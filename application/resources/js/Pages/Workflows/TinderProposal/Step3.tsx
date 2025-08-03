@@ -524,7 +524,7 @@ const Step3: React.FC<Step3Props> = ({
                 <div className="flex flex-col bg-background  h-220  pt-30" >
                     <div className="rounded-lg p-6 scrolling-touch flex-1">
                         {allProposals && allProposals.length > 0 ? (
-                            <div className="space-y-4 w-full flex flex-col items-center justify-center">
+                            <div className="space-y-4 w-full flex flex-col items-center justify-center" data-testid="proposal-cards-container">
                                 {/* Stack of cards */}
                                 <div className="relative w-full max-w-md ">
                                     {cardsToRender.map((proposal: any, index: number) => {
@@ -600,7 +600,7 @@ const Step3: React.FC<Step3Props> = ({
                                                 onMouseDown={isTopCard && !isAnimating ? handleMouseDown : undefined}
                                                 onTouchStart={isTopCard && !isAnimating ? handleTouchStart : undefined}
                                             >
-                                                <div className="flex flex-col w-full rounded-lg relative">
+                                                <div className="flex flex-col w-full rounded-lg relative" data-testid={`proposals-card`}>
                                                     <ProposalCard
                                                         proposal={proposal}
                                                         isHorizontal={false}
@@ -615,7 +615,7 @@ const Step3: React.FC<Step3Props> = ({
 
                                     {/* No more cards message */}
                                     {currentIndex >= allProposals.length && !isLoading && (
-                                        <div className="absolute inset-0 flex items-center justify-center">
+                                        <div className="absolute inset-0 flex items-center justify-center" data-testid="no-more-cards">
                                             <div className="text-center p-8 bg-white rounded-lg shadow-lg">
                                                 <Paragraph className="text-lg font-semibold mb-2">
                                                     {t('workflows.tinderProposal.step3.allDone')}
@@ -641,13 +641,13 @@ const Step3: React.FC<Step3Props> = ({
 
                             </div>
                         ) : proposals === null ? (
-                            <div className="text-center">
+                            <div className="text-center" data-testid="failed-to-load-proposals">
                                 <Paragraph className="text-error">
                                     {t('workflows.tinderProposal.step3.failedToLoadProposals')}
                                 </Paragraph>
                             </div>
                         ) : (
-                            <div className="text-center">
+                            <div className="text-center" data-testid="no-proposals-found">
                                 <Paragraph>
                                     {isLoading ? t('workflows.tinderProposal.step3.loadingProposals') : t('workflows.tinderProposal.step3.noProposalsFound')}
                                 </Paragraph>
@@ -668,13 +668,14 @@ const Step3: React.FC<Step3Props> = ({
                                     onClick={() => handleCardSwipe('left', true)}
                                     disabled={!hasTopCard || isAnimating}
                                     className="flex-1 flex items-center bg-background justify-center py-3 px-6 rounded-l-lg rounded-r-none hover:bg-error-light/[30%] active:bg-error-light/[70%] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-light border-r-0"
+                                    dataTestId="no-button"
                                 >
                                     <div className="flex items-center space-x-2">
                                         <div className="w-6 h-6 flex items-center justify-center">
                                             <ThumbsDownIcon width={18} height={18} />
                                         </div>
                                         <Paragraph>{t('workflows.tinderProposal.step3.noButtonText')}</Paragraph>
-                                        <Paragraph className="text-sm text-gray-light">({swipedLeftProposals.length})</Paragraph>
+                                        <Paragraph className="text-sm text-gray-light" data-testid='no-count'>({swipedLeftProposals.length})</Paragraph>
                                     </div>
                                 </Button>
 
@@ -686,13 +687,14 @@ const Step3: React.FC<Step3Props> = ({
                                     onClick={() => handleCardSwipe('right', true)}
                                     disabled={!hasTopCard || isAnimating}
                                     className="flex-1 flex items-center bg-background justify-center py-3 px-6 rounded-r-lg rounded-l-none hover:bg-success-light active:bg-success-light transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-light border-l-0"
+                                    dataTestId="yes-button"
                                 >
                                     <div className="flex items-center space-x-2">
                                         <div className="w-6 h-6 flex items-center justify-center">
                                             <ThumbsUpIcon width={18} height={18} className="text-success" />
                                         </div>
                                         <Paragraph>{t('workflows.tinderProposal.step3.yesButtonText')}</Paragraph>
-                                        <Paragraph className=" text-gray-light">({swipedRightProposals.length})</Paragraph>
+                                        <Paragraph className=" text-gray-light" data-testid='yes-count'>({swipedRightProposals.length})</Paragraph>
                                     </div>
                                 </Button>
                             </div>
@@ -704,12 +706,13 @@ const Step3: React.FC<Step3Props> = ({
                     <div className="flex flex-col justify-between items-center w-full">
                     
                     <div className="flex flex-col space-y-4 w-full items-center justify-center">
-                        <PrimaryButton onClick={goToStep4} className="px-8 w-[75%] py-3 text-sm">
+                        <PrimaryButton onClick={goToStep4} className="px-8 w-[75%] py-3 text-sm" data-testid='save-progress-button'>
                             {t('workflows.tinderProposal.step3.saveProgress')}
                         </PrimaryButton>
                         <PrimaryLink
                             href={editSettingsStep}
                             className="text-sm  lg:px-8 lg:py-3 w-[75%]  bg-background border border-gray-persist/[20%]"
+                            data-testid='edit-settings-link'
                         >
                             <Paragraph className='text-content' size='sm'>{t('workflows.tinderProposal.step3.editSettings')}</Paragraph>
                         </PrimaryLink>

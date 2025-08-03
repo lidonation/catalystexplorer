@@ -17,6 +17,7 @@ interface RadioGroupProps {
   radioClassName?: string;
   groupClassName?: string;
   required?: boolean;
+  'data-testid'?: string;
 }
 
 const RadioGroup: React.FC<RadioGroupProps> = ({
@@ -29,6 +30,7 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
     radioClassName = 'h-4 w-4 text-primary focus:ring-primary focus:ring-offset-1 focus:ring-offset-primary focus:ring-1 border-gray-light ',
     groupClassName = '',
     required = false,
+    'data-testid': dataTestId
 }) => {
     return (
         <div
@@ -45,6 +47,7 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
                         disabled={option.disabled}
                         className={radioClassName}
                         required={required}
+                        data-testid={dataTestId}
                     />
                     <ValueLabel className={labelClassName}>
                         {option.label}
