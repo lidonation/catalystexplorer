@@ -61,6 +61,7 @@ const CatalystConnectionsGraph = ({
         data.rootNodeId,
     );
     const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
+    const [engineStarted, setEngineStarted] = useState(false);
 
     const { t } = useLaravelReactI18n();
 
@@ -86,6 +87,11 @@ const CatalystConnectionsGraph = ({
         loadImages();
     }, [loadImages]);
 
+    
+    useEffect(() => {
+        setEngineStarted(false);
+    }, [data]);
+
     const config = useMemo(
         () => ({
             nodeSize: {
@@ -109,16 +115,6 @@ const CatalystConnectionsGraph = ({
         }),
         [nodeSize, forces, colors],
     );
-
-    useEffect(() => {
-        if (fgRef.current) {
-            fgRef.current.d3Force('link')?.distance(forces.linkDistance);
-            fgRef.current
-                .d3Force('charge')
-                ?.distanceMax(1000)
-                .strength(forces.chargeStrength);
-        }
-    }, [forces.linkDistance, forces.chargeStrength]);
 
     const getColor = useCallback((color: string) => {
         return color.startsWith('--')
@@ -377,7 +373,7 @@ const CatalystConnectionsGraph = ({
     );
 
     return (
-        <div className="bg-background w-full h-120" ref={containerRef}>
+        <div className="bg-background w-full h-full" ref={containerRef}>
             {!isClient ? (
                 <LoadingSpinner />
             ) : (
@@ -389,6 +385,57 @@ const CatalystConnectionsGraph = ({
                         graphData={data}
                         nodeLabel="name"
                         nodeRelSize={4}
+                        d3AlphaDecay={0.01}
+                        d3VelocityDecay={0.3}
+                        onEngineTick={() => {
+                            if (!engineStarted && fgRef.current) {
+                                setEngineStarted(true);
+                                
+                                const linkForce = fgRef.current.d3Force('link');
+                                const chargeForce = fgRef.current.d3Force('charge');
+                                
+                                if (linkForce) {
+                                    linkForce.distance(forces.linkDistance);
+                                }
+                                if (chargeForce) {
+                                    chargeForce.strength(forces.chargeStrength).distanceMax(1000);
+                                }
+                                
+                                fgRef.current.d3ReheatSimulation();
+                                
+                                
+                                if (data.rootNodeId) {
+                                    setTimeout(() => {
+                                        const rootNode = data.nodes.find(n => n.id === data.rootNodeId);
+                                        if (rootNode && fgRef.current) {
+                                            fgRef.current.centerAt(
+                                                rootNode.x || 0, 
+                                                rootNode.y || 0, 
+                                                1000
+                                            );
+                                        }
+                                    }, 100);
+                                }
+                            }
+                        }}
+                        onEngineStop={() => {
+                            // Apply forces immediately when engine stops
+                           /*  if (fgRef.current) {
+                                const linkForce = fgRef.current.d3Force('link');
+                                const chargeForce = fgRef.current.d3Force('charge');
+                                
+                                if (linkForce) {
+                                    linkForce.distance(forces.linkDistance);
+                                }
+                                if (chargeForce) {
+                                    chargeForce.strength(forces.chargeStrength).distanceMax(1000);
+                                }
+                                
+                                
+                                // Immediately restart with correct forces
+                                fgRef.current.d3ReheatSimulation();
+                            } */
+                        }}
                         onBackgroundClick={() => {
                             fgRef.current.zoomToFit(100, 0);
                             setFocusedNodeId(null);
