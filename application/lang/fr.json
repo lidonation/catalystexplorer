@@ -963,5 +963,8 @@
     "comments.comments": "Commentaires",
     "comments.reply": "Répondre",
     "rightSwipes": " - Balayages vers la droite",
-    "leftSwipes": " - Balayages vers la gauche"
+    "leftSwipes": " - Balayages vers la gauche",
+    "graph.loadingConnections": "Chargement des connexions pour {nodeName}...",
+    "graph.noAdditionalConnections": "{nodeName} n'a pas de connexions supplémentaires",
+    "graph.unknownNode": "Inconnu"
 }
