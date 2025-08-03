@@ -84,7 +84,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                         <MetricsProvider>
                             {memoizedChildren}
                             <UIProvider>
-                                <section className="sticky inset-x-0 bottom-0 mx-auto flex items-center justify-center gap-2">
+                                <section className="sticky inset-x-0 bottom-0 mx-auto flex items-center justify-center gap-2 z-50">
                                     <div className="">
                                         <MetricsBar />
                                     </div>

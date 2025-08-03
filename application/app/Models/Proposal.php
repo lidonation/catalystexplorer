@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use App\Actions\TransformHashToIds;
 use App\Casts\DateFormatCast;
 use App\Enums\CatalystCurrencies;
@@ -30,6 +33,12 @@ use Laravel\Scout\Searchable;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 #[ScopedBy(ProposalTypeScope::class)]
+#[ApiResource(
+    operations: [
+        new Get,
+        new GetCollection,
+    ]
+)]
 class Proposal extends Model
 {
     use HasAuthor,

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\Get;
+use App\State\ModelProvider;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Attributes\MapOutputName;
 use Spatie\LaravelData\Data;
@@ -12,9 +15,19 @@ use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 #[TypeScript]
+#[Get(
+    uriTemplate: '/proposals/{hash}',
+    shortName: 'Proposal',
+    provider: ModelProvider::class
+)]
 final class ProposalData extends Data
 {
     public function __construct(
+
+        #[ApiProperty(identifier: false)]
+        public ?int $id,
+
+        #[ApiProperty(identifier: true)]
         public ?string $hash,
 
         public ?CampaignData $campaign,
@@ -137,4 +150,5 @@ final class ProposalData extends Data
         public ?int $order,
 
     ) {}
+
 }
