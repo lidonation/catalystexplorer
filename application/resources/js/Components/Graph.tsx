@@ -153,7 +153,7 @@ const Graph: React.FC<GraphProps> = ({ graphData }) => {
     };
 
     return (
-        <div className="bg-background w-full relative">
+        <div className="bg-background w-full h-full relative">
             {isLoading && (
                 <div className="bg-background absolute top-4 right-4 z-10 bg-white/90 px-3 py-2 rounded-lg shadow-md">
                     <div className="flex items-center space-x-2">
