@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {useLaravelReactI18n} from "laravel-react-i18n";
+import Paragraph from '@/Components/atoms/Paragraph';
 
 interface MilestoneDateProgressBarProps {
     startDate: string; // Format: "2022-11-11 17:37:43"
@@ -11,6 +12,14 @@ const MilestoneDateProgressBar: React.FC<MilestoneDateProgressBarProps> = ({
     months,
 }) => {
     const { t } = useLaravelReactI18n();
+    const startDateLabelRef = useRef<HTMLDivElement>(null);
+    const endDateLabelRef = useRef<HTMLDivElement>(null);
+    const nowDateLabelRef = useRef<HTMLDivElement>(null);
+    const [labelsOverlap, setLabelsOverlap] = useState({
+        startEnd: false,
+        startNow: false,
+        endNow: false
+    });
 
     const start = new Date(startDate.replace(' ', 'T'));
     const end = new Date(start);
@@ -29,6 +38,9 @@ const MilestoneDateProgressBar: React.FC<MilestoneDateProgressBarProps> = ({
         ((end.getTime() - start.getTime()) / totalDuration) * 100;
     const isWithinRange = now <= end;
     const barColor = isWithinRange ? 'bg-success' : 'bg-error';
+    const nowLabelColor = isWithinRange 
+        ? 'bg-success-light text-success border-success' 
+        : 'bg-error-light text-error border-error';
 
     const formatDate = (date: Date): string =>
         date.toLocaleDateString('en-US', {
@@ -37,136 +49,210 @@ const MilestoneDateProgressBar: React.FC<MilestoneDateProgressBarProps> = ({
             day: 'numeric',
         });
 
+    // Check for label overlap using getBoundingClientRect
+    const checkLabelOverlap = () => {
+        if (startDateLabelRef.current && endDateLabelRef.current && nowDateLabelRef.current) {
+            
+            const containerRect = startDateLabelRef.current.parentElement?.getBoundingClientRect();
+            if (!containerRect) return;
+            const startRect = startDateLabelRef.current.getBoundingClientRect();
+            const nowRect = nowDateLabelRef.current.getBoundingClientRect();
+        
+            const endElement = endDateLabelRef.current;
+            const endRect = endElement.getBoundingClientRect();
+        
+            const endRectOriginal = {
+                left: endRect.left,
+                right: endRect.right,
+                top: containerRect.top,
+                bottom: containerRect.top + endRect.height,
+                width: endRect.width,
+                height: endRect.height
+            } as DOMRect;
+            
+            // Helper function to check if two rectangles overlap
+            const doRectsOverlap = (rect1: DOMRect, rect2: DOMRect): boolean => {
+                return !(
+                    rect1.right < rect2.left ||
+                    rect2.right < rect1.left ||
+                    rect1.bottom < rect2.top ||
+                    rect2.bottom < rect1.top
+                );
+            };
+            
+            // Check all combinations using original position for end date
+            const startEndOverlap = doRectsOverlap(startRect, endRectOriginal);
+            const startNowOverlap = doRectsOverlap(startRect, nowRect);
+            const endNowOverlap = doRectsOverlap(endRectOriginal, nowRect);
+            
+            setLabelsOverlap({
+                startEnd: startEndOverlap,
+                startNow: startNowOverlap,
+                endNow: endNowOverlap
+            });
+        }
+    };
+
+    useEffect(() => {
+        
+        const timeoutId = setTimeout(checkLabelOverlap, 0);
+        
+        window.addEventListener('resize', checkLabelOverlap);
+        
+        return () => {
+            clearTimeout(timeoutId);
+            window.removeEventListener('resize', checkLabelOverlap);
+        };
+    }, [startDate, months, percentNow, endOffsetPercent, isWithinRange]);
+
+    // Calculate positions and styles to avoid duplication
+    const nowPosition = isWithinRange ? percentNow : 100;
+    const endPosition = isWithinRange ? 100 : endOffsetPercent;
+    const progressBarBg = isWithinRange ? 'bg-success-light' : 'bg-gray-200';
+    const progressWidth = isWithinRange ? percentNow : 100;
+
+    // Vertical line configurations
+    const verticalLines = [
+        { left: '0%', testId: 'milestone-start-line' },
+        { left: `${nowPosition}%`, testId: 'milestone-now-line' },
+        { 
+            left: `${endPosition}%`, 
+            testId: 'milestone-end-line'
+        }
+    ];
+
     return (
-        <div>
-            {isWithinRange ? (
-                <div className="flex w-full flex-col gap-8 space-y-2">
-                    {/* Labels */}
-                    <div className="relative h-6 w-full text-sm font-medium">
-                        <div className="border-background-lighter absolute left-0 flex flex-col justify-items-center rounded-lg border px-1 py-1">
-                            <span className="text-gray-persist w-full text-center">
-                                {t('Start Date')}
-                            </span>
-                            <span className="font-bold">
-                                {formatDate(start)}
-                            </span>
-                        </div>
-
-                        {/* Now Date Label */}
-                        <div
-                            className="absolute"
+        <div 
+            style={{
+                marginTop: labelsOverlap.startEnd || labelsOverlap.endNow ? '60px' : '0px'
+            }}
+            data-testid="milestone-progress-bar-container"
+            role="progressbar"
+            aria-label={`Project milestone progress: ${Math.round(percentNow)}% complete`}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={Math.round(percentNow)}
+        >
+            <div className="flex w-full flex-col gap-8 space-y-2 px-16" data-testid="milestone-progress-content">
+                {/* Labels Section */}
+                <div className="relative h-6 w-full text-sm font-medium" data-testid="milestone-labels-section">
+                    {/* Vertical pointer lines */}
+                    {verticalLines.map((line, index) => (
+                        <div 
+                            key={index}
+                            className="absolute w-0.5 bg-gray-persist z-0"
                             style={{
-                                left: `${percentNow}%`,
-                                top: `100%`,
+                                left: line.left,
+                                top: '100%',
+                                height: '40px',
+                                transform: line.left !== '0%' ? 'translateX(-50%)' : undefined,
+                            }}
+                            data-testid={line.testId}
+                            aria-hidden="true"
+                        />
+                    ))}
+
+                    {/* Additional line for end date when labels overlap */}
+                    {(labelsOverlap.startEnd || labelsOverlap.endNow) && (
+                        <div 
+                            className="absolute w-0.5 bg-gray-persist z-0"
+                            style={{
+                                left: `${endPosition}%`,
+                                top: '-60px',
+                                height: 'calc(100% + 60px + 40px)',
                                 transform: 'translateX(-50%)',
                             }}
-                        >
-                            <div className="bg-success-light text-success border-success flex rounded-lg border border-1 px-1 py-1 text-xs whitespace-nowrap">
-                                {formatDate(now)}
-                            </div>
-                        </div>
+                            data-testid="milestone-end-line-extended"
+                            aria-hidden="true"
+                        />
+                    )}
 
-                        {/* End Date Label with clamp to avoid overflow */}
-                        <div
-                            className="border-background-lighter absolute flex flex-col justify-items-center rounded-lg border px-1 py-1"
-                            style={{
-                                left: `90%`,
-                                transform: 'translateX(-50%)',
-                                whiteSpace: 'nowrap',
-                            }}
-                        >
-                            <span className="text-gray-persist w-full text-center">
-                                {t('End Date')}
-                            </span>
-                            <span className="font-bold">{formatDate(end)}</span>
-                        </div>
+                    {/* Start Date Label */}
+                    <div 
+                        ref={startDateLabelRef}
+                        className="border-background-lighter absolute flex flex-col justify-items-center rounded-lg shadow-md border px-1 py-1 z-10 bg-background"
+                        style={{
+                            left: '0%',
+                            transform: 'translateX(-50%)',
+                        }}
+                        data-testid="milestone-start-date-label"
+                        aria-label={`Project start date: ${formatDate(start)}`}
+                    >
+                        <Paragraph size="xs" className="text-gray-persist w-full text-center">
+                            {t('startDate')}
+                        </Paragraph>
+                        <Paragraph size="xs" className="font-bold">
+                            {formatDate(start)}
+                        </Paragraph>
                     </div>
 
-                    {/* Progress Bar */}
-                    <div className="bg-success-light relative h-3 w-full overflow-visible rounded-full">
-                        <div className="relative h-full">
-                            <div
-                                className={`h-full ${barColor} rounded-full transition-all duration-500`}
-                                style={{ width: `${percentNow}%` }}
-                            ></div>
+                    {/* Current Date Label */}
+                    <div
+                        ref={nowDateLabelRef}
+                        className="absolute z-10"
+                        style={{
+                            left: `${nowPosition}%`,
+                            top: '100%',
+                            transform: 'translateX(-50%)',
+                            whiteSpace: 'nowrap',
+                        }}
+                        data-testid="milestone-current-date-label"
+                        aria-label={`Current date: ${formatDate(now)}`}
+                    >
+                        <Paragraph size="xs" className={`flex rounded-lg border border-1 px-1 py-1 text-xs whitespace-nowrap ${nowLabelColor}`}>
+                            {formatDate(now)}
+                        </Paragraph>
+                    </div>
 
-                            {/* Circular Now Marker */}
-                            <div
-                                className={`absolute h-6 w-6 rounded-full border-3 border-white ${barColor} shadow-md`}
-                                style={{
-                                    left: `${percentNow}%`,
-                                    top: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                }}
-                            ></div>
-                        </div>
+                    {/* End Date Label */}
+                    <div
+                        ref={endDateLabelRef}
+                        className="border-background-lighter absolute flex flex-col justify-items-center shadow-md rounded-lg border px-1 py-1 z-10 bg-background"
+                        style={{
+                            left: `${endPosition}%`,
+                            transform: 'translateX(-50%)',
+                            whiteSpace: 'nowrap',
+                            top: labelsOverlap.startEnd || labelsOverlap.endNow ? '-60px' : '0px',
+                        }}
+                        data-testid="milestone-end-date-label"
+                        aria-label={`Project end date: ${formatDate(end)}`}
+                    >
+                        <Paragraph size="xs" className="text-gray-persist w-full text-center">
+                            {t('endDate')}
+                        </Paragraph>
+                        <Paragraph size="xs" className="font-bold">
+                            {formatDate(end)}
+                        </Paragraph>
                     </div>
                 </div>
-            ) : (
-                <div className="flex w-full flex-col gap-8 space-y-2">
-                    {/* Labels */}
-                    <div className="relative h-6 w-full text-sm font-medium">
-                        {/* Start date label */}
-                        <div className="border-background-lighter absolute left-0 flex flex-col justify-items-center rounded-lg border px-1 py-1">
-                            <span className="text-gray-persist w-full text-center">
-                                {t('Start Date')}
-                            </span>
-                            <span className="font-bold">
-                                {formatDate(start)}
-                            </span>
-                        </div>
 
-                        {/* Now Date Label with clamp to avoid overflow */}
+                {/* Progress Bar */}
+                <div 
+                    className={`${progressBarBg} relative h-3 w-full overflow-visible rounded-full`}
+                    data-testid="milestone-progress-track"
+                    aria-hidden="true"
+                >
+                    <div className="relative h-full">
                         <div
-                            className="absolute"
-                            style={{
-                                left: `95%`,
-                                top: `100%`,
-                                transform: 'translateX(-50%)',
-                                whiteSpace: 'nowrap',
-                            }}
-                        >
-                            <div className="bg-error-light text-error border-error flex rounded-lg border border-1 px-2 py-1 text-xs whitespace-nowrap">
-                                {formatDate(now)}
-                            </div>
-                        </div>
+                            className={`h-full ${barColor} rounded-full transition-all duration-500`}
+                            style={{ width: `${progressWidth}%` }}
+                            data-testid="milestone-progress-fill"
+                        />
 
-                        {/* End Date Label */}
+                        {/* Circular Now Marker */}
                         <div
-                            className="border-background-lighter absolute flex flex-col justify-items-center rounded-lg border bg-white px-1 py-1"
+                            className={`absolute h-6 w-6 rounded-full border-3 border-white ${barColor} shadow-md`}
                             style={{
-                                left: `${endOffsetPercent}%`,
-                                whiteSpace: 'nowrap',
+                                left: `${nowPosition}%`,
+                                top: '50%',
+                                transform: 'translate(-50%, -50%)',
                             }}
-                        >
-                            <span className="text-gray-persist w-full text-center">
-                                {t('End Date')}
-                            </span>
-                            <span className="font-bold">{formatDate(end)}</span>
-                        </div>
-                    </div>
-
-                    {/* Progress Bar */}
-                    <div className="relative h-3 w-full overflow-visible rounded-full bg-gray-200">
-                        <div className="relative h-full">
-                            <div
-                                className={`h-full ${barColor} rounded-full transition-all duration-500`}
-                                style={{ width: `100%` }}
-                            ></div>
-
-                            {/* Circular Now Marker */}
-                            <div
-                                className={`absolute h-6 w-6 rounded-full border-3 border-white ${barColor} shadow-md`}
-                                style={{
-                                    left: `95%`,
-                                    top: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                }}
-                            ></div>
-                        </div>
+                            data-testid="milestone-current-marker"
+                            aria-label="Current progress indicator"
+                        />
                     </div>
                 </div>
-            )}
+            </div>
         </div>
     );
 };
