@@ -71,6 +71,7 @@ export default function WorkflowSlideOver({
                                         type="button"
                                         className="relative"
                                         onClick={onClose}
+                                        dataTestId='close-button'
                                     >
                                         <X className="h-6 w-6 text-gray-persist/[70%]" aria-hidden="true" />
                                     </Button>
