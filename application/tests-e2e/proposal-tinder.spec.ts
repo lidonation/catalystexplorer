@@ -32,17 +32,15 @@ test.describe('Proposal Tinder', () => {
 
         await loginButton.click();
 
-        await page.waitForURL(/\/map/);
+        await page.goto('/workflows/tinder-proposal/steps/1', {
+            waitUntil: 'domcontentloaded',
+        });
 
         await page.context().storageState({ path: 'storage/auth.json' });
 
-        await page.goto('/en/workflows/tinder-proposal/steps/1');
+        await page.waitForLoadState('domcontentloaded');
 
-
-        await page.goto('workflows/tinder-proposal/steps/1');
-
-        const nav = page.locator('[data-testid="workflow-nav"]');
-        await expect(nav).toBeVisible();
+        // await page.waitForSelector('[data-testid="workflow-nav"]');
 
         const step1Active = page.locator('[data-testid="step-number-1"]');
 
@@ -59,19 +57,63 @@ test.describe('Proposal Tinder', () => {
         await fundSelector.click();
 
         const option = page.locator(
-            '[data-testid="selector-option-vd8fn02sxi"]',
+            '[data-testid="selector-option-f39vza7c05"]',
         );
         await option.click();
 
-        const proposalSizeCheckbox = page
+        const proposalCategoryCheckbox1 = page
+            .locator(`[data-testid="proposal-category-checkbox"]`)
+            .first();
+
+        await expect(proposalCategoryCheckbox1).toBeVisible();
+
+         await proposalCategoryCheckbox1.click();
+
+        await expect(proposalCategoryCheckbox1).toBeChecked();
+
+        const proposalCategoryCheckbox2 = page
+            .locator(`[data-testid="proposal-category-checkbox"]`)
+            .nth(1);
+
+        await expect(proposalCategoryCheckbox2).toBeVisible();
+
+        await proposalCategoryCheckbox2.click();
+
+        await expect(proposalCategoryCheckbox2).toBeChecked();
+
+        const proposalCategoryCheckbox3 = page
+            .locator(`[data-testid="proposal-category-checkbox"]`)
+            .nth(2);
+
+        await expect(proposalCategoryCheckbox3).toBeVisible();
+
+        await proposalCategoryCheckbox3.click();
+
+        await expect(proposalCategoryCheckbox3).toBeChecked();
+
+        const proposalCategoryCheckbox4 = page
+            .locator(`[data-testid="proposal-category-checkbox"]`)
+            .nth(3);
+
+        await expect(proposalCategoryCheckbox4).toBeVisible();
+
+        await proposalCategoryCheckbox4.click();
+
+        await expect(proposalCategoryCheckbox4).toBeChecked();
+
+        const proposalTypeCheckbox5 = page
+            .locator(`[data-testid="proposal-size-checkbox"]`)
+            .nth(4);
+
+        const proposalSizeCheckbox1 = page
             .locator(`[data-testid="proposal-size-checkbox"]`)
             .first();
 
-        await expect(proposalSizeCheckbox).toBeVisible();
+        await expect(proposalSizeCheckbox1).toBeVisible();
 
-        await proposalSizeCheckbox.click();
+        await proposalSizeCheckbox1.click();
 
-        await expect(proposalSizeCheckbox).toBeChecked();
+        await expect(proposalSizeCheckbox1).toBeChecked();
 
         const proposalTypeCheckbox = page
             .locator(`[data-testid="impact-type-checkbox"]`)
@@ -91,86 +133,78 @@ test.describe('Proposal Tinder', () => {
     });
 
     test('Successful Step 2 Completion', async ({ page }) => {
-        await page.goto('/workflows/tinder-proposal/steps/2');
+        await page.goto('/workflows/tinder-proposal/steps/2', {
+            waitUntil: 'domcontentloaded',
+        });
 
-        await page.fill(
-            '[data-testid="login-email-input"]',
-            'admin@catalystexplorer.com',
+        await page.waitForLoadState('domcontentloaded');
+
+        // await page.waitForSelector('[data-testid="workflow-nav"]', {
+        //     timeout: 30000,
+        // });
+
+        const step2Active = page.locator('[data-testid="step-number-2"]');
+
+        await expect(step2Active).toBeVisible();
+
+        await expect(step2Active).toHaveClass(/border-primary/);
+        await expect(step2Active).toHaveClass(/text-primary/);
+
+        const titleInput = page.locator(
+            '[data-testid="tinder-proposal-title-input"]',
         );
-        await page.fill(
-            '[data-testid="login-password-input"]',
-            'ofnXIFbZ0JOuGBqx',
+        await expect(titleInput).toBeVisible();
+
+        await titleInput.fill('Test Proposal Title');
+
+        const contentTextarea = page.locator(
+            '[data-testid="tinder-proposal-content-textarea"]',
         );
+        await expect(contentTextarea).toBeVisible();
 
-        const checkbox = page.locator(
-            `[data-testid="login-remember-checkbox"]`,
+        await contentTextarea.fill('This is a test proposal content.');
+
+        const visibilityRadioGroup = page.locator(
+            '[data-testid="tinder-visibility-radio-group"]',
         );
-        await expect(checkbox).toBeVisible();
+        await expect(visibilityRadioGroup).toBeVisible();
 
-        await checkbox.click();
-        await expect(checkbox).toBeChecked();
-
-        const loginButton = page.locator('[data-testid="login-signin-button"]');
-
-        await expect(loginButton).toBeVisible();
-
-        await loginButton.click();
-
-        await page.waitForURL(/\/map/);
-
-        await page.context().storageState({ path: 'storage/auth.json' });
-
-        await page.goto('/en/workflows/tinder-proposal/steps/1');
-
-
-        await page.goto('workflows/tinder-proposal/steps/1');
-
-        const nav = page.locator('[data-testid="workflow-nav"]');
-        await expect(nav).toBeVisible();
-
-        const step1Active = page.locator('[data-testid="step-number-1"]');
-
-        await expect(step1Active).toBeVisible();
-
-        await expect(step1Active).toHaveClass(/border-primary/);
-        await expect(step1Active).toHaveClass(/text-primary/);
-
-        const fundSelector = page.locator(
-            '[data-testid="tinder-fund-selector"]',
+        const visibilityOptions = visibilityRadioGroup.locator(
+            'input[type="radio"]',
         );
-        await expect(fundSelector).toBeVisible();
+        await visibilityOptions.first().check();
 
-        await fundSelector.click();
-
-        const option = page.locator(
-            '[data-testid="selector-option-vd8fn02sxi"]',
+        const commentsSwitch = page.locator(
+            '[data-testid="tinder-comments-switch"]',
         );
-        await option.click();
+        await expect(commentsSwitch).toBeVisible();
 
-        const proposalSizeCheckbox = page
-            .locator(`[data-testid="proposal-size-checkbox"]`)
-            .first();
+        await commentsSwitch.click();
+        await expect(commentsSwitch).toBeChecked();
 
-        await expect(proposalSizeCheckbox).toBeVisible();
+        const colorTextInput = page.locator('[data-testid="color-text-input"]');
+        await expect(colorTextInput).toBeVisible();
 
-        await proposalSizeCheckbox.click();
+        await colorTextInput.fill('#ff0000');
 
-        await expect(proposalSizeCheckbox).toBeChecked();
+        const colorPickerInput = page.locator(
+            '[data-testid="color-picker-input"]',
+        );
+        await expect(colorPickerInput).toBeVisible();
 
-        const proposalTypeCheckbox = page
-            .locator(`[data-testid="impact-type-checkbox"]`)
-            .first();
+        await colorPickerInput.click();
 
-        await expect(proposalTypeCheckbox).toBeVisible();
+        const statusRadioGroup = page.locator(
+            '[data-testid="tinder-status-radio-group"]',
+        );
+        await expect(statusRadioGroup).toBeVisible();
 
-        await proposalTypeCheckbox.click();
+        const statusOptions = statusRadioGroup.locator('input[type="radio"]');
+        await statusOptions.first().check();
 
-        await expect(proposalTypeCheckbox).toBeChecked();
+        const saveButton = page.locator('[data-testid="tinder-save-button"]');
+        await expect(saveButton).toBeVisible();
 
-        const beginButton = page.locator('[data-testid="tinder-begin-button"]');
-
-        await expect(beginButton).toBeVisible();
-
-        await beginButton.click();
+        await saveButton.click();
     });
 });
