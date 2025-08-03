@@ -10,6 +10,8 @@ use Spatie\Enum\Laravel\Enum;
  * @method static self IDEASCALEPROFILE()
  * @method static self GROUP()
  * @method static self COMMUNITY()
+ * @method static self EXCLUDE_EXISTING()
+ * @method static self DEPTH()
  */
 final class CatalystConnectionParams extends Enum
 {
@@ -19,6 +21,8 @@ final class CatalystConnectionParams extends Enum
             'IDEASCALEPROFILE' => 'ip',
             'GROUP' => 'g',
             'COMMUNITY' => 'c',
+            'EXCLUDE_EXISTING' => 'exclude_existing',
+            'DEPTH' => 'depth',
         ];
     }
 }
