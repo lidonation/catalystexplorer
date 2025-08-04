@@ -17,6 +17,7 @@ interface SwipeCardProps {
     swipeCount: number;
     onEditList: () => void;
     isDeleted: boolean;
+    'data-testid'? : string;
 }
 
 const SwipeCard: React.FC<SwipeCardProps> = ({
@@ -24,7 +25,8 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
                                                  bookmarkCollection,
                                                  swipeCount,
                                                  onEditList,
-                                                 isDeleted
+                                                 isDeleted,
+                                                 'data-testid': dataTestId
                                              }) => {
     const { t } = useLaravelReactI18n();
 
@@ -55,7 +57,7 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
 
     return (
         <div
-            className="rounded-lg p-6 bg-background border dark:border-2 border-border-dark-on-dark shadow-[0_4px_24px_0_rgba(0,0,0,0.10),0_0px_2px_0_rgba(0,0,0,0.08)]">
+            className="rounded-lg p-6 bg-background border dark:border-2 border-border-dark-on-dark shadow-[0_4px_24px_0_rgba(0,0,0,0.10),0_0px_2px_0_rgba(0,0,0,0.08)]" data-testid={dataTestId}>
             <div className="flex items-center justify-between mb-2">
                 <div>
                     <Paragraph size="md" className="font-semibold">
@@ -90,6 +92,7 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
                             type: 'proposals'
                         }), '_blank', 'noopener,noreferrer');
                     }}
+                    data-testid='manage-button'
                 >
                     <span className='block w-full'>
                         {t('bookmarks.manage')}
@@ -99,6 +102,8 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
                 <SecondaryButton
                     className=' flex-1 text-center'
                     onClick={onEditList}
+                    data-testid='edit-button'
+                    
                 >
                     <span className='block w-full'>
                         {t('bookmarks.listSetting')}
