@@ -461,8 +461,6 @@ Route::localized(
 
         Route::prefix('/services')->as('services.')->group(function () {
             Route::get('/', [ServiceController::class, 'index'])->name('index');
-            Route::get('/create', [ServiceController::class, 'create'])->name('create')->middleware('auth');
-            Route::post('/', [ServiceController::class, 'store'])->name('store')->middleware('auth');
             Route::get('/{service}', [ServiceController::class, 'show'])->name('show');
         });
 

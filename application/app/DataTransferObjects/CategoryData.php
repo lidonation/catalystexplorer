@@ -17,7 +17,7 @@ final class CategoryData extends Data
 {
     public function __construct(
         public int $id,
-        public string $hash, // Add this
+        public string $hash,
         public string $name,
         public string $slug,
         public string $type,
@@ -50,7 +50,7 @@ final class CategoryData extends Data
     {
         return new self(
             id: $category->id,
-            hash: $category->hash, // Add this
+            hash: $category->hash,
             name: $category->name,
             slug: $category->slug,
             type: $category->type,

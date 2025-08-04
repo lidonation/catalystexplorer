@@ -50,7 +50,7 @@ export default function SearchControls({
             showRingOnFocus={true}
             value={searchQuery}
             placeholder={"Search services"}
-            className=""
+            className="h-12"
           />
         </div>
 

@@ -126,13 +126,10 @@ class Service extends Model implements HasMedia
                 $term = strtolower($term);
                 $relevanceCase[] = "CASE WHEN LOWER(title) = '{$term}' THEN 1000 ELSE 0 END";
 
-                // Title starts with term
                 $relevanceCase[] = "CASE WHEN LOWER(title) LIKE '{$term}%' THEN 500 ELSE 0 END";
 
-                // Title contains term
                 $relevanceCase[] = "CASE WHEN LOWER(title) LIKE '%{$term}%' THEN 100 ELSE 0 END";
 
-                // Description contains term
                 $relevanceCase[] = "CASE WHEN LOWER(description) LIKE '%{$term}%' THEN 10 ELSE 0 END";
             }
 
@@ -149,8 +146,8 @@ class Service extends Model implements HasMedia
             $ids = is_array($categoryIds) ? $categoryIds : (array) $categoryIds;
             $q->whereHas('categories', function ($query) use ($ids) {
                 $query->whereIn(
-                    'service_model.model_id', // Explicit pivot column
-                    $ids // Already transformed to IDs
+                    'service_model.model_id',
+                    $ids
                 );
             });
         });

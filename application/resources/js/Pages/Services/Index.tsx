@@ -21,7 +21,6 @@ const Section = ({ children, className }: { children: React.ReactNode; className
   <div className={className}>{children}</div>
 );
 
-// Create a proper service filters interface instead of using SearchParams
 interface ServiceFilters {
   search?: string;
   categories?: string | string[];
@@ -33,7 +32,7 @@ interface ServiceFilters {
 interface ServicesIndexProps {
   services: PaginatedData<ServiceData[]>;
   categories: CategoryData[];
-  filters?: ServiceFilters; // Changed from SearchParams to ServiceFilters
+  filters?: ServiceFilters;
 }
 
 const DEFAULT_FILTERS: ServiceFilters = {

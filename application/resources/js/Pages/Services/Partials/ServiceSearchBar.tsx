@@ -10,15 +10,13 @@ export const ServiceSearchBar = forwardRef<HTMLInputElement, ServiceSearchBarPro
   ({ value, handleSearch, className, ...props }, ref) => {
     return (
       <div className={className}>
-          <SearchBar
-            {...props}
-            ref={ref}
-            initialSearch={value}
-            handleSearch={handleSearch}
-          />
-       </div>
+        <SearchBar
+          {...props}
+          ref={ref}
+          initialSearch={value}
+          handleSearch={handleSearch}
+        />
+      </div>
     );
   }
 );
-
-ServiceSearchBar.displayName = 'ServiceSearchBar';

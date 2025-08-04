@@ -55,11 +55,10 @@ class ServiceController extends Controller
             ->when($request->type, fn ($q, $type) => $q->where('type', $type))
             ->latest()
             ->paginate(12)
-            ->withQueryString() // Add this to preserve filters
+            ->withQueryString()
             ->setPageName('page')
             ->onEachSide(1);
 
-        // Transform the data to match PaginatedData<T> where data: T (not T[])
         $transformedServices = $services->getCollection()->map(fn ($service) => ServiceData::fromModel($service))->toArray();
 
         return Inertia::render('Services/Index', [

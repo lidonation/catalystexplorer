@@ -10,7 +10,6 @@ interface ServiceCategoriesProps {
   filterable?: boolean;
 }
 
-// Define the shape of children items since they're plain arrays from PHP
 interface CategoryChild {
   id: number;
   hash: string;
