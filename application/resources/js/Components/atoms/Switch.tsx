@@ -9,6 +9,7 @@ interface SwitchProps {
     size?: 'sm' | 'md' | 'lg';
     color?: string;
     className?: string;
+    'data-testid'?: string;
 }
 
 const CustomSwitch = ({
@@ -20,6 +21,7 @@ const CustomSwitch = ({
     size = 'md',
     color = 'bg-primary',
     className = '',
+    'data-testid': dataTestId,
 }: SwitchProps) => {
     const sizes = {
         sm: {
@@ -40,9 +42,11 @@ const CustomSwitch = ({
     };
 
     return (
-        <div className={`flex w-full items-center justify-between ${
-            labelShouldPrecede ? 'flex-row-reverse' : 'flex-row'
-        } ${className}`}>
+        <div
+            className={`flex w-full items-center justify-between ${
+                labelShouldPrecede ? 'flex-row-reverse' : 'flex-row'
+            } ${className}`}
+        >
             <Switch.Root
                 checked={checked}
                 onCheckedChange={onCheckedChange}
@@ -52,6 +56,7 @@ const CustomSwitch = ({
                         ? 'cursor-not-allowed bg-gray-200'
                         : 'cursor-pointer bg-gray-200'
                 } ${checked && !disabled ? color : ''} transition-colors duration-200`}
+                data-testid={dataTestId}
             >
                 <Switch.Thumb
                     className={` ${sizes[size].thumb} block transform rounded-full bg-white transition-transform duration-200 ${checked ? sizes[size].translate : 'translate-x-0.5'} ${disabled ? 'bg-gray-300' : ''} `}

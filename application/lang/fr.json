@@ -966,5 +966,11 @@
     "rightSwipes": " - Balayages vers la droite",
     "leftSwipes": " - Balayages vers la gauche",
     "workflows.createService.step1.clickToReplaceImage": "Cliquez ici pour remplacer l'image",
-    "workflows.createService.step1.clickToUploadImage": "Cliquez ici pour télécharger une image"
+    "workflows.createService.step1.clickToUploadImage": "Cliquez ici pour télécharger une image",
+    "graph.loadingConnections": "Chargement des connexions pour {nodeName}...",
+    "graph.noAdditionalConnections": "{nodeName} n'a pas de connexions supplémentaires",
+    "graph.unknownNode": "Inconnu",
+    "endDate": "Date de fin",
+    "startDate": "Date de début"
+
 }

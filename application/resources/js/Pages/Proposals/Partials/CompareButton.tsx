@@ -4,7 +4,6 @@ import { IndexedDBService } from '@/Services/IndexDbService';
 import { useLiveQuery } from 'dexie-react-hooks';
 import ProposalData = App.DataTransferObjects.ProposalData;
 import { useState } from 'react';
-
 type CompareButtonProps = {
     model: string;
     hash: string;
@@ -12,23 +11,18 @@ type CompareButtonProps = {
     data: ProposalData;
     'data-testid'?: string;
 };
-
 const CompareButton: React.FC<CompareButtonProps> = ({
     data,
     tooltipDescription = 'Compare proposal',
     'data-testid': dataTestId,
 }: CompareButtonProps) => {
     const [isHovered, setIsHovered] = useState(false);
-
     // Live query to check if the proposal is already in the DB
     const existingProposal = useLiveQuery(
         async () => await IndexedDBService.get('proposal_comparisons', data.hash ?? ''),
         [data.hash],
     );
-    
-    
     const alreadyExists = !!existingProposal;
-
     const toggleInList = async () => {
         if (alreadyExists) {
             await IndexedDBService.remove(
@@ -39,7 +33,6 @@ const CompareButton: React.FC<CompareButtonProps> = ({
             await IndexedDBService.create('proposal_comparisons', data);
         }
     };
-
     return (
         <button
             type="button"
@@ -60,5 +53,4 @@ const CompareButton: React.FC<CompareButtonProps> = ({
         </button>
     );
 };
-
 export default CompareButton;
