@@ -7,13 +7,6 @@ import React, {
 } from 'react';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
-let Plyr: any = null;
-if (typeof window !== 'undefined') {
-    import('plyr').then(module => {
-        Plyr = module.default;
-    });
-}
-
 export interface Playlist {
     title: string | null;
     quickpitch?: string;
@@ -66,10 +59,13 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
     const [progress, setProgress] = useState(0);
     const [initialLoad, setInitialLoad] = useState(true);
     const [isClient, setIsClient] = useState(false);
+    const [PlyrClass, setPlyrClass] = useState<any>(null);
 
-    // Check if we're on the client side
     useEffect(() => {
         setIsClient(true);
+        import('plyr').then(module => {
+            setPlyrClass(() => module.default);
+        });
     }, []);
 
     const currentTrack =
@@ -80,7 +76,7 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
     useEffect(() => {
         if (
             !isClient ||
-            !Plyr ||
+            !PlyrClass ||
             !playlist ||
             playlist.length === 0 ||
             !playerContainerRef.current ||
@@ -89,7 +85,7 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
             return;
         }
 
-        plyrInstanceRef.current = new Plyr(playerContainerRef.current, {
+        plyrInstanceRef.current = new PlyrClass(playerContainerRef.current, {
             controls: [
             'play',
             'progress',
@@ -118,8 +114,12 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
 
         return () => {
             clearTimeout(timeout);
+            if (plyrInstanceRef.current) {
+                plyrInstanceRef.current.destroy();
+                plyrInstanceRef.current = null;
+            }
         };
-    }, [plyrInstanceRef, playlist, isClient, Plyr]);
+    }, [plyrInstanceRef, playlist, isClient, PlyrClass]);
 
     useEffect(() => {
         if (!isClient || !plyrInstanceRef.current || !playlist || playlist.length === 0) {
