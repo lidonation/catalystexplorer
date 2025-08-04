@@ -8,7 +8,7 @@ import Modal from '@/Components/layout/Modal.tsx';
 import CloseIcon from '@/Components/svgs/CloseIcon';
 import MenuIcon from '@/Components/svgs/MenuIcon';
 import { MetricsProvider } from '@/Context/MetricsContext';
-// import { PlayerProvider } from '@/Context/PlayerContext';
+import { PlayerProvider } from '@/Context/PlayerContext';
 import { UIProvider } from '@/Context/SharedUIContext';
 import { Dialog } from '@headlessui/react';
 import { usePage } from '@inertiajs/react';
@@ -80,7 +80,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 <main id="main-content" data-testid="main-content">
                     <Breadcrumbs items={breadcrumbItems} />
 
-                    {/*<PlayerProvider>*/}
+                    <PlayerProvider>
                         <MetricsProvider>
                             {memoizedChildren}
                             <UIProvider>
@@ -94,7 +94,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                                 </section>
                             </UIProvider>
                         </MetricsProvider>
-                    {/*</PlayerProvider>*/}
+                    </PlayerProvider>
                 </main>
 
                 <ProposalComparison />
