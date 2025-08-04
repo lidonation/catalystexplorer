@@ -40,51 +40,37 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
         to,
         total,
     } = pagination;
-
-    // Filter out navigation links (Previous/Next) from page links
     const pageLinks = links?.filter(
         link => !link.label.includes('&laquo;') && 
                 !link.label.includes('&raquo;') && 
                 link.label !== 'Previous' && 
                 link.label !== 'Next'
     ) || [];
-
-    // For mobile: show 2 pages before and 2 pages after current page (5 total)
     const getMobilePageLinks = () => {
-        if (pageLinks.length <= 7) return pageLinks; // Show all if 7 or fewer pages
+        if (pageLinks.length <= 7) return pageLinks;
         
         const currentIdx = pageLinks.findIndex(link => link.active);
         const current_page_num = parseInt(pageLinks[currentIdx]?.label || '1');
         
-        // Calculate the range: 2 before, current, 2 after
         const startPage = Math.max(1, current_page_num - 2);
         const endPage = Math.min(pageLinks.length, current_page_num + 2);
         
         const result = [];
         
-        // Add ellipsis at start if we're not showing from page 1
         if (startPage > 1) {
-            result.push(pageLinks[0]); // First page
+            result.push(pageLinks[0]);
             if (startPage > 2) {
                 result.push({ label: '...', active: false, url: null });
             }
         }
         
-        // Add the 5-page window around current page
         for (let i = startPage; i <= endPage; i++) {
             const pageLink = pageLinks.find(link => parseInt(link.label) === i);
             if (pageLink) {
                 result.push(pageLink);
             }
         }
-        
-        // Add ellipsis at end if we're not showing to the last page
-        if (endPage < pageLinks.length) {
-            if (endPage < pageLinks.length - 1) {
-                result.push({ label: '...', active: false, url: null });
-            }
-            result.push(pageLinks[pageLinks.length - 1]); 
-        }
+       
         
         return result;
     };
