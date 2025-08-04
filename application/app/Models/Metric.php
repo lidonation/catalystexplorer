@@ -182,13 +182,22 @@ class Metric extends Model
         if ($rule->subject && $rule->operator && isset($rule->predicate)) {
             $predicate = $rule->predicate;
 
+            if ((str_starts_with($predicate, '[') && str_ends_with($predicate, ']'))) {
+
+                $filterString = substr($predicate, 1, -1);
+
+                $filterArray = array_map('trim', explode(',', $filterString));
+
+                $predicate = $filterArray;
+            }
+
             $ruleFilter = match ($rule->operator) {
                 '=', 'equals' => is_array($predicate)
-                    ? "{$rule->subject} IN (".collect($predicate)->map(fn ($val) => '"'.addslashes($val).'"')->join(', ').')'
+                    ? "{$rule->subject} IN [".collect($predicate)->map(fn ($val) => '"'.addslashes($val).'"')->join(', ').']'
                     : "{$rule->subject} = \"".addslashes($predicate).'"',
 
                 '!=', 'not_equals' => is_array($predicate)
-                    ? "{$rule->subject} NOT IN (".collect($predicate)->map(fn ($val) => '"'.addslashes($val).'"')->join(', ').')'
+                    ? "{$rule->subject} NOT IN [".collect($predicate)->map(fn ($val) => '"'.addslashes($val).'"')->join(', ').']'
                     : "{$rule->subject} != \"".addslashes($predicate).'"',
 
                 '>', 'greater_than' => "{$rule->subject} > \"".addslashes($predicate).'"',
@@ -209,7 +218,7 @@ class Metric extends Model
         try {
             $searchOptions = [
                 'limit' => 0,
-                'facets' => [$facetKey, 'tags.title'], 
+                'facets' => [$facetKey, 'tags.title'],
             ];
 
             if (! empty($combinedFilter)) {
@@ -219,10 +228,8 @@ class Metric extends Model
             $builder = $proposals->search($searchQuery, $searchOptions);
             $response = new \Illuminate\Support\Fluent($builder->raw());
 
-            // Get facet counts for primary facet
             $facetCounts = $response->facetDistribution[$facetKey] ?? [];
 
-            // Handle `year` aggregation if needed
             if ($countBy === 'year') {
                 $yearCounts = [];
                 foreach ($facetCounts as $date => $cnt) {
@@ -232,14 +239,12 @@ class Metric extends Model
                 $facetCounts = $yearCounts;
             }
 
-            // Get tag counts across entire result set
             $tagCounts = $response->facetDistribution['tags.title'] ?? [];
 
             $ruleChartData = [];
             foreach (array_keys($facetData) as $facetValue) {
                 $count = $facetCounts[$facetValue] ?? 0;
 
-                // This part does not split tags per facetValue — only global tag counts
                 $tags = [];
                 foreach ($tagCounts as $tagTitle => $tagCount) {
                     $tags[] = [
@@ -276,13 +281,22 @@ class Metric extends Model
         if ($rule->subject && $rule->operator && isset($rule->predicate)) {
             $predicate = $rule->predicate;
 
+            if ((str_starts_with($predicate, '[') && str_ends_with($predicate, ']'))) {
+
+                $filterString = substr($predicate, 1, -1);
+
+                $filterArray = array_map('trim', explode(',', $filterString));
+
+                $predicate = $filterArray;
+            }
+
             $ruleFilterPart = match ($rule->operator) {
                 '=', 'equals' => is_array($predicate)
-                    ? "{$rule->subject} IN (".collect($predicate)->map(fn ($val) => '"'.addslashes($val).'"')->join(', ').')'
+                    ? "{$rule->subject} IN [".collect($predicate)->map(fn ($val) => '"'.addslashes($val).'"')->join(', ').']'
                     : "{$rule->subject} = \"".addslashes($predicate).'"',
 
                 '!=', 'not_equals' => is_array($predicate)
-                    ? "{$rule->subject} NOT IN (".collect($predicate)->map(fn ($val) => '"'.addslashes($val).'"')->join(', ').')'
+                    ? "{$rule->subject} NOT IN [".collect($predicate)->map(fn ($val) => '"'.addslashes($val).'"')->join(', ').']'
                     : "{$rule->subject} != \"".addslashes($predicate).'"',
 
                 '>', 'greater_than' => "{$rule->subject} > \"".addslashes($predicate).'"',

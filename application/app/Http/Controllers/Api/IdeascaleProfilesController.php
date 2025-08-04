@@ -98,7 +98,7 @@ class IdeascaleProfilesController extends Controller
     {
         $hash = $request->get('hash');
         $ideascaleProfile = IdeascaleProfile::byHash($hash);
-        
+
         $connections = $ideascaleProfile->getIncrementalConnectionsData($request);
 
         return $connections;

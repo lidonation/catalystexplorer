@@ -34,8 +34,7 @@ export default function AllCharts({
     onViewByChange,
     loading,
 }: AllChartsProps) {
-    const { getFilter, filters, setFilters } = useFilterContext();
-    const selectedChartOptions = getFilter(ParamsEnum.CHART_OPTIONS) || [];
+    const { filters, setFilters } = useFilterContext();
     const { value: selectedChartTypes } = useUserSetting<string[]>(
         userSettingEnums.CHART_OPTIONS,
         [],
@@ -158,8 +157,9 @@ export default function AllCharts({
                 <Title level="2" className="mb-4 font-bold">
                     {t('charts.viewCharts')}
                 </Title>
-                <div className="flex items-center gap-2">
-                    <Paragraph className="text-gray-persist">
+                <div className="flex items-center justify-between w-full md:w-fit">
+                   <div className='flex items-center gap-2'>
+                     <Paragraph className="text-gray-persist">
                         {t('charts.viewBy')}
                     </Paragraph>
                     <RadioSelector
@@ -171,14 +171,23 @@ export default function AllCharts({
                         setSelectedItem={onViewByChange}
                         className="focus:border-primary focus:ring-primary"
                     />
+                   </div>
+                   <div className='block md:hidden'>
+                    <PrimaryButton
+                        onClick={onEditMetrics}
+                        className="px-6 py-3"
+                    >
+                        {t('charts.edit')}
+                    </PrimaryButton>
+                </div>
                 </div>
             </div>
 
-            <div className="mb-4 flex justify-start md:justify-between">
+            <div className="mb-4 flex justify-start md:justify-between items-start">
                 <div className="container mx-auto flex justify-start px-0">
                     <ActiveFilters filters={filters} setFilters={setFilters} />
                 </div>
-                <div>
+                <div className='hidden md:block'>
                     <PrimaryButton
                         onClick={onEditMetrics}
                         className="px-6 py-3"

@@ -27,9 +27,24 @@ export default function Step2({
         return !!selectedChart;
     }, [selectedChart]);
 
+    const chartOptions = useMemo(
+        () => [
+            { label: t('charts.trendChart'), value: 'trendChart' },
+            { label: t('charts.distributionChart'), value: 'distributionChart' },
+        ],
+        [t],
+    );
+
+    const getChartLabel = useCallback(
+        (value: string) =>
+            chartOptions.find((opt) => opt.value === value)?.label ?? value,
+        [chartOptions],
+    );
+
     useEffect(() => {
         onCompletionChange?.(isChartSelected);
     }, [isChartSelected, onCompletionChange]);
+
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -40,24 +55,15 @@ export default function Step2({
         if (!mounted) return;
 
         if (selectedChart) {
-            // Use setTimeout to ensure this runs after current render cycle
             setTimeout(() => {
                 setFilters({
-                    label: t('charts.trendChart'),
+                    label: getChartLabel(selectedChart),
                     value: selectedChart,
                     param: ParamsEnum.CHART_TYPE,
                 });
             }, 0);
         }
-    }, [selectedChart, t, setFilters]);
-
-    const chartOptions = useMemo(
-        () => [
-            { label: 'Trend Chart', value: 'trendChart' },
-            { label: 'Distribution Chart', value: 'distributionChart' },
-        ],
-        [],
-    );
+    }, [selectedChart, getChartLabel, setFilters, mounted]);
 
     const selectedItems = useMemo(() => {
         return selectedChart ? [selectedChart] : [];
@@ -65,21 +71,20 @@ export default function Step2({
 
     const handleSelectorChange = useCallback(
         (value: string | string[]) => {
+            if (!mounted) return;
+
             const chart = Array.isArray(value) ? value[0] : value;
-
-             if (!mounted) return;
-
             setSelectedChart(chart);
 
             if (chart) {
                 setFilters({
-                    label: t('charts.trendChart'),
+                    label: getChartLabel(chart),
                     value: chart,
                     param: ParamsEnum.CHART_TYPE,
                 });
             }
         },
-        [setSelectedChart, setFilters, t],
+        [setSelectedChart, setFilters, getChartLabel, mounted],
     );
 
     return (
@@ -91,7 +96,6 @@ export default function Step2({
                         <InformationIcon className="mx-auto" />
                         <div className="bg-tooltip absolute bottom-full left-1/2 z-10 mb-2 hidden w-48 -translate-x-1/2 rounded p-2 text-white shadow-lg group-hover:block">
                             <Paragraph>
-                                {' '}
                                 {t('charts.chooseChartType')}
                             </Paragraph>
                         </div>

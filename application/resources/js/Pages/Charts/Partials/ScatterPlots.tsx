@@ -2,8 +2,8 @@ import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveScatterPlot } from '@nivo/scatterplot';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 interface CustomScatterPlotDatum {
     x: number | string;
@@ -28,7 +28,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
     yAxisLabel,
     viewBy,
 }) => {
-    const { t } = useTranslation();
+    const { t } = useLaravelReactI18n();
     const [normalizedData, setNormalizedData] = useState<any[]>([]);
   
     const [screenWidth, setScreenWidth] = useState(

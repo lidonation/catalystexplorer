@@ -10,16 +10,12 @@ import SetChartMetrics from './Partials/SetChartMetrics';
 
 interface ChartsIndexProps {
     filters: SearchParams;
-    chartDataByFund?: any[];
-    chartDataByYear?: any[];
-    onChartDataReceived?: (chartData: any) => void;
+    rules?: string[];
 }
 
 const Index = ({
     filters,
-    chartDataByFund,
-    chartDataByYear,
-    onChartDataReceived,
+    rules
 }: ChartsIndexProps) => {
     const [showCharts, setShowCharts] = useState<boolean>(() => {
         return localStorage.getItem('metricsSet') === 'true';
@@ -79,18 +75,10 @@ const Index = ({
     const filteredAllChartData = allChartData?.find(
         (group) => group?.[0]?.count_by === viewBy,
     );
-
-    useEffect(()=>{
-        console.log('filtered data', filteredAllChartData);
-    }, [filteredAllChartData]);
+    
 
     return (
         <FiltersProvider defaultFilters={filters}>
-            <RoutedModalLayout
-                navigate={true}
-                className="px-2 md:px-8"
-                zIndex="z-100"
-            >
                 <Head title="Charts" />
 
                 {!showCharts && (
@@ -114,7 +102,6 @@ const Index = ({
                         />
                     </div>
                 )}
-            </RoutedModalLayout>
         </FiltersProvider>
     );
 };

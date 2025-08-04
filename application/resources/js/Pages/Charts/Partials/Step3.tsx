@@ -155,7 +155,6 @@ export default function Step3({
                     },
                 );
                 onChartDataReceived?.(response?.data); 
-                console.log('Proposal metrics response:', response?.data);
             } catch (error: any) {
                 console.error(
                     'Error fetching proposal metrics:',
