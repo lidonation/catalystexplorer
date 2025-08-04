@@ -1,24 +1,21 @@
 import React from 'react';
 import Checkbox from '@/Components/atoms/Checkbox';
 import Divider from '@/Components/Divider';
-interface CategoryData {
-  id: number;
-  hash: string;
-  name: string;
-  slug: string;
-  children?: {
-    id: number;
-    hash: string;
-    name: string;
-    slug: string;
-  }[];
-}
+import CategoryData = App.DataTransferObjects.CategoryData;
 
 interface ServiceCategoriesProps {
   categories: CategoryData[];
   selectedCategories: string[];
   onCategoryToggle: (categoryHash: string) => void;
   filterable?: boolean;
+}
+
+// Define the shape of children items since they're plain arrays from PHP
+interface CategoryChild {
+  id: number;
+  hash: string;
+  name: string;
+  slug: string;
 }
 
 export default function ServiceCategories({
@@ -29,7 +26,7 @@ export default function ServiceCategories({
 }: ServiceCategoriesProps) {
   return (
     <div className="inline-flex flex-col justify-center items-start gap-5">
-      {categories.map((category, categoryIndex) => (
+      {categories.map((category, categoryIndex: number) => (
         <React.Fragment key={category.hash}>
           <div className="w-full">
             <div className="flex flex-col justify-start items-start gap-3.5">
@@ -37,7 +34,7 @@ export default function ServiceCategories({
                 {category.name}
               </div>
               <div className="flex flex-col justify-start items-start gap-[5px]">
-                {category.children?.map((subCategory) => (
+                {(category.children as CategoryChild[])?.map((subCategory: CategoryChild) => (
                   <div key={subCategory.hash} className="self-stretch py-[5px] inline-flex justify-start items-center gap-2.5">
                     {filterable && (
                       <Checkbox
@@ -59,7 +56,7 @@ export default function ServiceCategories({
               </div>
             </div>
           </div>
-          {categoryIndex < categories.length - 1 && (
+          {categoryIndex < Number(categories.length - 1) && (
             <Divider className="self-stretch h-px bg-gray-100 my-2" />
           )}
         </React.Fragment>

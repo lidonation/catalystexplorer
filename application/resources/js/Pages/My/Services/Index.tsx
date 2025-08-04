@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { router } from '@inertiajs/react';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import ServiceCard from '@/Components/ServiceCard';
-import { ServiceData } from '@/types';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
@@ -13,6 +12,7 @@ import { FiltersProvider } from '@/Context/FiltersContext';
 import SearchControls from '../../Services/Partials/SearchControls';
 import { useLaravelReactI18n } from "laravel-react-i18n";
 import Title from '@/Components/atoms/Title';
+import ServiceData = App.DataTransferObjects.ServiceData;
 
 interface MyServicesProps {
   services: PaginatedData<ServiceData[]>;
@@ -78,18 +78,12 @@ const MyServicesComponent: React.FC<MyServicesProps> = ({ services, filters }) =
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {services.data.map(service => (
-              <ServiceCard key={`${service.hash}-${service.id}`} service={service} />
+              <ServiceCard key={service.hash} service={service} />
             ))}
           </div>
 
           <div className="mt-8 w-full">
-            <Paginator
-                pagination={services}
-                linkProps={{
-                    preserveState: true,
-                    preserveScroll: true,
-                }}
-          />
+            <Paginator pagination={services} />
         </div>
         </>
       ) : (

@@ -21,72 +21,71 @@ use ReflectionMethod;
 
 class ServiceController extends Controller
 {
-     protected function formatPaginator($paginator, ?array $transformedData = null): array
-     {
-         return [
-             'data' => $transformedData ?: $paginator->items(),
-             'current_page' => $paginator->currentPage(),
-             'last_page' => $paginator->lastPage(),
-             'per_page' => $paginator->perPage(),
-             'total' => $paginator->total(),
-             'from' => $paginator->firstItem(),
-             'to' => $paginator->lastItem(),
-             'links' => $paginator->linkCollection()->toArray(),
-             'next_page_url' => $paginator->nextPageUrl(),
-             'prev_page_url' => $paginator->previousPageUrl(),
-             'first_page_url' => $paginator->url(1),
-             'last_page_url' => $paginator->url($paginator->lastPage()),
-             'path' => $paginator->path(),
-         ];
-     }
+    protected function formatPaginator($paginator, ?array $transformedData = null): array
+    {
+        return [
+            'data' => $transformedData ?: $paginator->items(),
+            'current_page' => $paginator->currentPage(),
+            'last_page' => $paginator->lastPage(),
+            'per_page' => $paginator->perPage(),
+            'total' => $paginator->total(),
+            'from' => $paginator->firstItem(),
+            'to' => $paginator->lastItem(),
+            'links' => $paginator->linkCollection()->toArray(),
+            'next_page_url' => $paginator->nextPageUrl(),
+            'prev_page_url' => $paginator->previousPageUrl(),
+            'first_page_url' => $paginator->url(1),
+            'last_page_url' => $paginator->url($paginator->lastPage()),
+            'path' => $paginator->path(),
+        ];
+    }
 
-     public function index(Request $request): Response
-     {
-         $services = Service::withStandardRelations()
-             ->when($request->search, fn ($q) => $q->search($request->search))
-             ->when($request->categories, function ($q) use ($request) {
-                 $categoryIds = app(TransformHashToIds::class)->handle(
-                     collect(explode(',', $request->categories)),
-                     new Category
-                 );
+    public function index(Request $request): Response
+    {
+        $services = Service::withStandardRelations()
+            ->when($request->search, fn ($q) => $q->search($request->search))
+            ->when($request->categories, function ($q) use ($request) {
+                $categoryIds = app(TransformHashToIds::class)->handle(
+                    collect(explode(',', $request->categories)),
+                    new Category
+                );
 
-                 $q->filterByCategories($categoryIds);
-             })
-             ->when($request->type, fn ($q, $type) => $q->where('type', $type))
-             ->latest()
-             ->paginate(12)
-             ->withQueryString() // Add this to preserve filters
-             ->setPageName('page')
-             ->onEachSide(1);
+                $q->filterByCategories($categoryIds);
+            })
+            ->when($request->type, fn ($q, $type) => $q->where('type', $type))
+            ->latest()
+            ->paginate(12)
+            ->withQueryString() // Add this to preserve filters
+            ->setPageName('page')
+            ->onEachSide(1);
 
-         // Transform the data to match PaginatedData<T> where data: T (not T[])
-         $transformedServices = $services->getCollection()->map(fn ($service) => ServiceData::fromModel($service))->toArray();
+        // Transform the data to match PaginatedData<T> where data: T (not T[])
+        $transformedServices = $services->getCollection()->map(fn ($service) => ServiceData::fromModel($service))->toArray();
 
-         return Inertia::render('Services/Index', [
-             'services' => $this->formatPaginator($services, $transformedServices),
-             'categories' => $this->getCategoryTree(),
-             'filters' => $request->only(['search', 'categories', 'type']),
-         ]);
-     }
+        return Inertia::render('Services/Index', [
+            'services' => $this->formatPaginator($services, $transformedServices),
+            'categories' => $this->getCategoryTree(),
+            'filters' => $request->only(['search', 'categories', 'type']),
+        ]);
+    }
 
-     public function myServices(Request $request): Response
-     {
-         $services = Service::withStandardRelations()
-             ->forUser(auth()->id())
-             ->when($request->search, fn ($q) => $q->search($request->search))
-             ->when($request->type, fn ($q, $type) => $q->where('type', $type))
-             ->orderBy($request->sort ?? 'created_at', $request->order ?? 'desc')
-             ->paginate(12)
-             ->withQueryString();
+    public function myServices(Request $request): Response
+    {
+        $services = Service::withStandardRelations()
+            ->forUser(auth()->id())
+            ->when($request->search, fn ($q) => $q->search($request->search))
+            ->when($request->type, fn ($q, $type) => $q->where('type', $type))
+            ->orderBy($request->sort ?? 'created_at', $request->order ?? 'desc')
+            ->paginate(12)
+            ->withQueryString();
 
-         // Transform the data to match PaginatedData<T> where data: T (not T[])
-         $transformedServices = $services->getCollection()->map(fn ($service) => ServiceData::fromModel($service))->toArray();
+        $transformedServices = $services->getCollection()->map(fn ($service) => ServiceData::fromModel($service))->toArray();
 
-         return Inertia::render('My/Services/Index', [
-             'services' => $this->formatPaginator($services, $transformedServices),
-             'filters' => $request->only(['search', 'type', 'sort', 'order']),
-         ]);
-     }
+        return Inertia::render('My/Services/Index', [
+            'services' => $this->formatPaginator($services, $transformedServices),
+            'filters' => $request->only(['search', 'type', 'sort', 'order']),
+        ]);
+    }
 
     protected function validateFilters(Request $request): array
     {

@@ -4,30 +4,39 @@ import ServiceCategories from '@/Components/ServiceCategories';
 import SearchControls from './Partials/SearchControls';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import ServiceCard from '@/Components/ServiceCard';
-import { ServiceData, CategoryData } from '@/types';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import {useLaravelReactI18n} from "laravel-react-i18n";
 import { PaginatedData } from '@/types/paginated-data';
-import { SearchParams } from '@/types/search-params';
 import Paginator from '@/Components/Paginator';
 import ServiceTypeFilter from './Partials/ServiceTypeFilter';
 import Button from '@/Components/atoms/Button';
 import Title from '@/Components/atoms/Title';
+import ServiceData = App.DataTransferObjects.ServiceData;
+import CategoryData = App.DataTransferObjects.CategoryData;
 
 const Section = ({ children, className }: { children: React.ReactNode; className?: string }) => (
   <div className={className}>{children}</div>
 );
 
+// Create a proper service filters interface instead of using SearchParams
+interface ServiceFilters {
+  search?: string;
+  categories?: string | string[];
+  type?: string | null;
+  sort?: string;
+  viewType?: string;
+}
+
 interface ServicesIndexProps {
   services: PaginatedData<ServiceData[]>;
   categories: CategoryData[];
-  filters?: SearchParams;
+  filters?: ServiceFilters; // Changed from SearchParams to ServiceFilters
 }
 
-const DEFAULT_FILTERS = {
+const DEFAULT_FILTERS: ServiceFilters = {
   search: '',
   categories: [],
   type: null,
@@ -140,7 +149,7 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 {services.data.map(service => (
-                  <ServiceCard key={`${service.hash}-${service.id}`} service={service} />
+                  <ServiceCard key={service.hash} service={service} />
                 ))}
               </div>
               <div className="mt-8 w-full">
@@ -161,7 +170,7 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({
 const ServicesIndex: React.FC<ServicesIndexProps> = ({ filters, ...props }) => {
   return (
     <div className="isolate">
-      <FiltersProvider defaultFilters={filters || DEFAULT_FILTERS}>
+      <FiltersProvider defaultFilters={(filters || DEFAULT_FILTERS) as any}>
         <ServicesComponent
           {...props}
           filters={filters || DEFAULT_FILTERS}

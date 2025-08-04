@@ -1,5 +1,5 @@
 import React from 'react';
-import { ServiceData } from '@/types';
+import ServiceData = App.DataTransferObjects.ServiceData;
 
 export default function ServiceCard({ service }: { service: ServiceData }) {
   const statusBadgeClasses = {
