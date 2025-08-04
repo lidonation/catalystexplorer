@@ -1,3 +1,38 @@
+## [1.3.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.3.1...v1.3.2) (2025-08-03)
+
+
+### Bug Fixes
+
+* **catalyst connections:** ln-1943 fixing ssr issues and optimizing the connections ([16a1cca](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/16a1cca370bbeb0d9ec6f317f28584a754c11fe5))
+* **milesones:** ln-1948 preventing clipping and overlapping of date labels ([b245b83](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/b245b83f850da6b98f3e77cb80230226d7d17eb3))
+
+## [1.3.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.3.0...v1.3.1) (2025-08-02)
+
+
+### Bug Fixes
+
+* **bookmark:** ln-1905 fixed the bookmark. ([6a0c449](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/6a0c449e29a7503d5dad6c1c9d6c275563f353db))
+
+# [1.3.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.2.0...v1.3.0) (2025-07-30)
+
+
+### Features
+
+* adding project schedule to single proposal page ([ca644f2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/ca644f2ddfab76e48fff7977f83cdf9223d294f8))
+
+# [1.2.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.1.0...v1.2.0) (2025-07-30)
+
+
+### Bug Fixes
+
+* cleanup ui and tweak tinder workflow ui ([ef11212](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/ef11212b6e045950a06bc473520ef08a880ebd05))
+
+
+### Features
+
+* add nova resources for milestone models ([b4ba039](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/b4ba0392f47a7149ae855991418b13ba0d596d22))
+* adding project schedule to single proposal page ([6f8317e](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/6f8317ec28f29f97df684b8eefea8819fe0ce772))
+
 # [1.1.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.0.0...v1.1.0) (2025-07-29)
 
 

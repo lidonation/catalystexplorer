@@ -19,6 +19,9 @@ final class ProposalData extends Data
 
         public ?CampaignData $campaign,
 
+        #[TypeScript('projectSchedule')]
+        public ?ProjectScheduleData $schedule,
+
         public ?string $title,
 
         public ?string $slug,

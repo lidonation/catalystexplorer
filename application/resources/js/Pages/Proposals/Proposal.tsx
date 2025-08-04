@@ -7,7 +7,6 @@ import {useLaravelReactI18n} from "laravel-react-i18n";
 import ProposalTab from "./Partials/ProposalTab";
 import { ListProvider } from "@/Context/ListContext";
 import BookmarkButton from "../My/Bookmarks/Partials/BookmarkButton";
-import Paragraph from "@/Components/atoms/Paragraph";
 import { ArrowUpRight } from "@/Components/svgs/ArrowUpRight";
 import Markdown from "marked-react";
 import Button from "@/Components/atoms/Button";
@@ -182,7 +181,7 @@ const Show = ({
 
                 <section>{children}</section>
 
-                <div className="self-stretch p-4 sm:p-6 bg-background rounded-xl shadow-[0px_1px_4px_0px_rgba(16,24,40,0.10)] flex flex-col sm:flex-row justify-between items-start gap-5 sm:gap-2">
+                <div className="self-stretch p-4 sm:p-6 bg-background rounded-xl shadow-cx-box-shadow flex flex-col sm:flex-row justify-between items-start gap-5 sm:gap-2">
                     <div className="w-full sm:w-auto flex flex-wrap items-center gap-6 sm:gap-4">
                         <div className="flex-1 sm:flex-initial min-w-[30%] sm:min-w-0 flex flex-col items-start">
                             <div className="text-gray-persist text-sm">{t('proposals.outstanding')}</div>
@@ -208,7 +207,7 @@ const Show = ({
                     </div>
                 </div>
 
-                <div className="self-stretch p-6 bg-background rounded-xl shadow-[0px_1px_4px_0px_rgba(16,24,40,0.10)] flex flex-col items-start gap-4 mt-4 mb-4 relative">
+                <div className="self-stretch p-6 bg-background rounded-xl shadow-cx-box-shadow flex flex-col items-start gap-4 mt-4 mb-4 relative">
                     <div className='w-full flex justify-end'>
                         <Button
                             onClick={toggleContentExpand}

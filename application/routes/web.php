@@ -53,12 +53,15 @@ Route::localized(
                 ->name('csvs');
 
             Route::get('/{slug}', function ($slug) {
-                return redirect()->route('proposals.group.details', ['slug' => $slug]);
+                return redirect()->route('proposals.proposal.details', ['slug' => $slug]);
             })->name('redirect');
 
-            Route::prefix('/{slug}')->as('group.')->group(function () {
+            Route::prefix('/{slug}')->as('proposal.')->group(function () {
                 Route::get('/details', [ProposalsController::class, 'proposal'])
                     ->name('details');
+
+                Route::get('/schedule', [ProposalsController::class, 'proposalSchedule'])
+                    ->name('schedule');
 
                 Route::get('/community-review', [ProposalsController::class, 'proposal'])
                     ->name('communityReview');

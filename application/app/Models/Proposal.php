@@ -307,7 +307,7 @@ class Proposal extends Model
         );
     }
 
-    public function schedule(): HasOne|Proposal
+    public function schedule(): HasOne
     {
         return $this->hasOne(ProjectSchedule::class, 'proposal_id', 'id');
     }

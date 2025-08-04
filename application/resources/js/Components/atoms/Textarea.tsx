@@ -72,7 +72,7 @@ export default forwardRef(function Textarea(
                         e.stopPropagation();
                     }
                 }}
-            />w
+            />
             <div className="mt-1 mb-2 flex items-center justify-between">
                 <Paragraph
                     size="sm"

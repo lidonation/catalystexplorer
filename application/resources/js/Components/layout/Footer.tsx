@@ -1,8 +1,9 @@
 import { CatalystWhiteLogo } from '@/Components/svgs/CatalystWhiteLogo.tsx';
 import Paragraph from '@/Components/atoms/Paragraph';
+import NavLinkItem from '../atoms/NavLinkItem';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { useLaravelReactI18n } from "laravel-react-i18n";
-import {Config, useRoute} from 'ziggy-js';
+import { Config, useRoute } from 'ziggy-js';
 import { usePage } from '@inertiajs/react';
 
 
@@ -20,30 +21,50 @@ export default function Footer() {
                         <ul className="menu-gap-y flex flex-col">
                             <li>
                                 <Paragraph>
-                                    <a href={useLocalizedRoute('proposals.index')} data-testid="proposals-link">
-                                        {t('proposals.allProposals')}
-                                    </a>
+                                    <NavLinkItem
+                                        href={useLocalizedRoute('proposals.index')}
+                                        data-testid="proposals-link"
+                                        title={t('proposals.allProposals')}
+                                        active={true}
+                                        disable={false}
+                                        className="hover:!bg-transparent"
+                                    ></NavLinkItem>
                                 </Paragraph>
                             </li>
                             <li>
                                 <Paragraph>
-                                    <a href={useLocalizedRoute('reviews.index')} data-testid="reviews-link">
-                                        {t('proposalReviews')}
-                                    </a>
+                                    <NavLinkItem
+                                        href={useLocalizedRoute('reviews.index')}
+                                        data-testid="reviews-link"
+                                        title={t('proposalReviews')}
+                                        active={true}
+                                        disable={false}
+                                        className="hover:!bg-transparent"
+                                    ></NavLinkItem>
                                 </Paragraph>
                             </li>
                             <li>
                                 <Paragraph>
-                                    <a href={useLocalizedRoute('reports.index')} data-testid="reports-link">
-                                        {t('monthlyReports')}
-                                    </a>
+                                    <NavLinkItem
+                                        href={useLocalizedRoute('reports.index')}
+                                        data-testid="reports-link"
+                                        title={t('monthlyReports')}
+                                        active={false}
+                                        disable={true}
+                                        className="hover:!bg-transparent"
+                                    ></NavLinkItem>
                                 </Paragraph>
                             </li>
                             <li>
                                 <Paragraph>
-                                    <a href={useLocalizedRoute('funds.index')} data-testid="funds-link">
-                                        {t('funds.funds')}
-                                    </a>
+                                    <NavLinkItem
+                                        href={useLocalizedRoute('funds.index')}
+                                        data-testid="funds-link"
+                                        title={t('funds.funds')}
+                                        active={true}
+                                        disable={false}
+                                        className="hover:!bg-transparent"
+                                    ></NavLinkItem>
                                 </Paragraph>
                             </li>
                         </ul>
@@ -55,30 +76,50 @@ export default function Footer() {
                         <ul className="menu-gap-y flex flex-col">
                             <li>
                                 <Paragraph>
-                                    <a href={useLocalizedRoute('ideascaleProfiles.index')} data-testid="ideascale-profiles-link">
-                                        {t('ideascaleProfiles.ideascaleProfiles')}
-                                    </a>
+                                    <NavLinkItem
+                                        href={useLocalizedRoute('ideascaleProfiles.index')}
+                                        data-testid="ideascale-profiles-link"
+                                        title={t('ideascaleProfiles.ideascaleProfiles')}
+                                        active={true}
+                                        disable={false}
+                                        className="hover:!bg-transparent"
+                                    ></NavLinkItem>
                                 </Paragraph>
                             </li>
                             <li>
                                 <Paragraph>
-                                    <a href={useLocalizedRoute('groups.index')} data-testid="groups-link">
-                                        {t('groups.groups')}
-                                    </a>
+                                    <NavLinkItem
+                                        href={useLocalizedRoute('groups.index')}
+                                        data-testid="groups-link"
+                                        title={t('groups.groups')}
+                                        active={true}
+                                        disable={false}
+                                        className="hover:!bg-transparent"
+                                    ></NavLinkItem>
                                 </Paragraph>
                             </li>
                             <li>
                                 <Paragraph>
-                                    <a href={useLocalizedRoute('communities.index')} data-testid="communities-link">
-                                        {t('communities.communities')}
-                                    </a>
+                                    <NavLinkItem
+                                        href={useLocalizedRoute('communities.index')}
+                                        data-testid="communities-link"
+                                        title={t('communities.communities')}
+                                        active={true}
+                                        disable={false}
+                                        className="hover:!bg-transparent"
+                                    ></NavLinkItem>
                                 </Paragraph>
                             </li>
                             <li>
                                 <Paragraph>
-                                    <a href={useLocalizedRoute('dreps.index')} data-testid="dreps-link">
-                                        {t('dReps')}
-                                    </a>
+                                    <NavLinkItem
+                                        href={useLocalizedRoute('dreps.index')}
+                                        data-testid="dreps-link"
+                                        title={t('dReps')}
+                                        active={true}
+                                        disable={false}
+                                        className="hover:!bg-transparent"
+                                    ></NavLinkItem>
                                 </Paragraph>
                             </li>
                         </ul>
@@ -88,44 +129,68 @@ export default function Footer() {
                         <ul className="menu-gap-y flex flex-col">
                             <li>
                                 <Paragraph>
-                                    <a href={useLocalizedRoute('numbers.impact')} data-testid="impact-link">
-                                        {t('impact')}
-                                    </a>
+                                    <NavLinkItem
+                                        href={useLocalizedRoute('numbers.impact')}
+                                        data-testid="impact-link"
+                                        title={t('impact')}
+                                        active={false}
+                                        disable={true}
+                                    ></NavLinkItem>
                                 </Paragraph>
                             </li>
                             <li>
                                 <Paragraph>
-                                    <a href={useLocalizedRoute('numbers.spending')} data-testid="spending-link">
-                                        {t('spending')}
-                                    </a>
+                                    <NavLinkItem
+                                        href={useLocalizedRoute('numbers.spending')}
+                                        data-testid="spending-link"
+                                        title={t('spending')}
+                                        active={false}
+                                        disable={true}
+                                    ></NavLinkItem>
                                 </Paragraph>
                             </li>
                             <li>
                                 <Paragraph>
-                                    <a href={useLocalizedRoute('numbers.general')} data-testid="general-link">
-                                        {t('general')}
-                                    </a>
+                                    <NavLinkItem
+                                        href={useLocalizedRoute('numbers.general')}
+                                        data-testid="general-link"
+                                        title={t('general')}
+                                        active={false}
+                                        disable={true}
+                                    ></NavLinkItem>
                                 </Paragraph>
                             </li>
                             <li>
                                 <Paragraph>
-                                    <a href={useLocalizedRoute('ccv4.index')} data-testid="ccv4-link">
-                                        {t('ccv4Votes')}
-                                    </a>
+                                    <NavLinkItem
+                                        href={useLocalizedRoute('ccv4.index')}
+                                        data-testid="ccv4-link"
+                                        title={t('ccv4Votes')}
+                                        active={false}
+                                        disable={true}
+                                    ></NavLinkItem>
                                 </Paragraph>
                             </li>
                             <li>
                                 <Paragraph>
-                                    <a href={route('api.index')} data-testid="catalyst-api-link">
-                                        {t('catalystAPI')}
-                                    </a>
+                                    <NavLinkItem
+                                        href={route('api.index')}
+                                        data-testid="catalyst-api-link"
+                                        title={t('catalystAPI')}
+                                        active={false}
+                                        disable={true}
+                                    ></NavLinkItem>
                                 </Paragraph>
                             </li>
                             <li>
                                 <Paragraph>
-                                    <a href={useLocalizedRoute('proposals.csvs')} data-testid="proposal-csvs-link">
-                                        {t('proposalCSVs')}
-                                    </a>
+                                    <NavLinkItem
+                                        href={useLocalizedRoute('proposals.csvs')}
+                                        data-testid="proposal-csvs-link"
+                                        title={t('proposalCSVs')}
+                                        active={false}
+                                        disable={true}
+                                    ></NavLinkItem>
                                 </Paragraph>
                             </li>
                         </ul>
@@ -135,30 +200,50 @@ export default function Footer() {
                         <ul className="menu-gap-y flex flex-col">
                             <li>
                                 <Paragraph>
-                                    <a href="https://x.com/LidoNation" data-testid="twitter-link">
-                                        {t('twitter')}
-                                    </a>
+                                    <NavLinkItem
+                                        href="https://x.com/LidoNation"
+                                        data-testid="twitter-link"
+                                        title={t('twitter')}
+                                        active={true}
+                                        disable={false}
+                                        className="hover:!bg-transparent"
+                                    ></NavLinkItem>
                                 </Paragraph>
                             </li>
                             <li>
                                 <Paragraph>
-                                    <a href="https://www.linkedin.com/company/lidonation/" data-testid="linkedin-link">
-                                        {t('linkedIn')}
-                                    </a>
+                                    <NavLinkItem
+                                        href="https://www.linkedin.com/company/lidonation/"
+                                        data-testid="linkedin-link"
+                                        title={t('linkedIn')}
+                                        active={true}
+                                        disable={false}
+                                        className="hover:!bg-transparent"
+                                    ></NavLinkItem>
                                 </Paragraph>
                             </li>
                             <li>
                                 <Paragraph>
-                                    <a href="https://www.facebook.com/lidonation" data-testid="facebook-link">
-                                        {t('facebook')}
-                                    </a>
+                                    <NavLinkItem
+                                        href="https://www.facebook.com/lidonation"
+                                        data-testid="facebook-link"
+                                        title={t('facebook')}
+                                        active={true}
+                                        disable={false}
+                                        className="hover:!bg-transparent"
+                                    ></NavLinkItem>
                                 </Paragraph>
                             </li>
                             <li>
                                 <Paragraph>
-                                    <a href="https://github.com/lidonation/catalystexplorer" data-testid="github-link">
-                                        {t('github')}
-                                    </a>
+                                    <NavLinkItem
+                                        href="https://github.com/lidonation/catalystexplorer"
+                                        data-testid="github-link"
+                                        title={t('github')}
+                                        active={true}
+                                        disable={false}
+                                        className="hover:!bg-transparent"
+                                    ></NavLinkItem>
                                 </Paragraph>
                             </li>
                         </ul>

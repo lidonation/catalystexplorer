@@ -106,7 +106,7 @@ export default function ProposalCardHeader({
                                             <BookmarkButton
                                                 modelType="proposals"
                                                 itemId={proposal.hash}
-                                                data-testid="bookmark-button"
+                                                dataTestId="proposals-bookmark-button"
                                             />
                                         </>
                                     )}
@@ -117,7 +117,7 @@ export default function ProposalCardHeader({
                                         hash={proposal.hash}
                                         tooltipDescription={'Compare Proposals'}
                                         data={proposal}
-                                        data-testid="compare-button"
+                                        data-testid={`compare-button`}
                                     />
                                 )}
                             </div>

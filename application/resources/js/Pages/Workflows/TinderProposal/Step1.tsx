@@ -187,6 +187,7 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
                                         isMultiselect={false}
                                         hideCheckbox={true}
                                         className="w-full"
+                                        data-testid='tinder-fund-selector'
                                     />
                                 </div>
 
@@ -206,6 +207,7 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
                                                     id={option.id}
                                                     checked={data[TinderWorkflowParams.PROPOSAL_TYPES].includes(option.id)}
                                                     onChange={() => handleCheckboxChange(option.id, data[TinderWorkflowParams.PROPOSAL_TYPES], TinderWorkflowParams.PROPOSAL_TYPES)}
+                                                    data-testid={`proposal-type-checkbox`}
                                                 />
                                                 <label htmlFor={option.id} className="text-sm text-gray-persist">
                                                     {option.label}
@@ -231,6 +233,7 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
                                                     id={option.id}
                                                     checked={data[TinderWorkflowParams.PROPOSAL_SIZES].includes(option.id)}
                                                     onChange={() => handleCheckboxChange(option.id, data[TinderWorkflowParams.PROPOSAL_SIZES], TinderWorkflowParams.PROPOSAL_SIZES)}
+                                                    data-testid={`proposal-size-checkbox`}
                                                 />
                                                 <label htmlFor={option.id} className="text-sm text-gray-persist">
                                                     {option.label}
@@ -256,6 +259,7 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
                                                     id={option.id}
                                                     checked={data[TinderWorkflowParams.IMPACT_TYPES].includes(option.id)}
                                                     onChange={() => handleCheckboxChange(option.id, data[TinderWorkflowParams.IMPACT_TYPES], TinderWorkflowParams.IMPACT_TYPES)}
+                                                    data-testid={`impact-type-checkbox`}
                                                 />
                                                 <label htmlFor={option.id} className="text-sm text-gray-persist">
                                                     {option.label}
@@ -276,6 +280,7 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
                                 type="submit"
                                 className="text-sm lg:px-8 py-3 w-full"
                                 disabled={!isFormValid || processing}
+                                data-testid='tinder-begin-button'
                             >
                                 <span>{processing ? t('workflows.tinderProposal.step1.processing') : (isEditMode ? t('workflows.tinderProposal.step1.continue') : t('workflows.tinderProposal.step1.begin'))}</span>
                             </PrimaryButton>

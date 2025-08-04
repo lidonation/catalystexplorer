@@ -37,7 +37,7 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
     const { t } = useLaravelReactI18n();
 
     return (
-        <div>
+        <div data-testid="edit-voter-list">
             <div>
                 {!isEditingFields && (
                     <div className="flex items-center mb-2">
@@ -97,6 +97,7 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
                                         editForm.setData(TinderWorkflowParams.TITLE, e.target.value)
                                     }
                                     required
+                                    data-testid='title-input'
                                 />
                                 <InputError message={editForm.errors[TinderWorkflowParams.TITLE] || formErrors[TinderWorkflowParams.TITLE]} />
                             </div>
@@ -116,6 +117,7 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
                                         editForm.setData(TinderWorkflowParams.CONTENT, e.target.value)
                                     }
                                     className="h-30 w-full rounded-lg px-4 py-2"
+                                    data-testid="content-textarea"
                                 />
                                 <InputError message={editForm.errors[TinderWorkflowParams.CONTENT] || formErrors[TinderWorkflowParams.CONTENT]} />
                             </div>
@@ -151,6 +153,7 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
                                     },
                                 ]}
                                 labelClassName="text-gray-persist ml-2"
+                                data-testid='visibility-radio-group'
                             />
                         </div>
                     </div>
@@ -170,6 +173,7 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
                                 color="bg-primary"
                                 size="md"
                                 className="!w-auto"
+                                data-testid='comments-switch'
                             />
                             <Paragraph size="sm" className="text-gray-persist">
                                 {t('workflows.voterList.commentsEnabled')}
@@ -202,6 +206,7 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
                                             editForm.setData(TinderWorkflowParams.COLOR, e.target.value)
                                         }
                                         className="bg-background text-content border-none text-sm focus:outline-none"
+                                        data-testid='color-input'
                                     />
                                     <input
                                         type="color"
@@ -211,6 +216,7 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
                                             editForm.setData(TinderWorkflowParams.COLOR, e.target.value)
                                         }
                                         className="absolute top-0 left-0 h-full w-full cursor-pointer opacity-0"
+                                        data-testid='color-picker-input'
                                     />
                                 </div>
                             </div>
@@ -240,6 +246,7 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
                                         label: t('workflows.voterList.statusOptions.draft'),
                                     },
                                 ]}
+                                data-testid='status-radio-group'
                             />
                         </div>
                     </div>
@@ -251,12 +258,14 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
                             className="text-sm w-1/2 lg:py-3 rounded-lg bg-primary hover:bg-primary/[70%] transition"
                             disabled={!isFormValid}
                             onClick={onSaveEditForm}
+                            data-testid='save-button'
                         >
                             <Paragraph size='sm' className='text-content-light'>{t('Save')}</Paragraph>
                         </PrimaryButton>
                         <Button
                             onClick={onDeleteCollection}
                             className="text-sm w-1/2 lg:py-3 bg-error hover:bg-error/[70%] rounded-lg transition"
+                            dataTestId='delete-button'
                         >
                             <Paragraph size='sm' className='text-content-light'>{t('workflows.tinderProposal.step4.delete')}</Paragraph>
                         </Button>

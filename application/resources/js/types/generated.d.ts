@@ -40,6 +40,7 @@ amount_received_USD?: number;
 author?: App.DataTransferObjects.UserData;
 fund_id?: number;
 fund?: App.DataTransferObjects.FundData;
+tinder_direction?: string;
 };
 export type BookmarkItemData = {
 hash: string | null;
@@ -445,6 +446,7 @@ milestones: any | null;
 export type ProposalData = {
 hash: string | null;
 campaign: App.DataTransferObjects.CampaignData | null;
+schedule: App.DataTransferObjects.ProjectScheduleData | null;
 title: string | null;
 slug: string | null;
 website?: string;
