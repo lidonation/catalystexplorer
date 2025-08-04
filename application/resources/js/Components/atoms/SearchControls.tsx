@@ -100,7 +100,7 @@ function SearchControls({
                             }`}
                             onClick={toggleFilters}
                             ariaLabel="Show Filters"
-                            data-testid="search-controls-toggle-filters"
+                            dataTestId="search-controls-toggle-filters"
                         >
                             <FilterLinesIcon className={'size-5'} />
                             <span className="font-medium">{t('filters')}</span>

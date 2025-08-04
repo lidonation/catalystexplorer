@@ -40,6 +40,7 @@ amount_received_USD?: number;
 author?: App.DataTransferObjects.UserData;
 fund_id?: number;
 fund?: App.DataTransferObjects.FundData;
+tinder_direction?: string;
 };
 export type BookmarkItemData = {
 hash: string | null;

@@ -14,6 +14,7 @@ interface BookmarkButtonProps {
     width?: number;
     height?: number;
     children?: React.ReactNode;
+    dataTestId?: string;
 }
 
 export default function BookmarkButton({
@@ -21,7 +22,8 @@ export default function BookmarkButton({
     itemId,
     width = 24,
     height = 24,
-    children
+    children,
+    dataTestId = 'bookmark-button'
 }: BookmarkButtonProps) {
     const {
         isBookmarked,
@@ -71,9 +73,13 @@ export default function BookmarkButton({
                 <button
                     className="cursor-pointer rounded-full px-0 py-0.5 relative inline-flex gap-1"
                     aria-label={`bookmark-${modelType}`}
-                    onClick={toggleBookmark}
+                    onPointerDown={(e) => {
+                    e.stopPropagation(); // optional
+                    toggleBookmark();
+                    }}
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
+                    data-testid = {dataTestId}
                     style={{
                         outline: 'none', // Remove focus outline
                         WebkitTapHighlightColor: 'transparent' // Remove tap highlight on mobile

@@ -92,4 +92,14 @@ class GroupController extends Controller
 
         return $connections;
     }
+
+    public function incrementalConnections(Request $request): array
+    {
+        $hash = $request->get('hash');
+        $group = Group::byHash($hash);
+
+        $connections = $group->getIncrementalConnectionsData($request);
+
+        return $connections;
+    }
 }
