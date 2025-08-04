@@ -93,4 +93,14 @@ class IdeascaleProfilesController extends Controller
 
         return $connections;
     }
+
+    public function incrementalConnections(Request $request): array|Response
+    {
+        $hash = $request->get('hash');
+        $ideascaleProfile = IdeascaleProfile::byHash($hash);
+        
+        $connections = $ideascaleProfile->getIncrementalConnectionsData($request);
+
+        return $connections;
+    }
 }

@@ -5,6 +5,7 @@ interface PrimaryLinkProps extends InertiaLinkProps {
     className?: string;
     disabled?: boolean;
     loading?: boolean;
+    'data-testid'?: string;
 }
 
 export default function PrimaryLink({
@@ -13,6 +14,7 @@ export default function PrimaryLink({
     disabled,
     loading = false,
     children,
+    "data-testid": dataTestId,
     ...props
 }: PrimaryLinkProps) {
     return (
@@ -25,6 +27,7 @@ export default function PrimaryLink({
                     : 'cursor-pointer'
             } ${className}`}
             disabled={disabled || loading}
+            data-testid={dataTestId}
         >
             <span
                 className={`inline-flex items-center gap-2 ${loading ? 'invisible' : 'visible'}`}

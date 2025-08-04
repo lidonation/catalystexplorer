@@ -951,6 +951,12 @@ class TinderProposalWorkflowController extends Controller
             return response()->json(['error' => 'Proposal not found.'], 404);
         }
 
+        $proposal = Proposal::where('slug', $validated['proposalSlug'])->first();
+
+        if (! $proposal) {
+            return response()->json(['error' => 'Proposal not found.'], 404);
+        }
+
         $bookmarkableType = BookmarkableType::tryFrom(Str::kebab($validated['modelType']))->getModelClass();
 
         BookmarkItem::updateOrCreate([
