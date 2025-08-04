@@ -40,9 +40,9 @@ export default function SearchControls({
   }, [showFilters, onFiltersToggle]);
 
   return (
-    <div className="container mx-auto flex w-full flex-col gap-3 px-0 py-3">
-      <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
-        <div className="w-full">
+    <div className="w-full">
+      <div className="flex gap-4 items-center">
+        <div className="flex-1">
           <ServiceSearchBar
             border="border-gray-200"
             handleSearch={handleSearch}
@@ -50,23 +50,23 @@ export default function SearchControls({
             showRingOnFocus={true}
             value={searchQuery}
             placeholder={"Search services"}
+            className="h-12"
           />
         </div>
+
         {shouldShowFilters && (
-          <div className="sm:w-auto">
-            <Button
-              className={`border-input bg-background flex w-full cursor-pointer flex-row items-center justify-center gap-2 rounded-lg border px-3 py-1.5 shadow-md sm:w-auto ${
-                showFilters
-                  ? 'border-accent-blue text-primary ring-offset-background ring-1'
-                  : 'hover:bg-background-lighter text-gray-persist'
-              }`}
-              onClick={toggleFilters}
-              ariaLabel={'filters'}
-            >
-              <FilterLinesIcon className="size-6" />
-              <span>{t('filters')}</span>
-            </Button>
-          </div>
+          <Button
+            className={`h-12 px-6 border border-gray-200 bg-background flex cursor-pointer flex-row items-center justify-center gap-2 rounded-lg border shadow-sm ${
+              showFilters
+                ? 'border-accent-blue text-primary'
+                : 'hover:bg-background-lighter text-gray-persist'
+            }`}
+            onClick={toggleFilters}
+            ariaLabel={'filters'}
+          >
+            <FilterLinesIcon className="w-5 h-4" />
+            <span className="whitespace-nowrap">{t('filters')}</span>
+          </Button>
         )}
       </div>
     </div>

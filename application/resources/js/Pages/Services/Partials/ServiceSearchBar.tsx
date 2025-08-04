@@ -6,13 +6,14 @@ interface ServiceSearchBarProps extends Omit<React.ComponentProps<typeof SearchB
 }
 
 export const ServiceSearchBar = forwardRef<HTMLInputElement, ServiceSearchBarProps>(
-  ({ value, handleSearch, ...props }, ref) => {
+  ({ value, handleSearch, className, ...props }, ref) => {
     return (
       <SearchBar
         {...props}
         ref={ref}
         initialSearch={value}
         handleSearch={handleSearch}
+        className={className}
       />
     );
   }

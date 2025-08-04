@@ -1191,7 +1191,10 @@
     "loadingGraph": "Loading graph",
     "voter.sort.proposalsVotedOnAsc": "Proposals Voted On: Low to High",
     "services.service": "Service",
+    "services.AddService": "Add Service",
     "services.catalystServices": "Catalyst Services",
+    "services.hideCategories": "Hide Categories",
+    "services.showCategories": "Show Categories",
     "services.catalystServicesDesc": "A space for Catalyst-funded teams to collaborate, request help, and offer services to the ecosystem.",
     "services.myServices": "My Services",
     "services.myServicesDesc": "Manage your services and collaborate with the Catalyst ecosystem."

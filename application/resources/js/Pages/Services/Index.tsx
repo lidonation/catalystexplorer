@@ -14,6 +14,8 @@ import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 import Paginator from '@/Components/Paginator';
 import ServiceTypeFilter from './Partials/ServiceTypeFilter';
+import Button from '@/Components/atoms/Button';
+import Title from '@/Components/atoms/Title';
 
 const Section = ({ children, className }: { children: React.ReactNode; className?: string }) => (
   <div className={className}>{children}</div>
@@ -49,6 +51,7 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({
   const [selectedCategories, setSelectedCategories] = useState<string[]>(initialCategories);
   const [showTypeFilter, setShowTypeFilter] = useState(false);
   const [selectedType, setSelectedType] = useState<string | null>(filters?.type || null);
+  const [showMobileCategories, setShowMobileCategories] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -79,7 +82,7 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({
     <div className="w-full max-w-full py-4 px-8 xl:px-20">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-content">{t('services.catalystServices')}</h1>
+          <Title className="text-2xl font-semibold text-content">{t('services.catalystServices')}</Title>
           <Paragraph className="text-base text-slate-500"> {t('services.catalystServicesDesc')}
           </Paragraph>
         </div>
@@ -97,7 +100,25 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({
         </div>
 
         <div className="lg:col-span-3">
-          <Section className="mb-6">
+          <div className="lg:hidden mb-4">
+            <Button
+              onClick={() => setShowMobileCategories(!showMobileCategories)}
+              className="px-6 h-12 w-full flex items-center justify-center gap-2 hover:bg-background-tertiary hover:text-content-secondary focus:bg-background-accent active:bg-background-tertiary bg-primary active:text-content-secondary text-content-light"
+            >
+              {showMobileCategories ? t('services.hideCategories') : t('services.showCategories')}
+            </Button>
+          </div>
+          {showMobileCategories && (
+            <div className="lg:hidden mb-6 p-4 rounded-lg border border-gray-200 shadow-sm">
+              <ServiceCategories
+                categories={categories}
+                selectedCategories={selectedCategories}
+                onCategoryToggle={handleCategoryToggle}
+              />
+            </div>
+          )}
+
+          <Section className="mb-6  px-6 ">
             <SearchControls
               search={search}
               onSearchChange={setSearch}
@@ -123,17 +144,7 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({
                 ))}
               </div>
               <div className="mt-8 w-full">
-                  <Paginator
-                    pagination={{
-                      ...services,
-                      links: services.links
-                    }}
-                    linkProps={{
-                      preserveScroll: true,
-                      preserveState: true,
-                      only: ['services', 'filters']
-                    }}
-                  />
+                  <Paginator pagination={services} />
               </div>
             </>
           ) : (

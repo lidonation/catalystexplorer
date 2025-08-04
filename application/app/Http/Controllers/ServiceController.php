@@ -21,65 +21,72 @@ use ReflectionMethod;
 
 class ServiceController extends Controller
 {
-    protected function formatPaginator($paginator, ?Collection $transformedData = null): array
-    {
-        return [
-            'data' => $transformedData ?: $paginator->items(),
-            'current_page' => $paginator->currentPage(),
-            'last_page' => $paginator->lastPage(),
-            'per_page' => $paginator->perPage(),
-            'total' => $paginator->total(),
-            'from' => $paginator->firstItem(),
-            'to' => $paginator->lastItem(),
-            'links' => $paginator->linkCollection()->toArray(),
-            'next_page_url' => $paginator->nextPageUrl(),
-            'prev_page_url' => $paginator->previousPageUrl(),
-            'first_page_url' => $paginator->url(1),
-            'last_page_url' => $paginator->url($paginator->lastPage()),
-            'path' => $paginator->path(),
-        ];
-    }
+     protected function formatPaginator($paginator, ?array $transformedData = null): array
+     {
+         return [
+             'data' => $transformedData ?: $paginator->items(),
+             'current_page' => $paginator->currentPage(),
+             'last_page' => $paginator->lastPage(),
+             'per_page' => $paginator->perPage(),
+             'total' => $paginator->total(),
+             'from' => $paginator->firstItem(),
+             'to' => $paginator->lastItem(),
+             'links' => $paginator->linkCollection()->toArray(),
+             'next_page_url' => $paginator->nextPageUrl(),
+             'prev_page_url' => $paginator->previousPageUrl(),
+             'first_page_url' => $paginator->url(1),
+             'last_page_url' => $paginator->url($paginator->lastPage()),
+             'path' => $paginator->path(),
+         ];
+     }
 
-    public function index(Request $request): Response
-    {
-        $services = Service::withStandardRelations()
-            ->when($request->search, fn ($q) => $q->search($request->search))
-            ->when($request->categories, function ($q) use ($request) {
-                $categoryIds = app(TransformHashToIds::class)->handle(
-                    collect(explode(',', $request->categories)),
-                    new Category
-                );
+     public function index(Request $request): Response
+     {
+         $services = Service::withStandardRelations()
+             ->when($request->search, fn ($q) => $q->search($request->search))
+             ->when($request->categories, function ($q) use ($request) {
+                 $categoryIds = app(TransformHashToIds::class)->handle(
+                     collect(explode(',', $request->categories)),
+                     new Category
+                 );
 
-                $q->filterByCategories($categoryIds);
-            })
-            ->when($request->type, fn ($q, $type) => $q->where('type', $type))
-            ->latest()
-            ->paginate(12)
-            ->setPageName('page')
-            ->onEachSide(1);
+                 $q->filterByCategories($categoryIds);
+             })
+             ->when($request->type, fn ($q, $type) => $q->where('type', $type))
+             ->latest()
+             ->paginate(12)
+             ->withQueryString() // Add this to preserve filters
+             ->setPageName('page')
+             ->onEachSide(1);
 
-        return Inertia::render('Services/Index', [
-            'services' => $services->through(fn ($service) => ServiceData::fromModel($service)),
-            'categories' => $this->getCategoryTree(),
-            'filters' => $request->only(['search', 'categories', 'type']),
-        ]);
-    }
+         // Transform the data to match PaginatedData<T> where data: T (not T[])
+         $transformedServices = $services->getCollection()->map(fn ($service) => ServiceData::fromModel($service))->toArray();
 
-    public function myServices(Request $request): Response
-    {
-        $services = Service::withStandardRelations()
-            ->forUser(auth()->id())
-            ->when($request->search, fn ($q) => $q->search($request->search))
-            ->when($request->type, fn ($q, $type) => $q->where('type', $type))
-            ->orderBy($request->sort ?? 'created_at', $request->order ?? 'desc')
-            ->paginate(12)
-            ->withQueryString();
+         return Inertia::render('Services/Index', [
+             'services' => $this->formatPaginator($services, $transformedServices),
+             'categories' => $this->getCategoryTree(),
+             'filters' => $request->only(['search', 'categories', 'type']),
+         ]);
+     }
 
-        return Inertia::render('My/Services/Index', [
-            'services' => $services,
-            'filters' => $request->only(['search', 'type', 'sort', 'order']),
-        ]);
-    }
+     public function myServices(Request $request): Response
+     {
+         $services = Service::withStandardRelations()
+             ->forUser(auth()->id())
+             ->when($request->search, fn ($q) => $q->search($request->search))
+             ->when($request->type, fn ($q, $type) => $q->where('type', $type))
+             ->orderBy($request->sort ?? 'created_at', $request->order ?? 'desc')
+             ->paginate(12)
+             ->withQueryString();
+
+         // Transform the data to match PaginatedData<T> where data: T (not T[])
+         $transformedServices = $services->getCollection()->map(fn ($service) => ServiceData::fromModel($service))->toArray();
+
+         return Inertia::render('My/Services/Index', [
+             'services' => $this->formatPaginator($services, $transformedServices),
+             'filters' => $request->only(['search', 'type', 'sort', 'order']),
+         ]);
+     }
 
     protected function validateFilters(Request $request): array
     {
@@ -171,31 +178,6 @@ class ServiceController extends Controller
                 'locations:id,city,region,country',
             ])),
             'relatedServices' => $this->getRelatedServices($service),
-        ]);
-    }
-
-    public function create(): Response
-    {
-        return Inertia::render('Services/Create', [
-            'categories' => Category::where('is_active', true)
-                ->whereNull('parent_id')
-                ->with('children:id,name,parent_id,slug')
-                ->get(['id', 'name', 'slug'])
-                ->map(fn ($category) => CategoryData::fromModel($category)),
-            'locations' => Location::select('id', 'city', 'region')
-                ->whereNotNull('city')
-                ->orderBy('city')
-                ->get(),
-            'defaults' => [
-                'contact' => [
-                    'name' => auth()->user()->name,
-                    'email' => auth()->user()->email,
-                    'website' => auth()->user()->website,
-                    'github' => auth()->user()->github,
-                    'linkedin' => auth()->user()->linkedin,
-                ],
-                'location' => auth()->user()->location?->id,
-            ],
         ]);
     }
 
