@@ -10,8 +10,6 @@ interface ServiceData {
 }
 
 export default function ServiceCard({ service }: { service: ServiceData }) {
-  console.log('Service data:', service);
-  console.log('Header image URL:', service.header_image_url);
 
   const statusBadgeClasses = {
     offered: 'bg-green-500',
