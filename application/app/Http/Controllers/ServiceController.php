@@ -171,6 +171,7 @@ class ServiceController extends Controller
                     ServiceWorkflowParams::DESCRIPTION()->value => $existingService->description,
                     ServiceWorkflowParams::TYPE()->value => $existingService->type->value,
                     ServiceWorkflowParams::CATEGORIES()->value => $existingService->categories->pluck('slug')->toArray(),
+                    ServiceWorkflowParams::HEADER_IMAGE_URL()->value => $existingService->header_image_url,
                 ];
             }
         }
@@ -298,7 +299,6 @@ class ServiceController extends Controller
 
         if ($validator->fails()) {
             $request->session()->flash('error', $validator->errors()->toArray());
-
             return back()->withInput();
         }
 
@@ -346,7 +346,6 @@ class ServiceController extends Controller
 
         if ($validator->fails()) {
             $request->session()->flash('error', $validator->errors()->toArray());
-
             return back()->withInput();
         }
 
@@ -356,7 +355,6 @@ class ServiceController extends Controller
 
         if (! $service || $service->user_id !== auth()->id()) {
             $request->session()->flash('error', ['general' => ['Service not found or access denied.']]);
-
             return back();
         }
 
