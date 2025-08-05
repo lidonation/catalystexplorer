@@ -114,6 +114,11 @@ function UserNavigation() {
             title: t('my.wallets'),
             riaLabel: `${t('my.wallets')} ${t('link')}`,
         },
+        {
+            route: 'my.services',
+            title: t('my.services'),
+            riaLabel: `${t('my.services')} ${t('link')}`,
+        },
     ];
 
     return (

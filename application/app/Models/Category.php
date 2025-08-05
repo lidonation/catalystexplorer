@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Traits\HasHashId;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,6 +13,8 @@ use Illuminate\Support\Str;
 
 class Category extends Model
 {
+    use HasHashId;
+
     protected $fillable = [
         'parent_id',
         'name',
@@ -26,6 +29,10 @@ class Category extends Model
         'is_active' => 'boolean',
         'level' => 'integer',
     ];
+
+    protected $appends = ['hash'];
+
+    protected $hidden = ['id'];
 
     // Self-referential relationships
     public function parent(): BelongsTo
@@ -54,7 +61,6 @@ class Category extends Model
         );
     }
 
-    // Auto-set level and type on creation
     protected static function booted()
     {
         static::creating(function ($category) {
@@ -67,5 +73,15 @@ class Category extends Model
                 $category->type = 'category';
             }
         });
+    }
+
+    public function scopeWithActiveChildren($query)
+    {
+        return $query->where('is_active', true)
+            ->whereNull('parent_id')
+            ->with(['children' => function ($query) {
+                $query->where('is_active', true)
+                    ->select('id', 'name', 'parent_id', 'slug');
+            }]);
     }
 }

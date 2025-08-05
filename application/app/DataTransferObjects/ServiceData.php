@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
-use Spatie\LaravelData\Attributes\DataCollectionOf;
+use App\Enums\ServiceTypeEnum;
+use App\Models\Service;
 use Spatie\LaravelData\Data;
-use Spatie\LaravelData\DataCollection;
 use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
@@ -34,11 +34,11 @@ final class ServiceData extends Data
         #[TypeScriptOptional]
         public ?string $website,
 
-        #[DataCollectionOf(CategoryData::class)]
-        public ?DataCollection $categories,
+        #[TypeScriptOptional]
+        public ?array $categories,
 
-        #[DataCollectionOf(LocationData::class)]
-        public ?DataCollection $locations,
+        #[TypeScriptOptional]
+        public ?array $locations,
 
         #[TypeScriptOptional]
         public ?UserData $user,
@@ -68,16 +68,26 @@ final class ServiceData extends Data
             email: $service->email,
             website: $service->website,
             categories: $service->relationLoaded('categories')
-                ? CategoryData::collection($service->categories)
+                ? $service->categories->map(fn ($cat) => [
+                    'id' => $cat->id,
+                    'name' => $cat->name,
+                    'slug' => $cat->slug,
+                ])->toArray()
                 : null,
             locations: $service->relationLoaded('locations')
-                ? LocationData::collection($service->locations)
+                ? $service->locations->map(fn ($loc) => [
+                    'id' => $loc->id,
+                    'city' => $loc->city,
+                    'region' => $loc->region ?? null,
+                ])->toArray()
                 : null,
             user: $service->relationLoaded('user')
                 ? UserData::from($service->user)
                 : null,
-            effective_details: $service->effective_details,
-            link: route('services.show', $service)
+            created_at: $service->created_at?->toISOString(),
+            updated_at: $service->updated_at?->toISOString(),
+            effective_details: $service->effective_contact_details ?? null,
+            link: route('services.show', $service->hash ?? $service->id)
         );
     }
 }

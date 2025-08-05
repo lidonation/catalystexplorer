@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\TransformHashToIds;
+use App\DataTransferObjects\CategoryData;
 use App\DataTransferObjects\ServiceData;
 use App\Enums\ServiceTypeEnum;
 use App\Enums\ServiceWorkflowParams;
@@ -19,69 +21,161 @@ use ReflectionMethod;
 
 class ServiceController extends Controller
 {
+    protected function formatPaginator($paginator, ?array $transformedData = null): array
+    {
+        return [
+            'data' => $transformedData ?: $paginator->items(),
+            'current_page' => $paginator->currentPage(),
+            'last_page' => $paginator->lastPage(),
+            'per_page' => $paginator->perPage(),
+            'total' => $paginator->total(),
+            'from' => $paginator->firstItem(),
+            'to' => $paginator->lastItem(),
+            'links' => $paginator->linkCollection()->toArray(),
+            'next_page_url' => $paginator->nextPageUrl(),
+            'prev_page_url' => $paginator->previousPageUrl(),
+            'first_page_url' => $paginator->url(1),
+            'last_page_url' => $paginator->url($paginator->lastPage()),
+            'path' => $paginator->path(),
+        ];
+    }
+
     public function index(Request $request): Response
     {
-        $query = Service::with(['user:id,name,email', 'categories:id,name,slug', 'locations:id,city'])
-            ->latest();
-        if ($request->has('search')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('title', 'ilike', '%'.$request->search.'%')
-                    ->orWhere('description', 'ilike', '%'.$request->search.'%');
-            });
-        }
+        $services = Service::withStandardRelations()
+            ->when($request->search, fn ($q) => $q->search($request->search))
+            ->when($request->categories, function ($q) use ($request) {
+                $categoryIds = app(TransformHashToIds::class)->handle(
+                    collect(explode(',', $request->categories)),
+                    new Category
+                );
+
+                $q->filterByCategories($categoryIds);
+            })
+            ->when($request->type, fn ($q, $type) => $q->where('type', $type))
+            ->latest()
+            ->paginate(12)
+            ->withQueryString()
+            ->setPageName('page')
+            ->onEachSide(1);
+
+        $transformedServices = $services->getCollection()->map(fn ($service) => ServiceData::fromModel($service))->toArray();
 
         return Inertia::render('Services/Index', [
-            'services' => ServiceData::collection($query->paginate(24)),
-            'viewType' => 'all',
+            'services' => $this->formatPaginator($services, $transformedServices),
+            'categories' => $this->getCategoryTree(),
+            'filters' => $request->only(['search', 'categories', 'type']),
         ]);
     }
 
-    public function myServices(): Response
+    public function myServices(Request $request): Response
     {
+        $services = Service::withStandardRelations()
+            ->forUser(auth()->id())
+            ->when($request->search, fn ($q) => $q->search($request->search))
+            ->when($request->type, fn ($q, $type) => $q->where('type', $type))
+            ->orderBy($request->sort ?? 'created_at', $request->order ?? 'desc')
+            ->paginate(12)
+            ->withQueryString();
+
+        $transformedServices = $services->getCollection()->map(fn ($service) => ServiceData::fromModel($service))->toArray();
+
         return Inertia::render('My/Services/Index', [
-            'services' => ServiceData::collection(
-                Service::with(['user:id,name,email', 'categories:id,name,slug', 'locations:id,city'])
-                    ->where('user_id', auth()->id())
-                    ->latest()
-                    ->paginate(24)
-            ),
-            'viewType' => 'user',
+            'services' => $this->formatPaginator($services, $transformedServices),
+            'filters' => $request->only(['search', 'type', 'sort', 'order']),
         ]);
     }
 
-    public function show(Service $service): Response
+    protected function validateFilters(Request $request): array
     {
+        $validated = $request->validate([
+            'search' => 'sometimes|string|max:255',
+            'categories' => 'sometimes|string',
+            'type' => 'sometimes|in:offered,needed',
+            'sort' => 'sometimes|in:newest,oldest,title',
+            'viewType' => 'sometimes|in:all,user',
+            'page' => 'sometimes|integer|min:1',
+        ]);
+
+        if (! empty($validated['categories'])) {
+            $hashes = explode(',', $validated['categories']);
+            $validated['categories'] = array_filter(array_map(
+                fn ($hash) => Category::byHash($hash)?->id,
+                $hashes
+            ));
+        }
+
+        return $validated;
+    }
+
+    protected function buildQuery(array $filters)
+    {
+        $query = Service::query()
+            ->withStandardRelations()
+            ->forUser(($filters['viewType'] ?? 'all') === 'user' ? auth()->id() : null);
+
+        if (! empty($filters['search'])) {
+            $query->search($filters['search']);
+        }
+
+        if (! empty($filters['categories']) && ($filters['viewType'] ?? 'all') === 'all') {
+            $query->filterByCategories($filters['categories']);
+        }
+
+        if (! empty($filters['type'])) {
+            $query->where('type', $filters['type']);
+        }
+
+        if (empty($filters['search'])) {
+            match ($filters['sort'] ?? 'newest') {
+                'oldest' => $query->oldest(),
+                'title' => $query->orderBy('title'),
+                default => $query->latest()
+            };
+        }
+
+        return $query;
+    }
+
+    protected function getCategoryTree()
+    {
+        return Category::where('is_active', true)
+            ->whereNull('parent_id')
+            ->with(['children' => fn ($q) => $q->where('is_active', true)])
+            ->get()
+            ->map(fn ($category) => CategoryData::fromModel($category));
+    }
+
+    protected function formatFilters(array $filters): array
+    {
+        $formattedCategories = null;
+        if (! empty($filters['categories']) && ($filters['viewType'] ?? 'all') === 'all') {
+            $formattedCategories = array_filter(array_map(
+                fn ($id) => Category::find($id)?->hash,
+                $filters['categories']
+            ));
+        }
+
+        return [
+            'search' => $filters['search'] ?? null,
+            'categories' => $formattedCategories,
+            'type' => $filters['type'] ?? null,
+            'sort' => $filters['sort'] ?? null,
+            'viewType' => $filters['viewType'] ?? 'all',
+        ];
+    }
+
+    public function show(string $hash): Response
+    {
+        $service = Service::byHash($hash);
+
         return Inertia::render('Services/Show', [
-            'service' => ServiceData::from($service->load([
+            'service' => ServiceData::fromModel($service->load([
                 'user:id,name,email',
                 'categories:id,name,slug',
                 'locations:id,city,region,country',
             ])),
             'relatedServices' => $this->getRelatedServices($service),
-        ]);
-    }
-
-    public function create(): Response
-    {
-        return Inertia::render('Services/Create', [
-            'categories' => Category::where('is_active', true)
-                ->whereNull('parent_id')
-                ->with('children:id,name,parent_id,slug')
-                ->get(['id', 'name', 'slug']),
-            'locations' => Location::select('id', 'city', 'region')
-                ->whereNotNull('city')
-                ->orderBy('city')
-                ->get(),
-            'defaults' => [
-                'contact' => [
-                    'name' => auth()->user()->name,
-                    'email' => auth()->user()->email,
-                    'website' => auth()->user()->website,
-                    'github' => auth()->user()->github,
-                    'linkedin' => auth()->user()->linkedin,
-                ],
-                'location' => auth()->user()->location?->id,
-            ],
         ]);
     }
 
@@ -125,19 +219,19 @@ class ServiceController extends Controller
         }
 
         return redirect()
-            ->route('services.show', $service)
+            ->route('services.show', $service->hash)
             ->with('success', 'Service created successfully!');
     }
 
     protected function getRelatedServices(Service $service, int $limit = 4)
     {
-        return ServiceData::collection(
-            Service::with(['user:id,name', 'categories:id,name'])
-                ->where('id', '!=', $service->id)
-                ->whereHas('categories', fn ($q) => $q->whereIn('id', $service->categories->pluck('id')))
-                ->limit($limit)
-                ->get()
-        );
+        return Service::query()
+            ->with(['user:id,name', 'categories:id,name'])
+            ->where('id', '!=', $service->id)
+            ->whereHas('categories', fn ($q) => $q->whereIn('categories.id', $service->categories->pluck('id')))
+            ->limit($limit)
+            ->get()
+            ->map(fn ($relatedService) => ServiceData::fromModel($relatedService));
     }
 
     // Workflow methods
