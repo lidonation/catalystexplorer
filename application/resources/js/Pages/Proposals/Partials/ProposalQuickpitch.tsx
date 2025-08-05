@@ -1,10 +1,11 @@
 'use client'
 import Title from '@/Components/atoms/Title';
 import { PageProps } from '@/types';
-// import Plyr from 'plyr-react';
-// import 'plyr-react/plyr.css';
-import { useMemo } from 'react';
+import 'plyr-react/plyr.css';
+import React, { useMemo, useState, useEffect, Suspense } from 'react';
 import {useLaravelReactI18n} from "laravel-react-i18n";
+
+const Plyr = React.lazy(() => import('plyr-react'));
 
 interface ProposalQuickpitch extends Record<string, unknown> {
     quickpitch?: string | null;
@@ -22,6 +23,12 @@ export default function ProposalQuickpitch({
     quickpitch,
 }: PageProps<ProposalQuickpitch>) {
     const { t } = useLaravelReactI18n();
+    const [isClient, setIsClient] = useState(false);
+
+    
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     // Memoize the video data to avoid recalculating it on every render
     const videoData = useMemo<VideoData>(() => {
@@ -34,6 +41,14 @@ export default function ProposalQuickpitch({
         }
         return { id: null, provider: 'html5', error: null };
     }, [quickpitch]);
+
+    const LoadingSpinner = () => (
+        <div className="flex items-center justify-center w-full h-full bg-background">
+            <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+            </div>
+        </div>
+    );
 
     return (
         <section aria-labelledby="video-heading" className="h-full" data-testid="proposal-quickpitch-section">
@@ -53,36 +68,37 @@ export default function ProposalQuickpitch({
                         </div>
                     </div>
                 ) : (
-                    videoData.id && (
-                        <span></span>
-                        // <Plyr
-                        //     key={videoData.id}
-                        //     source={{
-                        //         type: 'video',
-                        //         sources: [
-                        //             {
-                        //                 src: videoData.id,
-                        //                 provider: videoData.provider,
-                        //             },
-                        //         ],
-                        //     }}
-                        //     options={{
-                        //         controls: [
-                        //             'play-large',
-                        //             'play',
-                        //             'progress',
-                        //             'current-time',
-                        //             'mute',
-                        //             'volume',
-                        //             'fullscreen',
-                        //         ],
-                        //         ratio: '16:9',
-                        //         hideControls: false,
-                        //         autoplay: false,
-                        //         invertTime: false,
-                        //         tooltips: { controls: true, seek: true },
-                        //     }}
-                        // />
+                    videoData.id && isClient && (
+                        <Suspense fallback={<LoadingSpinner />}>
+                            <Plyr
+                                key={videoData.id}
+                                source={{
+                                    type: 'video',
+                                    sources: [
+                                        {
+                                            src: videoData.id,
+                                            provider: videoData.provider,
+                                        },
+                                    ],
+                                }}
+                                options={{
+                                    controls: [
+                                        'play-large',
+                                        'play',
+                                        'progress',
+                                        'current-time',
+                                        'mute',
+                                        'volume',
+                                        'fullscreen',
+                                    ],
+                                    ratio: '16:9',
+                                    hideControls: false,
+                                    autoplay: false,
+                                    invertTime: false,
+                                    tooltips: { controls: true, seek: true },
+                                }}
+                            />
+                        </Suspense>
                     )
                 )}
             </div>
