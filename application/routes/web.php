@@ -463,6 +463,11 @@ Route::localized(
             return Inertia::render('Map');
         });
 
+        Route::prefix('/services')->as('services.')->group(function () {
+            Route::get('/', [ServiceController::class, 'index'])->name('index');
+            Route::get('/{service}', [ServiceController::class, 'show'])->name('show');
+        });
+
         Route::prefix('numbers')->as('numbers.')
             ->group(function () {
                 Route::get('/impact', fn() => Inertia::render(component: 'ComingSoon', props: ['context' => 'Impact Numbers']))->name('impact');
