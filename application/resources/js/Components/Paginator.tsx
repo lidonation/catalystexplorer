@@ -30,9 +30,8 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
         return getFilters({ param, value, label });
     };
 
-    let {
+    const {
         current_page,
-        per_page,
         links,
         prev_page_url,
         next_page_url,
@@ -41,104 +40,146 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
         total,
     } = pagination;
 
+    const pageLinks = links?.filter(
+        link => !link.label.includes('&laquo;') && 
+                !link.label.includes('&raquo;') && 
+                link.label !== 'Previous' && 
+                link.label !== 'Next'
+    ) || [];
+
+    const getMobilePageLinks = () => {
+        if (pageLinks.length <= 7) return pageLinks;
+        
+        const currentIdx = pageLinks.findIndex(link => link.active);
+        const start = Math.max(0, currentIdx - 2);
+        const end = Math.min(pageLinks.length, currentIdx + 3);
+        
+        let result = [];
+        
+        if (start > 0) {
+            result.push(pageLinks[0]);
+            if (start > 1) {
+                result.push({ label: '...', active: false, url: null });
+            }
+        }
+        result = result.concat(pageLinks.slice(start, end));
+        
+        if (end < pageLinks.length) {
+            if (end < pageLinks.length - 1) {
+                result.push({ label: '...', active: false, url: null });
+            }
+            result.push(pageLinks[pageLinks.length - 1]);
+        }
+        
+        return result;
+    };
+
+    const mobilePageLinks = getMobilePageLinks();
+    const renderPageLink = (link: any, index: number, size: 'sm' | 'md' = 'md') => (
+        <PaginationItem key={index}>
+            {link.label === '...' ? (
+                <PaginationEllipsis />
+            ) : (
+                <Link
+                    href={buildUrl(ParamsEnum.PAGE, link.label, 'Current Page')}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        setPagination(ParamsEnum.PAGE, link.label, 'Current Page');
+                    }}
+                    aria-current={link.active ? 'page' : undefined}
+                    className={cn(
+                        'flex items-center justify-center rounded-full transition-colors',
+                        size === 'sm' 
+                            ? 'size-7 text-xs' 
+                            : size === 'md' 
+                            ? 'size-8 text-sm' 
+                            : 'size-8 text-base',
+                        link.active 
+                            ? 'bg-gray-200 font-semibold text-gray-900' 
+                            : 'hover:bg-gray-100 text-gray-700'
+                    )}
+                    {...linkProps}
+                    data-testid={`pagination-link-${link.label}`}
+                >
+                    {link.label}
+                </Link>
+            )}
+        </PaginationItem>
+    );
+
+    const previousButton = (className = '') => (
+        <PaginationItem className="list-none flex-shrink-0">
+            <PaginationPrevious
+                linkProps={linkProps}
+                href={prev_page_url ? buildUrl(ParamsEnum.PAGE, current_page - 1, 'Current Page') : ''}
+                className={cn(
+                    className,
+                    !prev_page_url ? 'pointer-events-none opacity-50' : ''
+                )}
+            />
+        </PaginationItem>
+    );
+
+    const nextButton = (className = '') => (
+        <PaginationItem className="list-none flex-shrink-0">
+            <PaginationNext
+                linkProps={linkProps}
+                href={next_page_url ? buildUrl(ParamsEnum.PAGE, current_page + 1, 'Current Page') : ''}
+                className={cn(
+                    className,
+                    !next_page_url ? 'pointer-events-none opacity-50' : ''
+                )}
+            />
+        </PaginationItem>
+    );
+
     return (
         <div className="flex items-center justify-center py-4" data-testid="pagination-component">
-            <div className="flex items-center justify-between w-full">
+          
+            <div className="flex md:hidden items-center justify-between w-full gap-1">
+                {previousButton("px-2 py-1 text-xs")}
+                
+                <div className="flex-1 flex justify-center min-w-0">
+                    <ul className="flex list-none items-center gap-1">
+                        {mobilePageLinks.map((link, index) => renderPageLink(link, index, 'sm'))}
+                    </ul>
+                </div>
+                
+                {nextButton("px-2 py-1 text-xs")}
+            </div>
+            <div className="hidden md:flex lg:hidden items-center justify-between w-full">
+                {previousButton()}
+
+                <div className="flex items-center gap-4">
+                    <ul className="flex list-none items-center gap-1">
+                        {mobilePageLinks.map((link, index) => renderPageLink(link, index, 'md'))}
+                    </ul>
+                    
+                    <div className="text-sm" data-testid="pagination-info">
+                        {from}-{to} of <span className="font-bold">{total}</span>
+                    </div>
+                </div>
+
+                {nextButton()}
+            </div>
+            <div className="hidden lg:flex items-center justify-between w-full">
                 <div className="flex-shrink-0">
-                    <PaginationItem className="list-none">
-                        <PaginationPrevious
-                            linkProps={linkProps}
-                            href={
-                                prev_page_url
-                                    ? buildUrl(
-                                          ParamsEnum.PAGE,
-                                          current_page - 1,
-                                          'Current Page',
-                                      )
-                                    : ''
-                            }
-                            className={
-                                !prev_page_url
-                                    ? 'pointer-events-none opacity-50'
-                                    : ''
-                            }
-                        />
-                    </PaginationItem>
+                    {previousButton()}
                 </div>
 
                 <div className="flex items-center gap-8">
                     <div className="flex items-center gap-1">
                         <ul className="flex list-none items-center gap-1">
-                            {links &&
-                                links.map((link, index) =>
-                                    link.label.includes('&laquo;') ||
-                                    link.label.includes('&raquo;') ? null : (
-                                        <PaginationItem key={index}>
-                                            {link.label === '...' ? (
-                                                <PaginationEllipsis />
-                                            ) : (
-                                                <Link
-                                                    href={buildUrl(
-                                                        ParamsEnum.PAGE,
-                                                        link.label,
-                                                        'Current Page',
-                                                    )}
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        setPagination(
-                                                            ParamsEnum.PAGE,
-                                                            link.label,
-                                                            'Current Page',
-                                                        );
-                                                    }}
-                                                    aria-current={
-                                                        link.active
-                                                            ? 'page'
-                                                            : undefined
-                                                    }
-                                                    className={cn(
-                                                        'flex size-8 items-center justify-center rounded-full',
-                                                        link.active
-                                                            ? 'bg-gray-200'
-                                                            : '',
-                                                    )}
-                                                    {...linkProps}
-                                                    data-testid={`pagination-link-${link.label}`}
-                                                >
-                                                    {link.label}
-                                                </Link>
-                                            )}
-                                        </PaginationItem>
-                                    ),
-                                )}
+                            {pageLinks.map((link, index) => renderPageLink(link, index, 'md'))}
                         </ul>
                     </div>
                     <div className="text-sm" data-testid="pagination-info">
-                        Showing {from} - {to} of{' '}
-                        <span className="font-bold">{total}</span>
+                        Showing {from} - {to} of <span className="font-bold">{total}</span>
                     </div>
                 </div>
-                
+
                 <div className="flex-shrink-0">
-                    <PaginationItem className="list-none">
-                        <PaginationNext
-                            linkProps={linkProps}
-                            href={
-                                next_page_url
-                                    ? buildUrl(
-                                          ParamsEnum.PAGE,
-                                          current_page + 1,
-                                          'Current Page',
-                                      )
-                                    : ''
-                            }
-                            className={
-                                !next_page_url
-                                    ? 'pointer-events-none opacity-50'
-                                    : ''
-                            }
-                        />
-                    </PaginationItem>
+                    {nextButton()}
                 </div>
             </div>
         </div>
