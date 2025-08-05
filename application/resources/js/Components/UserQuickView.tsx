@@ -13,6 +13,7 @@ const UserQuickView: React.FC<ProposalUserQuickViewProps> = ({ user }) => {
     return (
         <div className="space-y-4 p-4">
             {/* Profile Section */}
+
             <div className="flex items-start space-x-2" data-testid="user-quick-view-lido">
                 <LinkIcon />
                 <div>

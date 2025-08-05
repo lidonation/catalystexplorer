@@ -98,21 +98,11 @@ export default function ProposalCardHeader({
                             <div className="flex items-center">
                                 <ListProvider>
                                     {proposal.hash && (
-<<<<<<< Updated upstream
-                                        <>
-                                            <BookmarkButton
-                                                modelType="proposals"
-                                                itemId={proposal.hash}
-                                                dataTestId="proposals-bookmark-button"
-                                            />
-                                        </>
-=======
                                         <BookmarkButton
                                             modelType="proposals"
                                             itemId={proposal.hash}
                                             data-testid="bookmark-button"
                                         />
->>>>>>> Stashed changes
                                     )}
                                 </ListProvider>
                                 {proposal.hash && (

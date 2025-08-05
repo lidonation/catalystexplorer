@@ -51,7 +51,7 @@ export default function ExpandableContentAnimation({
     }, [cardRef.current]);
 
     const renderCardContent = () => {
-        const lineHeightRem = 1.5; // Tailwind's leading-snug = ~1.5rem
+        const lineHeightRem = 1.5; 
         const minHeight = `${lineClamp * lineHeightRem}rem`;
 
         const isEmpty =
@@ -80,7 +80,6 @@ export default function ExpandableContentAnimation({
             </div>
         );
     };
-
     return (
         <div
             className={clsx(
