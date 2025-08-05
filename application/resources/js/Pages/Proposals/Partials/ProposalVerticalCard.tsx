@@ -106,11 +106,9 @@ export default function ProposalVerticalCard({
                             </section>
                             <div className="relative mt-4 min-h-36 border-b border-gray-200 pb-2 mb-2">
                                 {quickPitchView ? (
-                                    <span></span>
-                                    // reenable when we can replace support ssr.
-                                    // <ProposalQuickpitch
-                                    //     quickpitch={proposal.quickpitch}
-                                    // />
+                                    <ProposalQuickpitch
+                                         quickpitch={proposal.quickpitch}
+                                    />
                                 ) : (
                                     <ProposalSolution
                                         solution={proposal.solution}
