@@ -22,35 +22,22 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
     const [normalizedData, setNormalizedData] = useState<any[]>([]);
 
     useEffect(() => {
-        if (!chartData || chartData.length === 0) {
-            setNormalizedData([]);
-            return;
-        }
+        if (!chartData || chartData.length === 0) return;
 
-        const isSubmittedProposalsFormat =
-            Array.isArray(chartData) &&
-            chartData?.length > 0 &&
-            typeof chartData[0] === 'object' &&
-            !chartData[0]?.hasOwnProperty('fund') &&
-            !chartData[0]?.hasOwnProperty('year');
+        const tempData: Record<string, any> = {};
 
-        if (isSubmittedProposalsFormat) {
-            const fundKeys = Object.keys(chartData[0] || {});
-            const normalized = fundKeys?.map((fundKey, index) => ({
-                fund: fundKey,
-                year: fundKey,
-                totalProposals: chartData[0]?.[fundKey] || 0,
-            }));
-            setNormalizedData(normalized);
-        } else {
-            const normalized = chartData?.map((item: any) => ({
-                ...item,
-                totalProposals:
-                    item?.totalProposals || 0
-            }));
-            setNormalizedData(normalized);
-        }
-    }, [chartData]);
+        chartData.forEach((series: any) => {
+            series.data.forEach((point: any) => {
+                const index = point.x;
+                if (!tempData[index])
+                    tempData[index] = { [viewBy as string]: index };
+                tempData[index][series.id] = point.y;
+            });
+        });
+
+        const finalData = Object.values(tempData);
+        setNormalizedData(finalData);
+    }, [chartData, viewBy]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -72,25 +59,25 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
             filterParam: ParamsEnum.SUBMITTED_PROPOSALS,
         },
         {
-            key: 'fundedProposals',
+            key: 'Funded Proposals',
             label: t('funds.fundedProposals'),
             color: '#ee8434',
             filterParam: ParamsEnum.APPROVED_PROPOSALS,
         },
         {
-            key: 'completedProposals',
+            key: 'Completed Proposals',
             label: t('funds.completedProposals'),
             color: '#16B364',
             filterParam: ParamsEnum.COMPLETED_PROPOSALS,
         },
-         {
-            key: 'inProgressProposals',
+        {
+            key: 'In Progress Proposals',
             label: t('funds.inProgressProposals'),
             color: '#ee8434',
             filterParam: ParamsEnum.IN_PROGRESS,
         },
         {
-            key: 'unfundedProposals',
+            key: 'Unfunded Proposals',
             label: t('charts.unfundedProposals'),
             color: '#4fadce',
             filterParam: ParamsEnum.UNFUNDED_PROPOSALS,
@@ -110,8 +97,6 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
 
     const activeKeys = getFilteredKeys();
 
-    let total = 0;
-
     const getFunnelData = () => {
         if (!normalizedData || normalizedData.length === 0) return [];
 
@@ -128,19 +113,17 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
             {} as Record<string, number>,
         );
 
-
         const totalProposals = allData?.totalProposals || 0;
-        const fundedProposals = allData?.fundedProposals || 0;
-        const completedProposals = allData?.completedProposals || 0;
-        const inProgressProposals = allData?.inProgressProposals || 0;
-        const unfundedProposals = allData?.unfundedProposals;
-
+        const fundedProposals = allData?.['Funded Proposals'] || 0;
+        const completedProposals = allData?.['Completed Proposals'] || 0;
+        const inProgressProposals = allData?.['In Progress Proposals'] || 0;
+        const unfundedProposals = allData?.['Unfunded Proposals'] || 0;
 
         const funnelSteps = [];
 
         if (totalProposals > 0) {
             funnelSteps.push({
-                id: 'totalProposals',
+                id: 'Submitted Proposals',
                 value: totalProposals,
                 label: t('charts.totalProposals'),
             });
@@ -148,7 +131,7 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
 
         if (unfundedProposals > 0) {
             funnelSteps.push({
-                id: 'unfundedProposals',
+                id: 'Unfunded Proposals',
                 value: unfundedProposals,
                 label: t('charts.unfundedProposals'),
             });
@@ -156,15 +139,16 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
 
         if (fundedProposals > 0) {
             funnelSteps.push({
-                id: 'fundedProposals',
+                id: 'Funded Proposals',
                 value: fundedProposals,
                 label: t('funds.fundedProposals'),
             });
         }
 
+
         if (inProgressProposals > 0) {
             funnelSteps.push({
-                id: 'inProgressProposals',
+                id: 'In Progress Proposals',
                 value: inProgressProposals,
                 label: t('funds.inProgressProposals'),
             });
@@ -172,7 +156,7 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
 
         if (completedProposals > 0) {
             funnelSteps.push({
-                id: 'completedProposals',
+                id: 'Completed Proposals',
                 value: completedProposals,
                 label: t('funds.completedProposals'),
             });
@@ -184,6 +168,10 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
 
     const funnelData = getFunnelData() ?? [];
 
+    useEffect(() => {
+        console.log('normalizedData', normalizedData);
+        console.log('funnelData', funnelData);
+    }, [normalizedData, funnelData]);
 
     const getResponsiveConfig = () => {
         const isSmall = screenWidth < 480;
@@ -221,6 +209,7 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
             </div>
         );
     }
+
 
     if (funnelData.length < 1) {
         return (
@@ -279,8 +268,6 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
                         },
                     }}
                     tooltip={({ part }) => {
-
-
                         return (
                             <div
                                 className={`bg-tooltip text-content-light rounded-xs p-${isMobile ? '2' : '4'} max-w-xs`}
@@ -294,7 +281,6 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
                                         {shortNumber(part.data.value, 2)}
                                     </span>
                                 </Paragraph>
-
                             </div>
                         );
                     }}

@@ -284,7 +284,7 @@ trait HasConnections
         $modelName = class_basename($model);
         $sortedIds = $ids;
         sort($sortedIds);
-        $cacheKey = "connections:entities:{$modelName}:".md5(implode(',', $sortedIds));
+        $cacheKey = "connections:entities:{$modelName}:".hash('sha256', implode(',', $sortedIds));
 
         return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($model, $ids) {
             $startTime = microtime(true);

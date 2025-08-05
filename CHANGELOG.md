@@ -1,3 +1,10 @@
+## [1.3.3](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.3.2...v1.3.3) (2025-08-03)
+
+
+### Bug Fixes
+
+* **proposalTab:** fixed the tabs on hover. ([6461383](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/64613834f067d75a5b29bfcd122d864aa989c5da))
+
 ## [1.3.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.3.1...v1.3.2) (2025-08-03)
 
 

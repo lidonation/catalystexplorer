@@ -121,11 +121,10 @@ export default function ProposalHorizontalCard({
                                 />
                             </section>
                             <div className="h-full min-h-40 w-[500px] overflow-auto">
-                                {quickPitchView ? (<span></span>
-                                    // reenable when we can use something that supports ssr
-                                    // <ProposalQuickpitch
-                                    //     quickpitch={proposal.quickpitch}
-                                    // />
+                                {quickPitchView ? (
+                                     <ProposalQuickpitch
+                                         quickpitch={proposal.quickpitch}
+                                     />
                                 ) : (
                                     <ProposalSolution
                                         solution={proposal.solution}
