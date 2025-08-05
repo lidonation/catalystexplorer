@@ -380,6 +380,7 @@
     "workflows.createService.step1.selectCategories": "Select categories...",
     "workflows.createService.step1.selectedCategories": "Selected: :count categories",
     "workflows.createService.step1.selectedImageText": "Selected: :fileName",
+    "workflows.createService.step1.existingImageText": "Current image - click to change",
     "workflows.createService.step2.serviceCreatedSuccess": "Service created successfully!",
     "workflows.createService.step2.name": "Name",
     "workflows.createService.step2.emailAddress": "Email address",
@@ -393,7 +394,7 @@
     "workflows.createService.step2.contactInfoSavedSuccess": "Contact information saved successfully!",
     "workflows.createService.step2.submitService": "Submit Service",
     "workflows.createService.step2.validation.emailInvalid": "Please enter a valid email address",
-    "workflows.createService.step2.validation.websiteInvalid": "Please enter a valid website URL (must start with http:// or https://)",
+    "workflows.createService.step2.validation.websiteInvalid": "Please enter a valid website URL",
     "workflows.createService.stepDetails.serviceDetails": "Service Details",
     "workflows.createService.stepDetails.contactDetails": "Contact Details",
     "error404.mainText": "Sorry, we couldn't find what you're looking for",
@@ -1186,8 +1187,12 @@
     "voter.sort.proposalsVotedOnAsc": "Proposals Voted On: Low to High",
     "rightSwipes": " - Right Swipes",
     "leftSwipes": " - Left Swipes",
+    "workflows.createService.step1.clickToReplaceImage": "Click here to replace image",
+    "workflows.createService.step1.clickToUploadImage": "Click here to upload image",
     "graph.loadingConnections": "Loading connections for :nodeName ...",
     "graph.noAdditionalConnections": ":nodeName has no additional connections",
     "graph.unknownNode": "Unknown",
-    "loadingGraph": "Loading graph"
+    "loadingGraph": "Loading graph",
+    "endDate": "End Date",
+    "startDate": "Start Date"
 }
