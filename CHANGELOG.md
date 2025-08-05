@@ -1,3 +1,10 @@
+# [1.4.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.3.3...v1.4.0) (2025-08-05)
+
+
+### Features
+
+* refactoring charts ui backend ([9bfb26c](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/9bfb26ca0fb5153ea3406eb6548b565bd4487525))
+
 ## [1.3.3](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.3.2...v1.3.3) (2025-08-03)
 
 
