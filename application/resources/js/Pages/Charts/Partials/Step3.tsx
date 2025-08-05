@@ -1,18 +1,20 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import Selector from '@/Components/atoms/Selector';
-import { useFilterContext } from '@/Context/FiltersContext';
-import { ParamsEnum } from '@/enums/proposal-search-params';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/Hooks/useUserSettings';
-import { useEffect, useMemo, useCallback, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import axios from 'axios';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 interface Step3Props {
     disabled?: boolean;
     onCompletionChange: (isComplete: boolean) => void;
     onNext: () => void;
     onExploreCharts: () => void;
+    onChartDataReceived?: (chartData: any) => void;
+    onLoadingChange?: (loading: boolean) => void;
+    rules: string[];
 }
 
 export default function Step3({
@@ -20,133 +22,172 @@ export default function Step3({
     onCompletionChange,
     onNext,
     onExploreCharts,
+    onLoadingChange,
+    onChartDataReceived,
+    rules,
 }: Step3Props) {
     const { t } = useLaravelReactI18n();
-    const { setFilters } = useFilterContext();
 
-    const {
-        value: selectedChartTypes,
-        setValue: setSelectedChartTypes,
-    } = useUserSetting<string[]>(userSettingEnums.CHART_OPTIONS, []);
-
+    const { value: selectedChartOptions, setValue: setSelectedChartOptions } =
+        useUserSetting<string[]>(userSettingEnums.CHART_OPTIONS, []);
 
     const isChartsSelected = useMemo(() => {
-        return (selectedChartTypes?.length ?? 0) > 0;
-    }, [selectedChartTypes]);
+        return (selectedChartOptions?.length ?? 0) > 0;
+    }, [selectedChartOptions]);
 
-     const {
-        value: selectedChart,
-    } = useUserSetting<string>(userSettingEnums.CHART_TYPE, '');
+    const { value: selectedChart } = useUserSetting<string>(
+        userSettingEnums.CHART_TYPE,
+        '',
+    );
 
     const [trendChartDisabled, setTrendChartDisabled] = useState(false);
+    const currentParams = new URLSearchParams(window.location.search);
+    const paramsObject = Object.fromEntries(currentParams);
 
-    useEffect(()=>{
-        console.log('Selected Chart', selectedChart)
-    }, [selectedChart])
 
-   useEffect(()=>{
-     setTrendChartDisabled(false);
-   }, [selectedChart]);
+    useEffect(() => {
+        setTrendChartDisabled(false);
+    }, [selectedChart]);
 
     useEffect(() => {
         onCompletionChange?.(isChartsSelected);
     }, [isChartsSelected, onCompletionChange]);
 
-
-    useEffect(() => {
-        if (selectedChartTypes && selectedChartTypes.length > 0) {
-            setFilters({
-                label: t('charts.chartOptions'),
-                value: selectedChartTypes,
-                param: ParamsEnum.CHART_OPTIONS,
-            });
-        }
-    }, [selectedChartTypes, t, setFilters]);
-
-
     const chartOptions = useMemo(() => {
         const isDistributionChart = selectedChart === 'distributionChart';
         const isTrendChart = selectedChart === 'trendChart';
+
 
         const allOptions = [
             { label: t('charts.barChart'), value: 'barChart' },
             { label: t('charts.pieChart'), value: 'pieChart' },
             { label: t('charts.lineChart'), value: 'lineChart' },
-            { label: t('charts.heatMap'), value: 'heatMap' },
-            { label: t('charts.scatterPlot'), value: 'scatterPlots' },
+            { label: t('charts.treeMap'), value: 'treeMap' },
             { label: t('charts.stackedBarChart'), value: 'stackedBarCharts' },
             { label: t('charts.funnelChart'), value: 'funnelChart' },
         ];
 
-        return allOptions.map(option => {
+        return allOptions.map((option) => {
             let isDisabled = false;
 
+
             if (isDistributionChart) {
-                isDisabled = ['barChart', 'lineChart', 'pieChart', 'stackedBarCharts', 'funnelChart'].includes(option.value);
+                isDisabled = [
+                    'barChart',
+                    'lineChart',
+                    'pieChart',
+                    'stackedBarCharts',
+                    'funnelChart',
+                ].includes(option.value);
             } else if (isTrendChart) {
-                isDisabled = ['heatMap', 'scatterPlots'].includes(option.value);
+                isDisabled = ['treeMap'].includes(option.value);
             }
+
 
             return {
                 ...option,
-                disabled: isDisabled
+                disabled: isDisabled,
             };
         });
     }, [t, selectedChart]);
 
     useEffect(() => {
-        if (selectedChart && selectedChartTypes && selectedChartTypes.length > 0) {
+        if (
+            selectedChart &&
+            selectedChartOptions &&
+            selectedChartOptions.length > 0
+        ) {
             const isDistributionChart = selectedChart === 'distributionChart';
             const isTrendChart = selectedChart === 'trendChart';
 
+
             let disabledOptions: string[] = [];
 
+
             if (isDistributionChart) {
-                disabledOptions = ['barChart', 'lineChart', 'pieChart', 'stackedBarCharts', 'funnelChart'];
+                disabledOptions = [
+                    'barChart',
+                    'lineChart',
+                    'pieChart',
+                    'stackedBarCharts',
+                    'funnelChart',
+                ];
             } else if (isTrendChart) {
-                disabledOptions = ['heatMap', 'scatterPlots'];
+                disabledOptions = ['treeMap'];
             }
 
-            const filteredSelection = selectedChartTypes.filter(
-                chartType => !disabledOptions.includes(chartType)
+            const filteredSelection = selectedChartOptions.filter(
+                (chartType) => !disabledOptions.includes(chartType),
             );
 
-            if (filteredSelection.length !== selectedChartTypes.length) {
-                setSelectedChartTypes(filteredSelection);
+            if (filteredSelection.length !== selectedChartOptions.length) {
+                setSelectedChartOptions(filteredSelection);
             }
         }
-    }, [selectedChart, selectedChartTypes, setSelectedChartTypes]);
-
+    }, [selectedChart, selectedChartOptions, setSelectedChartOptions]);
 
     const selectedItems = useMemo(() => {
-        return selectedChartTypes ?? [];
-    }, [selectedChartTypes]);
+        return selectedChartOptions ?? [];
+    }, [selectedChartOptions]);
+
+    const handleSelectorChange = useCallback(
+        (value: string | string[]) => {
+            const selected = Array.isArray(value) ? value : [value];
+            setSelectedChartOptions(selected);
+        },
+        [setSelectedChartOptions],
+    );
+
+    const chartType = selectedChart === 'trendChart' ? 'trend' : 'distribution';
+
+    const sendProposalMetrics = useCallback(
+        async (rules: Array<string>, chartType: string) => {
+            const currentQueryString = window.location.search;
+            const urlParams = new URLSearchParams(currentQueryString);
 
 
-    const handleSelectorChange = useCallback((value: string | string[]) => {
-        const selected = Array.isArray(value) ? value : [value];
-
-
-        setSelectedChartTypes(selected);
-
-        if (selected.length > 0) {
-            setFilters({
-                label: t('charts.chartOptions'),
-                value: selected,
-                param: ParamsEnum.CHART_OPTIONS,
-            });
-        }
-    }, [setSelectedChartTypes, setFilters, t]);
+            onLoadingChange?.(true); 
+            try {
+                const response = await axios.get(
+                    `${route('api.proposalChartsMetrics')}?${urlParams.toString()}`,
+                    {
+                        params: { rules, chartType },
+                    },
+                );
+                onChartDataReceived?.(response?.data); 
+            } catch (error: any) {
+                console.error(
+                    'Error fetching proposal metrics:',
+                    error.response?.data || error.message,
+                );
+            } finally {
+                onLoadingChange?.(false); 
+            }
+        },
+        [],
+    );
 
     const handleComplete = useCallback(() => {
+        sendProposalMetrics(rules ?? [], chartType ?? '');
         onCompletionChange(true);
         onNext();
         onExploreCharts();
-    }, [onCompletionChange, onNext, onExploreCharts]);
+    }, [
+        sendProposalMetrics,
+        rules,
+        chartType,
+        onCompletionChange,
+        onNext,
+        onExploreCharts,
+    ]);
 
     const buttonClassName = useMemo(() => {
         return `mt-4 w-full ${!isChartsSelected || disabled ? 'cursor-not-allowed opacity-50' : ''}`;
     }, [isChartsSelected, disabled]);
+
+    useEffect(() => {
+        console.log('Params Object:', paramsObject);
+    }, [paramsObject]);
 
     return (
         <div className={disabled ? 'pointer-events-none opacity-50' : ''}>
@@ -172,3 +213,4 @@ export default function Step3({
         </div>
     );
 }
+

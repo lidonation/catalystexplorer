@@ -45,12 +45,18 @@ Route::prefix('api')->as('api.')->group(function () {
 
     Route::get('/ideascaleProfiles', [IdeascaleProfilesController::class, 'ideascaleProfiles'])->name('ideascaleProfiles');
 
+    Route::post('/test-modal', function () {
+        return response()->json(['message' => 'OK', 'time' => now()]);
+    })->name('test');
+
     Route::get('/communities', [CommunityController::class, 'communities'])->name('communities');
     Route::get('/communities/{community:id}', [CommunitiesController::class, 'community'])->name('community');
 
     Route::get('/communities/{hash}/connections', [CommunitiesController::class, 'connections'])->name('communities.connections');
     Route::get('/communities/incremental-connections', [CommunitiesController::class, 'incrementalConnections'])->name('communities.incremental-connections');
     Route::post('/communities/{hash}/join', [CommunitiesController::class, 'join'])->name('community.join');
+
+    Route::get('/proposal-charts-metrics', [ProposalsController::class, 'getProposalMetrics'])->name('proposalChartsMetrics');
 
     Route::prefix('bookmark-items')->as('bookmarks.')
         ->group(function () {
@@ -95,7 +101,6 @@ Route::prefix('api')->as('api.')->group(function () {
 
     Route::get('/funds', [ProposalsController::class, 'funds'])->name('funds');
 
-
     Route::get('/helpful-total', [ReviewsController::class, 'helpfulTotal'])->name('helpfulTotal');
 
     Route::get('/fund-counts', [GroupsController::class, 'getFundsWithProposalsCount'])->name('fundCounts');
@@ -137,5 +142,4 @@ Route::prefix('api')->as('api.')->group(function () {
             Route::post('/', [CommentController::class, 'store'])->name('store')
                 ->middleware('throttle:15,1');
         });
-
 });

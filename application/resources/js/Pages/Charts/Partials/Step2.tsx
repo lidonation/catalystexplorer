@@ -5,8 +5,8 @@ import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/Hooks/useUserSettings';
-import { useCallback, useEffect, useMemo } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 interface Step2Props {
     disabled?: boolean;
@@ -27,27 +27,43 @@ export default function Step2({
         return !!selectedChart;
     }, [selectedChart]);
 
+    const chartOptions = useMemo(
+        () => [
+            { label: t('charts.trendChart'), value: 'trendChart' },
+            { label: t('charts.distributionChart'), value: 'distributionChart' },
+        ],
+        [t],
+    );
+
+    const getChartLabel = useCallback(
+        (value: string) =>
+            chartOptions.find((opt) => opt.value === value)?.label ?? value,
+        [chartOptions],
+    );
+
     useEffect(() => {
         onCompletionChange?.(isChartSelected);
     }, [isChartSelected, onCompletionChange]);
 
-    useEffect(() => {
-        if (selectedChart) {
-            setFilters({
-                label: t('charts.trendChart'),
-                value: selectedChart,
-                param: ParamsEnum.TREND_CHART,
-            });
-        }
-    }, [selectedChart, t, setFilters]);
+    const [mounted, setMounted] = useState(false);
 
-    const chartOptions = useMemo(
-        () => [
-            { label: 'Trend Chart', value: 'trendChart' },
-            { label: 'Distribution Chart', value: 'distributionChart' },
-        ],
-        [],
-    );
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (!mounted) return;
+
+        if (selectedChart) {
+            setTimeout(() => {
+                setFilters({
+                    label: getChartLabel(selectedChart),
+                    value: selectedChart,
+                    param: ParamsEnum.CHART_TYPE,
+                });
+            }, 0);
+        }
+    }, [selectedChart, getChartLabel, setFilters, mounted]);
 
     const selectedItems = useMemo(() => {
         return selectedChart ? [selectedChart] : [];
@@ -55,19 +71,20 @@ export default function Step2({
 
     const handleSelectorChange = useCallback(
         (value: string | string[]) => {
-            const chart = Array.isArray(value) ? value[0] : value;
+            if (!mounted) return;
 
+            const chart = Array.isArray(value) ? value[0] : value;
             setSelectedChart(chart);
 
             if (chart) {
                 setFilters({
-                    label: t('charts.trendChart'),
+                    label: getChartLabel(chart),
                     value: chart,
                     param: ParamsEnum.CHART_TYPE,
                 });
             }
         },
-        [setSelectedChart, setFilters, t],
+        [setSelectedChart, setFilters, getChartLabel, mounted],
     );
 
     return (
@@ -78,7 +95,9 @@ export default function Step2({
                     <div className="group relative">
                         <InformationIcon className="mx-auto" />
                         <div className="bg-tooltip absolute bottom-full left-1/2 z-10 mb-2 hidden w-48 -translate-x-1/2 rounded p-2 text-white shadow-lg group-hover:block">
-                           <Paragraph> {t('charts.chooseChartType')}</Paragraph>
+                            <Paragraph>
+                                {t('charts.chooseChartType')}
+                            </Paragraph>
                         </div>
                     </div>
                 </div>
