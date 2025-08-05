@@ -49,6 +49,10 @@ Route::localized(
             Route::get('/charts', [ProposalsController::class, 'charts'])
                 ->name('charts');
 
+            Route::post('/test-modal', function () {
+    return response()->json(['message' => 'OK', 'time' => now()]);
+})->name('test');    
+
             Route::get('/csvs', fn() => Inertia::render('ComingSoon', ['context' => 'CSVs']))
                 ->name('csvs');
 

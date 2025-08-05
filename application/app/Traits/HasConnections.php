@@ -32,12 +32,12 @@ trait HasConnections
             return ['error' => 'Root node not found'];
         }
 
-        $isInitialLoad = !$request || (
+        $isInitialLoad = ! $request || (
             empty($request->query(CatalystConnectionParams::IDEASCALEPROFILE()->value, [])) &&
             empty($request->query(CatalystConnectionParams::GROUP()->value, [])) &&
             empty($request->query(CatalystConnectionParams::COMMUNITY()->value, [])) &&
-            !$request->has(CatalystConnectionParams::EXCLUDE_EXISTING()->value) &&
-            !$request->has(CatalystConnectionParams::DEPTH()->value)
+            ! $request->has(CatalystConnectionParams::EXCLUDE_EXISTING()->value) &&
+            ! $request->has(CatalystConnectionParams::DEPTH()->value)
         );
 
         if ($isInitialLoad) {
@@ -49,11 +49,11 @@ trait HasConnections
 
     private function getInitialConnectionsData($id, $rootNode): array
     {
-        $cacheKey = "connections:initial:{$rootNode->hash}:" . get_class($rootNode);
-        
+        $cacheKey = "connections:initial:{$rootNode->hash}:".get_class($rootNode);
+
         return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($id, $rootNode) {
             $startTime = microtime(true);
-            
+
             $nodes = collect();
             $links = collect();
 
@@ -86,9 +86,9 @@ trait HasConnections
 
             $uniqueNodes = $nodes->unique(fn ($node): string => (string) $node['id'])->values()->all();
             $uniqueLinks = $links->unique(fn ($link): string => $link['source'].'-'.$link['target'])->values()->all();
-            
+
             $executionTime = round((microtime(true) - $startTime) * 1000, 2);
-            
+
             return [
                 'nodes' => $uniqueNodes,
                 'links' => $uniqueLinks,
@@ -111,7 +111,7 @@ trait HasConnections
         $nodes->push($this->formatNodeOrLink($this));
 
         $this->load(['connected_groups', 'connected_users', 'connected_communities']);
-        
+
         $rootConnections = [
             'connected_groups' => $this->connected_groups,
             'connected_users' => $this->connected_users,
@@ -126,21 +126,21 @@ trait HasConnections
         }
 
         $additionalEntities = collect();
-        if (!empty($groupIds)) {
+        if (! empty($groupIds)) {
             $additionalEntities = $additionalEntities->merge(
                 Group::with(['connected_groups', 'connected_users', 'connected_communities'])
                     ->whereIn('id', $groupIds)
                     ->get()
             );
         }
-        if (!empty($profileIds)) {
+        if (! empty($profileIds)) {
             $additionalEntities = $additionalEntities->merge(
                 IdeascaleProfile::with(['connected_groups', 'connected_users', 'connected_communities'])
                     ->whereIn('id', $profileIds)
                     ->get()
             );
         }
-        if (!empty($communityIds)) {
+        if (! empty($communityIds)) {
             $additionalEntities = $additionalEntities->merge(
                 Community::with(['connected_groups', 'connected_users', 'connected_communities'])
                     ->whereIn('id', $communityIds)
@@ -252,15 +252,15 @@ trait HasConnections
         $communityIds = array_unique(array_diff($communityIds, $visited));
 
         $fetchPromises = [];
-        if (!empty($groupIds)) {
+        if (! empty($groupIds)) {
             $groups = $this->fetchEntitiesOptimized(Group::class, $groupIds);
             $connections = $connections->merge($groups);
         }
-        if (!empty($profileIds)) {
+        if (! empty($profileIds)) {
             $profiles = $this->fetchEntitiesOptimized(IdeascaleProfile::class, $profileIds);
             $connections = $connections->merge($profiles);
         }
-        if (!empty($communityIds)) {
+        if (! empty($communityIds)) {
             $communities = $this->fetchEntitiesOptimized(Community::class, $communityIds);
             $connections = $connections->merge($communities);
         }
@@ -284,14 +284,14 @@ trait HasConnections
         $modelName = class_basename($model);
         $sortedIds = $ids;
         sort($sortedIds);
-        $cacheKey = "connections:entities:{$modelName}:" . md5(implode(',', $sortedIds));
-        
-        return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($model, $ids, $modelName) {
+        $cacheKey = "connections:entities:{$modelName}:".hash('sha256', implode(',', $sortedIds));
+
+        return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($model, $ids) {
             $startTime = microtime(true);
 
             $chunkSize = 100;
             $results = collect();
-            
+
             if (count($ids) > $chunkSize) {
                 $chunks = array_chunk($ids, $chunkSize);
                 foreach ($chunks as $chunk) {
@@ -305,16 +305,16 @@ trait HasConnections
                     ->whereIn('id', $ids)
                     ->get();
             }
-            
+
             $executionTime = round((microtime(true) - $startTime) * 1000, 2);
-            
+
             return $results;
         });
     }
 
     public function getIncrementalConnectionsData(?Request $request = null): array
     {
-        
+
         $depth = $request ? (int) $request->query('depth', 1) : 1;
         $excludeExisting = $request ? (array) $request->query('exclude_existing', []) : [];
 
@@ -348,7 +348,7 @@ trait HasConnections
                 'rootNodeId' => $this->id,
                 'rootNodeHash' => $this->hash,
                 'rootNodeType' => get_class($this),
-                'error' => 'Failed to load connections'
+                'error' => 'Failed to load connections',
             ];
         }
 
@@ -363,7 +363,7 @@ trait HasConnections
 
     public function clearConnectionsCache(): void
     {
-        $cacheKey = "connections:initial:{$this->hash}:" . get_class($this);
+        $cacheKey = "connections:initial:{$this->hash}:".get_class($this);
         Cache::forget($cacheKey);
     }
 

@@ -10,32 +10,24 @@ import SetChartMetrics from './Partials/SetChartMetrics';
 
 interface ChartsIndexProps {
     filters: SearchParams;
-    chartDataByFund?: any[];
-    chartDataByYear?: any[];
+    rules?: string[];
 }
 
 const Index = ({
-                   filters,
-                   chartDataByFund,
-                   chartDataByYear,
-               }: ChartsIndexProps) => {
+    filters,
+    rules
+}: ChartsIndexProps) => {
     const [showCharts, setShowCharts] = useState<boolean>(() => {
         return localStorage.getItem('metricsSet') === 'true';
     });
 
-    const {
-        value: viewByPreference,
-        setValue: setViewByPreference
-    } = useUserSetting<string[]>(
-        userSettingEnums.VIEW_CHART_BY,
-        ['fund']
-    );
+    const { value: viewByPreference, setValue: setViewByPreference } =
+        useUserSetting<string[]>(userSettingEnums.VIEW_CHART_BY, ['fund']);
 
     const viewBy: 'fund' | 'year' =
         viewByPreference?.[0] === 'year' ? 'year' : 'fund';
-    const chartData = viewBy === 'fund' ? chartDataByFund : chartDataByYear;
-    const { url } = usePage();
-    const isOnChartsRoute = url.includes('/charts');
+    const [allChartData, setAllChartData] = useState<any[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const handleExploreCharts = () => {
         setShowCharts(true);
@@ -52,36 +44,49 @@ const Index = ({
         setViewByPreference([newValue]);
     };
 
-   useEffect(() => {
-    const handleNavigation = () => {
-        if (!window.location.pathname.includes('/charts')) {
+    useEffect(() => {
+        const handleNavigation = () => {
+            if (!window.location.pathname.includes('/charts')) {
+                localStorage.removeItem('metricsSet');
+            }
+        };
+
+        const handleUnload = () => {
             localStorage.removeItem('metricsSet');
-        }
+        };
+
+        router.on('navigate', handleNavigation);
+
+        window.addEventListener('beforeunload', handleUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleUnload);
+        };
+    }, []);
+
+    const handleChartDataFromMetrics = (chartData: any) => {
+        setAllChartData(chartData);
     };
 
-    const handleUnload = () => {
-        localStorage.removeItem('metricsSet');
-    };
+    const handleLoadingChange = (loading: boolean) => {
+        setLoading(loading);
+    }
 
-    router.on('navigate', handleNavigation);
-
-    window.addEventListener('beforeunload', handleUnload);
-
-    return () => {
-        window.removeEventListener('beforeunload', handleUnload);
-    };
-}, []);
-
+    const filteredAllChartData = allChartData?.find(
+        (group) => group?.[0]?.count_by === viewBy,
+    );
+    
 
     return (
         <FiltersProvider defaultFilters={filters}>
-            <RoutedModalLayout navigate={true} className="md:px-8 px-2" zIndex="z-30">
                 <Head title="Charts" />
 
                 {!showCharts && (
                     <div className="flex h-screen w-full flex-col items-center justify-center">
                         <SetChartMetrics
                             onExploreCharts={handleExploreCharts}
+                            onChartDataReceived={handleChartDataFromMetrics}
+                            onLoadingChange={handleLoadingChange}
                         />
                     </div>
                 )}
@@ -89,14 +94,14 @@ const Index = ({
                 {showCharts && (
                     <div>
                         <AllCharts
-                            chartData={chartData}
+                            chartData={filteredAllChartData}
                             onEditMetrics={handleEditMetrics}
                             viewBy={viewBy}
                             onViewByChange={handleViewByChange}
+                            loading={loading}
                         />
                     </div>
                 )}
-            </RoutedModalLayout>
         </FiltersProvider>
     );
 };
