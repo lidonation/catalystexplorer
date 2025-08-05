@@ -118,6 +118,7 @@ class Proposal extends Model
             'campaign_id',
             'created_at',
             'created_at_timestamp',
+            'funded_at',
         ];
     }
 
@@ -479,8 +480,7 @@ class Proposal extends Model
             'ranking_total' => intval($this->ranking_total) ?? 0,
             'reviewers_total' => $this->reviewers_total,
 
-            'tags' => $this->tags->toArray(),
-
+            'tags' => $this->tags,
             'users' => $this->team->map(function ($u) {
                 $proposals = $u->proposals?->map(fn ($p) => $p->toArray());
 
