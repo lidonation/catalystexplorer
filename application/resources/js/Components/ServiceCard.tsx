@@ -1,7 +1,18 @@
 import React from 'react';
-import ServiceData = App.DataTransferObjects.ServiceData;
+
+interface ServiceData {
+  title: string;
+  type: 'offered' | 'needed';
+  name?: string;
+  user?: { name: string };
+  categories?: { name: string }[];
+  header_image_url?: string;
+}
 
 export default function ServiceCard({ service }: { service: ServiceData }) {
+  console.log('Service data:', service);
+  console.log('Header image URL:', service.header_image_url);
+
   const statusBadgeClasses = {
     offered: 'bg-green-500',
     needed: 'bg-orange-400'
@@ -16,14 +27,21 @@ export default function ServiceCard({ service }: { service: ServiceData }) {
   };
 
   return (
-    <div className="flex-1  rounded-xl shadow-xs  bg-background border-gray-200  flex-col justify-start items-start overflow-hidden">
-      <div className="self-stretch h-40 p-2.5 flex flex-col justify-start items-end gap-2.5">
-        <div
-          className={`p-2 rounded-[30px] ${statusBadgeClasses[badgeType]} inline-flex justify-center items-center`}
-          data-property-1={service.type}
-        >
-          <div className="justify-start text-white text-xs font-medium leading-3">
-            {service.type === 'offered' ? 'Offering Service' : 'Requesting Service'}
+    <div className="flex-1 rounded-xl shadow-xs bg-background border-gray-200 flex-col justify-start items-start overflow-hidden">
+      <div className="self-stretch h-40 relative overflow-hidden">
+        <img
+          src={service.header_image_url || '/images/default-service-header.jpg'}
+          alt={service.title}
+          className="w-full h-full"
+        />
+        <div className="absolute inset-0 p-2.5 flex flex-col justify-start items-end">
+          <div
+            className={`p-2 rounded-[30px] ${statusBadgeClasses[badgeType]} inline-flex justify-center items-center`}
+            data-property-1={service.type}
+          >
+            <div className="justify-start text-white text-xs font-medium leading-3">
+              {service.type === 'offered' ? 'Offering Service' : 'Requesting Service'}
+            </div>
           </div>
         </div>
       </div>

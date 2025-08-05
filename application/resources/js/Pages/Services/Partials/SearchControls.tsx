@@ -49,14 +49,13 @@ export default function SearchControls({
             autoFocus={false}
             showRingOnFocus={true}
             value={searchQuery}
-            placeholder={"Search services"}
-            className="h-12"
+            placeholder={"Search"}
           />
         </div>
 
         {shouldShowFilters && (
           <Button
-            className={`h-12 px-6 border border-gray-200 bg-background flex cursor-pointer flex-row items-center justify-center gap-2 rounded-lg border shadow-sm ${
+            className={`h-10 px-6 border border-gray-200 bg-background flex cursor-pointer flex-row items-center justify-center gap-2 rounded-lg border ${
               showFilters
                 ? 'border-accent-blue text-primary'
                 : 'hover:bg-background-lighter text-gray-persist'

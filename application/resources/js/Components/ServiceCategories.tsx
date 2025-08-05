@@ -25,41 +25,43 @@ export default function ServiceCategories({
 }: ServiceCategoriesProps) {
   return (
     <div className="inline-flex flex-col justify-center items-start gap-5">
-      {categories.map((category, categoryIndex: number) => (
-        <React.Fragment key={category.hash}>
-          <div className="w-full">
-            <div className="flex flex-col justify-start items-start gap-3.5">
-              <div className="self-stretch justify-start text-content text-base text-slate-900 font-semibold leading-none">
-                {category.name}
-              </div>
-              <div className="flex flex-col justify-start items-start gap-[5px]">
-                {(category.children as CategoryChild[])?.map((subCategory: CategoryChild) => (
-                  <div key={subCategory.hash} className="self-stretch py-[5px] inline-flex justify-start items-center gap-2.5">
-                    {filterable && (
-                      <Checkbox
-                        size="sm"
-                        checked={selectedCategories.includes(subCategory.hash)}
-                        onChange={() => onCategoryToggle(subCategory.hash)}
-                        className="bg-card"
-                      />
-                    )}
-                    <div className="flex justify-start items-center gap-3">
-                      <div className="inline-flex flex-col justify-center items-start">
-                        <div className="justify-start font-medium text-content-lighter leading-tight">
-                          {subCategory.name}
+      {categories.map((category, index) => {
+        const isLast = index === categories.length - 1;
+        return (
+          <React.Fragment key={category.hash}>
+            <div className="w-full">
+              <div className="flex flex-col justify-start items-start gap-3.5">
+                <div className="self-stretch justify-start text-content text-base text-slate-900 font-semibold leading-none">
+                  {category.name}
+                </div>
+                <div className="flex flex-col justify-start items-start gap-[5px]">
+                  {(category.children as CategoryChild[])?.map((subCategory: CategoryChild) => (
+                    <div key={subCategory.hash} className="self-stretch py-[5px] inline-flex justify-start items-center gap-2.5">
+                      {filterable && (
+                        <Checkbox
+                          checked={selectedCategories.includes(String(subCategory.hash))}
+                          onChange={() => onCategoryToggle(String(subCategory.hash))}
+                          className="bg-card"
+                        />
+                      )}
+                      <div className="flex justify-start items-center gap-3">
+                        <div className="inline-flex flex-col justify-center items-start">
+                          <div className="justify-start font-medium text-content-lighter leading-tight">
+                            {subCategory.name}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-          {categoryIndex < Number(categories.length - 1) && (
-            <Divider className="self-stretch h-px bg-gray-100 my-2" />
-          )}
-        </React.Fragment>
-      ))}
+            {!isLast && (
+              <Divider className="self-stretch h-px bg-gray-100 my-2" />
+            )}
+          </React.Fragment>
+        );
+      })}
     </div>
   );
 }

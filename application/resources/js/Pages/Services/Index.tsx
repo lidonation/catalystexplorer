@@ -111,7 +111,7 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({
           <div className="lg:hidden mb-4">
             <Button
               onClick={() => setShowMobileCategories(!showMobileCategories)}
-              className="px-6 h-12 w-full flex items-center justify-center gap-2 hover:bg-background-tertiary hover:text-content-secondary focus:bg-background-accent active:bg-background-tertiary bg-primary active:text-content-secondary text-content-light"
+              className="px-6 h-10 w-full flex items-center justify-center gap-2 hover:bg-background-tertiary hover:text-content-secondary focus:bg-background-accent active:bg-background-tertiary bg-primary active:text-content-secondary text-content-light"
             >
               {showMobileCategories ? t('services.hideCategories') : t('services.showCategories')}
             </Button>
