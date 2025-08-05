@@ -49,16 +49,23 @@ Route::localized(
             Route::get('/charts', [ProposalsController::class, 'charts'])
                 ->name('charts');
 
+            Route::post('/test-modal', function () {
+    return response()->json(['message' => 'OK', 'time' => now()]);
+})->name('test');    
+
             Route::get('/csvs', fn() => Inertia::render('ComingSoon', ['context' => 'CSVs']))
                 ->name('csvs');
 
             Route::get('/{slug}', function ($slug) {
-                return redirect()->route('proposals.group.details', ['slug' => $slug]);
+                return redirect()->route('proposals.proposal.details', ['slug' => $slug]);
             })->name('redirect');
 
-            Route::prefix('/{slug}')->as('group.')->group(function () {
+            Route::prefix('/{slug}')->as('proposal.')->group(function () {
                 Route::get('/details', [ProposalsController::class, 'proposal'])
                     ->name('details');
+
+                Route::get('/schedule', [ProposalsController::class, 'proposalSchedule'])
+                    ->name('schedule');
 
                 Route::get('/community-review', [ProposalsController::class, 'proposal'])
                     ->name('communityReview');

@@ -117,6 +117,7 @@ class Metrics extends Resource
                         MetricTypes::PARTITION()->value => 'Partition',
                         MetricTypes::PROGRESS()->value => 'Progress',
                         MetricTypes::TABLE()->value => 'Table',
+                        MetricTypes::DISTRIBUTION()->value => 'Distribution',
                     ]
                 )->filterable()
                 ->required(),

@@ -27,7 +27,7 @@ const Index = ({
             globalQuickPitchView={globalQuickPitchView}
             setGlobalQuickPitchView={setGlobalQuickPitchView}
         >
-            <div className="self-stretch p-4 sm:p-6 bg-background rounded-xl shadow-[0px_1px_4px_0px_rgba(16,24,40,0.10)] flex flex-col sm:flex-row justify-between items-start gap-5 sm:gap-2">
+            <div className="self-stretch p-4 sm:p-6 bg-background rounded-xl shadow-cx-box-shadow flex flex-col sm:flex-row justify-between items-start gap-5 sm:gap-2">
                 <div className="w-120 flex justify-start items-center gap-4">
                     <div className="flex-1 inline-flex flex-col justify-start items-start gap-1">
                         <div className="text-gray-persist text-sm">{t('proposals.outstanding')}</div>

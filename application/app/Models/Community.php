@@ -13,12 +13,14 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
-class Community extends Model
+class Community extends Model implements HasMedia
 {
-    use HasConnections, HasRelationships, HasTaxonomies, Searchable;
+    use HasConnections, HasRelationships, HasTaxonomies, InteractsWithMedia, Searchable;
 
     protected $appends = ['hash'];
 
@@ -195,7 +197,7 @@ class Community extends Model
             ->groupBy(['groups.id', 'community_has_proposal.community_id']);
     }
 
-    public function toSearchableArray()
+    public function toSearchableArray(): array
     {
         // $this->loadMissing([
         //     'groups',

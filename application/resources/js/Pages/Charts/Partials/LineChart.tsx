@@ -4,6 +4,8 @@ import ArrowTrendingDown from '@/Components/svgs/ArrowTrendingDown';
 import ArrowTrendingUp from '@/Components/svgs/ArrowTrendingUp';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
+import { userSettingEnums } from '@/enums/user-setting-enums';
+import { useUserSetting } from '@/Hooks/useUserSettings';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveLine } from '@nivo/line';
 import React, { useEffect, useRef, useState } from 'react';
@@ -22,6 +24,10 @@ const LineChart: React.FC<LineChartProps> = ({
 }) => {
     const { t } = useLaravelReactI18n();
     const { getFilter } = useFilterContext();
+    const { value: proposalTypes } = useUserSetting<string[]>(
+        userSettingEnums.PROPOSAL_TYPE,
+        [],
+    );
     const [isMobile, setIsMobile] = useState(false);
     const [screenWidth, setScreenWidth] = useState(
         typeof window !== 'undefined' ? window.innerWidth : 1200,
@@ -30,36 +36,21 @@ const LineChart: React.FC<LineChartProps> = ({
     const [normalizedData, setNormalizedData] = useState<any[]>([]);
 
     useEffect(() => {
-        if (!chartData || chartData.length === 0) {
-            setNormalizedData([]);
-            return;
-        }
+        if (!chartData || chartData.length === 0 || !viewBy) return;
 
-        const isSubmittedProposalsFormat =
-            Array.isArray(chartData) &&
-            chartData.length > 0 &&
-            typeof chartData[0] === 'object' &&
-            !chartData[0].hasOwnProperty('fund') &&
-            !chartData[0].hasOwnProperty('year');
+        const tempData: Record<string, any> = {};
 
-        if (isSubmittedProposalsFormat) {
-            const fundKeys = Object.keys(chartData[0] || {});
-            const normalized = fundKeys.map((fundKey, index) => ({
-                fund: fundKey,
-                year: fundKey,
-                totalProposals: chartData[0]?.[fundKey] || 0,
-            }));
-            setNormalizedData(normalized);
-        } else {
-            const normalized = chartData.map((item: any) => ({
-                ...item,
-                totalProposals:
-                    item.totalProposals ||
-                    (item.unfundedProposals || 0) + (item.fundedProposals || 0),
-            }));
-            setNormalizedData(normalized);
-        }
-    }, [chartData]);
+        chartData.forEach((series: any) => {
+            series.data.forEach((point: any) => {
+                const index = point.x;
+                if (!tempData[index]) tempData[index] = { [viewBy]: index };
+                tempData[index][series.id] = point.y;
+            });
+        });
+
+        const finalData = Object.values(tempData);
+        setNormalizedData(finalData);
+    }, [chartData, viewBy]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -73,33 +64,27 @@ const LineChart: React.FC<LineChartProps> = ({
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const defaultColors = ['#4fadce', '#dc2626', '#ee8434'];
+    const defaultColors = [
+        '#4fadce',
+        '#dc2626',
+        '#ee8434',
+        '#16B364',
+        '#f59e0b',
+    ];
 
-    useEffect(()=>{
-        console.log('LineChart mounted with data:', chartData);
-    })
-    const isSubmittedSelected =
-        getFilter(ParamsEnum.SUBMITTED_PROPOSALS)?.includes('submitted') ||
-        false;
-    const isApprovedSelected =
-        getFilter(ParamsEnum.APPROVED_PROPOSALS)?.includes('approved') || false;
-    const isCompletedSelected =
-        getFilter(ParamsEnum.COMPLETED_PROPOSALS)?.includes('complete') ||
-        false;
-    const isUnfundedSelected =
-        getFilter(ParamsEnum.UNFUNDED_PROPOSALS)?.includes('unfunded') || false;
-
-    const isInProgressSelected =
-        getFilter(ParamsEnum.IN_PROGRESS)?.includes('in_progress') ||
-        false;
+    const isSubmittedSelected = proposalTypes?.includes('submitted');
+    const isApprovedSelected = proposalTypes?.includes('approved')
+    const isCompletedSelected = proposalTypes?.includes('complete');
+    const isInProgressSelected = proposalTypes?.includes('in_progress');
+    const isUnfundedSelected = proposalTypes?.includes('unfunded');
 
     const TransformedData = [
         {
-            id: 'Total Proposals',
+            id: 'Submitted Proposals',
             color: defaultColors[0],
             data: normalizedData.map((item: any) => ({
                 x: viewBy === 'fund' ? item.fund : item.year,
-                y: item.totalProposals ?? 0,
+                y: item.submittedProposals ?? item['Submitted Proposals'] ?? 0,
             })),
             shouldShow: isSubmittedSelected,
         },
@@ -108,7 +93,7 @@ const LineChart: React.FC<LineChartProps> = ({
             color: defaultColors[1],
             data: normalizedData.map((item: any) => ({
                 x: viewBy === 'fund' ? item.fund : item.year,
-                y: item.fundedProposals ?? 0,
+                y: item.fundedProposals ?? item['Funded Proposals'] ?? 0,
             })),
             shouldShow: isApprovedSelected,
         },
@@ -117,16 +102,16 @@ const LineChart: React.FC<LineChartProps> = ({
             color: defaultColors[2],
             data: normalizedData.map((item: any) => ({
                 x: viewBy === 'fund' ? item.fund : item.year,
-                y: item.completedProposals ?? 0,
+                y: item.completedProposals ?? item['Completed Proposals'] ?? 0,
             })),
             shouldShow: isCompletedSelected,
         },
         {
             id: 'Unfunded Proposals',
-            color: defaultColors[0],
+            color: defaultColors[3],
             data: normalizedData.map((item: any) => ({
                 x: viewBy === 'fund' ? item.fund : item.year,
-                y: item.unfundedProposals ?? 0,
+                y: item.unfundedProposals ?? item['Unfunded Proposals'] ?? 0,
             })),
             shouldShow: isUnfundedSelected,
         },
@@ -135,11 +120,17 @@ const LineChart: React.FC<LineChartProps> = ({
             color: defaultColors[1],
             data: normalizedData.map((item: any) => ({
                 x: viewBy === 'fund' ? item?.fund : item.year,
-                y: item.inProgressProposals ?? 0,
+                y:
+                    item.inProgressProposals ??
+                    item['In Progress Proposals'] ??
+                    0,
             })),
             shouldShow: isInProgressSelected,
         },
-    ];
+    ].filter(
+        (dataset) =>
+            dataset.data.length > 0 && dataset.data.some((d) => d.y > 0),
+    );
 
     const lineData = TransformedData.filter((dataset) => dataset?.shouldShow);
 
@@ -152,14 +143,12 @@ const LineChart: React.FC<LineChartProps> = ({
         return {
             height: '400px',
             minHeight: isSmall ? '400px' : '500px',
-
             margin: {
                 top: 50,
                 right: isSmall ? 20 : isMedium ? 30 : 50,
                 bottom: isSmall ? 160 : isMedium ? 140 : 100,
                 left: isSmall ? 40 : isMedium ? 50 : 60,
             },
-
             legendOffset: isSmall ? 45 : isMedium ? 40 : 36,
         };
     };
@@ -181,19 +170,45 @@ const LineChart: React.FC<LineChartProps> = ({
     }, [showTooltip]);
 
     const hasPlottableData = lineData?.some(
-        (d) => Array.isArray(d.data) && d.data.length > 0,
+        (d) =>
+            Array.isArray(d.data) &&
+            d.data.length > 0 &&
+            d.data.some((point) => point.y > 0),
     );
+
+    // Debug logs
+    useEffect(() => {
+        console.log('Line data to render:', lineData);
+        console.log('Has plottable data:', hasPlottableData);
+        console.log('Filter states:', {
+            isSubmittedSelected,
+            isApprovedSelected,
+            isCompletedSelected,
+            isUnfundedSelected,
+            isInProgressSelected,
+        });
+    }, [lineData, hasPlottableData]);
+
+    // Show no data message if there's nothing to render
+    if (!hasPlottableData || lineData.length === 0) {
+        return (
+            <div className="flex h-64 items-center justify-center">
+                <Paragraph size="md" className="text-content-light">
+                    {t('charts.noDataAvailable') || 'No data available'}
+                </Paragraph>
+            </div>
+        );
+    }
 
     return (
         <div ref={badgeRef} className="relative">
             <div
                 className="h-[400px] min-w-[600px] sm:min-w-full"
                 style={{ height: config.height, minHeight: config.minHeight }}
-                ref={badgeRef}
             >
                 <ResponsiveLine
                     data={lineData}
-                    margin={{ top: 50, right: 50, bottom: 50, left: 70 }}
+                    margin={config.margin}
                     xScale={{ type: 'point' }}
                     yScale={{
                         type: 'linear',
@@ -208,7 +223,7 @@ const LineChart: React.FC<LineChartProps> = ({
                     axisBottom={{
                         tickSize: 5,
                         tickPadding: 5,
-                        tickRotation: 0,
+                        tickRotation: isMobile ? -45 : 0,
                         legend:
                             viewBy === 'fund'
                                 ? t('charts.fund')
@@ -227,17 +242,14 @@ const LineChart: React.FC<LineChartProps> = ({
                     }}
                     colors={{ datum: 'color' }}
                     lineWidth={3}
-                    pointSize={10}
+                    pointSize={8}
                     pointColor={{ theme: 'background' }}
                     pointBorderWidth={2}
-                    pointBorderColor={(point: any) =>
-                        point.serieColor || point.color || defaultColors[0]
-                    }
+                    pointBorderColor={{ from: 'serieColor' }}
                     pointLabelYOffset={-12}
                     enablePoints={true}
-                    useMesh={hasPlottableData}
+                    useMesh={true}
                     enableArea={false}
-                    fill={[{ match: '*', id: 'gradient' }]}
                     theme={{
                         grid: {
                             line: {
@@ -320,73 +332,63 @@ const LineChart: React.FC<LineChartProps> = ({
                         const selectedData = dataWithPrevious;
 
                         return (
-                            <div
-                                className="bg-tooltip translate-x relative transform rounded-lg p-4 text-white shadow-lg"
-                                style={{
-                                    top: `${tooltipPosition.top}px`,
-                                    left: `${tooltipPosition.left}px`,
-                                }}
-                            >
-                                <div className="max-w-sm">
-                                    <Title
-                                        level="3"
-                                        className="text-lg font-semibold"
-                                    >
-                                        {point.data.xFormatted}
-                                    </Title>
+                            <div className="bg-tooltip max-w-sm rounded-lg p-4 text-white shadow-lg">
+                                <Title
+                                    level="3"
+                                    className="text-lg font-semibold"
+                                >
+                                    {point.data.xFormatted}
+                                </Title>
 
-                                    {selectedData.map((item: any) => (
-                                        <div key={item.id} className="mt-2">
-                                            <Paragraph className="flex items-center text-sm">
-                                                <span
-                                                    className="mr-1 shrink truncate"
-                                                    style={{
-                                                        color: item.color,
-                                                    }}
-                                                >
-                                                    {item.id}
-                                                </span>
-                                                :
-                                                <span className="ml-1 font-bold">
-                                                    {shortNumber(
-                                                        item?.current?.y ?? 0,
-                                                        2,
-                                                    )}
-                                                </span>
-                                            </Paragraph>
+                                {selectedData.map((item: any) => (
+                                    <div key={item.id} className="mt-2">
+                                        <Paragraph className="flex items-center text-sm">
+                                            <span
+                                                className="mr-1 shrink truncate"
+                                                style={{
+                                                    color: item.color,
+                                                }}
+                                            >
+                                                {item.id}
+                                            </span>
+                                            :
+                                            <span className="ml-1 font-bold">
+                                                {shortNumber(
+                                                    item?.current?.y ?? 0,
+                                                    2,
+                                                )}
+                                            </span>
+                                        </Paragraph>
 
-                                            <div className="mt-1 flex items-center">
-                                                <span
-                                                    className={
-                                                        item.trend.isPositive
-                                                            ? 'text-success'
-                                                            : 'text-danger-strong'
-                                                    }
-                                                    style={{
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                    }}
-                                                >
-                                                    {item.trend.isPositive ? (
-                                                        <ArrowTrendingUp />
-                                                    ) : (
-                                                        <ArrowTrendingDown />
-                                                    )}
-                                                    <span className="ml-1 font-medium">
-                                                        {item.trend.value}%
-                                                    </span>
+                                        <div className="mt-1 flex items-center">
+                                            <span
+                                                className={
+                                                    item.trend.isPositive
+                                                        ? 'text-success'
+                                                        : 'text-danger-strong'
+                                                }
+                                                style={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                }}
+                                            >
+                                                {item.trend.isPositive ? (
+                                                    <ArrowTrendingUp />
+                                                ) : (
+                                                    <ArrowTrendingDown />
+                                                )}
+                                                <span className="ml-1 font-medium">
+                                                    {item.trend.value}%
                                                 </span>
-                                                <span className="ml-1">
-                                                    {viewBy === 'fund'
-                                                        ? t('metric.vs')
-                                                        : t('charts.vsYear')}
-                                                </span>
-                                            </div>
+                                            </span>
+                                            <span className="ml-1">
+                                                {viewBy === 'fund'
+                                                    ? t('metric.vs')
+                                                    : t('charts.vsYear')}
+                                            </span>
                                         </div>
-                                    ))}
-                                </div>
-
-                                <div className="border-t-dark absolute bottom-0 left-1/2 h-0 w-0 -translate-x-1/2 translate-y-full border-t-[10px] border-r-[10px] border-l-[10px] border-r-transparent border-l-transparent"></div>
+                                    </div>
+                                ))}
                             </div>
                         );
                     }}

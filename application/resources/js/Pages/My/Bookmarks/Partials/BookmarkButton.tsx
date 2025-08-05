@@ -13,6 +13,8 @@ interface BookmarkButtonProps {
     itemId: string;
     width?: number;
     height?: number;
+    children?: React.ReactNode;
+    dataTestId?: string;
 }
 
 export default function BookmarkButton({
@@ -20,6 +22,8 @@ export default function BookmarkButton({
     itemId,
     width = 24,
     height = 24,
+    children,
+    dataTestId = 'bookmark-button'
 }: BookmarkButtonProps) {
     const {
         isBookmarked,
@@ -67,16 +71,21 @@ export default function BookmarkButton({
         <TransitionMenu
             trigger={
                 <button
-                    className="cursor-pointer rounded-full p-1.5 relative"
+                    className="cursor-pointer rounded-full px-0 py-0.5 relative inline-flex gap-1"
                     aria-label={`bookmark-${modelType}`}
-                    onClick={toggleBookmark}
+                    onPointerDown={(e) => {
+                    e.stopPropagation(); // optional
+                    toggleBookmark();
+                    }}
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
+                    data-testid = {dataTestId}
                     style={{
                         outline: 'none', // Remove focus outline
                         WebkitTapHighlightColor: 'transparent' // Remove tap highlight on mobile
                     }}
                 >
+                    {children}
                     {isHovered && (
                         <div className="absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 transform">
                             <ToolTipHover props={'Bookmark Item'} />

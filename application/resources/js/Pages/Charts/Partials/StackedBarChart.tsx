@@ -1,56 +1,46 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
+import { userSettingEnums } from '@/enums/user-setting-enums';
+import { useUserSetting } from '@/Hooks/useUserSettings';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveBar } from '@nivo/bar';
 import React, { useEffect, useState } from 'react';
 import {useLaravelReactI18n} from "laravel-react-i18n";
 
-interface BarChartProps {
+interface StackedBarChartProps {
     chartData: any;
     viewBy?: 'fund' | 'year';
 }
 
-const StackedBarChart: React.FC<BarChartProps> = ({ chartData, viewBy }) => {
+const StackedBarChart: React.FC<StackedBarChartProps> = ({ chartData, viewBy }) => {
     const { t } = useLaravelReactI18n();
-    const { getFilter } = useFilterContext();
+    const { value: proposalTypes } = useUserSetting<
+            string[]
+        >(userSettingEnums.PROPOSAL_TYPE, []);
     const [isMobile, setIsMobile] = useState(false);
     const [screenWidth, setScreenWidth] = useState(
         typeof window !== 'undefined' ? window.innerWidth : 1200,
     );
+
     const [normalizedData, setNormalizedData] = useState<any[]>([]);
 
     useEffect(() => {
-        if (!chartData || chartData.length === 0) {
-            setNormalizedData([]);
-            return;
-        }
+        if (!chartData || chartData.length === 0) return;
 
-        const isSubmittedProposalsFormat =
-            Array.isArray(chartData) &&
-            chartData.length > 0 &&
-            typeof chartData[0] === 'object' &&
-            !chartData[0].hasOwnProperty('fund') &&
-            !chartData[0].hasOwnProperty('year');
+        const tempData: Record<string, any> = {};
 
-        if (isSubmittedProposalsFormat) {
-            const fundKeys = Object.keys(chartData[0] || {});
-            const normalized = fundKeys.map((fundKey, index) => ({
-                fund: fundKey,
-                year: fundKey,
-                totalProposals: chartData[0]?.[fundKey] || 0,
-            }));
-            setNormalizedData(normalized);
-        } else {
-            const normalized = chartData.map((item: any) => ({
-                ...item,
-                totalProposals:
-                    item.totalProposals ||
-                    (item.unfundedProposals || 0) + (item.fundedProposals || 0),
-            }));
-            setNormalizedData(normalized);
-        }
-    }, [chartData]);
+        chartData.forEach((series: any) => {
+            series.data.forEach((point: any) => {
+                const index = point.x;
+                if (!tempData[index]) tempData[index] = { [viewBy as string]: index };
+                tempData[index][series.id] = point.y;
+            });
+        });
+
+        const finalData = Object.values(tempData);
+        setNormalizedData(finalData);
+    }, [chartData, viewBy]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -66,35 +56,34 @@ const StackedBarChart: React.FC<BarChartProps> = ({ chartData, viewBy }) => {
 
     const allKeys = [
         {
-            key: 'totalProposals',
+            key: 'Submitted Proposals',
             label: t('proposals.totalProposals'),
             color: '#4fadce',
-            filterParam: ParamsEnum.SUBMITTED_PROPOSALS,
+            proposalType: 'submitted', 
         },
         {
-            key: 'unfundedProposals',
-            label: t('charts.unfundedProposals'),
-            color: '#4fadce',
-            filterParam: ParamsEnum.UNFUNDED_PROPOSALS,
-        },
-        {
-            key: 'fundedProposals',
+            key: 'Funded Proposals',
             label: t('funds.fundedProposals'),
             color: '#ee8434',
-            filterParam: ParamsEnum.APPROVED_PROPOSALS,
-        },
-
-        {
-            key: 'inProgressProposals',
-            label: t('funds.inProgressProposals'),
-            color: '#ee8434',
-            filterParam: ParamsEnum.IN_PROGRESS,
+            proposalType: 'approved',
         },
         {
-            key: 'completedProposals',
+            key: 'Completed Proposals',
             label: t('funds.completedProposals'),
             color: '#16B364',
-            filterParam: ParamsEnum.COMPLETED_PROPOSALS,
+            proposalType: 'complete',
+        },
+        {
+            key: 'In Progress Proposals',
+            label: t('funds.inProgressProposals'),
+            color: '#ee8434',
+            proposalType: 'in_progress', 
+        },
+        {
+            key: 'Unfunded Proposals',
+            label: t('charts.unfundedProposals'),
+            color: '#4fadce',
+            proposalType: 'unfunded', // Replace filterParam with proposalType
         },
     ];
 
@@ -102,15 +91,14 @@ const StackedBarChart: React.FC<BarChartProps> = ({ chartData, viewBy }) => {
         if (!chartData || chartData.length === 0) return [];
 
         return allKeys.filter((keyItem) => {
-            const filterValue = getFilter(keyItem.filterParam);
-            const isFilterActive = filterValue && filterValue.length > 0;
-
-            return isFilterActive;
+            // Check if the proposal type is selected in user settings
+            const isActive =
+                proposalTypes?.includes(keyItem.proposalType) || false;
+            return isActive;
         });
     };
 
     const activeKeys = getFilteredKeys();
-
     const colorMap = allKeys.reduce(
         (map, item) => {
             map[item.key] = item.color;

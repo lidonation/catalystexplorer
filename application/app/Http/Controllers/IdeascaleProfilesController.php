@@ -123,11 +123,7 @@ class IdeascaleProfilesController extends Controller
             ),
 
             'connections' => Inertia::optional(
-                fn () => Cache::remember(
-                    "profile:{$profileId}:connections",
-                    now()->addMinutes(10),
-                    fn () => $ideascaleProfile->connected_items
-                )
+                fn () => $ideascaleProfile->connected_items
             ),
 
             'communities' => Inertia::optional(

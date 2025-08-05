@@ -2,16 +2,15 @@ import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveScatterPlot } from '@nivo/scatterplot';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useEffect, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import { useFilterContext } from '@/Context/FiltersContext';
-import { ParamsEnum } from '@/enums/proposal-search-params';
 
 interface CustomScatterPlotDatum {
-    x: number;
+    x: number | string;
     y: number;
     fund: string | number;
     year?: string | number;
+    tags?: any[];
 }
 
 interface ScatterChartProps {
@@ -27,54 +26,39 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
     title,
     xAxisLabel,
     yAxisLabel,
-    viewBy
+    viewBy,
 }) => {
     const { t } = useLaravelReactI18n();
-    const { getFilter } = useFilterContext();
     const [normalizedData, setNormalizedData] = useState<any[]>([]);
-
+  
     const [screenWidth, setScreenWidth] = useState(
         typeof window !== 'undefined' ? window.innerWidth : 1200,
     );
 
-    const defaultColors = [ '#4fadce','#16B364', '#ee8434' ];
+    const defaultColors = ['#4fadce', '#16B364', '#ee8434'];
 
     useEffect(() => {
-        if (!chartData || chartData.length === 0) {
-            setNormalizedData([]);
-            return;
-        }
+        if (!Array.isArray(chartData) || chartData.length === 0) return;
 
-        const isSubmittedProposalsFormat = Array.isArray(chartData) &&
-            chartData.length > 0 &&
-            typeof chartData[0] === 'object' &&
-            !chartData[0].hasOwnProperty('fund') &&
-            !chartData[0].hasOwnProperty('year');
+        const transformed = chartData?.map((group) => ({
+            id: group.id,
+            data: group.data.flatMap((item: any) =>
+                item?.tags?.map((tag: any) => ({
+                    x: tag.tagCount ?? 0,
+                    y: tag.tagProposalsCount ?? 0,
+                    tag: tag.title,
+                    countBy: item.count_by,
+                })),
+            ),
+        }));
 
-        if (isSubmittedProposalsFormat) {
-            const fundKeys = Object.keys(chartData[0] || {});
-            const normalized = fundKeys.map((fundKey, index) => ({
-                fund: fundKey,
-                year: fundKey,
-                totalProposals: chartData[0]?.[fundKey] || 0
-            }));
-            setNormalizedData(normalized);
-        } else {
-            const normalized = chartData.map((item: any) => ({
-                ...item,
-                totalProposals: item.totalProposals || (item.unfundedProposals || 0) + (item.fundedProposals || 0),
-            }));
-            setNormalizedData(normalized);
-        }
+        setNormalizedData(transformed);
+
     }, [chartData]);
-
-    const optionLabels = normalizedData.map((item: any) => viewBy === 'fund' ? item.fund : item.year);
-    const labelToIndex = (label: any) => optionLabels.indexOf(label);
 
     useEffect(() => {
         const handleResize = () => {
-            const width = window.innerWidth;
-            setScreenWidth(width);
+            setScreenWidth(window.innerWidth);
         };
 
         handleResize();
@@ -82,80 +66,15 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const allDataSeries = [
-        {
-            id: 'Total Proposals',
-            key: 'totalProposals',
-            param: ParamsEnum.SUBMITTED_PROPOSALS,
-            data: normalizedData.map((item: any) => ({
-                x: viewBy === 'fund' ? labelToIndex(item.fund) : labelToIndex(item.year),
-                y: item.totalProposals ?? 0,
-                fund: item.fund,
-                year: item.year,
-            })) as CustomScatterPlotDatum[],
-        },
-        {
-            id: 'Funded Proposals',
-            key: 'fundedProposals',
-            param: ParamsEnum.APPROVED_PROPOSALS,
-            data: normalizedData.map((item: any) => ({
-                x: viewBy === 'fund' ? labelToIndex(item.fund) : labelToIndex(item.year),
-                y: item.fundedProposals ?? 0,
-                fund: item.fund,
-                year: item.year,
-            })) as CustomScatterPlotDatum[],
-        },
-        {
-            id: 'Completed Proposals',
-            key: 'completedProposals',
-            param: ParamsEnum.COMPLETED_PROPOSALS,
-            data: normalizedData.map((item: any) => ({
-                x: viewBy === 'fund' ? labelToIndex(item.fund) : labelToIndex(item.year),
-                y: item.completedProposals ?? 0,
-                fund: item.fund,
-                year: item.year,
-            })) as CustomScatterPlotDatum[],
-        },
-            {
-            id: 'Unfunded Proposals',
-            key: 'unfundedProposals',
-            param: ParamsEnum.UNFUNDED_PROPOSALS,
-            data: normalizedData.map((item: any) => ({
-                x: viewBy === 'fund' ? labelToIndex(item.fund) : labelToIndex(item.year),
-                y: item.unfundedProposals ?? 0,
-                fund: item.fund,
-                year: item.year,
-            })) as CustomScatterPlotDatum[],
-        },
-        {
-            id: 'In Progress Proposals',
-            key: 'inProgressProposals',
-            param: ParamsEnum.IN_PROGRESS,
-            data: normalizedData.map((item: any) => ({
-                x: viewBy === 'fund' ? labelToIndex(item.fund) : labelToIndex(item.year),
-                y: item.inProgressProposals ?? 0,
-                fund: item.fund,
-                year: item.year,
-            })) as CustomScatterPlotDatum[],
-        },
-    ];
-
-    const getActiveDataSeries = () => {
-        if (!normalizedData || normalizedData.length === 0) return [];
-
-        return allDataSeries.filter(series => {
-            const filterValue = getFilter(series.param);
-            return filterValue && filterValue.length > 0;
-        });
-    };
-
-    const activeDataSeries = getActiveDataSeries();
-    const transformedData = activeDataSeries.map(series => ({
-        id: series.id,
-        data: series.data
+    const transformedData = normalizedData?.map((group) => ({
+        id: group.id,
+        data: group?.data?.map((item: any) => ({
+            x: item.x, 
+            y: item.y, 
+            countBy: item.count_by,
+            tag: item.tag,
+        })),
     }));
-
-    const legend = yAxisLabel || 'Proposals';
 
     const getResponsiveConfig = () => {
         const isSmall = screenWidth < 480;
@@ -164,18 +83,15 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
         return {
             height: '400px',
             minHeight: isSmall ? '400px' : '500px',
-
             margin: {
                 top: 50,
                 right: isSmall ? 20 : isMedium ? 30 : 50,
                 bottom: isSmall ? 160 : isMedium ? 140 : 120,
                 left: isSmall ? 50 : isMedium ? 50 : 80,
             },
-
             tickRotation: isSmall ? 45 : isMedium ? 30 : 0,
             legendOffset: isSmall ? 50 : isMedium ? 45 : 40,
             leftLegendOffset: isSmall ? -40 : isMedium ? -45 : -50,
-
             legendConfig: {
                 translateY: isSmall ? 140 : isMedium ? 120 : 80,
                 translateX: isSmall ? 10 : isMedium ? 0 : 0,
@@ -196,7 +112,6 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                     height: isSmall ? 12 : isMedium ? 15 : 15,
                 },
             },
-
             fontSize: {
                 axis: isSmall ? 10 : isMedium ? 11 : 12,
                 legend: isSmall ? 12 : isMedium ? 14 : 16,
@@ -218,36 +133,35 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                     margin={config.margin}
                     xScale={{
                         type: 'linear',
-                        min: 0,
-                        max: Math.max(0, optionLabels.length - 1),
+                        min: 'auto',
+                        max: 'auto',
                     }}
-                    xFormat={(x) => optionLabels[Number(x)] ?? x}
                     yScale={{ type: 'linear', min: 'auto', max: 'auto' }}
                     colors={defaultColors}
                     blendMode="normal"
                     nodeSize={10}
                     axisBottom={{
-                        tickValues: optionLabels.map((_: any, i: any) => i),
-                        format: (v) => optionLabels[v] || v,
-                        legend: xAxisLabel || viewBy === 'fund' ? t('charts.fund') : t('charts.year'),
+                        tickSize: 5,
+                        tickPadding: 5,
+                        tickRotation: config.tickRotation,
+                        legend: xAxisLabel || t('charts.tagCount'),
                         legendPosition: 'middle',
                         legendOffset: 46,
+                        format: shortNumber,
                     }}
                     axisLeft={{
                         tickSize: 5,
                         tickPadding: 5,
                         tickRotation: 0,
-                        legend: t('proposals.totalProposals'),
+                        legend: yAxisLabel || t('proposals.totalProposals'),
                         legendPosition: 'middle',
                         legendOffset: config.leftLegendOffset,
-                        format: (value) => {
-                            return shortNumber(value, 2);
-                        },
+                        format: (value) => shortNumber(value, 2),
                     }}
                     tooltip={({ node }) => {
-                        const nodeData = node?.data as CustomScatterPlotDatum;
+                        const nodeData = node.data as CustomScatterPlotDatum;
                         return (
-                            <div className="bg-tooltip rounded-lg p-4 text-white shadow-lg w-full">
+                            <div className="bg-tooltip w-full rounded-lg p-4 text-white shadow-lg">
                                 <Title
                                     level="3"
                                     className="text-lg font-semibold"
@@ -257,7 +171,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
                                         : `${nodeData?.year}`}
                                 </Title>
                                 <Paragraph className="text-sm">
-                                    <strong>{node?.serieId}</strong>:{' '}
+                                    <strong>{node.serieId}</strong>:{' '}
                                     {shortNumber(nodeData?.y, 2)}
                                 </Paragraph>
                             </div>
@@ -344,3 +258,4 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
 };
 
 export default ScatterPlot;
+

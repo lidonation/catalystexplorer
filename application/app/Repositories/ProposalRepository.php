@@ -80,6 +80,7 @@ class ProposalRepository extends Repository
                     'campaign.total_distributed',
                     'created_at',
                     'created_at_timestamp',
+                    'tags',
                 ];
                 $args['facets'] = [
                     'tags',
@@ -105,6 +106,7 @@ class ProposalRepository extends Repository
                     'ideafest_proposal',
                     'created_at',
                     'created_at_timestamp',
+                    'funded_at',
                 ];
 
                 //                if ((bool) $this->sortBy && (bool) $this->sortOrder) {

@@ -8,16 +8,21 @@ import Step3 from './Step3';
 
 interface SetChartMetricsProps {
     onExploreCharts: () => void;
+    onChartDataReceived?: (chartData: any) => void;
+    onLoadingChange?: (loading: boolean) => void;
 }
 
 export default function SetChartMetrics({
     onExploreCharts,
+    onChartDataReceived,
+    onLoadingChange,
 }: SetChartMetricsProps) {
     const { t } = useLaravelReactI18n();
     const [step1Complete, setStep1Complete] = useState(false);
     const [step2Complete, setStep2Complete] = useState(false);
     const [step3Complete, setStep3Complete] = useState(false);
     const [allMetricsSet, setAllMetricsSet] = useState(false);
+    const [rules, setRules] = useState<string[]>([]);
 
     const handleStep1Completion = (isComplete: boolean): void => {
         setStep1Complete(isComplete);
@@ -37,26 +42,33 @@ export default function SetChartMetrics({
         }
     };
 
+    const handleChartDataReceived = (chartData: any): void => {
+        onChartDataReceived?.(chartData);
+    };
 
+    const handleLoadingChange = (loading: boolean): void => {
+        onLoadingChange?.(loading);
+    };
+
+   
 
     return (
         <div>
-           <div className='text-center mb-4'>
-             <Title level="3">{t('charts.setMetrics')}</Title>
-           </div>
+            <div className="mb-4 text-center">
+                <Title level="3">{t('charts.setMetrics')}</Title>
+            </div>
             <Card className="p-6">
                 <div className="mb-6">
                     <Step1
                         onCompletionChange={handleStep1Completion}
+                        onRulesChange={setRules}
                     />
                 </div>
 
                 <div
                     className={`${!step1Complete ? 'pointer-events-none opacity-50' : ''} mb-6`}
                 >
-                    <Step2
-                        onCompletionChange={handleStep2Completion}
-                    />
+                    <Step2 onCompletionChange={handleStep2Completion} />
                 </div>
 
                 <div
@@ -66,6 +78,9 @@ export default function SetChartMetrics({
                         onCompletionChange={handleStep3Completion}
                         onNext={handleStep3Next}
                         onExploreCharts={onExploreCharts}
+                        rules={rules}
+                        onChartDataReceived={handleChartDataReceived}
+                        onLoadingChange={handleLoadingChange}
                     />
                 </div>
             </Card>

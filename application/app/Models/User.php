@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravolt\Avatar\Facade as Avatar;
 use Spatie\Image\Enums\CropPosition;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -69,15 +68,16 @@ class User extends Authenticatable implements HasMedia
     public function gravatar(): Attribute
     {
         $string = $this->name ?? $this->email;
+
         return Attribute::make(
-            get: fn() => "https://api.multiavatar.com/{$string}.png"
+            get: fn () => "https://api.multiavatar.com/{$string}.png"
         );
     }
 
     public function heroImgUrl(): Attribute
     {
         return Attribute::make(
-            get: fn() => count($this->getMedia('profile')) ? $this->getMedia('profile')[0]->getFullUrl() : $this->gravatar
+            get: fn () => count($this->getMedia('profile')) ? $this->getMedia('profile')[0]->getFullUrl() : $this->gravatar
         );
     }
 

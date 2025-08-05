@@ -60,7 +60,7 @@ class Category extends Model
         static::creating(function ($category) {
             if ($category->parent_id) {
                 $parent = static::find($category->parent_id);
-                $category->level = $parent->level + 1;
+                $category->level = $parent?->level + 1;
                 $category->type = 'subcategory';
             } else {
                 $category->level = 0;
