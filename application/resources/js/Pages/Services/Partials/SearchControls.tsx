@@ -40,7 +40,7 @@ export default function SearchControls({
   }, [showFilters, onFiltersToggle]);
 
   return (
-    <div className="w-full">
+    <div className="w-full" data-testid="services-search-controls">
       <div className="flex gap-4 items-center">
         <div className="flex-1">
           <ServiceSearchBar
@@ -50,6 +50,7 @@ export default function SearchControls({
             showRingOnFocus={true}
             value={searchQuery}
             placeholder={"Search"}
+            data-testid="services-search-input"
           />
         </div>
 
@@ -62,6 +63,7 @@ export default function SearchControls({
             }`}
             onClick={toggleFilters}
             ariaLabel={'filters'}
+            dataTestId="filters-toggle-button"
           >
             <FilterLinesIcon className="w-5 h-4" />
             <span className="whitespace-nowrap">{t('filters')}</span>

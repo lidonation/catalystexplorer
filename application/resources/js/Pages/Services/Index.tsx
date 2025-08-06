@@ -87,10 +87,10 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({
   const hasServices = services?.data?.length > 0;
 
   return (
-    <div className="w-full max-w-full py-4 px-8 xl:px-20">
+    <div className="w-full max-w-full py-4 px-8 xl:px-20" data-testid="services-page">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <Title className="text-2xl font-semibold text-content">{t('services.catalystServices')}</Title>
+          <Title className="text-2xl font-semibold text-content" data-testid="services-page-title" >{t('services.catalystServices')}</Title>
           <Paragraph className="text-base text-slate-500"> {t('services.catalystServicesDesc')}
           </Paragraph>
         </div>
@@ -98,7 +98,7 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({
 
       <div className="grid grid-cols-1 lg:grid-cols-4 md-grid-cols-2 gap-8 items-start">
         <div className="hidden lg:block lg:col-span-1">
-          <section className="sticky top-8">
+          <section className="sticky top-8" data-testid="categories-sidebar">
             <ServiceCategories
               categories={categories}
               selectedCategories={selectedCategories}
@@ -107,17 +107,18 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({
           </section>
         </div>
 
-        <div className="lg:col-span-3">
+        <div className="lg:col-span-3" data-testid="services-main-content">
           <div className="lg:hidden mb-4">
             <Button
               onClick={() => setShowMobileCategories(!showMobileCategories)}
               className="px-6 h-10 w-full flex items-center justify-center gap-2 hover:bg-background-tertiary hover:text-content-secondary focus:bg-background-accent active:bg-background-tertiary bg-primary active:text-content-secondary text-content-light"
+              dataTestId="mobile-categories-toggle"
             >
               {showMobileCategories ? t('services.hideCategories') : t('services.showCategories')}
             </Button>
           </div>
           {showMobileCategories && (
-            <div className="lg:hidden mb-6 p-4 rounded-lg border border-gray-200 shadow-sm">
+            <div className="lg:hidden mb-6 p-4 rounded-lg border border-gray-200 shadow-sm" data-testid="mobile-categories">
               <ServiceCategories
                 categories={categories}
                 selectedCategories={selectedCategories}
@@ -126,7 +127,7 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({
             </div>
           )}
 
-          <Section className="mb-6  px-6 ">
+          <Section className="mb-6" data-testid="services-search-controls">
             <SearchControls
               search={search}
               onSearchChange={setSearch}
@@ -136,7 +137,7 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({
           </Section>
 
           {showTypeFilter && (
-            <Section className="mb-6">
+            <Section className="mb-6" data-testid="type-filter-section">
               <ServiceTypeFilter
                 selectedType={selectedType}
                 onTypeChange={setSelectedType}
@@ -146,7 +147,7 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({
 
           {hasServices ? (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" data-testid="services-grid">
                 {services.data.map(service => (
                   <ServiceCard key={service.hash} service={service} />
                 ))}

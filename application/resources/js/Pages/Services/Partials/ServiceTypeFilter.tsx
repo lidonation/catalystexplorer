@@ -19,7 +19,7 @@ export default function ServiceTypeFilter({ selectedType, onTypeChange }: Servic
   };
 
   return (
-    <div className="self-stretch p-4 bg-background rounded-xl border border-gray-100  flex flex-col justify-start items-start gap-6">
+    <div className="self-stretch p-4 bg-background rounded-xl border border-gray-100  flex flex-col justify-start items-start gap-6" data-testid="service-type-filter">
       <div className="self-stretch flex flex-col justify-start items-start gap-4">
         <div className="self-stretch flex justify-start items-center gap-3">
           <div className="flex-1 flex flex-col justify-start items-start gap-1.5">
