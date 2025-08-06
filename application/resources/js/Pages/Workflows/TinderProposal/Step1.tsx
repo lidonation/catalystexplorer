@@ -204,6 +204,7 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
                                         {proposalTypeOptions.map((option) => (
                                             <div key={option.id} className="flex items-center space-x-2">
                                                 <Checkbox
+                                                    label={option.label}
                                                     id={option.id}
                                                     checked={data[TinderWorkflowParams.PROPOSAL_TYPES].includes(option.id)}
                                                     onChange={() => handleCheckboxChange(option.id, data[TinderWorkflowParams.PROPOSAL_TYPES], TinderWorkflowParams.PROPOSAL_TYPES)}
@@ -230,6 +231,7 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
                                         {proposalSizeOptions.map((option) => (
                                             <div key={option.id} className="flex items-center space-x-2">
                                                 <Checkbox
+                                                    label={option.label}
                                                     id={option.id}
                                                     checked={data[TinderWorkflowParams.PROPOSAL_SIZES].includes(option.id)}
                                                     onChange={() => handleCheckboxChange(option.id, data[TinderWorkflowParams.PROPOSAL_SIZES], TinderWorkflowParams.PROPOSAL_SIZES)}
@@ -256,6 +258,7 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
                                         {impactTypeOptions.map((option) => (
                                             <div key={option.id} className="flex items-center space-x-2">
                                                 <Checkbox
+                                                    label={option.label}
                                                     id={option.id}
                                                     checked={data[TinderWorkflowParams.IMPACT_TYPES].includes(option.id)}
                                                     onChange={() => handleCheckboxChange(option.id, data[TinderWorkflowParams.IMPACT_TYPES], TinderWorkflowParams.IMPACT_TYPES)}

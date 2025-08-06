@@ -77,6 +77,7 @@ const ChartFilter = forwardRef<
                                         {variant.label}
                                     </span>
                                     <Checkbox
+                                        label={`Select ${variant.label}`}
                                         id={variant.value}
                                         checked={
                                             selectedValue === variant.value

@@ -36,11 +36,14 @@ const ProfileList: React.FC<ProfileListProps> = ({
                     >
                         <ProfileCard profile={profile}/>
                         <Checkbox
-                            name={profile.hash as string | undefined}
-                            id={profile.hash as string | undefined}
-                            onChange={() => onProfileClick(profile.hash)}
-                            className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary mr-2 h-4 w-4 shadow-xs focus:border"
-                        />
+  name={profile.hash ?? ''}
+  id={profile.hash ?? ''}
+  label=""
+  onChange={() => onProfileClick(profile.hash)}
+  className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary mr-2 h-4 w-4 shadow-xs focus:border"
+/>
+
+                        
                     </label>
                 </div>
             ))}

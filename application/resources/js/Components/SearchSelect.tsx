@@ -177,8 +177,9 @@ export function SearchSelect({
                                         data-testid={`search-select-option-${option.value}`}
                                     >
                                         {option.label}
-                                        <Checkbox
+                                         <Checkbox
                                             id={`checkbox-${option.value}-${index}`}
+                                            label={option.label} 
                                             checked={
                                                 selected.length
                                                     ? selected?.includes(

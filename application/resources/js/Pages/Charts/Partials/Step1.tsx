@@ -15,9 +15,10 @@ export default function Step1({ onCompletionChange, onRulesChange }: Step1Props)
     const { t } = useLaravelReactI18n();
     const [rules, setRules] = useState<string[]>([]);
 
-    const { value: proposalTypes, setValue: setProposalTypes } = useUserSetting<
-        string[]
-    >(userSettingEnums.PROPOSAL_TYPE, []);
+    const { value: proposalTypes, setValue: setProposalTypes } = useUserSetting<string[]>(
+        userSettingEnums.PROPOSAL_TYPE,
+        []
+    );
 
     const isComplete = useMemo(() => {
         return (proposalTypes?.length ?? 0) > 0;
@@ -70,9 +71,7 @@ export default function Step1({ onCompletionChange, onRulesChange }: Step1Props)
         const label = t('charts.unfundedProposals');
 
         if (isChecked) {
-            const updated = current
-                .filter((item) => item !== 'submitted')
-                .concat('unfunded');
+            const updated = current.filter((item) => item !== 'submitted').concat('unfunded');
             setProposalTypes([...new Set(updated)]);
             const updatedRules = [...new Set([...currentRules, label])];
             setRules(updatedRules);
@@ -89,12 +88,7 @@ export default function Step1({ onCompletionChange, onRulesChange }: Step1Props)
 
         if (isChecked) {
             const updated = current
-                .filter(
-                    (item) =>
-                        item !== 'submitted' &&
-                        item !== 'complete' &&
-                        item !== 'in_progress',
-                )
+                .filter((item) => item !== 'submitted' && item !== 'complete' && item !== 'in_progress')
                 .concat('approved');
             setProposalTypes([...new Set(updated)]);
         } else {
@@ -136,89 +130,61 @@ export default function Step1({ onCompletionChange, onRulesChange }: Step1Props)
     return (
         <div>
             <Paragraph>{t('charts.selectProposals')}</Paragraph>
+
             <div className="mb-4 flex items-center gap-2">
                 <Paragraph>{t('charts.selectAllThatApply')}</Paragraph>
                 <div className="flex justify-center">
                     <div className="group relative">
                         <InformationIcon className="mx-auto" />
                         <div className="bg-tooltip absolute bottom-full left-1/2 z-10 mb-2 hidden w-48 -translate-x-1/2 rounded p-2 text-white shadow-lg group-hover:block">
-                            <Paragraph> {t('charts.filterProposal')}</Paragraph>
+                            <Paragraph>{t('charts.filterProposal')}</Paragraph>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div className="border-gray-persist/30 mb-2 flex w-full items-center justify-between gap-2 border-b pr-2 pb-4">
-                <label
-                    htmlFor="unfunded-proposals"
-                    className="text-sm font-bold md:text-base"
-                >
-                    {t('charts.unfundedProposals')}
-                </label>
                 <Checkbox
                     id="unfunded-proposals"
+                    label={t('charts.unfundedProposals')}
                     value="unfunded"
                     checked={proposalTypes?.includes('unfunded') || false}
                     onChange={handleUnfundedChange}
                     className="checked:bg-primary"
                 />
             </div>
+
             <div className="border-gray-persist/30 mb-2 flex flex-col gap-2 border-b pr-2 pb-4">
-                <div className="flex w-full items-center justify-between gap-2">
-                    <label
-                        htmlFor="approved-proposals"
-                        className="text-sm font-bold md:text-base"
-                    >
-                        {t('charts.fundedProposals')}
-                    </label>
-                    <Checkbox
-                        id="approved-proposals"
-                        value="approved"
-                        checked={proposalTypes?.includes('approved') || false}
-                        onChange={handleFundedChange}
-                        className="checked:bg-primary"
-                    />
-                </div>
-                <div className="flex w-full items-center justify-between gap-2">
-                    <label
-                        htmlFor="completed-proposals"
-                        className="text-sm md:text-base"
-                    >
-                        {t('charts.completedProposals')}
-                    </label>
-                    <Checkbox
-                        id="completed-proposals"
-                        value="complete"
-                        checked={proposalTypes?.includes('complete') || false}
-                        onChange={handleCompleteChange}
-                        className="checked:bg-primary"
-                    />
-                </div>
-                <div className="flex w-full items-center justify-between gap-2">
-                    <label
-                        htmlFor="in-progress-proposals"
-                        className="text-sm md:text-base"
-                    >
-                        {t('charts.inProgressProposals')}
-                    </label>
-                    <Checkbox
-                        id="in-progress-proposals"
-                        value="in_progress"
-                        checked={proposalTypes?.includes('in_progress') || false}
-                        onChange={handleInProgressChange}
-                        className="checked:bg-primary"
-                    />
-                </div>
+                <Checkbox
+                    id="approved-proposals"
+                    label={t('charts.fundedProposals')}
+                    value="approved"
+                    checked={proposalTypes?.includes('approved') || false}
+                    onChange={handleFundedChange}
+                    className="checked:bg-primary"
+                />
+                <Checkbox
+                    id="completed-proposals"
+                    label={t('charts.completedProposals')}
+                    value="complete"
+                    checked={proposalTypes?.includes('complete') || false}
+                    onChange={handleCompleteChange}
+                    className="checked:bg-primary"
+                />
+                <Checkbox
+                    id="in-progress-proposals"
+                    label={t('charts.inProgressProposals')}
+                    value="in_progress"
+                    checked={proposalTypes?.includes('in_progress') || false}
+                    onChange={handleInProgressChange}
+                    className="checked:bg-primary"
+                />
             </div>
 
             <div className="flex w-full items-center justify-between gap-2 pr-2">
-                <label
-                    htmlFor="submitted-proposals"
-                    className="text-sm font-bold md:text-base"
-                >
-                    {t('charts.submittedProposals')}
-                </label>
                 <Checkbox
                     id="submitted-proposals"
+                    label={t('charts.submittedProposals')}
                     value="submitted"
                     checked={proposalTypes?.includes('submitted') || false}
                     onChange={handleSubmittedChange}
@@ -228,3 +194,4 @@ export default function Step1({ onCompletionChange, onRulesChange }: Step1Props)
         </div>
     );
 }
+

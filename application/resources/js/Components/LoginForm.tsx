@@ -109,23 +109,19 @@ export default function LoginForm({ title, postRoute }: LoginFormProps) {
                     </div>
 
                     <div className="mb-4 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                            <Checkbox
-                                id="remember-me"
-                                className="text-primary h-4 w-4 rounded"
-                                checked={data.remember}
-                                onChange={(e) =>
-                                    setData(
-                                        'remember',
-                                        e.target.checked as false,
-                                    )
-                                }
-                                data-testid="login-remember-checkbox"
-                            />
-                            <label htmlFor="remember-me" className="text-sm">
-                                {t('rememberMe')}
-                            </label>
-                        </div>
+                        <Checkbox
+                            id="remember-me"
+                            label={t('rememberMe')}
+                            className="text-primary h-4 w-4 rounded"
+                            checked={data.remember}
+                            onChange={(e) =>
+                                setData(
+                                    'remember',
+                                    e.target.checked as false,
+                                )
+                            }
+                            data-testid="login-remember-checkbox"
+                        />
                         <Link
                             href="#"
                             className="text-primary text-xs hover:underline sm:text-sm"

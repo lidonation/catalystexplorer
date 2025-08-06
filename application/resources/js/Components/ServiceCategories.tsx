@@ -39,18 +39,14 @@ export default function ServiceCategories({
                     <div key={subCategory.hash} className="self-stretch py-[5px] inline-flex justify-start items-center gap-2.5">
                       {filterable && (
                         <Checkbox
+                          id={subCategory.hash}
+                          name={subCategory.hash}
+                          label={subCategory.name}
                           checked={selectedCategories.includes(String(subCategory.hash))}
                           onChange={() => onCategoryToggle(String(subCategory.hash))}
-                          className="bg-card"
+                          className="bg-card h-4 w-4 text-primary"
                         />
                       )}
-                      <div className="flex justify-start items-center gap-3">
-                        <div className="inline-flex flex-col justify-center items-start">
-                          <div className="justify-start font-medium text-content-lighter leading-tight">
-                            {subCategory.name}
-                          </div>
-                        </div>
-                      </div>
                     </div>
                   ))}
                 </div>
@@ -65,3 +61,4 @@ export default function ServiceCategories({
     </div>
   );
 }
+

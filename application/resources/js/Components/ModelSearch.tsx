@@ -182,26 +182,19 @@ export default function ModelSearch({
                                         : 'border-gray-light'
                                 }`}
                             >
-                                <label htmlFor={hash} className="block px-2">
+                                <div className="px-2">
                                     <div className="flex items-center gap-3">
                                         <Checkbox
                                             id={hash}
+                                            label={formatStat(result, model.labelField)} // Add the required label prop
                                             checked={isSelected}
                                             onChange={() =>
                                                 toggleSelection(domain, hash)
                                             }
                                             className="bg-background text-content-accent checked:bg-primary focus:border-primary focus:ring-primary h-4 w-4 shadow-xs"
                                         />
+                                        
                                         <div className="space-y-1">
-                                            {/* <a href={generateLink(result)} target='_blank'> */}
-                                            <h3 className="hover:cursor-pointer text-lg font-bold">
-                                                {formatStat(
-                                                    result,
-                                                    model.labelField,
-                                                )}
-                                            </h3>
-                                            {/* </a> */}
-
                                             <div className="flex flex-wrap gap-4 pt-1">
                                                 {model.statsField.map(
                                                     (
@@ -239,7 +232,7 @@ export default function ModelSearch({
                                             </div>
                                         </div>
                                     </div>
-                                </label>
+                                </div>
                             </Card>
                         );
                     })}

@@ -204,6 +204,7 @@ const PlayerBar = () => {
                                                             {option.label}
                                                         </span>
                                                         <Checkbox
+                                                            label={`Select ${option.label} playback speed`}
                                                             id={option.value}
                                                             checked={
                                                                 playbackSpeed.toString() ==

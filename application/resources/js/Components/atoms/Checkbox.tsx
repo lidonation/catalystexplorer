@@ -9,6 +9,7 @@ export default function Checkbox({
   id,
   ...props
 }: CheckboxProps) {
+    
   return (
     <label
       htmlFor={id}
