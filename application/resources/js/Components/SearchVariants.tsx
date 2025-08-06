@@ -5,7 +5,7 @@ import {
     ListboxOptions,
 } from '@headlessui/react';
 import ChevronDownIcon from './svgs/ChevronDownIcon';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from "laravel-react-i18n";
 import Checkbox from '@/Components/atoms/Checkbox';
 import React, { Fragment } from 'react';
 
@@ -30,23 +30,17 @@ const SearchVariants = ({
 
     const allKey = "allGroups";
     const handleSelection = (newValue: string[]) => {
-        console.log("BEFORE:", value);
-        console.log("CLICKED:", newValue);
-
         if (newValue.includes(allKey) && !value.includes(allKey)) {
-            console.log("Toggling all ON");
             onChange(variantItems.map(v => v.key));
             return;
         }
 
         if (!newValue.includes(allKey) && value.includes(allKey)) {
-            console.log("Toggling all OFF");
             onChange([]);
             return;
         }
-        if (value.includes(allKey) && newValue.length < value.length && newValue.includes(allKey)) {
-            console.log("Individual option deselected - removing 'All Groups'");
 
+        if (value.includes(allKey) && newValue.length < value.length && newValue.includes(allKey)) {
             const filteredValue = newValue.filter(item => item !== allKey);
             onChange(filteredValue);
             return;
@@ -56,10 +50,10 @@ const SearchVariants = ({
         const selectedIndividualOptions = newValue.filter(item => item !== allKey);
 
         if (selectedIndividualOptions.length === individualOptions.length && !newValue.includes(allKey)) {
-            console.log("All individual options selected - adding 'All Groups'");
             onChange([...newValue, allKey]);
             return;
         }
+
         onChange(newValue);
     };
 
@@ -79,41 +73,30 @@ const SearchVariants = ({
                     )}
                 </ListboxButton>
                 <ListboxOptions className="bg-background absolute left-0 z-50 mt-5 w-max rounded-lg shadow-xl">
-                    {variantItems.map((variant) => (
-                        <ListboxOption key={variant.key} value={variant.key} as={Fragment}>
-                            {({ selected, active }: { selected: boolean; active: boolean }) => {
-                              const checkboxId = `checkbox-${variant.key}`;
-                        return (
-                                 <div
-                                 className={`flex items-center justify-between gap-2 px-3 py-2 hover:rounded-lg ${
-                                 active ? 'bg-background-lighter' : ''
-                                  } cursor-pointer`}
-                          >
-                              <label
-                                    htmlFor={checkboxId}
-                                    onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    (e.currentTarget.closest('[role="option"]') as HTMLElement)?.click();
-                                   }}
-                                className="capitalize cursor-pointer select-none flex-1"
-                            >
-                                 {variant.label}
-                               </label>
-                            <Checkbox
-                                   id={checkboxId}
-                                   checked={selected}
-                                   onChange={() => {}}
-                                   className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary h-4 w-4 shadow-xs focus:border"
-                             />
-                        </div>
-                    );
-                }}
-            </ListboxOption>
+    {variantItems.map((variant) => (
+        <ListboxOption key={variant.key} value={variant.key} as={Fragment}>
+  {({ selected }) => {
+    const checkboxId = `checkbox-${variant.key}`;
+    return (
+      <Checkbox
+        id={checkboxId}
+        checked={selected}
+        onChange={() => {
+          const newValue = selected
+            ? value.filter((v) => v !== variant.key)
+            : [...value, variant.key];
+          handleSelection(newValue);
+        }}
+        label={variant.label}
+        className="h-4 w-4"
+      />
+    );
+  }}
+</ListboxOption>
 
+    ))}
+</ListboxOptions>
 
-                    ))}
-                </ListboxOptions>
             </Listbox>
         </div>
     );
