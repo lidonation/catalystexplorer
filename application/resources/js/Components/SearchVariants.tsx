@@ -93,7 +93,6 @@ const SearchVariants = ({
     );
   }}
 </ListboxOption>
-
     ))}
 </ListboxOptions>
 

@@ -3,7 +3,6 @@ import { InputHTMLAttributes, ReactNode } from 'react';
 interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
   label: ReactNode;
 }
-
 export default function Checkbox({
   className = '',
   label,
