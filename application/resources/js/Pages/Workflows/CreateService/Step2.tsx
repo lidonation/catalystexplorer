@@ -121,9 +121,19 @@ const Step2: React.FC<Step2Props> = ({
 
     const validateWebsiteUrl = (url: string): boolean => {
         if (!url) return true; // Empty URL is valid (not required)
+        
+        // If URL doesn't start with protocol, add https://
+        let urlToValidate = url;
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            urlToValidate = 'https://' + url;
+        }
+        
         try {
-            const urlObj = new URL(url);
-            return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+            const urlObj = new URL(urlToValidate);
+            // Check if it's a valid URL with http or https protocol and has a valid hostname
+            return (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') && 
+                   urlObj.hostname.length > 0 &&
+                   urlObj.hostname.includes('.');
         } catch {
             return false;
         }

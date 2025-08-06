@@ -15,11 +15,11 @@ test.describe('Services Page Tests', () => {
 
    test('should display service cards', async ({ page }) => {
        await expect(page.locator('[data-testid="services-grid"]')).toBeVisible();
-       
+
        const serviceCards = page.locator('[data-testid="service-card"]');
        if (await serviceCards.count() > 0) {
            await expect(serviceCards.first()).toBeVisible();
-           
+
            await expect(serviceCards.first().locator('[data-testid="service-card-title"]')).toBeVisible();
            await expect(serviceCards.first().locator('[data-testid="service-card-status-badge"]')).toBeVisible();
        }
@@ -33,18 +33,18 @@ test.describe('Services Page Tests', () => {
         await expect(page.locator('[data-testid="mobile-categories-toggle"]')).toBeVisible();
         await expect(page.locator('[data-testid="mobile-categories"]')).not.toBeVisible();
         await page.locator('[data-testid="mobile-categories-toggle"]').click();
-        
-        await expect(page.locator('[data-testid="mobile-categories"]')).toBeVisible();       
-        await expect(page.locator('[data-testid="mobile-categories-toggle"]')).toContainText('Hide Categories');     
-        await page.locator('[data-testid="mobile-categories-toggle"]').click();   
-        await expect(page.locator('[data-testid="mobile-categories"]')).not.toBeVisible(); 
+
+        await expect(page.locator('[data-testid="mobile-categories"]')).toBeVisible();
+        await expect(page.locator('[data-testid="mobile-categories-toggle"]')).toContainText('Hide Categories');
+        await page.locator('[data-testid="mobile-categories-toggle"]').click();
+        await expect(page.locator('[data-testid="mobile-categories"]')).not.toBeVisible();
         await expect(page.locator('[data-testid="mobile-categories-toggle"]')).toContainText('Show Categories');
     });
 
    test('should display category filters in sidebar', async ({ page }) => {
        await expect(page.locator('[data-testid="categories-sidebar"]')).toBeVisible();
        await expect(page.locator('[data-testid="service-categories"]')).toBeVisible();
-       
+
        const categoryCheckboxes = page.locator('[data-testid^="category-checkbox-"]');
        if (await categoryCheckboxes.count() > 0) {
            await expect(categoryCheckboxes.first()).toBeVisible();
@@ -52,9 +52,9 @@ test.describe('Services Page Tests', () => {
    });
    test('should show filters toggle button', async ({ page }) => {
        await expect(page.locator('[data-testid="filters-toggle-button"]')).toBeVisible();
-       
+
        await page.locator('[data-testid="filters-toggle-button"]').click();
-       
+
        await expect(page.locator('[data-testid="service-type-filter"]')).toBeVisible();
    });
 });
@@ -62,47 +62,47 @@ test.describe('Services Page Tests', () => {
 test.describe('My Services Page Tests', () => {
    test.beforeEach(async ({ page }) => {
     await page.goto('/login');
-    
-    await page.fill('input[name="email"]', 'daickate@gmail.com');
-    await page.fill('input[name="password"]', 'sawe1234');
-    
+
+    await page.fill('input[name="email"]', 'admin@catalystexplorer.com');
+    await page.fill('input[name="password"]', 'ofnXIFbZ0JOuGBqx');
+
     const submitButton = page.locator('[data-testid="login-submit-button"]');
-    
+
     await submitButton.click();
     await page.waitForTimeout(2000);
-    
+
     await page.goto('/en/my/services');
     await page.waitForLoadState('domcontentloaded');
-    
+
 });
 
    test('should display my services page with add button', async ({ page }) => {
        await expect(page.locator('[data-testid="my-services-page"]')).toBeVisible();
-       
+
        await expect(page.locator('[data-testid="my-services-page-title"]')).toContainText('My Services');
-       
+
        await expect(page.locator('[data-testid="add-service-button"]')).toBeVisible();
        await expect(page.locator('[data-testid="add-service-button"]')).toHaveAttribute('href', /.*workflows\/create-service\/steps\/1.*/);
    });
 
     test('should display my service cards', async ({ page }) => {
        await expect(page.locator('[data-testid="my-services-grid"]')).toBeVisible();
-       
+
        const myServiceCards = page.locator('[data-testid^="service-card"]');
        if (await myServiceCards.count() > 0) {
            await expect(myServiceCards.first()).toBeVisible();
-           
+
            await expect(myServiceCards.first().locator('[data-testid="service-card-title"]')).toBeVisible();
            await expect(myServiceCards.first().locator('[data-testid="service-card-status-badge"]')).toBeVisible();
        }
    });
     test('should search my services', async ({ page }) => {
        await expect(page.locator('[data-testid="services-search-controls"]')).toBeVisible();
-       
+
        await page.locator('[data-testid="searchbar-input"]').fill('my service');
-       
+
        await page.waitForTimeout(400);
-       
+
        await expect(page).toHaveURL(/.*\/my\/services\?.*search=my%20service.*/);
    });
 });
@@ -112,8 +112,8 @@ test.describe('My Services Page Tests', () => {
 test.describe('Create Service Workflow Tests', () => {
     test.beforeEach(async ({ page }) => {
         await page.goto('/login');
-        await page.fill('input[name="email"]', 'daickate@gmail.com');
-        await page.fill('input[name="password"]', 'sawe1234');
+        await page.fill('input[name="email"]', 'admin@catalystexplorer.com');
+        await page.fill('input[name="password"]', 'ofnXIFbZ0JOuGBqx');
         await page.locator('[data-testid="login-submit-button"]').click();
         await page.waitForTimeout(2000);
     });
@@ -179,14 +179,14 @@ test.describe('Create Service Workflow Tests', () => {
 
         test('should select categories from dropdown', async ({ page }) => {
             await page.locator('[data-testid="service-categories-dropdown-trigger"]').click();
-            
+
             await expect(page.locator('[data-testid="service-categories-dropdown-content"]')).toBeVisible();
 
             const firstCategoryCheckbox = page.locator('[data-testid^="service-category-checkbox-"]').first();
             if (await firstCategoryCheckbox.isVisible()) {
                 await firstCategoryCheckbox.click();
                 await page.locator('[data-testid="service-categories-dropdown-trigger"]').click();
-                
+
                 await expect(page.locator('[data-testid="service-categories-count"]')).toBeVisible();
             }
         });
@@ -205,7 +205,7 @@ test.describe('Create Service Workflow Tests', () => {
             if (await firstCategoryCheckbox.isVisible()) {
                 await firstCategoryCheckbox.click();
                 await page.locator('[data-testid="service-categories-dropdown-trigger"]').click();
-                
+
                 await expect(page.locator('[data-testid="service-step1-next-button"]')).not.toBeDisabled();
             }
         });
@@ -213,7 +213,7 @@ test.describe('Create Service Workflow Tests', () => {
         test('should navigate to step 2 after successful submission', async ({ page }) => {
             await page.locator('[data-testid="service-title-input"]').fill('Complete Service');
             await page.locator('[data-testid="service-description-textarea"]').fill('Complete service description');
-            
+
             await page.locator('[data-testid="service-categories-dropdown-trigger"]').click();
             const firstCategoryCheckbox = page.locator('[data-testid^="service-category-checkbox-"]').first();
             if (await firstCategoryCheckbox.isVisible()) {
@@ -230,10 +230,10 @@ test.describe('Create Service Workflow Tests', () => {
     test.describe('Step 2 - Contact Information', () => {
         test.beforeEach(async ({ page }) => {
             await page.goto('/en/workflows/create-service/steps/1');
-            
+
             await page.locator('[data-testid="service-title-input"]').fill('Test Service for Step 2');
             await page.locator('[data-testid="service-description-textarea"]').fill('Test description');
-            
+
             await page.locator('[data-testid="service-categories-dropdown-trigger"]').click();
             const firstCategoryCheckbox = page.locator('[data-testid^="service-category-checkbox-"]').first();
             if (await firstCategoryCheckbox.isVisible()) {
@@ -274,24 +274,24 @@ test.describe('Create Service Workflow Tests', () => {
 
         test('should validate email format', async ({ page }) => {
             await page.locator('[data-testid="service-contact-email-input"]').fill('invalid-email');
-            
+
             await page.locator('[data-testid="service-contact-name-input"]').click();
-            
+
             await expect(page.locator('[data-testid="service-contact-email-error"]')).toBeVisible();
 
             await page.locator('[data-testid="service-contact-email-input"]').fill('valid@example.com');
-            
+
             await expect(page.locator('[data-testid="service-contact-email-error"]')).not.toBeVisible();
         });
 
         test('should validate website URL format', async ({ page }) => {
             await page.locator('[data-testid="service-contact-website-input"]').fill('not-a-url');
             await page.locator('[data-testid="service-contact-name-input"]').click();
-            
+
             await expect(page.locator('[data-testid="service-contact-website-error"]')).toBeVisible();
 
             await page.locator('[data-testid="service-contact-website-input"]').fill('https://example.com');
-            
+
             await expect(page.locator('[data-testid="service-contact-website-error"]')).not.toBeVisible();
         });
 
@@ -312,7 +312,7 @@ test.describe('Create Service Workflow Tests', () => {
 
         test('should validate required fields before final submission', async ({ page }) => {
             const submitButton = page.locator('[data-testid="service-step2-submit-button"]');
-            
+
             await page.locator('[data-testid="service-contact-name-input"]').fill('Final Test');
             await page.locator('[data-testid="service-contact-email-input"]').fill('final@test.com');
 
@@ -325,7 +325,7 @@ test.describe('Create Service Workflow Tests', () => {
             await page.locator('[data-testid="service-location-input"]').fill('Test City');
 
             await page.locator('[data-testid="service-step2-submit-button"]').click();
-            
+
         });
     });
 });

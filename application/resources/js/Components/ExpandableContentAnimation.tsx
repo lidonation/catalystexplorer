@@ -3,12 +3,13 @@ import { ReactNode, RefObject, useEffect, useRef, useState } from 'react';
 
 export interface ExpandableContentAnimationProps {
     children: ReactNode;
-    lineClamp?: number; 
-    className?: string; 
-    marginBottom?: number; 
-    contentRef?: RefObject<HTMLElement> | null; 
+    lineClamp?: number;
+    className?: string;
+    marginBottom?: number;
+    contentRef?: RefObject<HTMLElement> | null;
     onHoverChange?: ((hovered: boolean) => void) | null;
 }
+
 export default function ExpandableContentAnimation({
     lineClamp = 3,
     contentRef: externalContentRef = null,
@@ -50,20 +51,42 @@ export default function ExpandableContentAnimation({
     }, [cardRef.current]);
 
     const renderCardContent = () => {
+        const lineHeightRem = 1.5; 
+        const minHeight = `${lineClamp * lineHeightRem}rem`;
+
+        const isEmpty =
+            !children ||
+            (typeof children === 'string' && children.trim() === '') ||
+            (Array.isArray(children) && children.every(child => !child));
+
+        const shouldClamp = !isEmpty && lineCount > lineClamp;
+
         return (
-            <>
-                <div style={{ overflow: 'visible' }}>{children}</div>
-            </>
+            <div
+                ref={contentRef as RefObject<HTMLDivElement>}
+                className={clsx(
+                    'leading-snug',
+                    isEmpty && 'italic text-gray-400 opacity-70'
+                )}
+                style={{
+                    display: shouldClamp ? '-webkit-box' : 'block',
+                    WebkitBoxOrient: 'vertical',
+                    WebkitLineClamp: shouldClamp ? lineClamp : undefined,
+                    overflow: shouldClamp ? 'hidden' : 'visible',
+                    minHeight,
+                }}
+            >
+                {isEmpty ? 'No description available.' : children}
+            </div>
         );
     };
-
     return (
         <div
             className={clsx(
                 'relative w-full',
-                isHovered && isExpandable
-                    ? 'overflow-visible'
-                    : '',
+                isHovered && isExpandable 
+                ? 'overflow-visible'
+                 : '',
             )}
             style={{
                 height: baseHeight > 0 ? baseHeight : 'auto',
@@ -85,3 +108,4 @@ export default function ExpandableContentAnimation({
         </div>
     );
 }
+

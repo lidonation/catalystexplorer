@@ -265,6 +265,7 @@ class ServiceController extends Controller
                     ServiceWorkflowParams::DESCRIPTION()->value => $existingService->description,
                     ServiceWorkflowParams::TYPE()->value => $existingService->type->value,
                     ServiceWorkflowParams::CATEGORIES()->value => $existingService->categories->pluck('slug')->toArray(),
+                    ServiceWorkflowParams::HEADER_IMAGE_URL()->value => $existingService->header_image_url,
                 ];
             }
         }

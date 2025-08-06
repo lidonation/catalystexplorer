@@ -63,7 +63,7 @@ class Metas extends Resource
                 ->sortable(),
             MorphTo::make(__('Type'), 'model')->types([
                 //                Articles::class,
-                //                Campaigns::class,
+                Campaigns::class,
                 IdeascaleProfiles::class,
                 //                Discussions::class,
                 Funds::class,
