@@ -24,7 +24,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
@@ -484,7 +483,7 @@ class Proposal extends Model
             'reviewers_total' => $this->reviewers_total,
 
             'tags' => $this->tags,
-            'users' => $this->proposal_profiles?->pluck('profiiles')?->map(function ($u) {
+            'users' => $this->proposal_profiles?->pluck('profiles')?->map(function ($u) {
                 $proposals = $u->proposals?->map(fn ($p) => $p->toArray());
 
                 return [
@@ -545,10 +544,10 @@ class Proposal extends Model
         );
     }
 
-    //    public function team(): BelongsToMany
-    //    {
-    //        return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
-    //    }
+    public function team(): BelongsToMany
+    {
+        return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
+    }
 
     public function author(): BelongsTo
     {
@@ -568,12 +567,6 @@ class Proposal extends Model
     public function ideascaleProfiles(): BelongsToMany
     {
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
-    }
-
-    public function team(): MorphTo
-    {
-        return $this->morphTo('team', 'profile_type', 'profile_id');
-        //        return $this->morphedByMany(ProposalProfile::class, 'team', 'proposal_profiles', 'proposal_id', 'profile_id');
     }
 
     public function proposal_profiles()
