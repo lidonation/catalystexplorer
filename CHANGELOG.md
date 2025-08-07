@@ -1,3 +1,10 @@
+# [1.5.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.4.1...v1.5.0) (2025-08-07)
+
+
+### Features
+
+* merging and normalizing catalyst profiles and ideascale profiles ([675912f](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/675912f5cd66a1b7d5f19dbdf66a8820c39e2b92))
+
 ## [1.4.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.4.0...v1.4.1) (2025-08-07)
 
 
