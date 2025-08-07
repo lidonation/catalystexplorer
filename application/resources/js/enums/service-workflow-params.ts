@@ -5,6 +5,7 @@ export enum ServiceWorkflowParams {
     DESCRIPTION = 'description',
     TYPE = 'type',
     HEADER_IMAGE = 'header_image',
+    HEADER_IMAGE_URL = 'header_image_url',
     CATEGORIES = 'categories',
     LOCATION = 'location',
     NAME = 'name',

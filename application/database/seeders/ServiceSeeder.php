@@ -16,24 +16,63 @@ class ServiceSeeder extends Seeder
      */
     public function run(): void
     {
-        $mainCategories = Category::factory(5)->create();
-        
-        $allSubcategories = collect();
-        
-        foreach ($mainCategories as $mainCategory) {
-            $subcategories = Category::factory(3)->create([
-                'parent_id' => $mainCategory->id
-            ]);
-            $allSubcategories = $allSubcategories->merge($subcategories);
-        }
-        
-        // Create 50 services
+        $this->createRealCategories();
+
+        $allSubcategories = Category::whereNotNull('parent_id')->get();
+
         Service::factory(50)->create()->each(function ($service) use ($allSubcategories) {
             $selectedSubcategories = $allSubcategories->random(random_int(1, 3));
-            
+
             foreach ($selectedSubcategories as $category) {
                 $category->services()->attach($service);
             }
         });
+    }
+
+    private function createRealCategories(): void
+    {
+        if (Category::where('name', 'Technical Services')->exists()) {
+            return;
+        }
+
+        $categoryData = [
+            'Technical Services' => [
+                'Web/App Development',
+                'Smart Contract Development',
+                'API Integration',
+                'Security Audits',
+                'Testing & QA',
+                'DevOps & Deployment',
+                'Database Optimization'
+            ],
+            'Design Services' => [
+                'UI/UX Design',
+                'Product Design',
+                'Branding / Identity Design'
+            ],
+            'Research & Strategy' => [
+                'User Research',
+                'Market Research',
+                'Education',
+                'Tokenomics Strategy'
+            ]
+        ];
+
+        foreach ($categoryData as $categoryName => $subcategories) {
+            $mainCategory = Category::create([
+                'name' => $categoryName,
+                'description' => "Professional {$categoryName}",
+                'is_active' => true,
+            ]);
+
+            foreach ($subcategories as $subCategoryName) {
+                Category::create([
+                    'parent_id' => $mainCategory->id,
+                    'name' => $subCategoryName,
+                    'description' => "Professional {$subCategoryName} services",
+                    'is_active' => true,
+                ]);
+            }
+        }
     }
 }

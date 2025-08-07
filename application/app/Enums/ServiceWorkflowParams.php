@@ -13,6 +13,7 @@ use Spatie\Enum\Laravel\Enum;
  * @method static self DESCRIPTION()
  * @method static self TYPE()
  * @method static self HEADER_IMAGE()
+ * @method static self HEADER_IMAGE_URL()
  * @method static self CATEGORIES()
  * @method static self LOCATION()
  * @method static self NAME()
@@ -32,6 +33,7 @@ final class ServiceWorkflowParams extends Enum
             'DESCRIPTION' => 'description',
             'TYPE' => 'type',
             'HEADER_IMAGE' => 'header_image',
+            'HEADER_IMAGE_URL' => 'header_image_url',
             'CATEGORIES' => 'categories',
             'LOCATION' => 'location',
             'NAME' => 'name',

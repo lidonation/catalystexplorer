@@ -356,6 +356,7 @@
     "workflows.createService.step1.selectCategories": "Sélectionner les catégories...",
     "workflows.createService.step1.selectedCategories": "Sélectionné : :count catégories",
     "workflows.createService.step1.selectedImageText": "Sélectionné : :fileName",
+    "workflows.createService.step1.existingImageText": "Image actuelle - cliquez pour changer",
     "workflows.createService.step2.serviceCreatedSuccess": "Service créé avec succès !",
     "workflows.createService.step2.name": "Nom",
     "workflows.createService.step2.emailAddress": "Adresse e-mail",
@@ -369,7 +370,7 @@
     "workflows.createService.step2.contactInfoSavedSuccess": "Informations de contact enregistrées avec succès !",
     "workflows.createService.step2.submitService": "Soumettre le Service",
     "workflows.createService.step2.validation.emailInvalid": "Veuillez entrer une adresse e-mail valide",
-    "workflows.createService.step2.validation.websiteInvalid": "Veuillez entrer une URL de site web valide (doit commencer par http:// ou https://)",
+    "workflows.createService.step2.validation.websiteInvalid": "Veuillez entrer une URL de site web valide",
     "workflows.createService.stepDetails.serviceDetails": "Détails du Service",
     "workflows.createService.stepDetails.contactDetails": "Détails de Contact",
     "error404.mainText": "Désolé, nous n'avons pas trouvé ce que vous cherchez",
@@ -964,7 +965,12 @@
     "comments.reply": "Répondre",
     "rightSwipes": " - Balayages vers la droite",
     "leftSwipes": " - Balayages vers la gauche",
+    "workflows.createService.step1.clickToReplaceImage": "Cliquez ici pour remplacer l'image",
+    "workflows.createService.step1.clickToUploadImage": "Cliquez ici pour télécharger une image",
     "graph.loadingConnections": "Chargement des connexions pour {nodeName}...",
     "graph.noAdditionalConnections": "{nodeName} n'a pas de connexions supplémentaires",
-    "graph.unknownNode": "Inconnu"
+    "graph.unknownNode": "Inconnu",
+    "endDate": "Date de fin",
+    "startDate": "Date de début"
+
 }

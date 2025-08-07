@@ -41,21 +41,21 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
     } = pagination;
 
     const pageLinks = links?.filter(
-        link => !link.label.includes('&laquo;') && 
-                !link.label.includes('&raquo;') && 
-                link.label !== 'Previous' && 
+        link => !link.label.includes('&laquo;') &&
+                !link.label.includes('&raquo;') &&
+                link.label !== 'Previous' &&
                 link.label !== 'Next'
     ) || [];
 
     const getMobilePageLinks = () => {
         if (pageLinks.length <= 7) return pageLinks;
-        
+
         const currentIdx = pageLinks.findIndex(link => link.active);
         const start = Math.max(0, currentIdx - 2);
         const end = Math.min(pageLinks.length, currentIdx + 3);
-        
+
         let result = [];
-        
+
         if (start > 0) {
             result.push(pageLinks[0]);
             if (start > 1) {
@@ -63,14 +63,14 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
             }
         }
         result = result.concat(pageLinks.slice(start, end));
-        
+
         if (end < pageLinks.length) {
             if (end < pageLinks.length - 1) {
                 result.push({ label: '...', active: false, url: null });
             }
             result.push(pageLinks[pageLinks.length - 1]);
         }
-        
+
         return result;
     };
 
@@ -88,15 +88,15 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                     }}
                     aria-current={link.active ? 'page' : undefined}
                     className={cn(
-                        'flex items-center justify-center rounded-full transition-colors',
-                        size === 'sm' 
-                            ? 'size-7 text-xs' 
-                            : size === 'md' 
-                            ? 'size-8 text-sm' 
+                        'flex items-center justify-center rounded-full',
+                        size === 'sm'
+                            ? 'size-7 text-xs'
+                            : size === 'md'
+                            ? 'size-8 text-sm'
                             : 'size-8 text-base',
-                        link.active 
-                            ? 'bg-gray-200 font-semibold text-gray-900' 
-                            : 'hover:bg-gray-100 text-gray-700'
+                        link.active
+                            ? 'bg-gray-200 font-semibold'
+                            : 'hover:bg-gray-100'
                     )}
                     {...linkProps}
                     data-testid={`pagination-link-${link.label}`}
@@ -135,16 +135,16 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
 
     return (
         <div className="flex items-center justify-center py-4" data-testid="pagination-component">
-          
+
             <div className="flex md:hidden items-center justify-between w-full gap-1">
                 {previousButton("px-2 py-1 text-xs")}
-                
+
                 <div className="flex-1 flex justify-center min-w-0">
                     <ul className="flex list-none items-center gap-1">
                         {mobilePageLinks.map((link, index) => renderPageLink(link, index, 'sm'))}
                     </ul>
                 </div>
-                
+
                 {nextButton("px-2 py-1 text-xs")}
             </div>
             <div className="hidden md:flex lg:hidden items-center justify-between w-full">
@@ -154,7 +154,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                     <ul className="flex list-none items-center gap-1">
                         {mobilePageLinks.map((link, index) => renderPageLink(link, index, 'md'))}
                     </ul>
-                    
+
                     <div className="text-sm" data-testid="pagination-info">
                         {from}-{to} of <span className="font-bold">{total}</span>
                     </div>

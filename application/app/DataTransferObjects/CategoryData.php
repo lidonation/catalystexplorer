@@ -17,6 +17,7 @@ final class CategoryData extends Data
 {
     public function __construct(
         public int $id,
+        public string $hash,
         public string $name,
         public string $slug,
         public string $type,
@@ -30,8 +31,7 @@ final class CategoryData extends Data
         public ?int $parent_id,
 
         #[TypeScriptOptional]
-        #[DataCollectionOf(self::class)]
-        public ?DataCollection $children,
+        public ?array $children,
 
         #[TypeScriptOptional]
         #[DataCollectionOf(ServiceData::class)]
@@ -50,6 +50,7 @@ final class CategoryData extends Data
     {
         return new self(
             id: $category->id,
+            hash: $category->hash,
             name: $category->name,
             slug: $category->slug,
             type: $category->type,
@@ -58,7 +59,12 @@ final class CategoryData extends Data
             description: $category->description,
             parent_id: $category->parent_id,
             children: $category->relationLoaded('children')
-                ? self::collection($category->children)
+                ? $category->children->map(fn ($cat) => [
+                    'id' => $cat->id,
+                    'hash' => $cat->hash,
+                    'name' => $cat->name,
+                    'slug' => $cat->slug,
+                ])->toArray()
                 : null,
             services: $category->relationLoaded('services')
                 ? ServiceData::collection($category->services)
@@ -66,15 +72,5 @@ final class CategoryData extends Data
             created_at: $category->created_at?->toIso8601String(),
             updated_at: $category->updated_at?->toIso8601String()
         );
-    }
-
-    public static function basic(Category $category): array
-    {
-        return [
-            'id' => $category->id,
-            'name' => $category->name,
-            'slug' => $category->slug,
-            'type' => $category->type,
-        ];
     }
 }
