@@ -13,6 +13,7 @@ use App\Nova\Actions\MakeSearchable;
 use App\Nova\Actions\UpdateModelMedia;
 use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
 use Laravel\Nova\Actions\Action;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Color;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
@@ -108,6 +109,8 @@ class Campaigns extends Resource
             Color::make(__('Color'))
                 ->sortable()
                 ->rules('required', 'max:255'),
+
+            BelongsTo::make(__('Fund'), 'fund', Funds::class),
 
             Textarea::make(__('Excerpt'), 'excerpt')
                 ->alwaysShow()

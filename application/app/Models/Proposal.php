@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Actions\TransformHashToIds;
 use App\Casts\DateFormatCast;
 use App\Enums\CatalystCurrencies;
+use App\Models\Pivot\ProposalProfile;
 use App\Models\Scopes\ProposalTypeScope;
 use App\Traits\HasAuthor;
 use App\Traits\HasConnections;
@@ -23,6 +24,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -481,17 +484,17 @@ class Proposal extends Model
             'reviewers_total' => $this->reviewers_total,
 
             'tags' => $this->tags,
-            'users' => $this->team->map(function ($u) {
+            'users' => $this->proposal_profiles?->pluck('profiiles')?->map(function ($u) {
                 $proposals = $u->proposals?->map(fn ($p) => $p->toArray());
 
                 return [
                     'id' => $u->id,
                     'hash' => $u->hash,
-                    'ideascale_id' => $u->ideascale_id,
+                    'ideascale_id' => $u->ideascale_id ?? null,
                     'username' => $u->username,
-                    'name' => $u->name,
-                    'bio' => $u->bio,
-                    'hero_img_url' => $u->hero_img_url,
+                    'name' => $u->name ?? null,
+                    'bio' => $u->bio ?? null,
+                    'hero_img_url' => $u->hero_img_url ?? null,
                     'proposals_completed' => $proposals?->filter(fn ($p) => $p['status'] === 'complete')?->count() ?? 0,
                     'first_timer' => ($proposals?->map(fn ($p) => isset($p['fund']) ? $p['fund']['id'] : null)->unique()->count() === 1),
                 ];
@@ -542,10 +545,10 @@ class Proposal extends Model
         );
     }
 
-    public function team(): BelongsToMany
-    {
-        return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
-    }
+    //    public function team(): BelongsToMany
+    //    {
+    //        return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
+    //    }
 
     public function author(): BelongsTo
     {
@@ -557,9 +560,42 @@ class Proposal extends Model
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
     }
 
+    public function catalystProfiles(): BelongsToMany
+    {
+        return $this->belongsToMany(CatalystProfile::class, 'catalyst_profile_has_proposal', 'proposal_id', 'catalyst_profile_id');
+    }
+
     public function ideascaleProfiles(): BelongsToMany
     {
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
+    }
+
+    public function team(): MorphTo
+    {
+        return $this->morphTo('team', 'profile_type', 'profile_id');
+        //        return $this->morphedByMany(ProposalProfile::class, 'team', 'proposal_profiles', 'proposal_id', 'profile_id');
+    }
+
+    public function proposal_profiles()
+    {
+        return $this->hasMany(ProposalProfile::class, 'proposal_id', 'id')
+            ->with(['profiles']);
+    }
+
+    /**
+     * Get ideascale profiles using polymorphic relation.
+     */
+    public function ideascaleProfilesPolymorphic(): MorphToMany
+    {
+        return $this->morphedByMany(IdeascaleProfile::class, 'profile', 'proposal_profiles');
+    }
+
+    /**
+     * Get catalyst profiles using polymorphic relation.
+     */
+    public function catalystProfilesPolymorphic(): MorphToMany
+    {
+        return $this->morphedByMany(CatalystProfile::class, 'profile', 'proposal_profiles');
     }
 
     public function completedProjectNft(): Attribute

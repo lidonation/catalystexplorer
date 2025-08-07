@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\DB;
 use Laravel\Scout\Searchable;
 use Laravolt\Avatar\Facade as Avatar;
@@ -285,12 +286,26 @@ class IdeascaleProfile extends Model implements HasMedia
             ->where('user_id', '!=', $this->id);
     }
 
-    public function proposals(): BelongsToMany
+    //  public function proposals(): BelongsToMany
+    //    {
+    //        return $this->belongsToMany(
+    //            Proposal::class,
+    //            'ideascale_profile_has_proposal',
+    //            'ideascale_profile_id',
+    //            'proposal_id'
+    //        )->where('type', 'proposal');
+    //    }
+
+    /**
+     * Get all proposals using the polymorphic relationship.
+     */
+    public function proposals(): MorphToMany
     {
-        return $this->belongsToMany(
+        return $this->morphToMany(
             Proposal::class,
-            'ideascale_profile_has_proposal',
-            'ideascale_profile_id',
+            'profile',
+            'proposal_profiles',
+            'profile_id',
             'proposal_id'
         )->where('type', 'proposal');
     }

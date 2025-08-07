@@ -88,15 +88,15 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                     }}
                     aria-current={link.active ? 'page' : undefined}
                     className={cn(
-                        'flex items-center justify-center rounded-full transition-colors',
+                        'flex items-center justify-center rounded-full',
                         size === 'sm'
                             ? 'size-7 text-xs'
                             : size === 'md'
                             ? 'size-8 text-sm'
                             : 'size-8 text-base',
                         link.active
-                            ? 'bg-gray-200 font-semibold text-gray-900'
-                            : 'hover:bg-gray-100 text-gray-700'
+                            ? 'bg-gray-200 font-semibold'
+                            : 'hover:bg-gray-100'
                     )}
                     {...linkProps}
                     data-testid={`pagination-link-${link.label}`}

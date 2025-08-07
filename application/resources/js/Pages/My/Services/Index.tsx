@@ -46,10 +46,10 @@ const MyServicesComponent: React.FC<MyServicesProps> = ({ services, filters }) =
   const hasServices = services?.data?.length > 0;
 
   return (
-    <div className="w-full max-w-full py-4 px-8 xl:px-20">
+    <div className="w-full max-w-full py-4 px-8 xl:px-20" data-testid="my-services-page">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <Title level="1" className="text-2xl font-semibold text-content">{t('services.myServices')}</Title>
+          <Title level="1" className="text-2xl font-semibold text-content" data-testid="my-services-page-title">{t('services.myServices')}</Title>
           <Paragraph className="text-base text-slate-500">
             {t('services.myServicesDesc')}
           </Paragraph>
@@ -59,24 +59,26 @@ const MyServicesComponent: React.FC<MyServicesProps> = ({ services, filters }) =
           href={useLocalizedRoute('workflows.createService.index', {
               step: 1,
           })}
+          data-testid="add-service-button"
         >
           +  {t('services.AddService')}
         </PrimaryLink>
       </div>
 
-      <section className="mb-6">
+      <section className="mb-6" data-testid="services-search-section">
         <SearchControls
           search={search}
           onSearchChange={setSearch}
           onFiltersToggle={() => {}}
           showFilters={false}
           viewType="user"
+          data-testid="my-services-search-controls"
         />
       </section>
 
       {hasServices ? (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" data-testid="my-services-grid">
             {services.data.map(service => (
               <ServiceCard key={service.hash} service={service} />
             ))}
