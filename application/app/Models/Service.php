@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\ServiceTypeEnum;
+use App\Traits\HasHashId;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Laravel\Scout\Searchable;
 use Spatie\Enum\Laravel\Casts\EnumCast;
 use Spatie\Image\Enums\CropPosition;
 use Spatie\MediaLibrary\HasMedia;
@@ -18,7 +18,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Service extends Model implements HasMedia
 {
-    use HasRelationships, InteractsWithMedia, Searchable;
+    use HasHashId, HasRelationships,InteractsWithMedia;
 
     protected $fillable = [
         'title',
@@ -33,11 +33,13 @@ class Service extends Model implements HasMedia
         'linkedin',
     ];
 
+    protected $appends = ['header_image_url', 'hash'];
+
+    protected $hidden = ['id'];
+
     protected $casts = [
         'type' => EnumCast::class.':'.ServiceTypeEnum::class,
     ];
-
-    protected $appends = ['header_image_url'];
 
     public function user(): BelongsTo
     {
@@ -101,5 +103,67 @@ class Service extends Model implements HasMedia
             'linkedin' => $this->effective_linkedin,
             'location' => $this->effective_location,
         ];
+    }
+
+    public function scopeSearch($query, ?string $search)
+    {
+        return $query->when($search, function ($q, string $search) {
+            $search = trim($search);
+            $terms = array_filter(explode(' ', $search));
+
+            $q->where(function ($query) use ($terms) {
+                foreach ($terms as $term) {
+                    $query->where(function ($q) use ($term) {
+                        $q->where('title', 'ilike', "%{$term}%")
+                            ->orWhere('description', 'ilike', "%{$term}%")
+                            ->orWhereHas('user', fn ($q) => $q->where('name', 'ilike', "%{$term}%"));
+                    });
+                }
+            });
+
+            $relevanceCase = [];
+            foreach ($terms as $term) {
+                $term = strtolower($term);
+                $relevanceCase[] = "CASE WHEN LOWER(title) = '{$term}' THEN 1000 ELSE 0 END";
+
+                $relevanceCase[] = "CASE WHEN LOWER(title) LIKE '{$term}%' THEN 500 ELSE 0 END";
+
+                $relevanceCase[] = "CASE WHEN LOWER(title) LIKE '%{$term}%' THEN 100 ELSE 0 END";
+
+                $relevanceCase[] = "CASE WHEN LOWER(description) LIKE '%{$term}%' THEN 10 ELSE 0 END";
+            }
+
+            if (! empty($relevanceCase)) {
+                $relevanceQuery = '('.implode(' + ', $relevanceCase).')';
+                $q->orderByRaw("{$relevanceQuery} DESC");
+            }
+        });
+    }
+
+    public function scopeFilterByCategories($query, $categoryIds = null)
+    {
+        return $query->when($categoryIds, function ($q, $categoryIds) {
+            $ids = is_array($categoryIds) ? $categoryIds : (array) $categoryIds;
+            $q->whereHas('categories', function ($query) use ($ids) {
+                $query->whereIn(
+                    'service_model.model_id',
+                    $ids
+                );
+            });
+        });
+    }
+
+    public function scopeForUser($query, ?int $userId = null)
+    {
+        return $query->when($userId, fn ($q) => $q->where('user_id', $userId));
+    }
+
+    public function scopeWithStandardRelations($query)
+    {
+        return $query->with([
+            'user:id,name,email',
+            'categories:id,name,slug',
+            'locations:id,city',
+        ]);
     }
 }

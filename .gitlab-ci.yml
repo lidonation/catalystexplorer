@@ -189,29 +189,56 @@ pest:
     - yarn-build-ssr
 
 
-
-playwright:
-  stage: preview
+########## e2e testing ############
+######################################
+.playwright_template:
+  stage: test
   image: registry.lidonation.com/lidonation/www.catalystexplorer.com/playwright:latest
-  retry: 1
-  artifacts:
+  retry: 2
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
     paths:
-    - ./application/vendor
-    expire_in: 1 days
+      - application/node_modules/
+  artifacts:
+    when: always
+    expire_in: 1 day
+    paths:
+      - ./application/test-results/
+  before_script:
+    - set -xev
+    - cd application
+    - yarn install --frozen-lockfile --ignore-engines
+    - npx playwright install --with-deps
+
+playwright:shard1:
+  extends: .playwright_template
   script:
-  - |-
-    set -xev
-    cd application
-    yarn install --ignore-engines
-    npx playwright test
-  needs:
-  - job: app_preview
-  - job: composer
-  rules:
-  - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBAPP == "true")'
-  dependencies:
-  - composer
-  # - yarn
+    - npx playwright test --shard=1/6 --reporter=dot
+
+playwright:shard2:
+  extends: .playwright_template
+  script:
+    - npx playwright test --shard=2/6 --reporter=dot
+
+playwright:shard3:
+  extends: .playwright_template
+  script:
+    - npx playwright test --shard=3/6 --reporter=dot
+
+playwright:shard4:
+  extends: .playwright_template
+  script:
+    - npx playwright test --shard=4/6 --reporter=dot
+
+playwright:shard5:
+  extends: .playwright_template
+  script:
+    - npx playwright test --shard=5/6 --reporter=dot
+
+playwright:shard6:
+  extends: .playwright_template
+  script:
+    - npx playwright test --shard=6/6 --reporter=dot
 
 ########## Helper Scripts ############
 ######################################
