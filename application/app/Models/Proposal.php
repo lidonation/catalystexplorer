@@ -491,7 +491,7 @@ class Proposal extends Model
                     'hash' => $u->hash,
                     'ideascale_id' => $u->ideascale_id ?? null,
                     'username' => $u->username,
-                    'name' => $u->name ?? null,
+                    'name' => $u->name ?? $u->username ?? null,
                     'bio' => $u->bio ?? null,
                     'hero_img_url' => $u->hero_img_url ?? null,
                     'proposals_completed' => $proposals?->filter(fn ($p) => $p['status'] === 'complete')?->count() ?? 0,
