@@ -1,3 +1,24 @@
+# [1.5.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.4.1...v1.5.0) (2025-08-07)
+
+
+### Features
+
+* merging and normalizing catalyst profiles and ideascale profiles ([675912f](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/675912f5cd66a1b7d5f19dbdf66a8820c39e2b92))
+
+## [1.4.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.4.0...v1.4.1) (2025-08-07)
+
+
+### Bug Fixes
+
+* **checkbox:** ln-1946 fixed to have label. ([05f1701](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/05f170151e84bb1893ed589c209539a19729a154))
+
+# [1.4.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.3.3...v1.4.0) (2025-08-05)
+
+
+### Features
+
+* refactoring charts ui backend ([9bfb26c](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/9bfb26ca0fb5153ea3406eb6548b565bd4487525))
+
 ## [1.3.3](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.3.2...v1.3.3) (2025-08-03)
 
 

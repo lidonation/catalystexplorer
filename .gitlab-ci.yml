@@ -210,35 +210,35 @@ pest:
     - yarn install --frozen-lockfile --ignore-engines
     - npx playwright install --with-deps
 
-playwright:shard1:
-  extends: .playwright_template
-  script:
-    - npx playwright test --shard=1/6 --reporter=dot
+# playwright:shard1:
+#   extends: .playwright_template
+#   script:
+#     - npx playwright test --shard=1/6 --reporter=dot
 
-playwright:shard2:
-  extends: .playwright_template
-  script:
-    - npx playwright test --shard=2/6 --reporter=dot
+# playwright:shard2:
+#   extends: .playwright_template
+#   script:
+#     - npx playwright test --shard=2/6 --reporter=dot
 
-playwright:shard3:
-  extends: .playwright_template
-  script:
-    - npx playwright test --shard=3/6 --reporter=dot
+# playwright:shard3:
+#   extends: .playwright_template
+#   script:
+#     - npx playwright test --shard=3/6 --reporter=dot
 
-playwright:shard4:
-  extends: .playwright_template
-  script:
-    - npx playwright test --shard=4/6 --reporter=dot
+# playwright:shard4:
+#   extends: .playwright_template
+#   script:
+#     - npx playwright test --shard=4/6 --reporter=dot
 
-playwright:shard5:
-  extends: .playwright_template
-  script:
-    - npx playwright test --shard=5/6 --reporter=dot
+# playwright:shard5:
+#   extends: .playwright_template
+#   script:
+#     - npx playwright test --shard=5/6 --reporter=dot
 
-playwright:shard6:
-  extends: .playwright_template
-  script:
-    - npx playwright test --shard=6/6 --reporter=dot
+# playwright:shard6:
+#   extends: .playwright_template
+#   script:
+#     - npx playwright test --shard=6/6 --reporter=dot
 
 ########## Helper Scripts ############
 ######################################

@@ -393,6 +393,7 @@ class ServiceController extends Controller
 
         if ($validator->fails()) {
             $request->session()->flash('error', $validator->errors()->toArray());
+
             return back()->withInput();
         }
 
@@ -440,6 +441,7 @@ class ServiceController extends Controller
 
         if ($validator->fails()) {
             $request->session()->flash('error', $validator->errors()->toArray());
+
             return back()->withInput();
         }
 
@@ -449,6 +451,7 @@ class ServiceController extends Controller
 
         if (! $service || $service->user_id !== auth()->id()) {
             $request->session()->flash('error', ['general' => ['Service not found or access denied.']]);
+
             return back();
         }
 
