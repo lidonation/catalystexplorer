@@ -46,9 +46,8 @@ export default function WorkflowLayout({
                 <div className="@container relative flex w-full flex-row justify-center">
                     {/* Main Content (Full Width on Small Screens) */}
 
-                    <div className={`bg-background no-scrollbar relative max-h-[90vh] w-full overflow-auto rounded-lg lg:overflow-hidden @lg:w-2/3 @lg:min-w-[400px] @lg:rounded-l-lg ${contentClassName || ''}`}>
+                    <div className={`bg-background relative max-h-[90vh] w-full overflow-auto rounded-lg lg:overflow-y-auto  @lg:w-2/3 @lg:min-w-[400px] @lg:rounded-l-lg ${contentClassName || ''}`}>
                         {/* Toggle Button for Small Screens */}
-
                         <div className="@container relative">
                             {children}
                             <button
