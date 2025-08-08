@@ -8,7 +8,6 @@ use App\Http\Intergrations\LidoNation\Blockfrost\IpfsConnector;
 use App\Http\Intergrations\LidoNation\Blockfrost\Requests\IpfsAddRequest;
 use App\Http\Intergrations\LidoNation\Blockfrost\Requests\IpfsPinRequest;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Log;
 use Saloon\Exceptions\Request\RequestException;
 
 class IpfsService
@@ -22,27 +21,27 @@ class IpfsService
         try {
             // Handle different file input types
             $fileContent = $this->prepareFileContent($file, $filename);
-            
+
             $request = new IpfsAddRequest($fileContent['content'], $fileContent['filename']);
             $response = $this->connector->send($request);
 
-            if (!$response->successful()) {
-                throw new \Exception('IPFS upload failed: ' . $response->body());
+            if (! $response->successful()) {
+                throw new \Exception('IPFS upload failed: '.$response->body());
             }
 
             $data = $response->json();
             $cid = $data['ipfs_hash'] ?? $data['Hash'] ?? null;
 
-            if (!$cid) {
-                
+            if (! $cid) {
+
                 throw new \Exception('No IPFS hash returned from Blockfrost');
             }
 
             return $cid;
 
         } catch (RequestException $e) {
-            
-            throw new \Exception('IPFS upload request failed: ' . $e->getMessage());
+
+            throw new \Exception('IPFS upload request failed: '.$e->getMessage());
         }
     }
 
@@ -52,8 +51,8 @@ class IpfsService
     public function getGatewayUrl(string $cid): string
     {
         $gateway = config('services.blockfrost.ipfs_public_gateway', 'https://ipfs.io/ipfs/');
-        
-        return rtrim($gateway, '/') . '/' . $cid;
+
+        return rtrim($gateway, '/').'/'.$cid;
     }
 
     /**
@@ -65,14 +64,14 @@ class IpfsService
             $request = new IpfsPinRequest($cid);
             $response = $this->connector->send($request);
 
-            if (!$response->successful()) {
-                throw new \Exception('IPFS pin failed: ' . $response->body());
+            if (! $response->successful()) {
+                throw new \Exception('IPFS pin failed: '.$response->body());
             }
 
             return true;
 
         } catch (RequestException $e) {
-            throw new \Exception('IPFS pin request failed: ' . $e->getMessage());
+            throw new \Exception('IPFS pin request failed: '.$e->getMessage());
         }
     }
 
