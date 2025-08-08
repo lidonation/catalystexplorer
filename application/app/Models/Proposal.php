@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use App\State\ProposalItemProvider;
+use App\State\ProposalCollectionProvider;
 use App\Actions\TransformHashToIds;
 use App\Casts\DateFormatCast;
 use App\Enums\CatalystCurrencies;
@@ -16,9 +21,9 @@ use App\Traits\HasMetaData;
 use App\Traits\HasTaxonomies;
 use App\Traits\HasTranslations;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -32,18 +37,33 @@ use Laravel\Scout\Searchable;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 #[ScopedBy(ProposalTypeScope::class)]
+#[ApiResource(
+    shortName: 'Proposal',
+    operations: [
+        new GetCollection(
+            uriTemplate: '/proposals',
+            provider: ProposalCollectionProvider::class
+        ),
+        new Get(
+            uriTemplate: '/proposals/{id}',
+            provider: ProposalItemProvider::class
+        ),
+    ],
+    paginationClientItemsPerPage: true,
+    paginationItemsPerPage: 20,
+    paginationMaximumItemsPerPage: 50,
+)]
 class Proposal extends Model
 {
     use HasAuthor,
-        HasConnections,
         HasConnections,
         HasDto,
         HasMetaData,
         HasRelationships,
         HasTaxonomies,
-        HasTimestamps,
         HasTranslations,
-        Searchable,
+        HasUuids,
+        // Searchable,
         SoftDeletes;
 
     public array $translatable = [
@@ -63,11 +83,37 @@ class Proposal extends Model
 
     protected $guarded = ['user_id', 'created_at', 'funded_at'];
 
+    protected $hidden = [
+        'legacy_id',
+        'iog_hash',
+        'deleted_at',
+        'comment_prompt',
+        'team_id',
+        'type',
+        'content',
+        'quickpitch',
+        'quickpitch_id',
+        'quickpitch_length'
+    ];
+
     protected $appends = [
         'link',
-        'hash',
         'currency',
     ];
+
+    /**
+     * The data type of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
 
     public $meiliIndexName = 'cx_proposals';
 
@@ -216,7 +262,7 @@ class Proposal extends Model
 
     public function getRouteKeyName(): string
     {
-        return 'slug';
+        return 'id';
     }
 
     public function currency(): Attribute
@@ -331,17 +377,17 @@ class Proposal extends Model
             ->where('context_type', Proposal::class);
     }
 
-    public function reviews(): HasManyThrough
-    {
-        return $this->hasManyThrough(
-            Review::class,
-            Discussion::class,
-            'model_id',
-            'model_id',
-            'id',
-            'id'
-        )->where('discussions.model_type', Proposal::class);
-    }
+    // public function reviews(): HasManyThrough
+    // {
+    //     return $this->hasManyThrough(
+    //         Review::class,
+    //         Discussion::class,
+    //         'model_id',
+    //         'model_id',
+    //         'id',
+    //         'id'
+    //     )->where('discussions.model_type', Proposal::class);
+    // }
 
     public function discussions(): HasMany
     {
@@ -351,39 +397,39 @@ class Proposal extends Model
             ->withAvg('ratings', 'rating');
     }
 
-    public function ratings(): Attribute
-    {
-        return Attribute::make(
-            get: function () {
-                return DB::table('ratings')
-                    ->join('reviews', 'reviews.id', '=', 'ratings.review_id')
-                    ->join('moderations', 'moderations.review_id', '=', 'reviews.id')
-                    ->where('moderations.context_type', Proposal::class)
-                    ->where('moderations.context_id', $this->id)
-                    ->select('ratings.*')
-                    ->get();
-            }
-        );
-    }
+    // public function ratings(): Attribute
+    // {
+    //     return Attribute::make(
+    //         get: function () {
+    //             return DB::table('ratings')
+    //                 ->join('reviews', 'reviews.id', '=', 'ratings.review_id')
+    //                 ->join('moderations', 'moderations.review_id', '=', 'reviews.id')
+    //                 ->where('moderations.context_type', Proposal::class)
+    //                 ->where('moderations.context_id', $this->id)
+    //                 ->select('ratings.*')
+    //                 ->get();
+    //         }
+    //     );
+    // }
 
-    public function avgRating(): Attribute
-    {
-        return Attribute::make(
-            get: function () {
-                return DB::table('ratings')
-                    ->join('reviews', 'reviews.id', '=', 'ratings.review_id')
-                    ->join('moderations', 'moderations.review_id', '=', 'reviews.id')
-                    ->where('moderations.context_type', Proposal::class)
-                    ->where('moderations.context_id', $this->id)
-                    ->avg('ratings.rating');
-            }
-        );
-    }
+    // public function avgRating(): Attribute
+    // {
+    //     return Attribute::make(
+    //         get: function () {
+    //             return DB::table('ratings')
+    //                 ->join('reviews', 'reviews.id', '=', 'ratings.review_id')
+    //                 ->join('moderations', 'moderations.review_id', '=', 'reviews.id')
+    //                 ->where('moderations.context_type', Proposal::class)
+    //                 ->where('moderations.context_id', $this->id)
+    //                 ->avg('ratings.rating');
+    //         }
+    //     );
+    // }
 
-    public function ratingsAverage(): Attribute
-    {
-        return Attribute::make(get: fn () => $this->ratings->avg('rating'));
-    }
+    // public function ratingsAverage(): Attribute
+    // {
+    //     return Attribute::make(get: fn () => $this->ratings->avg('rating'));
+    // }
 
     /**
      * Get the value used to index the model.
@@ -432,11 +478,10 @@ class Proposal extends Model
             'amount_received' => $this->amount_received ? intval($this->amount_received) : 0,
             "amount_requested_{$this->currency}" => $this->amount_requested ? intval($this->amount_requested) : 0,
             'amount_requested' => $this->amount_requested ? intval($this->amount_requested) : 0,
-            'ca_rating' => intval($this->avg_rating) ?? 0.00,
+            'ca_rating' => 0.00, // intval($this->avg_rating) ?? 0.00,
             'campaign' => [
                 'id' => $this->campaign_id,
                 'title' => $this->campaign?->title,
-                'hash' => $this->campaign?->hash,
                 'currency' => $this->currency,
                 'proposals_count' => $this->campaign?->proposals_count,
                 'amount' => $this->campaign?->amount ? intval($this->campaign?->amount) : null,
@@ -498,7 +543,7 @@ class Proposal extends Model
                     'first_timer' => ($proposals?->map(fn ($p) => isset($p['fund']) ? $p['fund']['id'] : null)->unique()->count() === 1),
                 ];
             }),
-            'reviews' => $this->reviews,
+            // 'reviews' => $this->reviews,
 
             'woman_proposal' => $this->is_woman_proposal ? 1 : 0,
             'link' => $this->link,
@@ -610,10 +655,10 @@ class Proposal extends Model
     /**
      * Modify the query used to retrieve models when making all the models searchable.
      */
-    protected function makeAllSearchableUsing(Builder $query): Builder
-    {
-        return $query->with(['team', 'tags', 'groups']);
-    }
+    // protected function makeAllSearchableUsing(Builder $query): Builder
+    // {
+    //     return $query->with(['team', 'tags', 'groups']);
+    // }
 
     protected function casts(): array
     {

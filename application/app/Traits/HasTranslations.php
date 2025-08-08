@@ -41,12 +41,20 @@ trait HasTranslations
 
     public function getClaimableTranslationsAttribute()
     {
+        if (!Auth::user()) {
+            return collect();
+        }
+        
         return $this->translations?->where('lang', Auth::user()?->meta_info?->translates)
             ->whereNull('user_id');
     }
 
     public function getUserTranslationWithSiblingsAttribute()
     {
+        if (!Auth::user()) {
+            return collect();
+        }
+        
         return $this->translations?->where('lang', Auth::user()?->meta_info?->translates)
             ->where('user_id', Auth::user()->id);
     }

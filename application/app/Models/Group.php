@@ -293,10 +293,10 @@ class Group extends Model implements HasMedia
         $this->addMediaCollection('banner')->singleFile();
     }
 
-    public function reviews(): HasManyDeep
-    {
-        return $this->hasManyDeepFromRelations($this->proposals(), (new Proposal)->reviews());
-    }
+    // public function reviews(): HasManyDeep
+    // {
+    //     return $this->hasManyDeepFromRelations($this->proposals(), (new Proposal)->reviews());
+    // }
 
     public function registerMediaConversions(?Media $media = null): void
     {
@@ -338,7 +338,7 @@ class Group extends Model implements HasMedia
             'proposals_woman' => collect($proposals)->filter(fn ($p) => ($p->is_woman_proposal ?? false) === true)->count(),
             'proposals_ideascale' => collect($proposals)->filter(fn ($p) => ($p->is_ideascale_proposal ?? false) === true)->count(),
             'proposals_impact' => collect($proposals)->filter(fn ($p) => ($p->is_impact_proposal ?? false) === true)->count(),
-            'reviews_count' => $this->reviews->count(),
+            // 'reviews_count' => $this->reviews->count(),
             'amount_awarded_ada' => intval($this->amount_awarded_ada),
             'amount_awarded_usd' => intval($this->amount_awarded_usd),
             'amount_distributed_ada' => intval($this->amount_distributed_ada),

@@ -9,9 +9,13 @@ use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalFundingStatus;
 use App\Enums\ProposalStatus;
 use App\Models\Scopes\OrderByLaunchedDateScope;
+use App\Traits\HasDto;
 use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -22,11 +26,18 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 #[ScopedBy(OrderByLaunchedDateScope::class)]
-class Fund extends Model implements HasMedia
+class Fund extends EloquentModel implements HasMedia
 {
-    use HasMetaData,
+    use HasDto,
+        HasFactory,
+        HasMetaData,
+        HasUuids,
         InteractsWithMedia,
         SoftDeletes;
+
+    protected $hidden = [
+        'legacy_id',
+    ];
 
     protected $with = [
         'media',
@@ -34,10 +45,12 @@ class Fund extends Model implements HasMedia
 
     protected $appends = [
         'hero_img_url',
-        'hash',
     ];
 
     protected $guarded = [];
+
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $withCount = [
         //        'proposals',

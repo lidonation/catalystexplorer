@@ -13,18 +13,15 @@ class AppPolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Perform pre-authorization checks.
-     */
-    public function before(User $user, string $ability): bool
-    {
-        return $user->hasAnyRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]);
+    public function before(?User $user = null, $ability) {
+        dd($user);
+        return true;
     }
 
     /**
      * Determine whether the user can view any models.
      */
-    public function canViewAny(User $user): mixed
+    public function canViewAny(?User $user = null): mixed
     {
         return true;
     }
@@ -34,7 +31,7 @@ class AppPolicy
      *
      * @throws \Exception
      */
-    public function canView(User $user, $model): mixed
+    public function canView(?User $user = null, $model): mixed
     {
         return $user->hasAnyRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]) || $this->ownsModel($user, $model);
     }
@@ -42,7 +39,7 @@ class AppPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function canCreate(User $user): bool
+    public function canCreate(?User $user = null): bool
     {
         return $user->hasAnyRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]);
     }
@@ -50,13 +47,13 @@ class AppPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function canUpdate(User $user, $model): mixed
+    public function canUpdate(?User $user = null, $model): mixed
     {
         return $user->hasAnyRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]) || $this->ownsModel($user, $model);
     }
 
     /** Determine whether the user can update the model.*/
-    public function canUpdateAny(User $user): mixed
+    public function canUpdateAny(?User $user = null): mixed
     {
         return $user->hasAnyRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]);
     }
@@ -64,7 +61,7 @@ class AppPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function canDelete(User $user, $model): bool
+    public function canDelete(?User $user = null, $model): bool
     {
         return $user->hasAnyRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]) || $this->ownsModel($user, $model);
     }
@@ -72,7 +69,7 @@ class AppPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function canDeleteAny(User $user): mixed
+    public function canDeleteAny(?User $user = null): mixed
     {
         return $user->hasAnyRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]);
     }
@@ -80,7 +77,7 @@ class AppPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function canForceDelete(User $user, $model): bool
+    public function canForceDelete(?User $user = null, $model): bool
     {
         return $user->hasAnyRole([RoleEnum::super_admin()->value]);
     }
@@ -88,7 +85,7 @@ class AppPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function canForceDeleteAny(User $user): mixed
+    public function canForceDeleteAny(?User $user = null): mixed
     {
         return $user->hasAnyRole([RoleEnum::super_admin()->value]);
     }
@@ -96,7 +93,7 @@ class AppPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function forceDelete(User $user, Model $model): mixed
+    public function forceDelete(?User $user = null, Model $model): mixed
     {
         return $user->hasAnyRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]);
     }
@@ -104,12 +101,12 @@ class AppPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function canRestore(User $user, $model): bool
+    public function canRestore(?User $user = null, $model): bool
     {
         return $user->hasRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]) || $this->ownsModel($user, $model);
     }
 
-    protected function ownsModel(User $user, $model): bool
+    protected function ownsModel(?User $user = null, $model): bool
     {
         if ($model instanceof User) {
             return $user->id === $model->id;

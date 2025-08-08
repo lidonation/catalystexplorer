@@ -320,10 +320,10 @@ class IdeascaleProfile extends Model implements HasMedia
         );
     }
 
-    public function reviews(): HasManyDeep
-    {
-        return $this->hasManyDeepFromRelations($this->proposals(), (new Proposal)->reviews());
-    }
+    // public function reviews(): HasManyDeep
+    // {
+    //     return $this->hasManyDeepFromRelations($this->proposals(), (new Proposal)->reviews());
+    // }
 
     public function aggregatedRatings(): Attribute
     {
