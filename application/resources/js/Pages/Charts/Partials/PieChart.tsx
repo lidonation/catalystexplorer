@@ -4,8 +4,8 @@ import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/Hooks/useUserSettings';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsivePie } from '@nivo/pie';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useEffect, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface PieChartProps {
     chartData: any;
@@ -130,12 +130,12 @@ const PieChart: React.FC<PieChartProps> = ({
 
     let total = 0;
     if (isSubmittedSelected) {
-        total = selectedOption?.totalProposals ?? 0;
+        total = selectedOption["Submitted Proposals"] ?? 0;
     } else {
         total =
-            (selectedOption?.completedProposals ?? 0) +
-            (selectedOption?.fundedProposals ?? 0) +
-            (selectedOption?.unfundedProposals ?? 0);
+            (selectedOption["Completed Proposals"] ?? 0) +
+            (selectedOption["Funded Proposals"] ?? 0) +
+            (selectedOption["Unfunded Proposals"] ?? 0);
     }
 
     const pieDataWithPercentages = filteredPieData.map((item) => ({
@@ -152,21 +152,17 @@ const PieChart: React.FC<PieChartProps> = ({
         enableArcLinkLabels: !isMobile,
         arcLabelsSkipAngle: isMobile ? 15 : 10,
         arcLinkLabelsSkipAngle: isMobile ? 15 : 10,
-        legendTranslateY: isMobile ? 60 : 56,
+        legendTranslateY: isMobile ? 80 : 56,
         legendDirection: isMobile ? ('column' as const) : ('row' as const),
         legendItemWidth: isMobile ? 80 : 100,
         legendItemHeight: isMobile ? 20 : 18,
     };
 
-    console.log('Proposal types:', proposalTypes);
-    console.log('Includes complete?', proposalTypes?.includes('complete'));
-
     return (
         <div>
             <div className="mb-4">
                 <Paragraph
-                    className="mb-2 text-sm"
-                    style={{ color: 'var(--cx-content-gray-persist)' }}
+                    className="mb-2 text-sm text-content/70"
                 >
                     {viewBy === 'fund' ? t('charts.fund') : t('charts.year')}
                 </Paragraph>
@@ -175,7 +171,7 @@ const PieChart: React.FC<PieChartProps> = ({
                     onChange={(e) =>
                         setActiveOptionIndex(Number(e.target.value))
                     }
-                    className="w-full rounded border px-3 py-2 text-sm md:w-auto"
+                    className="w-fit rounded border px-3 py-2 text-sm md:w-auto"
                     style={{
                         backgroundColor: 'var(--cx-background)',
                         borderColor: 'var(--cx-border-color)',
@@ -199,11 +195,10 @@ const PieChart: React.FC<PieChartProps> = ({
                 </select>
             </div>
 
-            <div className="my-4 mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+            <div className="my-4 mb-4 grid grid-cols-1 gap-3 md:grid-cols-2 sm:gap-4">
                 <div className="text-center">
                     <Paragraph
-                        className="text-sm"
-                        style={{ color: 'var(--cx-content-gray-persist)' }}
+                        className="text-sm text-content/70"
                     >
                         {t('proposals.totalProposals')}
                     </Paragraph>
@@ -220,34 +215,15 @@ const PieChart: React.FC<PieChartProps> = ({
                 {isApprovedSelected && (
                     <div className="text-center">
                         <Paragraph
-                            className="text-sm"
-                            style={{ color: 'var(--cx-content-gray-persist)' }}
+                            className="text-sm text-content/70"
                         >
                             {t('funds.fundedProposals')}
                         </Paragraph>
                         <Paragraph className="text-lg font-semibold">
                             {shortNumber(
-                                selectedOption?.fundedProposals ?? 0,
+                                selectedOption["Funded Proposals"] ?? 0,
                                 2,
                             )}
-                        </Paragraph>
-                    </div>
-                )}
-                {(isApprovedSelected ||
-                    isCompletedSelected ||
-                    isUnfundedSelected ||
-                    isInProgressSelected) && (
-                    <div className="text-center">
-                        <Paragraph
-                            className="text-sm"
-                            style={{ color: 'var(--cx-content-gray-persist)' }}
-                        >
-                            {t('charts.fundingRate')}
-                        </Paragraph>
-                        <Paragraph className="text-lg font-semibold">
-                            {(selectedOption?.totalProposals ?? 0) > 0
-                                ? `${(((selectedOption?.fundedProposals ?? 0) / (total ?? 0)) * 100).toFixed(1)}%`
-                                : '0%'}
                         </Paragraph>
                     </div>
                 )}
@@ -298,7 +274,7 @@ const PieChart: React.FC<PieChartProps> = ({
                     }}
                     tooltip={({ datum }) => (
                         <div
-                            className="rounded-lg p-2 sm:p-3"
+                            className="rounded-lg p-2 sm:p-3 w-40"
                             style={{
                                 backgroundColor: 'var(--cx-tooltip-background)',
                                 color: 'var(--cx-content-light)',
@@ -332,31 +308,36 @@ const PieChart: React.FC<PieChartProps> = ({
                             </div>
                         </div>
                     )}
-                    legends={[
-                        {
-                            anchor: 'bottom',
-                            direction: chartConfig.legendDirection,
-                            justify: false,
-                            translateX: 0,
-                            translateY: chartConfig.legendTranslateY,
-                            itemsSpacing: isMobile ? 5 : 0,
-                            itemWidth: chartConfig.legendItemWidth,
-                            itemHeight: chartConfig.legendItemHeight,
-                            itemTextColor: 'var(--cx-content)',
-                            itemDirection: 'left-to-right',
-                            itemOpacity: 1,
-                            symbolSize: isMobile ? 14 : 18,
-                            symbolShape: 'circle',
-                            effects: [
-                                {
-                                    on: 'hover',
-                                    style: {
-                                        itemTextColor: 'var(--cx-content)',
-                                    },
-                                },
-                            ],
-                        },
-                    ]}
+                    legends={
+                        isMobile
+                            ? []
+                            : [
+                                  {
+                                      anchor: 'bottom',
+                                      direction: chartConfig.legendDirection,
+                                      justify: false,
+                                      translateX: 0,
+                                      translateY: chartConfig.legendTranslateY,
+                                      itemsSpacing: 0,
+                                      itemWidth: chartConfig.legendItemWidth,
+                                      itemHeight: chartConfig.legendItemHeight,
+                                      itemTextColor: 'var(--cx-content)',
+                                      itemDirection: 'left-to-right',
+                                      itemOpacity: 1,
+                                      symbolSize: 18,
+                                      symbolShape: 'circle',
+                                      effects: [
+                                          {
+                                              on: 'hover',
+                                              style: {
+                                                  itemTextColor:
+                                                      'var(--cx-content)',
+                                              },
+                                          },
+                                      ],
+                                  },
+                              ]
+                    }
                 />
             </div>
 
@@ -380,10 +361,7 @@ const PieChart: React.FC<PieChartProps> = ({
                                 {shortNumber(item.value, 2)}
                             </Paragraph>
                             <Paragraph
-                                className="text-sm"
-                                style={{
-                                    color: 'var(--cx-content-gray-persist)',
-                                }}
+                                className="text-sm text-content/70"
                             >
                                 {item.percentage}%
                             </Paragraph>

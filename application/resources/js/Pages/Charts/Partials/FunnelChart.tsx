@@ -3,8 +3,8 @@ import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveFunnel } from '@nivo/funnel';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useEffect, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface FunnelChartProps {
     chartData: any;
@@ -145,7 +145,6 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
             });
         }
 
-
         if (inProgressProposals > 0) {
             funnelSteps.push({
                 id: 'In Progress Proposals',
@@ -210,7 +209,6 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
         );
     }
 
-
     if (funnelData.length < 1) {
         return (
             <div className="flex h-64 items-center justify-center">
@@ -228,7 +226,6 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
                     height: config.height,
                     minHeight: config.minHeight,
                 }}
-                className="min-w-[600px] sm:min-w-full"
             >
                 <ResponsiveFunnel
                     data={funnelData}
@@ -270,13 +267,13 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
                     tooltip={({ part }) => {
                         return (
                             <div
-                                className={`bg-tooltip text-content-light rounded-xs p-${isMobile ? '2' : '4'} max-w-xs`}
+                                className={`bg-tooltip text-content-light rounded-xs p-${isMobile ? '2' : '4'} w-52`}
                             >
                                 <Paragraph size="sm">
                                     <strong className="mb-1 block">
                                         {part.data.label}
                                     </strong>
-                                    <span>
+                                    <span className='font-bold'>
                                         {t('proposals.count')}:{' '}
                                         {shortNumber(part.data.value, 2)}
                                     </span>
@@ -287,23 +284,26 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
                 />
             </div>
 
-            {/* Legend */}
-            <div className="mt-4 flex flex-wrap justify-center gap-4">
-                {allKeys
-                    .filter((keyItem) =>
-                        activeKeys.find((active) => active.key === keyItem.key),
-                    )
-                    .map((item) => (
-                        <div key={item.key} className="flex items-center gap-2">
+            <div className="flex md:flex-wrap flex-col justify-center items-center gap-4 sm:justify-start w-fit mx-auto">
+                {funnelData.map((step) => {
+                    const keyItem = allKeys.find((k) => k.key === step.id);
+                    if (!keyItem) return null;
+
+                    return (
+                        <div
+                            key={keyItem.key}
+                            className="flex items-center gap-2"
+                        >
                             <div
-                                className="h-4 w-10 rounded-md"
-                                style={{ backgroundColor: item.color }}
+                                className="h-3 md:w-8 w-3 rounded-lg"
+                                style={{ backgroundColor: keyItem.color }}
                             />
-                            <span className="text-content text-sm font-medium">
-                                {item.label}
+                            <span className="text-content text-base font-bold">
+                                {keyItem.label}
                             </span>
                         </div>
-                    ))}
+                    );
+                })}
             </div>
         </div>
     );

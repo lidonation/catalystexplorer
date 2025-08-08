@@ -93,13 +93,11 @@ export function ChartLoading({ chartType = 'bar' }: { chartType?: 'bar' | 'treem
             case 'stackedbar':
                 return (
                     <div className="relative h-full">
-                        {/* Y-Axis */}
                         <div className="absolute left-0 top-0 h-full flex flex-col justify-between py-2">
                             {[1, 2, 3, 4, 5].map((_, i) => (
                                 <div key={i} className="h-3 w-8 rounded-sm bg-slate-200"></div>
                             ))}
                         </div>
-                        {/* Stacked Bars */}
                         <div className="ml-12 mr-4 h-full flex items-end justify-between gap-2">
                             {[
                                 { segments: [30, 25, 20] },
@@ -110,7 +108,6 @@ export function ChartLoading({ chartType = 'bar' }: { chartType?: 'bar' | 'treem
                                 { segments: [30, 40, 15] },
                             ].map((bar, barIndex) => (
                                 <div key={barIndex} className="flex-1 flex flex-col items-center gap-1">
-                                    {/* Stacked Bar Segments */}
                                     <div className="w-full flex flex-col">
                                         {bar.segments.map((height, segIndex) => (
                                             <div
@@ -123,7 +120,6 @@ export function ChartLoading({ chartType = 'bar' }: { chartType?: 'bar' | 'treem
                                             ></div>
                                         ))}
                                     </div>
-                                    {/* X-Axis Label */}
                                     <div className="h-3 w-8 rounded-sm bg-slate-200"></div>
                                 </div>
                             ))}
@@ -133,7 +129,6 @@ export function ChartLoading({ chartType = 'bar' }: { chartType?: 'bar' | 'treem
             case 'funnel':
                 return (
                     <div className="relative h-full flex flex-col items-center justify-center gap-2">
-                        {/* Funnel Stages */}
                         {[
                             { width: '90%', label: 'Stage 1' },
                             { width: '75%', label: 'Stage 2' },
@@ -142,12 +137,10 @@ export function ChartLoading({ chartType = 'bar' }: { chartType?: 'bar' | 'treem
                             { width: '30%', label: 'Stage 5' },
                         ].map((stage, index) => (
                             <div key={index} className="flex flex-col items-center gap-1">
-                                {/* Funnel Section */}
                                 <div
                                     className="h-8 bg-slate-200 rounded flex items-center justify-center relative"
                                     style={{ width: stage.width }}
                                 >
-                                    {/* Connecting lines for funnel effect */}
                                     {index < 4 && (
                                         <>
                                             <div className="absolute -bottom-2 left-0 w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-t-4 border-t-slate-200"></div>
@@ -155,9 +148,7 @@ export function ChartLoading({ chartType = 'bar' }: { chartType?: 'bar' | 'treem
                                         </>
                                     )}
                                 </div>
-                                {/* Stage Label */}
                                 <div className="h-3 w-16 rounded-sm bg-slate-200"></div>
-                                {/* Value */}
                                 <div className="h-2 w-12 rounded-sm bg-slate-200"></div>
                             </div>
                         ))}
@@ -191,20 +182,18 @@ export function ChartLoading({ chartType = 'bar' }: { chartType?: 'bar' | 'treem
         <div className="chart-loading-wrapper">
             <div className="bg-background relative h-fit rounded-lg shadow-md p-6">
                 <div className="animate-pulse">
-                    {/* Chart Title Area */}
                     <div className="mb-6">
                         <div className="h-6 w-48 rounded-sm bg-slate-200 mb-2"></div>
                         <div className="h-4 w-32 rounded-sm bg-slate-200"></div>
                     </div>
 
-                    {/* Main Chart Area */}
                     <div className="h-64 bg-slate-100 rounded-md p-4">
                         {renderChartSkeleton()}
                     </div>
 
                     {/* Legend */}
                     <div className="mt-6 flex justify-center gap-6">
-                        {[1, 2, 3, 4].map((item, index) => (
+                        {[1, 2, 3].map((item, index) => (
                             <div key={index} className="flex items-center gap-2">
                                 <div className="h-3 w-3 rounded-sm bg-slate-200"></div>
                                 <div className="h-3 w-16 rounded-sm bg-slate-200"></div>
