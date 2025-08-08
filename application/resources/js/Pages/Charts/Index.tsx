@@ -1,7 +1,6 @@
 import { FiltersProvider } from '@/Context/FiltersContext';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/Hooks/useUserSettings';
-import RoutedModalLayout from '@/Layouts/RoutedModalLayout.tsx';
 import { SearchParams } from '@/types/search-params';
 import { Head, router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
@@ -62,6 +61,7 @@ const Index = ({
         return () => {
             window.removeEventListener('beforeunload', handleUnload);
         };
+
     }, []);
 
     const handleChartDataFromMetrics = (chartData: any) => {
@@ -75,14 +75,13 @@ const Index = ({
     const filteredAllChartData = allChartData?.find(
         (group) => group?.[0]?.count_by === viewBy,
     );
-    
 
     return (
         <FiltersProvider defaultFilters={filters}>
                 <Head title="Charts" />
 
                 {!showCharts && (
-                    <div className="flex h-screen w-full flex-col items-center justify-center">
+                    <div className="flex my-10 md:my-0 md:h-screen w-full flex-col items-center justify-center ">
                         <SetChartMetrics
                             onExploreCharts={handleExploreCharts}
                             onChartDataReceived={handleChartDataFromMetrics}
