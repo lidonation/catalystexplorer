@@ -130,12 +130,12 @@ const PieChart: React.FC<PieChartProps> = ({
 
     let total = 0;
     if (isSubmittedSelected) {
-        total = selectedOption?.totalProposals ?? 0;
+        total = selectedOption["Submitted Proposals"] ?? 0;
     } else {
         total =
-            (selectedOption?.completedProposals ?? 0) +
-            (selectedOption?.fundedProposals ?? 0) +
-            (selectedOption?.unfundedProposals ?? 0);
+            (selectedOption["Completed Proposals"] ?? 0) +
+            (selectedOption["Funded Proposals"] ?? 0) +
+            (selectedOption["Unfunded Proposals"] ?? 0);
     }
 
     const pieDataWithPercentages = filteredPieData.map((item) => ({
@@ -162,8 +162,7 @@ const PieChart: React.FC<PieChartProps> = ({
         <div>
             <div className="mb-4">
                 <Paragraph
-                    className="mb-2 text-sm"
-                    style={{ color: 'var(--cx-content-gray-persist)' }}
+                    className="mb-2 text-sm text-content/70"
                 >
                     {viewBy === 'fund' ? t('charts.fund') : t('charts.year')}
                 </Paragraph>
@@ -196,11 +195,10 @@ const PieChart: React.FC<PieChartProps> = ({
                 </select>
             </div>
 
-            <div className="my-4 mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+            <div className="my-4 mb-4 grid grid-cols-1 gap-3 md:grid-cols-2 sm:gap-4">
                 <div className="text-center">
                     <Paragraph
-                        className="text-sm"
-                        style={{ color: 'var(--cx-content-gray-persist)' }}
+                        className="text-sm text-content/70"
                     >
                         {t('proposals.totalProposals')}
                     </Paragraph>
@@ -217,34 +215,15 @@ const PieChart: React.FC<PieChartProps> = ({
                 {isApprovedSelected && (
                     <div className="text-center">
                         <Paragraph
-                            className="text-sm"
-                            style={{ color: 'var(--cx-content-gray-persist)' }}
+                            className="text-sm text-content/70"
                         >
                             {t('funds.fundedProposals')}
                         </Paragraph>
                         <Paragraph className="text-lg font-semibold">
                             {shortNumber(
-                                selectedOption?.fundedProposals ?? 0,
+                                selectedOption["Funded Proposals"] ?? 0,
                                 2,
                             )}
-                        </Paragraph>
-                    </div>
-                )}
-                {(isApprovedSelected ||
-                    isCompletedSelected ||
-                    isUnfundedSelected ||
-                    isInProgressSelected) && (
-                    <div className="text-center">
-                        <Paragraph
-                            className="text-sm"
-                            style={{ color: 'var(--cx-content-gray-persist)' }}
-                        >
-                            {t('charts.fundingRate')}
-                        </Paragraph>
-                        <Paragraph className="text-lg font-semibold">
-                            {(selectedOption?.totalProposals ?? 0) > 0
-                                ? `${(((selectedOption?.fundedProposals ?? 0) / (total ?? 0)) * 100).toFixed(1)}%`
-                                : '0%'}
                         </Paragraph>
                     </div>
                 )}
@@ -382,10 +361,7 @@ const PieChart: React.FC<PieChartProps> = ({
                                 {shortNumber(item.value, 2)}
                             </Paragraph>
                             <Paragraph
-                                className="text-sm"
-                                style={{
-                                    color: 'var(--cx-content-gray-persist)',
-                                }}
+                                className="text-sm text-content/70"
                             >
                                 {item.percentage}%
                             </Paragraph>
