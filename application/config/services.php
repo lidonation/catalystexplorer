@@ -48,7 +48,10 @@ return [
     ],
     'blockfrost' => [
         'project_id' => env('BLOCKFROST_PROJECT_ID'),
+        'ipfs_project_id' => env('BLOCKFROST_IPFS_PROJECT_ID'),
         'base_url' => env('BLOCKFROST_BASE_URL', 'https://cardano-preprod.blockfrost.io/api/v0'),
         'baseUrlFallback' => env('BLOCKFROST_BASE_URL_FALLBACK', 'https://cardano-preprod.blockfrost.io/api/v0'),
+        'ipfs_gateway' => env('BLOCKFROST_IPFS_GATEWAY', 'https://ipfs.blockfrost.io/api/v0'),
+        'ipfs_public_gateway' => env('BLOCKFROST_IPFS_PUBLIC_GATEWAY', 'https://ipfs.io/ipfs/'),
     ],
 ];
