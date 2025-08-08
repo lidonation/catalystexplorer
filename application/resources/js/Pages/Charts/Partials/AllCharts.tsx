@@ -159,7 +159,7 @@ export default function AllCharts({
                 </Title>
                 <div className="flex items-center justify-between w-full md:w-fit">
                    <div className='flex items-center gap-2'>
-                     <Paragraph className="text-gray-persist">
+                     <Paragraph className="text-content/70">
                         {t('charts.viewBy')}
                     </Paragraph>
                     <RadioSelector

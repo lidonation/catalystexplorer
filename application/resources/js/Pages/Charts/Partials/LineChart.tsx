@@ -176,10 +176,7 @@ const LineChart: React.FC<LineChartProps> = ({
             d.data.some((point) => point.y > 0),
     );
 
-    // Debug logs
     useEffect(() => {
-        console.log('Line data to render:', lineData);
-        console.log('Has plottable data:', hasPlottableData);
         console.log('Filter states:', {
             isSubmittedSelected,
             isApprovedSelected,
@@ -189,7 +186,6 @@ const LineChart: React.FC<LineChartProps> = ({
         });
     }, [lineData, hasPlottableData]);
 
-    // Show no data message if there's nothing to render
     if (!hasPlottableData || lineData.length === 0) {
         return (
             <div className="flex h-64 items-center justify-center">
@@ -203,7 +199,6 @@ const LineChart: React.FC<LineChartProps> = ({
     return (
         <div ref={badgeRef} className="relative">
             <div
-                className="h-[400px] min-w-[600px] sm:min-w-full"
                 style={{ height: config.height, minHeight: config.minHeight }}
             >
                 <ResponsiveLine

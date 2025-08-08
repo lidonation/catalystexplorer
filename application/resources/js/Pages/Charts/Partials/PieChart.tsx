@@ -4,8 +4,8 @@ import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/Hooks/useUserSettings';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsivePie } from '@nivo/pie';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useEffect, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface PieChartProps {
     chartData: any;
@@ -152,14 +152,11 @@ const PieChart: React.FC<PieChartProps> = ({
         enableArcLinkLabels: !isMobile,
         arcLabelsSkipAngle: isMobile ? 15 : 10,
         arcLinkLabelsSkipAngle: isMobile ? 15 : 10,
-        legendTranslateY: isMobile ? 60 : 56,
+        legendTranslateY: isMobile ? 80 : 56,
         legendDirection: isMobile ? ('column' as const) : ('row' as const),
         legendItemWidth: isMobile ? 80 : 100,
         legendItemHeight: isMobile ? 20 : 18,
     };
-
-    console.log('Proposal types:', proposalTypes);
-    console.log('Includes complete?', proposalTypes?.includes('complete'));
 
     return (
         <div>
@@ -175,7 +172,7 @@ const PieChart: React.FC<PieChartProps> = ({
                     onChange={(e) =>
                         setActiveOptionIndex(Number(e.target.value))
                     }
-                    className="w-full rounded border px-3 py-2 text-sm md:w-auto"
+                    className="w-fit rounded border px-3 py-2 text-sm md:w-auto"
                     style={{
                         backgroundColor: 'var(--cx-background)',
                         borderColor: 'var(--cx-border-color)',
@@ -298,7 +295,7 @@ const PieChart: React.FC<PieChartProps> = ({
                     }}
                     tooltip={({ datum }) => (
                         <div
-                            className="rounded-lg p-2 sm:p-3"
+                            className="rounded-lg p-2 sm:p-3 w-40"
                             style={{
                                 backgroundColor: 'var(--cx-tooltip-background)',
                                 color: 'var(--cx-content-light)',
@@ -332,31 +329,36 @@ const PieChart: React.FC<PieChartProps> = ({
                             </div>
                         </div>
                     )}
-                    legends={[
-                        {
-                            anchor: 'bottom',
-                            direction: chartConfig.legendDirection,
-                            justify: false,
-                            translateX: 0,
-                            translateY: chartConfig.legendTranslateY,
-                            itemsSpacing: isMobile ? 5 : 0,
-                            itemWidth: chartConfig.legendItemWidth,
-                            itemHeight: chartConfig.legendItemHeight,
-                            itemTextColor: 'var(--cx-content)',
-                            itemDirection: 'left-to-right',
-                            itemOpacity: 1,
-                            symbolSize: isMobile ? 14 : 18,
-                            symbolShape: 'circle',
-                            effects: [
-                                {
-                                    on: 'hover',
-                                    style: {
-                                        itemTextColor: 'var(--cx-content)',
-                                    },
-                                },
-                            ],
-                        },
-                    ]}
+                    legends={
+                        isMobile
+                            ? []
+                            : [
+                                  {
+                                      anchor: 'bottom',
+                                      direction: chartConfig.legendDirection,
+                                      justify: false,
+                                      translateX: 0,
+                                      translateY: chartConfig.legendTranslateY,
+                                      itemsSpacing: 0,
+                                      itemWidth: chartConfig.legendItemWidth,
+                                      itemHeight: chartConfig.legendItemHeight,
+                                      itemTextColor: 'var(--cx-content)',
+                                      itemDirection: 'left-to-right',
+                                      itemOpacity: 1,
+                                      symbolSize: 18,
+                                      symbolShape: 'circle',
+                                      effects: [
+                                          {
+                                              on: 'hover',
+                                              style: {
+                                                  itemTextColor:
+                                                      'var(--cx-content)',
+                                              },
+                                          },
+                                      ],
+                                  },
+                              ]
+                    }
                 />
             </div>
 
