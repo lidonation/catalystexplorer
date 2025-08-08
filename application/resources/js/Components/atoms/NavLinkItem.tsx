@@ -14,6 +14,8 @@ type NavLinkItemProps = {
     ariaLabel?: string;
     showMyPrefix?: boolean;
     disable?: boolean;
+    showDisableTag?: boolean;
+    disabledTextColor?: string;
 };
 
 export default function NavLinkItem({
@@ -27,6 +29,8 @@ export default function NavLinkItem({
                                         ariaLabel,
                                         showMyPrefix = false,
                                         disable = false,
+                                        showDisableTag = true,
+                                        disabledTextColor,
                                         ...rest
                                     }: NavLinkItemProps) {
     const { t } = useLaravelReactI18n();
@@ -65,8 +69,8 @@ export default function NavLinkItem({
                             {t('my.my')}
                         </span>
                     )}
-                    <span className="text-sm">{title}</span>
-                    {disable && (
+                    <span className={`text-sm ${disable && disabledTextColor ? disabledTextColor : ''}`}>{title}</span>
+                    {disable && showDisableTag && (
                         <span className="ml-3 text-nowrap text-sm">
                             {t('Coming Soon!')}
                         </span>
