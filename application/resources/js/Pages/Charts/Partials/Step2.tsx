@@ -108,6 +108,7 @@ export default function Step2({
                     options={chartOptions}
                     selectedItems={selectedItems}
                     setSelectedItems={handleSelectorChange}
+                    data-testid='chart-type-selector'
                 />
             </div>
         </div>

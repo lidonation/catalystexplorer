@@ -160,6 +160,7 @@ export default function Step1({ onCompletionChange, onRulesChange }: Step1Props)
                     checked={proposalTypes?.includes('unfunded') || false}
                     onChange={handleUnfundedChange}
                     className="checked:bg-primary"
+                    data-testid="unfunded-proposals-checkbox"
                 />
             </div>
             <div className="border-gray-persist/30 mb-2 flex flex-col gap-2 border-b pr-2 pb-4">
@@ -176,6 +177,7 @@ export default function Step1({ onCompletionChange, onRulesChange }: Step1Props)
                         checked={proposalTypes?.includes('approved') || false}
                         onChange={handleFundedChange}
                         className="checked:bg-primary"
+                        data-testid="approved-proposals-checkbox"
                     />
                 </div>
                 <div className="flex w-full items-center justify-between gap-2">
@@ -191,6 +193,7 @@ export default function Step1({ onCompletionChange, onRulesChange }: Step1Props)
                         checked={proposalTypes?.includes('complete') || false}
                         onChange={handleCompleteChange}
                         className="checked:bg-primary"
+                        data-testid="completed-proposals-checkbox"
                     />
                 </div>
                 <div className="flex w-full items-center justify-between gap-2">
@@ -206,6 +209,7 @@ export default function Step1({ onCompletionChange, onRulesChange }: Step1Props)
                         checked={proposalTypes?.includes('in_progress') || false}
                         onChange={handleInProgressChange}
                         className="checked:bg-primary"
+                        data-testid="in-progress-proposals-checkbox"
                     />
                 </div>
             </div>
@@ -223,6 +227,7 @@ export default function Step1({ onCompletionChange, onRulesChange }: Step1Props)
                     checked={proposalTypes?.includes('submitted') || false}
                     onChange={handleSubmittedChange}
                     className="checked:bg-primary"
+                    data-testid="submitted-proposals-checkbox"
                 />
             </div>
         </div>
