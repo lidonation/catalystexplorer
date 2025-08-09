@@ -1,23 +1,25 @@
 import Paragraph from '@/Components/atoms/Paragraph';
-import { useFilterContext } from '@/Context/FiltersContext';
-import { ParamsEnum } from '@/enums/proposal-search-params';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/Hooks/useUserSettings';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveBar } from '@nivo/bar';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useEffect, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface StackedBarChartProps {
     chartData: any;
     viewBy?: 'fund' | 'year';
 }
 
-const StackedBarChart: React.FC<StackedBarChartProps> = ({ chartData, viewBy }) => {
+const StackedBarChart: React.FC<StackedBarChartProps> = ({
+    chartData,
+    viewBy,
+}) => {
     const { t } = useLaravelReactI18n();
-    const { value: proposalTypes } = useUserSetting<
-            string[]
-        >(userSettingEnums.PROPOSAL_TYPE, []);
+    const { value: proposalTypes } = useUserSetting<string[]>(
+        userSettingEnums.PROPOSAL_TYPE,
+        [],
+    );
     const [isMobile, setIsMobile] = useState(false);
     const [screenWidth, setScreenWidth] = useState(
         typeof window !== 'undefined' ? window.innerWidth : 1200,
@@ -33,7 +35,8 @@ const StackedBarChart: React.FC<StackedBarChartProps> = ({ chartData, viewBy }) 
         chartData.forEach((series: any) => {
             series.data.forEach((point: any) => {
                 const index = point.x;
-                if (!tempData[index]) tempData[index] = { [viewBy as string]: index };
+                if (!tempData[index])
+                    tempData[index] = { [viewBy as string]: index };
                 tempData[index][series.id] = point.y;
             });
         });
@@ -59,7 +62,7 @@ const StackedBarChart: React.FC<StackedBarChartProps> = ({ chartData, viewBy }) 
             key: 'Submitted Proposals',
             label: t('proposals.totalProposals'),
             color: '#4fadce',
-            proposalType: 'submitted', 
+            proposalType: 'submitted',
         },
         {
             key: 'Funded Proposals',
@@ -77,7 +80,7 @@ const StackedBarChart: React.FC<StackedBarChartProps> = ({ chartData, viewBy }) 
             key: 'In Progress Proposals',
             label: t('funds.inProgressProposals'),
             color: '#ee8434',
-            proposalType: 'in_progress', 
+            proposalType: 'in_progress',
         },
         {
             key: 'Unfunded Proposals',
@@ -128,7 +131,7 @@ const StackedBarChart: React.FC<StackedBarChartProps> = ({ chartData, viewBy }) 
 
             legendConfig: {
                 translateY: isSmall ? 140 : isMedium ? 120 : 80,
-                translateX: isSmall ? 10 : isMedium ? 0 : 0,
+                translateX: isSmall ? -150 : isMedium ? 0 : 0,
                 itemsSpacing: isSmall ? 5 : isMedium ? 8 : 10,
                 itemWidth: isSmall
                     ? screenWidth / 3 - 20
@@ -164,7 +167,6 @@ const StackedBarChart: React.FC<StackedBarChartProps> = ({ chartData, viewBy }) 
                     height: config.height,
                     minHeight: config.minHeight,
                 }}
-                className="min-w-[600px] sm:min-w-full"
             >
                 <ResponsiveBar
                     data={normalizedData}
@@ -288,7 +290,7 @@ const StackedBarChart: React.FC<StackedBarChartProps> = ({ chartData, viewBy }) 
                     }}
                     tooltip={({ indexValue, data }) => (
                         <div
-                            className={`bg-tooltip text-content-light rounded-xs p-${isMobile ? '2' : '4'} max-w-xs`}
+                            className={`bg-tooltip text-content-light rounded-xs p-${isMobile ? '2' : '4'} w-52`}
                         >
                             <Paragraph size="sm">
                                 <strong className="mb-1 block">
@@ -300,7 +302,10 @@ const StackedBarChart: React.FC<StackedBarChartProps> = ({ chartData, viewBy }) 
                                     size={isMobile ? 'xs' : 'sm'}
                                     key={item.key}
                                 >
-                                    {`${item.label}: ${data[item.key] || 0}`}
+                                    {item.label}:{' '}
+                                    <span className="font-bold">
+                                        {data[item.key] || 0}
+                                    </span>
                                 </Paragraph>
                             ))}
                         </div>

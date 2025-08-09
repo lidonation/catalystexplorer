@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Intergrations\LidoNation\Blockfrost;
 
-use Illuminate\Support\Facades\Log;
 use Saloon\Contracts\Authenticator;
 use Saloon\Http\Auth\HeaderAuthenticator;
 use Saloon\Http\Connector;
