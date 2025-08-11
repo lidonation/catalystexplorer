@@ -73,6 +73,7 @@ const ChartFilter = forwardRef<
                                     htmlFor={variant.value}
                                     className="hover:bg-background-lighter flex cursor-pointer items-center justify-between gap-2 px-3 py-2 hover:rounded-lg"
                                 >
+                                    
                                     <span className="capitalize">
                                         {variant.label}
                                     </span>

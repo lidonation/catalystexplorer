@@ -133,17 +133,15 @@ export default function LoginForm({ closeModal }: LoginFormProps) {
 
                 <div className="flex justify-between">
                     <div className="flex items-center">
-                        <Checkbox
-                            name="remember"
-                            checked={data.remember}
-                            onChange={(e) =>
-                                setData('remember', e.target.checked as false)
-                            }
-                            data-testid="remember-me-checkbox"
-                        />
-                        <Paragraph className="text-4 text-dark ms-2">
-                            {t('rememberMe')}
-                        </Paragraph>
+                    <Checkbox
+                    name="remember"
+                    label={t('rememberMe')}
+                    checked={data.remember}
+                    onChange={(e) =>
+                    setData('remember', e.target.checked as false)
+                     }
+                    data-testid="remember-me-checkbox"
+                    />
                     </div>
                     <div>
                         <Button

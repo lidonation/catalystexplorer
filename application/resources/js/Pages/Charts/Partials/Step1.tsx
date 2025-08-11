@@ -180,7 +180,6 @@ export default function Step1({ onCompletionChange, onRulesChange }: Step1Props)
                     className="checked:bg-primary"
                 />
             </div>
-
             <div className="flex w-full items-center justify-between gap-2 pr-2">
                 <Checkbox
                     id="submitted-proposals"

@@ -124,22 +124,17 @@ const DrepSignupForm = forwardRef<DrepSignupFormHandles, DrepSignupFormProps>(
                     </div>
 
                     <div className="mt-3 flex items-center">
-                        <Checkbox
-                            name="willMaintain"
-                            id="willMaintain"
-                            checked={data.willMaintain}
-                            onChange={(e) =>
-                                setData('willMaintain', !data.willMaintain)
-                            }
-                            className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary mr-2 h-4 w-4 shadow-xs focus:border"
-                        />
-                        <label
-                            htmlFor="willMaintain"
-                            className={`text-sm ${!data.willMaintain && errors.willMaintain ? 'text-danger-strong' : 'text-slate'}`}
-                        >
-                            {t('workflows.catalystDrepSignup.willMaintain')}
-                        </label>
-                    </div>
+                    <Checkbox
+                      name="willMaintain"
+                      id="willMaintain"
+                      label={t('workflows.catalystDrepSignup.willMaintain')}
+                      checked={data.willMaintain}
+                      onChange={(e) =>
+                      setData('willMaintain', !data.willMaintain)
+                    }
+                    className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary mr-2 h-4 w-4 shadow-xs focus:border"
+                  />
+                </div>
                 </form>
             </div>
         );

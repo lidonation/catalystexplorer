@@ -27,6 +27,7 @@ const SearchVariants = ({
         { key: "reviews", label: t('reviews.reviews') },
         { key: "articles", label: t('articles') },
     ];
+    
     const allKey = "allGroups";
     const handleSelection = (newValue: string[]) => {
         if (newValue.includes(allKey) && !value.includes(allKey)) {

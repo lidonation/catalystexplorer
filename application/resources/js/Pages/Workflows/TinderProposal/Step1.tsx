@@ -244,7 +244,6 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
                                         ))}
                                     </div>
                                 </div>
-
                                 {/* Impact Type */}
                                 <div>
                                     <div className='flex flex-col gap-1 mb-2'>

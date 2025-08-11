@@ -25,7 +25,6 @@ const ProfileList: React.FC<ProfileListProps> = ({
             </div>
         );
     }
-
     return (
         <div className="divide-gray-200 mt-2 space-y-2 divide-y">
             {profiles.map((profile, index) => (

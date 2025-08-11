@@ -68,13 +68,14 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
                         >
                             <div className="m-4">
                                 <Checkbox
-                                    id={fund.hash as string | undefined}
-                                    value={fund.hash as string}
-                                    checked={selectedItems.includes(fund.hash)}
-                                    onChange={() => {}}
-                                    className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary mr-2 h-4 w-4 shadow-xs focus:border"
-                                    data-testid={`fund-checkbox-${fund.hash}`}
-                                />
+                                  id={fund.hash as string | undefined}
+                                  label={fund.label}  
+                                  value={fund.hash as string}
+                                  checked={selectedItems.includes(fund.hash)}
+                                  onChange={() => {}}
+                                  className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary mr-2 h-4 w-4 shadow-xs focus:border"
+                                  data-testid={`fund-checkbox-${fund.hash}`}
+                                 />
                             </div>
                             <div className="m-4 ml-1 w-full">
                                 <div className="mb-2 font-medium" data-testid={`fund-label-${fund.label}`}>

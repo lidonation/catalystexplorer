@@ -23,6 +23,7 @@ export default function ServiceCategories({
   onCategoryToggle,
   filterable = true
 }: ServiceCategoriesProps) {
+  
   return (
     <div className="inline-flex flex-col justify-center items-start gap-5" data-testid="service-categories">
       {categories.map((category, index) => {

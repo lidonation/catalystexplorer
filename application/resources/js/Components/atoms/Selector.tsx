@@ -153,29 +153,20 @@ export default function Selector({
 
                                     {!hideCheckbox && (
                                         <Checkbox
-                                            id={
-                                                Array.isArray(option.value)
-                                                    ? option.value.join('-')
-                                                    : option.value
-                                            }
-                                            checked={
-                                                isMultiselect &&
-                                                selectedItems.length
-                                                    ? selectedItems?.includes(
-                                                          option.value,
-                                                      )
-                                                    : selectedItems ==
-                                                      option.value
-                                            }
-                                            value={option.value}
+                                         id={Array.isArray(option.value) ? option.value.join('-') : option.value}
+                                         label={option.label || option.value}
+                                         checked={
+                                                 isMultiselect && selectedItems.length
+                                                 ? selectedItems?.includes(option.value)
+                                                 : selectedItems == option.value
+                                                 }
+                                             value={option.value}
                                             onChange={() => {}}
-                                            className={`text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary ml-2 h-4 w-4 shadow-xs focus:border ${
-                                                isOptionDisabled
-                                                    ? 'text-gray-persist cursor-not-allowed'
-                                                    : ''
-                                            }`}
-                                            disabled={isOptionDisabled}
-                                            data-testid={`selector-checkbox-${Array.isArray(option.value) ? option.value.join('-') : option.value}`}
+                                             className={`text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary ml-2 h-4 w-4 shadow-xs focus:border ${
+                                        isOptionDisabled ? 'text-gray-persist cursor-not-allowed' : ''
+                                        }`}
+                                         disabled={isOptionDisabled}
+                                           data-testid={`selector-checkbox-${Array.isArray(option.value) ? option.value.join('-') : option.value}`}
                                         />
                                     )}
                                 </div>

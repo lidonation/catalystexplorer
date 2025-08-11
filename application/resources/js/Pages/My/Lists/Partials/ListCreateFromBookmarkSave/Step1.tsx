@@ -177,7 +177,6 @@ const BookmarkPage1 = ({
                 {t('listQuickCreate.addAll')}
               </Paragraph>
             </button>
-
             {lists.map((list) => (
               <CheckboxWithLoading
                 key={list.id}

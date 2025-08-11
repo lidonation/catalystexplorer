@@ -160,7 +160,6 @@ export default function ModelSearch({
                         <CloseIcon width={16} />
                     </Button>
                 </label>
-
                 <p className="text-md text-dark mt-1">
                     {`Find ${domain} you're interested in and bookmark them into custom lists for easy tracking and comparison`}
                 </p>

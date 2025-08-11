@@ -193,6 +193,7 @@ export function SearchSelect({
                                             data-testid={`search-select-checkbox-${option.value}`}
                                         />
                                     </CommandItem>
+                                    
                                 ))}
                         </ScrollArea>
                     </CommandGroup>
