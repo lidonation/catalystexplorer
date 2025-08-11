@@ -34,6 +34,7 @@ use App\Http\Controllers\CompletedProjectNftsController;
 use App\Http\Controllers\CardanoBudgetProposalController;
 use App\Http\Controllers\ClaimIdeascaleProfileController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\PublishToIpfsController;
 use App\Http\Controllers\WalletController;
 use CodeZero\LocalizedRoutes\Controllers\FallbackController;
 
@@ -203,6 +204,17 @@ Route::localized(
                     Route::post('/save-contact', [ServiceController::class, 'saveContactInfo'])
                         ->name('saveContactInfo');
                     Route::get('/{step}', [ServiceController::class, 'handleStep'])
+                        ->name('index');
+                });
+
+            Route::prefix('/publish-to-ipfs/steps')->as('publishToIpfs.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::get('/success', [PublishToIpfsController::class, 'success'])
+                        ->name('success');
+                    Route::post('/publish-list', [PublishToIpfsController::class, 'publishListToIpfs'])
+                        ->name('publishListToIpfs');
+                    Route::get('/{step}', [PublishToIpfsController::class, 'handleStep'])
                         ->name('index');
                 });
 
