@@ -97,5 +97,8 @@ final class BookmarkCollectionData extends Data
 
         #[TypeScriptOptional]
         public ?FundData $fund,
+
+        #[TypeScriptOptional]
+        public ?string $list_type,
     ) {}
 }
