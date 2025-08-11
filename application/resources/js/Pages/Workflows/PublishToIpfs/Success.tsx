@@ -57,14 +57,14 @@ const Success: React.FC<SuccessProps> = ({
                         <VerificationBadge size={80} data-testid="verification-badge" />
                     
                         {/* IPFS Details */}
-                        <div className=" mt-8 w-full max-w-md" data-testid="ipfs-details-container">
+                        <div className=" mt-8 max-w-full" data-testid="ipfs-details-container">
                             <div className="flex flex-col items-center  justify-center w-full p-4  rounded-lg">
                                 <Paragraph className="text-lg font-semibold text-gray-persist mb-2" data-testid="content-id-label">
                                     {t('workflows.publishToIpfs.success.contentIdLabel')}
                                 </Paragraph>
                                 <div className="flex items-center gap-2" data-testid="cid-actions-container">
-                                    <Paragraph className="text-lg text-primary flex-1" data-testid="ipfs-cid-text">
-                                        {ipfs_cid}
+                                    <Paragraph className="text-lg text-primary break-words max-w-full overflow-hidden" data-testid="ipfs-cid-text">
+                                        {ipfs_cid.length > 16 ? `${ipfs_cid.slice(0, 8)}...${ipfs_cid.slice(-8)}` : ipfs_cid}
                                     </Paragraph>
                                     <div className="relative">
                                         <Button
