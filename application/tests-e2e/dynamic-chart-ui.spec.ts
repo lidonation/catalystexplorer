@@ -60,7 +60,7 @@ test.describe('Rendering Dynamic Charts', () => {
         await expect(inProgressCheckbox).not.toBeChecked();
     });
 
-    test('Chart type affects chart style options availability', async ({
+    test('Charts are rendered after all metrics are selected', async ({
         page,
     }) => {
         const unfundedCheckbox = page.getByTestId(
