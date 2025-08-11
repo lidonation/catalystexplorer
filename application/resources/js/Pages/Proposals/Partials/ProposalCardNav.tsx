@@ -19,7 +19,7 @@ export default function ProposalCardNav({
                         onClick={() => toggleLocalQuickPitchView(false)}
                         className={`w-full border-b-2 pb-3 font-semibold relative ${
                             !quickPitchView
-                                ? 'border-primary text-primary mb-[-1px] z-10'
+                                ? 'border-primary text-primary mb-[-1px]'
                                 : 'text-content border-transparent '
                         }`}
                         data-testid="proposal-card-nav-details-button"
@@ -34,7 +34,7 @@ export default function ProposalCardNav({
                         disabled={!hasQuickPitch}
                         className={`flex items-center gap-1 pb-3 font-semibold relative${
                             quickPitchView
-                                ? 'border-primary text-primary border-b-[4px] mb-[-1px] z-10'
+                                ? 'border-primary text-primary border-b-[4px] mb-[-1px]'
                                 : 'border-transparent'
                         } ${!hasQuickPitch ? 'cursor-not-allowed opacity-60' : 'text-content hover:text-primary'}`}
                         data-testid="proposal-card-nav-quick-pitch-button"
