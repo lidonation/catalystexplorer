@@ -56,6 +56,7 @@ export default function ProposalSolution({
                             >
                                 {solution ? t('solution') : t('problem')}
                             </Title>
+                            
                         </header>
 
                         <div className="text-content">

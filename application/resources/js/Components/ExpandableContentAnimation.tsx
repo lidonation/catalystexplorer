@@ -93,6 +93,7 @@ export default function ExpandableContentAnimation({
             }}
         >
             <div
+            
                 ref={cardRef}
                 onMouseEnter={() => handleHoverChange(true)}
                 onMouseLeave={() => handleHoverChange(false)}

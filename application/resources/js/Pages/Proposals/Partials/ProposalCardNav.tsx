@@ -9,6 +9,7 @@ export default function ProposalCardNav({
     hasQuickPitch: boolean;
     t: (key: string) => string;
 }) {
+    
     return (
         <nav className="border-b border-gray-200" aria-label="Project details navigation" data-testid="proposal-card-nav">
             <ul className="flex justify-between" data-testid="proposal-card-nav-list">
