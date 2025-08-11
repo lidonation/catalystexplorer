@@ -198,7 +198,6 @@ const MetricsBar: React.FC<ProposalMetrics | undefined> = (props) => {
                         completed={metrics?.completed}
                     />
                 </div>
-                
                 {isExpanded && !isPlayerBarExpanded && (
                     <div className="hidden w-full items-center md:flex md:space-x-4">
                         <div className="grow items-center transition-all duration-300">
