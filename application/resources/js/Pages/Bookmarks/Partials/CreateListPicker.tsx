@@ -15,7 +15,6 @@ export default function CreateListPicker({showPickingList, setPickingList}: {
 
     return (
         <Modal
-             data-testid="create-list-modal"
             title={t('bookmarks.editList')}
             isOpen={!!showPickingList}
             logo={false}
@@ -33,7 +32,6 @@ export default function CreateListPicker({showPickingList, setPickingList}: {
                                 {t('my.createVotingListBlurb')}
                             </Paragraph>
                             <PrimaryLink
-                                data-testid="create-voting-list-btn"
                                 href={useLocalizedRoute(
                                     'workflows.createVoterList.index',
                                     { step: 1 },
@@ -51,7 +49,6 @@ export default function CreateListPicker({showPickingList, setPickingList}: {
                             </Paragraph>
                             <div>
                                 <SecondaryLink
-                                    data-testid="create-tinder-list-btn"
                                     href={useLocalizedRoute(
                                         'workflows.tinderProposal.index',
                                         { step: 1 },
@@ -70,7 +67,6 @@ export default function CreateListPicker({showPickingList, setPickingList}: {
                             </Paragraph>
                             <div>
                                 <SecondaryLink
-                                    data-testid="create-bookmark-list-btn"
                                     href={useLocalizedRoute(
                                         'workflows.bookmarks.index',
                                         { step: 1 },

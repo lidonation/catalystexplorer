@@ -23,8 +23,8 @@ const noop: Dispatch<SetStateAction<boolean>> = () => {};
 const UIContext = createContext<UIContextType>({
     isPlayerBarExpanded: false,
     isMetricsBarExpanded: false,
-    setIsPlayerBarExpanded: noop,
-    setIsMetricsBarExpanded: noop,
+    setIsPlayerBarExpanded: () => noop,
+    setIsMetricsBarExpanded: () => noop,
 });
 
 // Provider
@@ -33,27 +33,27 @@ export const UIProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [isPlayerBarExpanded, setIsPlayerBarExpanded] = useState(isPlaying);
     const [isMetricsBarExpanded, setIsMetricsBarExpanded] = useState(false);
 
-    useEffect(() => {
-        if (isMetricsBarExpanded) {
-            setIsPlayerBarExpanded(false);
-        }
-        if (isPlayerBarExpanded) {
-            setIsMetricsBarExpanded(false);
-        }
-    }, [isMetricsBarExpanded, isPlayerBarExpanded]);
+     useEffect(() => {
+         if (isMetricsBarExpanded) {
+             setIsPlayerBarExpanded(false);
+         }
+         if (isPlayerBarExpanded) {
+             setIsMetricsBarExpanded(false);
+         }
+     }, [isMetricsBarExpanded, isPlayerBarExpanded]);
 
-    useEffect(() => {
-        if (isPlaying) {
-            setIsPlayerBarExpanded(true);
-        }
-    }, [isPlaying]);
+     useEffect(() => {
+         if (isPlaying) {
+             setIsPlayerBarExpanded(true);
+         }
+     }, [isPlaying]);
 
     return (
         <UIContext.Provider
             value={{
-                isPlayerBarExpanded,
+                isPlayerBarExpanded: false,
                 isMetricsBarExpanded,
-                setIsPlayerBarExpanded,
+                setIsPlayerBarExpanded: () => {},
                 setIsMetricsBarExpanded,
             }}
         >
@@ -64,4 +64,3 @@ export const UIProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
 // Hook to use the UI context
 export const useUIContext = () => useContext(UIContext);
-

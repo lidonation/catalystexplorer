@@ -66,7 +66,7 @@ export default function ProposalSolution({
                             >
                                 <div
                                     ref={containerRef}
-                                    className={`${solutionLineCount > 3 ? 'cursor-pointer' : ''} ${isHoveredSolution ? 'bg-background relative' : ''}`}
+                                    className={`${solutionLineCount > 3 ? 'cursor-pointer' : ''} ${isHoveredSolution ? 'bg-background relative z-10' : ''}`}
                                     style={{
                                         paddingBottom: isHoveredSolution
                                             ? '20px'
