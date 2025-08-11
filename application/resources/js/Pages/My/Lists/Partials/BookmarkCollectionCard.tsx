@@ -26,20 +26,22 @@ const BookmarkCollectionCard = ({
         <Card
             className="relative flex w-full gap-1 lg:gap-3"
             key={collection.hash}
+            data-testid="bookmark-collection-card"
         >
             <div className="flex flex-row items-center justify-between pb-2">
                 <div className="space-y-2">
                     <div className="flex items-center gap-3">
-                        <Title level="4" className="font-bold lg:text-2xl">
+                        <Title level="4" className="font-bold lg:text-2xl"data-testid="bookmark-title" >
                             {collection.title}
                         </Title>
                         <div className="bg-primary-light text-primary border-primary rounded-lg border px-2 py-1 text-sm text-nowrap lg:px-4">
                             {`${collection?.items_count} ${t('my.items')}`}
                         </div>
                     </div>
-                    <Paragraph
+                    <Paragraph 
                         size="sm"
                         className="text-muted-foreground lg:text-md lg:w-5/6"
+                        data-testid="card-description"
                     >
                         {collection?.content || 'No description available.'}
                     </Paragraph>
@@ -57,6 +59,7 @@ const BookmarkCollectionCard = ({
                                     : undefined
                             }
                             name={user?.name}
+                            data-testid="user-avatar"
                         />
 
                         <span className="lg:text-md text-xs font-semibold">
@@ -86,7 +89,6 @@ const BookmarkCollectionCard = ({
                 </div>
             </div>
 
-            {/* <div className="py-6"> */}
             <div className="grid grid-cols-2 gap-4 md:grid-cols-6">
                 {Object.entries(collection?.types_count ?? {})?.map((item) => {
                     let pluralizedModel = capitalizeFirstLetter(item[0]);
@@ -104,6 +106,7 @@ const BookmarkCollectionCard = ({
                 {user?.hash && isAuthor ? (
                     <div className="flex flex-col gap-2 lg:flex-row lg:gap-3">
                         <PrimaryLink
+                            data-testid="manage-list-button"
                             className="bg-success w-full px-4 py-1.5 font-medium text-white lg:w-auto lg:whitespace-nowrap"
                             href={useLocalizedRoute('lists.manage', {
                                 bookmarkCollection: collection?.hash,
@@ -113,6 +116,7 @@ const BookmarkCollectionCard = ({
                             {t('my.manage')}
                         </PrimaryLink>
                         <PrimaryLink
+                            data-testid="view-list-button"
                             href={useLocalizedRoute('lists.view', {
                                 bookmarkCollection: collection?.hash,
                             })}
@@ -123,6 +127,7 @@ const BookmarkCollectionCard = ({
                     </div>
                 ) : (
                     <PrimaryLink
+                        data-testid="view-list-button"
                         href={useLocalizedRoute('lists.view', {
                             bookmarkCollection: collection?.hash,
                         })}

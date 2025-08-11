@@ -10,6 +10,7 @@ export default defineConfig({
 
     use: {
         baseURL: 'https://preview.catalystexplorer.com/en'',
+        baseURL: 'http://localhost/en',
         trace: 'retain-on-failure',
         screenshot: 'only-on-failure',
         video: 'retain-on-failure',

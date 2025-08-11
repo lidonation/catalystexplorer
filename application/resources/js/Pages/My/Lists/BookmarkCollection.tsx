@@ -16,7 +16,7 @@ const BookmarkCollection = ({bookmarkCollection}: BookmarkCollectionProps) => {
 
             <header>
                 <div className='container'>
-                    <Title>{bookmarkCollection?.title}</Title>
+                    <Title data-testid="bookmark-list-title">{bookmarkCollection?.title}</Title>
                 </div>
 
             </header>

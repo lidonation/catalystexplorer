@@ -42,7 +42,7 @@ export default function UserAvatar({
     }, [imageUrl, fallbackSvg]);
 
   return (
-        <div className="relative inline-block group">
+        <div className="relative inline-block group" data-testid="user-avatar-container">
             <img
                 src={avatarSrc}
                 alt={name + ' avatar'}
