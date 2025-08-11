@@ -41,6 +41,7 @@ author?: App.DataTransferObjects.UserData;
 fund_id?: number;
 fund?: App.DataTransferObjects.FundData;
 tinder_direction?: string;
+list_type?: string;
 };
 export type BookmarkItemData = {
 hash: string | null;

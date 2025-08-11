@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Enums\VoteEnum;
 use App\Traits\HasAuthor;
 use App\Traits\HasHashId;
+use App\Traits\HasIpfsFiles;
 use App\Traits\HasMetaData;
 use App\Traits\HasSignatures;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -18,7 +19,7 @@ use Spatie\Comments\Models\Concerns\HasComments;
 
 class BookmarkCollection extends Model
 {
-    use HasAuthor, HasComments, HasHashId, HasMetaData, HasSignatures, Searchable, SoftDeletes;
+    use HasAuthor, HasComments, HasHashId, HasIpfsFiles, HasMetaData, HasSignatures, Searchable, SoftDeletes;
 
     protected $withCount = [
         'items',
@@ -32,7 +33,7 @@ class BookmarkCollection extends Model
 
     public $meiliIndexName = 'cx_bookmark_collections';
 
-    protected $appends = ['types_count', 'hash', 'tinder_direction'];
+    protected $appends = ['types_count', 'hash', 'tinder_direction', 'list_type'];
 
     protected $guarded = [];
 
@@ -183,6 +184,23 @@ class BookmarkCollection extends Model
                 } elseif ($hasRightVotes && ! $hasLeftVotes) {
                     return 'right';
                 }
+            }
+        );
+    }
+
+    public function listType(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if (is_null($this->fund_id)) {
+                    return 'normal';
+                }
+
+                if ($this->model_type === TinderCollection::class) {
+                    return 'tinder';
+                }
+
+                return 'voter';
             }
         );
     }
