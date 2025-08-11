@@ -403,6 +403,15 @@ function AppNavigation() {
                                                     active={false}
                                                     data-testid="numbers-general-link"
                                                 ></NavLinkItem>
+                                                <NavLinkItem
+                                                    href={useLocalizedRoute(
+                                                        'proposals.charts',
+                                                    )}
+                                                    title={t('myCharts')}
+                                                    ariaLabel={`${t('myCharts')} ${t('link')}`}
+                                                    active={false}
+                                                    data-testid="numbers-charts-link"
+                                                ></NavLinkItem>
                                             </div>
                                         )}
                                     </div>

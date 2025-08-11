@@ -49,7 +49,7 @@ const Step3: React.FC<Step3Props> = ({
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                <div className="container">
+                <div className="container h-[800px]">
                     <BookmarkProvider
                         bookmarkCollection={bookmarkCollection}
                         preselected={collectionItems}
