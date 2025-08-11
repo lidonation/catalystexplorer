@@ -92,6 +92,7 @@ export default function ExpandableContentAnimation({
                 height: baseHeight > 0 ? baseHeight : 'auto',
             }}
         >
+            
             <div
                 ref={cardRef}
                 onMouseEnter={() => handleHoverChange(true)}
