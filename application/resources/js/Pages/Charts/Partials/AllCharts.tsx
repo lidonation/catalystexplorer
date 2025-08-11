@@ -73,7 +73,7 @@ export default function AllCharts({
         loading ? (
             <ChartLoading chartType="bar" />
         ) : (
-            <div>
+            <div data-testid="bar-chart">
                 <ChartCard title={t('charts.barChart')}>
                     <BarChart chartData={chartData} viewBy={viewBy} />
                 </ChartCard>
@@ -152,7 +152,7 @@ export default function AllCharts({
     };
 
     return (
-        <div className="relative min-h-screen px-6 pb-20">
+        <div className="relative min-h-screen px-6 pb-20" data-testid="all-charts">
             <div className="my-4 flex flex-col items-start justify-between md:flex-row md:items-center">
                 <Title level="2" className="mb-4 font-bold">
                     {t('charts.viewCharts')}
@@ -170,12 +170,14 @@ export default function AllCharts({
                         selectedItem={viewBy}
                         setSelectedItem={onViewByChange}
                         className="focus:border-primary focus:ring-primary"
+                        data-testid='view-by-selector'
                     />
                    </div>
                    <div className='block md:hidden'>
                     <PrimaryButton
                         onClick={onEditMetrics}
                         className="px-6 py-3"
+                        data-testid='charts-edit-button-mobile'
                     >
                         {t('charts.edit')}
                     </PrimaryButton>
@@ -191,6 +193,7 @@ export default function AllCharts({
                     <PrimaryButton
                         onClick={onEditMetrics}
                         className="px-6 py-3"
+                        data-testid='charts-edit-button-desktop'
                     >
                         {t('charts.edit')}
                     </PrimaryButton>
@@ -213,7 +216,9 @@ export default function AllCharts({
                                 {loading ? (
                                     <ChartLoading chartType={getChartLoadingType(chartType)} />
                                 ) : hasAnyProposalTypeSelected ? (
-                                    renderer()
+                                    <div data-testid="charts-card">
+                                        {renderer()}
+                                    </div>
                                 ) : (
                                     <div>
                                         <ChartCard

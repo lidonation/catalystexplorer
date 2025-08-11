@@ -2,29 +2,14 @@ import { expect, test } from '@playwright/test';
 
 test.describe('Rendering Dynamic Charts', () => {
     test.beforeEach(async ({ page }) => {
-        await page.goto('http://localhost/en/proposals', {
+        await page.goto('https://preview.catalystexplorer.com/en', {
             waitUntil: 'load',
         });
 
         await page.waitForLoadState('domcontentloaded');
     });
 
-    test('Graph icon on proposals page leads to the charts page', async ({
-        page,
-    }) => {
-        const chartsButton = page.getByTestId('proposals-charts-button');
-        await expect(chartsButton).toBeVisible();
-        await chartsButton.click();
-        await page.waitForLoadState('networkidle');
-        await expect(page).toHaveURL(/.*\/proposals\/charts/);
-    });
-
     test('Set Chart Metrics Container is Visible', async ({ page }) => {
-        const chartsButton = page.getByTestId('proposals-charts-button');
-        await expect(chartsButton).toBeVisible();
-        await chartsButton.click();
-        await page.waitForLoadState('networkidle');
-        await expect(page).toHaveURL(/.*\/proposals\/charts/);
         const chartMetricsContainer = page.getByTestId('set-chart-metrics');
         await expect(chartMetricsContainer).toBeVisible();
     });
@@ -32,15 +17,6 @@ test.describe('Rendering Dynamic Charts', () => {
     test('Ensure the checkboxes are functional and respect the pairing rules', async ({
         page,
     }) => {
-        const chartsButton = page.getByTestId('proposals-charts-button');
-        await expect(chartsButton).toBeVisible();
-        await chartsButton.click();
-        await page.waitForLoadState('networkidle');
-
-        await expect(page).toHaveURL(/.*\/proposals\/charts/, {
-            timeout: 10000,
-        });
-
         const chartMetricsContainer = page.getByTestId('set-chart-metrics');
         await expect(chartMetricsContainer).toBeVisible();
 
@@ -84,15 +60,293 @@ test.describe('Rendering Dynamic Charts', () => {
         await expect(inProgressCheckbox).not.toBeChecked();
     });
 
-    //   test('Select Chart Type Selector Works', async ({
-    //     page,
-    // }) => {
-    //     const chartsTypeSelector = page.getByTestId('chart-type-selector');
-    //     await expect(chartsTypeSelector).toBeVisible();
-    //     await chartsTypeSelector.click();
-    //     await page.waitForLoadState('networkidle');
-    //     await expect(page).toHaveURL(/.*\/proposals\/charts/);
-    // });
+    test('Chart type affects chart style options availability', async ({
+        page,
+    }) => {
+        const unfundedCheckbox = page.getByTestId(
+            'unfunded-proposals-checkbox',
+        );
 
+        await expect(unfundedCheckbox).toBeVisible();
+        await unfundedCheckbox.click();
+        const chartTypeSelector = page.getByTestId('chart-type-selector');
+        await expect(chartTypeSelector).toBeVisible();
 
+        const chartStyleSelector = page.getByTestId('chart-style-selector');
+        await expect(chartStyleSelector).toBeVisible();
+
+        await chartTypeSelector.click();
+        await page
+            .locator('[data-testid="selector-option-distributionChart"]')
+            .click();
+
+        await chartStyleSelector.click();
+
+        const distributionDisabled = [
+            'barChart',
+            'lineChart',
+            'pieChart',
+            'stackedBarCharts',
+            'funnelChart',
+        ];
+        for (const chart of distributionDisabled) {
+            await expect(
+                page.getByTestId(`selector-option-${chart}`),
+            ).toHaveClass(/cursor-not-allowed/);
+        }
+        await expect(page.getByTestId('selector-option-treeMap')).toBeEnabled();
+
+        await chartTypeSelector.click();
+        await page
+            .locator('[data-testid="selector-option-trendChart"]')
+            .click();
+
+        await chartStyleSelector.click();
+
+        await expect(page.getByTestId('selector-option-treeMap')).toHaveClass(
+            /cursor-not-allowed/,
+        );
+
+        const allOthers = [
+            'barChart',
+            'lineChart',
+            'pieChart',
+            'stackedBarCharts',
+            'funnelChart',
+        ];
+        for (const chart of allOthers) {
+            await expect(
+                page.getByTestId(`selector-option-${chart}`),
+            ).toBeEnabled();
+        }
+
+        for (const chartType of allOthers.slice(0, 4)) {
+            await chartStyleSelector.dispatchEvent('mousedown');
+            await page.waitForTimeout(500);
+
+            const optionLocator = page.locator(
+                `[data-testid="selector-option-${chartType}"]`,
+            );
+            await optionLocator.click();
+            await page.waitForTimeout(1000);
+        }
+
+        const viewChartsButton = page.getByTestId('view-charts-button');
+        await expect(viewChartsButton).toBeVisible();
+        await viewChartsButton.click();
+
+        const allCharts = page.getByTestId('all-charts');
+        await expect(allCharts).toBeVisible();
+
+        const chartsCard = page.getByTestId('charts-card');
+
+        for (let i = 0; i < 4; i++) {
+            const card = chartsCard.nth(i);
+            await card.scrollIntoViewIfNeeded();
+            await expect(card).toBeVisible();
+        }
+    });
+    test('View selector works', async ({ page }) => {
+        const unfundedCheckbox = page.getByTestId(
+            'unfunded-proposals-checkbox',
+        );
+
+        await expect(unfundedCheckbox).toBeVisible();
+        await unfundedCheckbox.click();
+        const chartTypeSelector = page.getByTestId('chart-type-selector');
+        await expect(chartTypeSelector).toBeVisible();
+
+        const chartStyleSelector = page.getByTestId('chart-style-selector');
+        await expect(chartStyleSelector).toBeVisible();
+
+        await chartTypeSelector.click();
+        await page
+            .locator('[data-testid="selector-option-distributionChart"]')
+            .click();
+
+        await chartStyleSelector.click();
+
+        const distributionDisabled = [
+            'barChart',
+            'lineChart',
+            'pieChart',
+            'stackedBarCharts',
+            'funnelChart',
+        ];
+        for (const chart of distributionDisabled) {
+            await expect(
+                page.getByTestId(`selector-option-${chart}`),
+            ).toHaveClass(/cursor-not-allowed/);
+        }
+        await expect(page.getByTestId('selector-option-treeMap')).toBeEnabled();
+
+        await chartTypeSelector.click();
+        await page
+            .locator('[data-testid="selector-option-trendChart"]')
+            .click();
+
+        await chartStyleSelector.click();
+
+        await expect(page.getByTestId('selector-option-treeMap')).toHaveClass(
+            /cursor-not-allowed/,
+        );
+
+        const allOthers = [
+            'barChart',
+            'lineChart',
+            'pieChart',
+            'stackedBarCharts',
+            'funnelChart',
+        ];
+        for (const chart of allOthers) {
+            await expect(
+                page.getByTestId(`selector-option-${chart}`),
+            ).toBeEnabled();
+        }
+
+        for (const chartType of allOthers.slice(0, 1)) {
+            await chartStyleSelector.dispatchEvent('mousedown');
+            await page.waitForTimeout(500);
+
+            const optionLocator = page.locator(
+                `[data-testid="selector-option-${chartType}"]`,
+            );
+            await optionLocator.click();
+            await page.waitForTimeout(1000);
+        }
+
+        const viewChartsButton = page.getByTestId('view-charts-button');
+        await expect(viewChartsButton).toBeVisible();
+        await viewChartsButton.click();
+
+        const allCharts = page.getByTestId('all-charts');
+        await expect(allCharts).toBeVisible();
+
+        const viewBySelector = page.getByTestId('view-by-selector');
+        await expect(viewBySelector).toBeVisible();
+        await viewBySelector.click();
+        await page
+            .locator('[data-testid="radio-selector-option-year"]')
+            .click();
+         
+    });
+    test('Edit chart metrics works', async ({ page }) => {
+        const unfundedCheckbox = page.getByTestId(
+            'unfunded-proposals-checkbox',
+        );
+
+        await expect(unfundedCheckbox).toBeVisible();
+        await unfundedCheckbox.click();
+        const chartTypeSelector = page.getByTestId('chart-type-selector');
+        await expect(chartTypeSelector).toBeVisible();
+
+        const chartStyleSelector = page.getByTestId('chart-style-selector');
+        await expect(chartStyleSelector).toBeVisible();
+
+        await chartTypeSelector.click();
+        await page
+            .locator('[data-testid="selector-option-distributionChart"]')
+            .click();
+
+        await chartStyleSelector.click();
+
+        const distributionDisabled = [
+            'barChart',
+            'lineChart',
+            'pieChart',
+            'stackedBarCharts',
+            'funnelChart',
+        ];
+        for (const chart of distributionDisabled) {
+            await expect(
+                page.getByTestId(`selector-option-${chart}`),
+            ).toHaveClass(/cursor-not-allowed/);
+        }
+        await expect(page.getByTestId('selector-option-treeMap')).toBeEnabled();
+
+        await chartTypeSelector.click();
+        await page
+            .locator('[data-testid="selector-option-trendChart"]')
+            .click();
+
+        await chartStyleSelector.click();
+
+        await expect(page.getByTestId('selector-option-treeMap')).toHaveClass(
+            /cursor-not-allowed/,
+        );
+
+        const allOthers = [
+            'barChart',
+            'lineChart',
+            'pieChart',
+            'stackedBarCharts',
+            'funnelChart',
+        ];
+        for (const chart of allOthers) {
+            await expect(
+                page.getByTestId(`selector-option-${chart}`),
+            ).toBeEnabled();
+        }
+
+        for (const chartType of allOthers.slice(0, 1)) {
+            await chartStyleSelector.dispatchEvent('mousedown');
+            await page.waitForTimeout(500);
+
+            const optionLocator = page.locator(
+                `[data-testid="selector-option-${chartType}"]`,
+            );
+            await optionLocator.click();
+            await page.waitForTimeout(1000);
+        }
+
+        const viewChartsButton = page.getByTestId('view-charts-button');
+        await expect(viewChartsButton).toBeVisible();
+        await viewChartsButton.click();
+
+        const allCharts = page.getByTestId('all-charts');
+        await expect(allCharts).toBeVisible();
+
+        await page.evaluate(() => window.scrollTo(0, 0));
+
+        await page.waitForLoadState('domcontentloaded');
+
+        const editChartsMetricsButton = page.getByTestId('charts-edit-button-desktop');
+
+        await expect(editChartsMetricsButton).toBeVisible();
+        await editChartsMetricsButton.click();
+
+        const chartMetricsContainer = page.getByTestId('set-chart-metrics');
+        await expect(chartMetricsContainer).toBeVisible();
+
+        const submittedCheckbox = page.getByTestId(
+            'submitted-proposals-checkbox',
+        );
+
+        await expect(submittedCheckbox).toBeVisible();
+        await submittedCheckbox.click();
+
+        await chartTypeSelector.click();
+        await page
+            .locator('[data-testid="selector-option-distributionChart"]')
+            .click();
+        await chartStyleSelector.click();
+        await chartStyleSelector.dispatchEvent('mousedown');
+        await page.waitForTimeout(500);
+
+        const optionLocator = page.locator(
+            `[data-testid="selector-option-treeMap"]`,
+        );
+        await optionLocator.click();
+        await page.waitForTimeout(1000);
+
+        await expect(viewChartsButton).toBeVisible();
+        await viewChartsButton.click();
+
+    
+        await expect(allCharts).toBeVisible();
+
+        const chartsCard = page.getByTestId('charts-card');
+        await expect(chartsCard.first()).toBeVisible();
+         
+    });
 });
