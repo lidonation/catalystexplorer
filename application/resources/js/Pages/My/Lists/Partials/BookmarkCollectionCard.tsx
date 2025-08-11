@@ -26,6 +26,8 @@ const BookmarkCollectionCard = ({
         <Card
             className="relative flex w-full gap-1 lg:gap-3"
             key={collection.hash}
+            data-testid="bookmark-collection-card"
+            data-collection-hash={collection.hash}
         >
             <div className="flex flex-row items-center justify-between pb-2">
                 <div className="space-y-2">
@@ -50,6 +52,7 @@ const BookmarkCollectionCard = ({
                 <div className="flex items-center gap-4 py-2 lg:gap-6">
                     <div className="flex items-center gap-2">
                         <UserAvatar
+                            data-testid="user-avatar"
                             size="size-8"
                             imageUrl={
                                 user?.hero_img_url
@@ -65,7 +68,10 @@ const BookmarkCollectionCard = ({
                     </div>
 
                     {collection?.updated_at && (
-                        <div className="text-muted-foreground lg:text-md flex items-center gap-2 text-xs">
+                        <div 
+                            className="text-muted-foreground lg:text-md flex items-center gap-2 text-xs"
+                            data-testid="last-modified"
+                        >
                             <Clock className="hidden h-5 w-5 lg:block" />
                             <span className="font-semibold">
                                 {t('bookmarks.lastModified')}:{' '}
@@ -76,7 +82,10 @@ const BookmarkCollectionCard = ({
                         </div>
                     )}
 
-                    <div className="text-muted-foreground lg:text-md flex items-center gap-2 text-xs">
+                    <div 
+                        className="text-muted-foreground lg:text-md flex items-center gap-2 text-xs"
+                        data-testid="comments-count"
+                    >
                         <MessageCircle className="hidden h-5 w-5 lg:block" />
                         <span className="font-semibold">
                             {t('bookmarks.comments')}:{' '}
@@ -102,8 +111,13 @@ const BookmarkCollectionCard = ({
             </div>
             <div className="top-4 right-4 lg:absolute">
                 {user?.hash && isAuthor ? (
-                    <div className="flex flex-col gap-2 lg:flex-row lg:gap-3">
+                    <div 
+                        className="flex flex-col gap-2 lg:flex-row lg:gap-3"
+                        data-testid="button-container"
+                    >
                         <PrimaryLink
+                            data-testid="manage-button"
+                            aria-label={`Manage ${collection.title} collection`}
                             className="bg-success w-full px-4 py-1.5 font-medium text-white lg:w-auto lg:whitespace-nowrap"
                             href={useLocalizedRoute('lists.manage', {
                                 bookmarkCollection: collection?.hash,
@@ -113,6 +127,8 @@ const BookmarkCollectionCard = ({
                             {t('my.manage')}
                         </PrimaryLink>
                         <PrimaryLink
+                            data-testid="view-list-button"
+                            aria-label={`View ${collection.title} list`}
                             href={useLocalizedRoute('lists.view', {
                                 bookmarkCollection: collection?.hash,
                             })}
@@ -123,6 +139,8 @@ const BookmarkCollectionCard = ({
                     </div>
                 ) : (
                     <PrimaryLink
+                        data-testid="view-list-button"
+                        aria-label={`View ${collection.title} list`}
                         href={useLocalizedRoute('lists.view', {
                             bookmarkCollection: collection?.hash,
                         })}
