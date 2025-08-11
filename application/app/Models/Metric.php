@@ -135,10 +135,6 @@ class Metric extends Model
                 $facetData = $yearCounts;
             }
 
-            if (empty($facetData)) {
-                return [];
-            }
-
             $seriesData = [];
             foreach ($this->rules as $rule) {
                 try {
@@ -156,18 +152,20 @@ class Metric extends Model
                     ];
                 } catch (\Exception $e) {
 
-                    $seriesData[] = [
-                        'id' => $rule->title ?? "Rule {$rule->id}",
-                        'data' => [],
-                        'count_by' => $countBy,
-                        'type' => $type,
-                    ];
+                    // $seriesData[] = [
+                    //     'id' => $rule->title ?? "Rule {$rule->id}",
+                    //     'data' => [],
+                    //     'count_by' => $countBy,
+                    //     'type' => $type,
+                    // ];
+                    return $e;
                 }
             }
 
             return $seriesData;
         } catch (\Exception $e) {
-            return [];
+
+            return $e;
         }
     }
 
