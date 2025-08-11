@@ -12,7 +12,6 @@ interface ServiceCategoriesProps {
 
 interface CategoryChild {
   id: number;
-  hash: string;
   name: string;
   slug: string;
 }
@@ -28,19 +27,19 @@ export default function ServiceCategories({
       {categories.map((category, index) => {
         const isLast = index === categories.length - 1;
         return (
-          <React.Fragment key={category.hash}>
-            <div className="w-full" data-testid={`category-group-${category.hash}`}>
+          <React.Fragment key={category.id}>
+            <div className="w-full" data-testid={`category-group-${category.id}`}>
               <div className="flex flex-col justify-start items-start gap-3.5">
                 <div className="self-stretch justify-start text-content text-base text-slate-900 font-semibold leading-none">
                   {category.name}
                 </div>
                 <div className="flex flex-col justify-start items-start gap-[5px]">
                   {(category.children as CategoryChild[])?.map((subCategory: CategoryChild) => (
-                    <div key={subCategory.hash} className="self-stretch py-[5px] inline-flex justify-start items-center gap-2.5">
+                    <div key={subCategory.id} className="self-stretch py-[5px] inline-flex justify-start items-center gap-2.5">
                       {filterable && (
                         <Checkbox
-                          checked={selectedCategories.includes(String(subCategory.hash))}
-                          onChange={() => onCategoryToggle(String(subCategory.hash))}
+                          checked={selectedCategories.includes(String(subCategory.id))}
+                          onChange={() => onCategoryToggle(String(subCategory.id))}
                           className="bg-card"
                         />
                       )}

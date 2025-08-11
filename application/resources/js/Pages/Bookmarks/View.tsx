@@ -204,7 +204,7 @@ const View = (props: BookmarkCollectionListProps) => {
         switch (props.type) {
             case 'proposals':
                 return {
-                    proposals: props.proposals.data.map((item) => item.hash),
+                    proposals: props.proposals.data.map((item) => item.id),
                 };
             case 'communities':
                 return {
@@ -213,11 +213,11 @@ const View = (props: BookmarkCollectionListProps) => {
                     ),
                 };
             case 'groups':
-                return { groups: props.groups.data.map((item) => item.hash) };
+                return { groups: props.groups.data.map((item) => item.uuid) };
             case 'ideascaleProfiles':
                 return {
                     ideascaleProfiles: props.ideascaleProfiles.data.map(
-                        (item) => item.hash,
+                        (item) => item.id,
                     ),
                 };
             case 'reviews':

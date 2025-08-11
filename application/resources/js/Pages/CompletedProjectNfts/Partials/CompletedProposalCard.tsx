@@ -20,7 +20,7 @@ export default function CompletedProposalCard({
 
     return (
         <div
-            key={proposal.hash}
+            key={proposal.id}
             className={`flex w-full flex-col  items-center justify-between rounded-lg p-4 shadow-sm lg:relative`}
         >
             <div

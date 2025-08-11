@@ -216,7 +216,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
             case 'ideascaleProfiles':
                 return {
                     ideascaleProfiles: props.ideascaleProfiles.data.map(
-                        (item) => item.uuid,
+                        (item) => item.id,
                     ),
                 };
             case 'reviews':

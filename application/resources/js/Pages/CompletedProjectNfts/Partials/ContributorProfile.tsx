@@ -82,7 +82,7 @@ const ContributorProfile = ({ contributorProfiles, author, isOwner }: Contributo
             <div className="flex flex-wrap gap-8 justify-start">
               {contributorProfiles.map((contributor, index) => {
                 // Ensure a unique key by combining id and index as fallback
-                const uniqueKey = contributor.hash ? `contributor-${contributor.hash}-${index}` : `contributor-index-${index}`;
+                const uniqueKey = contributor.id ? `contributor-${contributor.id}-${index}` : `contributor-index-${index}`;
 
                 return (
                   <div
