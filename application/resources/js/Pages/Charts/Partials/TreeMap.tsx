@@ -139,7 +139,6 @@ const TreeMap: React.FC<TreeMapProps> = ({ chartData, viewBy }) => {
                 style={{
                     height: config.height,
                 }}
-                className="min-w-[600px] sm:min-w-full"
             >
                 <ResponsiveTreeMap
                     data={normalizedData}
@@ -175,7 +174,7 @@ const TreeMap: React.FC<TreeMapProps> = ({ chartData, viewBy }) => {
                     motionConfig="gentle"
                     tooltip={(node: any) => (
                         <div
-                            className={`bg-tooltip text-content-light rounded-xs p-${isMobile ? '2' : '4'} w-fit border shadow-lg`}
+                            className={`bg-tooltip text-content-light rounded-xs p-${isMobile ? '2' : '4'} w-52 shadow-lg`}
                         >
                             <Paragraph size="sm">
                                 <strong className="mb-1 block">

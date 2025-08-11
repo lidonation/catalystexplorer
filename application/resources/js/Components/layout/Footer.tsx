@@ -51,6 +51,8 @@ export default function Footer() {
                                         title={t('monthlyReports')}
                                         active={false}
                                         disable={true}
+                                        showDisableTag={false}
+                                        disabledTextColor="text-gray-200"
                                         className="hover:!bg-transparent"
                                     ></NavLinkItem>
                                 </Paragraph>
@@ -135,6 +137,8 @@ export default function Footer() {
                                         title={t('impact')}
                                         active={false}
                                         disable={true}
+                                        showDisableTag={false}
+                                        className="text-gray-200"
                                     ></NavLinkItem>
                                 </Paragraph>
                             </li>
@@ -146,6 +150,8 @@ export default function Footer() {
                                         title={t('spending')}
                                         active={false}
                                         disable={true}
+                                        showDisableTag={false}
+                                        className="text-gray-200"
                                     ></NavLinkItem>
                                 </Paragraph>
                             </li>
@@ -157,6 +163,8 @@ export default function Footer() {
                                         title={t('general')}
                                         active={false}
                                         disable={true}
+                                        showDisableTag={false}
+                                        className="text-gray-200"
                                     ></NavLinkItem>
                                 </Paragraph>
                             </li>
@@ -168,6 +176,8 @@ export default function Footer() {
                                         title={t('ccv4Votes')}
                                         active={false}
                                         disable={true}
+                                        showDisableTag={false}
+                                        className="text-gray-200"
                                     ></NavLinkItem>
                                 </Paragraph>
                             </li>
@@ -179,6 +189,8 @@ export default function Footer() {
                                         title={t('catalystAPI')}
                                         active={false}
                                         disable={true}
+                                        showDisableTag={false}
+                                        className="text-gray-200"
                                     ></NavLinkItem>
                                 </Paragraph>
                             </li>
@@ -190,6 +202,8 @@ export default function Footer() {
                                         title={t('proposalCSVs')}
                                         active={false}
                                         disable={true}
+                                        showDisableTag={false}
+                                        className="text-gray-200"
                                     ></NavLinkItem>
                                 </Paragraph>
                             </li>
