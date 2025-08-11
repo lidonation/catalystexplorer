@@ -113,6 +113,7 @@ export default function Selector({
                 <PopoverContent
                     className="bg-background relative z-150 w-full min-w-[var(--radix-popover-trigger-width)] p-1"
                     align="start"
+                    data-testid="options-container"
                 >
                     <div>
                         <div className="flex justify-end">

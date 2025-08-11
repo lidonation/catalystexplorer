@@ -53,7 +53,7 @@ export default function SetChartMetrics({
    
 
     return (
-        <div>
+        <div data-testid="set-chart-metrics">
             <div className="mb-4 text-center">
                 <Title level="3">{t('charts.setMetrics')}</Title>
             </div>

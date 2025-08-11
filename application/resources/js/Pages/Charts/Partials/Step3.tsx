@@ -155,6 +155,7 @@ export default function Step3({
                     },
                 );
                 onChartDataReceived?.(response?.data); 
+                console.log('test', response?.data);
             } catch (error: any) {
                 console.error(
                     'Error fetching proposal metrics:',
@@ -185,9 +186,9 @@ export default function Step3({
         return `mt-4 w-full ${!isChartsSelected || disabled ? 'cursor-not-allowed opacity-50' : ''}`;
     }, [isChartsSelected, disabled]);
 
-    useEffect(() => {
-        console.log('Params Object:', paramsObject);
-    }, [paramsObject]);
+    useEffect(()=>{
+        console.log('options', chartOptions);
+    })
 
     return (
         <div className={disabled ? 'pointer-events-none opacity-50' : ''}>
@@ -201,12 +202,14 @@ export default function Step3({
                     selectedItems={selectedItems}
                     setSelectedItems={handleSelectorChange}
                     disabled={trendChartDisabled}
+                    data-testid="chart-style-selector"
                 />
             </div>
             <PrimaryButton
                 className={buttonClassName}
                 disabled={!isChartsSelected}
                 onClick={handleComplete}
+                data-testid='view-charts-button'
             >
                 {t('charts.viewCharts')}
             </PrimaryButton>
