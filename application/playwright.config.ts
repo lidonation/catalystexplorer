@@ -9,7 +9,7 @@ export default defineConfig({
     reporter: [['html', { open: 'never' }], ['allure-playwright']],
 
     use: {
-        baseURL: 'https://preview.catalystexplorer.com/en'',
+        baseURL: 'https://preview.catalystexplorer.com/en',
         trace: 'retain-on-failure',
         screenshot: 'only-on-failure',
         video: 'retain-on-failure',
