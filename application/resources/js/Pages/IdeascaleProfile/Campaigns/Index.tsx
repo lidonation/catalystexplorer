@@ -33,7 +33,7 @@ export default function Campaigns({
                             >
                                 {(campaign) => (
                                     <CampaignCardMini
-                                        key={campaign.hash}
+                    key={campaign.id}
                                         campaign={campaign}
                                         fund={campaign?.fund}
                                     />
