@@ -19,9 +19,9 @@ import {
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { router, useForm } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
@@ -40,7 +40,7 @@ interface Step3Props {
     activeStep: number;
     proposals: PaginatedData<ProposalData[]>;
     campaigns: Campaign[];
-    selectedProposals: { hash: string; vote: number|null }[];
+    selectedProposals: { hash: string; vote: number | null }[];
     filters: SearchParams;
     bookmarkHash: string;
     fundSlug?: string;
@@ -64,9 +64,7 @@ const Step3: React.FC<Step3Props> = ({
     });
 
     const [selectedIds, setSelectedIds] =
-        useState<{ hash: string; vote: number | null }[]>(
-            selectedProposals,
-        );
+        useState<{ hash: string; vote: number | null }[]>(selectedProposals);
 
     const form = useForm({
         proposals: selectedIds,
@@ -108,21 +106,23 @@ const Step3: React.FC<Step3Props> = ({
         return baseFilters;
     };
 
-    const handleVote = (proposalHash: string, vote: number | null) => {
+  const handleVote = (proposalHash: string, vote: number | null) => {
+      setSelectedIds((prev) => {
+          if (vote === null) {
+              return prev.filter((item) => item.hash !== proposalHash);
+          }
 
-        setSelectedIds((prev) => {
-            const existing = prev.find((item) => item.hash === proposalHash);
+          const existing = prev.find((item) => item.hash === proposalHash);
 
-            if (!existing) {
-                return [...prev, { hash: proposalHash, vote }];
-            }
+          if (!existing) {
+              return [...prev, { hash: proposalHash, vote }];
+          }
 
-            return prev.map((item) =>
-                item.hash === proposalHash ? { ...item, vote } : item,
-            );
-        });
-
-    };
+          return prev.map((item) =>
+              item.hash === proposalHash ? { ...item, vote } : item,
+          );
+      });
+  };
 
     const handleSearch = (search: string) => {
         const updatedFilters: Record<
@@ -204,7 +204,12 @@ const Step3: React.FC<Step3Props> = ({
                                         size="sm"
                                         className="text-gray-persist bg-background rounded-md px-3 py-1 font-medium shadow"
                                     >
-                                        {selectedIds.length}/{proposals.total}
+                                        {
+                                            selectedIds.filter(
+                                                (item) => item.vote !== null,
+                                            ).length
+                                        }
+                                        /{proposals.total}
                                     </Paragraph>
                                 </div>
 
@@ -286,11 +291,8 @@ const Step3: React.FC<Step3Props> = ({
                                                             selected.vote ==
                                                                 VoteEnum.YES)
                                                     }
-                                                    onVote={(proposal, hash) =>
-                                                        handleVote(
-                                                            proposal,
-                                                            hash,
-                                                        )
+                                                    onVote={(hash, vote) =>
+                                                        handleVote(hash, vote)
                                                     }
                                                     currentVote={selected?.vote}
                                                 />

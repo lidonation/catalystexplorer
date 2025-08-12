@@ -178,8 +178,10 @@ const Manage = (props: BookmarkCollectionListProps) => {
             <header className="container mt-4 flex flex-col items-start lg:mt-6">
                 <Title level="1">
                     {bookmarkCollection.title ?? ''}
-                    {bookmarkCollection.tinder_direction === 'right' && t('rightSwipes')}
-                    {bookmarkCollection.tinder_direction === 'left' && t('leftSwipes')}
+                    {bookmarkCollection.tinder_direction === 'right' &&
+                        t('rightSwipes')}
+                    {bookmarkCollection.tinder_direction === 'left' &&
+                        t('leftSwipes')}
                 </Title>
                 <p className="text-content">
                     {t(bookmarkCollection.content ?? '')}
@@ -197,7 +199,6 @@ const Manage = (props: BookmarkCollectionListProps) => {
                 <div className="container w-full py-4 lg:relative">
                     <div className="top-6 right-8 z-50 mb-6 flex flex-row justify-between gap-4 lg:absolute lg:mb-0 lg:ml-auto">
                         <button
-
                             className="text-primary text-sm text-nowrap hover:cursor-pointer"
                             onClick={() => setActiveEditModal(true)}
                         >
@@ -244,6 +245,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
                 isOpen={!!activeEditModal}
                 onClose={() => setActiveEditModal(false)}
                 logo={false}
+        
             >
                 <EditListForm
                     bookmarkCollection={bookmarkCollection}

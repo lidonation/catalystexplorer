@@ -45,21 +45,21 @@ export default function WorkflowLayout({
                     backgroundRepeat: 'no-repeat',
                 }}
             >
-                <div className="@container relative flex w-full flex-row justify-center">
+                <div className="relative flex w-full flex-row justify-center min-h-full">
                     {/* Main Content (Full Width on Small Screens) */}
 
                     <div
-                        className={`bg-background relative max-h-[90vh] w-full overflow-auto rounded-lg lg:overflow-y-auto @lg:w-2/3 @lg:min-w-[400px] @lg:rounded-l-lg ${contentClassName || ''}`}
+                        className={`bg-background relative h-full w-full overflow-auto rounded-lg lg:overflow-y-auto @lg:w-2/3 @lg:min-w-[400px] @lg:rounded-l-lg ${contentClassName || ''}`}
                     >
-                        {/* Toggle Button for Small Screens */}
-                        <div className="@container relative">
+                        <div className="relative h-full">
                             {children}
                             <button
                                 onClick={() => setIsOpen(!isOpen)}
-                                className="bg-primary text-content-light hover:bg-background-tertiary hover:text-content-secondary focus:bg-background-accent active:bg-background-tertiary absolute top-0 top-20 right-4 z-5 rounded-full p-2 transition duration-150 ease-in-out lg:hidden"
+                                className="bg-primary text-content-light hover:bg-background-tertiary hover:text-content-secondary focus:bg-background-accent active:bg-background-tertiary absolute top-20 right-4 z-5 rounded-full p-2 transition duration-150 ease-in-out lg:hidden"
                             >
                                 <HelpCircleIcon />
                             </button>
+
                             <div className="absolute top-28 right-0 z-10 mx-4 h-full lg:hidden">
                                 <div
                                     className={`bg-primary flex h-full flex-col items-center justify-center gap-y-3 overflow-hidden rounded-lg shadow-lg transition-all duration-300 ease-in-out lg:hidden ${isOpen ? 'w-full translate-x-0 px-6' : 'max-w-0 translate-x-full px-0'}`}
@@ -82,8 +82,6 @@ export default function WorkflowLayout({
                                 </div>
                             </div>
                         </div>
-
-                        {/* Animated Sidebar for Small Screens */}
                     </div>
 
                     {/* Sidebar for Large Screens */}
