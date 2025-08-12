@@ -179,7 +179,7 @@ export function ChartLoading({ chartType = 'bar' }: { chartType?: 'bar' | 'treem
     };
 
     return (
-        <div className="chart-loading-wrapper">
+        <div className="chart-loading-wrapper" data-testid="charts-loader">
             <div className="bg-background relative h-fit rounded-lg shadow-md p-6">
                 <div className="animate-pulse">
                     <div className="mb-6">

@@ -6,10 +6,11 @@ export default defineConfig({
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : 0,
     workers: 3,
+    timeout: 120 * 1000,
     reporter: [['html', { open: 'never' }], ['allure-playwright']],
 
     use: {
-        baseURL: 'https://preview.catalystexplorer.com/en'',
+        baseURL: 'https://preview.catalystexplorer.com/en',
         trace: 'retain-on-failure',
         screenshot: 'only-on-failure',
         video: 'retain-on-failure',

@@ -19,12 +19,14 @@ import IdeascaleProfilePaginatedList from '../IdeascaleProfile/Partials/Ideascal
 import ProposalPaginatedList from '../Proposals/Partials/ProposalPaginatedList';
 import BookmarkModelSearch from './Partials/BookmarkModelSearch';
 import EditListForm, { ListForm } from './Partials/EditListForm';
+import DropdownMenu, { DropdownMenuItem } from './Partials/DropdownMenu';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import CommunityData = App.DataTransferObjects.CommunityData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import GroupData = App.DataTransferObjects.GroupData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ReviewData = App.DataTransferObjects.ReviewData;
+import { useLocalizedRoute } from '@/utils/localizedRoute';
 
 type BookmarkCollectionListProps =
     | {
@@ -77,6 +79,59 @@ const Manage = (props: BookmarkCollectionListProps) => {
 
     const [activeEditModal, setActiveEditModal] = useState<boolean>(false);
     const [activeConfirm, setActiveConfirm] = useState<boolean>(false);
+
+    const hasItems = (bookmarkCollection.items_count ?? 0) > 0;
+    const isVoterList = bookmarkCollection.list_type === 'voter';
+
+    const getPublishToIpfsTooltip = () => {
+        if (!hasItems && !isVoterList) {
+            return t('bookmarks.listMustHaveItemsAndVoter');
+        }
+        if (!hasItems) {
+            return t('bookmarks.listMustHaveItems');
+        }
+        if (!isVoterList) {
+            return t('bookmarks.onlyVoterLists');
+        }
+        return undefined;
+    };
+
+    const dropdownMenuItems: DropdownMenuItem[] = [
+        {
+            label: t('bookmarks.viewAsPublic'),
+            type: 'link',
+            href: generateLocalizedRoute('lists.view', {
+                bookmarkCollection: bookmarkCollection.hash,
+                type: 'proposals',
+            }),
+            onClick: () => {
+                // Handle navigation if needed
+            }
+        },
+        {
+            label: t('bookmarks.editListItem'),
+            type: 'button',
+            onClick: () => {
+                setActiveEditModal(true);
+            }
+        },
+        {
+            label: t('bookmarks.publishToIpfs'),
+            type: 'link',
+            href: hasItems && isVoterList ? useLocalizedRoute('workflows.publishToIpfs.index', {
+                step: 1,
+                bookmarkHash: bookmarkCollection.hash
+            }) : undefined,
+            disabled: !hasItems || !isVoterList,
+            disabledTooltip: getPublishToIpfsTooltip(),
+            onClick: () => {
+                if (!hasItems || !isVoterList) {
+                    return;
+                }
+                // Navigation is handled by the href
+            }
+        }
+    ];
 
     const handleUpdate = (form: ListForm) => {
         form.post(
@@ -204,15 +259,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
                         >
                             {`${t('bookmarks.listSetting')}`}
                         </button>
-                        <Link
-                            href={generateLocalizedRoute('lists.view', {
-                                bookmarkCollection: bookmarkCollection.hash,
-                                type: 'proposals',
-                            })}
-                            className="text-primary text-sm text-nowrap"
-                        >
-                            {t('bookmarks.viewPublic')}
-                        </Link>
+                        <DropdownMenu items={dropdownMenuItems} />
                     </div>
                     <BookmarkModelSearch
                         activeTab={activeTab}
