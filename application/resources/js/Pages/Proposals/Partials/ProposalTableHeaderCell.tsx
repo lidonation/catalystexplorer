@@ -5,7 +5,7 @@ import React from 'react';
 
 
 interface TableHeaderCellProps {
-  label: string;
+  label: string | React.ReactNode;
   sortable?: boolean;
   sortDirection?: 'asc' | 'desc' | null;
   onSort?: () => void;
@@ -19,25 +19,39 @@ const TableHeaderCell: React.FC<TableHeaderCellProps> = ({
   onSort,
   isLastColumn = false,
 }) => (
-  <th className="px-6 py-3 border-r border-background-lighter">
-    <div className="flex items-center justify-center gap-1 cursor-pointer" onClick={sortable ? onSort : undefined}>
-      <Paragraph className="text-dark">{label}</Paragraph>
-      {sortable && (
-        <div className="flex-col gap-2">
-          <ArrowUpIcon
-            width={8}
-            height={6}
-            className={sortDirection === 'asc' ? 'text-primary' : 'text-dark'}
-          />
-          <ArrowDownIcon
-            width={8}
-            height={5}
-            className={sortDirection === 'desc' ? 'text-primary' : 'text-dark'}
-          />
-        </div>
-      )}
-    </div>
-  </th>
+  <div 
+    className="flex items-center justify-center gap-1 cursor-pointer" 
+    onClick={sortable ? onSort : undefined}
+    data-testid="table-header-cell"
+  >
+    {typeof label === 'string' ? (
+      <Paragraph 
+        size="sm"
+        className="text-content/60 text-left font-medium text-nowrap"
+        data-testid="table-header-label"
+      >
+        {label}
+      </Paragraph>
+    ) : (
+      <div className="text-content/60 text-left font-medium text-nowrap" data-testid="table-header-label-element">{label}</div>
+    )}
+    {sortable && (
+      <div className="flex-col gap-2" data-testid="table-header-sort-icons">
+        <ArrowUpIcon
+          width={8}
+          height={6}
+          className={sortDirection === 'asc' ? 'text-primary' : 'text-content/60'}
+          data-testid="table-header-sort-up"
+        />
+        <ArrowDownIcon
+          width={8}
+          height={5}
+          className={sortDirection === 'desc' ? 'text-primary' : 'text-content/60'}
+          data-testid="table-header-sort-down"
+        />
+      </div>
+    )}
+  </div>
 );
 
 export default TableHeaderCell;

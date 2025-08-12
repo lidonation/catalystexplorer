@@ -1,7 +1,7 @@
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 import useEscapeKey from '@/Hooks/useEscapeKey';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ReactNode, useEffect, useRef } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import Button from '../atoms/Button';
 import CatalystLogo from '../atoms/CatalystLogo';
 import Title from '../atoms/Title';
@@ -24,7 +24,7 @@ function Modal({
     onClose,
     centered = false,
     logo = true,
-   contentClasses = 'max-w-md'
+    contentClasses = 'max-w-md',
 }: ModalProps) {
     const sidebarRef = useRef<HTMLDivElement | null>(null);
     const { t } = useLaravelReactI18n();
@@ -68,13 +68,16 @@ function Modal({
 
             {/* Sidebar or Centered Modal */}
             <div
-                className={`${centered
-                    ? `w-full h-full flex items-center justify-center sm:pl-(--sidebar-width)`
-                    : 'top-0 right-0 h-full min-w-[24rem] lg:ml-auto'
+                className={`${
+                    centered
+                        ? `flex h-full w-full items-center justify-center sm:pl-(--sidebar-width)`
+                        : 'absolute h-full w-full'
                 }`}
                 tabIndex={0}
             >
-                <div className={`bg-background fixed z-50 shadow-lg focus:outline-hidden rounded-lg  ${contentClasses}`}>
+                <div
+                    className={`bg-background fixed z-50 rounded-lg shadow-lg focus:outline-hidden ${!centered ? 'top-0 right-0 h-full' : ''} ${contentClasses}`}
+                >
                     {!centered && (
                         <header className="border-border-primary flex items-center justify-between border-b px-6 py-4">
                             <Title
@@ -103,9 +106,7 @@ function Modal({
                                 <CatalystLogo className="object-contain" />
                             </div>
                         )}
-                        <section>
-                            {children}
-                        </section>
+                        <section>{children}</section>
                     </div>
                 </div>
             </div>
