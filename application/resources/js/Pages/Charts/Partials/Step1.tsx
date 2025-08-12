@@ -151,6 +151,7 @@ export default function Step1({ onCompletionChange, onRulesChange }: Step1Props)
                     checked={proposalTypes?.includes('unfunded') || false}
                     onChange={handleUnfundedChange}
                     className="checked:bg-primary"
+                    data-testid="unfunded-proposals-checkbox"
                 />
             </div>
 
@@ -188,6 +189,7 @@ export default function Step1({ onCompletionChange, onRulesChange }: Step1Props)
                     checked={proposalTypes?.includes('submitted') || false}
                     onChange={handleSubmittedChange}
                     className="checked:bg-primary"
+                    data-testid="submitted-proposals-checkbox"
                 />
             </div>
         </div>

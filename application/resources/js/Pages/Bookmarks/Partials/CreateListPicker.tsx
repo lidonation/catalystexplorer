@@ -21,9 +21,16 @@ export default function CreateListPicker({showPickingList, setPickingList}: {
             centered
             contentClasses="max-w-2xl"
             onClose={() => setPickingList(false)}
+            data-testid="create-list-picker"
         >
             <div className="flex flex-col gap-8 px-6 sm:px-8 py-10 sm:py-16">
-                <Title className='text-center' level="5">{t('my.createListTitle')}</Title>
+                <Title 
+                    className='text-center' 
+                    level="5"
+                    data-testid="list-title"
+                >
+                    {t('my.createListTitle')}
+                </Title>
 
                 <section className="grid grid-cols-2">
                     <div className="border-border-secondary col-span-2 -mb-px border p-4">
@@ -36,6 +43,8 @@ export default function CreateListPicker({showPickingList, setPickingList}: {
                                     'workflows.createVoterList.index',
                                     { step: 1 },
                                 )}
+                                data-testid="create-voting-list-button"
+                                aria-label="Create voting list"
                             >
                                 {`+ ${t('my.createVotingList')}`}
                             </PrimaryLink>
@@ -53,6 +62,8 @@ export default function CreateListPicker({showPickingList, setPickingList}: {
                                         'workflows.tinderProposal.index',
                                         { step: 1 },
                                     )}
+                                    data-testid="create-tinder-list-button"
+                                    aria-label="Create tinder list"
                                 >
                                     {`+ ${t('my.createTinderList')}`}
                                 </SecondaryLink>
@@ -71,6 +82,8 @@ export default function CreateListPicker({showPickingList, setPickingList}: {
                                         'workflows.bookmarks.index',
                                         { step: 1 },
                                     )}
+                                    data-testid="create-bookmark-list-button"
+                                    aria-label="Create bookmark list"
                                 >
                                     {`+ ${t('my.createBookmarkList')}`}
                                 </SecondaryLink>
