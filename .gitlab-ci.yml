@@ -565,3 +565,14 @@ sem-release:
     - echo ~/.git-credentials
   script:
     - semantic-release
+    - |
+      if git show-ref --verify --quiet refs/remotes/origin/dev; then
+        echo "Dev branch exists, proceeding with merge..."
+        git fetch origin dev:dev
+        git checkout dev
+        git merge main --no-ff -m "chore: merge release changes from main to dev [skip ci]"
+        git push origin dev
+        echo "Successfully merged main to dev"
+      else
+        echo "Dev branch does not exist, skipping merge"
+      fi

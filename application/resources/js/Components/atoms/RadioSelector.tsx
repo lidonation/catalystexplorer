@@ -15,6 +15,7 @@ type RadioSelectorProps = {
     context?: string;
     className?: string;
     placeholder?: string;
+    'data-testid'?: string;
 };
 
 export default function RadioSelector({
@@ -25,6 +26,7 @@ export default function RadioSelector({
     className,
     bgColor = 'bg-background',
     placeholder = '',
+    'data-testid': dataTestId
 }: RadioSelectorProps) {
     const [open, setOpen] = useState(false);
     const { t } = useLaravelReactI18n();
@@ -46,7 +48,7 @@ export default function RadioSelector({
     };
 
     return (
-        <div className={cn('h-full rounded-lg', className, bgColor)}>
+        <div className={cn('h-full rounded-lg', className, bgColor)} data-testid={dataTestId}>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <button
@@ -80,6 +82,7 @@ export default function RadioSelector({
                                 key={option.value}
                                 onClick={() => handleSelect(option.value)}
                                 className="hover:bg-background-lighter focus:bg-background-lighter aria-selected:bg-background-lighter relative flex w-full cursor-pointer items-center justify-between rounded-xs px-3 py-1.5 text-sm outline-none select-none"
+                                data-testid={`radio-selector-option-${Array.isArray(option.value) ? option.value.join('-') : option.value}`}
                             >
                                 <span>{option.label}</span>
                                 <input
