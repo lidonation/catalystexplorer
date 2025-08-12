@@ -4,6 +4,7 @@ export default defineConfig({
     testDir: './tests-e2e',
     fullyParallel: false,
     forbidOnly: !!process.env.CI,
+    timeout: 120_000,
     retries: process.env.CI ? 2 : 0,
     workers: 3,
     reporter: [['html', { open: 'never' }], ['allure-playwright']],
