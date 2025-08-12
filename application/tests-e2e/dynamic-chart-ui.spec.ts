@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test.describe('Rendering Dynamic Charts', () => {
     test.beforeEach(async ({ page }) => {
-        await page.goto('https://preview.catalystexplorer.com/en', {
+        await page.goto('https://preview.catalystexplorer.com/en/proposals/charts', {
             waitUntil: 'load',
         });
 
