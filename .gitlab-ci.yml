@@ -204,7 +204,7 @@ pest:
     expire_in: 1 day
     paths:
       - ./application/test-results/
-before_script:
+  before_script:
   - set -xev
   - cd application
   - yarn install --frozen-lockfile --ignore-engines
