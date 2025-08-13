@@ -482,9 +482,9 @@ Route::localized(
 
         Route::prefix('numbers')->as('numbers.')
             ->group(function () {
-                Route::get('/impact', fn() => Inertia::render(component: 'ComingSoon', props: ['context' => 'Impact Numbers']))->name('impact');
-                Route::get('/spending', fn() => Inertia::render('ComingSoon', props: ['context' => 'Spending Numbers']))->name('spending');
-                Route::get('/general', fn() => Inertia::render('ComingSoon', props: ['context' => 'General Numbers']))->name('general');
+                Route::get('/impact', fn() => Inertia::render('ComingSoon', ['context' => 'Impact Numbers']))->name('impact');
+                Route::get('/spending', fn() => Inertia::render('ComingSoon', ['context' => 'Spending Numbers']))->name('spending');
+                Route::get('/general', fn() => Inertia::render('ComingSoon', ['context' => 'General Numbers']))->name('general');
             });
 
         Route::prefix('ccv4')->as('ccv4.')
