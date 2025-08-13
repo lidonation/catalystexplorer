@@ -10,7 +10,7 @@ export default defineConfig({
     reporter: [['html', { open: 'never' }], ['allure-playwright']],
 
     use: {
-        baseURL: process.env.CI ? 'http://localhost:3000' : 'https://preview.catalystexplorer.com/en',
+        baseURL: process.env.CI ? 'http://localhost/en' : 'https://preview.catalystexplorer.com/en',
         trace: 'retain-on-failure',
         screenshot: 'only-on-failure',
         video: 'retain-on-failure',
