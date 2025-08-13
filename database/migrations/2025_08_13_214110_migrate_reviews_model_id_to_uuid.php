@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\DB;
 return new class extends Migration
 {
     /**
+     * Disable automatic transactions for this migration
+     */
+    public $withinTransaction = false;
+    
+    /**
      * Run the migrations.
      */
     public function up(): void
@@ -20,36 +25,17 @@ return new class extends Migration
             ->count();
         echo "Total Discussion reviews to migrate: $discussionReviews\n";
 
-        // Step 2: Map Discussion reviews from old_id to UUID in batches
+        // Step 2: Map Discussion reviews from old_id to UUID
         echo "Updating Discussion reviews with UUIDs...\n";
-        $batchSize = 10000;
-        $totalAffected = 0;
-        $offset = 0;
-        
-        do {
-            echo "Processing batch starting at offset $offset...\n";
-            $affected = DB::affectingStatement("
-                UPDATE reviews 
-                SET model_id = d.id::text
-                FROM discussions d 
-                WHERE reviews.model_type = 'App\\Models\\Discussion'
-                AND reviews.model_id ~ '^[0-9]+$'
-                AND reviews.model_id::integer = d.old_id
-                AND reviews.id IN (
-                    SELECT id FROM reviews 
-                    WHERE model_type = 'App\\Models\\Discussion' 
-                    AND model_id ~ '^[0-9]+$'
-                    ORDER BY id 
-                    LIMIT $batchSize OFFSET $offset
-                )
-            ");
-            
-            $totalAffected += $affected;
-            $offset += $batchSize;
-            echo "  Updated $affected records in this batch\n";
-        } while ($affected > 0);
-        
-        echo "Updated $totalAffected Discussion reviews with UUIDs total\n";
+        $affected = DB::affectingStatement("
+            UPDATE reviews 
+            SET model_id = d.id::text
+            FROM discussions d 
+            WHERE reviews.model_type = 'App\\Models\\Discussion'
+            AND reviews.model_id ~ '^[0-9]+$'
+            AND reviews.model_id::integer = d.old_id
+        ");
+        echo "Updated $affected Discussion reviews with UUIDs\n";
 
         // Step 3: Remove all orphaned reviews that couldn't be mapped to valid UUIDs
         $orphanedReviews = DB::table('reviews')
