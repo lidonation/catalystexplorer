@@ -242,10 +242,16 @@ postgresql:
   extraEnvVarsSecret: ""
   ## @param postgresql.extraVolumes Extra volumes to add to the StatefulSet
   ##
-  extraVolumes: []
+  extraVolumes:
+    - name: shm-volume
+      emptyDir:
+        medium: Memory
+        sizeLimit: 1Gi
   ## @param postgresql.extraVolumeMounts Extra volume mounts to add to the container. Normally used with `extraVolumes`.
   ##
-  extraVolumeMounts: []
+  extraVolumeMounts:
+    - name: shm-volume
+      mountPath: /dev/shm
   ## @param postgresql.initContainers Extra init containers to add to the StatefulSet
   ##
   initContainers: []
