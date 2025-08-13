@@ -1,14 +1,33 @@
 FROM mcr.microsoft.com/playwright:v1.53.0-noble
 
-# Install Java, Docker CLI and Docker Compose plugin
+# Install PHP and required extensions
 RUN apt-get update && apt-get install -y \
-    openjdk-11-jre-headless \
+    php8.3 \
+    php8.3-cli \
+    php8.3-fpm \
+    php8.3-mysql \
+    php8.3-pgsql \
+    php8.3-sqlite3 \
+    php8.3-redis \
+    php8.3-curl \
+    php8.3-gd \
+    php8.3-mbstring \
+    php8.3-xml \
+    php8.3-zip \
+    php8.3-bcmath \
+    php8.3-intl \
+    php8.3-readline \
+    php8.3-pcov \
+    php8.3-xdebug \
+    unzip \
+    git \
     curl \
     ca-certificates \
     gnupg \
     lsb-release \
     apt-transport-https \
-    software-properties-common && \
+    software-properties-common \
+    openjdk-11-jre-headless && \
     ln -s /usr/lib/jvm/java-11-openjdk-* /usr/lib/jvm/java-11-openjdk && \
     echo "JAVA_HOME=/usr/lib/jvm/java-11-openjdk" >> /etc/environment && \
     # Add Docker's official GPG key and repo
@@ -20,6 +39,10 @@ RUN apt-get update && apt-get install -y \
     apt-get install -y docker-ce-cli docker-compose-plugin && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Set environment variables
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
@@ -30,3 +53,6 @@ WORKDIR /workspace
 # RUN npm install
 
 RUN npx playwright install --with-deps
+
+# Create a symbolic link for php if needed (Ubuntu 24.04 Noble uses php8.3)
+RUN ln -sf /usr/bin/php8.3 /usr/bin/php

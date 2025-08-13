@@ -215,7 +215,6 @@ pest:
   - php artisan db:seed
   - php artisan serve --host 0.0.0.0 --port 3000 & npx wait-on http://localhost:3000
 
-
 playwright:shard1:
   extends: .playwright_template
   needs: [pest]
