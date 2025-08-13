@@ -44,7 +44,7 @@ spec:
               php artisan view:clear
               php artisan storage:link
 
-{{/*              php artisan migrate --force --isolated*/}}
+              php artisan migrate --force --isolated
 
               php artisan route:clear;
               php artisan event:cache;
