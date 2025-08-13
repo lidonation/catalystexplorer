@@ -99,7 +99,7 @@ export default function ExpandableContentAnimation({
                 onMouseLeave={() => handleHoverChange(false)}
                 className={clsx(
                     'relative top-0 right-0 left-0 w-full',
-                    isHovered && isExpandable && 'absolute',
+                    isHovered && isExpandable && 'absolute z-30',
                 )}
             >
                 <div className="w-full transition-shadow duration-300 ease-in-out">
