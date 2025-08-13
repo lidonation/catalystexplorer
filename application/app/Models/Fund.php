@@ -31,8 +31,7 @@ class Fund extends Model implements HasMedia
         SoftDeletes;
 
     protected $with = [
-        // Temporarily disabled - media library needs model_id column type adjustment
-        // 'media',
+        'media',
     ];
 
     protected $appends = [
