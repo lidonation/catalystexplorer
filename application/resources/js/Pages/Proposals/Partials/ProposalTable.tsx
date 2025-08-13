@@ -57,8 +57,8 @@ interface ProposalTableProps {
     disableSorting?: boolean; // If true, all columns become unsortable
 }
 
-const ProposalTable: React.FC<ProposalTableProps> = ({ 
-    proposals, 
+const ProposalTable: React.FC<ProposalTableProps> = ({
+    proposals,
     columnVisibility = {},
     actionType = 'manage', // Default to 'manage' for backward compatibility
     disableSorting = false // Default to false to maintain existing behavior
@@ -78,11 +78,11 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
         funding: true,
         teams: true,
         yesVotes: false,
-        abstainVotes: false, 
+        abstainVotes: false,
         action: actionType === 'manage',
-        viewProposal: actionType === 'view', 
+        viewProposal: actionType === 'view',
     };
-    
+
     const mergedVisibility = { ...defaultVisibility, ...columnVisibility };
 
     const currentSort = getFilter(ParamsEnum.SORTS) || null;
@@ -133,8 +133,8 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
             sortable: !disableSorting,
             sortKey: 'title',
             renderCell: (proposal: ProposalData) => (
-                <div className="w-80" data-testid={`proposal-title-${proposal.hash}`}>
-                    <Paragraph className="text-md text-content" data-testid={`proposal-title-text-${proposal.hash}`}>
+                <div className="w-80" data-testid={`proposal-title-${proposal.id}`}>
+                    <Paragraph className="text-md text-content" data-testid={`proposal-title-text-${proposal.id}`}>
                         {proposal.title}
                     </Paragraph>
                 </div>
@@ -146,13 +146,13 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
             sortable: !disableSorting,
             sortKey: 'title',
             renderCell: (proposal: ProposalData, { selectedUser, noSelectedUser }: TableHelpers) => (
-                <div className="w-80" data-testid={`proposal-card-header-${proposal.hash}`}>
+                <div className="w-80" data-testid={`proposal-card-header-${proposal.id}`}>
                     <ProposalCardHeader
                         proposal={proposal}
                         userSelected={selectedUser}
                         noSelectedUser={noSelectedUser}
                         isHorizontal={false}
-                        data-testid={`proposal-card-${proposal.hash}`}
+                        data-testid={`proposal-card-${proposal.id}`}
                     />
                 </div>
             ),
@@ -163,9 +163,9 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
             sortable: !disableSorting,
             sortKey: 'fund_id',
             renderCell: (proposal: ProposalData) => (
-                <div className="flex items-center justify-center border border-light-gray-persist bg-light-gray-persist/[10%] px-1 w-16 rounded-md" data-testid={`proposal-fund-${proposal.hash}`}>
+                <div className="flex items-center justify-center border border-light-gray-persist bg-light-gray-persist/[10%] px-1 w-16 rounded-md" data-testid={`proposal-fund-${proposal.id}`}>
                     {proposal.fund?.label && (
-                        <span className="items-center py-1 rounded-full text-xs font-medium text-content" data-testid={`proposal-fund-label-${proposal.hash}`}>
+                        <span className="items-center py-1 rounded-full text-xs font-medium text-content" data-testid={`proposal-fund-label-${proposal.id}`}>
                             {proposal.fund.label}
                         </span>
                     )}
@@ -178,10 +178,10 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
             sortable: !disableSorting,
             sortKey: 'funding_status',
             renderCell: (proposal: ProposalData) => (
-                <div className='flex w-32 items-center justify-center' data-testid={`proposal-status-${proposal.hash}`}>
+                <div className='flex w-32 items-center justify-center' data-testid={`proposal-status-${proposal.id}`}>
                     <ProposalFundingStatus
                         funding_status={proposal.funding_status ?? ''}
-                        data-testid={`proposal-funding-status-${proposal.hash}`}
+                        data-testid={`proposal-funding-status-${proposal.id}`}
                     />
                 </div>
             ),
@@ -192,10 +192,10 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
             sortable: !disableSorting,
             sortKey: 'amount_received',
             renderCell: (proposal: ProposalData) => (
-                <div className="flex w-60" data-testid={`proposal-funding-${proposal.hash}`}>
-                    <ProposalFundingPercentages 
-                        proposal={proposal} 
-                        data-testid={`proposal-funding-percentages-${proposal.hash}`}
+                <div className="flex w-60" data-testid={`proposal-funding-${proposal.id}`}>
+                    <ProposalFundingPercentages
+                        proposal={proposal}
+                        data-testid={`proposal-funding-percentages-${proposal.id}`}
                     />
                 </div>
             ),
@@ -206,13 +206,13 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
             sortable: false, // Keep this always false as it was originally
             sortKey: 'users.proposals_completed',
             renderCell: (proposal: ProposalData, { handleUserClick }: TableHelpers) => (
-                <div className="w-40" data-testid={`proposal-teams-${proposal.hash}`}>
+                <div className="w-40" data-testid={`proposal-teams-${proposal.id}`}>
                     <IdeascaleProfileUsers
                         users={proposal.users}
                         onUserClick={handleUserClick}
                         className="bg-content-light"
                         toolTipProps={t('proposals.viewTeam')}
-                        data-testid={`proposal-ideascale-users-${proposal.hash}`}
+                        data-testid={`proposal-ideascale-users-${proposal.id}`}
                     />
                 </div>
             ),
@@ -235,9 +235,9 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
             sortable: !disableSorting,
             sortKey: 'yes_votes_count',
             renderCell: (proposal: ProposalData) => (
-                <div className="text-center" data-testid={`proposal-yes-votes-${proposal.hash}`}>
-                    <div className="flex items-center justify-center gap-2" data-testid={`proposal-yes-votes-content-${proposal.hash}`}>
-                        <Paragraph className='text-light-gray-persist' data-testid={`proposal-yes-votes-count-${proposal.hash}`}>({shortNumber(proposal.yes_votes_count) || '0'})</Paragraph>
+                <div className="text-center" data-testid={`proposal-yes-votes-${proposal.id}`}>
+                    <div className="flex items-center justify-center gap-2" data-testid={`proposal-yes-votes-content-${proposal.id}`}>
+                        <Paragraph className='text-light-gray-persist' data-testid={`proposal-yes-votes-count-${proposal.id}`}>({shortNumber(proposal.yes_votes_count) || '0'})</Paragraph>
                     </div>
                 </div>
             ),
@@ -260,9 +260,9 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
             sortable: !disableSorting,
             sortKey: 'abstain_votes_count',
             renderCell: (proposal: ProposalData) => (
-                <div className="text-center" data-testid={`proposal-abstain-votes-${proposal.hash}`}>
-                    <div className="flex items-center justify-center gap-2" data-testid={`proposal-abstain-votes-content-${proposal.hash}`}>
-                        <Paragraph className="text-light-gray-persist" data-testid={`proposal-abstain-votes-count-${proposal.hash}`}>({shortNumber(proposal.abstain_votes_count) || '0'})</Paragraph>
+                <div className="text-center" data-testid={`proposal-abstain-votes-${proposal.id}`}>
+                    <div className="flex items-center justify-center gap-2" data-testid={`proposal-abstain-votes-content-${proposal.id}`}>
+                        <Paragraph className="text-light-gray-persist" data-testid={`proposal-abstain-votes-count-${proposal.id}`}>({shortNumber(proposal.abstain_votes_count) || '0'})</Paragraph>
                     </div>
                 </div>
             ),
@@ -271,10 +271,10 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
             key: 'action',
             label: t('proposals.action'),
             renderCell: (proposal: ProposalData) => (
-                <div data-testid={`proposal-action-${proposal.hash}`}>
-                    <ManageProposalButton 
-                        proposal={proposal} 
-                        data-testid={`manage-proposal-button-${proposal.hash}`}
+                <div data-testid={`proposal-action-${proposal.id}`}>
+                    <ManageProposalButton
+                        proposal={proposal}
+                        data-testid={`manage-proposal-button-${proposal.id}`}
                     />
                 </div>
             ),
@@ -283,13 +283,13 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
             key: 'viewProposal',
             label: t('proposals.action'),
             renderCell: (proposal: ProposalData) => (
-                <div className='w-32' data-testid={`proposal-view-${proposal.hash}`}>
+                <div className='w-32' data-testid={`proposal-view-${proposal.id}`}>
                     <a
                         href={proposal.link}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors duration-200 font-medium text-sm"
-                        data-testid={`view-proposal-button-${proposal.hash}`}
+                        data-testid={`view-proposal-button-${proposal.id}`}
                     >
                         {t('proposalComparison.viewProposal')}
                     </a>

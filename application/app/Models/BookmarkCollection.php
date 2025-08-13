@@ -19,7 +19,7 @@ use Spatie\Comments\Models\Concerns\HasComments;
 
 class BookmarkCollection extends Model
 {
-    use HasAuthor, HasComments, HasIpfsFiles, HasMetaData, HasSignatures, Searchable, SoftDeletes, HasUuids;
+    use HasAuthor, HasComments, HasIpfsFiles, HasMetaData, HasSignatures, HasUuids, Searchable, SoftDeletes;
 
     protected $withCount = [
         'items',

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Enums\BookmarkableType;
 use App\Enums\ProposalSearchParams;
 use App\Enums\QueryParamsEnum;
 use App\Models\BookmarkCollection;
@@ -17,7 +16,6 @@ use App\Models\Review;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 use ReflectionMethod;
@@ -30,7 +28,7 @@ class PublishToIpfsController extends Controller
         $method = "step{$step}";
 
         if (method_exists($this, $method)) {
-          
+
             $reflection = new ReflectionMethod($this, $method);
             $parametersCount = $reflection->getNumberOfParameters();
 
@@ -66,16 +64,16 @@ class PublishToIpfsController extends Controller
 
         $bookmarkCollection = null;
         $currentType = $validated['type'] ?? 'proposals';
-        
+
         if ($request->has('type')) {
             $currentPage = 1;
         } else {
             $currentPage = (int) $request->input(ProposalSearchParams::PAGE()->value, 1);
         }
-        
-        if (!empty($validated['bookmarkHash'])) {
+
+        if (! empty($validated['bookmarkHash'])) {
             $bookmarkCollection = BookmarkCollection::byHash($validated['bookmarkHash']);
-            if (!$bookmarkCollection) {
+            if (! $bookmarkCollection) {
                 abort(404, 'Bookmark collection not found');
             }
         }
@@ -102,7 +100,7 @@ class PublishToIpfsController extends Controller
             $filters[QueryParamsEnum::BOOKMARK_COLLECTION()->value] = $request->input(QueryParamsEnum::BOOKMARK_COLLECTION()->value);
         }
 
-        if (!empty($validated['bookmarkHash'])) {
+        if (! empty($validated['bookmarkHash'])) {
             $filters['bookmarkHash'] = $validated['bookmarkHash'];
         }
 
@@ -132,11 +130,11 @@ class PublishToIpfsController extends Controller
 
         try {
             $bookmarkCollection = BookmarkCollection::byHash($validated['bookmarkHash']);
-            
-            if (!$bookmarkCollection) {
+
+            if (! $bookmarkCollection) {
                 return back()->withErrors(['error' => 'Bookmark collection not found.']);
             }
-        
+
             if ($bookmarkCollection->user_id !== auth()->id()) {
                 return back()->withErrors(['error' => 'You do not have permission to publish this collection.']);
             }
@@ -147,13 +145,12 @@ class PublishToIpfsController extends Controller
 
             $jsonLdData = $this->generateBallotJsonLd($bookmarkCollection);
 
-        
             $filename = "ballot-{$bookmarkCollection->hash}.json";
             $cid = $bookmarkCollection->uploadToIpfs(json_encode($jsonLdData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), $filename);
             $gatewayUrl = $bookmarkCollection->getIpfsUrl($cid);
-            
+
             $bookmarkCollection->pinToIpfs($cid);
-            
+
             Meta::where('model_type', BookmarkCollection::class)
                 ->where('model_id', $bookmarkCollection->id)
                 ->where('key', 'ipfs_cid')
@@ -165,11 +162,11 @@ class PublishToIpfsController extends Controller
                 'key' => 'ipfs_cid',
                 'content' => $cid,
             ]);
-            
+
             $ipfsResult = [
                 'cid' => $cid,
                 'gateway_url' => $gatewayUrl,
-                'filename' => $filename
+                'filename' => $filename,
             ];
 
             return redirect()->route('workflows.publishToIpfs.success', [
@@ -180,8 +177,8 @@ class PublishToIpfsController extends Controller
             ]);
 
         } catch (\Exception $e) {
-           
-            return back()->withErrors(['error' => 'Failed to publish to IPFS: ' . $e->getMessage()]);
+
+            return back()->withErrors(['error' => 'Failed to publish to IPFS: '.$e->getMessage()]);
         }
     }
 
@@ -212,7 +209,7 @@ class PublishToIpfsController extends Controller
 
     protected function getBookmarkItemsByType(BookmarkCollection $bookmarkCollection, Request $request, int $currentPage = 1): array
     {
-        
+
         $modelTypes = [
             'proposals' => Proposal::class,
             'communities' => Community::class,
@@ -240,14 +237,14 @@ class PublishToIpfsController extends Controller
         $result = [];
 
         foreach ($modelTypes as $type => $modelClass) {
-            
+
             $bookmarkItemIds = $bookmarkCollection->items
                 ->where('model_type', $modelClass)
                 ->pluck('model_id')
                 ->toArray();
 
             if (empty($bookmarkItemIds)) {
-                
+
                 $result[$type] = [
                     'data' => [],
                     'current_page' => $currentPage,
@@ -257,6 +254,7 @@ class PublishToIpfsController extends Controller
                     'from' => null,
                     'to' => null,
                 ];
+
                 continue;
             }
 
@@ -266,22 +264,22 @@ class PublishToIpfsController extends Controller
             $query = $modelClass::query()
                 ->whereIn('id', $bookmarkItemIds);
 
-           if (!empty($relationships)) {
+            if (! empty($relationships)) {
                 $query->with($relationships);
-            } 
+            }
 
-            if (!empty($counts)) {
+            if (! empty($counts)) {
                 $query->withCount($counts);
             }
 
             $data = $query->paginate(10, ['*'], ProposalSearchParams::PAGE()->value, $currentPage);
 
             $dtoData = $modelClass::toDtoPaginated($data);
-            
+
             $paginatorResult = to_length_aware_paginator($dtoData);
 
             $result[$type] = $paginatorResult->toArray();
-            
+
         }
 
         return $result;
@@ -292,12 +290,12 @@ class PublishToIpfsController extends Controller
      */
     private function generateBallotJsonLd(BookmarkCollection $bookmarkCollection): array
     {
-        
+
         $proposalIds = $bookmarkCollection->items
             ->where('model_type', Proposal::class)
             ->pluck('model_id')
             ->toArray();
-        
+
         $proposals = Proposal::query()
             ->whereIn('id', $proposalIds)
             ->get();
@@ -325,12 +323,12 @@ class PublishToIpfsController extends Controller
                             '@context' => [
                                 'publicKey' => 'CIP100:publicKey',
                                 'signature' => 'CIP100:signature',
-                                'witnessAlgorithm' => 'CIP100:witnessAlgorithm'
+                                'witnessAlgorithm' => 'CIP100:witnessAlgorithm',
                             ],
-                            '@id' => 'CIP100:witness'
-                        ]
+                            '@id' => 'CIP100:witness',
+                        ],
                     ],
-                    '@id' => 'CIP100:authors'
+                    '@id' => 'CIP100:authors',
                 ],
                 'body' => [
                     '@context' => [
@@ -346,17 +344,17 @@ class PublishToIpfsController extends Controller
                                 'referenceHash' => [
                                     '@context' => [
                                         'hashAlgorithm' => 'CIP100:hashAlgorithm',
-                                        'hashDigest' => 'CIP108:hashDigest'
+                                        'hashDigest' => 'CIP108:hashDigest',
                                     ],
-                                    '@id' => 'CIP108:referenceHash'
+                                    '@id' => 'CIP108:referenceHash',
                                 ],
-                                'uri' => 'CIP100:reference-uri'
+                                'uri' => 'CIP100:reference-uri',
                             ],
-                            '@id' => 'CIP108:references'
+                            '@id' => 'CIP108:references',
                         ],
-                        'title' => 'CIP108:title'
+                        'title' => 'CIP108:title',
                     ],
-                    '@id' => 'CIP108:body'
+                    '@id' => 'CIP108:body',
                 ],
                 'bookmark' => 'https://schema.org/BookmarkAction',
                 'list' => 'https://schema.org/Collection',
@@ -377,11 +375,11 @@ class PublishToIpfsController extends Controller
                                 'proposalId' => 'https://schema.org/identifier',
                                 'fundingRequested' => 'https://schema.org/MonetaryAmount',
                                 'currency' => 'https://schema.org/currency',
-                                'fund' => 'https://schema.org/isPartOf'
-                            ]
-                        ]
-                    ]
-                ]
+                                'fund' => 'https://schema.org/isPartOf',
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'authors' => [],
             'hashAlgorithm' => 'blake2b-256',
@@ -409,9 +407,9 @@ class PublishToIpfsController extends Controller
                         'fundingRequested' => $proposal->amount_requested,
                         'currency' => $proposal->currency,
                         'fund' => $proposal->fund->title ?? null,
-                    ]
+                    ],
                 ];
-            })->toArray()
+            })->toArray(),
         ];
     }
 }
