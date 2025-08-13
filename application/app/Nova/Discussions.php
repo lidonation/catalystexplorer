@@ -26,11 +26,12 @@ class Discussions extends Resource
     public function fields(NovaRequest $request): array
     {
         return [
-            ID::make()->sortable(),
+            Text::make('ID', 'id')->sortable(),
 
             //            BelongsTo::make('User', 'user', Users::class)
             //                ->nullable()
             //                ->sortable(),
+
 
             Text::make('Model ID', 'model_id')
                 ->nullable()

@@ -331,7 +331,7 @@ class Proposal extends Model
             ->where('context_type', Proposal::class);
     }
 
-    public function reviews(): Attribute
+    public function reviewsAttribute(): Attribute
     {
         return Attribute::make(
             get: function () {
@@ -344,6 +344,19 @@ class Proposal extends Model
                 })->get();
             }
         );
+    }
+
+    public function reviews(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Review::class,
+            Discussion::class,
+            'model_id', // Foreign key on discussions table
+            'model_id', // Foreign key on reviews table  
+            'id',       // Local key on proposals table
+            'id'        // Local key on discussions table
+        )
+        ->where('discussions.model_type', static::class);
     }
 
     public function discussions(): HasMany
