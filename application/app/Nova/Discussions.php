@@ -9,7 +9,6 @@ use App\Models\Discussion;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\HasMany;
-use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
@@ -31,7 +30,6 @@ class Discussions extends Resource
             //            BelongsTo::make('User', 'user', Users::class)
             //                ->nullable()
             //                ->sortable(),
-
 
             Text::make('Model ID', 'model_id')
                 ->nullable()

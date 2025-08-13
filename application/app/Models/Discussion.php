@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Discussion extends Model
 {
     use HasUuids;
+
     /**
      * The attributes that should be cast.
      *
