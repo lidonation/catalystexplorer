@@ -17,9 +17,6 @@ class ConnectionNodeData extends Data
         public string $name,
 
         #[TypeScriptOptional]
-        public ?string $hash,
-
-        #[TypeScriptOptional]
         public ?string $photo,
 
         #[TypeScriptOptional]

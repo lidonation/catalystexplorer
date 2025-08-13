@@ -12,7 +12,7 @@ final class MilestonePoasSignoffData extends Data
 {
     public function __construct(
 
-        public string $hash,
+        public string $id,
 
         public string $created_at,
 

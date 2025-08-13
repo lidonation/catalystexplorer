@@ -11,7 +11,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 final class CatalystDrepData extends Data
 {
     public function __construct(
-        public ?string $hash,
+        public ?string $id,
 
         public ?string $name,
 

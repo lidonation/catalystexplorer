@@ -97,7 +97,7 @@ const Step2: React.FC<Step2Props> = ({
         form.post(
             generateLocalizedRoute(
                 'workflows.createVoterList.saveListDetails',
-                voterList?.hash ? { bk: voterList?.hash } : {},
+                voterList.id ? { bk: voterList.id } : {},
             ),
         );
     };

@@ -12,7 +12,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 final class SnapshotData extends Data
 {
     public function __construct(
-        public ?string $hash,
+        public ?string $id,
 
         #[TypeScriptOptional]
         public int $epoch,

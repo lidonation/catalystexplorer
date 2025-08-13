@@ -165,11 +165,11 @@ const Show = ({
                     </section>
                     <div className="px-3 py-1 bg-background rounded-lg shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] flex-shrink-0 flex items-center justify-center gap-1 overflow-hidden self-end sm:self-auto sm:ml-2">
                         <ListProvider>
-                            {proposal.hash && (
+                            {proposal.id && (
                                 <>
                                     <BookmarkButton
                                         modelType="proposals"
-                                        itemId={proposal.hash}
+                                        itemId={proposal.id}
                                     >
                                         <span>{t('buttons.bookmark')}</span>
                                     </BookmarkButton>

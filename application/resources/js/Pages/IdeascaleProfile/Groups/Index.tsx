@@ -27,7 +27,7 @@ export default function Groups({ ideascaleProfile, groups }: GroupsPageProps) {
                             {groups?.data.map((group) => (
                                 <div className="border-border-dark-on-dark rounded-lg border-2">
                                     <GroupCardExtended
-                    key={group?.uuid}
+                                        key={group?.id}
                                         group={group}
                                     />
                                 </div>

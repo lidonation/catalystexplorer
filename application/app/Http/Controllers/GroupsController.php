@@ -95,7 +95,7 @@ class GroupsController extends Controller
         $userId = $request->user()->id;
 
         $groups = Cache::remember("user-groups:{ $userId }", now()->addMinutes(10), function () use ($userId) {
-            return IdeascaleProfile::where('claimed_by_id', operator: $userId)->get()->flatMap(fn ($p) => $p->groups);
+            return IdeascaleProfile::where('claimed_by_uuid', operator: $userId)->get()->flatMap(fn ($p) => $p->groupsUuid);
         });
 
         $props = [
@@ -110,7 +110,7 @@ class GroupsController extends Controller
     public function group(Request $request, Group $group, ReviewRepository $reviewRepository): Response
     {
 
-        $groupData = Cache::remember("group:{$group->hash}:with_counts", now()->addMinutes(10), function () use ($group) {
+        $groupData = Cache::remember("group:{$group->id}:with_counts", now()->addMinutes(10), function () use ($group) {
             $group->load(['proposals'])->loadCount([
                 'proposals',
                 'funded_proposals',
@@ -129,7 +129,7 @@ class GroupsController extends Controller
             return GroupData::from($group);
         });
 
-        $cacheKey = "group:{$group->hash}:proposals_data";
+        $cacheKey = "group:{$group->id}:proposals_data";
 
         [
             'proposals' => $proposals,
@@ -138,7 +138,7 @@ class GroupsController extends Controller
             'ideascaleProfiles' => $ideascaleProfiles
         ] = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($reviewRepository, $group) {
             $args = [
-                'filter' => ["proposal.groups.hash = {$group->hash}"],
+                'filter' => ["proposal.groups.id = {$group->id}"],
                 'attributesToRetrieve' => ['*'],
             ];
 
@@ -290,7 +290,7 @@ class GroupsController extends Controller
 
         if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
             $funds = implode("','", $this->queryParams[ProposalSearchParams::FUNDS()->value]);
-            $filters[] = "proposals.fund.hash IN ['{$funds}']";
+            $filters[] = "proposals.fund.id IN ['{$funds}']";
         }
 
         if (isset($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
@@ -319,24 +319,24 @@ class GroupsController extends Controller
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value])) {
-            $campaignHashes = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
-            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "proposals.campaign.hash = {$c}", $campaignHashes)).')';
+            $campaignIds = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
+            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "proposals.campaign.id = {$c}", $campaignIds)).')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
-            $tagHashes = ($this->queryParams[ProposalSearchParams::TAGS()->value]);
-            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "tags.hash = {$c}", $tagHashes)).')';
+            $tagIds = ($this->queryParams[ProposalSearchParams::TAGS()->value]);
+            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "tags.id = {$c}", $tagIds)).')';
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
-            $ideascaleProfileHashes = implode(',', $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value]);
+            $ideascaleProfileIds = implode(',', $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value]);
 
-            $filters[] = "ideascale_profiles.hash IN [{$ideascaleProfileHashes}]";
+            $filters[] = "ideascale_profiles.id IN [{$ideascaleProfileIds}]";
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::COMMUNITIES()->value])) {
-            $communityHashes = implode(',', $this->queryParams[ProposalSearchParams::COMMUNITIES()->value]);
-            $filters[] = "proposals.communities.hash IN [{$communityHashes}]";
+            $communityIds = implode(',', $this->queryParams[ProposalSearchParams::COMMUNITIES()->value]);
+            $filters[] = "proposals.communities.id IN [{$communityIds}]";
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {
@@ -349,10 +349,9 @@ class GroupsController extends Controller
 
     public function setCounts($facets, $facetStats)
     {
-
-        if (isset($facets['tags.id']) && count($facets['tags.id'])) {
-            $this->tagsCount = $facets['tags.id'];
-        }
+        //        if (isset($facets['tags.id']) && count($facets['tags.id'])) {
+        //            $this->tagsCount = $facets['tags.id'];
+        //        }
 
         if (isset($facets['proposals_count']) && count($facets['proposals_count'])) {
             $this->proposalsCount = $facets['proposals_count'];

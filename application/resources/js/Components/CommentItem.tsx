@@ -70,7 +70,7 @@ const CommentItem = ({
                                 (child: CommentData) => (
                                     <CommentItem
                                         user={user}
-                                        key={child.hash}
+                                        key={child.id}
                                         comment={child}
                                         commentable_type={commentable_type}
                                         commentable_id={commentable_id}
@@ -84,7 +84,7 @@ const CommentItem = ({
                 {isReplying && (
                     <ReplyBox
                         user={user}
-                        parentId={comment?.hash ?? null}
+                        parentId={comment?.id ?? null}
                         commentableType={commentable_type}
                         commentableHash={commentable_id}
                         onPosted={(comments) => {

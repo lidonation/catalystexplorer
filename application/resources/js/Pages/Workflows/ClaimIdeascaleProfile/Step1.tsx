@@ -89,7 +89,7 @@ const Step1: React.FC<Step1Props> = ({ profiles, stepDetails, activeStep }) => {
                                         <input
                                             type="radio"
                                             id={
-                                                profile.hash as
+                                                profile.id as
                                                     | string
                                                     | undefined
                                             }
@@ -98,13 +98,13 @@ const Step1: React.FC<Step1Props> = ({ profiles, stepDetails, activeStep }) => {
                                             className="peer hidden"
                                             required
                                             onChange={() =>
-                                                profile.hash &&
-                                                setSelectedProfile(profile.hash)
+                                                profile.id &&
+                                                setSelectedProfile(profile.id)
                                             }
                                         />
                                         <label
                                             htmlFor={
-                                                profile.hash as
+                                                profile.id as
                                                     | string
                                                     | undefined
                                             }
@@ -113,7 +113,7 @@ const Step1: React.FC<Step1Props> = ({ profiles, stepDetails, activeStep }) => {
                                             <ProfileCard
                                                 profile={profile}
                                                 className={
-                                                    profile?.claimed_by_id
+                                                    profile?.claimed_by_uuid
                                                         ? 'cursor-not-allowed'
                                                         : 'cursor-pointer'
                                                 }
@@ -121,12 +121,12 @@ const Step1: React.FC<Step1Props> = ({ profiles, stepDetails, activeStep }) => {
                                                 <div className="ml-6 flex-shrink-0">
                                                     <span
                                                         className={`rounded-full px-3 py-1 text-sm ${
-                                                            !profile?.claimed_by_id
+                                                            !profile?.claimed_by_uuid
                                                                 ? 'cursor-pointer bg-green-100 text-green-600'
                                                                 : 'cursor-not-allowed bg-red-100 text-red-600'
                                                         }`}
                                                     >
-                                                        {!profile?.claimed_by_id
+                                                        {!profile?.claimed_by_uuid
                                                             ? t(
                                                                   'profileWorkflow.claimProfile',
                                                               )

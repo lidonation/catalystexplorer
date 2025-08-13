@@ -222,7 +222,7 @@ const Step3: React.FC<Step3Props> = ({
 
         setIsProcessingQueue(true);
         const currentQueue = [...apiQueue];
-        
+
         for (const item of currentQueue) {
             try {
                 await api.post(generateLocalizedRoute('workflows.tinderProposal.addBookmarkItem'), {
@@ -233,17 +233,17 @@ const Step3: React.FC<Step3Props> = ({
                 });
 
                 setApiQueue(prev => prev.filter(queueItem => queueItem.id !== item.id));
-                
+
                 setProcessingProposals(prev => {
                     const newSet = new Set(prev);
                     newSet.delete(item.proposalSlug);
                     return newSet;
                 });
-                
+
             } catch (error) {
                 if (item.retryCount < 3) {
-                    setApiQueue(prev => prev.map(queueItem => 
-                        queueItem.id === item.id 
+                    setApiQueue(prev => prev.map(queueItem =>
+                        queueItem.id === item.id
                             ? { ...queueItem, retryCount: queueItem.retryCount + 1 }
                             : queueItem
                     ));
@@ -256,11 +256,11 @@ const Step3: React.FC<Step3Props> = ({
                     });
                 }
             }
-            
+
             // Small delay between requests to avoid overwhelming the server
             await new Promise(resolve => setTimeout(resolve, 100));
         }
-        
+
         setIsProcessingQueue(false);
     };
 
@@ -532,7 +532,7 @@ const Step3: React.FC<Step3Props> = ({
                                         const isSwipedCard = proposal._isSwipedCard === true;
 
                                         // Use the original index as a stable key to prevent rerendering
-                                        const stableKey = `${proposal.hash || proposal.id}-${proposal._originalIndex}`;
+                                        const stableKey = `${proposal.id || proposal.id}-${proposal._originalIndex}`;
 
                                         // Calculate stack position
                                         let stackPosition = index;
@@ -637,7 +637,7 @@ const Step3: React.FC<Step3Props> = ({
                                     )}
                                 </div>
 
-                              
+
 
                             </div>
                         ) : proposals === null ? (
@@ -662,7 +662,7 @@ const Step3: React.FC<Step3Props> = ({
                     {allProposals && allProposals.length > 0 && (
                         <div className="flex justify-center w-full px-6 pb-6">
                             <div className="flex w-full max-w-md relative">
-                                
+
                                 {/* No Button */}
                                 <Button
                                     onClick={() => handleCardSwipe('left', true)}
@@ -704,7 +704,7 @@ const Step3: React.FC<Step3Props> = ({
                 </div>
                 <Footer>
                     <div className="flex flex-col justify-between items-center w-full">
-                    
+
                     <div className="flex flex-col space-y-4 w-full items-center justify-center">
                         <PrimaryButton onClick={goToStep4} className="px-8 w-[75%] py-3 text-sm" data-testid='save-progress-button'>
                             {t('workflows.tinderProposal.step3.saveProgress')}

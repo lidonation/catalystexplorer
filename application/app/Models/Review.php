@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\ProposalSearchParams;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -16,7 +17,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Review extends Model
 {
-    use HasRelationships, Searchable;
+    use HasRelationships, HasUuids, Searchable;
 
     protected $guarded = [];
 
@@ -43,11 +44,11 @@ class Review extends Model
             'reviewer.avg_reputation_score',
             'proposal.id',
             'proposal.title',
-            'proposal.uuid',
+            'proposal.id',
             'proposal.fund_id',
-            'proposal.ideascale_profiles.uuid',
             'proposal.ideascale_profiles.id',
-            'proposal.groups.uuid',
+            'proposal.ideascale_profiles.id',
+            'proposal.groups.id',
         ];
     }
 
@@ -63,12 +64,12 @@ class Review extends Model
             'reviewer.uuid',
             'reviewer.reputation_scores.fund',
             'proposal.title',
-            'proposal.uuid',
+            'proposal.id',
             'proposal.fund_id',
             'proposal.content',
             'proposal.ideascale_profiles.name',
             'proposal.ideascale_profiles.username',
-            'proposal.groups.uuid',
+            'proposal.groups.id',
         ];
     }
 
@@ -84,17 +85,19 @@ class Review extends Model
             'reviewer.avg_reputation_score',
             'rating',
             'helpful_total',
-            'proposal.uuid',
+            'proposal.id',
             'rankings',
             'positive_rankings',
             'negative_rankings',
-            'proposal.groups.uuid',
+            'proposal.groups.id',
         ];
     }
 
     public function discussion(): BelongsTo
     {
-        return $this->belongsTo(Discussion::class, 'model_id')->where('model_type', Discussion::class);
+        return $this->belongsTo(Discussion::class, 'model_id', 'old_id')
+            ->where('reviews.model_type', Discussion::class)
+            ->whereRaw('reviews.model_id = discussions.old_id::text');
     }
 
     public function rating(): HasOne

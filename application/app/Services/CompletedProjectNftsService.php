@@ -22,7 +22,7 @@ class CompletedProjectNftsService
         $claimedIdeascaleProfiles = [];
 
         if ($user) {
-            $claimedIdeascaleProfiles = IdeascaleProfile::where('claimed_by_id', $user->id)
+            $claimedIdeascaleProfiles = IdeascaleProfile::where('claimed_by_uuid', $user->id)
                 ->withCount(['proposals'])
                 ->get()
                 ->toArray();

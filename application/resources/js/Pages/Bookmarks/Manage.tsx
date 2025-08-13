@@ -67,7 +67,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
 
     const setActiveTab = (val: typeof type) => {
         const route = generateLocalizedRoute('lists.manage', {
-            bookmarkCollection: bookmarkCollection.hash,
+            bookmarkCollection: bookmarkCollection.id,
             type: val,
         });
         router.visit(route);
@@ -101,7 +101,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
             label: t('bookmarks.viewAsPublic'),
             type: 'link',
             href: generateLocalizedRoute('lists.view', {
-                bookmarkCollection: bookmarkCollection.hash,
+                bookmarkCollection: bookmarkCollection.id,
                 type: 'proposals',
             }),
             onClick: () => {
@@ -120,7 +120,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
             type: 'link',
             href: hasItems && isVoterList ? useLocalizedRoute('workflows.publishToIpfs.index', {
                 step: 1,
-                bookmarkHash: bookmarkCollection.hash
+                bookmarkHash: bookmarkCollection.id
             }) : undefined,
             disabled: !hasItems || !isVoterList,
             disabledTooltip: getPublishToIpfsTooltip(),
@@ -136,7 +136,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
     const handleUpdate = (form: ListForm) => {
         form.post(
             route('api.collections.update', {
-                bookmarkCollection: bookmarkCollection.hash,
+                bookmarkCollection: bookmarkCollection.id,
             }),
             {
                 onSuccess: () => setActiveTab(activeTab),
@@ -148,7 +148,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
         setActiveConfirm(true);
         router.post(
             route('api.collections.delete', {
-                bookmarkCollection: bookmarkCollection.hash,
+                bookmarkCollection: bookmarkCollection.id,
             }),
             {},
             {
@@ -208,11 +208,11 @@ const Manage = (props: BookmarkCollectionListProps) => {
             case 'communities':
                 return {
                     communities: props.communities.data.map(
-                        (item) => item.hash,
+                        (item) => item.id,
                     ),
                 };
             case 'groups':
-                return { groups: props.groups.data.map((item) => item.uuid) };
+                return { groups: props.groups.data.map((item) => item.id) };
             case 'ideascaleProfiles':
                 return {
                     ideascaleProfiles: props.ideascaleProfiles.data.map(
@@ -220,7 +220,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
                     ),
                 };
             case 'reviews':
-                return { reviews: props.reviews.data.map((item) => item.hash) };
+                return { reviews: props.reviews.data.map((item) => item.id) };
             default:
                 return [{}];
         }
@@ -277,7 +277,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
                 <div className="container my-8">
                     <Comments
                         commentableType={'BookmarkCollection'}
-                        commentableHash={bookmarkCollection.hash ?? ''}
+                        commentableHash={bookmarkCollection.id ?? ''}
                     />
                 </div>
             )}

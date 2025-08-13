@@ -13,7 +13,7 @@ const ManageProposalButton: React.FC<ManageProposalButtonProps> = ({ proposal })
     const { t } = useLaravelReactI18n();
 
     const localizedRoute = useLocalizedRoute('my.proposals.manage', {
-        proposal: proposal?.hash,
+        proposal: proposal?.id,
     });
 
     const handleClick = () => {

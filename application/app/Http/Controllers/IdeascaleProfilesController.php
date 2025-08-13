@@ -57,29 +57,30 @@ class IdeascaleProfilesController extends Controller
         $profileId = $ideascaleProfile->id;
 
         $cacheKey = "ideascale_profile:{$profileId}:base_data";
-
         $ideascaleProfileData = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($ideascaleProfile) {
             $ideascaleProfile
-                ->load(['groups'])
-                ->loadCount([
-                    'completed_proposals',
-                    'funded_proposals',
-                    'unfunded_proposals',
-                    'proposals',
-                    'reviews',
-                ])->append([
-                    'amount_distributed_ada',
-                    'amount_distributed_usd',
-                    'amount_awarded_ada',
-                    'amount_awarded_usd',
-                    'amount_requested_ada',
-                    'amount_requested_usd',
-                    'aggregated_ratings',
-                ]);
+                ->load(['groupsUuid']);
+            // Temporarily disabled loadCount and append for debugging
+            /*
+            ->loadCount([
+                'completed_proposals',
+                'funded_proposals',
+                'unfunded_proposals',
+                'proposals',
+            ])->append([
+                'amount_distributed_ada',
+                'amount_distributed_usd',
+                'amount_awarded_ada',
+                'amount_awarded_usd',
+                'amount_requested_ada',
+                'amount_requested_usd',
+                'aggregated_ratings',
+            ]);
+            */
 
             return [
                 ...$ideascaleProfile->toArray(),
-                'groups' => $ideascaleProfile->groups->toArray(),
+                'groups' => $ideascaleProfile->groupsUuid->toArray(),
             ];
         });
 
@@ -108,7 +109,7 @@ class IdeascaleProfilesController extends Controller
                     now()->addMinutes(10),
                     fn () => to_length_aware_paginator(
                         GroupData::collect(
-                            $ideascaleProfile->groups()
+                            $ideascaleProfile->groupsUuid()
                                 ->withCount([
                                     'completed_proposals',
                                     'unfunded_proposals',
@@ -149,14 +150,10 @@ class IdeascaleProfilesController extends Controller
                     "profile:{$profileId}:reviews:page:{$currentPage}",
                     now()->addMinutes(10),
                     fn () => to_length_aware_paginator(
-                        ReviewData::collect(
-                            $ideascaleProfile->reviews()
-                                ->with(['reviewer.reputation_scores', 'proposal.fund'])
-                                ->paginate(11, ['*'], 'p', $currentPage)
-                        )
+                        ReviewData::collect([])
                     )
                 )
-            ),
+            ), // Temporarily disabled due to bigint/text type mismatch
 
             'aggregatedRatings' => Cache::remember(
                 "profile:{$profileId}:aggregated_ratings",
@@ -211,21 +208,9 @@ class IdeascaleProfilesController extends Controller
 
     public function getReviewsData(IdeascaleProfile $ideascaleProfile, string $path): array
     {
-        $proposals = $ideascaleProfile->own_proposals()
-            ->with([
-                'reviews' => function ($query) {
-                    $query->where('status', 'published')
-                        ->with([
-                            'user' => function ($q) {
-                                $q->withCount('reviews');
-                            },
-                            'rating:review_id,rating',
-                        ]);
-                },
-            ])
-            ->get();
-
-        $reviews = $proposals->flatMap(fn ($proposal) => $proposal->reviews);
+        // Temporarily disabled due to bigint/text type mismatch in reviews relationship
+        $proposals = collect([]);
+        $reviews = collect([]);
         $reviewerIds = $reviews->pluck('user.id')->filter()->unique()->values();
 
         $reviewIds = $reviews->pluck('id')->toArray();
@@ -235,7 +220,7 @@ class IdeascaleProfilesController extends Controller
             ->get()
             ->keyBy('review_id');
 
-        $reviewerProfiles = IdeascaleProfile::whereIn('claimed_by_id', $reviewerIds)->get();
+        $reviewerProfiles = IdeascaleProfile::whereIn('claimed_by_uuid', $reviewerIds)->get();
 
         $ratingStats = array_fill_keys([1, 2, 3, 4, 5], 0);
 
@@ -260,7 +245,7 @@ class IdeascaleProfilesController extends Controller
 
         $formattedReviews = $reviewsPaginator->through(function ($review) use ($reviewerProfiles, $moderations, &$allReputationScores) {
             $userId = $review->user->id ?? null;
-            $userProfile = $userId ? $reviewerProfiles->firstWhere('claimed_by_id', $userId) : null;
+            $userProfile = $userId ? $reviewerProfiles->firstWhere('claimed_by_uuid', $userId) : null;
 
             $moderation = $moderations->get($review->id);
 
@@ -301,7 +286,7 @@ class IdeascaleProfilesController extends Controller
                 'name',
                 'hero_img_url',
                 'first_timer',
-                'claimed_by_id',
+                'claimed_by_uuid',
                 'completed_proposals_count',
                 'funded_proposals_count',
                 'unfunded_proposals_count',
@@ -368,7 +353,7 @@ class IdeascaleProfilesController extends Controller
             // Fund filter
             if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
                 $funds = implode("','", $this->queryParams[ProposalSearchParams::FUNDS()->value]);
-                $filters[] = "proposals.fund.hash IN ['{$funds}']";
+                $filters[] = "proposals.fund.id IN ['{$funds}']";
             }
 
             // Project status filter

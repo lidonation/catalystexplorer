@@ -11,7 +11,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 class TransactionData extends Data
 {
     public function __construct(
-        public ?string $hash,
+        public ?string $id,
         public string $tx_hash,
         public string $block,
         public ?string $witness,

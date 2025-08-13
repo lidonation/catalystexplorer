@@ -31,6 +31,7 @@ return new class extends Migration
             'rankings' => 'rankings_user_id_foreign',
             'services' => 'services_user_id_foreign',
             'signatures' => 'signatures_user_id_foreign',
+            'reviewers' => 'reviewers_claimed_by_id_foreign',
         ];
         
         foreach ($foreignKeyTables as $tableName => $constraintName) {

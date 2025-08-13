@@ -21,7 +21,7 @@ export default function Proposals({ group, proposals }: ProposalsPageProps) {
                 <RelatedProposals
                     proposals={proposals}
                     routeParam={{
-                        [ParamsEnum.GROUPS]: group.uuid ? [group.uuid] : null,
+                        [ParamsEnum.GROUPS]: group.id ? [group.id] : null,
                     }}
                     proposalWrapperClassName="rounded-xl border-2 border-border-dark-on-dark"
                     className="proposals-wrapper grid w-full grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3"

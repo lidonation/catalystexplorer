@@ -54,7 +54,7 @@ const CommunityCard: React.FC<CommunityCardProps> = ({
                         modelType="communities"
                         width={16}
                         height={16}
-                        itemId={community?.hash ?? '0'}
+                        itemId={community?.id ?? '0'}
                     />
                 </ListProvider>
             </div>

@@ -36,12 +36,12 @@ const Step3: React.FC<Step3Props> = ({
     const localizedRoute = useLocalizedRoute;
     const prevStep = localizedRoute('workflows.bookmarks.index', {
         step: activeStep - 1,
-        bookmarkCollection: bookmarkCollection.hash,
+        bookmarkCollection: bookmarkCollection.id,
     });
 
     const nextStep = localizedRoute('workflows.bookmarks.index', {
         step: activeStep + 1,
-        bookmarkCollection: bookmarkCollection.hash,
+        bookmarkCollection: bookmarkCollection.id,
     });
 
     return (

@@ -12,8 +12,8 @@ interface CommunitiesListProps {
     gridCols?: string;
 }
 
-const CommunitiesList: React.FC<CommunitiesListProps> = ({ 
-    communities, 
+const CommunitiesList: React.FC<CommunitiesListProps> = ({
+    communities,
     cardType = 'mini',
     gridCols = 'grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-4'
 }) => {
@@ -33,12 +33,12 @@ const CommunitiesList: React.FC<CommunitiesListProps> = ({
                             communities.data?.map((community) => (
                                 cardType === 'full' ? (
                                     <CommunityCard
-                                        key={community.hash}
+                                        key={community.id}
                                         community={community}
                                     />
                                 ) : (
                                     <CommunityCardMini
-                                        key={community.hash}
+                                        key={community.id}
                                         community={community}
                                     />
                                 )

@@ -40,7 +40,7 @@ const Step9: React.FC<Step9Props> = ({
     const localizedRoute = useLocalizedRoute;
     const prevStep = localizedRoute('workflows.createVoterList.index', {
         step: activeStep - 1,
-        bk: bookmarkCollection.hash,
+        bk: bookmarkCollection.id,
     });
     const nextStep = localizedRoute('workflows.createVoterList.success', {});
 

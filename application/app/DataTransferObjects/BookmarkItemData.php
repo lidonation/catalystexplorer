@@ -16,7 +16,7 @@ final class BookmarkItemData extends Data
         public ?string $id,
 
         #[TypeScriptOptional]
-        public ?int $user_id,
+        public ?string $user_id,
 
         #[TypeScriptOptional]
         public ?int $bookmark_collection_id,

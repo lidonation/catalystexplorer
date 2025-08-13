@@ -34,7 +34,7 @@ export default function Communities({
                                 {communities?.data &&
                                     communities?.data?.map((community) => (
                                         <CommunityCard
-                                            key={community.hash}
+                                            key={community.id}
                                             community={community}
                                         />
                                     ))}

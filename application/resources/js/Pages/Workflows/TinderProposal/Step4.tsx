@@ -110,12 +110,12 @@ const Step4Content: React.FC<Step4Props> = ({
                 ? leftBookmarkCollection
                 : rightBookmarkCollection;
 
-        if (!collection?.hash) return;
+        if (!collection?.id) return;
 
         // Make API call to update the bookmark collection
         editForm.post(
             route('api.collections.update', {
-                bookmarkCollection: collection.hash,
+                bookmarkCollection: collection.id,
             }),
             {
                 onSuccess: () => {
@@ -182,12 +182,12 @@ const Step4Content: React.FC<Step4Props> = ({
             collectionToDelete === 'left'
                 ? leftBookmarkCollection
                 : rightBookmarkCollection;
-        if (!collection?.hash) return;
+        if (!collection?.id) return;
 
         try {
             router.post(
                 route('api.collections.delete', {
-                    bookmarkCollection: collection.hash
+                    bookmarkCollection: collection.id
                 }),
                 {
                     no_redirect: true
@@ -233,9 +233,9 @@ const Step4Content: React.FC<Step4Props> = ({
             [TinderWorkflowParams.STEP]: 3,
             [TinderWorkflowParams.TINDER_COLLECTION_HASH]: tinderCollectionHash,
             [TinderWorkflowParams.LEFT_BOOKMARK_COLLECTION_HASH]:
-                leftBookmarkCollection?.hash,
+                leftBookmarkCollection?.id,
             [TinderWorkflowParams.RIGHT_BOOKMARK_COLLECTION_HASH]:
-                rightBookmarkCollection?.hash,
+                rightBookmarkCollection?.id,
         },
     );
 
@@ -246,9 +246,9 @@ const Step4Content: React.FC<Step4Props> = ({
             [TinderWorkflowParams.EDIT]: 1,
             [TinderWorkflowParams.TINDER_COLLECTION_HASH]: tinderCollectionHash,
             [TinderWorkflowParams.LEFT_BOOKMARK_COLLECTION_HASH]:
-                leftBookmarkCollection?.hash,
+                leftBookmarkCollection?.id,
             [TinderWorkflowParams.RIGHT_BOOKMARK_COLLECTION_HASH]:
-                rightBookmarkCollection?.hash,
+                rightBookmarkCollection?.id,
         },
     );
 

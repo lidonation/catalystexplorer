@@ -16,10 +16,10 @@ return new class extends Migration
         if (Schema::hasTable('ideascale_profiles') && Schema::hasColumn('ideascale_profiles', 'old_id')) {
             $updated = DB::update(
                 "UPDATE proposal_profiles 
-                 SET profile_id = (SELECT ip.id FROM ideascale_profiles ip WHERE ip.old_id = proposal_profiles.profile_id::bigint LIMIT 1)
+                 SET profile_id = (SELECT ip.id FROM ideascale_profiles ip WHERE ip.old_id = proposal_profiles.profile_id::text::bigint LIMIT 1)
                  WHERE profile_type = 'App\\\\Models\\\\IdeascaleProfile'
-                   AND profile_id ~ '^[0-9]+$'
-                   AND EXISTS (SELECT 1 FROM ideascale_profiles ip WHERE ip.old_id = proposal_profiles.profile_id::bigint)"
+                   AND profile_id::text ~ '^[0-9]+$'
+                   AND EXISTS (SELECT 1 FROM ideascale_profiles ip WHERE ip.old_id = proposal_profiles.profile_id::text::bigint)"
             );
             
             echo "Mapped $updated proposal_profiles entries to UUIDs\n";
@@ -29,7 +29,7 @@ return new class extends Migration
         $remaining = DB::delete(
             "DELETE FROM proposal_profiles 
              WHERE profile_type = 'App\\\\Models\\\\IdeascaleProfile' 
-             AND profile_id ~ '^[0-9]+$'"
+             AND profile_id::text ~ '^[0-9]+$'"
         );
         
         if ($remaining > 0) {

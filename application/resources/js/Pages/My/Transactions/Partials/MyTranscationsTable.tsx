@@ -50,7 +50,7 @@ export const MyTransactionTable: React.FC<MyTransactionTableProps> = ({ transact
   const columns: ColumnConfig<TransactionData>[] = [
     {
       key: 'hash',
-      header: t('transactions.table.hash'),
+      header: t('transactions.table.id'),
       render: (tx) => (
         <div className="flex flex-col space-y-1 items-center">
           <CopyableCell

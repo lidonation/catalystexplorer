@@ -10,7 +10,6 @@ use App\Models\Connection;
 use App\Models\Group;
 use App\Models\IdeascaleProfile;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -57,9 +56,8 @@ trait HasConnections
             $nodes = collect();
             $links = collect();
 
-            $rootConnections = $this->with(['connected_groups', 'connected_users', 'connected_communities'])
-                ->where('id', $this->id)
-                ->get();
+            // Get the root entity
+            $rootConnections = collect([$this]);
 
             $allConnections = $this->fetchConnectionsRecursively($rootConnections, 1, 2);
 
@@ -110,7 +108,7 @@ trait HasConnections
 
         $nodes->push($this->formatNodeOrLink($this));
 
-        $this->load(['connected_groups', 'connected_users', 'connected_communities']);
+        // Note: connections are now loaded as attributes, not relationships
 
         $rootConnections = [
             'connected_groups' => $this->connected_groups,
@@ -128,23 +126,17 @@ trait HasConnections
         $additionalEntities = collect();
         if (! empty($groupIds)) {
             $additionalEntities = $additionalEntities->merge(
-                Group::with(['connected_groups', 'connected_users', 'connected_communities'])
-                    ->whereIn('id', $groupIds)
-                    ->get()
+                Group::whereIn('id', $groupIds)->get()
             );
         }
         if (! empty($profileIds)) {
             $additionalEntities = $additionalEntities->merge(
-                IdeascaleProfile::with(['connected_groups', 'connected_users', 'connected_communities'])
-                    ->whereIn('id', $profileIds)
-                    ->get()
+                IdeascaleProfile::whereIn('id', $profileIds)->get()
             );
         }
         if (! empty($communityIds)) {
             $additionalEntities = $additionalEntities->merge(
-                Community::with(['connected_groups', 'connected_users', 'connected_communities'])
-                    ->whereIn('id', $communityIds)
-                    ->get()
+                Community::whereIn('id', $communityIds)->get()
             );
         }
 
@@ -179,49 +171,25 @@ trait HasConnections
         return $this->morphMany(Connection::class, 'previous_model', 'previous_model_type', 'previous_model_id');
     }
 
-    public function connected_users(): HasManyThrough
+    public function getConnectedUsersAttribute()
     {
-        return $this->hasManyThrough(
-            IdeascaleProfile::class,
-            Connection::class,
-            'previous_model_id',
-            'id',
-            'id',
-            'next_model_id'
-        )->where([
-            ['connections.next_model_type', IdeascaleProfile::class],
-            ['connections.previous_model_type', get_class($this)],
-        ]);
+        // Temporarily disabled due to data migration issues
+        // TODO: Fix connections data conversion from old numeric IDs to UUIDs
+        return collect();
     }
 
-    public function connected_groups(): HasManyThrough
+    public function getConnectedGroupsAttribute()
     {
-        return $this->hasManyThrough(
-            Group::class,
-            Connection::class,
-            'previous_model_id',
-            'id',
-            'id',
-            'next_model_id'
-        )->where([
-            ['connections.next_model_type', Group::class],
-            ['connections.previous_model_type', get_class($this)],
-        ]);
+        // Temporarily disabled due to data migration issues
+        // TODO: Fix connections data conversion from old numeric IDs to UUIDs
+        return collect();
     }
 
-    public function connected_communities(): HasManyThrough
+    public function getConnectedCommunitiesAttribute()
     {
-        return $this->hasManyThrough(
-            Community::class,
-            Connection::class,
-            'previous_model_id',
-            'id',
-            'id',
-            'next_model_id'
-        )->where([
-            ['connections.next_model_type', Community::class],
-            ['connections.previous_model_type', get_class($this)],
-        ]);
+        // Temporarily disabled due to data migration issues
+        // TODO: Fix connections data conversion from old numeric IDs to UUIDs
+        return collect();
     }
 
     private function fetchConnectionsRecursively($entities, int $depth, int $maxDepth = 2, &$visited = []): \Illuminate\Support\Collection
@@ -295,15 +263,11 @@ trait HasConnections
             if (count($ids) > $chunkSize) {
                 $chunks = array_chunk($ids, $chunkSize);
                 foreach ($chunks as $chunk) {
-                    $chunkResults = $model::with(['connected_groups', 'connected_users', 'connected_communities'])
-                        ->whereIn('id', $chunk)
-                        ->get();
+                    $chunkResults = $model::whereIn('id', $chunk)->get();
                     $results = $results->merge($chunkResults);
                 }
             } else {
-                $results = $model::with(['connected_groups', 'connected_users', 'connected_communities'])
-                    ->whereIn('id', $ids)
-                    ->get();
+                $results = $model::whereIn('id', $ids)->get();
             }
 
             $executionTime = round((microtime(true) - $startTime) * 1000, 2);
@@ -322,7 +286,7 @@ trait HasConnections
         $links = collect();
 
         try {
-            $this->load(['connected_groups', 'connected_users', 'connected_communities']);
+            // Note: connections are now loaded as attributes, not relationships
 
             $connections = [
                 'connected_groups' => $this->connected_groups,

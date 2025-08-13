@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Traits\HasMetaData;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Moderation extends Model
 {
-    use HasMetaData, SoftDeletes;
+    use HasMetaData, HasUuids, SoftDeletes;
 
     protected $guarded = [];
 

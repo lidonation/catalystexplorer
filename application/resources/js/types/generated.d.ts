@@ -1,6 +1,6 @@
 declare namespace App.DataTransferObjects {
 export type AnnouncementData = {
-hash: string;
+id: string;
 title: string;
 content: string;
 label?: string;
@@ -12,8 +12,8 @@ user_id: number;
 hero_image_url: string;
 };
 export type BookmarkCollectionData = {
-hash: string | null;
-user_id?: number;
+id: string | null;
+user_id?: string;
 title?: string;
 content?: string;
 color?: string;
@@ -38,13 +38,13 @@ amount_received_ADA?: number;
 amount_requested_ADA?: number;
 amount_received_USD?: number;
 author?: App.DataTransferObjects.UserData;
-fund_id?: number;
+fund_id?: string;
 fund?: App.DataTransferObjects.FundData;
 list_type?: string;
 };
 export type BookmarkItemData = {
-hash: string | null;
-user_id?: number;
+id: string | null;
+user_id?: string;
 bookmark_collection_id?: number;
 model_id?: number;
 model?: App.DataTransferObjects.ProposalData | App.DataTransferObjects.ReviewData | App.DataTransferObjects.IdeascaleProfileData | App.DataTransferObjects.CommunityData | App.DataTransferObjects.GroupData;
@@ -94,7 +94,7 @@ prop_comments_number?: number;
 proposal_benefit?: string;
 };
 export type CatalystDrepData = {
-hash: string | null;
+id: string | null;
 name: string | null;
 email: string | null;
 link: string | null;
@@ -122,7 +122,7 @@ created_at?: string;
 updated_at?: string;
 };
 export type CommentData = {
-hash: string;
+id: string;
 text: string;
 original_text: string | null;
 created_at: string;
@@ -132,10 +132,10 @@ commentator: App.DataTransferObjects.UserData | null;
 nested_comments: any | null;
 };
 export type CommunityData = {
-hash: string | null;
+id: string | null;
 title?: string;
 content?: string;
-user_id?: number;
+user_id?: string;
 status?: string;
 slug?: string;
 ideascale_profiles: any | null;
@@ -169,7 +169,6 @@ export type ConnectionNodeData = {
 id: string;
 type: string;
 name: string;
-hash?: string;
 photo?: string;
 val?: number;
 x?: number;
@@ -188,7 +187,7 @@ amount_requested?: number;
 amount_awarded?: number;
 meta_title?: string;
 slug?: string;
-user_id?: number;
+user_id?: string;
 excerpt?: string;
 comment_prompt?: string;
 content?: string;
@@ -203,8 +202,8 @@ review_started_at?: string;
 parent_id?: string;
 };
 export type GroupData = {
-uuid: string;
-user_id?: number;
+id: string;
+user_id?: string;
 name?: string;
 hero_img_url?: string;
 bio?: Array<any> | string | null;
@@ -260,7 +259,7 @@ amount_distributed_ada?: number;
 amount_distributed_usd?: number;
 co_proposals_count?: number;
 own_proposals_count?: number;
-claimed_by_id?: number;
+claimed_by_uuid?: string;
 completed_proposals_count?: number;
 funded_proposals_count?: number;
 unfunded_proposals_count?: number;
@@ -272,7 +271,7 @@ claimed_by: App.DataTransferObjects.UserData | null;
 reviews: any | null;
 };
 export type LocationData = {
-hash: string | null;
+id: string | null;
 country: string;
 city: string;
 region?: string;
@@ -283,8 +282,8 @@ lat?: number;
 long?: number;
 };
 export type MetricData = {
-hash: string | null;
-user_id: number | null;
+id: string | null;
+user_id: string | null;
 title: string;
 content?: string;
 status?: string;
@@ -300,7 +299,7 @@ value?: number;
 order?: number;
 };
 export type MilestoneData = {
-hash: string;
+id: string;
 title: string;
 current: boolean;
 outputs: string;
@@ -315,7 +314,7 @@ som_reviews: any | null;
 poas: any | null;
 };
 export type MilestonePoasData = {
-hash: string;
+id: string;
 content: string;
 created_at: string;
 current: boolean;
@@ -323,7 +322,7 @@ reviews: any | null;
 signoffs: any | null;
 };
 export type MilestonePoasReviewData = {
-hash: string;
+id: string;
 content_approved: boolean;
 content_comment: string;
 role: string;
@@ -332,12 +331,12 @@ user_id: string;
 current: boolean;
 };
 export type MilestonePoasSignoffData = {
-hash: string;
+id: string;
 created_at: string;
 user_id: string;
 };
 export type MilestoneSomReviewsData = {
-hash: string;
+id: string;
 outputs_approves: boolean;
 outputs_comment: string | null;
 success_criteria_approves: boolean;
@@ -426,11 +425,11 @@ type: string | null;
 published_at?: string;
 };
 export type ProjectScheduleData = {
-hash: string;
+id: string;
 title: string;
 url: string;
-proposal_id: number | null;
-fund_id: number | null;
+proposal_id: string | null;
+fund_id: string | null;
 project_id: number | null;
 created_at: string | null;
 budget: number;
@@ -488,8 +487,8 @@ link: string;
 order?: number;
 };
 export type RankingData = {
-hash?: string;
-user_id?: number;
+id?: string;
+user_id?: string;
 model_id: number;
 model_type: string;
 value: number;
@@ -500,7 +499,7 @@ review_id: number;
 model_id: number;
 };
 export type ReviewData = {
-hash: string | null;
+id: string | null;
 parent_id?: number;
 title?: string;
 content: string | null;
@@ -513,7 +512,7 @@ positive_rankings: number | null;
 negative_rankings: number | null;
 };
 export type ReviewModerationData = {
-hash: string | null;
+id: string | null;
 reviewer_id?: number;
 reviewer_reputation_score?: number;
 excellent_count: number;
@@ -523,7 +522,7 @@ flagged: boolean;
 qa_rationale?: Array<any>;
 };
 export type ReviewerData = {
-hash: string | null;
+id: string | null;
 reviews_count: any;
 reputation_scores?: any;
 catalyst_reviewer_id: string | null;
@@ -556,13 +555,13 @@ effective_details?: Array<any>;
 link?: string;
 };
 export type SnapshotData = {
-hash: string | null;
+id: string | null;
 epoch?: number;
 order?: number;
 fund?: App.DataTransferObjects.FundData;
 };
 export type TransactionData = {
-hash: string | null;
+id: string | null;
 tx_hash: string;
 block: string;
 witness: string | null;
@@ -599,7 +598,7 @@ reference_script_hash: string | null;
 consumed_by_tx: string | null;
 };
 export type UserData = {
-hash: string | null;
+id: string | null;
 name: string;
 email: string;
 hero_img_url: string | null;
@@ -616,8 +615,7 @@ chartOptions: Array<any>;
 chartType: Array<any>;
 };
 export type VoterData = {
-id: number;
-hash?: string;
+id?: string;
 stake_pub?: string;
 stake_key?: string;
 voting_pub?: string;
@@ -632,7 +630,7 @@ deleted_at?: string;
 latest_fund?: App.DataTransferObjects.FundData;
 };
 export type VoterHistoryData = {
-hash: string | null;
+id: string | null;
 stake_address?: string;
 fragment_id?: string;
 caster?: string;

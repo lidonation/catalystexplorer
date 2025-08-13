@@ -28,7 +28,7 @@ class IdeascaleProfileResource extends JsonResource
             'linkedin' => $this->linkedin,
             'discord' => $this->discord,
             'ideascale' => $this->ideascale,
-            'claimed_by_id' => $this->claimed_by_id,
+            'claimed_by_uuid' => $this->claimed_by_uuid,
             'telegram' => $this->telegram,
             'title' => $this->title,
             'proposals_count' => $this->proposals_count,

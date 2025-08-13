@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\ServiceTypeEnum;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Spatie\Enum\Laravel\Casts\EnumCast;
@@ -17,7 +18,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Service extends Model implements HasMedia
 {
-    use HasRelationships,InteractsWithMedia;
+    use HasRelationships, HasUuids, InteractsWithMedia;
 
     protected $fillable = [
         'title',

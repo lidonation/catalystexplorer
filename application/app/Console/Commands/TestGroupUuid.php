@@ -27,7 +27,7 @@ class TestGroupUuid extends Command
                 $proposalsCount = $group->proposals()->count();
                 $this->info('✓ Proposals relationship works: '.$proposalsCount.' proposals');
 
-                $ideascaleProfilesCount = $group->ideascale_profiles()->count();
+                $ideascaleProfilesCount = $group->ideascaleProfilesUuid()->count();
                 $this->info('✓ Ideascale profiles relationship works: '.$ideascaleProfilesCount.' profiles');
 
             } else {

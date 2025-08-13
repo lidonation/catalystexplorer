@@ -210,7 +210,7 @@ class CommunitiesController extends Controller
                 return Cache::remember("community:{$community->id}:ideascale_profiles:page:{$currentPage}", now()->addMinutes(5), function () use ($community, $currentPage) {
                     return to_length_aware_paginator(
                         IdeascaleProfileData::collect(
-                            $community->ideascale_profiles()
+                            $community->ideascaleProfilesUuid()
                                 ->withCount([
                                     'proposals',
                                     'funded_proposals',

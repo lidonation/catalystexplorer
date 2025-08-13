@@ -48,7 +48,7 @@ final class FundData extends Data
         public ?string $slug,
 
         #[TypeScriptOptional]
-        public ?int $user_id,
+        public ?string $user_id,
 
         #[TypeScriptOptional]
         public ?string $excerpt,

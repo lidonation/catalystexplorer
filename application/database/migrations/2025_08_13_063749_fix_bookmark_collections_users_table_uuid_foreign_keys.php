@@ -14,14 +14,15 @@ return new class extends Migration
         // Drop the table if it exists, as the original migration has incompatible foreign key types
         Schema::dropIfExists('bookmark_collections_users');
         
-        // Recreate with proper UUID foreign keys
+        // Recreate with proper foreign key types matching current table schemas
         Schema::create('bookmark_collections_users', function (Blueprint $table) {
-            $table->id();
-            $table->uuid('bookmark_collection_id');
+            $table->unsignedBigInteger('bookmark_collection_id');
             $table->uuid('user_id');
             $table->timestamps();
             
-            // Add foreign key constraints
+            $table->primary(['bookmark_collection_id', 'user_id']);
+            
+            // Add foreign key constraints - bookmark_collections uses bigint, users uses UUID
             $table->foreign('bookmark_collection_id')->references('id')->on('bookmark_collections')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });

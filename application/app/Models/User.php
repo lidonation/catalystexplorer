@@ -83,7 +83,7 @@ class User extends Authenticatable implements HasMedia
 
     public function ideascale_profiles()
     {
-        return $this->hasMany(IdeascaleProfile::class, 'claimed_by_id');
+        return $this->hasMany(IdeascaleProfile::class, 'claimed_by_uuid', 'id');
     }
 
     public function reviews()
@@ -98,7 +98,7 @@ class User extends Authenticatable implements HasMedia
 
     public function communities(): BelongsToMany
     {
-        return $this->belongsToMany(Community::class, 'community_has_users', 'user_id', 'community_id');
+        return $this->belongsToMany(Community::class, 'community_has_users', 'user_uuid', 'community_id', 'id', 'id');
     }
 
     public function signatures()

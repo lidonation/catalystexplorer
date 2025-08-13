@@ -331,16 +331,19 @@ class Proposal extends Model
             ->where('context_type', Proposal::class);
     }
 
-    public function reviews(): HasManyThrough
+    public function reviews(): Attribute
     {
-        return $this->hasManyThrough(
-            Review::class,
-            Discussion::class,
-            'model_id',
-            'model_id',
-            'id',
-            'id'
-        )->where('discussions.model_type', Proposal::class);
+        return Attribute::make(
+            get: function () {
+                return Review::whereExists(function ($query) {
+                    $query->select(DB::raw(1))
+                        ->from('discussions')
+                        ->whereRaw('discussions.old_id::text = reviews.model_id')
+                        ->where('discussions.model_type', Proposal::class)
+                        ->where('discussions.model_id', $this->id);
+                })->get();
+            }
+        );
     }
 
     public function discussions(): HasMany
@@ -475,13 +478,13 @@ class Proposal extends Model
             'proposal_uuid',
             'ideascale_profile_uuid',
             'uuid',
-            'uuid'
+            'id'
         );
     }
 
     public function author(): BelongsTo
     {
-        return $this->belongsTo(IdeascaleProfile::class, 'user_id', 'id', 'author');
+        return $this->belongsTo(IdeascaleProfile::class, 'user_id', 'old_id', 'author');
     }
 
     public function users(): BelongsToMany
@@ -519,7 +522,7 @@ class Proposal extends Model
             'proposal_uuid',
             'ideascale_profile_uuid',
             'uuid',
-            'uuid'
+            'id'
         );
     }
 

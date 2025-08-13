@@ -12,7 +12,7 @@ final class MilestoneSomReviewsData extends Data
 {
     public function __construct(
 
-        public string $hash,
+        public string $id,
 
         public bool $outputs_approves,
 

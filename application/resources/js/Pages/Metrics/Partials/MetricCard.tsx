@@ -45,7 +45,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
     };
 
     return (
-        <div className="bg-background relative flex h-full w-full flex-col rounded-lg shadow-md" data-testid={`metric-card-${metric.hash}`}>
+        <div className="bg-background relative flex h-full w-full flex-col rounded-lg shadow-md" data-testid={`metric-card-${metric.id}`}>
             <div className="bg-background absolute top-4 left-12 rounded-md px-4 py-2 shadow-md" data-testid="metric-card-header">
                 <span className="text-content text-2xl font-bold">
                     {shortNumber(metric.value ?? 0, 2)}

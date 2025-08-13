@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
@@ -13,7 +14,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Reviewer extends Model
 {
-    use HasMetaData, HasRelationships;
+    use HasMetaData, HasRelationships, HasUuids;
 
     protected $guarded = [];
 
@@ -54,7 +55,7 @@ class Reviewer extends Model
 
     public function claimedBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'claimed_by_id', 'id');
+        return $this->belongsTo(User::class, 'claimed_by_uuid', 'id');
     }
 
     public function scopeFilter($query, array $filters)

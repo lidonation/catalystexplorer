@@ -179,14 +179,17 @@ const DynamicSearchResults = ({
                     <div className="flex flex-col gap-4">
                         <Title level="2">{t('reviews.reviews')}</Title>
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:items-start">
-                            {data.hits.map((review, index) => (
+                            {data.hits.map((review, index) => {
+                                const reviewData = review as ReviewData;
+                                return (
                                 <section
-                                    key={review.hash || index}
+                                    key={reviewData.id || index}
                                     className="relative mb-2"
                                 >
-                                    <ReviewCard review={review as ReviewData} />
+                                    <ReviewCard review={reviewData} />
                                 </section>
-                            ))}
+                                );
+                            })}
                         </div>
                         <div className="flex w-full items-center justify-center">
                             <NavLink href={`/reviews?q=${query}`}>

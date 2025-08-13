@@ -9,7 +9,7 @@ const AnnouncementCarousel = ({ announcements }: AnnouncementCarouselProps) => {
             {announcements && announcements.length > 0 && (
                 announcements.map((announcement, index) => {
                     return (
-                        <div key={announcement?.hash}>
+                        <div key={announcement?.id}>
                             <AnnouncementCard announcement={announcement} />
                         </div>
                     );

@@ -28,7 +28,7 @@ class BookmarkCollection extends Model
         'groups',
         'reviews',
         'communities',
-        'comments',
+        // 'comments', // Temporarily disabled due to polymorphic UUID/text relationship issue
     ];
 
     public $meiliIndexName = 'cx_bookmark_collections';
@@ -118,6 +118,15 @@ class BookmarkCollection extends Model
     {
         return $this->hasMany(BookmarkItem::class)
             ->where('model_type', Review::class);
+    }
+
+    /**
+     * Override the comments relationship to handle UUID-to-text conversion
+     */
+    public function comments()
+    {
+        return Comment::where('commentable_type', static::class)
+            ->where('commentable_id', (string) $this->getKey());
     }
 
     public function typesCount(): Attribute

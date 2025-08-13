@@ -19,14 +19,14 @@ const JoinCommunityButton: React.FC<JoinCommunityButtonProps> = ({
 
     const [hasJoined, setHasJoined] = useState(
         ideascale_profiles?.some(
-            (profile) => profile?.claimed_by?.hash === auth?.user?.hash,
+            (profile) => profile?.claimed_by?.id === auth?.user?.id,
         ),
     );
 
     const handleJoin = async () => {
         if (hasJoined || !auth?.user) return;
         router.post(
-            route('api.community.join', { hash: community.hash }),
+            route('api.community.join', { hash: community.id }),
             {},
             {
                 onSuccess: () => setHasJoined(true),

@@ -178,7 +178,8 @@ class ProfileController extends Controller
             $user->addMedia($request->file('photo'))
                 ->toMediaCollection('profile');
 
-            $user?->ideascale_profiles()->searchable();
+            // Skip searchable update for now due to UUID transition
+            // $user?->ideascale_profiles()->searchable();
 
             return Redirect::route('my.profile')->with('status', 'Profile photo updated successfully.');
         }
@@ -229,7 +230,7 @@ class ProfileController extends Controller
             $ideascaleProfile = app(IdeascaleProfileRepository::class);
 
             $args = [
-                'filter' => ["claimed_by_id = {$userId}"],
+                'filter' => ["claimed_by_uuid = {$userId}"],
                 'attributesToRetrieve' => [
                     'proposals',
                     'name',
@@ -345,7 +346,7 @@ class ProfileController extends Controller
 
         $communities = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($userId) {
 
-            $ideascaleProfileIDs = IdeascaleProfile::where('claimed_by_id', $userId)->pluck('id')->toArray();
+            $ideascaleProfileIDs = IdeascaleProfile::where('claimed_by_uuid', $userId)->pluck('id')->toArray();
 
             return Community::query()
                 ->whereRelation('ideascale_profiles', fn ($p) => $p->whereIn('ideascale_profiles.id', $ideascaleProfileIDs))
@@ -372,7 +373,7 @@ class ProfileController extends Controller
             'reviews' => $reviews,
             'ideascaleProfileHashes' => $ideascaleProfileHashes,
         ] = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($userId, $reviewRepository) {
-            $ideascaleProfile = IdeascaleProfile::where('claimed_by_id', $userId)->get()
+            $ideascaleProfile = IdeascaleProfile::where('claimed_by_uuid', $userId)->get()
                 ->map(fn ($p) => $p->hash);
 
             $ideascaleProfileHashes = implode(',', $ideascaleProfile->toArray());

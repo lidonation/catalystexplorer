@@ -60,9 +60,9 @@ const SpecialAnnouncementCarousel = ({
                 >
                     {announcements.map((announcement) => (
                         <CarouselItem
-                            key={announcement.hash}
+                            key={announcement.id}
                             className="w-full shrink-0"
-                            data-testid={`special-announcement-carousel-item-${announcement.hash}`}
+                            data-testid={`special-announcement-carousel-item-${announcement.id}`}
                         >
                             <SpecialAnnouncementCard
                                 announcement={announcement}

@@ -20,7 +20,6 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Translatable\HasTranslations;
-use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Group extends Model implements HasMedia
@@ -300,27 +299,22 @@ class Group extends Model implements HasMedia
         return $this->belongsToMany(
             IdeascaleProfile::class,
             'group_has_ideascale_profile',
-            'group_uuid',
-            'ideascale_profile_uuid',
-            'uuid',
-            'uuid'
+            'group_id',
+            'ideascale_profile_id',
+            'id',
+            'id'
         );
     }
 
     public function owner(): BelongsTo
     {
-        return $this->belongsTo(IdeascaleProfile::class, 'user_id');
+        return $this->belongsTo(IdeascaleProfile::class, 'owner_id');
     }
 
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('hero')->singleFile();
         $this->addMediaCollection('banner')->singleFile();
-    }
-
-    public function reviews(): HasManyDeep
-    {
-        return $this->hasManyDeepFromRelations($this->proposals(), (new Proposal)->reviews());
     }
 
     public function registerMediaConversions(?Media $media = null): void
@@ -363,12 +357,12 @@ class Group extends Model implements HasMedia
         return array_merge($array, [
             'proposals_completed' => collect($proposals)->filter(fn ($p) => $p['status'] === 'complete')?->count() ?? 0,
             'proposals_funded' => collect($proposals)->filter(fn ($p) => (bool) $p['funded_at'])?->count() ?? 0,
-            'proposals_unfunded' => collect($proposals)->filter(fn ($p) => empty($p['funded_at']))->count(),
+            'proposals_unfunded' => collect($proposals)->filter(fn ($p) => empty($p['funded_at']))?->count(),
             'amount_received' => intval($this->proposals()->whereNotNull('funded_at')->sum('amount_received')),
             'proposals_woman' => collect($proposals)->filter(fn ($p) => ($p->is_woman_proposal ?? false) === true)->count(),
             'proposals_ideascale' => collect($proposals)->filter(fn ($p) => ($p->is_ideascale_proposal ?? false) === true)->count(),
             'proposals_impact' => collect($proposals)->filter(fn ($p) => ($p->is_impact_proposal ?? false) === true)->count(),
-            'reviews_count' => $this->reviews->count(),
+            //            'reviews_count' => $this->reviews->count(),
             'amount_awarded_ada' => intval($this->amount_awarded_ada),
             'amount_awarded_usd' => intval($this->amount_awarded_usd),
             'amount_distributed_ada' => intval($this->amount_distributed_ada),
@@ -380,7 +374,7 @@ class Group extends Model implements HasMedia
             'proposals_count' => collect($proposals)->count(),
             'proposals' => $proposals,
             'ideascale_profiles' => $ideascale_profiles,
-            'tags' => $this->tags->map(fn ($m) => $m->toArray()),
+            //            'tags' => $this->tags->map(fn ($m) => $m->toArray()),
             'connected_items' => $this->connected_items,
         ]);
     }

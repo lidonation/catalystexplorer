@@ -344,7 +344,7 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                     </thead>
                     <tbody data-testid="proposal-table-body">
                         {proposals.map((proposal, index) => {
-                            const proposalHash = proposal.hash ?? '';
+                            const proposalHash = proposal.id ?? '';
                             const helpers = getRowHelpers(proposalHash);
 
                             return (

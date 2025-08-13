@@ -14,7 +14,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 class ReviewerData extends Data
 {
     public function __construct(
-        public ?string $hash,
+        public ?string $id,
 
         public $reviews_count,
 

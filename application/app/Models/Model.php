@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Artisan;
 
 class Model extends EloquentModel
 {
-    protected $hidden = ['id'];
+    protected $hidden = [];
 
     protected $appends = ['uuid'];
 

@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Scout\Searchable;
 
 class MonthlyReport extends Model
 {
-    use Searchable;
+    use HasUuids, Searchable;
 
     public static function runCustomIndex(): void
     {

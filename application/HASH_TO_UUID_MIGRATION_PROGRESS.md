@@ -36,9 +36,9 @@ We have successfully completed the next major phase of removing hash ID usage fr
 5. **Review Model** (`app/Models/Review.php`)
    - ✅ Updated all MeiliSearch configuration to use UUIDs:
      - `reviewer.hash` → `reviewer.uuid`
-     - `proposal.hash` → `proposal.uuid`
-     - `proposal.ideascale_profiles.hash` → `proposal.ideascale_profiles.uuid`
-     - `proposal.groups.hash` → `proposal.groups.uuid`
+     - `proposal.hash` → `proposal.id`
+     - `proposal.ideascale_profiles.hash` → `proposal.ideascale_profiles.id`
+     - `proposal.groups.hash` → `proposal.groups.id`
    - ✅ Updated filterable, searchable, and sortable attributes
    - ✅ Added hash field removal in `toSearchableArray()` method
 

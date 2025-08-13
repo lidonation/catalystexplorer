@@ -24,7 +24,7 @@ class GroupRepository extends Repository
                     [
                         'attributesToRetrieve' => [
                             'slug',
-                            'hash',
+                            'id',
                             'name',
                             'discord',
                             'twitter',

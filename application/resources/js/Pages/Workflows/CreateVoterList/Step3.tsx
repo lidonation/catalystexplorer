@@ -40,7 +40,7 @@ interface Step3Props {
     activeStep: number;
     proposals: PaginatedData<ProposalData[]>;
     campaigns: Campaign[];
-    selectedProposals: { hash: string; vote: number | null }[];
+    selectedProposals: { id: string; vote: number|null }[];
     filters: SearchParams;
     bookmarkHash: string;
     fundSlug?: string;
@@ -64,7 +64,9 @@ const Step3: React.FC<Step3Props> = ({
     });
 
     const [selectedIds, setSelectedIds] =
-        useState<{ hash: string; vote: number | null }[]>(selectedProposals);
+        useState<{ id: string; vote: number | null }[]>(
+            selectedProposals,
+        );
 
     const form = useForm({
         proposals: selectedIds,
@@ -106,23 +108,20 @@ const Step3: React.FC<Step3Props> = ({
         return baseFilters;
     };
 
-  const handleVote = (proposalHash: string, vote: number | null) => {
-      setSelectedIds((prev) => {
-          if (vote === null) {
-              return prev.filter((item) => item.hash !== proposalHash);
-          }
+    const handleVote = (proposalId: string, vote: number | null) => {
+        setSelectedIds((prev) => {
+            const existing = prev.find((item) => item.id === proposalId);
 
-          const existing = prev.find((item) => item.hash === proposalHash);
+            if (!existing) {
+                return [...prev, { id: proposalId, vote }];
+            }
 
-          if (!existing) {
-              return [...prev, { hash: proposalHash, vote }];
-          }
+            return prev.map((item) =>
+                item.id === proposalId ? { ...item, vote } : item,
+            );
+        });
 
-          return prev.map((item) =>
-              item.hash === proposalHash ? { ...item, vote } : item,
-          );
-      });
-  };
+    };
 
     const handleSearch = (search: string) => {
         const updatedFilters: Record<
@@ -235,7 +234,7 @@ const Step3: React.FC<Step3Props> = ({
                                             options={campaigns.map(
                                                 (campaign) => ({
                                                     label: campaign.title,
-                                                    value: campaign.hash,
+                                                    value: String(campaign.id),
                                                 }),
                                             )}
                                             hideCheckbox={true}
@@ -270,19 +269,19 @@ const Step3: React.FC<Step3Props> = ({
                         <div className="w-full">
                             <div className="mt-4 mb-4 max-h-[25rem] w-full space-y-4 overflow-y-auto">
                                 {proposals?.data &&
-                                proposals.data.filter((p) => p.hash).length >
+                                proposals.data.filter((p) => p.id).length >
                                     0 ? (
                                     proposals.data
-                                        .filter((p) => p.hash)
+                                        .filter((p) => p.id)
                                         .map((proposal) => {
                                             let selected = selectedIds.find(
                                                 (item) =>
-                                                    item.hash == proposal.hash,
+                                                    item.id == proposal.id,
                                             );
 
                                             return (
                                                 <ProposalVotingCard
-                                                    key={proposal.hash}
+                                                    key={proposal.id}
                                                     proposal={proposal}
                                                     isSelected={
                                                         !!selected &&

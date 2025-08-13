@@ -18,7 +18,7 @@ const CompareButton: React.FC<CompareButtonProps> = ({
     'data-testid': dataTestId,
 }: CompareButtonProps) => {
     const [isHovered, setIsHovered] = useState(false);
-    const proposalId = getUuid(data);
+    const proposalId = data.id ?? '';
     
     // Live query to check if the proposal is already in the DB
     const existingProposal = useLiveQuery(

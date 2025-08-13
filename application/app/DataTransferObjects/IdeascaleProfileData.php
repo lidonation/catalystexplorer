@@ -83,7 +83,7 @@ final class IdeascaleProfileData extends Data
         public ?int $own_proposals_count,
 
         #[TypeScriptOptional]
-        public ?int $claimed_by_id,
+        public ?string $claimed_by_uuid,
 
         #[TypeScriptOptional]
         public ?int $completed_proposals_count,

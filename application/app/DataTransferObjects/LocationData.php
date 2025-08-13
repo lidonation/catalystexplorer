@@ -12,7 +12,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 class LocationData extends Data
 {
     public function __construct(
-        public ?string $hash,
+        public ?string $id,
 
         public string $country,
 

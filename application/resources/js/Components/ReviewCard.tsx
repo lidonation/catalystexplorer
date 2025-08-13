@@ -43,10 +43,10 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
 
 
     const markPositive = () => {
-        if (!review?.hash) return;
+        if (!review?.id) return;
         setIsLoadingPositive(true);
         router.post(
-            generateLocalizedRoute('reviews.helpful', { review: review?.hash }),
+            generateLocalizedRoute('reviews.helpful', { review: review?.id }),
             {},
             {
                 preserveScroll: true,
@@ -65,10 +65,10 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
     };
 
     const markNegative = () => {
-        if (!review?.hash) return;
+        if (!review?.id) return;
         router.post(
             generateLocalizedRoute('reviews.notHelpful', {
-                id: review?.hash,
+                id: review?.id,
             }),
             {},
             {

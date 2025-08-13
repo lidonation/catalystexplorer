@@ -7,11 +7,12 @@ namespace App\Models;
 use App\Interfaces\IHasMetaData;
 use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Laravel\Scout\Searchable;
 
 class Transaction extends Model implements IHasMetaData
 {
-    use HasMetaData, Searchable;
+    use HasMetaData, HasUuids, Searchable;
 
     public $timestamps = false;
 

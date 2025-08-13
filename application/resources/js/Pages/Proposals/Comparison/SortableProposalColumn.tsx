@@ -30,7 +30,7 @@ export default function SortableProposalColumn({
         transition,
         isDragging,
     } = useSortable({
-        id: proposal.hash ?? `${Math.random() + 'proposal'}`,
+        id: proposal.id ?? `${Math.random() + 'proposal'}`,
     });
 
     const { t } = useLaravelReactI18n();
@@ -118,7 +118,7 @@ export default function SortableProposalColumn({
     const handleRemove = async () => {
         await IndexedDBService.remove(
             'proposal_comparisons',
-            proposal.hash ?? '',
+            proposal.id ?? '',
         );
     };
 
@@ -131,7 +131,7 @@ export default function SortableProposalColumn({
             {...attributes}
             {...listeners}
             className="bg-background flex w-80 flex-col"
-            data-testid={`sortable-proposal-column-${proposal.hash}`}
+            data-testid={`sortable-proposal-column-${proposal.id}`}
         >
             {/* Reorder */}
             <div

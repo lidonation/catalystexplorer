@@ -186,14 +186,14 @@ export default function ProposalsTable() {
                         <div className="flex min-w-max">
                             <SortableContext
                                 items={filteredProposals.map(
-                                    (p) => p.hash ?? '',
+                                (p) => p.id ?? '',
                                 )}
                                 strategy={horizontalListSortingStrategy}
                                 data-testid="sortable-proposal-context"
                             >
                                  {filteredProposals.map((proposal, index) => (
                                     <SortableProposalColumn
-                                        key={proposal.hash}
+                                    key={proposal.id}
                                         proposal={proposal}
                                         isLast={
                                             index ===

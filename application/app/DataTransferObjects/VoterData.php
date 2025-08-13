@@ -12,10 +12,8 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 final class VoterData extends Data
 {
     public function __construct(
-        public int $id,
-
         #[TypeScriptOptional]
-        public ?string $hash,
+        public ?string $id,
 
         #[TypeScriptOptional]
         public ?string $stake_pub,

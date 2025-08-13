@@ -124,11 +124,11 @@ const ProposalLayout = ({
                     </section>
                     <div className="p-2 bg-background rounded-lg shadow-md flex-shrink-0 inline-flex items-center justify-center overflow-hidden self-end sm:ml-2">
                         <ListProvider>
-                            {proposal.hash && (
+                            {proposal.id && (
                                 <>
                                     <BookmarkButton
                                         modelType="proposals"
-                                        itemId={proposal.hash}
+                                        itemId={proposal.id}
                                     >
                                         <span>{t('buttons.bookmark')}</span>
                                     </BookmarkButton>

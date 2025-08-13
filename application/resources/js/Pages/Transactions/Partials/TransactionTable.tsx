@@ -71,7 +71,7 @@ export const CardanoTransactionTable: React.FC<
       },
         {
             key: 'hash',
-            header: t('transactions.table.hash'),
+            header: t('transactions.table.id'),
             render: (tx) => (
                 <div className="flex flex-col items-start space-y-1">
                     <CopyableCell

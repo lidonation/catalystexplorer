@@ -38,7 +38,7 @@ const RelatedReviews: React.FC<RelatedReviewsProps> = ({
             >
                 {reviews?.data?.map((review, index) => (
                     <section
-                        key={review?.hash}
+                        key={review?.id}
                         className="relative mb-2"
                         style={{
                             zIndex: reviews?.data?.length - index,

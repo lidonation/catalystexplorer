@@ -27,7 +27,7 @@ export default function ProposalCardHeader({
     const contentRef = useRef<HTMLParagraphElement | null>(null);
     const [lineCount, setLineCount] = useState(0);
     const { t } = useLaravelReactI18n();
-    const proposalId = getUuid(proposal);
+    const proposalId = proposal.id ?? '';
 
     const gradientColors: Record<string, unknown> = {
         complete: 'from-[var(--success-gradient-color-1)] to-[var(--success-gradient-color-2)]',

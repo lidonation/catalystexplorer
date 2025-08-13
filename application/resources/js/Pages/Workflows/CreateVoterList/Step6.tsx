@@ -40,11 +40,11 @@ const Step6: React.FC<Step6Props> = ({
     const localizedRoute = useLocalizedRoute;
     const prevStep = localizedRoute('workflows.createVoterList.index', {
         step: activeStep - 1,
-        bk: bookmarkCollection.hash,
+        bk: bookmarkCollection.id,
     });
     const nextStep = localizedRoute('workflows.createVoterList.index', {
         step: activeStep + 1,
-        bk: bookmarkCollection.hash,
+        bk: bookmarkCollection.id,
     });
 
     type ExtendedProposalData = ProposalData & {
@@ -180,7 +180,7 @@ const Step6: React.FC<Step6Props> = ({
                             linkProps={{
                                 preserveState: true,
                                 preserveScroll: true,
-                                // bk: bookmarkCollection.hash,
+                                // bk: bookmarkCollection.id,
                             }}
                         />
                     </div>

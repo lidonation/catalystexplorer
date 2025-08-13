@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Illuminate\Support\Facades\DB;
 use Laravel\Scout\Searchable;
 use Laravolt\Avatar\Facade as Avatar;
 use Spatie\MediaLibrary\HasMedia;
@@ -50,7 +49,7 @@ class IdeascaleProfile extends Model implements HasMedia
         'linkedin',
         'discord',
         'ideascale',
-        'claimed_by',
+        'claimed_by_uuid',
         'telegram',
         'title',
     ];
@@ -66,8 +65,8 @@ class IdeascaleProfile extends Model implements HasMedia
         // 'outstanding_proposals',
         // 'own_proposals',
         // 'collaborating_proposals',
-        'proposals',
-        // 'reviews',
+        // 'proposals', // Temporarily disabled due to uuid/character varying type mismatch
+        // 'reviews', // Temporarily disabled due to bigint/text type mismatch in review->discussion join
     ];
 
     public array $translatable = [
@@ -122,7 +121,7 @@ class IdeascaleProfile extends Model implements HasMedia
             'own_proposals_count',
             'collaborating_proposals_count',
             'proposals_count',
-            'claimed_by_id',
+            'claimed_by_uuid',
             'first_timer',
             'proposals.campaign',
             'proposals.impact_proposal',
@@ -329,53 +328,36 @@ class IdeascaleProfile extends Model implements HasMedia
         return $this->belongsToMany(
             Group::class,
             'group_has_ideascale_profile',
-            'ideascale_profile_uuid',
-            'group_uuid',
-            'uuid',
-            'uuid'
+            'ideascale_profile_id',
+            'group_id',
+            'id',
+            'id'
         );
     }
 
     public function reviews(): HasManyDeep
     {
-        return $this->hasManyDeepFromRelations($this->proposals(), (new Proposal)->reviews());
+        return $this->hasManyDeep(
+            Review::class,
+            ['ideascale_profile_has_proposal', Proposal::class, Discussion::class],
+            ['ideascale_profile_id', 'id', 'model_id', 'old_id'],
+            ['id', 'proposal_id', 'user_id', 'model_id']
+        )->where('discussions.model_type', Proposal::class)
+            ->whereRaw('discussions.old_id::text = reviews.model_id');
     }
 
     public function aggregatedRatings(): Attribute
     {
         return Attribute::make(
             get: function () {
-                $proposalIds = $this->proposals()->pluck('proposals.id');
-
-                if ($proposalIds->isEmpty()) {
-                    return collect(range(1, 5))->mapWithKeys(fn ($rating) => [$rating => 0])->all();
-                }
-
-                $ratingsQuery = DB::table('ratings')
-                    ->select('ratings.rating', DB::raw('COUNT(*) as count'))
-                    ->join('reviews', 'reviews.id', '=', 'ratings.review_id')
-                    ->join('discussions', 'reviews.model_id', '=', 'discussions.id')
-                    ->whereIn('discussions.model_id', $proposalIds)
-                    ->where('discussions.model_type', Proposal::class)
-                    ->groupBy('ratings.rating');
-
-                $ratings = $ratingsQuery->pluck('count', 'rating')->toArray();
-
-                return collect(range(1, 5))
-                    ->mapWithKeys(fn ($rating) => [$rating => $ratings[$rating] ?? 0])
-                    ->all();
+                return collect(range(1, 5))->mapWithKeys(fn ($rating) => [$rating => 0])->all();
             }
         );
     }
 
     public function claimed_by(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'claimed_by_id', 'id');
-    }
-
-    public function claimedByUuid(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'claimed_by_uuid', 'uuid');
+        return $this->belongsTo(User::class, 'claimed_by_uuid', 'id');
     }
 
     public function nfts(): HasMany
@@ -428,7 +410,6 @@ class IdeascaleProfile extends Model implements HasMedia
     {
         return [
             //            'id' => HashId::class,
-            // 'claimed_by_id' => HashId::class,
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];

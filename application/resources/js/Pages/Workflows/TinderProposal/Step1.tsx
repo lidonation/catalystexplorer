@@ -66,7 +66,7 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
     }));
 
     const proposalTypeOptions = campaigns?.map(campaign => ({
-        id: campaign.uuid || '',
+        id: campaign.id || '',
         label: campaign.title || 'Untitled Campaign'
     }));
 
