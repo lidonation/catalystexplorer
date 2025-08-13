@@ -1,3 +1,10 @@
+# [1.6.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.5.0...v1.6.0) (2025-08-08)
+
+
+### Features
+
+* **ipfs:** created a serivice for uploading and pinning files to ipfs via blockfrost ([2a2b583](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/2a2b58335edd59ca5e413650fe01ac14c61b9dca))
+
 # [1.5.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.4.1...v1.5.0) (2025-08-07)
 
 
