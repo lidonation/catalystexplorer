@@ -75,7 +75,7 @@ return new class extends Migration
                             UPDATE {$table} 
                             SET {$uuidColumn} = users.uuid 
                             FROM users 
-                            WHERE {$table}.{$column} = users.id 
+                            WHERE {$table}.{$column}::text = users.id::text 
                             AND {$table}.{$column} IS NOT NULL
                         ");
                     }
@@ -91,7 +91,7 @@ return new class extends Migration
                     UPDATE {$table} 
                     SET {$uuidColumn} = users.uuid 
                     FROM users 
-                    WHERE {$table}.{$column} = users.id 
+                    WHERE {$table}.{$column}::text = users.id::text 
                     AND {$table}.{$column} IS NOT NULL
                 ");
             }

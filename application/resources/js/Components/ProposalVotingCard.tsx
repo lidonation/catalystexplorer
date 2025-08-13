@@ -11,7 +11,7 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 interface ProposalVotingCardProps {
     proposal: ProposalData;
     isSelected: boolean;
-    onVote: (hash: string, vote: number | null) => void;
+    onVote: (id: string, vote: number | null) => void;
     currentVote?: number | null;
 }
 
@@ -49,8 +49,8 @@ const ProposalVotingCard: React.FC<ProposalVotingCardProps> = ({
                 className={`mr-4 flex h-4 w-4 flex-shrink-0 cursor-pointer items-center justify-center rounded border ${isSelected ? 'bg-primary border-primary' : 'border-gray-300'}`}
                 onClick={(e) => {
                     e.stopPropagation();
-                    if (typeof proposal.hash === 'string') {
-                        onVote(proposal.hash, null);
+                    if (typeof proposal.id === 'string') {
+                        onVote(proposal.id, null);
                     }
                 }}
             >
@@ -98,8 +98,8 @@ const ProposalVotingCard: React.FC<ProposalVotingCardProps> = ({
                         className={`flex-1 ${currentVote === VoteEnum.YES ? 'bg-success text-white' : 'bg-success-light text-success'} border-success hover:bg-success rounded-md border py-2 font-medium transition hover:text-white`}
                         onClick={(e) => {
                             e.stopPropagation();
-                            if (typeof proposal.hash === 'string' && onVote) {
-                                onVote(proposal.hash, VoteEnum.YES);
+                            if (typeof proposal.id === 'string' && onVote) {
+                                onVote(proposal.id, VoteEnum.YES);
                             }
                         }}
                         ariaLabel={t(
@@ -112,8 +112,8 @@ const ProposalVotingCard: React.FC<ProposalVotingCardProps> = ({
                         className={`flex-1 ${currentVote === VoteEnum.ABSTAIN ? 'bg-warning text-white' : 'bg-warning-light text-warning'} border-warning hover:bg-warning rounded-md border py-2 font-medium transition hover:text-white`}
                         onClick={(e) => {
                             e.stopPropagation();
-                            if (typeof proposal.hash === 'string' && onVote) {
-                                onVote(proposal.hash, VoteEnum.ABSTAIN);
+                            if (typeof proposal.id === 'string' && onVote) {
+                                onVote(proposal.id, VoteEnum.ABSTAIN);
                             }
                         }}
                         ariaLabel={t(

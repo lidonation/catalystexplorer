@@ -37,11 +37,11 @@ const IDFilters = React.memo(
     }) => {
         const domain =
             domainMap[filter.param] || labels[filter.param as LabelKeys];
-        const { setHashes, options } = useSearchOptions<any>(domain);
+        const { setUuids, options } = useSearchOptions<any>(domain);
 
         useEffect(() => {
-            setHashes(filter.value);
-        }, [setHashes, filter.value]);
+            setUuids(filter.value);
+        }, [setUuids, filter.value]);
 
         //if has comparison table fund filter
         const hasFund = filter.value.some((value: string) =>
@@ -54,14 +54,14 @@ const IDFilters = React.memo(
                 return filter.value.includes(option.label);
             }
 
-            return filter.value.includes(option.hash);
+            return filter.value.includes(option.uuid);
         });
 
         const removeFilter = (value?: string) => {
             // for comparison table fund filter
             if (hasFund) {
                 const fundLabel = selectedOptions.find(
-                    (fund) => fund.hash == value,
+                    (fund) => fund.uuid == value,
                 ).title;
 
                 setFilters({
@@ -92,12 +92,12 @@ const IDFilters = React.memo(
                 <div className="mr-1 font-bold">{filter.label}:</div>
                 <div className="mr-1 flex items-center gap-2">
                     {selectedOptions.map((option) => (
-                        <div key={option.hash} className="flex items-center">
+                        <div key={option.uuid} className="flex items-center">
                             <span>{getDisplayName(option)}</span>
                             <button
                                 className="ml-2"
-                                onClick={() => removeFilter(option.hash)}
-                                data-testid={`remove-id-filter-${option.hash}`}
+                                onClick={() => removeFilter(option.uuid)}
+                                data-testid={`remove-id-filter-${option.uuid}`}
                             >
                                 X
                             </button>

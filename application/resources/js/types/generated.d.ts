@@ -58,7 +58,7 @@ updated_at?: string;
 deleted_at?: string;
 };
 export type CampaignData = {
-uuid: string;
+id: string;
 fund_id?: string;
 title: string | null;
 meta_title: string | null;
@@ -237,7 +237,7 @@ ideascale_profiles?: any;
 reviews_count?: number;
 };
 export type IdeascaleProfileData = {
-uuid: string;
+id: string;
 ideascaleId?: number;
 username?: string;
 email?: string;

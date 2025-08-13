@@ -203,7 +203,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
         switch (props.type) {
             case 'proposals':
                 return {
-                    proposals: props.proposals.data.map((item) => item.hash),
+                    proposals: props.proposals.data.map((item) => item.id),
                 };
             case 'communities':
                 return {
@@ -212,11 +212,11 @@ const Manage = (props: BookmarkCollectionListProps) => {
                     ),
                 };
             case 'groups':
-                return { groups: props.groups.data.map((item) => item.hash) };
+                return { groups: props.groups.data.map((item) => item.uuid) };
             case 'ideascaleProfiles':
                 return {
                     ideascaleProfiles: props.ideascaleProfiles.data.map(
-                        (item) => item.hash,
+                        (item) => item.uuid,
                     ),
                 };
             case 'reviews':
@@ -233,10 +233,6 @@ const Manage = (props: BookmarkCollectionListProps) => {
             <header className="container mt-4 flex flex-col items-start lg:mt-6">
                 <Title level="1">
                     {bookmarkCollection.title ?? ''}
-                    {bookmarkCollection.tinder_direction === 'right' &&
-                        t('rightSwipes')}
-                    {bookmarkCollection.tinder_direction === 'left' &&
-                        t('leftSwipes')}
                 </Title>
                 <p className="text-content">
                     {t(bookmarkCollection.content ?? '')}
@@ -292,7 +288,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
                 isOpen={!!activeEditModal}
                 onClose={() => setActiveEditModal(false)}
                 logo={false}
-        
+
             >
                 <EditListForm
                     bookmarkCollection={bookmarkCollection}

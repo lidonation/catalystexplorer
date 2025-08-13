@@ -350,7 +350,7 @@ Route::localized(
         });
 
         Route::prefix('/milestones')->as('milestones.')->group(function () {
-            Route::get('/', fn() => Inertia::render('ComingSoon', props: ['context' => 'Milestones Lists']))
+            Route::get('/', fn() => Inertia::render('ComingSoon', ['context' => 'Milestones Lists']))
                 ->name('index');
         });
 
@@ -489,7 +489,7 @@ Route::localized(
 
         Route::prefix('ccv4')->as('ccv4.')
             ->group(function () {
-                Route::get('/', fn() => Inertia::render(component: 'ComingSoon', props: ['context' => 'CCV4 Data']))->name('index');
+                Route::get('/', fn() => Inertia::render('ComingSoon', ['context' => 'CCV4 Data']))->name('index');
             });
     }
 

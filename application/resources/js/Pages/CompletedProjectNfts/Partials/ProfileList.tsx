@@ -8,7 +8,7 @@ import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 
 interface ProfileListProps {
     profiles: IdeascaleProfileData[];
-    onProfileClick: (profileHash: string | null) => void;
+    onProfileClick: (profileUuid: string | null) => void;
 }
 
 const ProfileList: React.FC<ProfileListProps> = ({
@@ -31,14 +31,14 @@ const ProfileList: React.FC<ProfileListProps> = ({
             {profiles.map((profile, index) => (
                 <div key={index} className="w-full">
                     <label
-                        htmlFor={profile.hash as string | undefined}
+                        htmlFor={profile.uuid as string | undefined}
                         className="flex items-center hover:cursor-pointer"
                     >
                         <ProfileCard profile={profile}/>
                         <Checkbox
-                            name={profile.hash as string | undefined}
-                            id={profile.hash as string | undefined}
-                            onChange={() => onProfileClick(profile.hash)}
+                            name={profile.uuid as string | undefined}
+                            id={profile.uuid as string | undefined}
+                            onChange={() => onProfileClick(profile.uuid)}
                             className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary mr-2 h-4 w-4 shadow-xs focus:border"
                         />
                     </label>

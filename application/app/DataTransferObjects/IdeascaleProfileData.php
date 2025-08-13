@@ -14,7 +14,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 final class IdeascaleProfileData extends Data
 {
     public function __construct(
-        public string $uuid,
+        public string $id,
 
         #[TypeScriptOptional]
         public ?int $ideascaleId,

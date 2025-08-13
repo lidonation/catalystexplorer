@@ -36,7 +36,7 @@ class IdeascaleProfile extends Model implements HasMedia
      *
      * @var array<string>
      */
-    protected $hidden = ['id'];
+    protected $hidden = [];
 
     protected $fillable = [
         'ideascale_id',

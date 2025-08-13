@@ -13,7 +13,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 class CampaignData extends Data
 {
     public function __construct(
-        public string $uuid,
+        public string $id,
 
         #[TypeScriptOptional]
         public ?string $fund_id,

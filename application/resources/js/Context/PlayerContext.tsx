@@ -252,9 +252,9 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
         const playlist = proposals
             ?.filter((item) => item.quickpitch)
             .map((item): Playlist => {
-                const { title, quickpitch, hash } = item;
+                const { title, quickpitch, id } = item;
                 const provider = quickpitch?.match(regex) ? 'youtube' : 'vimeo';
-                return { title, quickpitch, provider, hash: hash ? hash : null };
+                return { title, quickpitch, provider, hash: id ? id : null };
             });
 
         setPlaylist(playlist);
