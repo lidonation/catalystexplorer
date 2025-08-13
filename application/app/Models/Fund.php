@@ -12,6 +12,7 @@ use App\Models\Scopes\OrderByLaunchedDateScope;
 use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -25,19 +26,34 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 class Fund extends Model implements HasMedia
 {
     use HasMetaData,
+        HasUuids,
         InteractsWithMedia,
         SoftDeletes;
 
     protected $with = [
-        'media',
+        // Temporarily disabled - media library needs model_id column type adjustment
+        // 'media',
     ];
 
     protected $appends = [
         'hero_img_url',
-        'hash',
     ];
 
     protected $guarded = [];
+
+    /**
+     * The "type" of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
 
     protected $withCount = [
         //        'proposals',
@@ -145,6 +161,11 @@ class Fund extends Model implements HasMedia
     public function campaigns(): HasMany
     {
         return $this->hasMany(Campaign::class, 'fund_id', 'id');
+    }
+
+    public function campaignsUuid(): HasMany
+    {
+        return $this->hasMany(Campaign::class, 'fund_uuid', 'uuid');
     }
 
     public function getRouteKeyName(): string

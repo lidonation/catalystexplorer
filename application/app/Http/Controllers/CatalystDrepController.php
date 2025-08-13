@@ -63,7 +63,7 @@ class CatalystDrepController extends Controller
 
     public function step1(Request $request): Response
     {
-        $catalystDrep = CatalystDrep::byHash($request->catalystDrep);
+        $catalystDrep = CatalystDrep::find($request->catalystDrep);
 
         return Inertia::render('Workflows/CatalystDrepSignup/Step1', [
             'stepDetails' => $this->getStepDetails(),
@@ -81,7 +81,7 @@ class CatalystDrepController extends Controller
         }
 
         return Inertia::render('Workflows/CatalystDrepSignup/Step2', [
-            'catalystDrep' => $catalystDrep->hash,
+            'catalystDrep' => $catalystDrep->id,
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
         ]);
@@ -96,7 +96,7 @@ class CatalystDrepController extends Controller
         }
 
         return Inertia::render('Workflows/CatalystDrepSignup/Step3', [
-            'catalystDrep' => $catalystDrep->hash,
+            'catalystDrep' => $catalystDrep->id,
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
         ]);
@@ -115,7 +115,7 @@ class CatalystDrepController extends Controller
         }
 
         return Inertia::render('Workflows/CatalystDrepSignup/Success', [
-            'catalystDrep' => $catalystDrep->hash,
+            'catalystDrep' => $catalystDrep->id,
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
         ]);

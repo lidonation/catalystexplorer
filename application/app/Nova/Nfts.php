@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Auth;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\HasMany;
-use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\KeyValue;
 use Laravel\Nova\Fields\Markdown;
 use Laravel\Nova\Fields\MorphTo;
@@ -58,7 +57,10 @@ class Nfts extends Resource
     public function fields(NovaRequest $request)
     {
         return [
-            ID::make(__('ID'), 'id')->sortable(),
+            Text::make(__('ID'), 'id')
+                ->sortable()
+                ->readonly()
+                ->copyable(),
 
             Text::make(__('Name'))->maxlength(32)
                 ->enforceMaxlength()

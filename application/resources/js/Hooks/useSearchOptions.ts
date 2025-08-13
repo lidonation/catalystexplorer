@@ -4,7 +4,7 @@ import ApiPaginatedData from '../types/api-paginated-data';
 
 export function useSearchOptions<T>(domain?: string) {
     const [searchTerm, setSearchTerm] = useState('');
-    const [hashes, setHashes] = useState([]);
+    const [uuids, setUuids] = useState([]);
     const [options, setOptions] = useState<T[]>([]);
 
     const resolvePromise = async <T>(promise: Promise<T>): Promise<T | null> => {
@@ -27,7 +27,7 @@ export function useSearchOptions<T>(domain?: string) {
 
 
             const response = await resolvePromise<ApiPaginatedData<T>>(
-                requestManager.sendRequest('get', route(routeName, { search: searchTerm, hashes }))
+                requestManager.sendRequest('get', route(routeName, { search: searchTerm, uuids }))
             );
 
             if (response) {
@@ -35,12 +35,12 @@ export function useSearchOptions<T>(domain?: string) {
             }
         };
 
-        if (searchTerm.length || hashes.length) {
+        if (searchTerm.length || uuids.length) {
             fetchData();
         }
 
 
-    }, [domain, searchTerm, hashes]);
+    }, [domain, searchTerm, uuids]);
 
-    return { searchTerm, setSearchTerm, options, hashes, setHashes };
+    return { searchTerm, setSearchTerm, options, uuids, setUuids };
 }

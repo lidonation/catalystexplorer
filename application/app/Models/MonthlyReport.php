@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Scout\Searchable;
 
 class MonthlyReport extends Model
 {
-    use Searchable;
+    use HasUuids, Searchable;
 
     public static function runCustomIndex(): void
     {
@@ -34,5 +35,10 @@ class MonthlyReport extends Model
     public function ideascale_profile(): BelongsTo
     {
         return $this->belongsTo(IdeascaleProfile::class);
+    }
+
+    public function ideascaleProfileUuid(): BelongsTo
+    {
+        return $this->belongsTo(IdeascaleProfile::class, 'ideascale_profile_uuid', 'uuid');
     }
 }

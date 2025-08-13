@@ -45,8 +45,8 @@ export default function Reviews({
                             <RelatedReviews
                                 reviews={reviews}
                                 routeParam={{
-                                    [ParamsEnum.GROUPS]: group.hash
-                                        ? [group.hash]
+                                    [ParamsEnum.GROUPS]: group.id
+                                        ? [group.id]
                                         : null,
                                 }}
                             />

@@ -60,7 +60,7 @@ class UpdateNMKRNftStatus implements ShouldQueue
             );
 
             $nft->txs()->create([
-                'user_id' => $nft->model?->claimed_by_id,
+                'user_id' => $nft->model?->claimed_by_uuid,
                 'model_id' => $nft->id,
                 'model_type' => $nft::class,
                 'policy' => $nftNotification->PolicyId,

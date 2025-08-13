@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Traits\HasHashId;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Comment extends \Spatie\Comments\Models\Comment
 {
-    use HasHashId;
+    use HasUuids;
 
     public function commentator(): BelongsTo
     {

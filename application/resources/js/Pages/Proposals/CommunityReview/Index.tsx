@@ -47,8 +47,8 @@ const Index = ({
                             <RelatedReviews
                                 reviews={reviews}
                                 routeParam={{
-                                    [ParamsEnum.PROPOSALS]: proposal.hash
-                                        ? [proposal.hash]
+                                [ParamsEnum.PROPOSALS]: proposal.id
+                                    ? [proposal.id]
                                         : null,
                                 }}
                             />

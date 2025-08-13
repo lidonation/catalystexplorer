@@ -6,13 +6,14 @@ namespace App\Models;
 
 use App\Traits\HasModel;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Scout\Searchable;
 
 class Link extends Model
 {
-    use HasModel, HasTimestamps, Searchable, SoftDeletes;
+    use HasModel, HasTimestamps, HasUuids, Searchable, SoftDeletes;
 
     public array $translatable = [
         'title',

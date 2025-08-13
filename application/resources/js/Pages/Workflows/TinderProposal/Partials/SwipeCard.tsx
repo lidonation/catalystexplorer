@@ -82,13 +82,13 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
                 <SecondaryLink
                     className='flex-1 text-center'
                     href={generateLocalizedRoute('lists.manage', {
-                        bookmarkCollection: bookmarkCollection.hash,
+                        bookmarkCollection: bookmarkCollection.id,
                         type: 'proposals'
                     })}
                     onClick={(e) => {
                         e.preventDefault();
                         window.open(generateLocalizedRoute('lists.manage', {
-                            bookmarkCollection: bookmarkCollection.hash,
+                            bookmarkCollection: bookmarkCollection.id,
                             type: 'proposals'
                         }), '_blank', 'noopener,noreferrer');
                     }}

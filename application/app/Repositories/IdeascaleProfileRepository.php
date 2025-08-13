@@ -23,11 +23,11 @@ class IdeascaleProfileRepository extends Repository
                 $args = array_merge(
                     [
                         'attributesToRetrieve' => [
-                            'hash',
+                            'id', // Changed from 'hash' to use UUID
                             'name',
                             'hero_img_url',
                             'first_timer',
-                            'claimed_by_id',
+                            'claimed_by_uuid',
                             'completed_proposals_count',
                             'funded_proposals_count',
                             'unfunded_proposals_count',

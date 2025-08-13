@@ -74,9 +74,14 @@ class Signature extends Model
             ->distinct();
     }
 
-    public function scopeForUser(Builder $query, int $userId): Builder
+    /**
+     * Scope signatures for a given user id (UUID string).
+     *
+     * @param  string|int  $userId  UUID (or legacy int during migrations)
+     */
+    public function scopeForUser(Builder $query, string $userId): Builder
     {
-        return $query->where('user_id', $userId);
+        return $query->where('user_id', (string) $userId);
     }
 
     protected function displayName(): Attribute

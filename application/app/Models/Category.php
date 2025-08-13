@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Traits\HasHashId;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,8 +12,6 @@ use Illuminate\Support\Str;
 
 class Category extends Model
 {
-    use HasHashId;
-
     protected $fillable = [
         'parent_id',
         'name',
@@ -30,9 +27,9 @@ class Category extends Model
         'level' => 'integer',
     ];
 
-    protected $appends = ['hash'];
+    protected $appends = [];
 
-    protected $hidden = ['id'];
+    protected $hidden = [];
 
     // Self-referential relationships
     public function parent(): BelongsTo

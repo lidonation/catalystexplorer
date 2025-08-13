@@ -50,7 +50,7 @@ export default function ProposalVerticalCard({
             ref={cardRef as React.RefObject<HTMLElement>}
             className="bg-background proposal-card proposal-card-vertical flex h-full flex-col justify-between rounded-xl p-2 shadow-lg gap-3 relative"
             style={cardHeight && userSelected ? { height: `${cardHeight}px` } : {}}
-            data-testid={`vertical-proposal-card-${proposal?.hash}`}
+            data-testid={`vertical-proposal-card-${proposal?.id}`}
         >
             {userSelected && (
                 <button

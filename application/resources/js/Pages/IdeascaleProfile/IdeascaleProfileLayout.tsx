@@ -32,7 +32,7 @@ export default function IdeascaleProfileLayout({
 
     const tabConfig = {
         ...ideascaleProfileTabs,
-        routePrefix: `ideascale-profiles/${ideascaleProfile.hash}`,
+        routePrefix: `ideascale-profiles/${ideascaleProfile.id}`,
     };
     const tabs = generateTabs(t, tabConfig);
 

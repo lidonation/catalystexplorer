@@ -6,16 +6,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Scout\Searchable;
 
 class Voter extends Model
 {
-    use Searchable;
+    use HasUuids, Searchable;
 
     protected $with = [];
 
-    protected $appends = ['hash'];
+    protected $appends = [];
 
     public int $maxValuesPerFacet = 8000;
 
@@ -25,7 +26,6 @@ class Voter extends Model
     {
         return [
             'id',
-            'hash',
             'stake_pub',
             'stake_key',
             'voting_pub',
@@ -36,7 +36,7 @@ class Voter extends Model
             'proposals_voted_on',
             'latest_fund.id',
             'latest_fund.title',
-            'latest_fund.hash',
+            'latest_fund.uuid',
             'created_at',
             'updated_at',
         ];
@@ -110,27 +110,21 @@ class Voter extends Model
     {
         return Attribute::make(
             get: fn () => $this->voting_powers()
-                ->with('snapshot.fund')
+                ->with('snapshot') // Temporarily disabled fund relationship
                 ->get()
-                ->filter(fn ($v) => $v->snapshot && $v->snapshot->fund)
-                ->sortByDesc(fn ($v) => $v->snapshot->fund->created_at)
+                ->filter(fn ($v) => $v->snapshot)
+                ->sortByDesc('created_at')
                 ->first()
         );
     }
 
     public function toSearchableArray(): array
     {
-        $funds = $this->voting_histories
-            ->pluck('snapshot.fund')
-            ->filter()
-            ->unique('id')
-            ->values();
-
-        $latestFund = $funds->sortByDesc('id')->first();
+        // Temporarily disable fund relationship access due to UUID migration issue
+        // TODO: Fix snapshots.model_id to contain proper UUIDs for Fund references
 
         return [
             'id' => $this->id,
-            'hash' => $this->hash,
             'stake_pub' => $this->stake_pub,
             'stake_key' => $this->stake_key,
             'voting_pub' => $this->voting_pub,
@@ -141,11 +135,7 @@ class Voter extends Model
             'proposals_voted_on' => $this->voting_histories
                 ->pluck('proposals')
                 ->count(),
-            'latest_fund' => $latestFund ? [
-                'id' => $latestFund->id,
-                'title' => $latestFund->title,
-                'hash' => $latestFund->hash,
-            ] : null,
+            'latest_fund' => null, // Disabled until snapshot->fund relationship is fixed
             'created_at' => $this->created_at?->timestamp,
             'updated_at' => $this->updated_at?->timestamp,
             'deleted_at' => $this->deleted_at?->timestamp,
@@ -154,7 +144,9 @@ class Voter extends Model
 
     public function makeSearchableUsing(Collection $models): Collection
     {
-        return $models->load(['voting_histories.snapshot.fund', 'voting_powers']);
+        // Temporarily disable fund relationship loading due to UUID migration issue
+        // TODO: Fix snapshots.model_id to contain proper UUIDs for Fund references
+        return $models->load(['voting_histories.snapshot', 'voting_powers']);
     }
 
     protected function casts(): array

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\ServiceTypeEnum;
-use App\Traits\HasHashId;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Spatie\Enum\Laravel\Casts\EnumCast;
@@ -18,7 +18,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Service extends Model implements HasMedia
 {
-    use HasHashId, HasRelationships,InteractsWithMedia;
+    use HasRelationships, HasUuids, InteractsWithMedia;
 
     protected $fillable = [
         'title',
@@ -33,9 +33,9 @@ class Service extends Model implements HasMedia
         'linkedin',
     ];
 
-    protected $appends = ['header_image_url', 'hash'];
+    protected $appends = ['header_image_url'];
 
-    protected $hidden = ['id'];
+    protected $hidden = [];
 
     protected $casts = [
         'type' => EnumCast::class.':'.ServiceTypeEnum::class,

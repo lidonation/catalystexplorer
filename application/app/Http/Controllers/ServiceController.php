@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\TransformHashToIds;
 use App\DataTransferObjects\CategoryData;
 use App\DataTransferObjects\ServiceData;
 use App\Enums\ServiceTypeEnum;
@@ -45,10 +44,7 @@ class ServiceController extends Controller
         $services = Service::withStandardRelations()
             ->when($request->search, fn ($q) => $q->search($request->search))
             ->when($request->categories, function ($q) use ($request) {
-                $categoryIds = app(TransformHashToIds::class)->handle(
-                    collect(explode(',', $request->categories)),
-                    new Category
-                );
+                $categoryIds = array_filter(explode(',', (string) $request->categories));
 
                 $q->filterByCategories($categoryIds);
             })
@@ -99,10 +95,7 @@ class ServiceController extends Controller
 
         if (! empty($validated['categories'])) {
             $hashes = explode(',', $validated['categories']);
-            $validated['categories'] = array_filter(array_map(
-                fn ($hash) => Category::byHash($hash)?->id,
-                $hashes
-            ));
+            $validated['categories'] = array_filter($hashes);
         }
 
         return $validated;
@@ -151,7 +144,7 @@ class ServiceController extends Controller
         $formattedCategories = null;
         if (! empty($filters['categories']) && ($filters['viewType'] ?? 'all') === 'all') {
             $formattedCategories = array_filter(array_map(
-                fn ($id) => Category::find($id)?->hash,
+                fn ($id) => $id,
                 $filters['categories']
             ));
         }
@@ -165,9 +158,9 @@ class ServiceController extends Controller
         ];
     }
 
-    public function show(string $hash): Response
+    public function show(string $id): Response
     {
-        $service = Service::byHash($hash);
+        $service = Service::find($id);
 
         return Inertia::render('Services/Show', [
             'service' => ServiceData::fromModel($service->load([
@@ -219,7 +212,7 @@ class ServiceController extends Controller
         }
 
         return redirect()
-            ->route('services.show', $service->hash)
+            ->route('services.show', $service->id)
             ->with('success', 'Service created successfully!');
     }
 
@@ -292,7 +285,7 @@ class ServiceController extends Controller
         $serviceData = [];
 
         if (! empty($validated[ServiceWorkflowParams::SERVICE_HASH()->value])) {
-            $existingService = Service::byHash($validated[ServiceWorkflowParams::SERVICE_HASH()->value]);
+            $existingService = Service::find($validated[ServiceWorkflowParams::SERVICE_HASH()->value]);
             if ($existingService && $existingService->user_id === auth()->id()) {
                 $serviceData = [
                     ServiceWorkflowParams::NAME()->value => $existingService->name,
@@ -310,6 +303,9 @@ class ServiceController extends Controller
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
             'serviceHash' => $validated[ServiceWorkflowParams::SERVICE_HASH()->value] ?? null,
+            'serviceId' => $validated[ServiceWorkflowParams::SERVICE_HASH()->value] ?? $request->input('serviceId') ?? null,
+            'serviceId' => $validated[ServiceWorkflowParams::SERVICE_HASH()->value] ?? null,
+            'serviceId' => $validated[ServiceWorkflowParams::SERVICE_HASH()->value] ?? null,
             'serviceData' => $serviceData,
             'defaults' => [
                 'contact' => [
@@ -375,7 +371,7 @@ class ServiceController extends Controller
 
         return redirect()->route('workflows.createService.index', [
             ServiceWorkflowParams::STEP()->value => 2,
-            ServiceWorkflowParams::SERVICE_HASH()->value => $service->hash,
+            ServiceWorkflowParams::SERVICE_HASH()->value => $service->id,
         ]);
     }
 
@@ -399,7 +395,7 @@ class ServiceController extends Controller
 
         $validated = $validator->validated();
 
-        $service = Service::byHash($validated[ServiceWorkflowParams::SERVICE_HASH()->value]);
+        $service = Service::find($validated[ServiceWorkflowParams::SERVICE_HASH()->value]);
 
         if (! $service || $service->user_id !== auth()->id()) {
             return redirect()->route('workflows.createService.index', [ServiceWorkflowParams::STEP()->value => 1])
@@ -447,7 +443,7 @@ class ServiceController extends Controller
 
         $validated = $validator->validated();
 
-        $service = Service::byHash($validated[ServiceWorkflowParams::SERVICE_HASH()->value]);
+        $service = Service::find($validated[ServiceWorkflowParams::SERVICE_HASH()->value]);
 
         if (! $service || $service->user_id !== auth()->id()) {
             $request->session()->flash('error', ['general' => ['Service not found or access denied.']]);

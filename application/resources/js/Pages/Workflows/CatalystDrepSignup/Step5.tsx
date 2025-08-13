@@ -47,7 +47,7 @@ const step5: React.FC<Step5Props> = ({
     const submitForm = () => {
         form.patch(
             generateLocalizedRoute('workflows.drepSignUp.patch', {
-                catalystDrep:catalystDrep.hash,
+                catalystDrep:catalystDrep.id,
             }),
             {
                 onError: (errors) => {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\TransformHashToIds;
 use App\DataTransferObjects\IdeascaleProfileData;
 use App\Models\IdeascaleProfile;
 use Illuminate\Http\RedirectResponse;
@@ -53,7 +52,7 @@ class ClaimIdeascaleProfileController extends Controller
     public function step2(Request $request): Response
     {
 
-        $profileIdArr = (new TransformHashToIds)(collect($request->profile), new IdeascaleProfile);
+        $profileIdArr = array_filter((array) ($request->profile ?? []));
 
         $profile = null;
 
@@ -70,7 +69,7 @@ class ClaimIdeascaleProfileController extends Controller
 
     public function step3(Request $request, IdeascaleProfile $ideascaleProfile): Response
     {
-        $profileIdArr = (new TransformHashToIds)(collect($request->profile), new IdeascaleProfile);
+        $profileIdArr = array_filter((array) ($request->profile ?? []));
 
         $profile = null;
 

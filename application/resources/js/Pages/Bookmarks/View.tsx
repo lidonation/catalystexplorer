@@ -96,7 +96,7 @@ const BookmarkContent = (props: BookmarkCollectionListProps) => {
 
     const setActiveTab = (val: typeof type) => {
         const route = generateLocalizedRoute('lists.view', {
-            bookmarkCollection: bookmarkCollection.hash,
+            bookmarkCollection: bookmarkCollection.id,
             type: val,
         });
 
@@ -115,7 +115,7 @@ const BookmarkContent = (props: BookmarkCollectionListProps) => {
 
     const user = bookmarkCollection?.author;
 
-    const isAuthor = auth?.user?.hash == user?.hash;
+    const isAuthor = auth?.user?.id == user?.id;
 
     const component = (() => {
         switch (type) {
@@ -165,7 +165,7 @@ const BookmarkContent = (props: BookmarkCollectionListProps) => {
                     <div className="top-6 right-8 z-50 ml-auto flex justify-end gap-4 lg:absolute">
                         <Link
                             href={generateLocalizedRoute('lists.manage', {
-                                bookmarkCollection: bookmarkCollection.hash,
+                                bookmarkCollection: bookmarkCollection.id,
                                 type: 'proposals',
                             })}
                             className="text-primary  text-sm text-nowrap"
@@ -204,24 +204,24 @@ const View = (props: BookmarkCollectionListProps) => {
         switch (props.type) {
             case 'proposals':
                 return {
-                    proposals: props.proposals.data.map((item) => item.hash),
+                    proposals: props.proposals.data.map((item) => item.id),
                 };
             case 'communities':
                 return {
                     communities: props.communities.data.map(
-                        (item) => item.hash,
+                        (item) => item.id,
                     ),
                 };
             case 'groups':
-                return { groups: props.groups.data.map((item) => item.hash) };
+                return { groups: props.groups.data.map((item) => item.id) };
             case 'ideascaleProfiles':
                 return {
                     ideascaleProfiles: props.ideascaleProfiles.data.map(
-                        (item) => item.hash,
+                        (item) => item.id,
                     ),
                 };
             case 'reviews':
-                return { reviews: props.reviews.data.map((item) => item.hash) };
+                return { reviews: props.reviews.data.map((item) => item.id) };
             default:
                 return [{}];
         }
@@ -301,7 +301,7 @@ const View = (props: BookmarkCollectionListProps) => {
                 <div className="container mb-8" id="comment-section">
                     <Comments
                         commentableType={'BookmarkCollection'}
-                        commentableHash={bookmarkCollection.hash ?? ''}
+                        commentableHash={bookmarkCollection.id ?? ''}
                     />
                 </div>
             )}

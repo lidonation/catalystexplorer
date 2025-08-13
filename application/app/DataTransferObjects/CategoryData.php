@@ -17,7 +17,6 @@ final class CategoryData extends Data
 {
     public function __construct(
         public int $id,
-        public string $hash,
         public string $name,
         public string $slug,
         public string $type,
@@ -50,7 +49,6 @@ final class CategoryData extends Data
     {
         return new self(
             id: $category->id,
-            hash: $category->hash,
             name: $category->name,
             slug: $category->slug,
             type: $category->type,
@@ -61,7 +59,6 @@ final class CategoryData extends Data
             children: $category->relationLoaded('children')
                 ? $category->children->map(fn ($cat) => [
                     'id' => $cat->id,
-                    'hash' => $cat->hash,
                     'name' => $cat->name,
                     'slug' => $cat->slug,
                 ])->toArray()

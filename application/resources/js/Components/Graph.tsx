@@ -39,8 +39,8 @@ const Graph: React.FC<GraphProps> = ({ graphData }) => {
     const [showNoConnectionsMessage, setShowNoConnectionsMessage] = useState<boolean>(false);
     const [noConnectionsNodeName, setNoConnectionsNodeName] = useState<string>('');
 
-    const routeName = graphData.rootNodeType == CatalystConnectionsEnum.GROUP 
-        ? 'api.groups.connections' 
+    const routeName = graphData.rootNodeType == CatalystConnectionsEnum.GROUP
+        ? 'api.groups.connections'
         : graphData.rootNodeType == CatalystConnectionsEnum.COMMUNITY
             ? 'api.communities.connections'
             : 'api.ideascaleProfiles.connections';
@@ -71,7 +71,7 @@ const Graph: React.FC<GraphProps> = ({ graphData }) => {
             setShowNoConnectionsMessage(false);
             targetSet.add(id);
 
-            const nodeIdentifier = node.hash;
+            const nodeIdentifier = node.id;
             if (!nodeIdentifier) {
                 throw new Error('Node has no hash or id');
             }
@@ -89,25 +89,25 @@ const Graph: React.FC<GraphProps> = ({ graphData }) => {
                             ...Array.from(selectedCommunityIds)
                         ]))
                     },
-                   
+
                 },
             ).catch((axiosError) => {
                 console.error('Axios request failed:', axiosError);
                 throw axiosError;
             });
 
-            if (!incrementalResponse.data || 
-                !Array.isArray(incrementalResponse.data.nodes) || 
+            if (!incrementalResponse.data ||
+                !Array.isArray(incrementalResponse.data.nodes) ||
                 !Array.isArray(incrementalResponse.data.links)) {
                 return;
             }
 
-            const newNodes = incrementalResponse.data.nodes.filter(newNode => 
+            const newNodes = incrementalResponse.data.nodes.filter(newNode =>
                 !currentData.nodes.some(existingNode => existingNode.id === newNode.id)
             );
 
-            const newLinks = incrementalResponse.data.links.filter(newLink => 
-                !currentData.links.some(existingLink => 
+            const newLinks = incrementalResponse.data.links.filter(newLink =>
+                !currentData.links.some(existingLink =>
                     existingLink.source === newLink.source && existingLink.target === newLink.target
                 )
             );
@@ -130,7 +130,7 @@ const Graph: React.FC<GraphProps> = ({ graphData }) => {
             setCurrentData(mergedData);
         } catch (error: any) {
             targetSet.delete(id);
-    
+
             if (error.response) {
                /*  console.error('Axios error response:', {
                     status: error.response.status,
@@ -139,10 +139,10 @@ const Graph: React.FC<GraphProps> = ({ graphData }) => {
                     headers: error.response.headers
                 }); */
             } else if (error.request) {
-               
+
                 console.error('Axios error request:', error.request);
             } else {
-                
+
                // console.error('Axios error:', error.message);
             }
         } finally {

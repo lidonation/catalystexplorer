@@ -36,7 +36,7 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
             if (res.data?.type === 'success') {
                 const listsWithId = res.data?.collections?.map((list: any) => ({
                     ...list,
-                    id: list.hash,
+                    id: list.id,
                 }));
                 setState((prev) => ({
                     ...prev,
@@ -79,7 +79,7 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
                         ? [
                               {
                                   ...res.data.collection,
-                                  id: res.data.collection.hash || '',
+                                  id: res.data.collection.id || '',
                               },
                               ...prev.lists,
                           ]
@@ -133,7 +133,7 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
                         ? [
                               {
                                   ...res.data.collection,
-                                  id: res.data.collection.hash || '',
+                                  id: res.data.collection.id || '',
                               },
                               ...prev.lists,
                           ]
@@ -195,7 +195,7 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
                         ? [
                               {
                                   ...res.data.collection,
-                                  id: res.data.collection.hash || '',
+                                  id: res.data.collection.id || '',
                               },
                               ...prev.lists,
                           ]

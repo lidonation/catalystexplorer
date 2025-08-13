@@ -31,8 +31,8 @@ export default function Proposals({
             <WhenVisible data="proposals" fallback={<ProposalMiniCardLoader />}>
                 <RelatedProposals
                     routeParam={{
-                        [ParamsEnum.COMMUNITIES]: community.hash
-                            ? [community.hash]
+                        [ParamsEnum.COMMUNITIES]: community.id
+                            ? [community.id]
                             : null,
                     }}
                     proposals={proposals}

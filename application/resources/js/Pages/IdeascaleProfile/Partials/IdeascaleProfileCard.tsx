@@ -109,14 +109,14 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                                         className="line-clamp-2"
                                         href={useLocalizedRoute(
                                             'ideascaleProfiles.show',
-                                            { id: ideascaleProfile?.hash },
-                                        )}
+                                        {
+                                            id: ideascaleProfile?.id })}
                                     >
                                         {ideascaleProfile?.name ??
                                             ideascaleProfile?.username}
                                     </Link>
                                 </Title>
-                                {ideascaleProfile?.claimed_by_id && (
+                                {ideascaleProfile?.claimed_by_uuid && (
                                     <VerificationBadge />
                                 )}
                             </div>
@@ -131,7 +131,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                                 <ClaimedButton
                                     modelType="ideascale-profiles"
                                     className="text-content-light"
-                                    itemId={ideascaleProfile?.hash ?? '0'}
+                                itemId={ideascaleProfile?.id ?? '0'}
                                 />
 
                                 <div className="w-fit items-center rounded-md p-0">
@@ -147,7 +147,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                                             width={16}
                                             height={16}
                                             itemId={
-                                                ideascaleProfile?.hash ?? '0'
+                                            ideascaleProfile?.id ?? '0'
                                             }
                                         />
                                     </ListProvider>

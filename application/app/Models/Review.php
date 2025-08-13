@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\ProposalSearchParams;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -16,7 +17,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Review extends Model
 {
-    use HasRelationships, Searchable;
+    use HasRelationships, HasUuids, Searchable;
 
     protected $guarded = [];
 
@@ -31,7 +32,7 @@ class Review extends Model
             'reviewer.catalyst_reviewer_id',
             'reviewer.id',
             'reviewer_id',
-            'reviewer.hash',
+            'reviewer.uuid',
             'positive_rankings',
             'negative_rankings',
             'status',
@@ -43,11 +44,11 @@ class Review extends Model
             'reviewer.avg_reputation_score',
             'proposal.id',
             'proposal.title',
-            'proposal.hash',
+            'proposal.id',
             'proposal.fund_id',
-            'proposal.ideascale_profiles.hash',
             'proposal.ideascale_profiles.id',
-            'proposal.groups.hash',
+            'proposal.ideascale_profiles.id',
+            'proposal.groups.id',
         ];
     }
 
@@ -60,15 +61,15 @@ class Review extends Model
             'status',
             'model_type',
             'reviewer_id',
-            'reviewer.hash',
+            'reviewer.uuid',
             'reviewer.reputation_scores.fund',
             'proposal.title',
-            'proposal.hash',
+            'proposal.id',
             'proposal.fund_id',
             'proposal.content',
             'proposal.ideascale_profiles.name',
             'proposal.ideascale_profiles.username',
-            'proposal.groups.hash',
+            'proposal.groups.id',
         ];
     }
 
@@ -80,21 +81,23 @@ class Review extends Model
             'status',
             'created_at',
             'updated_at',
-            'reviewer.hash',
+            'reviewer.uuid',
             'reviewer.avg_reputation_score',
             'rating',
             'helpful_total',
-            'proposal.hash',
+            'proposal.id',
             'rankings',
             'positive_rankings',
             'negative_rankings',
-            'proposal.groups.hash',
+            'proposal.groups.id',
         ];
     }
 
     public function discussion(): BelongsTo
     {
-        return $this->belongsTo(Discussion::class, 'model_id')->where('model_type', Discussion::class);
+        return $this->belongsTo(Discussion::class, 'model_id', 'old_id')
+            ->where('reviews.model_type', Discussion::class)
+            ->whereRaw('reviews.model_id = discussions.old_id::text');
     }
 
     public function rating(): HasOne
@@ -195,6 +198,11 @@ class Review extends Model
         $this->load(['model', 'discussion', 'parent', 'reviewer.reputation_scores.fund', 'proposal']);
 
         $array = $this->toArray();
+
+        // Remove hash field from indexing - we only use UUIDs now
+        if (isset($array['hash'])) {
+            unset($array['hash']);
+        }
 
         return array_merge($array, [
             'model_type' => 'review',

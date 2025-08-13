@@ -31,7 +31,11 @@ export default function MyList({ bookmarkCollections }: MyListProps) {
             <div className="flex flex-col w-full max-w-full px-4 py-2 sm:px-6 lg:px-8">
                 <div className="mb-6 flex items-center">
                     <div className="m-auto mt-8">
-                        <PrimaryButton className="" onClick={() => setPickingList(true)}>
+                        <PrimaryButton 
+                            className="" 
+                            onClick={() => setPickingList(true)}
+                            data-testid="create-new-list-button"
+                        >
                             {`+ ${t('my.createList')}`}
                         </PrimaryButton>
                     </div>
@@ -55,7 +59,11 @@ export default function MyList({ bookmarkCollections }: MyListProps) {
                     </div>
                 )}
 
-                <CreateListPicker showPickingList={showListPicker} setPickingList={setPickingList}></CreateListPicker>
+                <CreateListPicker 
+                    showPickingList={showListPicker} 
+                    setPickingList={setPickingList}
+                    data-testid="create-list-picker"
+                />
             </div>
         </>
     );

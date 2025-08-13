@@ -14,10 +14,10 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 final class GroupData extends Data
 {
     public function __construct(
-        public ?string $hash,
+        public string $id,
 
         #[TypeScriptOptional]
-        public ?int $user_id,
+        public ?string $user_id,
 
         #[TypeScriptOptional]
         public ?string $name,

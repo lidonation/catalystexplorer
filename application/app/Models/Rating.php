@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Traits\HasMetaData;
 use DateTime;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -15,6 +16,7 @@ class Rating extends Model
 {
     use HasMetaData,
         HasTimestamps,
+        HasUuids,
         SoftDeletes;
 
     protected $with = ['model'];

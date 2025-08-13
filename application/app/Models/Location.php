@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Location extends Model
 {
+    use HasUuids;
+
     protected $fillable = ['city'];
 
-    protected $hidden = ['id', 'pivot.location_id'];
+    protected $hidden = [];
 
     /**
      * The roles that belong to the user.

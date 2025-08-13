@@ -61,6 +61,11 @@ trait HasRules
             return;
         }
 
+        // Skip rules that try to compare UUID columns with integer values to prevent SQL errors
+        if ($this->isUuidColumnIntegerComparison($rule, $table)) {
+            return;
+        }
+
         $query->where($subject, $rule->operator, $rule->predicate);
     }
 
@@ -107,5 +112,27 @@ trait HasRules
         return str_contains($predicate, ',')
             ? array_map('trim', explode(',', $predicate))
             : [$predicate];
+    }
+
+    /**
+     * Check if a rule is trying to compare a UUID column with an integer value.
+     * This prevents SQL errors after UUID migrations.
+     */
+    private function isUuidColumnIntegerComparison(object $rule, string $table): bool
+    {
+        // Only check 'id' column for now, as that's the main culprit
+        if ($rule->subject !== 'id') {
+            return false;
+        }
+
+        // Check if the predicate is a numeric value
+        if (! is_numeric($rule->predicate)) {
+            return false;
+        }
+
+        // For specific tables that we know use UUIDs for id column
+        $uuidTables = ['proposals', 'users', 'funds', 'groups', 'ideascale_profiles', 'campaigns', 'communities'];
+
+        return in_array($table, $uuidTables);
     }
 }

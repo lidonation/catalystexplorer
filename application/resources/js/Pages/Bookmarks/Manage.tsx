@@ -19,12 +19,14 @@ import IdeascaleProfilePaginatedList from '../IdeascaleProfile/Partials/Ideascal
 import ProposalPaginatedList from '../Proposals/Partials/ProposalPaginatedList';
 import BookmarkModelSearch from './Partials/BookmarkModelSearch';
 import EditListForm, { ListForm } from './Partials/EditListForm';
+import DropdownMenu, { DropdownMenuItem } from './Partials/DropdownMenu';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import CommunityData = App.DataTransferObjects.CommunityData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import GroupData = App.DataTransferObjects.GroupData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ReviewData = App.DataTransferObjects.ReviewData;
+import { useLocalizedRoute } from '@/utils/localizedRoute';
 
 type BookmarkCollectionListProps =
     | {
@@ -65,7 +67,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
 
     const setActiveTab = (val: typeof type) => {
         const route = generateLocalizedRoute('lists.manage', {
-            bookmarkCollection: bookmarkCollection.hash,
+            bookmarkCollection: bookmarkCollection.id,
             type: val,
         });
         router.visit(route);
@@ -78,10 +80,63 @@ const Manage = (props: BookmarkCollectionListProps) => {
     const [activeEditModal, setActiveEditModal] = useState<boolean>(false);
     const [activeConfirm, setActiveConfirm] = useState<boolean>(false);
 
+    const hasItems = (bookmarkCollection.items_count ?? 0) > 0;
+    const isVoterList = bookmarkCollection.list_type === 'voter';
+
+    const getPublishToIpfsTooltip = () => {
+        if (!hasItems && !isVoterList) {
+            return t('bookmarks.listMustHaveItemsAndVoter');
+        }
+        if (!hasItems) {
+            return t('bookmarks.listMustHaveItems');
+        }
+        if (!isVoterList) {
+            return t('bookmarks.onlyVoterLists');
+        }
+        return undefined;
+    };
+
+    const dropdownMenuItems: DropdownMenuItem[] = [
+        {
+            label: t('bookmarks.viewAsPublic'),
+            type: 'link',
+            href: generateLocalizedRoute('lists.view', {
+                bookmarkCollection: bookmarkCollection.id,
+                type: 'proposals',
+            }),
+            onClick: () => {
+                // Handle navigation if needed
+            }
+        },
+        {
+            label: t('bookmarks.editListItem'),
+            type: 'button',
+            onClick: () => {
+                setActiveEditModal(true);
+            }
+        },
+        {
+            label: t('bookmarks.publishToIpfs'),
+            type: 'link',
+            href: hasItems && isVoterList ? useLocalizedRoute('workflows.publishToIpfs.index', {
+                step: 1,
+                bookmarkHash: bookmarkCollection.id
+            }) : undefined,
+            disabled: !hasItems || !isVoterList,
+            disabledTooltip: getPublishToIpfsTooltip(),
+            onClick: () => {
+                if (!hasItems || !isVoterList) {
+                    return;
+                }
+                // Navigation is handled by the href
+            }
+        }
+    ];
+
     const handleUpdate = (form: ListForm) => {
         form.post(
             route('api.collections.update', {
-                bookmarkCollection: bookmarkCollection.hash,
+                bookmarkCollection: bookmarkCollection.id,
             }),
             {
                 onSuccess: () => setActiveTab(activeTab),
@@ -93,7 +148,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
         setActiveConfirm(true);
         router.post(
             route('api.collections.delete', {
-                bookmarkCollection: bookmarkCollection.hash,
+                bookmarkCollection: bookmarkCollection.id,
             }),
             {},
             {
@@ -148,24 +203,24 @@ const Manage = (props: BookmarkCollectionListProps) => {
         switch (props.type) {
             case 'proposals':
                 return {
-                    proposals: props.proposals.data.map((item) => item.hash),
+                    proposals: props.proposals.data.map((item) => item.id),
                 };
             case 'communities':
                 return {
                     communities: props.communities.data.map(
-                        (item) => item.hash,
+                        (item) => item.id,
                     ),
                 };
             case 'groups':
-                return { groups: props.groups.data.map((item) => item.hash) };
+                return { groups: props.groups.data.map((item) => item.id) };
             case 'ideascaleProfiles':
                 return {
                     ideascaleProfiles: props.ideascaleProfiles.data.map(
-                        (item) => item.hash,
+                        (item) => item.id,
                     ),
                 };
             case 'reviews':
-                return { reviews: props.reviews.data.map((item) => item.hash) };
+                return { reviews: props.reviews.data.map((item) => item.id) };
             default:
                 return [{}];
         }
@@ -178,8 +233,6 @@ const Manage = (props: BookmarkCollectionListProps) => {
             <header className="container mt-4 flex flex-col items-start lg:mt-6">
                 <Title level="1">
                     {bookmarkCollection.title ?? ''}
-                    {bookmarkCollection.tinder_direction === 'right' && t('rightSwipes')}
-                    {bookmarkCollection.tinder_direction === 'left' && t('leftSwipes')}
                 </Title>
                 <p className="text-content">
                     {t(bookmarkCollection.content ?? '')}
@@ -197,21 +250,12 @@ const Manage = (props: BookmarkCollectionListProps) => {
                 <div className="container w-full py-4 lg:relative">
                     <div className="top-6 right-8 z-50 mb-6 flex flex-row justify-between gap-4 lg:absolute lg:mb-0 lg:ml-auto">
                         <button
-
                             className="text-primary text-sm text-nowrap hover:cursor-pointer"
                             onClick={() => setActiveEditModal(true)}
                         >
                             {`${t('bookmarks.listSetting')}`}
                         </button>
-                        <Link
-                            href={generateLocalizedRoute('lists.view', {
-                                bookmarkCollection: bookmarkCollection.hash,
-                                type: 'proposals',
-                            })}
-                            className="text-primary text-sm text-nowrap"
-                        >
-                            {t('bookmarks.viewPublic')}
-                        </Link>
+                        <DropdownMenu items={dropdownMenuItems} />
                     </div>
                     <BookmarkModelSearch
                         activeTab={activeTab}
@@ -233,7 +277,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
                 <div className="container my-8">
                     <Comments
                         commentableType={'BookmarkCollection'}
-                        commentableHash={bookmarkCollection.hash ?? ''}
+                        commentableHash={bookmarkCollection.id ?? ''}
                     />
                 </div>
             )}
@@ -244,6 +288,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
                 isOpen={!!activeEditModal}
                 onClose={() => setActiveEditModal(false)}
                 logo={false}
+
             >
                 <EditListForm
                     bookmarkCollection={bookmarkCollection}

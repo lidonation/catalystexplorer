@@ -54,7 +54,7 @@ const Step2: React.FC<Step1Props> = ({ profile, stepDetails, activeStep }) => {
                 generateLocalizedRoute(
                     'workflows.claimIdeascaleProfile.saveClaim',
                     {
-                        ideascaleProfile: profile.hash,
+                        ideascaleProfile: profile.id,
                     },
                 ),
                 {
@@ -69,7 +69,7 @@ const Step2: React.FC<Step1Props> = ({ profile, stepDetails, activeStep }) => {
         <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
-            {profile?.hash && (
+            {profile?.id && (
                 <Content>
                     <ClaimProfileForm
                         form={form}
@@ -79,7 +79,7 @@ const Step2: React.FC<Step1Props> = ({ profile, stepDetails, activeStep }) => {
                 </Content>
             )}
 
-            {!profile?.hash && (
+            {!profile?.id && (
                 <Content>
                     <div className="m-4 rounded-lg border border-gray-200 p-4 text-center text-gray-600 lg:m-8">
                         <Paragraph>
@@ -101,7 +101,7 @@ const Step2: React.FC<Step1Props> = ({ profile, stepDetails, activeStep }) => {
                 </PrimaryLink>
                 <PrimaryButton
                     className="text-sm lg:px-8 lg:py-3"
-                    disabled={!isFormValid || !profile?.hash}
+                    disabled={!isFormValid || !profile?.id}
                     onClick={() => (isFormValid ? submitForm() : '')}
                 >
                     <span>{t('profileWorkflow.claimProfile')}</span>

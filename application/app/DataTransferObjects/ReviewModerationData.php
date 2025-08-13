@@ -12,7 +12,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 final class ReviewModerationData extends Data
 {
     public function __construct(
-        public ?string $hash,
+        public ?string $id,
 
         #[TypeScriptOptional]
         public ?int $reviewer_id,

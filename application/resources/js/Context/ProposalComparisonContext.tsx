@@ -166,10 +166,10 @@ export function ProposalComparisonProvider({
 
         await Promise.all(
             newOrder.map((item, index) =>
-                item.hash
+                item.id
                     ? IndexedDBService.update(
                           'proposal_comparisons',
-                          item.hash,
+                          item.id,
                           {
                               order: total - index,
                           },
@@ -181,8 +181,8 @@ export function ProposalComparisonProvider({
 
     const reorderProposals = async (activeId: string, overId: string) => {
         if (activeId === overId) return;
-        const oldIndex = proposals.findIndex((item) => item.hash === activeId);
-        const newIndex = proposals.findIndex((item) => item.hash === overId);
+        const oldIndex = proposals.findIndex((item) => item.id === activeId);
+        const newIndex = proposals.findIndex((item) => item.id === overId);
         if (oldIndex === -1 || newIndex === -1) return;
         const newOrder = arrayMove(proposals, oldIndex, newIndex);
         await updateProposalOrder(newOrder);

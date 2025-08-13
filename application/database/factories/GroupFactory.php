@@ -7,6 +7,7 @@ namespace Database\Factories;
 use App\Models\Group;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Group>
@@ -18,6 +19,7 @@ class GroupFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => Str::uuid()->toString(),
             'user_id' => User::inRandomOrder()->first()?->id,
             'name' => $this->faker->company,
             'bio' => $this->faker->paragraph,

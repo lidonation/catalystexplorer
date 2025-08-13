@@ -13,10 +13,10 @@ final class RankingData extends Data
 {
     public function __construct(
         #[TypeScriptOptional]
-        public ?string $hash,
+        public ?string $id,
 
         #[TypeScriptOptional]
-        public ?int $user_id,
+        public ?string $user_id,
 
         public int $model_id,
 

@@ -46,7 +46,7 @@ const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
                         modelType="groups"
                         width={16}
                         height={16}
-                        itemId={group?.hash ?? '0'}
+                        itemId={group?.id ?? '0'}
                     />
                 </ListProvider>
             </div>

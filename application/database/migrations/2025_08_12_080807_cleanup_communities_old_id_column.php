@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('proposal_profiles', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('proposal_id')->constrained('proposals');
-            $table->morphs('profile');
-            $table->index(['proposal_id', 'profile_type', 'profile_id']);
+        Schema::table('communities', function (Blueprint $table) {
+            $table->dropColumn('old_id');
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('proposal_profiles');
+        Schema::table('communities', function (Blueprint $table) {
+            $table->bigInteger('old_id')->nullable()->after('id');
+        });
     }
 };

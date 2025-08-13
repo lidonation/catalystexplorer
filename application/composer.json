@@ -37,7 +37,6 @@
         "spatie/laravel-permission": "^6.20",
         "spatie/laravel-translatable": "^6.11",
         "spatie/laravel-typescript-transformer": "^2.5",
-        "sqids/sqids": "^0.5.0",
         "staudenmeir/belongs-to-through": "^2.17",
         "staudenmeir/eloquent-has-many-deep": "^1.21",
         "tightenco/ziggy": "^2.0",

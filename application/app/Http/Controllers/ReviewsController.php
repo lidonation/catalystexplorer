@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\TransformHashToIds;
-use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\ReviewData;
 use App\Enums\ProposalSearchParams;
 use App\Enums\QueryParamsEnum;
@@ -182,12 +180,7 @@ class ReviewsController extends Controller
         $items = collect($response->hits);
 
         $pagination = new LengthAwarePaginator(
-            ReviewData::collect(
-                (new TransformIdsToHashes)(
-                    collection: $items,
-                    model: new Review
-                )->toArray()
-            ),
+            ReviewData::collect($items->toArray()),
             $response->estimatedTotalHits,
             $limit,
             $page,
@@ -211,8 +204,8 @@ class ReviewsController extends Controller
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
-            $idsFromHash = (new TransformHashToIds)(collect($this->queryParams[ProposalSearchParams::FUNDS()->value]), new Fund);
-            $funds = implode("','", $idsFromHash);
+            $fundIds = (array) $this->queryParams[ProposalSearchParams::FUNDS()->value];
+            $funds = implode("','", $fundIds);
             $filters[] = "proposal.fund_id IN ['{$funds}']";
         }
 
@@ -237,9 +230,9 @@ class ReviewsController extends Controller
         $reviewerIdsKey = ProposalSearchParams::REVIEWER_IDS()->value;
         if (! empty($this->queryParams[$reviewerIdsKey])) {
 
-            $idsFromHash = (new TransformHashToIds)(collect($this->queryParams[$reviewerIdsKey]), new Review);
+            $reviewerIdsArr = (array) $this->queryParams[$reviewerIdsKey];
 
-            $reviewerIds = implode(',', $idsFromHash);
+            $reviewerIds = implode(',', $reviewerIdsArr);
 
             // dd($reviewerIds);
 

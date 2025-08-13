@@ -91,7 +91,7 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
                     <ListProvider>
                         <BookmarkButton
                             modelType="ideascale-profiles"
-                            itemId={ideascaleProfile?.hash ?? '0'}
+                            itemId={ideascaleProfile?.id ?? '0'}
                         />
                     </ListProvider>
                 </div>
@@ -118,7 +118,7 @@ const IdeascaleProfileCardMini: React.FC<IdeascaleProfileProps> = ({
                                             'ideascaleProfiles.show',
                                             {
                                                 ideascaleProfile:
-                                                    ideascaleProfile?.hash,
+                                                    ideascaleProfile?.id,
                                             },
                                         )}
                                     >

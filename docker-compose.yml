@@ -198,7 +198,7 @@ services:
 
   # meilisearch
   catalystexplorer-search:
-    image: getmeili/meilisearch:v1.16.0-rc.4
+    image: getmeili/meilisearch:v1.16.0
     container_name: catalystexplorer-search
     logging: *default-logging
     ports:

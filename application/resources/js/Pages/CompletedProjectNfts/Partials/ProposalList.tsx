@@ -7,7 +7,7 @@ import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 
 interface ProposalListProps {
     proposals: PaginatedData<ProposalData[]>;
-    onProposalClick?: (proposalHash: string | null) => void;
+    onProposalClick?: (proposalId: string | null) => void;
     profileHash: string;
 }
 
@@ -35,7 +35,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
                     <div className="w-full" key={index}>
                         <input
                             type="radio"
-                            id={proposal.hash as string | undefined}
+                            id={proposal.id as string | undefined}
                             name="hosting"
                             value="hosting-small"
                             className="peer hidden"
@@ -43,11 +43,11 @@ const ProposalList: React.FC<ProposalListProps> = ({
                             required
                             onChange={() =>
                                 onProposalClick &&
-                                onProposalClick(proposal.hash)
+                                onProposalClick(proposal.id)
                             }
                         />
                         <label
-                            htmlFor={proposal.hash as string | undefined}
+                            htmlFor={proposal.id as string | undefined}
                             className={`peer-checked:border-primary peer-checked:text-primary peer-checked:border-primary ${proposal.minted_nfts_fingerprint ? 'cursor-not-allowed' : ''} inline-flex w-full items-center justify-between rounded-lg border border-gray-100 text-gray-500 peer-checked:border-2`}
                         >
                             <CompletedProposalCard

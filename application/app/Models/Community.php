@@ -10,6 +10,7 @@ use App\Traits\HasConnections;
 use App\Traits\HasTaxonomies;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
@@ -20,9 +21,9 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Community extends Model implements HasMedia
 {
-    use HasConnections, HasRelationships, HasTaxonomies, InteractsWithMedia, Searchable;
+    use HasConnections, HasRelationships, HasTaxonomies, HasUuids, InteractsWithMedia, Searchable;
 
-    protected $appends = ['hash'];
+    protected $appends = [];
 
     public $meiliIndexName = 'cx_communities';
 
@@ -30,7 +31,6 @@ class Community extends Model implements HasMedia
     {
         return [
             'id',
-            'hash',
             'status',
             'user_id',
             'slug',
@@ -186,9 +186,14 @@ class Community extends Model implements HasMedia
             ->groupBy(['ideascale_profiles.id', 'community_has_proposal.community_id']);
     }
 
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'community_has_users', 'community_id', 'user_id');
+        return $this->belongsToMany(User::class, 'community_has_users', 'community_id', 'user_uuid', 'id', 'id');
     }
 
     public function groups(): HasManyDeep
@@ -209,9 +214,16 @@ class Community extends Model implements HasMedia
             'unfunded_proposals',
             'completed_proposals',
             'funded_proposals', 'proposals', 'ideascale_profiles',
-            'users',
+            // 'users', // Temporarily commented out to fix UUID/bigint issue
         ]);
 
-        return $this->toArray();
+        $array = $this->toArray();
+
+        // Remove hash field from indexing - we only use UUIDs now
+        if (isset($array['hash'])) {
+            unset($array['hash']);
+        }
+
+        return $array;
     }
 }

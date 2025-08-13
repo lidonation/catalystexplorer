@@ -22,6 +22,11 @@ if (! function_exists('to_length_aware_paginator')) {
             $items = ProposalData::collect($items);
         }
 
+        // Set default values to prevent division by zero
+        $total = $total ?? count($items);
+        $perPage = $perPage ?? 15; // Default per page
+        $currentPage = $currentPage ?? 1; // Default current page
+
         $pagination = new LengthAwarePaginator(
             $items,
             $total,

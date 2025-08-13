@@ -58,7 +58,7 @@ export default function Comments({
                 <div className="mt-4 space-y-4">
                     {comments.map((comment) => (
                         <CommentItem
-                            key={comment.hash}
+                            key={comment.id}
                             comment={comment}
                             commentable_type={commentableType}
                             commentable_id={commentableHash}

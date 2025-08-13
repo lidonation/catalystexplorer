@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ReviewModerationReviewer extends Model
 {
+    use HasUuids;
+
     public $timestamps = false;
 
     public function reviewer(): BelongsTo
@@ -17,7 +20,7 @@ class ReviewModerationReviewer extends Model
 
     public function review(): BelongsTo
     {
-        return $this->belongsTo(Review::class, 'reviewer_id');
+        return $this->belongsTo(Review::class, 'review_id');
     }
 
     public function review_moderation(): BelongsTo

@@ -13,7 +13,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 class CommentData extends Data
 {
     public function __construct(
-        public string $hash,
+        public string $id,
         public string $text,
         public ?string $original_text,
         public string $created_at,

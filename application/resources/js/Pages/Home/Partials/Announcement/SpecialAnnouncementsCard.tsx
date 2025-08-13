@@ -4,7 +4,7 @@ type CtaItem = Record<string, unknown>;
 
 const SpecialAnnouncementCard = ({ announcement }: any) => {
     return (
-        <div className="flex w-full flex-col items-center p-6 lg:flex-row" data-testid={`special-announcement-card-${announcement.hash}`}>
+        <div className="flex w-full flex-col items-center p-6 lg:flex-row" data-testid={`special-announcement-card-${announcement.id}`}>
             <div className="flex flex-1 flex-col text-center lg:mr-12 lg:text-left">
                 <Title className="mb-4 font-bold" data-testid="special-announcement-card-title">{announcement.title}</Title>
 

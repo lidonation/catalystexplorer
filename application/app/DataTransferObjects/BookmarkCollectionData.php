@@ -12,10 +12,10 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 final class BookmarkCollectionData extends Data
 {
     public function __construct(
-        public ?string $hash,
+        public ?string $id,
 
         #[TypeScriptOptional]
-        public ?int $user_id,
+        public ?string $user_id,
 
         #[TypeScriptOptional]
         public ?string $title,
@@ -93,9 +93,12 @@ final class BookmarkCollectionData extends Data
         public ?UserData $author,
 
         #[TypeScriptOptional]
-        public ?int $fund_id,
+        public ?string $fund_id,
 
         #[TypeScriptOptional]
         public ?FundData $fund,
+
+        #[TypeScriptOptional]
+        public ?string $list_type,
     ) {}
 }

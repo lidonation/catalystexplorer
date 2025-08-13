@@ -20,11 +20,11 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
     const fetchBookmarkStatus = async () => {
         try {
             const response = await axiosClient.get(
-                route('api.bookmarks.status', { modelType, hash: itemId }),
+                route('api.bookmarks.status', { modelType, uuid: itemId }),
             );
             setIsBookmarked(response.data.isBookmarked);
             setBookmarkId(response.data.id || null);
-            setAssociatedCollection(response.data?.collection?.hash || null);
+            setAssociatedCollection(response.data?.collection?.uuid || null);
         } catch (error) {
             console.error('Error fetching bookmark status', error);
         }
@@ -35,7 +35,7 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
             console.log({ itemId });
             
             const response = await axiosClient.post(
-                route('api.bookmarks.store', { modelType, hash: itemId }),
+                route('api.bookmarks.store', { modelType, uuid: itemId }),
             );
              
             if (response.data.bookmarkItems) {

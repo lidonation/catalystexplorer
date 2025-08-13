@@ -12,7 +12,7 @@ final class DiscussionData extends Data
         public ?int $hash,
 
         #[TypeScriptOptional]
-        public ?int $user_id,
+        public ?string $user_id,
 
         public int $model_id,
 

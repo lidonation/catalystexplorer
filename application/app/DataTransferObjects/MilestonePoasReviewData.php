@@ -12,7 +12,7 @@ final class MilestonePoasReviewData extends Data
 {
     public function __construct(
 
-        public string $hash,
+        public string $id,
 
         public bool $content_approved,
 

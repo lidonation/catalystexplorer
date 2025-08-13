@@ -18,7 +18,6 @@ class ReviewerResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'hash' => $this->hash,
             'catalyst_reviewer_id' => $this->catalyst_reviewer_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

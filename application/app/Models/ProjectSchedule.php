@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Scout\Searchable;
 
 class ProjectSchedule extends Model
 {
-    use Searchable;
+    use HasUuids, Searchable;
 
     public $timestamps = false;
 
@@ -21,7 +22,6 @@ class ProjectSchedule extends Model
 
     protected $appends = [
         'on_track',
-        'hash',
     ];
 
     public static function getFilterableAttributes(): array

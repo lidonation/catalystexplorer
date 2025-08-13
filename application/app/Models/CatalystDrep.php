@@ -7,12 +7,13 @@ namespace App\Models;
 use App\Traits\HasAuthor;
 use App\Traits\HasSignatures;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
 class CatalystDrep extends Model
 {
-    use HasAuthor, HasSignatures, SoftDeletes;
+    use HasAuthor, HasSignatures, HasUuids, SoftDeletes;
 
     public $guarded = [];
 

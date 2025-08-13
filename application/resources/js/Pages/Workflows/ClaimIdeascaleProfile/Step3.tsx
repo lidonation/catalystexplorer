@@ -32,7 +32,7 @@ const Step2: React.FC<Step1Props> = ({
             ? ''
             : generateLocalizedRoute('workflows.claimIdeascaleProfile.index', {
                   step: activeStep - 1,
-                  profile: profile.hash,
+                   profile: profile.id,
               });
 
     return (

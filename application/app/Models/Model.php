@@ -5,18 +5,25 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Traits\HasDto;
-use App\Traits\HasHashId;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Support\Facades\Artisan;
 
 class Model extends EloquentModel
 {
-    protected $hidden = ['id'];
+    protected $hidden = [];
 
-    protected $appends = ['hash'];
+    protected $appends = ['uuid'];
 
-    use HasDto, HasFactory, HasHashId;
+    use HasDto, HasFactory;
+
+    /**
+     * Get the UUID attribute, which is the primary key.
+     */
+    public function getUuidAttribute(): string
+    {
+        return $this->getKey();
+    }
 
     public static function runCustomIndex()
     {

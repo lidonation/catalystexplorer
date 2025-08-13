@@ -8,6 +8,7 @@ use App\Enums\CatalystFunds;
 use App\Models\Fund;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 class FundFactory extends Factory
 {
@@ -19,6 +20,7 @@ class FundFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => Str::uuid()->toString(),
             'user_id' => User::factory(),
             'title' => 'Fund '.$this->faker->randomElement(CatalystFunds::toValues()),
             'meta_title' => $this->faker->words(5, true),

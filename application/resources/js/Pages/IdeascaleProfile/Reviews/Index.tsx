@@ -40,8 +40,8 @@ export default function Reviews({
                                 reviews={reviews}
                                 routeParam={{
                                     [ParamsEnum.IDEASCALE_PROFILES]:
-                                        ideascaleProfile.hash
-                                            ? [ideascaleProfile.hash]
+                                    ideascaleProfile.id
+                                        ? [ideascaleProfile.id]
                                             : null,
                                 }}
                             />

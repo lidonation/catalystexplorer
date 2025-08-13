@@ -27,9 +27,7 @@ class VoterHistory extends Model
      *
      * @var array<string>
      */
-    protected $appends = [
-        'hash',
-    ];
+    protected $appends = [];
 
     public $meiliIndexName = 'cx_voter_histories';
 
@@ -79,7 +77,7 @@ class VoterHistory extends Model
         return [
             'choice',
             'snapshot.fund',
-            'snapshot.fund.hash',
+            'snapshot.fund.uuid',
             'snapshot.fund.title',
             'stake_address',
             'caster',
@@ -123,8 +121,15 @@ class VoterHistory extends Model
      */
     public function toSearchableArray(): array
     {
+        $array = $this->load(['snapshot.fund'])->toArray();
+
+        // Remove hash field from indexing - we only use UUIDs now
+        if (isset($array['hash'])) {
+            unset($array['hash']);
+        }
+
         return array_merge(
-            $this->load(['snapshot.fund'])->toArray(),
+            $array,
             ['voting_power' => $this->voting_power?->voting_power]
         );
     }

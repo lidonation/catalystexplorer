@@ -18,7 +18,7 @@ const AnnouncementCard = ({ announcement }: AnnouncementCardProps) => {
     return (
         <div
             className="bg-background flex flex-col gap-3 rounded-xl px-3 py-4"
-            data-testid={`announcement-card-${announcement.hash}`}
+            data-testid={`announcement-card-${announcement.id}`}
         >
             <div
                 className="flex items-center justify-between"

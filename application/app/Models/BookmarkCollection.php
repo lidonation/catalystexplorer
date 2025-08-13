@@ -6,10 +6,11 @@ namespace App\Models;
 
 use App\Enums\VoteEnum;
 use App\Traits\HasAuthor;
-use App\Traits\HasHashId;
+use App\Traits\HasIpfsFiles;
 use App\Traits\HasMetaData;
 use App\Traits\HasSignatures;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,7 +19,7 @@ use Spatie\Comments\Models\Concerns\HasComments;
 
 class BookmarkCollection extends Model
 {
-    use HasAuthor, HasComments, HasHashId, HasMetaData, HasSignatures, Searchable, SoftDeletes;
+    use HasAuthor, HasComments, HasIpfsFiles, HasMetaData, HasSignatures, Searchable, SoftDeletes, HasUuids;
 
     protected $withCount = [
         'items',
@@ -27,16 +28,16 @@ class BookmarkCollection extends Model
         'groups',
         'reviews',
         'communities',
-        'comments',
+        // 'comments', // Temporarily disabled due to polymorphic UUID/text relationship issue
     ];
 
     public $meiliIndexName = 'cx_bookmark_collections';
 
-    protected $appends = ['types_count', 'hash', 'tinder_direction'];
+    protected $appends = ['types_count', 'tinder_direction', 'list_type'];
 
     protected $guarded = [];
 
-    protected $hidden = ['id'];
+    protected $hidden = [];
 
     public static function getFilterableAttributes(): array
     {
@@ -104,7 +105,7 @@ class BookmarkCollection extends Model
 
     public function fund(): BelongsTo
     {
-        return $this->belongsTo(fund::class);
+        return $this->belongsTo(Fund::class);
     }
 
     public function groups(): HasMany
@@ -117,6 +118,15 @@ class BookmarkCollection extends Model
     {
         return $this->hasMany(BookmarkItem::class)
             ->where('model_type', Review::class);
+    }
+
+    /**
+     * Override the comments relationship to handle UUID-to-text conversion
+     */
+    public function comments()
+    {
+        return Comment::where('commentable_type', static::class)
+            ->where('commentable_id', (string) $this->getKey());
     }
 
     public function typesCount(): Attribute
@@ -187,6 +197,23 @@ class BookmarkCollection extends Model
         );
     }
 
+    public function listType(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if (is_null($this->fund_id)) {
+                    return 'normal';
+                }
+
+                if ($this->model_type === TinderCollection::class) {
+                    return 'tinder';
+                }
+
+                return 'voter';
+            }
+        );
+    }
+
     /*
     * This string will be used in notifications on what a new comment
     * was made.
@@ -207,10 +234,17 @@ class BookmarkCollection extends Model
 
     public function toSearchableArray(): array
     {
-        return array_merge($this->load([
+        $array = $this->load([
             // 'comments',
             'author',
-        ])->toArray(), $this->amount_received, $this->amount_requested, [
+        ])->toArray();
+
+        // Remove hash field from indexing - we only use UUIDs now
+        if (isset($array['hash'])) {
+            unset($array['hash']);
+        }
+
+        return array_merge($array, $this->amount_received, $this->amount_requested, [
             'proposals' => $this->proposals->pluck('model')->toArray(),
             'ideascale_profiles' => $this->ideascale_profiles->pluck('model')->toArray(),
             'reviews' => $this->reviews->pluck('model')->toArray(),

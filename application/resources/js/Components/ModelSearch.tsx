@@ -113,24 +113,24 @@ export default function ModelSearch({
         return value;
     }
 
-    // function generateLink(result: any): string {
-    //     const id = result.id || result.hash || result.slug;
+    function generateLink(result: any): string {
+        const id = result.uuid || result.slug || result.id;
 
-    //     switch (domain) {
-    //         case 'proposals':
-    //             return `/proposals/${result.slug || id}`;
-    //         case 'ideascaleProfiles':
-    //             return `/ideascale-profiles/${id}`;
-    //         case 'groups':
-    //             return `/groups/${result.slug || id}`;
-    //         case 'communities':
-    //             return `/communities/${result.slug || id}`;
-    //         case 'reviews':
-    //             return `/reviews/${id}`;
-    //         default:
-    //             return '/';
-    //     }
-    // }
+        switch (domain) {
+            case 'proposals':
+                return `/proposals/${result.slug || id}`;
+            case 'ideascaleProfiles':
+                return `/ideascale-profiles/${id}`;
+            case 'groups':
+                return `/groups/${result.slug || id}`;
+            case 'communities':
+                return `/communities/${result.slug || id}`;
+            case 'reviews':
+                return `/reviews/${id}`;
+            default:
+                return '/';
+        }
+    }
 
     return (
         <div className={`relative${className}`}>
@@ -170,37 +170,37 @@ export default function ModelSearch({
             {searchTerm && options.length > 0 && (
                 <div className="bg-background absolute right-0 left-0 z-30 mt-2 max-h-[30rem] overflow-y-auto rounded-xl bg-white px-2 py-4 shadow-xl">
                     {options.map((result) => {
-                        const hash = result.hash;
-                        const isSelected = selectedHashes.includes(hash);
+                        const uuid = result.uuid;
+                        const isSelected = selectedHashes.includes(uuid);
 
                         return (
                             <Card
-                                key={hash}
+                                key={uuid}
                                 className={`mb-3 w-full rounded-xl border shadow-sm transition-all ${
                                     isSelected
                                         ? 'border-primary border-2'
                                         : 'border-gray-light'
                                 }`}
                             >
-                                <label htmlFor={hash} className="block px-2">
+                                <label htmlFor={uuid} className="block px-2">
                                     <div className="flex items-center gap-3">
                                         <Checkbox
-                                            id={hash}
+                                            id={uuid}
                                             checked={isSelected}
                                             onChange={() =>
-                                                toggleSelection(domain, hash)
+                                                toggleSelection(domain, uuid)
                                             }
                                             className="bg-background text-content-accent checked:bg-primary focus:border-primary focus:ring-primary h-4 w-4 shadow-xs"
                                         />
                                         <div className="space-y-1">
-                                            {/* <a href={generateLink(result)} target='_blank'> */}
+                                            <a href={generateLink(result)} target='_blank'>
                                             <h3 className="hover:cursor-pointer text-lg font-bold">
                                                 {formatStat(
                                                     result,
                                                     model.labelField,
                                                 )}
                                             </h3>
-                                            {/* </a> */}
+                                            </a>
 
                                             <div className="flex flex-wrap gap-4 pt-1">
                                                 {model.statsField.map(

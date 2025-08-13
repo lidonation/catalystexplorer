@@ -11,12 +11,13 @@ use App\Enums\StatusEnum;
 use App\Repositories\ProposalRepository;
 use App\Traits\HasRules;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\DB;
 
 class Metric extends Model
 {
-    use HasRules;
+    use HasRules, HasUuids;
 
     protected function casts(): array
     {

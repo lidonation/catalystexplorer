@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\TransformHashToIds;
-use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\IdeascaleProfileData;
 use App\DataTransferObjects\ProposalData;
 use App\Enums\CatalystCurrencySymbols;
@@ -83,7 +81,7 @@ class CompletedProjectNftsController extends Controller
     public function step1(Request $request): Response
     {
         return Inertia::render('Workflows/CompletedProjectNfts/Step1', [
-            'profiles' => IdeascaleProfileData::collect(IdeascaleProfile::where('claimed_by_id', $this->user->id)
+            'profiles' => IdeascaleProfileData::collect(IdeascaleProfile::where('claimed_by_uuid', $this->user->id)
                 ->withCount(['proposals'])
                 ->get()),
             'stepDetails' => $this->getStepDetails(),
@@ -176,7 +174,7 @@ class CompletedProjectNftsController extends Controller
         $claimedProfile = null;
         if (! empty($user)) {
             $claimedProfile = $proposal->ideascaleProfiles()
-                ->where('claimed_by_id', $user->id)
+                ->where('claimed_by_uuid', $user->id)
                 ->first();
 
             $isOwner = ! empty($claimedProfile);
@@ -253,7 +251,7 @@ class CompletedProjectNftsController extends Controller
 
     public function getClaimedIdeascaleProfilesProposals(Request $request): array
     {
-        $profileIds = (new TransformHashToIds)(collect($request->profiles), new IdeascaleProfile);
+        $profileIds = array_filter((array) ($request->profiles ?? []));
 
         $searchTerm = request('search');
 
@@ -305,10 +303,7 @@ class CompletedProjectNftsController extends Controller
 
         $pagination = new LengthAwarePaginator(
             ProposalData::collect(
-                (new TransformIdsToHashes)(
-                    collection: $items,
-                    model: new Proposal
-                )->toArray()
+                $items->toArray()
             ),
             $response->estimatedTotalHits,
             $limit,
@@ -379,7 +374,7 @@ class CompletedProjectNftsController extends Controller
         $user = $this->user;
 
         if ($user) {
-            $this->claimedIdeascaleProfiles = IdeascaleProfile::where('claimed_by_id', $user->id)
+            $this->claimedIdeascaleProfiles = IdeascaleProfile::where('claimed_by_uuid', $user->id)
                 ->withCount(['proposals'])
                 ->get()
                 ->toArray();

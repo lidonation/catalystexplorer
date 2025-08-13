@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Actions\TransformHashToIds;
 use App\Enums\CatalystCurrencies;
 use App\Enums\ProposalStatus;
 use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -21,11 +21,11 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 class Campaign extends Model implements HasMedia
 {
     use HasMetaData,
+        HasUuids,
         InteractsWithMedia,
         SoftDeletes;
 
     protected $hidden = [
-        'id',
         'user_id',
         'fund_id',
         'created_at',
@@ -43,7 +43,6 @@ class Campaign extends Model implements HasMedia
     ];
 
     protected $appends = [
-        'hash',
         'currency',
         'hero_img_url',
         'total_distributed',
@@ -97,7 +96,7 @@ class Campaign extends Model implements HasMedia
      */
     public function scopeFilter(Builder $query, array $filters): Builder
     {
-        $idsFromHash = isset($filters['hashes']) ? (new TransformHashToIds)(collect($filters['hashes']), new static) : [];
+        $idsFromHash = isset($filters['hashes']) ? (array) $filters['hashes'] : [];
 
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($q) use ($search) {
@@ -115,6 +114,11 @@ class Campaign extends Model implements HasMedia
     public function fund(): BelongsTo
     {
         return $this->belongsTo(Fund::class, 'fund_id', 'id');
+    }
+
+    public function fundUuid(): BelongsTo
+    {
+        return $this->belongsTo(Fund::class, 'fund_uuid', 'uuid');
     }
 
     public function proposals(): HasMany

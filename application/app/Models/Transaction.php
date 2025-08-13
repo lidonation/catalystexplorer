@@ -7,11 +7,12 @@ namespace App\Models;
 use App\Interfaces\IHasMetaData;
 use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Laravel\Scout\Searchable;
 
 class Transaction extends Model implements IHasMetaData
 {
-    use HasMetaData, Searchable;
+    use HasMetaData, HasUuids, Searchable;
 
     public $timestamps = false;
 
@@ -81,6 +82,11 @@ class Transaction extends Model implements IHasMetaData
     public function toSearchableArray(): array
     {
         $array = $this->toArray();
+
+        // Remove hash field from indexing - we only use UUIDs now (keep tx_hash as it's blockchain data)
+        if (isset($array['hash'])) {
+            unset($array['hash']);
+        }
 
         $inputs = collect($this->inputs)->map(function ($input) {
             return $input;

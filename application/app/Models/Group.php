@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Actions\TransformHashToIds;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalStatus;
 use App\Traits\HasConnections;
 use App\Traits\HasLocations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Laravel\Scout\Searchable;
@@ -20,7 +20,6 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Translatable\HasTranslations;
-use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Group extends Model implements HasMedia
@@ -29,6 +28,7 @@ class Group extends Model implements HasMedia
         HasLocations,
         HasRelationships,
         HasTranslations,
+        HasUuids,
         InteractsWithMedia,
         Searchable;
 
@@ -40,8 +40,21 @@ class Group extends Model implements HasMedia
 
     protected $appends = [
         'hero_img_url',
-        'hash',
     ];
+
+    /**
+     * The "type" of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
 
     public static function getFilterableAttributes(): array
     {
@@ -49,10 +62,9 @@ class Group extends Model implements HasMedia
             'id',
             'tags.id',
             'tags',
-            'hash',
             'proposals.fund.title',
-            'proposals.campaign.hash',
-            'proposals.communities.hash',
+            'proposals.campaign.uuid',
+            'proposals.communities.uuid',
             'proposals.status',
             'proposals_funded',
             'proposals_completed',
@@ -62,8 +74,8 @@ class Group extends Model implements HasMedia
             'proposals_ideafest',
             'proposals_woman',
             'proposals_impact',
-            'ideascale_profiles.hash',
-            'proposals.fund.hash',
+            'ideascale_profiles.uuid',
+            'proposals.fund.uuid',
         ];
     }
 
@@ -74,7 +86,7 @@ class Group extends Model implements HasMedia
             'proposals',
             'ideascale_profiles',
             'tags',
-            'ideascale_profiles.hash',
+            'ideascale_profiles.uuid',
             'ideascale_profiles.name',
             'ideascale_profiles.username',
         ];
@@ -91,7 +103,7 @@ class Group extends Model implements HasMedia
             'amount_awarded_ada',
             'amount_awarded_usd',
             'amount_requested',
-            'ideascale_profiles.hash',
+            'ideascale_profiles.uuid',
             'updated_at',
         ];
     }
@@ -113,9 +125,9 @@ class Group extends Model implements HasMedia
      */
     public function scopeFilter(Builder $query, array $filters): Builder
     {
-        $idsFromHash = ! empty($filters['hashes']) ? (new TransformHashToIds)(collect($filters['hashes']), new static) : [];
+        $idsFromHash = ! empty($filters['hashes']) ? (array) $filters['hashes'] : [];
 
-        $ids = ! empty($filters['ids']) ? array_merge($filters['ids'], $idsFromHash) : $idsFromHash;
+        $ids = ! empty($filters['ids']) ? array_merge((array) $filters['ids'], $idsFromHash) : $idsFromHash;
 
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($q) use ($search) {
@@ -282,20 +294,27 @@ class Group extends Model implements HasMedia
         return $this->belongsToMany(IdeascaleProfile::class, 'group_has_ideascale_profile', 'group_id', 'ideascale_profile_id');
     }
 
+    public function ideascaleProfilesUuid(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            IdeascaleProfile::class,
+            'group_has_ideascale_profile',
+            'group_id',
+            'ideascale_profile_id',
+            'id',
+            'id'
+        );
+    }
+
     public function owner(): BelongsTo
     {
-        return $this->belongsTo(IdeascaleProfile::class, 'user_id');
+        return $this->belongsTo(IdeascaleProfile::class, 'owner_id');
     }
 
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('hero')->singleFile();
         $this->addMediaCollection('banner')->singleFile();
-    }
-
-    public function reviews(): HasManyDeep
-    {
-        return $this->hasManyDeepFromRelations($this->proposals(), (new Proposal)->reviews());
     }
 
     public function registerMediaConversions(?Media $media = null): void
@@ -324,6 +343,11 @@ class Group extends Model implements HasMedia
 
         $array = $this->toArray();
 
+        // Remove hash field from indexing - we only use UUIDs now
+        if (isset($array['hash'])) {
+            unset($array['hash']);
+        }
+
         $proposals = $this->proposals->load('fund')->map(function ($p) {
             return $p->toArray();
         })->toArray();
@@ -333,12 +357,12 @@ class Group extends Model implements HasMedia
         return array_merge($array, [
             'proposals_completed' => collect($proposals)->filter(fn ($p) => $p['status'] === 'complete')?->count() ?? 0,
             'proposals_funded' => collect($proposals)->filter(fn ($p) => (bool) $p['funded_at'])?->count() ?? 0,
-            'proposals_unfunded' => collect($proposals)->filter(fn ($p) => empty($p['funded_at']))->count(),
+            'proposals_unfunded' => collect($proposals)->filter(fn ($p) => empty($p['funded_at']))?->count(),
             'amount_received' => intval($this->proposals()->whereNotNull('funded_at')->sum('amount_received')),
             'proposals_woman' => collect($proposals)->filter(fn ($p) => ($p->is_woman_proposal ?? false) === true)->count(),
             'proposals_ideascale' => collect($proposals)->filter(fn ($p) => ($p->is_ideascale_proposal ?? false) === true)->count(),
             'proposals_impact' => collect($proposals)->filter(fn ($p) => ($p->is_impact_proposal ?? false) === true)->count(),
-            'reviews_count' => $this->reviews->count(),
+            //            'reviews_count' => $this->reviews->count(),
             'amount_awarded_ada' => intval($this->amount_awarded_ada),
             'amount_awarded_usd' => intval($this->amount_awarded_usd),
             'amount_distributed_ada' => intval($this->amount_distributed_ada),
@@ -350,7 +374,7 @@ class Group extends Model implements HasMedia
             'proposals_count' => collect($proposals)->count(),
             'proposals' => $proposals,
             'ideascale_profiles' => $ideascale_profiles,
-            'tags' => $this->tags->map(fn ($m) => $m->toArray()),
+            //            'tags' => $this->tags->map(fn ($m) => $m->toArray()),
             'connected_items' => $this->connected_items,
         ]);
     }

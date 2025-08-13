@@ -14,7 +14,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 final class ServiceData extends Data
 {
     public function __construct(
-        public ?string $hash,
+        public ?string $id,
 
         public string $title,
 
@@ -59,7 +59,7 @@ final class ServiceData extends Data
     public static function fromModel(Service $service): self
     {
         return new self(
-            hash: $service->hash,
+            id: $service->id,
             title: $service->title,
             description: $service->description,
             type: $service->type,
@@ -87,7 +87,7 @@ final class ServiceData extends Data
             created_at: $service->created_at?->toISOString(),
             updated_at: $service->updated_at?->toISOString(),
             effective_details: $service->effective_contact_details ?? null,
-            link: route('services.show', $service->hash ?? $service->id)
+            link: route('services.show', $service->id)
         );
     }
 }

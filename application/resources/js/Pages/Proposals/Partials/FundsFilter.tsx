@@ -60,20 +60,20 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
                 <ul className="flex gap-4 whitespace-nowrap min-w-max" data-testid="funds-filter-list">
                     {funds.map((fund) => {
                         return (
-                            <li key={fund.hash}
+                            <li key={fund.uuid}
                                 className={`flex  flex-shrink-0 cursor-pointer rounded-md border-transparent bg-background shadow-xs border-2 hover:border-primary ${selectedItems.includes(fund) ? 'border-primary' : ''}`}
-                            onClick={() => handleSelect(fund.hash)}
-                            aria-label={fund.hash as string}
-                            data-testid={`fund-filter-item-${fund.hash}`}
+                            onClick={() => handleSelect(fund.uuid)}
+                            aria-label={fund.uuid as string}
+                            data-testid={`fund-filter-item-${fund.uuid}`}
                         >
                             <div className="m-4">
                                 <Checkbox
-                                    id={fund.hash as string | undefined}
-                                    value={fund.hash as string}
-                                    checked={selectedItems.includes(fund.hash)}
+                                    id={fund.uuid as string | undefined}
+                                    value={fund.uuid as string}
+                                    checked={selectedItems.includes(fund.uuid)}
                                     onChange={() => {}}
                                     className="text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary mr-2 h-4 w-4 shadow-xs focus:border"
-                                    data-testid={`fund-checkbox-${fund.hash}`}
+                                    data-testid={`fund-checkbox-${fund.uuid}`}
                                 />
                             </div>
                             <div className="m-4 ml-1 w-full">

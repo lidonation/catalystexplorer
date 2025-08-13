@@ -40,11 +40,11 @@ const Step6: React.FC<Step6Props> = ({
     const localizedRoute = useLocalizedRoute;
     const prevStep = localizedRoute('workflows.createVoterList.index', {
         step: activeStep - 1,
-        bk: bookmarkCollection.hash,
+        bk: bookmarkCollection.id,
     });
     const nextStep = localizedRoute('workflows.createVoterList.index', {
         step: activeStep + 1,
-        bk: bookmarkCollection.hash,
+        bk: bookmarkCollection.id,
     });
 
     type ExtendedProposalData = ProposalData & {
@@ -53,15 +53,23 @@ const Step6: React.FC<Step6Props> = ({
     };
 
     const proposalData = selectedProposals.data.map((item) => {
-        let model = item.model as ProposalData;
-        return {
-            hash: model.slug,
+        const model = item.model as ProposalData;
+        const normalized: ExtendedProposalData = {
+            id: model.id,
+            campaign: model.campaign ?? null,
+            schedule: model.schedule ?? null,
             title: model.title,
+            slug: model.slug,
+            status: model.status ?? null,
+            users: null,
+            reviews: null,
             fund: bookmarkCollection.fund,
+            link: model.link,
             amount_requested: model.amount_requested,
-            vote: item?.vote,
+            vote: item?.vote ?? null,
             exists: true,
         } as ExtendedProposalData;
+        return normalized;
     });
 
     const defaultVoteRender = (item: ExtendedProposalData): React.ReactNode => {
@@ -172,7 +180,7 @@ const Step6: React.FC<Step6Props> = ({
                             linkProps={{
                                 preserveState: true,
                                 preserveScroll: true,
-                                // bk: bookmarkCollection.hash,
+                                // bk: bookmarkCollection.id,
                             }}
                         />
                     </div>

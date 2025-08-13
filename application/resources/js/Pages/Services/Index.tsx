@@ -149,7 +149,7 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" data-testid="services-grid">
                 {services.data.map(service => (
-                  <ServiceCard key={service.hash} service={service} />
+                  <ServiceCard key={service.id} service={service} />
                 ))}
               </div>
               <div className="mt-8 w-full">

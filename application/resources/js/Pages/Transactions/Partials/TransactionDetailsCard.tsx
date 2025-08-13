@@ -34,8 +34,8 @@ export default function TransactionDetailsCard({ transaction }: TransactionDetai
           <div className="grid grid-cols-1 gap-6 pt-4 md:grid-cols-2">
               <div className="space-y-6">
                   <DetailRow
-                      label={t('transactions.table.hash')}
-                      value={transaction.hash}
+                      label={t('transactions.table.id')}
+                      value={transaction.id}
                       copyable
                   />
 

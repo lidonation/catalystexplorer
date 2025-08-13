@@ -23,10 +23,10 @@ function MobileNavigation() {
             <div className="fixed inset-0 top-16 flex">
                 <DialogPanel
                     transition
-                    className="relative flex w-full flex-1 transform transition duration-300 ease-in-out data-closed:-translate-x-full"
+                    className="relative bg-background flex w-full flex-1 transform transition duration-300 ease-in-out data-closed:-translate-x-full overflow-y-auto"
                 >
                     <aside
-                        className="bg-background flex grow flex-col justify-between px-4"
+                        className="flex grow flex-col justify-between px-4"
                         aria-label={t('navigation.mobile.content')}
                         data-testid="mobile-navigation-content"
                     >

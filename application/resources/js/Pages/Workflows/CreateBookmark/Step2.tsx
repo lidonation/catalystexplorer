@@ -52,7 +52,7 @@ const Step2: React.FC<Step2Props> = ({
     const localizedRoute = useLocalizedRoute;
 
     const param = bookmarkCollection
-        ? { step: activeStep - 1, bookmarkCollection: bookmarkCollection?.hash }
+        ? { step: activeStep - 1, bookmarkCollection: bookmarkCollection?.id }
         : { step: activeStep - 1 };
 
     const prevStep = localizedRoute('workflows.bookmarks.index', param);
@@ -82,7 +82,7 @@ const Step2: React.FC<Step2Props> = ({
     const submitForm = () => {
         form.post(
             generateLocalizedRoute('workflows.bookmarks.saveList', {
-                bookmarkCollection: bookmarkCollection?.hash,
+                bookmarkCollection: bookmarkCollection?.id,
             }),
         );
     };
@@ -288,7 +288,7 @@ const Step2: React.FC<Step2Props> = ({
                 </PrimaryLink>
                 <PrimaryButton
                     className="text-sm lg:px-8 lg:py-3"
-                    disabled={!isFormValid && !bookmarkCollection?.hash}
+                    disabled={!isFormValid && !bookmarkCollection?.id}
                     onClick={submitForm}
                 >
                     <span>{t('Next')}</span>

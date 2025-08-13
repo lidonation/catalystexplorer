@@ -19,9 +19,9 @@ import {
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { router, useForm } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
@@ -40,7 +40,7 @@ interface Step3Props {
     activeStep: number;
     proposals: PaginatedData<ProposalData[]>;
     campaigns: Campaign[];
-    selectedProposals: { hash: string; vote: number|null }[];
+    selectedProposals: { id: string; vote: number|null }[];
     filters: SearchParams;
     bookmarkHash: string;
     fundSlug?: string;
@@ -64,7 +64,7 @@ const Step3: React.FC<Step3Props> = ({
     });
 
     const [selectedIds, setSelectedIds] =
-        useState<{ hash: string; vote: number | null }[]>(
+        useState<{ id: string; vote: number | null }[]>(
             selectedProposals,
         );
 
@@ -108,17 +108,16 @@ const Step3: React.FC<Step3Props> = ({
         return baseFilters;
     };
 
-    const handleVote = (proposalHash: string, vote: number | null) => {
-
+    const handleVote = (proposalId: string, vote: number | null) => {
         setSelectedIds((prev) => {
-            const existing = prev.find((item) => item.hash === proposalHash);
+            const existing = prev.find((item) => item.id === proposalId);
 
             if (!existing) {
-                return [...prev, { hash: proposalHash, vote }];
+                return [...prev, { id: proposalId, vote }];
             }
 
             return prev.map((item) =>
-                item.hash === proposalHash ? { ...item, vote } : item,
+                item.id === proposalId ? { ...item, vote } : item,
             );
         });
 
@@ -204,7 +203,12 @@ const Step3: React.FC<Step3Props> = ({
                                         size="sm"
                                         className="text-gray-persist bg-background rounded-md px-3 py-1 font-medium shadow"
                                     >
-                                        {selectedIds.length}/{proposals.total}
+                                        {
+                                            selectedIds.filter(
+                                                (item) => item.vote !== null,
+                                            ).length
+                                        }
+                                        /{proposals.total}
                                     </Paragraph>
                                 </div>
 
@@ -230,7 +234,7 @@ const Step3: React.FC<Step3Props> = ({
                                             options={campaigns.map(
                                                 (campaign) => ({
                                                     label: campaign.title,
-                                                    value: campaign.hash,
+                                                    value: String(campaign.id),
                                                 }),
                                             )}
                                             hideCheckbox={true}
@@ -265,19 +269,19 @@ const Step3: React.FC<Step3Props> = ({
                         <div className="w-full">
                             <div className="mt-4 mb-4 max-h-[25rem] w-full space-y-4 overflow-y-auto">
                                 {proposals?.data &&
-                                proposals.data.filter((p) => p.hash).length >
+                                proposals.data.filter((p) => p.id).length >
                                     0 ? (
                                     proposals.data
-                                        .filter((p) => p.hash)
+                                        .filter((p) => p.id)
                                         .map((proposal) => {
                                             let selected = selectedIds.find(
                                                 (item) =>
-                                                    item.hash == proposal.hash,
+                                                    item.id == proposal.id,
                                             );
 
                                             return (
                                                 <ProposalVotingCard
-                                                    key={proposal.hash}
+                                                    key={proposal.id}
                                                     proposal={proposal}
                                                     isSelected={
                                                         !!selected &&
@@ -286,11 +290,8 @@ const Step3: React.FC<Step3Props> = ({
                                                             selected.vote ==
                                                                 VoteEnum.YES)
                                                     }
-                                                    onVote={(proposal, hash) =>
-                                                        handleVote(
-                                                            proposal,
-                                                            hash,
-                                                        )
+                                                    onVote={(hash, vote) =>
+                                                        handleVote(hash, vote)
                                                     }
                                                     currentVote={selected?.vote}
                                                 />

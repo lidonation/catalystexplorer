@@ -28,7 +28,7 @@ export default function IdeascaleProfiles({
                             {ideascaleProfiles.data.map((profile) => (
                                 <div className="border-border-dark-on-dark rounded-lg border-2">
                                     <IdeascaleProfileCardMini
-                                        key={profile.hash}
+                                        key={profile.id}
                                         ideascaleProfile={profile}
                                     />
                                 </div>

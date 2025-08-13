@@ -50,16 +50,16 @@ export const BookmarkProvider: React.FC<{
         console.log({
             hash,
             modelType: model,
-            bookmarkCollection: bookmarkCollection.hash,
+            bookmarkCollection: bookmarkCollection.id,
         });
 
         router.post(
             generateLocalizedRoute(routeName, {
                 hash,
                 modelType: model,
-                bookmarkCollection: bookmarkCollection.hash,
+                bookmarkCollection: bookmarkCollection.id,
             }),
-            {},
+            { },
             {
                 preserveScroll: true,
                 onSuccess: () => {

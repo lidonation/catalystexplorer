@@ -68,7 +68,7 @@ export default function ProposalHorizontalCard({
                 height: `${cardHeight}px`,
                 width: cardWidth ? `${cardWidth}px` : 'auto'
             } : {}}
-            data-testid={`horizontal-proposal-card-${proposal?.hash}`}
+            data-testid={`horizontal-proposal-card-${proposal?.id}`}
         >
             {userSelected && (
                 <button

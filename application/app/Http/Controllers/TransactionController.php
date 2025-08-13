@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\TransactionData;
 use App\DataTransferObjects\VoterHistoryData;
 use App\Enums\TransactionSearchParams;
 use App\Models\Signature;
 use App\Models\Transaction;
 use App\Models\Voter;
-use App\Models\VoterHistory;
 use App\Repositories\TransactionRepository;
 use App\Repositories\VoterHistoryRepository;
 use Illuminate\Http\Request;
@@ -222,12 +220,7 @@ class TransactionController
         $items = collect($response->hits);
 
         $pagination = new LengthAwarePaginator(
-            TransactionData::collect(
-                (new TransformIdsToHashes)(
-                    collection: $items,
-                    model: new Transaction
-                )->toArray()
-            ),
+            TransactionData::collect($items->toArray()),
             $response->estimatedTotalHits,
             $limit,
             $page,
@@ -271,12 +264,7 @@ class TransactionController
         $items = collect($response->hits);
 
         $pagination = new LengthAwarePaginator(
-            VoterHistoryData::collect(
-                (new TransformIdsToHashes)(
-                    collection: $items,
-                    model: new VoterHistory
-                )->toArray()
-            ),
+            VoterHistoryData::collect($items->toArray()),
             $response->estimatedTotalHits,
             $limit,
             $page,

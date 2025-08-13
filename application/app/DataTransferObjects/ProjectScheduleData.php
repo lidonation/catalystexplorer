@@ -15,15 +15,15 @@ final class ProjectScheduleData extends Data
 {
     public function __construct(
 
-        public string $hash,
+        public string $id,
 
         public string $title,
 
         public string $url,
 
-        public ?int $proposal_id,
+        public ?string $proposal_id,
 
-        public ?int $fund_id,
+        public ?string $fund_id,
 
         public ?int $project_id,
 

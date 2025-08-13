@@ -34,6 +34,7 @@ use App\Http\Controllers\CompletedProjectNftsController;
 use App\Http\Controllers\CardanoBudgetProposalController;
 use App\Http\Controllers\ClaimIdeascaleProfileController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\PublishToIpfsController;
 use App\Http\Controllers\WalletController;
 use CodeZero\LocalizedRoutes\Controllers\FallbackController;
 
@@ -206,6 +207,17 @@ Route::localized(
                         ->name('index');
                 });
 
+            Route::prefix('/publish-to-ipfs/steps')->as('publishToIpfs.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::get('/success', [PublishToIpfsController::class, 'success'])
+                        ->name('success');
+                    Route::post('/publish-list', [PublishToIpfsController::class, 'publishListToIpfs'])
+                        ->name('publishListToIpfs');
+                    Route::get('/{step}', [PublishToIpfsController::class, 'handleStep'])
+                        ->name('index');
+                });
+
 
             // Route::prefix('/submit-votes/steps')->as('voting.')
             //     ->middleware([WorkflowMiddleware::class])
@@ -338,7 +350,7 @@ Route::localized(
         });
 
         Route::prefix('/milestones')->as('milestones.')->group(function () {
-            Route::get('/', fn() => Inertia::render('ComingSoon', props: ['context' => 'Milestones Lists']))
+            Route::get('/', fn() => Inertia::render('ComingSoon', ['context' => 'Milestones Lists']))
                 ->name('index');
         });
 
@@ -470,14 +482,14 @@ Route::localized(
 
         Route::prefix('numbers')->as('numbers.')
             ->group(function () {
-                Route::get('/impact', fn() => Inertia::render(component: 'ComingSoon', props: ['context' => 'Impact Numbers']))->name('impact');
-                Route::get('/spending', fn() => Inertia::render('ComingSoon', props: ['context' => 'Spending Numbers']))->name('spending');
-                Route::get('/general', fn() => Inertia::render('ComingSoon', props: ['context' => 'General Numbers']))->name('general');
+                Route::get('/impact', fn() => Inertia::render('ComingSoon', ['context' => 'Impact Numbers']))->name('impact');
+                Route::get('/spending', fn() => Inertia::render('ComingSoon', ['context' => 'Spending Numbers']))->name('spending');
+                Route::get('/general', fn() => Inertia::render('ComingSoon', ['context' => 'General Numbers']))->name('general');
             });
 
         Route::prefix('ccv4')->as('ccv4.')
             ->group(function () {
-                Route::get('/', fn() => Inertia::render(component: 'ComingSoon', props: ['context' => 'CCV4 Data']))->name('index');
+                Route::get('/', fn() => Inertia::render('ComingSoon', ['context' => 'CCV4 Data']))->name('index');
             });
     }
 

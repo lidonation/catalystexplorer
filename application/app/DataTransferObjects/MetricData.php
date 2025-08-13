@@ -18,9 +18,9 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 final class MetricData extends Data
 {
     public function __construct(
-        public ?string $hash,
+        public ?string $id,
 
-        public ?int $user_id,
+        public ?string $user_id,
 
         public string $title,
 

@@ -71,7 +71,7 @@ class SearchController extends Controller
 
             $posts = $this->getPosts($posts, $searchTerm);
 
-            $counts['articles'] = empty($posts) ? 0 : $posts->count();
+            $counts['articles'] = empty($posts) ? 0 : count($posts);
         }
 
         return $counts;

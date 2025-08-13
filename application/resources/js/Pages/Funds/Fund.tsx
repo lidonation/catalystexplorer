@@ -83,7 +83,7 @@ export default function Fund({
                                 >
                                     {(campaign) => (
                                         <CampaignCard
-                                            key={campaign.hash}
+                                            key={campaign.id}
                                             campaign={campaign}
                                             fund={fund}
                                         />

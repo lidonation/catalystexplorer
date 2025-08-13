@@ -73,7 +73,7 @@ export default function ProposalCardMini({
             ref={cardRef}
             className="bg-background z-0 flex h-full flex-col justify-between rounded-xl p-2 shadow-lg relative"
             style={cardHeight && userSelected ? { height: `${cardHeight}px` } : {}}
-            data-testid={`proposal-card-mini-${proposal.hash}`}
+            data-testid={`proposal-card-mini-${proposal.id}`}
         >
             {userSelected && (
                 <button

@@ -57,7 +57,7 @@ export const WalletTransactionsTable: React.FC<
         },
         {
             key: 'hash',
-            header: t('transactions.table.hash'),
+            header: t('transactions.table.id'),
             render: (tx) => (
                 <div className="flex flex-col items-center justify-center space-y-1">
                     <CopyableCell

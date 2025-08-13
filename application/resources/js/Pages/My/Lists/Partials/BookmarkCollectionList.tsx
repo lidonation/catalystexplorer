@@ -22,7 +22,7 @@ const BookmarkCollectionList: React.FC<BookmarkCollectionListProps> = ({ bookmar
                             className="h-full"
                         >
                             <BookmarkCollectionCard
-                                key={bookmarkCollection.hash}
+                                key={bookmarkCollection.id}
                                 collection={bookmarkCollection}
                             />
                         </motion.li>

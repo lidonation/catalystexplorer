@@ -23,7 +23,7 @@ class ProposalRepository extends Repository
 
                 $args['attributesToRetrieve'] = $attrs ?? [
                     'id',
-                    'hash',
+                    // 'hash', // Removed - now using UUID id instead
                     'amount_requested',
                     'amount_received',
                     'currency',
