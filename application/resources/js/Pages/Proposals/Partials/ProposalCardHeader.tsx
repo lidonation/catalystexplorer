@@ -7,6 +7,7 @@ import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import { Link } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { getUuid } from '@/utils/getPreferredId';
 import CompareButton from './CompareButton';
 import ProposalStatus from './ProposalStatus';
 import UserAvatar from '@/Components/UserAvatar';
@@ -26,6 +27,7 @@ export default function ProposalCardHeader({
     const contentRef = useRef<HTMLParagraphElement | null>(null);
     const [lineCount, setLineCount] = useState(0);
     const { t } = useLaravelReactI18n();
+    const proposalId = getUuid(proposal);
 
     const gradientColors: Record<string, unknown> = {
         complete: 'from-[var(--success-gradient-color-1)] to-[var(--success-gradient-color-2)]',
@@ -52,7 +54,7 @@ export default function ProposalCardHeader({
         >
             <header
                 className={`min-h-[10rem] text-content-light w-full rounded-xl bg-linear-to-tr ${headerBGColor} flex flex-col justify-between ${isHorizontal ? 'h-full' : ''}`}
-                data-testid={`proposal-card-header-${proposal?.hash}`}
+                data-testid={`proposal-card-header-${proposalId}`}
             >
                 <div className="px-4 pt-3">
                     {userSelected ? (
@@ -97,18 +99,18 @@ export default function ProposalCardHeader({
                             />
                             <div className="flex items-center">
                                 <ListProvider>
-                                    {proposal.hash && (
+                                    {proposalId && (
                                         <BookmarkButton
                                             modelType="proposals"
-                                            itemId={proposal.hash}
+                                            itemId={proposalId}
                                             data-testid="bookmark-button"
                                         />
                                     )}
                                 </ListProvider>
-                                {proposal.hash && (
+                                {proposalId && (
                                     <CompareButton
                                         model="proposal"
-                                        hash={proposal.hash}
+                                        hash={proposalId}
                                         tooltipDescription="Compare Proposals"
                                         data={proposal}
                                         data-testid={`compare-button`}
@@ -128,7 +130,7 @@ export default function ProposalCardHeader({
                         <Link
                             href={proposal.link}
                             className="hover:text-primary font-medium w-full"
-                            data-testid={`single-proposal-card-link-${proposal?.hash}`}
+                            data-testid={`single-proposal-card-link-${proposalId}`}
                             style={{ overflow: 'visible' }}
                         >
                             <div ref={contentRef}>
@@ -137,7 +139,7 @@ export default function ProposalCardHeader({
                                     lineClamp={3}
                                     expanded={isHovered}
                                 >
-                                    <Title level="4" data-testid={`proposal-card-title-${proposal?.hash}`}>
+                                    <Title level="4" data-testid={`proposal-card-title-${proposalId}`}>
                                         {proposal.title}
                                     </Title>
                                 </ExpandableContent>
@@ -155,7 +157,7 @@ export default function ProposalCardHeader({
                         <nav
                             className="text-content-light flex items-center justify-evenly rounded-b-xl bg-white/25 p-2 font-semibold"
                             aria-label="Related Platforms"
-                            data-testid={`related-platforms-proposal-card-links-${proposal?.hash}`}
+                            data-testid={`related-platforms-proposal-card-links-${proposalId}`}
                         >
                             {proposal.ideascale_link && (
                                 <a
@@ -163,7 +165,7 @@ export default function ProposalCardHeader({
                                     className="text-4 text-opacity-100 flex w-full items-center justify-center"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    data-testid={`ideascale-link-${proposal?.hash}`}
+                                    data-testid={`ideascale-link-${proposalId}`}
                                 >
                                     <span>{t('proposals.ideascale')}</span>
                                 </a>
@@ -177,7 +179,7 @@ export default function ProposalCardHeader({
                                     className="text-4 text-opacity-100 flex w-full items-center justify-center"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    data-testid={`projectcatalyst-link-${proposal?.hash}`}
+                                    data-testid={`projectcatalyst-link-${proposalId}`}
                                 >
                                     <span>{t('proposals.projectCatalyst')}</span>
                                 </a>

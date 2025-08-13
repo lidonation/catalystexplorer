@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\BookmarkCollectionData;
 use App\Enums\BookmarkableType;
 use App\Enums\BookmarkStatus;
@@ -282,12 +281,7 @@ class BookmarksController extends Controller
         $items = collect($response->hits);
 
         $pagination = new LengthAwarePaginator(
-            BookmarkCollectionData::collect(
-                (new TransformIdsToHashes)(
-                    collection: $items,
-                    model: new BookmarkCollection
-                )->toArray()
-            ),
+            BookmarkCollectionData::collect($items->toArray()),
             $response->estimatedTotalHits,
             $limit,
             $page,
@@ -325,8 +319,8 @@ class BookmarksController extends Controller
     {
         $collection = null;
 
-        if ($hash = $request->bookmarkCollection) {
-            $collection = BookmarkCollection::byHash($hash);
+        if ($hash = ($request->bookmarkCollection ?? $request->input('bookmarkCollectionId'))) {
+            $collection = BookmarkCollection::find($hash);
         }
 
         return Inertia::render('Workflows/CreateBookmark/Step2', [
@@ -338,15 +332,13 @@ class BookmarksController extends Controller
 
     public function step3(Request $request): RedirectResponse|Response
     {
-        if (empty($request->bookmarkCollection)) {
+        if (empty($request->bookmarkCollection) && ! $request->filled('bookmarkCollectionId')) {
             return to_route('workflows.bookmarks.index', [
                 'step' => 2,
             ]);
         }
 
-        $collection = BookmarkCollection::byHash($request->bookmarkCollection);
-
-        $transformer = app(TransformIdsToHashes::class);
+        $collection = BookmarkCollection::find($request->bookmarkCollection ?? $request->input('bookmarkCollectionId'));
 
         $modelMap = [
             \App\Models\Proposal::class => 'proposals',
@@ -358,18 +350,16 @@ class BookmarksController extends Controller
 
         $selectedItemsByType = $collection->items
             ->groupBy('model_type')
-            ->mapWithKeys(function ($items, $modelType) use ($transformer, $modelMap) {
+            ->mapWithKeys(function ($items, $modelType) use ($modelMap) {
                 $label = $modelMap[$modelType] ?? null;
 
                 if (! $label) {
                     return [];
                 }
 
-                $modelClass = new $modelType;
-                $modelIds = $items->pluck('model_id');
-                $hashedItems = $transformer($modelIds->map(fn ($id) => ['id' => $id]), $modelClass);
+                $modelIds = $items->pluck('model_id')->all();
 
-                return [$label => $hashedItems->pluck('hash')->values()];
+                return [$label => $modelIds];
             });
 
         return Inertia::render('Workflows/CreateBookmark/Step3', [
@@ -382,19 +372,20 @@ class BookmarksController extends Controller
 
     public function step4(Request $request): RedirectResponse|Response
     {
-        if (empty($request->bookmarkCollection)) {
+        if (empty($request->bookmarkCollection) && ! $request->filled('bookmarkCollectionId')) {
             return to_route('workflows.bookmarks.index', [
                 'step' => 2,
             ]);
         }
 
-        $collection = BookmarkCollection::byHash($request->bookmarkCollection);
+        $collection = BookmarkCollection::find($request->bookmarkCollection ?? $request->input('bookmarkCollectionId'));
 
         return Inertia::render('Workflows/CreateBookmark/Step4', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
             'rationale' => $collection->meta_info?->rationale,
-            'bookmarkCollection' => $collection->hash,
+            'bookmarkCollection' => $collection->id,
+            'bookmarkCollectionId' => $collection->id,
         ]);
     }
 
@@ -417,7 +408,7 @@ class BookmarksController extends Controller
             'bookmarkCollection' => 'nullable|string',
         ]);
 
-        $existingList = BookmarkCollection::byhash($request->bookmarkCollection);
+        $existingList = BookmarkCollection::find($request->bookmarkCollection);
 
         if ($existingList) {
             $existingList->update([
@@ -445,7 +436,8 @@ class BookmarksController extends Controller
 
         return to_route('workflows.bookmarks.index', [
             'step' => 3,
-            'bookmarkCollection' => $bookmarkCollection->hash,
+            'bookmarkCollection' => $bookmarkCollection->id,
+            'bookmarkCollectionId' => $bookmarkCollection->id,
         ]);
     }
 
@@ -458,7 +450,7 @@ class BookmarksController extends Controller
 
         $bookmarkableType = BookmarkableType::tryFrom(Str::kebab($validated['modelType']))->getModelClass();
 
-        $model = $bookmarkableType::byHash($validated['hash']);
+        $model = $bookmarkableType::find($validated['hash']);
 
         if (empty($model)) {
             return back()->withErrors(['message' => "Item {$validated['modelType']} if hash {$validated['hash']} not found."]);
@@ -489,7 +481,7 @@ class BookmarksController extends Controller
 
         $bookmarkableType = BookmarkableType::tryFrom(Str::kebab($validated['modelType']))->getModelClass();
 
-        $model = $bookmarkableType::byHash($validated['hash']);
+        $model = $bookmarkableType::find($validated['hash']);
 
         if (empty($model)) {
             return back()->withErrors([

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\CampaignData;
 use App\DataTransferObjects\CommunityData;
 use App\DataTransferObjects\GroupData;
@@ -332,10 +331,7 @@ class IdeascaleProfilesController extends Controller
         $items = collect($response->hits);
 
         $pagination = new LengthAwarePaginator(
-            (new TransformIdsToHashes)(
-                collection: $items,
-                model: new IdeascaleProfile
-            )->toArray(),
+            $items->toArray(),
             $response->estimatedTotalHits,
             $limit,
             $page,

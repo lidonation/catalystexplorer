@@ -35,4 +35,9 @@ class MonthlyReport extends Model
     {
         return $this->belongsTo(IdeascaleProfile::class);
     }
+
+    public function ideascaleProfileUuid(): BelongsTo
+    {
+        return $this->belongsTo(IdeascaleProfile::class, 'ideascale_profile_uuid', 'uuid');
+    }
 }

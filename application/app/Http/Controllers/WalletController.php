@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\TransactionData;
 use App\DataTransferObjects\VoterHistoryData;
 use App\Enums\TransactionSearchParams;
 use App\Models\Transaction;
 use App\Models\Voter;
-use App\Models\VoterHistory;
 use App\Repositories\VoterHistoryRepository;
 use App\Services\WalletInfoService;
 use Illuminate\Http\JsonResponse;
@@ -159,12 +157,7 @@ class WalletController extends Controller
         $items = collect($response->hits);
 
         $pagination = new LengthAwarePaginator(
-            VoterHistoryData::collect(
-                (new TransformIdsToHashes)(
-                    collection: $items,
-                    model: new VoterHistory
-                )->toArray()
-            ),
+            VoterHistoryData::collect($items->toArray()),
             $response->estimatedTotalHits,
             $limit,
             $page,

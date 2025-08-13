@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\TransformHashToIds;
-use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\IdeascaleProfileData;
 use App\DataTransferObjects\ProposalData;
 use App\Enums\CatalystCurrencySymbols;
@@ -253,7 +251,7 @@ class CompletedProjectNftsController extends Controller
 
     public function getClaimedIdeascaleProfilesProposals(Request $request): array
     {
-        $profileIds = (new TransformHashToIds)(collect($request->profiles), new IdeascaleProfile);
+        $profileIds = array_filter((array) ($request->profiles ?? []));
 
         $searchTerm = request('search');
 
@@ -305,10 +303,7 @@ class CompletedProjectNftsController extends Controller
 
         $pagination = new LengthAwarePaginator(
             ProposalData::collect(
-                (new TransformIdsToHashes)(
-                    collection: $items,
-                    model: new Proposal
-                )->toArray()
+                $items->toArray()
             ),
             $response->estimatedTotalHits,
             $limit,

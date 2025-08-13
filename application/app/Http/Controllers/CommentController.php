@@ -23,7 +23,7 @@ class CommentController extends Controller
 
         $className = $this->getCommentableModelClass($request->commentable_type);
 
-        $model = $className::byHash($request->commentable_id);
+        $model = $className::find($request->commentable_id);
 
         $comments = Comment::query()
             ->with(['nestedComments.commentator', 'commentator'])
@@ -46,11 +46,11 @@ class CommentController extends Controller
             'commentable_id' => 'required|string',
         ]);
 
-        $parentId = Comment::byHash($data['parent_id'])?->id;
+        $parentId = ! empty($data['parent_id']) ? Comment::find($data['parent_id'])?->id : null;
 
         $className = $this->getCommentableModelClass($request->commentable_type);
 
-        $model = $className::byHash($data['commentable_id']);
+        $model = $className::find($data['commentable_id']);
 
         if (empty($model)) {
             return ['error' => 'Cannot save comment'];

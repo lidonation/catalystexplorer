@@ -8,7 +8,6 @@ use App\Models\Signature;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\HasMany;
-use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Resource;
 
@@ -43,7 +42,10 @@ class Signatures extends Resource
     public function fields(Request $request): array
     {
         return [
-            ID::make()->sortable(),
+            Text::make('ID', 'id')
+                ->sortable()
+                ->readonly()
+                ->copyable(),
 
             Text::make('Stake Key')
                 ->sortable()

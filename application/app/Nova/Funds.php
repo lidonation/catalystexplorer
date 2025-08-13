@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
-use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Slug;
@@ -60,7 +59,10 @@ class Funds extends Resource
     public function fields(NovaRequest $request): array
     {
         return [
-            ID::make()->sortable(),
+            Text::make('ID', 'id')
+                ->sortable()
+                ->readonly()
+                ->copyable(),
 
             Text::make(__('Title'))
                 ->sortable()

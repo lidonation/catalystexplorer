@@ -17,7 +17,6 @@ class IdeascaleProfileResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            'hash' => $this->hash,
             'ideascale_id' => $this->ideascale_id,
             'username' => $this->username,
             'email' => $this->email,

@@ -13,7 +13,6 @@ use Laravel\Nova\Auth\PasswordValidationRules;
 use Laravel\Nova\Card;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\Gravatar;
-use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Filters\Filter;
@@ -57,7 +56,10 @@ class Users extends Resource
     public function fields(NovaRequest $request): array
     {
         return [
-            ID::make()->sortable(),
+            Text::make('ID', 'id')
+                ->sortable()
+                ->readonly()
+                ->copyable(),
 
             Gravatar::make()->maxWidth(50),
 

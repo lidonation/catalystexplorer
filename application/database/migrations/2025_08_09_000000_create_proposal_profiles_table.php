@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('proposal_profiles', function (Blueprint $table) {
             $table->id();
             $table->foreignId('proposal_id')->constrained('proposals');
-            $table->morphs('profile');
+            $table->string('profile_type');
+            $table->string('profile_id'); // Use string to support UUIDs
             $table->index(['proposal_id', 'profile_type', 'profile_id']);
         });
     }

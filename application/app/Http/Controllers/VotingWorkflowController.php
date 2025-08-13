@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\ProposalData;
 use App\Enums\ProposalSearchParams;
 use App\Enums\QueryParamsEnum;
@@ -311,12 +310,7 @@ class VotingWorkflowController extends Controller
         $response = new Fluent($searchBuilder->raw());
 
         return new LengthAwarePaginator(
-            ProposalData::collect(
-                (new TransformIdsToHashes)->__invoke(
-                    collection: collect($response->hits),
-                    model: new Proposal
-                )->toArray()
-            ),
+            ProposalData::collect(collect($response->hits)->toArray()),
             $response->estimatedTotalHits,
             $limit,
             $page,

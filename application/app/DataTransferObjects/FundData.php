@@ -21,7 +21,7 @@ final class FundData extends Data
 
         public ?string $title,
 
-        public ?string $hash,
+        public string $uuid,
 
         #[TypeScriptOptional]
         public ?int $proposals_count,
@@ -84,6 +84,6 @@ final class FundData extends Data
         public ?string $review_started_at,
 
         #[TypeScriptOptional]
-        public ?int $parent_id
+        public ?string $parent_id
     ) {}
 }

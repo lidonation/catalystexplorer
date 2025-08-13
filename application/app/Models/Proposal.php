@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Actions\TransformHashToIds;
 use App\Casts\DateFormatCast;
 use App\Enums\CatalystCurrencies;
 use App\Models\Pivot\ProposalProfile;
@@ -19,6 +18,7 @@ use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -43,6 +43,7 @@ class Proposal extends Model
         HasTaxonomies,
         HasTimestamps,
         HasTranslations,
+        HasUuids,
         Searchable,
         SoftDeletes;
 
@@ -65,7 +66,6 @@ class Proposal extends Model
 
     protected $appends = [
         'link',
-        'hash',
         'currency',
     ];
 
@@ -186,7 +186,7 @@ class Proposal extends Model
 
     public function scopeFilter($query, array $filters)
     {
-        $idsFromHash = ! empty($filters['hashes']) ? (new TransformHashToIds)(collect($filters['hashes']), new static) : null;
+        $idsFromHash = ! empty($filters['hashes']) ? (array) $filters['hashes'] : null;
 
         $query->when(
             $idsFromHash ?? false,
@@ -409,113 +409,31 @@ class Proposal extends Model
     {
         $array = $this->toArray();
 
-        $opensourceOptionDate = new Carbon('2023-06-01');
-        $opensource = (bool) $this->opensource ? 1 : 0;
-        if ($this->fund?->launched_at && Carbon::make($this->fund?->launched_at)?->lessThan($opensourceOptionDate) && $opensource === 0) {
-            $opensource = null;
+        // Remove hash field from indexing - we only use UUIDs now
+        if (isset($array['hash'])) {
+            unset($array['hash']);
         }
 
-        $communities = $this->communities->map(function ($communities) {
-            return [
-                'id' => $communities->id,
-                'title' => $communities->title,
-                'status' => $communities->status,
-                'content' => $communities->content,
-                'user_id' => $communities->user_id,
-            ];
-        });
-
+        // TESTING: Adding back tags relationship to isolate bigint issue
         return array_merge($array, [
-            'abstain_votes_count' => $this->abstain_votes_count,
-            "amount_awarded_{$this->currency}" => (bool) $this->funded_at ? ($this->amount_requested ? intval($this->amount_requested) : 0) : null,
-            "amount_received_{$this->currency}" => $this->amount_received ? intval($this->amount_received) : 0,
-            'amount_received' => $this->amount_received ? intval($this->amount_received) : 0,
-            "amount_requested_{$this->currency}" => $this->amount_requested ? intval($this->amount_requested) : 0,
-            'amount_requested' => $this->amount_requested ? intval($this->amount_requested) : 0,
-            'ca_rating' => intval($this->avg_rating) ?? 0.00,
-            'campaign' => [
-                'id' => $this->campaign_id,
-                'title' => $this->campaign?->title,
-                'hash' => $this->campaign?->hash,
-                'currency' => $this->currency,
-                'proposals_count' => $this->campaign?->proposals_count,
-                'amount' => $this->campaign?->amount ? intval($this->campaign?->amount) : null,
-                'label' => $this->campaign?->label,
-                'status' => $this->campaign?->status,
-                'link' => $this->campaign?->link,
-                'fund' => $this->campaign?->fund,
-                'total_awarded' => $this->campaign?->total_awarded,
-                'total_distributed' => $this->campaign?->total_distributed,
-            ],
-            'communities' => $communities->toArray(),
-            "completed_amount_paid{$this->currency}" => ($this->amount_received && $this->status === 'complete') ? intval($this->amount_received) : 0,
-            'completed' => $this->completed,
-            'currency' => $this->currency,
-
             'funded' => (bool) $this->funded_at ? 1 : 0,
-            'fund' => [
-                'id' => $this->fund_id,
-                'hash' => $this->fund?->hash,
-                'title' => $this->fund?->title,
-                'amount' => $this->fund?->amount ? intval($this->fund?->amount) : null,
-                'label' => $this->fund?->label,
-                'status' => $this->fund?->status,
-                'launched_at' => $this->fund?->launched_at,
-                'link' => $this->fund?->link,
-            ],
-
-            'groups' => $this->groups,
-
-            'has_quick_pitch' => (bool) $this->quickpitch ? 1 : 0,
-
-            'ideafest_proposal' => $this->is_ideafest_proposal ? 1 : 0,
-            'impact_proposal' => $this->is_impact_proposal ? 1 : 0,
-
-            'opensource' => $opensource,
-            'over_budget' => $this->status === 'over_budget' ? 1 : 0,
-
-            'paid' => ($this->amount_received > 0) && ($this->amount_received == $this->amount_requested ? 1 : 0),
-
-            'quickpitch' => $this->quick_pitch_id ?? null,
-            'quickpitch_length' => $this->quickpitch_length ?? null,
-
-            'ranking_total' => intval($this->ranking_total) ?? 0,
-            'reviewers_total' => $this->reviewers_total,
-
-            'tags' => $this->tags,
-            'users' => $this->proposal_profiles?->pluck('profiles')?->map(function ($u) {
-                $proposals = $u->proposals?->map(fn ($p) => $p->toArray());
-
-                return [
-                    'id' => $u->id,
-                    'hash' => $u->hash,
-                    'ideascale_id' => $u->ideascale_id ?? null,
-                    'username' => $u->username,
-                    'name' => $u->name ?? $u->username ?? null,
-                    'bio' => $u->bio ?? null,
-                    'hero_img_url' => $u->hero_img_url ?? null,
-                    'proposals_completed' => $proposals?->filter(fn ($p) => $p['status'] === 'complete')?->count() ?? 0,
-                    'first_timer' => ($proposals?->map(fn ($p) => isset($p['fund']) ? $p['fund']['id'] : null)->unique()->count() === 1),
-                ];
-            }),
-            'reviews' => $this->reviews,
-
-            'woman_proposal' => $this->is_woman_proposal ? 1 : 0,
+            'currency' => $this->currency,
+            'amount_requested' => $this->amount_requested ? intval($this->amount_requested) : 0,
+            'amount_received' => $this->amount_received ? intval($this->amount_received) : 0,
             'link' => $this->link,
-            'alignment_score' => $this->meta_info->alignment_score ?? $this->getDiscussionRankingScore('Impact Alignment') ?? 0,
-            'feasibility_score' => $this->meta_info->feasibility_score ?? $this->getDiscussionRankingScore('Feasibility') ?? 0,
-            'auditability_score' => $this->meta_info->auditability_score ?? $this->getDiscussionRankingScore('Value for money') ?? 0,
-            'projectcatalyst_io_link' => $this->meta_info?->projectcatalyst_io_url ?? null,
-            'project_length' => intval($this->meta_info->project_length) ?? 0,
-            'vote_casts' => intval($this->meta_info->vote_casts) ?? 0,
-            'connected_items' => $this->connected_items,
             'created_at_timestamp' => $this->created_at ? Carbon::parse($this->created_at)->timestamp : null,
+            'tags' => $this->tags,
         ]);
     }
 
     public function campaign(): BelongsTo
     {
         return $this->belongsTo(Campaign::class, 'campaign_id', 'id');
+    }
+
+    public function campaignUuid(): BelongsTo
+    {
+        return $this->belongsTo(Campaign::class, 'campaign_uuid', 'uuid');
     }
 
     /**
@@ -549,6 +467,18 @@ class Proposal extends Model
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
     }
 
+    public function teamUuid(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            IdeascaleProfile::class,
+            'ideascale_profile_has_proposal',
+            'proposal_uuid',
+            'ideascale_profile_uuid',
+            'uuid',
+            'uuid'
+        );
+    }
+
     public function author(): BelongsTo
     {
         return $this->belongsTo(IdeascaleProfile::class, 'user_id', 'id', 'author');
@@ -559,6 +489,18 @@ class Proposal extends Model
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
     }
 
+    public function usersUuid(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            IdeascaleProfile::class,
+            'ideascale_profile_has_proposal',
+            'proposal_uuid',
+            'ideascale_profile_uuid',
+            'uuid',
+            'uuid'
+        );
+    }
+
     public function catalystProfiles(): BelongsToMany
     {
         return $this->belongsToMany(CatalystProfile::class, 'catalyst_profile_has_proposal', 'proposal_id', 'catalyst_profile_id');
@@ -567,6 +509,18 @@ class Proposal extends Model
     public function ideascaleProfiles(): BelongsToMany
     {
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
+    }
+
+    public function ideascaleProfilesUuid(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            IdeascaleProfile::class,
+            'ideascale_profile_has_proposal',
+            'proposal_uuid',
+            'ideascale_profile_uuid',
+            'uuid',
+            'uuid'
+        );
     }
 
     public function proposal_profiles()
@@ -612,7 +566,8 @@ class Proposal extends Model
      */
     protected function makeAllSearchableUsing(Builder $query): Builder
     {
-        return $query->with(['team', 'tags', 'groups']);
+        // Temporarily disable relationship loading to debug UUID issue
+        return $query; // Removed ->with(['tags', 'groups'])
     }
 
     protected function casts(): array

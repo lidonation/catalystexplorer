@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\TransformHashToIds;
-use App\Actions\TransformIdsToHashes;
 use App\DataTransferObjects\FundData;
 use App\DataTransferObjects\ProjectScheduleData;
 use App\DataTransferObjects\ProposalData;
@@ -363,12 +361,7 @@ class ProposalsController extends Controller
         $this->setCounts($response->facetDistribution, $response->facetStats);
 
         $pagination = new LengthAwarePaginator(
-            ProposalData::collect(
-                (new TransformIdsToHashes)(
-                    collection: $items,
-                    model: new Proposal
-                )->toArray()
-            ),
+            ProposalData::collect($items->toArray()),
             $response->estimatedTotalHits,
             $limit,
             $page,
@@ -448,8 +441,8 @@ class ProposalsController extends Controller
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
-            $idsFromHash = (new TransformHashToIds)(collect($this->queryParams[ProposalSearchParams::FUNDS()->value]), new Fund);
-            $funds = implode("','", $idsFromHash);
+            $fundIds = (array) $this->queryParams[ProposalSearchParams::FUNDS()->value];
+            $funds = implode("','", $fundIds);
             $filters[] = "fund.id IN ['{$funds}']";
         }
 

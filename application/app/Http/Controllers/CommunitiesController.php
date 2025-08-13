@@ -11,12 +11,8 @@ use App\DataTransferObjects\ProposalData;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\CommunitySearchParams;
 use App\Enums\ProposalSearchParams;
-use App\Models\Campaign;
 use App\Models\Community;
 use App\Models\Fund;
-use App\Models\IdeascaleProfile;
-use App\Models\Tag;
-use App\Services\HashIdService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -293,29 +289,23 @@ class CommunitiesController extends Controller
         }
 
         if (isset($this->queryParams[CommunitySearchParams::CAMPAIGNS()->value])) {
-            $campaignHashes = $this->queryParams[CommunitySearchParams::CAMPAIGNS()->value];
-            $decoded_campaign_ids = (new HashIdService(new Campaign))
-                ->decodeArray($campaignHashes);
-            $query->whereHas('proposals.campaign', function ($query) use ($decoded_campaign_ids) {
-                $query->whereIn('id', $decoded_campaign_ids);
+            $campaignIds = $this->queryParams[CommunitySearchParams::CAMPAIGNS()->value];
+            $query->whereHas('proposals.campaign', function ($query) use ($campaignIds) {
+                $query->whereIn('id', (array) $campaignIds);
             });
         }
 
         if (isset($this->queryParams[CommunitySearchParams::IDEASCALE_PROFILES()->value])) {
-            $ideascaleProfileHashes = $this->queryParams[CommunitySearchParams::IDEASCALE_PROFILES()->value];
-            $decodedIdeascaleProfileIds = (new HashIdService(new IdeascaleProfile))
-                ->decodeArray($ideascaleProfileHashes);
-            $query->whereHas('ideascale_profiles', function ($query) use ($decodedIdeascaleProfileIds) {
-                $query->whereIn('id', $decodedIdeascaleProfileIds);
+            $ideascaleProfileIds = $this->queryParams[CommunitySearchParams::IDEASCALE_PROFILES()->value];
+            $query->whereHas('ideascale_profiles', function ($query) use ($ideascaleProfileIds) {
+                $query->whereIn('id', (array) $ideascaleProfileIds);
             });
         }
 
         if (isset($this->queryParams[CommunitySearchParams::TAGS()->value])) {
-            $tagsHashes = $this->queryParams[CommunitySearchParams::TAGS()->value];
-            $decodedTagsIds = (new HashIdService(new Tag))
-                ->decodeArray($tagsHashes);
-            $query->whereHas('tags', function ($query) use ($decodedTagsIds) {
-                $query->whereIn('tags.id', $decodedTagsIds);
+            $tagIds = $this->queryParams[CommunitySearchParams::TAGS()->value];
+            $query->whereHas('tags', function ($query) use ($tagIds) {
+                $query->whereIn('tags.id', (array) $tagIds);
             });
         }
 

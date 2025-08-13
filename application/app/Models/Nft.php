@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Traits\HasAuthor;
-use App\Traits\HasHashId;
 use App\Traits\HasLinks;
 use App\Traits\HasMetaData;
 use App\Traits\HasModel;
 use App\Traits\HasTranslations;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -25,7 +25,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Nft extends Model implements CardanoNftInterface, HasMedia
 {
-    use HasAuthor, HasHashId, HasLinks, HasMetaData, HasModel, HasTranslations, InteractsWithMedia, NftServiceTrait, SoftDeletes;
+    use HasAuthor, HasLinks, HasMetaData, HasModel, HasTranslations, HasUuids, InteractsWithMedia, NftServiceTrait, SoftDeletes;
 
     protected $hidden = ['artist_id', 'deleted_at', 'model_type', 'model_id'];
 
@@ -38,7 +38,6 @@ class Nft extends Model implements CardanoNftInterface, HasMedia
 
     // Add appended attributes needed by NftServiceTrait
     protected $appends = [
-        'hash',
         'maker_project_uuid',
         'maker_nft_uuid',
         // 'required_nft_metadata',

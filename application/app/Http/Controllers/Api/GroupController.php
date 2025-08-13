@@ -43,15 +43,7 @@ class GroupController extends Controller
             ], 60);
         }
 
-        $requestValues = request(['ids', 'hashes']);
-
-        $ids = null;
-        $hashes = null;
-
-        if (! empty($requestValues['hashes'])) {
-            $hashes = implode(',', $requestValues['hashes'] ?? []);
-            $args['filter'] = "hash IN [{$hashes}]";
-        }
+        $requestValues = request(['ids']);
 
         if (! empty($requestValues['ids'])) {
             $ids = implode(',', $requestValues['ids'] ?? []);
@@ -95,8 +87,9 @@ class GroupController extends Controller
 
     public function incrementalConnections(Request $request): array
     {
-        $hash = $request->get('hash');
-        $group = Group::byHash($hash);
+
+        $id = $request->get('id');
+        $group = Group::find($id);
 
         $connections = $group->getIncrementalConnectionsData($request);
 

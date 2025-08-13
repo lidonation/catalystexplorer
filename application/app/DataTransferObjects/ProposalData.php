@@ -15,7 +15,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 final class ProposalData extends Data
 {
     public function __construct(
-        public ?string $hash,
+        public string $id,
 
         public ?CampaignData $campaign,
 

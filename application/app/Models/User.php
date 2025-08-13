@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Traits\HasHashId;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -19,7 +19,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements HasMedia
 {
-    use HasFactory, HasHashId, HasRoles, InteractsWithMedia, MustVerifyEmail, Notifiable;
+    use HasFactory, HasRoles, HasUuids, InteractsWithMedia, MustVerifyEmail, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -49,7 +49,7 @@ class User extends Authenticatable implements HasMedia
         'remember_token',
     ];
 
-    protected $appends = ['hero_img_url', 'hash'];
+    protected $appends = ['hero_img_url'];
 
     /**
      * Get the attributes that should be cast.

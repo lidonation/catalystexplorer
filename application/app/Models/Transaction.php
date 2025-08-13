@@ -82,6 +82,11 @@ class Transaction extends Model implements IHasMetaData
     {
         $array = $this->toArray();
 
+        // Remove hash field from indexing - we only use UUIDs now (keep tx_hash as it's blockchain data)
+        if (isset($array['hash'])) {
+            unset($array['hash']);
+        }
+
         $inputs = collect($this->inputs)->map(function ($input) {
             return $input;
         });

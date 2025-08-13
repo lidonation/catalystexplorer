@@ -19,7 +19,6 @@ class BookmarkCollectionResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'hash' => $this->hash,
             'user_id' => $this->user_id,
             'title' => $this->title,
             'content' => $this->content,

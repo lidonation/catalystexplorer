@@ -6,11 +6,11 @@ namespace App\Models;
 
 use App\Enums\VoteEnum;
 use App\Traits\HasAuthor;
-use App\Traits\HasHashId;
 use App\Traits\HasIpfsFiles;
 use App\Traits\HasMetaData;
 use App\Traits\HasSignatures;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -19,7 +19,7 @@ use Spatie\Comments\Models\Concerns\HasComments;
 
 class BookmarkCollection extends Model
 {
-    use HasAuthor, HasComments, HasHashId, HasIpfsFiles, HasMetaData, HasSignatures, Searchable, SoftDeletes;
+    use HasAuthor, HasComments, HasIpfsFiles, HasMetaData, HasSignatures, Searchable, SoftDeletes, HasUuids;
 
     protected $withCount = [
         'items',
@@ -33,11 +33,11 @@ class BookmarkCollection extends Model
 
     public $meiliIndexName = 'cx_bookmark_collections';
 
-    protected $appends = ['types_count', 'hash', 'tinder_direction', 'list_type'];
+    protected $appends = ['types_count', 'tinder_direction', 'list_type'];
 
     protected $guarded = [];
 
-    protected $hidden = ['id'];
+    protected $hidden = [];
 
     public static function getFilterableAttributes(): array
     {
@@ -105,7 +105,7 @@ class BookmarkCollection extends Model
 
     public function fund(): BelongsTo
     {
-        return $this->belongsTo(fund::class);
+        return $this->belongsTo(Fund::class);
     }
 
     public function groups(): HasMany
@@ -225,10 +225,17 @@ class BookmarkCollection extends Model
 
     public function toSearchableArray(): array
     {
-        return array_merge($this->load([
+        $array = $this->load([
             // 'comments',
             'author',
-        ])->toArray(), $this->amount_received, $this->amount_requested, [
+        ])->toArray();
+
+        // Remove hash field from indexing - we only use UUIDs now
+        if (isset($array['hash'])) {
+            unset($array['hash']);
+        }
+
+        return array_merge($array, $this->amount_received, $this->amount_requested, [
             'proposals' => $this->proposals->pluck('model')->toArray(),
             'ideascale_profiles' => $this->ideascale_profiles->pluck('model')->toArray(),
             'reviews' => $this->reviews->pluck('model')->toArray(),

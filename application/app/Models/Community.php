@@ -22,7 +22,7 @@ class Community extends Model implements HasMedia
 {
     use HasConnections, HasRelationships, HasTaxonomies, InteractsWithMedia, Searchable;
 
-    protected $appends = ['hash'];
+    protected $appends = [];
 
     public $meiliIndexName = 'cx_communities';
 
@@ -30,7 +30,6 @@ class Community extends Model implements HasMedia
     {
         return [
             'id',
-            'hash',
             'status',
             'user_id',
             'slug',
@@ -212,6 +211,13 @@ class Community extends Model implements HasMedia
             'users',
         ]);
 
-        return $this->toArray();
+        $array = $this->toArray();
+
+        // Remove hash field from indexing - we only use UUIDs now
+        if (isset($array['hash'])) {
+            unset($array['hash']);
+        }
+
+        return $array;
     }
 }

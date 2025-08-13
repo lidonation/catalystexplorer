@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Actions\TransformHashToIds;
 use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -60,9 +59,9 @@ class Reviewer extends Model
 
     public function scopeFilter($query, array $filters)
     {
-        $idsFromHash = ! empty($filters['hashes']) ? (new TransformHashToIds)(collect($filters['hashes']), new static) : [];
+        $idsFromHash = ! empty($filters['hashes']) ? (array) $filters['hashes'] : [];
 
-        $ids = ! empty($filters['ids']) ? array_merge($filters['ids'], $idsFromHash) : $idsFromHash;
+        $ids = ! empty($filters['ids']) ? array_merge((array) $filters['ids'], $idsFromHash) : $idsFromHash;
 
         $term = isset($filters['search']) ? (string) $filters['search'] : null;
 

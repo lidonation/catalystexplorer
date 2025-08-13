@@ -18,7 +18,6 @@ class ProposalResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'hash' => $this->hash,
             'title' => $this->title,
             'status' => $this->status,
             'fund_id' => $this->fund_id,

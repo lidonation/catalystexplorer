@@ -14,7 +14,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 final class GroupData extends Data
 {
     public function __construct(
-        public ?string $hash,
+        public string $uuid,
 
         #[TypeScriptOptional]
         public ?int $user_id,

@@ -17,7 +17,6 @@ use App\Models\Group;
 use App\Models\IdeascaleProfile;
 use App\Models\Proposal;
 use App\Models\Review;
-use App\Services\HashIdService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -311,10 +310,8 @@ class MyBookmarksController extends Controller
         try {
             DB::beginTransaction();
 
-            $decoded_collection_id = (new HashIdService(new BookmarkCollection))
-                ->decode($data['bookmark_collection_id']);
-            $decoded_bookmark_ids = (new HashIdService(new BookmarkItem))
-                ->decodeArray($data['bookmark_ids']);
+            $decoded_collection_id = $data['bookmark_collection_id'];
+            $decoded_bookmark_ids = $data['bookmark_ids'];
 
             $collection = BookmarkCollection::findOrFail($decoded_collection_id);
 
@@ -369,10 +366,9 @@ class MyBookmarksController extends Controller
         try {
             DB::beginTransaction();
 
-            $decoded_bookmark_ids = (new HashIdService(new BookmarkItem))
-                ->decodeArray($data['bookmark_ids']);
+            $decoded_bookmark_ids = $data['bookmark_ids'];
 
-            $collection = BookmarkCollection::byHash($data['bookmark_collection_id']);
+            $collection = BookmarkCollection::find($data['bookmark_collection_id']);
 
             if ($collection->user_id !== Auth::id()) {
                 return response()->json([

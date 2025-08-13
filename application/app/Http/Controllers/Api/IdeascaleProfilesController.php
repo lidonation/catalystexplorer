@@ -44,15 +44,7 @@ class IdeascaleProfilesController extends Controller
             ], 60);
         }
 
-        $requestValues = request(['ids', 'hashes']);
-
-        $ids = null;
-        $hashes = null;
-
-        if (! empty($requestValues['hashes'])) {
-            $hashes = implode(',', $requestValues['hashes'] ?? []);
-            $args['filter'] = "hash IN [{$hashes}]";
-        }
+        $requestValues = request(['ids']);
 
         if (! empty($requestValues['ids'])) {
             $ids = implode(',', $requestValues['ids'] ?? []);
@@ -96,8 +88,8 @@ class IdeascaleProfilesController extends Controller
 
     public function incrementalConnections(Request $request): array|Response
     {
-        $hash = $request->get('hash');
-        $ideascaleProfile = IdeascaleProfile::byHash($hash);
+        $id = $request->get('id');
+        $ideascaleProfile = IdeascaleProfile::find($id);
 
         $connections = $ideascaleProfile->getIncrementalConnectionsData($request);
 

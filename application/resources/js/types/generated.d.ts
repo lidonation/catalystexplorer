@@ -40,7 +40,6 @@ amount_received_USD?: number;
 author?: App.DataTransferObjects.UserData;
 fund_id?: number;
 fund?: App.DataTransferObjects.FundData;
-tinder_direction?: string;
 list_type?: string;
 };
 export type BookmarkItemData = {
@@ -59,8 +58,8 @@ updated_at?: string;
 deleted_at?: string;
 };
 export type CampaignData = {
-hash: string | null;
-fund_id?: number;
+uuid: string;
+fund_id?: string;
 title: string | null;
 meta_title: string | null;
 slug: string | null;
@@ -110,7 +109,6 @@ status: string | null;
 };
 export type CategoryData = {
 id: number;
-hash: string;
 name: string;
 slug: string;
 type: string;
@@ -181,7 +179,7 @@ export type FundData = {
 amount: number | null;
 label: string | null;
 title: string | null;
-hash: string | null;
+uuid: string;
 proposals_count?: number;
 funded_proposals_count?: number;
 completed_proposals_count?: number;
@@ -202,10 +200,10 @@ awarded_at?: string;
 color?: string;
 currency?: string;
 review_started_at?: string;
-parent_id?: number;
+parent_id?: string;
 };
 export type GroupData = {
-hash: string | null;
+uuid: string;
 user_id?: number;
 name?: string;
 hero_img_url?: string;
@@ -239,7 +237,7 @@ ideascale_profiles?: any;
 reviews_count?: number;
 };
 export type IdeascaleProfileData = {
-hash: string | null;
+uuid: string;
 ideascaleId?: number;
 username?: string;
 email?: string;
@@ -446,7 +444,7 @@ proposal: App.DataTransferObjects.ProposalData | null;
 milestones: any | null;
 };
 export type ProposalData = {
-hash: string | null;
+id: string;
 campaign: App.DataTransferObjects.CampaignData | null;
 schedule: App.DataTransferObjects.ProjectScheduleData | null;
 title: string | null;
@@ -541,7 +539,7 @@ context_id?: number;
 fund_name?: string;
 };
 export type ServiceData = {
-hash: string | null;
+id: string | null;
 title: string;
 description: string;
 type: any;

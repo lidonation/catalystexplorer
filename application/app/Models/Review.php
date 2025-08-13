@@ -31,7 +31,7 @@ class Review extends Model
             'reviewer.catalyst_reviewer_id',
             'reviewer.id',
             'reviewer_id',
-            'reviewer.hash',
+            'reviewer.uuid',
             'positive_rankings',
             'negative_rankings',
             'status',
@@ -43,11 +43,11 @@ class Review extends Model
             'reviewer.avg_reputation_score',
             'proposal.id',
             'proposal.title',
-            'proposal.hash',
+            'proposal.uuid',
             'proposal.fund_id',
-            'proposal.ideascale_profiles.hash',
+            'proposal.ideascale_profiles.uuid',
             'proposal.ideascale_profiles.id',
-            'proposal.groups.hash',
+            'proposal.groups.uuid',
         ];
     }
 
@@ -60,15 +60,15 @@ class Review extends Model
             'status',
             'model_type',
             'reviewer_id',
-            'reviewer.hash',
+            'reviewer.uuid',
             'reviewer.reputation_scores.fund',
             'proposal.title',
-            'proposal.hash',
+            'proposal.uuid',
             'proposal.fund_id',
             'proposal.content',
             'proposal.ideascale_profiles.name',
             'proposal.ideascale_profiles.username',
-            'proposal.groups.hash',
+            'proposal.groups.uuid',
         ];
     }
 
@@ -80,15 +80,15 @@ class Review extends Model
             'status',
             'created_at',
             'updated_at',
-            'reviewer.hash',
+            'reviewer.uuid',
             'reviewer.avg_reputation_score',
             'rating',
             'helpful_total',
-            'proposal.hash',
+            'proposal.uuid',
             'rankings',
             'positive_rankings',
             'negative_rankings',
-            'proposal.groups.hash',
+            'proposal.groups.uuid',
         ];
     }
 
@@ -195,6 +195,11 @@ class Review extends Model
         $this->load(['model', 'discussion', 'parent', 'reviewer.reputation_scores.fund', 'proposal']);
 
         $array = $this->toArray();
+
+        // Remove hash field from indexing - we only use UUIDs now
+        if (isset($array['hash'])) {
+            unset($array['hash']);
+        }
 
         return array_merge($array, [
             'model_type' => 'review',

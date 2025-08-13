@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Actions\TransformHashToIds;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalStatus;
 use App\Traits\HasConnections;
 use App\Traits\HasLocations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Laravel\Scout\Searchable;
@@ -29,6 +29,7 @@ class Group extends Model implements HasMedia
         HasLocations,
         HasRelationships,
         HasTranslations,
+        HasUuids,
         InteractsWithMedia,
         Searchable;
 
@@ -40,8 +41,21 @@ class Group extends Model implements HasMedia
 
     protected $appends = [
         'hero_img_url',
-        'hash',
     ];
+
+    /**
+     * The "type" of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
 
     public static function getFilterableAttributes(): array
     {
@@ -49,10 +63,9 @@ class Group extends Model implements HasMedia
             'id',
             'tags.id',
             'tags',
-            'hash',
             'proposals.fund.title',
-            'proposals.campaign.hash',
-            'proposals.communities.hash',
+            'proposals.campaign.uuid',
+            'proposals.communities.uuid',
             'proposals.status',
             'proposals_funded',
             'proposals_completed',
@@ -62,8 +75,8 @@ class Group extends Model implements HasMedia
             'proposals_ideafest',
             'proposals_woman',
             'proposals_impact',
-            'ideascale_profiles.hash',
-            'proposals.fund.hash',
+            'ideascale_profiles.uuid',
+            'proposals.fund.uuid',
         ];
     }
 
@@ -74,7 +87,7 @@ class Group extends Model implements HasMedia
             'proposals',
             'ideascale_profiles',
             'tags',
-            'ideascale_profiles.hash',
+            'ideascale_profiles.uuid',
             'ideascale_profiles.name',
             'ideascale_profiles.username',
         ];
@@ -91,7 +104,7 @@ class Group extends Model implements HasMedia
             'amount_awarded_ada',
             'amount_awarded_usd',
             'amount_requested',
-            'ideascale_profiles.hash',
+            'ideascale_profiles.uuid',
             'updated_at',
         ];
     }
@@ -113,9 +126,9 @@ class Group extends Model implements HasMedia
      */
     public function scopeFilter(Builder $query, array $filters): Builder
     {
-        $idsFromHash = ! empty($filters['hashes']) ? (new TransformHashToIds)(collect($filters['hashes']), new static) : [];
+        $idsFromHash = ! empty($filters['hashes']) ? (array) $filters['hashes'] : [];
 
-        $ids = ! empty($filters['ids']) ? array_merge($filters['ids'], $idsFromHash) : $idsFromHash;
+        $ids = ! empty($filters['ids']) ? array_merge((array) $filters['ids'], $idsFromHash) : $idsFromHash;
 
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($q) use ($search) {
@@ -282,6 +295,18 @@ class Group extends Model implements HasMedia
         return $this->belongsToMany(IdeascaleProfile::class, 'group_has_ideascale_profile', 'group_id', 'ideascale_profile_id');
     }
 
+    public function ideascaleProfilesUuid(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            IdeascaleProfile::class,
+            'group_has_ideascale_profile',
+            'group_uuid',
+            'ideascale_profile_uuid',
+            'uuid',
+            'uuid'
+        );
+    }
+
     public function owner(): BelongsTo
     {
         return $this->belongsTo(IdeascaleProfile::class, 'user_id');
@@ -323,6 +348,11 @@ class Group extends Model implements HasMedia
         $this->load(['media']);
 
         $array = $this->toArray();
+
+        // Remove hash field from indexing - we only use UUIDs now
+        if (isset($array['hash'])) {
+            unset($array['hash']);
+        }
 
         $proposals = $this->proposals->load('fund')->map(function ($p) {
             return $p->toArray();
