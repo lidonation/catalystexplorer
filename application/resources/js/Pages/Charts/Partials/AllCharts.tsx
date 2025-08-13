@@ -4,11 +4,11 @@ import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import RadioSelector from '@/Components/atoms/RadioSelector';
 import Title from '@/Components/atoms/Title';
 import { useFilterContext } from '@/Context/FiltersContext';
-import { ParamsEnum } from '@/enums/proposal-search-params';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/Hooks/useUserSettings';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { Share2Icon } from 'lucide-react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useEffect, useState } from 'react';
 import BarChart from './BarChart';
 import ChartCard from './ChartCard';
 import { ChartLoading } from './ChartLoading';
@@ -17,7 +17,6 @@ import LineChart from './LineChart';
 import PieChart from './PieChart';
 import StackedBarChart from './StackedBarChart';
 import TreeMap from './TreeMap';
-
 
 interface AllChartsProps {
     chartData: any;
@@ -49,6 +48,11 @@ export default function AllCharts({
     const hasCompletedProposals = proposalTypes?.includes('complete');
     const hasUnfundedProposals = proposalTypes?.includes('unfunded');
     const hasInProgressProposals = proposalTypes?.includes('in_progress');
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     const hasAnyProposalTypeSelected =
         hasSubmittedProposals ||
@@ -152,94 +156,87 @@ export default function AllCharts({
     };
 
     return (
-        <div className="relative min-h-screen px-6 pb-20" data-testid="all-charts">
+        <div
+            className="relative min-h-screen px-6 pb-20"
+            data-testid="all-charts"
+        >
             <div className="my-4 flex flex-col items-start justify-between md:flex-row md:items-center">
                 <Title level="2" className="mb-4 font-bold">
                     {t('charts.viewCharts')}
                 </Title>
-                <div className="flex items-center justify-between w-full md:w-fit">
-                   <div className='flex items-center gap-2'>
-                     <Paragraph className="text-content/70">
-                        {t('charts.viewBy')}
-                    </Paragraph>
-                    <RadioSelector
-                        options={[
-                            { label: t('charts.fund'), value: 'fund' },
-                            { label: t('charts.year'), value: 'year' },
-                        ]}
-                        selectedItem={viewBy}
-                        setSelectedItem={onViewByChange}
-                        className="focus:border-primary focus:ring-primary"
-                        data-testid='view-by-selector'
-                    />
-                   </div>
-                   <div className='block md:hidden'>
-                    <PrimaryButton
-                        onClick={onEditMetrics}
-                        className="px-6 py-3"
-                        data-testid='charts-edit-button-mobile'
-                    >
-                        {t('charts.edit')}
-                    </PrimaryButton>
-                </div>
+                <div className="flex w-full items-center justify-between md:w-fit">
+                    <div className="flex items-center gap-2">
+                        <Paragraph className="text-content/70">
+                            {t('charts.viewBy')}
+                        </Paragraph>
+                        <RadioSelector
+                            options={[
+                                { label: t('charts.fund'), value: 'fund' },
+                                { label: t('charts.year'), value: 'year' },
+                            ]}
+                            selectedItem={viewBy}
+                            setSelectedItem={onViewByChange}
+                            className="focus:border-primary focus:ring-primary"
+                            data-testid="view-by-selector"
+                        />
+                    </div>
+                    <div className="block md:hidden">
+                        <PrimaryButton
+                            onClick={onEditMetrics}
+                            className="px-6 py-3"
+                            data-testid="charts-edit-button-mobile"
+                        >
+                            {t('charts.edit')}
+                        </PrimaryButton>
+                    </div>
                 </div>
             </div>
 
-            <div className="mb-4 flex justify-start md:justify-between items-start">
+            <div className="mb-4 flex items-start justify-start md:justify-between">
                 <div className="container mx-auto flex justify-start px-0">
                     <ActiveFilters filters={filters} setFilters={setFilters} />
                 </div>
-                <div className='hidden md:block'>
+                <div className="hidden md:block">
                     <PrimaryButton
                         onClick={onEditMetrics}
                         className="px-6 py-3"
-                        data-testid='charts-edit-button-desktop'
+                        data-testid="charts-edit-button-desktop"
                     >
                         {t('charts.edit')}
                     </PrimaryButton>
                 </div>
             </div>
 
-            {selectedChartTypes?.length === 0 ? (
-                <div className="text-content-light p-8 text-left">
-                    <Paragraph>{t('charts.noOptions')}</Paragraph>
-                </div>
-            ) : (
+         {isMounted && (selectedChartTypes?.length ?? 0) > 0 ? (
                 <div className="space-y-6">
                     {selectedChartTypes?.map((chartType: string) => {
                         const renderer =
                             chartRenderers[
                                 chartType as keyof typeof chartRenderers
                             ];
-                        return renderer ? (
+
+                        if (!renderer) return null;
+
+                        return (
                             <div key={chartType}>
                                 {loading ? (
-                                    <ChartLoading chartType={getChartLoadingType(chartType)} />
-                                ) : hasAnyProposalTypeSelected ? (
+                                    <ChartLoading
+                                        chartType={getChartLoadingType(
+                                            chartType,
+                                        )}
+                                    />
+                                ) : (
                                     <div data-testid="charts-card">
                                         {renderer()}
                                     </div>
-                                ) : (
-                                    <div>
-                                        <ChartCard
-                                            title={t(`charts.${chartType}`)}
-                                        >
-                                            <div className="p-8 text-center">
-                                                <Paragraph
-                                                    className="text-content-light mb-4"
-                                                    size="lg"
-                                                >
-                                                    {t(
-                                                        'charts.selectProposalTypesFirst',
-                                                    )}
-                                                </Paragraph>
-                                            </div>
-                                        </ChartCard>
-                                    </div>
                                 )}
                             </div>
-                        ) : null;
+                        );
                     })}
+                </div>
+            ) : (
+                <div className="text-content-light p-8 text-left">
+                    <Paragraph>{t('charts.noOptions')}</Paragraph>
                 </div>
             )}
         </div>
