@@ -205,15 +205,11 @@ pest:
     paths:
       - ./application/test-results/
   before_script:
-  - set -xev
-  - cd application
-  - yarn install --frozen-lockfile --ignore-engines
-  - npx playwright install --with-deps
-  # Ensure test environment is ready
-  - cp .env.testing .env
-  - php artisan migrate:fresh --force
-  - php artisan db:seed
-  - php artisan serve --host 0.0.0.0 --port 3000 & npx wait-on http://localhost:3000
+    - set -xev
+    - cd application
+    - yarn install --frozen-lockfile --ignore-engines
+    - npx playwright install --with-deps
+    - cp .env.testing .env
 
 playwright:shard1:
   extends: .playwright_template
