@@ -162,27 +162,27 @@ const BookmarkCollectionManager = (
         switch (props.type) {
             case 'proposals':
                 return props.proposals ? {
-                    proposals: props.proposals.data.map((item) => item.hash),
+                    proposals: props.proposals.data.map((item) => item.id),
                 } : {};
             case 'communities':
                 return props.communities ? {
                     communities: props.communities.data.map(
-                        (item) => item.hash,
+                        (item) => item.id,
                     ),
                 } : {};
             case 'groups':
                 return props.groups ? {
-                    groups: props.groups.data.map((item) => item.hash)
+                    groups: props.groups.data.map((item) => item.id)
                 } : {};
             case 'ideascaleProfiles':
                 return props.ideascaleProfiles ? {
                     ideascaleProfiles: props.ideascaleProfiles.data.map(
-                        (item) => item.hash,
+                        (item) => item.id,
                     ),
                 } : {};
             case 'reviews':
                 return props.reviews ? {
-                    reviews: props.reviews.data.map((item) => item.hash)
+                    reviews: props.reviews.data.map((item) => item.id)
                 } : {};
             default:
                 return {};
@@ -197,8 +197,8 @@ const BookmarkCollectionManager = (
                 <header className="container mt-4 flex flex-col items-start lg:mt-6">
                     <Title level="1">
                         {bookmarkCollection.title ?? ''}
-                        {bookmarkCollection.tinder_direction === 'right' && t('rightSwipes')}
-                        {bookmarkCollection.tinder_direction === 'left' && t('leftSwipes')}
+                        {/*{bookmarkCollection.tinder_direction === 'right' && t('rightSwipes')}*/}
+                        {/*{bookmarkCollection.tinder_direction === 'left' && t('leftSwipes')}*/}
                     </Title>
                     <p className="text-content">
                         {t(bookmarkCollection.content ?? '')}
@@ -231,7 +231,7 @@ const BookmarkCollectionManager = (
                     defaultFilters={props.filters}
                     //routerOptions={{ preserveState: true, replace: true }}
                 >
-                    <BookmarkCollectionContent 
+                    <BookmarkCollectionContent
                         {...props}
                         component={component}
                         onTabChange={onTabChange}
@@ -247,7 +247,7 @@ const BookmarkCollectionManager = (
                 <div className="container my-8">
                     <Comments
                         commentableType={'BookmarkCollection'}
-                        commentableHash={bookmarkCollection.hash ?? ''}
+                        commentableHash={bookmarkCollection.id ?? ''}
                     />
                 </div>
             )}
