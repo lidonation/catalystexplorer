@@ -1,3 +1,19 @@
+# [1.7.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.6.0...v1.7.0) (2025-08-13)
+
+
+### Bug Fixes
+
+* **metricsbar:** ln-1963 fixed the metrics bar ([14a5da7](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/14a5da7d2de40f22a6ca3103b0ac66554e58acd9))
+* mobile menu and the the charts test ([6bbf9b6](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/6bbf9b6dfd0e3c225309c273c6c29f3f6b32cebe))
+* **testids:** added data-testids ([39ce6e2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/39ce6e258df573915f85ddb88c15e480b742980e))
+
+
+### Features
+
+* adding charts under the numbers section on the menu ([2ac747c](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/2ac747cc190aabd547084763b7553f1920afdd87))
+* **frontend:** continue migrating identifier properties in more components ([cbb3271](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/cbb3271b0de217402bba0b8d1ebac7a71dd73bc4))
+* **frontend:** fix Groups and IdeascaleProfile components identifier migration ([09679ca](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/09679ca5ce65f1a953f21248e1247e747d4d8c06))
+
 # [1.6.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.5.0...v1.6.0) (2025-08-08)
 
 
