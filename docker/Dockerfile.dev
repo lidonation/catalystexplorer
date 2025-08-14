@@ -36,6 +36,13 @@ SHELL ["/bin/bash", "-eou", "pipefail", "-c"]
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime \
     && echo ${TZ} > /etc/timezone
 
+# Install curl and gpg first for repository setup
+RUN apt-get update && apt-get install -yqq --no-install-recommends curl gpg
+
+# Add PostgreSQL APT repository for version 17
+RUN curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgresql-keyring.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/postgresql-keyring.gpg] https://apt.postgresql.org/pub/repos/apt/ bookworm-pgdg main" > /etc/apt/sources.list.d/postgresql.list
+
 RUN apt-get update; \
     apt-get upgrade -yqq; \
     apt-get install -yqq --no-install-recommends --show-progress \
@@ -46,20 +53,21 @@ RUN apt-get update; \
     libavif-bin \
     apt-utils \
     curl \
-    wget \
-    vim \
     git \
     ncdu \
-    procps \
     ca-certificates \
-    supervisor \
     libsodium-dev \
     libbrotli-dev \
+    postgresql-client-17 \
+    procps \
+    sudo \
+    supervisor \
+    vim \
+    wget \
     # Install PHP extensions (included with dunglas/frankenphp)
     && install-php-extensions \
     bz2 \
     pcntl \
-    postgresql-client \
     mbstring \
     bcmath \
     sockets \
