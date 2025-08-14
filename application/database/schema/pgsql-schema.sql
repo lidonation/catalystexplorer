@@ -944,7 +944,7 @@ CREATE SEQUENCE public.media_id_seq
 CREATE TABLE public.media (
     id bigint DEFAULT nextval('public.media_id_seq'::regclass) NOT NULL,
     model_type character varying(255) NOT NULL,
-    model_id text NOT NULL,
+    model_id uuid NOT NULL,
     uuid uuid,
     collection_name character varying(255) NOT NULL,
     name character varying(255) NOT NULL,
@@ -4366,6 +4366,7 @@ COPY public.migrations (id, migration, batch) FROM stdin;
 276	2025_08_13_212430_convert_discussions_model_id_to_uuid_type	16
 277	2025_08_13_213630_migrate_ratings_model_id_to_uuid	16
 278	2025_08_13_214110_migrate_reviews_model_id_to_uuid	17
+279	2025_08_14_091635_convert_media_model_id_to_uuid_type	18
 \.
 
 
@@ -4373,7 +4374,7 @@ COPY public.migrations (id, migration, batch) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 278, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 279, true);
 
 
 --
