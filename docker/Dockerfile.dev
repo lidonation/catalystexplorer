@@ -59,6 +59,7 @@ RUN apt-get update; \
     && install-php-extensions \
     bz2 \
     pcntl \
+    postgresql-client \
     mbstring \
     bcmath \
     sockets \
