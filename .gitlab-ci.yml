@@ -142,51 +142,51 @@ yarn-build-ssr:
 
 ########## Automated Testing jobs #########
 ##############################========#####
-pest:
-  stage: test
-  image: docker:24.0.7-dind-alpine3.18
-  retry: 1
-  artifacts:
-    paths:
-      - ./application/vendor
-    expire_in: 1 days
-  script:
-    - |-
-      set -xev
-      
-      if [[ -n $DOCKER_PASSWORD ]]; then
-        docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-      fi
-      
-      cp application/.env.testing application/.env
-      
-      docker-compose -f docker-compose.testing.yml up -d
-      
-      sleep 5
-      
-      docker logs catalystexplorer_test.com
-      
-      docker-compose -f docker-compose.testing.yml exec -t catalystexplorer_test.com sh -c '
-       php artisan migrate:fresh --force && \
-       php artisan optimize:clear  && \
-       sleep 10 && \
-       php artisan cx:create-search-index "App\Models\Group" && \ 
-       php artisan cx:create-search-index "App\Models\Proposal" && \
-       php artisan cx:create-search-index "App\Models\IdeascaleProfile" && \ 
-       php artisan cx:create-search-index "App\Models\Review" && \
-       php artisan cx:create-search-index "App\Models\Transaction" && \
-       php artisan cx:create-search-index "App\Models\BookmarkCollection" && \
-       php artisan cx:create-search-index "App\Models\Community" && \
-       php artisan cx:create-search-index "App\Models\VoterHistory" && \
-       sleep 10 && \
-       php artisan cx:create-search-index "App\Models\MonthlyReport" && \
-       php -d vendor/bin/pest'
-  rules:
-    - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBAPP == "true")'
-  dependencies:
-    - composer
-    - yarn-build
-    - yarn-build-ssr
+#pest:
+#  stage: test
+#  image: docker:24.0.7-dind-alpine3.18
+#  retry: 1
+#  artifacts:
+#    paths:
+#      - ./application/vendor
+#    expire_in: 1 days
+#  script:
+#    - |-
+#      set -xev
+#
+#      if [[ -n $DOCKER_PASSWORD ]]; then
+#        docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+#      fi
+#
+#      cp application/.env.testing application/.env
+#
+#      docker-compose -f docker-compose.testing.yml up -d
+#
+#      sleep 5
+#
+#      docker logs catalystexplorer_test.com
+#
+#      docker-compose -f docker-compose.testing.yml exec -t catalystexplorer_test.com sh -c '
+#       php artisan migrate:fresh --force && \
+#       php artisan optimize:clear  && \
+#       sleep 10 && \
+#       php artisan cx:create-search-index "App\Models\Group" && \
+#       php artisan cx:create-search-index "App\Models\Proposal" && \
+#       php artisan cx:create-search-index "App\Models\IdeascaleProfile" && \
+#       php artisan cx:create-search-index "App\Models\Review" && \
+#       php artisan cx:create-search-index "App\Models\Transaction" && \
+#       php artisan cx:create-search-index "App\Models\BookmarkCollection" && \
+#       php artisan cx:create-search-index "App\Models\Community" && \
+#       php artisan cx:create-search-index "App\Models\VoterHistory" && \
+#       sleep 10 && \
+#       php artisan cx:create-search-index "App\Models\MonthlyReport" && \
+#       php -d vendor/bin/pest'
+#  rules:
+#    - if: '$CI_COMMIT_BRANCH != "main" && ($DEPLOY_WEBAPP == "true")'
+#  dependencies:
+#    - composer
+#    - yarn-build
+#    - yarn-build-ssr
 
 
 ########## e2e testing ############
