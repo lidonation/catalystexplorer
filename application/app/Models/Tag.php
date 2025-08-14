@@ -6,9 +6,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Tag extends Taxonomy
 {
+    use HasUuids;
+    
     public $append = ['url'];
 
     public function url(): Attribute
