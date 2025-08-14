@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
+use App\ApiPlatform\Filter\MeiliSearchFilter;
 use App\Casts\DateFormatCast;
 use App\Enums\CatalystCurrencies;
 use App\Models\Pivot\ProposalProfile;
@@ -24,18 +30,26 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Laravel\Scout\Searchable;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
+#[ApiResource(
+    operations: [
+//        new Get(uriTemplate: '/proposals/{id}'),
+        new GetCollection(uriTemplate: '/proposals')
+    ],
+    paginationEnabled: true,
+    paginationItemsPerPage: 30
+)]
+//#[ApiFilter(MeiliSearchFilter::class)]
+//#[ApiFilter(PartialSearchFilter::class, properties: ['title', 'slug', 'problem', 'solution'])]
 #[ScopedBy(ProposalTypeScope::class)]
 class Proposal extends Model
 {
     use HasAuthor,
-        HasConnections,
         HasConnections,
         HasDto,
         HasMetaData,
@@ -172,6 +186,36 @@ class Proposal extends Model
         ];
     }
 
+    protected $hidden = [
+        'avg_rating',
+        'created_at',
+        'claimable_translations',
+        'comment_prompt',
+        'connected_communities',
+        'connected_groups',
+        'connected_items',
+        'connected_users',
+        'content',
+        'deleted_at',
+        'has_pending_translations',
+        'iog_hash',
+        'link',
+        'meta_title',
+        'meta_data',
+        'meta_info',
+        'old_id',
+        'ratings',
+        'ratings_average',
+        'social_excerpt',
+        'team_id',
+        'type',
+        'updated_at',
+        'user_translation_with_siblings',
+        'user_translation_with_pending_siblings',
+        'uuid',
+        'quickpitch_id',
+    ];
+
     public static function getRankingRules(): array
     {
         return [
@@ -186,31 +230,31 @@ class Proposal extends Model
 
     public function scopeFilter($query, array $filters)
     {
-        $idsFromHash = ! empty($filters['hashes']) ? (array) $filters['hashes'] : null;
+        $idsFromHash = !empty($filters['hashes']) ? (array)$filters['hashes'] : null;
 
         $query->when(
             $idsFromHash ?? false,
-            fn (Builder $query, $search) => $query->whereIn('id', $idsFromHash)
+            fn(Builder $query, $search) => $query->whereIn('id', $idsFromHash)
         );
 
         $query->when(
             $filters['search'] ?? false,
-            fn (Builder $query, $search) => $query->where('title', 'ILIKE', '%'.$search.'%')
+            fn(Builder $query, $search) => $query->where('title', 'ILIKE', '%' . $search . '%')
         );
 
         $query->when(
             $filters['user_id'] ?? false,
-            fn (Builder $query, $user_id) => $query->where('user_id', $user_id)
+            fn(Builder $query, $user_id) => $query->where('user_id', $user_id)
         );
 
         $query->when(
             $filters['campaign_id'] ?? false,
-            fn (Builder $query, $campaign_id) => $query->where('campaign_id', $campaign_id)
+            fn(Builder $query, $campaign_id) => $query->where('campaign_id', $campaign_id)
         );
 
         $query->when(
             $filters['fund_id'] ?? false,
-            fn (Builder $query, $fund_id) => $query->whereRelation('fund_id', '=', $fund_id)
+            fn(Builder $query, $fund_id) => $query->whereRelation('fund_id', '=', $fund_id)
         );
     }
 
@@ -222,7 +266,7 @@ class Proposal extends Model
     public function currency(): Attribute
     {
         return Attribute::make(
-            get: fn ($currency) => $currency ?? $this->campaign?->currency ?? $this->fund?->currency ?? CatalystCurrencies::ADA()->value,
+            get: fn($currency) => $currency ?? $this->campaign?->currency ?? $this->fund?->currency ?? CatalystCurrencies::ADA()->value,
         );
     }
 
@@ -246,14 +290,14 @@ class Proposal extends Model
     public function amountReceived(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => ($this->schedule?->funds_distributed ?? $value)
+            get: fn($value) => ($this->schedule?->funds_distributed ?? $value)
         );
     }
 
     public function quickPitchId(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->quickpitch ? collect(
+            get: fn() => $this->quickpitch ? collect(
                 explode(
                     '/',
                     $this->quickpitch
@@ -305,66 +349,9 @@ class Proposal extends Model
     {
         return Attribute::make(
             get: function () {
-                return config('app.url')."/en/proposals/{$this->slug}";
+                return config('app.url') . "/en/proposals/{$this->slug}";
             }
         );
-    }
-
-    public function schedule(): HasOne
-    {
-        return $this->hasOne(ProjectSchedule::class, 'proposal_id', 'id');
-    }
-
-    public function proposal_milestone(): HasOne
-    {
-        return $this->hasOne(ProjectSchedule::class, 'proposal_id', 'id');
-    }
-
-    public function milestones(): HasManyThrough|Proposal
-    {
-        return $this->hasManyThrough(Milestone::class, ProjectSchedule::class);
-    }
-
-    public function moderations(): HasMany
-    {
-        return $this->hasMany(Moderation::class, 'context_id', 'id')
-            ->where('context_type', Proposal::class);
-    }
-
-    public function reviewsAttribute(): Attribute
-    {
-        return Attribute::make(
-            get: function () {
-                return Review::whereExists(function ($query) {
-                    $query->select(DB::raw(1))
-                        ->from('discussions')
-                        ->whereRaw('discussions.old_id::text = reviews.model_id')
-                        ->where('discussions.model_type', Proposal::class)
-                        ->where('discussions.model_id', $this->id);
-                })->get();
-            }
-        );
-    }
-
-    public function reviews(): HasManyThrough
-    {
-        return $this->hasManyThrough(
-            Review::class,
-            Discussion::class,
-            'model_id', // Foreign key on discussions table
-            'model_id', // Foreign key on reviews table
-            'id',       // Local key on proposals table
-            'id'        // Local key on discussions table
-        )
-            ->where('discussions.model_type', static::class);
-    }
-
-    public function discussions(): HasMany
-    {
-        return $this->hasMany(Discussion::class, 'model_id')
-            ->where('model_type', '=', static::class)
-            ->withCount(['ratings'])
-            ->withAvg('ratings', 'rating');
     }
 
     public function ratings(): Attribute
@@ -398,15 +385,80 @@ class Proposal extends Model
 
     public function ratingsAverage(): Attribute
     {
-        return Attribute::make(get: fn () => $this->ratings->avg('rating'));
+        return Attribute::make(get: fn() => $this->ratings->avg('rating'));
     }
 
-    /**
-     * Get the value used to index the model.
-     */
-    public function getScoutKey(): mixed
+    public function completedProjectNft(): Attribute
     {
-        return $this->id;
+        return Attribute::make(
+            get: function () {
+                $englishTitle = json_decode($this->title, true)['en'] ?? $this->title;
+
+                return Nft::whereRelation(
+                    'ideascale_profile',
+                    fn($q) => $q->whereIn('ideascale_profiles.id', $this->users->pluck('id')->toArray())
+                )
+                    ->whereJsonContains('metadata->Project Title', $englishTitle)
+                    ->get();
+            }
+        );
+    }
+
+    public function schedule(): HasOne
+    {
+        return $this->hasOne(ProjectSchedule::class, 'proposal_id', 'id');
+    }
+
+    public function proposal_milestone(): HasOne
+    {
+        return $this->hasOne(ProjectSchedule::class, 'proposal_id', 'id');
+    }
+
+    public function milestones(): HasManyThrough|Proposal
+    {
+        return $this->hasManyThrough(Milestone::class, ProjectSchedule::class);
+    }
+
+    public function moderations(): HasMany
+    {
+        return $this->hasMany(Moderation::class, 'context_id', 'id')
+            ->where('context_type', Proposal::class);
+    }
+
+//    public function reviewsAttribute(): Attribute
+//    {
+//        return Attribute::make(
+//            get: function () {
+//                return Review::whereExists(function ($query) {
+//                    $query->select(DB::raw(1))
+//                        ->from('discussions')
+//                        ->whereRaw('discussions.old_id::text = reviews.model_id')
+//                        ->where('discussions.model_type', Proposal::class)
+//                        ->where('discussions.model_id', $this->id);
+//                })->get();
+//            }
+//        );
+//    }
+
+    public function reviews(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Review::class,
+            Discussion::class,
+            'model_id', // Foreign key on discussions table
+            'model_id', // Foreign key on reviews table
+            'id',       // Local key on proposals table
+            'id'        // Local key on discussions table
+        )
+            ->where('discussions.model_type', static::class);
+    }
+
+    public function discussions(): HasMany
+    {
+        return $this->hasMany(Discussion::class, 'model_id')
+            ->where('model_type', '=', static::class)
+            ->withCount(['ratings'])
+            ->withAvg('ratings', 'rating');
     }
 
     public function getDiscussionRankingScore(string $discussionTitle): ?float
@@ -418,38 +470,9 @@ class Proposal extends Model
         return (count($rankingScoreAvg) > 0) ? floatval($rankingScoreAvg[0]) : null;
     }
 
-    /**
-     * Get the index able data array for the model.
-     */
-    public function toSearchableArray(): array
-    {
-        $array = $this->toArray();
-
-        // Remove hash field from indexing - we only use UUIDs now
-        if (isset($array['hash'])) {
-            unset($array['hash']);
-        }
-
-        // TESTING: Adding back tags relationship to isolate bigint issue
-        return array_merge($array, [
-            'funded' => (bool) $this->funded_at ? 1 : 0,
-            'currency' => $this->currency,
-            'amount_requested' => $this->amount_requested ? intval($this->amount_requested) : 0,
-            'amount_received' => $this->amount_received ? intval($this->amount_received) : 0,
-            'link' => $this->link,
-            'created_at_timestamp' => $this->created_at ? Carbon::parse($this->created_at)->timestamp : null,
-            'tags' => $this->tags,
-        ]);
-    }
-
     public function campaign(): BelongsTo
     {
         return $this->belongsTo(Campaign::class, 'campaign_id', 'id');
-    }
-
-    public function campaignUuid(): BelongsTo
-    {
-        return $this->belongsTo(Campaign::class, 'campaign_uuid', 'uuid');
     }
 
     /**
@@ -483,18 +506,6 @@ class Proposal extends Model
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
     }
 
-    public function teamUuid(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            IdeascaleProfile::class,
-            'ideascale_profile_has_proposal',
-            'proposal_uuid',
-            'ideascale_profile_uuid',
-            'uuid',
-            'id'
-        );
-    }
-
     public function author(): BelongsTo
     {
         return $this->belongsTo(IdeascaleProfile::class, 'user_id', 'old_id', 'author');
@@ -505,76 +516,59 @@ class Proposal extends Model
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
     }
 
-    public function usersUuid(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            IdeascaleProfile::class,
-            'ideascale_profile_has_proposal',
-            'proposal_uuid',
-            'ideascale_profile_uuid',
-            'uuid',
-            'uuid'
-        );
-    }
-
-    public function catalystProfiles(): BelongsToMany
+    public function catalyst_profiles(): BelongsToMany
     {
         return $this->belongsToMany(CatalystProfile::class, 'catalyst_profile_has_proposal', 'proposal_id', 'catalyst_profile_id');
     }
 
-    public function ideascaleProfiles(): BelongsToMany
+    public function ideascale_profiles(): BelongsToMany
     {
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
     }
 
-    public function ideascaleProfilesUuid(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            IdeascaleProfile::class,
-            'ideascale_profile_has_proposal',
-            'proposal_uuid',
-            'ideascale_profile_uuid',
-            'uuid',
-            'id'
-        );
-    }
-
-    public function proposal_profiles()
+    public function proposal_profiles(): HasMany
     {
         return $this->hasMany(ProposalProfile::class, 'proposal_id', 'id')
-            ->with(['profiles']);
+            ->with('profiles');
+    }
+
+
+//    public static function apiResource(): ApiResource
+//    {
+//        return new ApiResource(
+//            operations: [
+//                new GetCollection(),
+//                new Get(),
+//            ],
+//            paginationItemsPerPage: 10,
+//        );
+//    }
+
+    /**
+     * Get the index able data array for the model.
+     */
+    public function toSearchableArray(): array
+    {
+        $array = $this->toArray();
+
+        // TESTING: Adding back tags relationship to isolate bigint issue
+        return array_merge($array, [
+            'funded' => (bool)$this->funded_at ? 1 : 0,
+            'currency' => $this->currency,
+            'amount_requested' => $this->amount_requested ? intval($this->amount_requested) : 0,
+            'amount_received' => $this->amount_received ? intval($this->amount_received) : 0,
+            'link' => $this->link,
+            'created_at_timestamp' => $this->created_at ? Carbon::parse($this->created_at)->timestamp : null,
+            'tags' => $this->tags,
+        ]);
     }
 
     /**
-     * Get ideascale profiles using polymorphic relation.
+     * Get the value used to index the model.
      */
-    public function ideascaleProfilesPolymorphic(): MorphToMany
+    public function getScoutKey(): mixed
     {
-        return $this->morphedByMany(IdeascaleProfile::class, 'profile', 'proposal_profiles');
-    }
-
-    /**
-     * Get catalyst profiles using polymorphic relation.
-     */
-    public function catalystProfilesPolymorphic(): MorphToMany
-    {
-        return $this->morphedByMany(CatalystProfile::class, 'profile', 'proposal_profiles');
-    }
-
-    public function completedProjectNft(): Attribute
-    {
-        return Attribute::make(
-            get: function () {
-                $englishTitle = json_decode($this->title, true)['en'] ?? $this->title;
-
-                return Nft::whereRelation(
-                    'ideascale_profile',
-                    fn ($q) => $q->whereIn('ideascale_profiles.id', $this->users->pluck('id')->toArray())
-                )
-                    ->whereJsonContains('metadata->Project Title', $englishTitle)
-                    ->get();
-            }
-        );
+        return $this->id;
     }
 
     /**
@@ -593,7 +587,7 @@ class Proposal extends Model
             'amount_received' => 'integer',
             'amount_requested' => 'integer',
             'created_at' => DateFormatCast::class,
-            'currency' => CatalystCurrencies::class.':nullable',
+            'currency' => CatalystCurrencies::class . ':nullable',
             'funded_at' => DateFormatCast::class,
             'funding_updated_at' => DateFormatCast::class,
             'offchain_metas' => 'array',
@@ -602,4 +596,5 @@ class Proposal extends Model
             'meta_data' => 'array',
         ];
     }
+
 }

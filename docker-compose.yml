@@ -15,7 +15,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: ${DOCKER_COMPOSE_MEMORY_LIMIT:-1024M}
+          memory: ${DOCKER_COMPOSE_MEMORY_LIMIT:-2048M}
           cpus: "1.0"
     image: catalystexplorer
     container_name: catalystexplorer.com
@@ -167,7 +167,7 @@ services:
 
   # database
   catalystexplorer.db:
-    image: postgres:17.1-bookworm
+    image: postgres:17.5-bookworm
     container_name: catalystexplorer.db
     logging: *default-logging
     ports:
@@ -302,6 +302,7 @@ services:
       /usr/bin/mc anonymous set public minio/${MINIO_DEFAULT_BUCKET};
       exit 0;
       "
+
 networks:
   catalystexplorer-net:
     driver: bridge

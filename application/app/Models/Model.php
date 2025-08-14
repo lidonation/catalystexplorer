@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\Artisan;
 
 class Model extends EloquentModel
 {
-    protected $hidden = [];
+    protected $hidden = [
+        'old_id',
+    ];
 
     protected $appends = [];
 

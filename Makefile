@@ -160,7 +160,7 @@ up:
 
 .PHONY: vite
 vite:
-	$(sail) npx vite --force
+	$(sail) npx --node-options=--max-old-space-size=4096 vite --force
 
 .PHONY: watch
 watch:
