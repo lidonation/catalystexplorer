@@ -8,20 +8,17 @@ use Illuminate\Support\Facades\DB;
 return new class extends Migration
 {
     /**
-     * Disable automatic transaction wrapping to handle large datasets.
-     */
-    public $withinTransaction = false;
-
-    /**
      * Run the migrations.
      */
     public function up(): void
     {
-        // Convert the model_id column from text to UUID type
-        // Since all values are already valid UUID strings, we can use USING model_id::UUID
+        // Disable automatic transactions to prevent rollback issues
+        Schema::disableForeignKeyConstraints();
+        
+        // Convert media.model_id from text to UUID
         DB::statement('ALTER TABLE media ALTER COLUMN model_id TYPE UUID USING model_id::UUID');
         
-        echo "\n✅ Successfully converted media.model_id column from text to UUID type\n";
+        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -29,9 +26,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Convert back from UUID to text
+        // Disable automatic transactions to prevent rollback issues
+        Schema::disableForeignKeyConstraints();
+        
+        // Convert media.model_id from UUID back to text
         DB::statement('ALTER TABLE media ALTER COLUMN model_id TYPE TEXT USING model_id::TEXT');
         
-        echo "\n✅ Successfully reverted media.model_id column from UUID to text type\n";
+        Schema::enableForeignKeyConstraints();
     }
 };
