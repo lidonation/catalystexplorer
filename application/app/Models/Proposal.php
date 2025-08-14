@@ -44,8 +44,8 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
     paginationEnabled: true,
     paginationItemsPerPage: 30
 )]
-//#[ApiFilter(MeiliSearchFilter::class)]
-//#[ApiFilter(PartialSearchFilter::class, properties: ['title', 'slug', 'problem', 'solution'])]
+#[ApiFilter(MeiliSearchFilter::class)]
+#[ApiFilter(PartialSearchFilter::class, properties: ['title', 'slug', 'problem', 'solution'])]
 #[ScopedBy(ProposalTypeScope::class)]
 class Proposal extends Model
 {

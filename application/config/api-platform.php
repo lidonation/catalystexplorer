@@ -55,12 +55,12 @@ return [
 
     'defaults' => [
         'pagination_enabled' => true,
-        'pagination_partial' => true,
-        'pagination_client_enabled' => true,
-        'pagination_client_items_per_page' => 30,
-        'pagination_client_partial' => true,
-        'pagination_items_per_page' => 30,
-        'pagination_maximum_items_per_page' => 30,
+//        'pagination_partial' => false,
+//        'pagination_client_enabled' => false,
+//        'pagination_client_items_per_page' => false,
+//        'pagination_client_partial' => false,
+//        'pagination_items_per_page' => 30,
+//        'pagination_maximum_items_per_page' => 30,
         'route_prefix' => '/api/v1',
         'middleware' => [],
     ],
@@ -143,5 +143,5 @@ return [
     ],
 
     // we recommend using "file" or "acpu"
-    'cache' => 'redis',
+    'cache' => 'file',
 ];
