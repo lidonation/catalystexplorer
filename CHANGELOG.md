@@ -1,3 +1,11 @@
+# [1.8.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.7.0...v1.8.0) (2025-08-15)
+
+
+### Features
+
+* beta v1 or catalyst api ([2693a53](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/2693a5399595f138bd1e708cdb8fe2d1277a8a5d))
+* working on api ([d925881](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/d925881d84d29aee44f5fdb2d1098e7ecd1fb5e9))
+
 # [1.7.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.6.0...v1.7.0) (2025-08-13)
 
 
