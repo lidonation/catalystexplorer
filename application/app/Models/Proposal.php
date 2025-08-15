@@ -504,7 +504,7 @@ class Proposal extends Model
             ->with(['profiles']);
     }
 
- 
+
     public function completedProjectNft(): Attribute
     {
         return Attribute::make(
