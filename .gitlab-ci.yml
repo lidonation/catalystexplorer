@@ -195,6 +195,7 @@ pest:
   stage: test
   image: registry.lidonation.com/lidonation/www.catalystexplorer.com/playwright:latest
   retry: 2
+  timeout: 2 hours
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
