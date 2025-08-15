@@ -55,7 +55,11 @@ const SortFilters = ({
             data-testid={`sort-filter-${filter.param}`}
         >
             <div className="mr-1">{sort?.label}</div>
-            <button className="ml-2" onClick={() => removeFilter()} data-testid={`remove-sort-filter-${filter.param}`}>
+            <button
+                className="ml-2 hover:cursor-pointer"
+                onClick={() => removeFilter()}
+                data-testid={`remove-sort-filter-${filter.param}`}
+            >
                 X{' '}
             </button>
         </div>

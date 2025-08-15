@@ -12,7 +12,7 @@ class CatalystDrepFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(), // create and link a user
+            'user_id' => User::factory(),
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'bio' => $this->faker->paragraph(),

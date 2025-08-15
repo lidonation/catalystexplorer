@@ -27,7 +27,7 @@ export function useSearchOptions<T>(domain?: string) {
 
 
             const response = await resolvePromise<ApiPaginatedData<T>>(
-                requestManager.sendRequest('get', route(routeName, { search: searchTerm, uuids }))
+                requestManager.sendRequest('get', route(routeName, { search: searchTerm, ids:uuids }))
             );
 
             if (response) {

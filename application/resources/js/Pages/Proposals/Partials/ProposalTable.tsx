@@ -163,7 +163,7 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
             sortable: !disableSorting,
             sortKey: 'fund_id',
             renderCell: (proposal: ProposalData) => (
-                <div className="flex items-center justify-center border border-light-gray-persist bg-light-gray-persist/[10%] px-1 w-16 rounded-md" data-testid={`proposal-fund-${proposal.id}`}>
+                <div className="flex items-center justify-center border border-light-gray-persist bg-light-gray-persist/[10%] px-1  rounded-md" data-testid={`proposal-fund-${proposal.id}`}>
                     {proposal.fund?.label && (
                         <span className="items-center py-1 rounded-full text-xs font-medium text-content" data-testid={`proposal-fund-label-${proposal.id}`}>
                             {proposal.fund.label}

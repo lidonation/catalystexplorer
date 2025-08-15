@@ -24,7 +24,7 @@ class TransactionRepository extends Repository
 
                 $args['attributesToRetrieve'] = $attrs ?? [
                     'tx_hash',
-                    'hash',
+                    'id',
                     'epoch',
                     'block',
                     'type',
