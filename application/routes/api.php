@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\CampaignController;
 use App\Http\Controllers\Api\ProposalController;
 use App\Http\Controllers\Api\ReviewerController;
 use App\Http\Controllers\Api\CommunityController;
+use App\Http\Controllers\Api\FundController;
 use App\Http\Controllers\My\MyBookmarksController;
 use App\Http\Controllers\VoterHistoriesController;
 use App\Http\Controllers\CompletedProjectNftsController;
@@ -37,10 +38,17 @@ Route::prefix('api')->as('api.')->group(function () {
     Route::get('/tags', [TagController::class, 'tags'])->name('tags');
     Route::get('/tags/{tag:id}', [TagController::class, 'tag'])->name('tag');
 
-    // API v1 - RESTful Proposal API routes with Spatie Query Builder
+    // API v1 - RESTful API routes with Spatie Query Builder
     Route::prefix('v1')->as('v1.')->group(function () {
         Route::apiResource('proposals', ProposalController::class)
             ->only(['index', 'show']);
+        
+        Route::apiResource('funds', FundController::class)
+            ->only(['index', 'show']);
+        
+        // Nested resource for fund proposals
+        Route::get('funds/{fund}/proposals', [FundController::class, 'proposals'])
+            ->name('funds.proposals');
 
         // You can add other v1 resources here in the future
         // Route::apiResource('campaigns', CampaignController::class)->only(['index', 'show']);
@@ -48,6 +56,7 @@ Route::prefix('api')->as('api.')->group(function () {
 
     // Legacy endpoints for backwards compatibility (unversioned)
     Route::get('/proposals', [ProposalController::class, 'proposals'])->name('proposals');
+    Route::get('/funds', [FundController::class, 'funds'])->name('funds.legacy');
 
     Route::get('/reviewers', [ReviewerController::class, 'reviewers'])->name('reviewers');
 
@@ -109,7 +118,7 @@ Route::prefix('api')->as('api.')->group(function () {
 
     Route::get('/fund-titles', [ProposalsController::class, 'fundTitles'])->name('fundTitles');
 
-    Route::get('/funds', [ProposalsController::class, 'funds'])->name('funds');
+    // Note: /funds route is now handled by the new FundController above
 
     Route::get('/helpful-total', [ReviewsController::class, 'helpfulTotal'])->name('helpfulTotal');
 
