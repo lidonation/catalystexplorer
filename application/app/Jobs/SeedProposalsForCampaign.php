@@ -14,10 +14,11 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class SeedProposalsForCampaign implements ShouldQueue
 {
-    use Batchable, Dispatchable, InteractsWithQueue, Queueable,SerializesModels;
+    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public function __construct(
         public Campaign $campaign,
@@ -26,13 +27,13 @@ class SeedProposalsForCampaign implements ShouldQueue
     ) {}
 
     public function handle(): void
-    {
-        Proposal::factory()
-            ->count(fake()->randomElement([60, 44, 35]))
+    {  
+        $proposals = Proposal::factory()
+            ->count($count)
             ->hasAttached($this->ideascaleProfiles->random(fake()->randomElement([0, 1, 3, 4])))
             ->state([
-                'campaign_id' => $this->campaign->getOriginal('id'),
-                'fund_id' => $this->campaign->fund->getOriginal('id'),
+                'campaign_id' => $this->campaign->id,
+                'fund_id' => $this->campaign->fund->id,
             ])
             ->has(Meta::factory()->state(fn () => [
                 'key' => fake()->randomElement(['woman_proposal', 'impact_proposal', 'ideafest_proposal']),

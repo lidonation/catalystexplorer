@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Models\Fund;
 use App\Models\Snapshot;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Log;
 
 class SnapshotSeeder extends Seeder
 {
@@ -14,10 +16,7 @@ class SnapshotSeeder extends Seeder
      */
     public function run(): void
     {
-        Snapshot::create([
-            'snapshot_name' => 'Snapshot 1',
-            'model_type' => Snapshot::class,
-            'model_id' => 1,
-        ]);
+        $fundCount = Fund::count();
+        $snapshots = Snapshot::factory(50)->create();
     }
 }

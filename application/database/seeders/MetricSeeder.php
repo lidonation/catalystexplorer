@@ -29,15 +29,24 @@ class MetricSeeder extends Seeder
         // 2️⃣ CSV import
         $csvPath = database_path('data/metrics.csv');
 
+        if (!file_exists($csvPath)) {
+            $this->command->warn("CSV file not found at {$csvPath}, skipping CSV import");
+            return;
+        }
+
         $reader = new CSVReader();
         $reader->open($csvPath);
 
         $headers = [];
-        $batchData = [];
-        $batchSize = 500;
         $processedCount = 0;
 
-        DB::beginTransaction();
+        // Get available user UUIDs for random assignment
+        $userIds = User::pluck('id')->toArray();
+        
+        if (empty($userIds)) {
+            $this->command->warn("No users found for metric assignment");
+            return;
+        }
 
         try {
             foreach ($reader->getSheetIterator() as $sheet) {
@@ -53,7 +62,6 @@ class MetricSeeder extends Seeder
                         continue;
                     }
 
-
                     $record = array_combine($headers, $cells);
 
                     if (empty($record['title'])) {
@@ -61,44 +69,36 @@ class MetricSeeder extends Seeder
                         continue;
                     }
 
-                    $batchData[] = [
-                        'id'         => trim($record['id']) !== '' ? (int) $record['id'] : null,
-                        'user_id'    => trim($record['user_id']) !== '' ? (int) $record['user_id'] : null,
-                        'title'      => trim($record['title']),
-                        'content'    => $record['content'] ?? null,
-                        'field'      => $record['field'] ?? null,
-                        'context'    => $record['context'] ?? null,
-                        'color'      => $record['color'] ?? null,
-                        'model'      => $record['model'] ?? null,
-                        'type'       => $record['type'] ?? null,
-                        'query'      => $record['query'] ?? null,
-                        'count_by'   => $record['count_by'] ?? null,
-                        'status'     => $record['status'] ?? null,
-                        'order'      => trim($record['order']) !== '' ? (int) $record['order'] : null,
-                        'created_at' => trim($record['created_at']) !== '' ? $record['created_at'] : now(),
-                        'updated_at' => trim($record['updated_at']) !== '' ? $record['updated_at'] : now(),
-                        'deleted_at' => trim($record['deleted_at']) !== '' ? $record['deleted_at'] : null,
-                    ];
+                    try {
+                        Metric::create([
+                            'user_id' => !empty($userIds) ? fake()->randomElement($userIds) : null,
+                            'title' => trim($record['title']),
+                            'content' => $record['content'] ?? null,
+                            'field' => $record['field'] ?? null,
+                            'context' => $record['context'] ?? null,
+                            'color' => $record['color'] ?? null,
+                            'model' => $record['model'] ?? null,
+                            'type' => $record['type'] ?? null,
+                            'query' => $record['query'] ?? null,
+                            'count_by' => $record['count_by'] ?? null,
+                            'status' => $record['status'] ?? null,
+                            'order' => trim($record['order']) !== '' ? (int) $record['order'] : null,
+                        ]);
 
+                        $processedCount++;
 
-                    if (count($batchData) >= $batchSize) {
-                        DB::table('metrics')->insertOrIgnore($batchData);
-                        $processedCount += count($batchData);
-                        $batchData = [];
-                        $this->command->info("Processed {$processedCount} metrics from CSV...");
+                        if ($processedCount % 100 === 0) {
+                            $this->command->info("Processed {$processedCount} metrics from CSV...");
+                        }
+                    } catch (\Exception $e) {
+                        $this->command->warn("Failed to create metric from row {$rowIndex}: " . $e->getMessage());
+                        continue;
                     }
                 }
             }
 
-            if (!empty($batchData)) {
-                DB::table('metrics')->insertOrIgnore($batchData);
-                $processedCount += count($batchData);
-            }
-
-            DB::commit();
             $this->command->info("Successfully imported {$processedCount} metrics from CSV");
         } catch (\Exception $e) {
-            DB::rollBack();
             throw new \Exception("Metrics import failed: " . $e->getMessage());
         } finally {
             $reader->close();

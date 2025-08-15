@@ -2,9 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\Fund;
 use App\Models\Milestone;
 use App\Models\MilestonePoa;
 use App\Models\MilestoneSomReview;
+use App\Models\Proposal;
+use App\Models\ProjectSchedule;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -21,20 +24,26 @@ class MilestoneFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => $this->faker->unique()->randomNumber(5),
-            'proposal_id' => $this->faker->randomNumber(2),
-            'fund_id' => $this->faker->randomNumber(2),
             'title' => $this->faker->sentence(4),
-            'current' => $this->faker->boolean,
+            'current' => $this->faker->boolean(),
             'outputs' => $this->faker->text(200),
             'success_criteria' => $this->faker->text(150),
-            'proposal_milestone_id' => $this->faker->randomNumber(2),
             'evidence' => $this->faker->text(250),
             'month' => $this->faker->numberBetween(1, 12),
             'cost' => $this->faker->randomFloat(2, 1000, 50000),
             'completion_percent' => $this->faker->numberBetween(0, 100),
-            'milestone' => $this->faker->randomNumber(2),
+            'milestone' => $this->faker->randomFloat(2, 1, 10),
             'created_at' => Carbon::now(),
+            
+            'proposal_id' => function() {
+                return Proposal::inRandomOrder()->value('id');
+            },
+            'fund_id' => function() {
+                return Fund::inRandomOrder()->value('id');
+            },
+            'proposal_milestone_id' => function() {
+                return ProjectSchedule::inRandomOrder()->value('id');
+            },
         ];
     }
 
@@ -45,16 +54,14 @@ class MilestoneFactory extends Factory
                 ->count($this->faker->numberBetween(2, 5))
                 ->create([
                     'milestone_id' => $milestone->id,
-                    'proposal_id' => $milestone->proposal_id,
-                    'created_at' => $milestone->created_at
+                    'created_at' => $milestone->created_at,
                 ]);
 
             MilestonePoa::factory()
-                ->count($this->faker->numberBetween(2, 5))
+                ->count($this->faker->numberBetween(1, 3))
                 ->create([
                     'milestone_id' => $milestone->id,
-                    'proposal_id' => $milestone->proposal_id,
-                    'created_at' => $milestone->created_at
+                    'created_at' => $milestone->created_at,
                 ]);
         });
     }

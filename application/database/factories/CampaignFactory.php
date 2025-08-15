@@ -25,11 +25,11 @@ class CampaignFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::inRandomOrder()->first()?->id,
-            'fund_id' => Fund::inRandomOrder()->first(),
+            'user_id' => User::inRandomOrder()->value('id'),
+            'fund_id' => Fund::inRandomOrder()->value('id'),
             'title' => $this->faker->sentence(4),
             'meta_title' => $this->faker->sentence(5),
-            'slug' => fn (array $attributes) => Str::slug($attributes['title']),
+            'slug' => fn (array $attributes) => Str::slug($attributes['title']) . '-' . $this->faker->unique()->randomNumber(4),
             'excerpt' => $this->faker->optional()->text(200),
             'comment_prompt' => $this->faker->optional()->sentence(),
             'content' => $this->faker->optional()->paragraphs(3, true),

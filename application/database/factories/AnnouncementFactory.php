@@ -14,6 +14,12 @@ class AnnouncementFactory extends Factory
 
     public function definition(): array
     {
+        $randomUser = User::inRandomOrder()->first();
+        
+        if (!$randomUser) {
+            $randomUser = User::factory()->create();
+        }
+
         return [
             'title' => $this->faker->sentence,
             'content' => $this->faker->paragraph,
@@ -21,12 +27,12 @@ class AnnouncementFactory extends Factory
             'context' => $this->faker->randomElement(['home', 'proposal', 'special', null]),
             'event_starts_at' => $this->faker->dateTimeBetween('now', '+1 week'),
             'event_ends_at' => $this->faker->dateTimeBetween('+1 week', '+2 weeks'),
-            'user_id' => User::factory(),
-            'cta' => [
+            'user_id' => $randomUser->old_id,
+            'cta' => json_encode([
                 $this->faker->word => $this->faker->url,
                 $this->faker->word => $this->faker->url,
                 $this->faker->word => $this->faker->url, 
-            ],
+            ]),
         ];
     }
 }

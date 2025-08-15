@@ -12,7 +12,14 @@ class Snapshot extends Model
 {
     public $timestamps = false;
 
-    protected $fillable = ['model_type', 'model_id', 'epoch', 'order', 'snapshot_at'];
+    protected $fillable = [
+        'snapshot_name',
+        'model_type', 
+        'model_id', 
+        'epoch', 
+        'order', 
+        'snapshot_at'
+    ];
 
     protected function casts(): array
     {
