@@ -37,6 +37,16 @@ Route::prefix('api')->as('api.')->group(function () {
     Route::get('/tags', [TagController::class, 'tags'])->name('tags');
     Route::get('/tags/{tag:id}', [TagController::class, 'tag'])->name('tag');
 
+    // API v1 - RESTful Proposal API routes with Spatie Query Builder
+    Route::prefix('v1')->as('v1.')->group(function () {
+        Route::apiResource('proposals', ProposalController::class)
+            ->only(['index', 'show']);
+
+        // You can add other v1 resources here in the future
+        // Route::apiResource('campaigns', CampaignController::class)->only(['index', 'show']);
+    });
+
+    // Legacy endpoints for backwards compatibility (unversioned)
     Route::get('/proposals', [ProposalController::class, 'proposals'])->name('proposals');
 
     Route::get('/reviewers', [ReviewerController::class, 'reviewers'])->name('reviewers');
@@ -94,7 +104,7 @@ Route::prefix('api')->as('api.')->group(function () {
         Route::post('/claim-ideascale-profile/{ideascaleProfile}', [IdeascaleProfilesController::class, 'claimIdeascaleProfile'])->name('claim');
         Route::get('/{ideascaleProfile:id}', [IdeascaleProfilesController::class, 'ideascale_profile'])->name('show');
         Route::get('/{hash}/connections', [IdeascaleProfilesController::class, 'connections'])->name('connections');
-     
+
     });
 
     Route::get('/fund-titles', [ProposalsController::class, 'fundTitles'])->name('fundTitles');

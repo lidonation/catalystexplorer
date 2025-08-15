@@ -447,11 +447,6 @@ class Proposal extends Model
         return $this->belongsTo(Campaign::class, 'campaign_id', 'id');
     }
 
-    public function campaignUuid(): BelongsTo
-    {
-        return $this->belongsTo(Campaign::class, 'campaign_uuid', 'uuid');
-    }
-
     /**
      * communities proposal belong to.
      */
@@ -483,18 +478,6 @@ class Proposal extends Model
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
     }
 
-    public function teamUuid(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            IdeascaleProfile::class,
-            'ideascale_profile_has_proposal',
-            'proposal_uuid',
-            'ideascale_profile_uuid',
-            'uuid',
-            'id'
-        );
-    }
-
     public function author(): BelongsTo
     {
         return $this->belongsTo(IdeascaleProfile::class, 'user_id', 'old_id', 'author');
@@ -505,38 +488,14 @@ class Proposal extends Model
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
     }
 
-    public function usersUuid(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            IdeascaleProfile::class,
-            'ideascale_profile_has_proposal',
-            'proposal_uuid',
-            'ideascale_profile_uuid',
-            'uuid',
-            'uuid'
-        );
-    }
-
-    public function catalystProfiles(): BelongsToMany
+    public function catalyst_profiles(): BelongsToMany
     {
         return $this->belongsToMany(CatalystProfile::class, 'catalyst_profile_has_proposal', 'proposal_id', 'catalyst_profile_id');
     }
 
-    public function ideascaleProfiles(): BelongsToMany
+    public function ideascale_profiles(): BelongsToMany
     {
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
-    }
-
-    public function ideascaleProfilesUuid(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            IdeascaleProfile::class,
-            'ideascale_profile_has_proposal',
-            'proposal_uuid',
-            'ideascale_profile_uuid',
-            'uuid',
-            'id'
-        );
     }
 
     public function proposal_profiles()
@@ -545,22 +504,7 @@ class Proposal extends Model
             ->with(['profiles']);
     }
 
-    /**
-     * Get ideascale profiles using polymorphic relation.
-     */
-    public function ideascaleProfilesPolymorphic(): MorphToMany
-    {
-        return $this->morphedByMany(IdeascaleProfile::class, 'profile', 'proposal_profiles');
-    }
-
-    /**
-     * Get catalyst profiles using polymorphic relation.
-     */
-    public function catalystProfilesPolymorphic(): MorphToMany
-    {
-        return $this->morphedByMany(CatalystProfile::class, 'profile', 'proposal_profiles');
-    }
-
+ 
     public function completedProjectNft(): Attribute
     {
         return Attribute::make(

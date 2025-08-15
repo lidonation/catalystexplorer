@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Traits\HasDto;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Support\Facades\Artisan;
@@ -13,9 +14,9 @@ class Model extends EloquentModel
 {
     protected $hidden = [];
 
-    protected $appends = ['uuid'];
+    protected $appends = [];
 
-    use HasDto, HasFactory;
+    use HasDto, HasFactory, HasUuids;
 
     /**
      * Get the UUID attribute, which is the primary key.
