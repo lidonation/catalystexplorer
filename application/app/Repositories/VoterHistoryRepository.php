@@ -37,7 +37,7 @@ class VoterHistoryRepository extends Repository
             function (Indexes $index, $query) use ($args, $isStakeSearch, $isSecondarySearch, $isUnifiedSearch) {
                 $defaultArgs = [
                     'attributesToRetrieve' => [
-                        'hash',
+                        'id',
                         'stake_address',
                         'fragment_id',
                         'caster',

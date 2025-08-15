@@ -99,7 +99,7 @@ const GroupFilters = ({proposalsCount, totalAwardedAda, totalAwardedUsd}:GroupFi
                             }
                             placeholder="Select"
                             multiple={true}
-                            valueField={'hash'}
+                            valueField={'id'}
                             labelField={'title'}
                         />
                     </div>
@@ -119,7 +119,7 @@ const GroupFilters = ({proposalsCount, totalAwardedAda, totalAwardedUsd}:GroupFi
                             }
                             placeholder="Select"
                             multiple={true}
-                            valueField={'hash'}
+                            valueField={'id'}
                             labelField={'title'}
                         />
                     </div>
@@ -145,7 +145,7 @@ const GroupFilters = ({proposalsCount, totalAwardedAda, totalAwardedUsd}:GroupFi
                             }
                             placeholder="Select"
                             multiple={true}
-                            valueField={'hash'}
+                            valueField={'id'}
                             labelField={'name'}
                         />
                     </div>
@@ -165,7 +165,7 @@ const GroupFilters = ({proposalsCount, totalAwardedAda, totalAwardedUsd}:GroupFi
                             }
                             placeholder="Select"
                             multiple={true}
-                            valueField={'hash'}
+                            valueField={'id'}
                             labelField={'title'}
                         />
                     </div>

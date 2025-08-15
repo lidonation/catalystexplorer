@@ -78,7 +78,7 @@ class VoterListController extends Controller
             $bookmarkCollection = BookmarkCollection::find($bookmarkHash);
         }
 
-        $fund = Fund::find($bookmarkCollection->fund_id);
+        $fund = Fund::find($bookmarkCollection?->fund_id);
 
         $proposals = [];
         $campaigns = [];
@@ -433,7 +433,7 @@ class VoterListController extends Controller
             $conditions = [
                 'bookmark_collection_id' => $collection->id,
                 'model_type' => Proposal::class,
-                'model_id' => $proposal['hash'],
+                'model_id' => $proposal['id'],
                 'user_id' => $request->user()->id,
             ];
 

@@ -45,7 +45,7 @@ export default function IdeascaleProfilesFilters() {
                         }
                         placeholder="Select"
                         multiple={true}
-                        valueField={'hash'}
+                        valueField={'id'}
                         labelField={'title'}
                     />
                 </div>
@@ -96,7 +96,7 @@ export default function IdeascaleProfilesFilters() {
                         }
                         placeholder="Select"
                         multiple={true}
-                        valueField={'hash'}
+                        valueField={'id'}
                         labelField={'title'}
                     />
                 </div>

@@ -153,7 +153,7 @@ class Service extends Model implements HasMedia
         });
     }
 
-    public function scopeForUser($query, ?int $userId = null)
+    public function scopeForUser($query, ?string $userId = null)
     {
         return $query->when($userId, fn ($q) => $q->where('user_id', $userId));
     }

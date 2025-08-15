@@ -35,6 +35,8 @@ const IDFilters = React.memo(
         filter: FilteredItem;
         setFilters: (filter: FilteredItem) => void;
     }) => {
+        console.log({ filter });
+        
         const domain =
             domainMap[filter.param] || labels[filter.param as LabelKeys];
         const { setUuids, options } = useSearchOptions<any>(domain);
@@ -54,14 +56,14 @@ const IDFilters = React.memo(
                 return filter.value.includes(option.label);
             }
 
-            return filter.value.includes(option.uuid);
+            return filter.value.includes(option.id);
         });
 
         const removeFilter = (value?: string) => {
             // for comparison table fund filter
             if (hasFund) {
                 const fundLabel = selectedOptions.find(
-                    (fund) => fund.uuid == value,
+                    (fund) => fund.id == value,
                 ).title;
 
                 setFilters({
@@ -95,8 +97,8 @@ const IDFilters = React.memo(
                         <div key={option.uuid} className="flex items-center">
                             <span>{getDisplayName(option)}</span>
                             <button
-                                className="ml-2"
-                                onClick={() => removeFilter(option.uuid)}
+                                className="ml-2 hover:cursor-pointer"
+                                onClick={() => removeFilter(option.id)}
                                 data-testid={`remove-id-filter-${option.uuid}`}
                             >
                                 X

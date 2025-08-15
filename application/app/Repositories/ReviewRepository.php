@@ -25,7 +25,7 @@ class ReviewRepository extends Repository
                 $args = array_merge(
                     [
                         'attributesToRetrieve' => [
-                            'hash',
+                            'id',
                             'title',
                             'content',
                             'model_type',

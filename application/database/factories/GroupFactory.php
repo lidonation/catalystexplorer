@@ -20,7 +20,6 @@ class GroupFactory extends Factory
     {
         return [
             'id' => Str::uuid()->toString(),
-            'user_id' => User::inRandomOrder()->first()?->id,
             'name' => $this->faker->company,
             'bio' => $this->faker->paragraph,
             'deleted_at' => null,
