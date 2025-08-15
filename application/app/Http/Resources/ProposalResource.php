@@ -19,8 +19,34 @@ class ProposalResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
+            'slug' => $this->slug,
+            'category' => $this->category,
             'status' => $this->status,
-            'fund_id' => $this->fund_id,
+            'yes_votes_count' => $this->yes_votes_count,
+            'no_votes_count' => $this->no_votes_count,
+            'amount_requested' => $this->amount_requested,
+            'amount_received' => $this->amount_received,
+            'currency' => $this->currency,
+            'problem' => $this->problem,
+            'solution' => $this->solution,
+            'experience' => $this->experience,
+            'website' => $this->website,
+            'quickpitch' => $this->quickpitch,
+            'opensourced' => $this->opensourced,
+            'funded_at' => $this->funded_at,
+            'link' => $this->link,
+
+            // Relationships
+            'campaign' => new CampaignResource($this->whenLoaded('campaign')),
+            'user' => $this->when($this->relationLoaded('user'), function () {
+                return [
+                    'id' => $this->user->id,
+                    'name' => $this->user->name,
+                ];
+            }),
+
+            // Computed attributes
+//            'currency_symbol' => $this->when(method_exists($this->resource, 'getCurrencySymbolAttribute'), $this->currency_symbol),
 
         ];
     }
