@@ -33,6 +33,10 @@ class NftFactory extends Factory
             'https://www.lidonation.com/storage/8610/conversions/yzVK3sFPHiTvn-ABKKRDANcTFGbR6AjAxnKIF7cYGFk-preview.jpg'
         ];
         $artLink = $this->faker->randomElement($links);
+        $user = User::inRandomOrder()->first();
+        $artistId = $user ? $user->old_id : 1;
+        $profile = IdeascaleProfile::inRandomOrder()->first();
+        $modelId = $profile ? $profile->id : (string) Str::uuid(); // fallback to random UUID
 
          return [
             'name' => [
@@ -41,9 +45,12 @@ class NftFactory extends Factory
             'description' => [
                 'en' => $this->faker->paragraph(),
             ],
-            'artist_id' => User::factory(),
+            'artist_id' => $artistId,
+            'artist_uuid' => $user?->id,
+            'user_id' => $artistId,
+            'user_uuid' => $user?->id,
             'model_type' => 'App\Models\IdeascaleProfile',
-            'model_id' => 1,
+            'model_id' => $modelId,
             'status' => 'draft',
             'metadata' => [
                 'project_title' => $this->faker->words(3, true),

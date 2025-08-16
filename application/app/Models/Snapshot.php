@@ -11,6 +11,15 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class Snapshot extends Model
 {
     public $timestamps = false;
+    
+    protected $keyType = 'int';
+    
+    public $incrementing = true;
+    
+    public function uniqueIds(): array
+    {
+        return [];
+    }
 
     protected $fillable = [
         'snapshot_name',
@@ -23,7 +32,12 @@ class Snapshot extends Model
 
     protected function casts(): array
     {
-        return ['snapshot_at' => 'datetime:Y-m-d'];
+        return [
+            'snapshot_at' => 'datetime:Y-m-d',
+            'id' => 'integer',
+            'epoch' => 'integer',
+            'order' => 'integer',
+        ];
     }
 
     public function model(): MorphTo

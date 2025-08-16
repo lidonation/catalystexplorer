@@ -7,6 +7,7 @@ namespace Database\Seeders;
 use App\Models\Rule;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use OpenSpout\Reader\CSV\Reader as CSVReader;
 
 class RuleSeeder extends Seeder
@@ -54,24 +55,36 @@ class RuleSeeder extends Seeder
 
                     $record = array_combine($headers, $cells);
 
-                    // Optional: skip if no title or predicate
                     if (empty($record['title'])) {
                         $this->command->warn("Skipping rules row {$rowIndex}: Missing title");
                         continue;
                     }
 
+                    $oldId = trim($record['id']) !== '' ? (int) $record['id'] : null;
+                    $uuid = $oldId ? (string) Str::uuid() : null;
+
+                    $oldModelId = trim($record['model_id']) !== '' ? (int) $record['model_id'] : null;
+                    $modelUuid = null;
+                    
+                    if ($oldModelId) {
+                        $metric = DB::table('metrics')->where('old_id', $oldModelId)->first();
+                        $modelUuid = $metric ? $metric->id : (string) Str::uuid();
+                    }
+
                     $batchData[] = [
-                        'id'               => trim($record['id']) !== '' ? (int) $record['id'] : null,
-                        'title'            => trim($record['title']),
-                        'subject'          => $record['subject'] ?? null,
-                        'operator'         => $record['operator'] ?? null,
-                        'predicate'        => $record['predicate'] ?? null,
+                        'id' => $uuid,
+                        'old_id' => $oldId,
+                        'title' => trim($record['title']),
+                        'subject' => $record['subject'] ?? null,
+                        'operator' => $record['operator'] ?? null,
+                        'predicate' => $record['predicate'] ?? null,
                         'logical_operator' => $record['logical_operator'] ?? null,
-                        'model_id'         => trim($record['model_id']) !== '' ? (int) $record['model_id'] : null,
-                        'model_type'       => $record['model_type'] ?? null,
-                        'created_at'       => trim($record['created_at']) !== '' ? $record['created_at'] : now(),
-                        'updated_at'       => trim($record['updated_at']) !== '' ? $record['updated_at'] : now(),
-                        'deleted_at'       => trim($record['deleted_at']) !== '' ? $record['deleted_at'] : null,
+                        'model_id' => $modelUuid,
+                        'old_model_id' => $oldModelId,
+                        'model_type' => $record['model_type'] ?? null,
+                        'created_at' => trim($record['created_at']) !== '' ? $record['created_at'] : now(),
+                        'updated_at' => trim($record['updated_at']) !== '' ? $record['updated_at'] : now(),
+                        'deleted_at' => trim($record['deleted_at']) !== '' ? $record['deleted_at'] : null,
                     ];
 
                     if (count($batchData) >= $batchSize) {
