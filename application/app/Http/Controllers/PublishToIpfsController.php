@@ -72,7 +72,7 @@ class PublishToIpfsController extends Controller
         }
 
         if (! empty($validated['bookmarkHash'])) {
-            $bookmarkCollection = BookmarkCollection::byHash($validated['bookmarkHash']);
+            $bookmarkCollection = BookmarkCollection::find($validated['bookmarkHash']);
             if (! $bookmarkCollection) {
                 abort(404, 'Bookmark collection not found');
             }
@@ -129,7 +129,7 @@ class PublishToIpfsController extends Controller
         ]);
 
         try {
-            $bookmarkCollection = BookmarkCollection::byHash($validated['bookmarkHash']);
+            $bookmarkCollection = BookmarkCollection::find($validated['bookmarkHash']);
 
             if (! $bookmarkCollection) {
                 return back()->withErrors(['error' => 'Bookmark collection not found.']);

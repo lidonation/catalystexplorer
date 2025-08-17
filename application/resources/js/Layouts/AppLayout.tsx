@@ -54,9 +54,13 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             )}
 
             <section
-                className={`bg-background-lighter lg:mt-4 ${isAuthPage ? '' : 'lg:ml-72'} ${isAuthPage ? '' : 'lg:rounded-tl-4xl'}`}>
+                className={`bg-background-lighter lg:mt-4 ${isAuthPage ? '' : 'lg:ml-72'} ${isAuthPage ? '' : 'lg:rounded-tl-4xl'}`}
+            >
                 {/* Mobile header */}
-                <header className="bg-background sticky top-0 z-30 border-b border-gray-200 lg:hidden" data-testid="mobile-header">
+                <header
+                    className="bg-background sticky top-0 z-30 border-b border-gray-200 lg:hidden"
+                    data-testid="mobile-header"
+                >
                     <div className="flex h-16 items-center justify-between">
                         <CatalystLogo className="h-8" />
                         <Button
@@ -77,18 +81,22 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 </header>
 
                 {/* Main content */}
-                <main id="main-content" data-testid="main-content">
+                <main
+                    id="main-content"
+                    data-testid="main-content"
+                    className="pb-16"
+                >
+                    {/* Add bottom padding equal to the height of your sticky bar */}
                     <Breadcrumbs items={breadcrumbItems} />
 
                     <PlayerProvider>
                         <MetricsProvider>
                             {memoizedChildren}
+
                             <UIProvider>
-                                <section className="sticky inset-x-0 bottom-0 mx-auto flex items-center justify-center gap-2">
-                                    <div className="">
+                                <section className="sticky bottom-0 z-50 flex justify-center">
+                                    <div className="flex items-center gap-2">
                                         <MetricsBar />
-                                    </div>
-                                    <div className="block">
                                         <GraphButton />
                                     </div>
                                 </section>
@@ -103,7 +111,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 <Modal
                     title={t('register')}
                     isOpen={false}
-                    onClose={() => setSidebarOpen(false)}>
+                    onClose={() => setSidebarOpen(false)}
+                >
                     <div className=""></div>
                 </Modal>
 
@@ -126,7 +135,6 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             />
 
             <ModalRoot />
-
         </MainLayout>
     );
 }

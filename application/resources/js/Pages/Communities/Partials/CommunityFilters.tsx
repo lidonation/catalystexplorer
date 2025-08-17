@@ -103,7 +103,7 @@ const CommunityFilters = ({
                             }
                             placeholder="Select"
                             multiple={true}
-                            valueField={'hash'}
+                            valueField={'id'}
                             labelField={'title'}
                         />
                     </div>
@@ -125,7 +125,7 @@ const CommunityFilters = ({
                             }
                             placeholder="Select"
                             multiple={true}
-                            valueField={'hash'}
+                            valueField={'id'}
                             labelField={'title'}
                         />
                     </div>
@@ -148,7 +148,7 @@ const CommunityFilters = ({
                             }
                             placeholder="Select"
                             multiple={true}
-                            valueField={'hash'}
+                            valueField={'id'}
                             labelField={'name'}
                         />
                     </div>

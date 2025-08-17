@@ -104,7 +104,7 @@ const VoteFilters = () => {
                         placeholder={t('select', {'Select': 'Select'})}
                         multiple={true}
                         emptyText={t('vote.noEpochsAvailable')}
-                        valueField={'hash'}
+                        valueField={'id'}
                         labelField={'title'}
                     />
                 </div>

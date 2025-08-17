@@ -25,7 +25,7 @@ class BookmarkCollectionRepository extends Repository
                 $args = array_merge(
                     [
                         'attributesToRetrieve' => [
-                            'hash',
+                            'id',
                             'title',
                             'content',
                             'updated_at',

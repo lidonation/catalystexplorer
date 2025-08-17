@@ -7,8 +7,8 @@ import capitalizeFirstLetter from '@/utils/caps';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { formatTimestamp } from '@/utils/timeStamp';
 import { usePage } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { Clock, MessageCircle } from 'lucide-react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 
 const BookmarkCollectionCard = ({
@@ -110,7 +110,7 @@ const BookmarkCollectionCard = ({
                 })}
             </div>
             <div className="top-4 right-4 lg:absolute">
-                {user?.id && isAuthor ? (
+                {user?.id && isAuthor && collection?.id ? (
                     <div
                         className="flex flex-col gap-2 lg:flex-row lg:gap-3"
                         data-testid="button-container"
@@ -138,16 +138,18 @@ const BookmarkCollectionCard = ({
                         </PrimaryLink>
                     </div>
                 ) : (
-                    <PrimaryLink
-                        data-testid="view-list-button"
-                        aria-label={`View ${collection.title} list`}
-                        href={useLocalizedRoute('lists.view', {
-                            bookmarkCollection: collection?.id,
-                        })}
-                        className="bg-success w-full px-4 hover:bg-green-600"
-                    >
-                        {t('View List')}
-                    </PrimaryLink>
+                    collection?.id && (
+                        <PrimaryLink
+                            data-testid="view-list-button"
+                            aria-label={`View ${collection.title} list`}
+                            href={useLocalizedRoute('lists.view', {
+                                bookmarkCollection: collection?.id,
+                            })}
+                            className="bg-success w-full px-4 hover:bg-green-600"
+                        >
+                            {t('View List')}
+                        </PrimaryLink>
+                    )
                 )}
             </div>
 

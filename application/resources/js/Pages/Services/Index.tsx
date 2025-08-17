@@ -96,7 +96,7 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 md-grid-cols-2 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-5 md-grid-cols-2 gap-8 items-start">
         <div className="hidden lg:block lg:col-span-1">
           <section className="sticky top-8" data-testid="categories-sidebar">
             <ServiceCategories
@@ -107,7 +107,7 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({
           </section>
         </div>
 
-        <div className="lg:col-span-3" data-testid="services-main-content">
+        <div className="col-span-4" data-testid="services-main-content">
           <div className="lg:hidden mb-4">
             <Button
               onClick={() => setShowMobileCategories(!showMobileCategories)}

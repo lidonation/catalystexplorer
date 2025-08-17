@@ -25,7 +25,7 @@ class CampaignResource extends JsonResource
             'launched_at' => $this->launched_at,
             'awarded_at' => $this->awarded_at,
             'color' => $this->color,
-            'label' => $this->label
+            'label' => $this->label,
         ];
     }
 }

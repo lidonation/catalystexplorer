@@ -70,7 +70,7 @@ export const CardanoTransactionTable: React.FC<
             )
       },
         {
-            key: 'hash',
+            key: 'id',
             header: t('transactions.table.id'),
             render: (tx) => (
                 <div className="flex flex-col items-start space-y-1">

@@ -38,6 +38,9 @@ class ProposalResource extends JsonResource
 
             // Relationships
             'campaign' => new CampaignResource($this->whenLoaded('campaign')),
+            'fund' => new FundResource($this->whenLoaded('fund')),
+            'team' => IdeascaleProfileResource::collection($this->whenLoaded('team')),
+            'schedule' => new ProjectScheduleResource($this->whenLoaded('schedule')),
             'user' => $this->when($this->relationLoaded('user'), function () {
                 return [
                     'id' => $this->user->id,
@@ -46,7 +49,7 @@ class ProposalResource extends JsonResource
             }),
 
             // Computed attributes
-//            'currency_symbol' => $this->when(method_exists($this->resource, 'getCurrencySymbolAttribute'), $this->currency_symbol),
+            //            'currency_symbol' => $this->when(method_exists($this->resource, 'getCurrencySymbolAttribute'), $this->currency_symbol),
 
         ];
     }

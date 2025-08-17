@@ -81,7 +81,11 @@ const RangeFilters = ({
         >
             <div className="mr-1">{filter.label}</div>
             <div>{`from ${shortNumber(filter.value[0])} to  ${shortNumber(filter.value[1])}`}</div>
-            <button className="ml-2" onClick={() => removeFilter()} data-testid={`remove-range-filter-${filter.param}`}>
+            <button
+                className="ml-2 hover:cursor-pointer"
+                onClick={() => removeFilter()}
+                data-testid={`remove-range-filter-${filter.param}`}
+            >
                 X{' '}
             </button>
         </div>

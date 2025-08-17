@@ -40,7 +40,7 @@ const StatusFilters = ({
                     <div key={value} className="flex items-center">
                         <span>{fromSnakeCase(value)}</span>
                         <button
-                            className="ml-2"
+                            className="ml-2 hover:cursor-pointer"
                             onClick={() => removeFilter(value)}
                             data-testid={`remove-status-filter-${value}`}
                         >

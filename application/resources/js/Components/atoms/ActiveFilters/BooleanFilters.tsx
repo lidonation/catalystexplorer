@@ -21,7 +21,11 @@ const BooleanFilters = ({
             data-testid={`boolean-filter-${filter.param}`}
         >
             <div className="mr-1 font-bold">{filter.label}:</div>
-            <button className="ml-2" onClick={() => removeFilter()} data-testid={`remove-boolean-filter-${filter.param}`}>
+            <button
+                className="ml-2 hover:cursor-pointer"
+                onClick={() => removeFilter()}
+                data-testid={`remove-boolean-filter-${filter.param}`}
+            >
                 X{' '}
             </button>
         </div>

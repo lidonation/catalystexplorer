@@ -195,7 +195,7 @@ const ProposalFilters = () => {
                             }
                             placeholder="Select"
                             multiple={true}
-                            valueField={'hash'}
+                            valueField={'id'}
                             labelField={'title'}
                             dataTestId='tags-filter-search-select'
                         />
@@ -216,7 +216,7 @@ const ProposalFilters = () => {
                             }
                             placeholder="Select"
                             multiple={true}
-                            valueField={'hash'}
+                            valueField={'id'}
                             labelField={'title'}
                             dataTestId='campaigns-filter-search-select'
                         />
@@ -239,7 +239,7 @@ const ProposalFilters = () => {
                             }
                             placeholder="Select"
                             multiple={true}
-                            valueField={'hash'}
+                            valueField={'id'}
                             labelField={'name'}
                             dataTestId='groups-filter-search-select'
                         />
@@ -260,7 +260,7 @@ const ProposalFilters = () => {
                             }
                             placeholder="Select"
                             multiple={true}
-                            valueField={'hash'}
+                            valueField={'id'}
                             labelField={'title'}
                             dataTestId='communities-filter-search-select'
                         />
@@ -321,7 +321,7 @@ const ProposalFilters = () => {
                             }
                             placeholder="Select"
                             multiple={true}
-                            valueField={'hash'}
+                            valueField={'id'}
                             labelField={'name'}
                             dataTestId='ideascale-profiles-filter-search-select'
                         />

@@ -9,11 +9,10 @@ use App\Http\Resources\ProposalResource;
 use App\Models\Proposal;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\Response;
-use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\AllowedSort;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class ProposalController extends Controller
 {
@@ -50,6 +49,9 @@ class ProposalController extends Controller
                 AllowedInclude::relationship('campaign'),
                 AllowedInclude::relationship('user'),
                 AllowedInclude::relationship('fund'),
+                AllowedInclude::relationship('team'),
+                AllowedInclude::relationship('schedule'),
+                AllowedInclude::relationship('schedule.milestones'),
             ])
             ->allowedSorts([
                 AllowedSort::field('title'),
@@ -78,6 +80,9 @@ class ProposalController extends Controller
                 AllowedInclude::relationship('campaign'),
                 AllowedInclude::relationship('user'),
                 AllowedInclude::relationship('fund'),
+                AllowedInclude::relationship('team'),
+                AllowedInclude::relationship('schedule'),
+                AllowedInclude::relationship('schedule.milestones'),
             ])
             ->findOrFail($id);
 
