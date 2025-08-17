@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\Group;
-use App\Models\User;
+use App\Models\IdeascaleProfile;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -18,10 +18,18 @@ class GroupFactory extends Factory
 
     public function definition(): array
     {
+        $profileCount = IdeascaleProfile::count();
+        
+        $randomProfile = null;
+        if ($profileCount > 0) {
+            $randomProfile = IdeascaleProfile::inRandomOrder()->first();
+        }
+        
         return [
             'id' => Str::uuid()->toString(),
+            'owner_id' => $randomProfile?->id,
             'name' => $this->faker->company,
-            'bio' => $this->faker->paragraph,
+            'bio' => json_encode(['en' => $this->faker->paragraph]),
             'deleted_at' => null,
             'created_at' => now(),
             'updated_at' => now(),

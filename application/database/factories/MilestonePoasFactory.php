@@ -6,12 +6,10 @@ use App\Models\Milestone;
 use App\Models\MilestonePoa;
 use App\Models\MilestonePoasReview;
 use App\Models\MilestonePoasSignoff;
-use App\Models\Proposal;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\MilestonePoa>
+ * @extends Factory<\App\Models\MilestonePoa>
  */
 class MilestonePoasFactory extends Factory
 {
@@ -23,32 +21,31 @@ class MilestonePoasFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => $this->faker->unique()->randomNumber(5, true),
-            'proposal_id' => Proposal::factory(),
+            'milestone_id' => function() {
+                return Milestone::inRandomOrder()->value('id');
+            },
+            'proposal_id' => null, // bigint - set to null as per schema
             'content' => $this->faker->paragraphs(3, true),
-            'milestone_id' => Milestone::factory(),
-            'created_at' => Carbon::now()->subDays($this->faker->numberBetween(0, 3 * 365)),
-            'current' => $this->faker->boolean,
+            'current' => $this->faker->boolean(),
+            'created_at' => now()->subDays($this->faker->numberBetween(0, 365)),
         ];
     }
 
     public function configure(): static
     {
-        return $this->afterCreating(function (MilestonePoa $milestonePoas) {
+        return $this->afterCreating(function (MilestonePoa $poa) {
             MilestonePoasReview::factory()
-                ->count(2)
+                ->count($this->faker->numberBetween(1, 3))
                 ->create([
-                    'milestone_poas_id' => $milestonePoas->id,
-                    'proposal_id' => $milestonePoas->proposal_id,
-                    'created_at' => $milestonePoas->created_at
+                    'milestone_poas_id' => $poa->id,
+                    'created_at' => $poa->created_at,
                 ]);
 
             MilestonePoasSignoff::factory()
-                ->count(2)
+                ->count($this->faker->numberBetween(1, 2))
                 ->create([
-                    'milestone_poas_id' => $milestonePoas->id,
-                    'proposal_id' => $milestonePoas->proposal_id,
-                    'created_at' => $milestonePoas->created_at
+                    'milestone_poas_id' => $poa->id,
+                    'created_at' => $poa->created_at,
                 ]);
         });
     }

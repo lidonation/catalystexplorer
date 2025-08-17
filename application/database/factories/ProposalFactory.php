@@ -19,11 +19,6 @@ class ProposalFactory extends Factory
 {
     protected $model = Proposal::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         $quickpitchLinks = [
@@ -40,11 +35,12 @@ class ProposalFactory extends Factory
         ];
 
         return [
-            'user_id' => User::inRandomOrder()->first()?->id,
-            'campaign_id' => Campaign::inRandomOrder()->first(),
-            'fund_id' => Fund::inRandomOrder()->first(),
-            'title' => $this->faker->words($this->faker->numberBetween(4, 12), true),
-            'slug' => fn(array $attributes) => Str::slug($attributes['title']),
+            'user_id' => null,
+            
+            'campaign_id' => Campaign::inRandomOrder()->value('id'),
+            'fund_id' => Fund::inRandomOrder()->value('id'),        
+            'title' => json_encode(['en' => $this->faker->words($this->faker->numberBetween(4, 12), true)]),
+            'slug' => $this->faker->unique()->slug(),
             'website' => $this->faker->url(),
             'excerpt' => $this->faker->text(200),
             'amount_requested' => $this->faker->numberBetween(0, 10000000),
@@ -52,7 +48,7 @@ class ProposalFactory extends Factory
             'definition_of_success' => $this->faker->sentence(),
             'status' => $this->faker->randomElement(ProposalStatus::toValues()),
             'funding_status' => $this->faker->randomElement(ProposalFundingStatus::toValues()),
-            'meta_data' => $this->faker->words(4, true),
+            'meta_data' => json_encode($this->faker->words(4)),
             'funded_at' => $this->faker->optional()->dateTimeBetween('-2 years', 'now'),
             'deleted_at' => $this->faker->optional()->dateTimeBetween('-1 year', 'now'),
             'funding_updated_at' => $this->faker->optional()->date(),
@@ -63,11 +59,11 @@ class ProposalFactory extends Factory
             'team_id' => $this->faker->optional()->randomNumber(),
             'ideascale_link' => $this->faker->optional()->url(),
             'type' => $this->faker->randomElement(['proposal', 'challenge', 'proposal', 'proposal']),
-            'meta_title' => $this->faker->words(5, true),
-            'problem' => $this->faker->sentences(4, true),
-            'solution' => $this->faker->sentences(4, true),
-            'experience' => $this->faker->sentences(4, true),
-            'content' => collect(range(1, $this->faker->numberBetween(3, 10)))
+            'meta_title' => json_encode(['en' => $this->faker->words(5, true)]),
+            'problem' => json_encode(['en' => $this->faker->sentences(4, true)]),
+            'solution' => json_encode(['en' => $this->faker->sentences(4, true)]),
+            'experience' => json_encode(['en' => $this->faker->sentences(4, true)]),
+            'content' => json_encode(['en' => collect(range(1, $this->faker->numberBetween(3, 10)))
                 ->map(function () {
                     $sections = [
                         fn() => "## {$this->faker->sentence()}",
@@ -76,16 +72,12 @@ class ProposalFactory extends Factory
                         fn() => "- " . implode("\n- ", $this->faker->words($this->faker->numberBetween(3, 7))),
                         fn() => "![{$this->faker->word()}](https://picsum.photos/seed/{$this->faker->uuid}/600/400)",
                         fn() => "`{$this->faker->word()} = {$this->faker->randomNumber()}`",
-                        fn() => "**{$this->faker->sentence()}**",
-                        fn() => $this->faker->paragraph(),
-                        fn() => "**{$this->faker->sentence()}**",
-                        fn() => $this->faker->paragraph(),
-                    fn() => "![{$this->faker->word()}](https://picsum.photos/seed/{$this->faker->uuid}/600/400)",
                     ];
 
                     return Arr::random($sections)();
                 })
-                ->implode("\n\n"),
+                ->implode("\n\n")]),
+                
             'currency' => $this->faker->randomElement(CatalystCurrencies::toArray()),
             'opensource' => $this->faker->boolean(),
             'ranking_total' => $this->faker->numberBetween(0, 100),

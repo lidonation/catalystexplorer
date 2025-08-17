@@ -14,6 +14,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class SyncProposalsToEntities implements ShouldQueue
 {
@@ -26,17 +27,32 @@ class SyncProposalsToEntities implements ShouldQueue
         $groups = Group::all();
         $communities = Community::all();
         $profiles = IdeascaleProfile::all();
+        
+        $profiles->each(function ($profile) {
+            $proposal = Proposal::inRandomOrder()->first();
+            if ($proposal) {
+                $proposal->users()->syncWithoutDetaching($profile->id);
+            } else {
+                Log::warning('SyncProposalsToEntities: No proposal found for profile sync');
+            }
+        });
 
-        $profiles->each(
-            fn ($profile) => Proposal::inRandomOrder()->first()->users()->syncWithoutDetaching($profile->getOriginal('id'))
-        );
+        $groups->each(function ($group) {
+            $proposal = Proposal::inRandomOrder()->first();
+            if ($proposal) {
+                $proposal->groups()->syncWithoutDetaching($group->id);
+            } else {
+                Log::warning('SyncProposalsToEntities: No proposal found for group sync');
+            }
+        });
 
-        $groups->each(
-            fn ($group) => Proposal::inRandomOrder()->first()->groups()->syncWithoutDetaching($group->getOriginal('id'))
-        );
-
-        $communities->each(
-            fn ($community) => Proposal::inRandomOrder()->first()->communities()->syncWithoutDetaching($community->getOriginal('id'))
-        );
+        $communities->each(function ($community) {
+            $proposal = Proposal::inRandomOrder()->first();
+            if ($proposal) {
+                $proposal->communities()->syncWithoutDetaching($community->id);
+            } else {
+                Log::warning('SyncProposalsToEntities: No proposal found for community sync');
+            }
+        });
     }
 }

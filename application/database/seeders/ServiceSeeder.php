@@ -8,6 +8,7 @@ use App\Models\Service;
 use App\Models\Category;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class ServiceSeeder extends Seeder
 {
@@ -24,7 +25,16 @@ class ServiceSeeder extends Seeder
             $selectedSubcategories = $allSubcategories->random(random_int(1, 3));
 
             foreach ($selectedSubcategories as $category) {
-                $category->services()->attach($service);
+                DB::table('service_model')->insertOrIgnore([
+                    'id' => (string) \Str::uuid(),
+                    'service_id' => $service->id,
+                    'old_service_id' => $service->old_id ?? 1,
+                    'model_id' => (string) \Str::uuid(),
+                    'old_model_id' => $category->id,
+                    'model_type' => Category::class,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
             }
         });
     }
