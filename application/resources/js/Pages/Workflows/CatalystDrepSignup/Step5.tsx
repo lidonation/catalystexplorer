@@ -8,7 +8,7 @@ import {
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { InertiaFormProps, useForm } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React from 'react';
 import Content from '../Partials/WorkflowContent';
@@ -47,7 +47,7 @@ const step5: React.FC<Step5Props> = ({
     const submitForm = () => {
         form.patch(
             generateLocalizedRoute('workflows.drepSignUp.patch', {
-                catalystDrep:catalystDrep.id,
+                catalystDrep: catalystDrep.id,
             }),
             {
                 onError: (errors) => {

@@ -30,7 +30,13 @@ class Signature extends Model
         'wallet_provider',
         'wallet_name',
         'user_id',
+        'user_uuid'
     ];
+
+    protected $casts = [
+        'user_id' => 'string', // Cast user_id as string to handle UUIDs
+    ];
+
 
     /**
      * Append computed attributes to JSON serialization

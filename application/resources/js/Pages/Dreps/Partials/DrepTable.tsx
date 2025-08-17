@@ -1,23 +1,42 @@
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import CheckIcon from '@/Components/svgs/CheckIcon';
 import CopyIcon from '@/Components/svgs/CopyIcon';
-import ToolTipHover from '@/Components/ToolTipHover';
+import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
+import axiosClient from '@/utils/axiosClient';
 import { currency } from '@/utils/currency';
 import { Button } from '@headlessui/react';
+import { usePage } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { toast } from 'react-toastify';
 import CatalystDrepData = App.DataTransferObjects.CatalystDrepData;
 
 interface DrepTableProps {
     dreps: CatalystDrepData[];
+    delegatedDrepStakeAddress?: string;
 }
 
-export default function DrepTable({ dreps }: DrepTableProps) {
+export default function DrepTable({
+    dreps,
+    delegatedDrepStakeAddress,
+}: DrepTableProps) {
     const { t } = useLaravelReactI18n();
 
     const [copySuccess, setCopySuccess] = useState<Record<number, boolean>>(
         Object.fromEntries(dreps.map((_, index) => [index, false])),
     );
+
+    const [currentDelegatedDrep, setCurrentDelegatedDrep] = useState<
+        string | null
+    >(delegatedDrepStakeAddress || null);
+
+    const {
+        connectedWalletProvider,
+        openConnectWalletSlider,
+        extractSignature,
+        stakeAddress,
+        stakeKey,
+    } = useConnectWallet();
 
     const tableColumns = [
         { label: t('dreps.drepList.drep') },
@@ -28,9 +47,6 @@ export default function DrepTable({ dreps }: DrepTableProps) {
         { label: t('dreps.drepList.status') },
         { label: t('dreps.drepList.delegate') },
     ];
-
-        const [isHovered, setIsHovered] = useState(false);
-
 
     const handleCopy = (text: string, index: number) => {
         navigator.clipboard
@@ -49,6 +65,101 @@ export default function DrepTable({ dreps }: DrepTableProps) {
             .catch((err) => {
                 console.error('Failed to copy: ', err);
             });
+    };
+
+    const url = route('api.dreps.delegate');
+    const user = usePage().props?.auth?.user;
+
+    const handleDelegate = async (drepStakeAddress: string | null) => {
+        try {
+            if (currentDelegatedDrep) {
+                toast.error('You can only delegate once', {
+                    className: 'bg-background text-content',
+                });
+                return;
+            }
+            if (!drepStakeAddress) {
+                toast.error('DRep stake address is required', {
+                    className: 'bg-background text-content',
+                });
+                return;
+            }
+            if (!connectedWalletProvider || !stakeAddress) {
+                openConnectWalletSlider();
+                return;
+            }
+
+            let signatureResult: { signature: string; key: string } | null =
+                null;
+
+            if (user) {
+                signatureResult = await extractSignature(
+                    t('workflows.catalystDrepSignup.signMessage'),
+                );
+                if (!signatureResult) return;
+            }
+
+            const res = await axiosClient.post(url, {
+                signature: signatureResult?.signature,
+                signature_key: signatureResult?.key,
+                stake_key: stakeKey,
+                stakeAddress,
+                drep_stake_address: drepStakeAddress,
+            });
+
+            if (res) {
+                setCurrentDelegatedDrep(drepStakeAddress); 
+                toast.success(res?.data?.message || 'Delegation Successful!', {
+                    className: 'bg-background text-content',
+                    toastId: 'delegation-successful',
+                });
+            }
+        } catch (err: any) {
+            toast.error(
+                err.response?.data?.message ||
+                    err.response?.data?.error ||
+                    'Delegation Failed!',
+                {
+                    className: 'bg-background text-content',
+                    toastId: 'delegation-failed',
+                },
+            );
+        }
+    };
+
+    const handleUndelegate = async (drepStakeAddress: string | null) => {
+        try {
+            if (!connectedWalletProvider || !stakeAddress) {
+                openConnectWalletSlider();
+                return;
+            }
+
+            const res = await axiosClient.post(route('api.dreps.undelegate'), {
+                stakeAddress: stakeAddress,
+                drepStakeAddress: drepStakeAddress,
+            });
+
+            if (res) {
+                setCurrentDelegatedDrep(null);
+                toast.success(
+                    res?.data?.message || 'Undelegation Successful!',
+                    {
+                        toastId: 'undelegation-successful',
+                        className: 'bg-background text-content',
+                    },
+                );
+            }
+        } catch (err: any) {
+            toast.error(
+                err.response?.data?.message ||
+                    err.response?.data?.error ||
+                    'Undelegation Failed!',
+                {
+                    className: 'bg-background text-content',
+                    toastId: 'undelegation-failed',
+                },
+            );
+        }
     };
 
     return (
@@ -74,7 +185,7 @@ export default function DrepTable({ dreps }: DrepTableProps) {
                     {dreps.map((drep, index) => (
                         <tr key={index} className="border-dark/30 border-b">
                             <td className="text-gray-persist flex items-center gap-2 px-4 py-8">
-                                <span>{drep.stake_address}</span>
+                                <span>{drep?.stake_address}</span>
                                 <Button
                                     className="text-content-light hover:text-content flex cursor-pointer items-center transition-colors duration-300 ease-in-out"
                                     onClick={() =>
@@ -134,23 +245,32 @@ export default function DrepTable({ dreps }: DrepTableProps) {
                                 </div>
                             </td>
                             <td className="px-4 py-2">
-                                <div
-                                    onMouseEnter={() => setIsHovered(true)}
-                                    onMouseLeave={() => setIsHovered(false)}
-                                    className="group relative inline-block w-full"
-                                >
-                                    {/* {isHovered && (
-                                        <ToolTipHover
-                                            props={t('Feature Unavailable')}
-                                            className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-                                        />
-                                    )} */}
-                                    <PrimaryButton
-                                        disabled
-                                        className="bg-primary text-content-light w-full cursor-not-allowed rounded px-3 py-1 text-sm"
-                                    >
-                                        {t('dreps.drepList.unavailable')}
-                                    </PrimaryButton>
+                                <div className="group relative inline-block w-full">
+                                    {drep?.stake_address ===
+                                        currentDelegatedDrep &&
+                                    currentDelegatedDrep ? (
+                                        <PrimaryButton
+                                            className="bg-primary text-content-light w-full rounded px-3 py-1 text-sm"
+                                            onClick={() =>
+                                                handleUndelegate(
+                                                    drep.stake_address,
+                                                )
+                                            }
+                                        >
+                                            {t('dreps.drepList.undelegate')}
+                                        </PrimaryButton>
+                                    ) : (
+                                        <PrimaryButton
+                                            className="bg-primary text-content-light w-full rounded px-3 py-1 text-sm"
+                                            onClick={() =>
+                                                handleDelegate(
+                                                    drep?.stake_address,
+                                                )
+                                            }
+                                        >
+                                            {t('dreps.drepList.delegate')}
+                                        </PrimaryButton>
+                                    )}
                                 </div>
                             </td>
                         </tr>

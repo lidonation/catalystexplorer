@@ -10,17 +10,24 @@ import { SearchParams } from '@/types/search-params';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import DrepFilters from './Partials/DrepFilters';
 import DrepTable from './Partials/DrepTable';
 import CatalystDrepData = App.DataTransferObjects.CatalystDrepData;
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 interface DrepListPageProps extends Record<string, unknown> {
     filters: SearchParams;
     catalystDreps: PaginatedData<CatalystDrepData[]>;
+    hasAuthenticatedUserDelegated?: boolean;
+    delegatedDrepStakeAddress?: string;
 }
 
-const Index = ({ filters, catalystDreps }: DrepListPageProps) => {
+const Index = ({
+    filters,
+    catalystDreps,
+    hasAuthenticatedUserDelegated,
+    delegatedDrepStakeAddress,
+}: DrepListPageProps) => {
     const [showFilters, setShowFilters] = useState(false);
     const { t } = useLaravelReactI18n();
 
@@ -41,7 +48,7 @@ const Index = ({ filters, catalystDreps }: DrepListPageProps) => {
 
                 <section className="container py-8">
                     <div className="bg-background w-full rounded-md p-4 shadow-xs">
-                        <div className="flex w-full justify-between py-4">
+                        <div className="flex flex-col md:flex-row gap-4 w-full justify-between py-4">
                             <Title level="4">{t('dreps.dreps')}</Title>
                             <PrimaryLink
                                 className="bg-primary text-content-light cursor-pointer p-2 text-white"
@@ -73,7 +80,12 @@ const Index = ({ filters, catalystDreps }: DrepListPageProps) => {
                         </div>
 
                         <div>
-                            <DrepTable dreps={catalystDreps?.data || []} />
+                            <DrepTable
+                                dreps={catalystDreps?.data || []}
+                                delegatedDrepStakeAddress={
+                                    delegatedDrepStakeAddress
+                                }
+                            />
                         </div>
 
                         <div className="bg-background-lighter rounded-b-lg p-4 shadow-md">
