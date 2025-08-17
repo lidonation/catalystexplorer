@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\DataTransferObjects\CatalystDrepData;
 use App\Models\CatalystDrep;
 use App\Models\Drep;
+use App\Models\Meta;
 use App\Models\Signature;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -74,11 +75,14 @@ class CatalystDrepController extends Controller
     public function step1(Request $request): Response
     {
         $catalystDrep = CatalystDrep::find($request->catalystDrep);
+        
+        $savedLocale = session('drep_signup_locale', 'en');
 
         return Inertia::render('Workflows/CatalystDrepSignup/Step1', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
-            'catalystDrep' => $catalystDrep,
+            'catalystDrep' => $catalystDrep ? $this->transformCatalystDrepForLocale($catalystDrep, $savedLocale) : null,
+            'savedLocale' => $savedLocale,
         ]);
     }
 
@@ -143,23 +147,55 @@ class CatalystDrepController extends Controller
             return to_route('workflows.drepSignUp.index', ['step' => 3]);
         }
 
+        // Get saved locale from session or default to 'en'
+        $savedLocale = session('drep_signup_locale', 'en');
+
         return Inertia::render('Workflows/CatalystDrepSignup/Step5', [
-            'catalystDrep' => CatalystDrepData::from($catalystDrep),
+            'catalystDrep' => $this->transformCatalystDrepForLocale($catalystDrep, $savedLocale),
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
+            'savedLocale' => $savedLocale,
         ]);
     }
 
     public function saveDrep(Request $request)
     {
+        $supportedLocales = implode(',', config('locales.supported', ['en']));
+        
         $attributes = $request->validate([
             'name' => 'required|min:3',
-            'bio' => 'min:100',
+            'bio' => 'min:69',
             'link' => 'url:http,https',
             'email' => 'email',
+            'locale' => "string|in:{$supportedLocales}",
         ]);
 
-        CatalystDrep::updateOrCreate(['user_id' => Auth::user()->id], $attributes);
+        $locale = $attributes['locale'] ?? 'en';
+        $bio = $attributes['bio'] ?? null;
+        
+        session(['drep_signup_locale' => $locale]);
+        
+        unset($attributes['locale'], $attributes['bio']);
+
+        $catalystDrep = CatalystDrep::where('user_id', Auth::user()->id)->first();
+        
+        if ($catalystDrep) {
+            
+            $catalystDrep->update($attributes);
+            
+            if (!empty($bio)) {
+                $catalystDrep->setTranslation('bio', $locale, $bio);
+                $catalystDrep->save();
+            }
+        } else {
+           
+            $catalystDrep = CatalystDrep::create(array_merge($attributes, ['user_id' => Auth::user()->id]));
+        
+            if (!empty($bio)) {
+                $catalystDrep->setTranslation('bio', $locale, $bio);
+                $catalystDrep->save();
+            }
+        }
 
         return to_route('workflows.drepSignUp.index', ['step' => 2]);
     }
@@ -235,17 +271,96 @@ class CatalystDrepController extends Controller
 
     public function updateDrep(CatalystDrep $catalystDrep, Request $request)
     {
-
+        $supportedLocales = implode(',', config('locales.supported', ['en']));
+        
         $attributes = $request->validate([
             'objective' => 'required|min:69',
             'motivation' => 'required|min:69',
             'qualifications' => 'required|min:69',
+            'locale' => "string|in:{$supportedLocales}",
         ]);
 
-        $drep = $catalystDrep->update($attributes);
+        $locale = $attributes['locale'] ?? session('drep_signup_locale', 'en');
+        
+        session(['drep_signup_locale' => $locale]);
+        
+        unset($attributes['locale']);
 
-        if ($drep) {
-            return to_route('workflows.drepSignUp.index', ['step' => 5]);
+        foreach (['objective', 'motivation', 'qualifications'] as $field) {
+            if (!empty($attributes[$field])) {
+                $catalystDrep->setTranslation($field, $locale, $attributes[$field]);
+            }
+        }
+
+        $catalystDrep->save();
+
+        return to_route('workflows.drepSignUp.index', ['step' => 5]);
+    }
+
+    public function publishPlatformStatementToIpfs(CatalystDrep $catalystDrep, Request $request)
+    {
+        $supportedLocales = implode(',', config('locales.supported', ['en']));
+        
+        $attributes = $request->validate([
+            'objective' => 'required|min:69',
+            'motivation' => 'required|min:69',
+            'qualifications' => 'required|min:69',
+            'locale' => "string|in:{$supportedLocales}",
+            'paymentAddress' => 'string|nullable', // Add payment address from wallet
+        ]);
+
+        $locale = $attributes['locale'] ?? session('drep_signup_locale', 'en');
+        $paymentAddress = $attributes['paymentAddress'] ?? null;
+        unset($attributes['locale'], $attributes['paymentAddress']);
+
+        try {
+            foreach (['objective', 'motivation', 'qualifications'] as $field) {
+                if (!empty($attributes[$field])) {
+                    $catalystDrep->setTranslation($field, $locale, $attributes[$field]);
+                }
+            }
+            
+            $catalystDrep->save();
+
+            $jsonLdData = $this->generatePlatformStatementJsonLd($catalystDrep, $locale, $paymentAddress);
+
+            $filename = "drep-platform-statement-{$catalystDrep->id}-{$locale}.json";
+            $cid = $catalystDrep->uploadToIpfs(json_encode($jsonLdData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), $filename);
+            $gatewayUrl = $catalystDrep->getIpfsUrl($cid);
+
+            $catalystDrep->pinToIpfs($cid);
+
+            Meta::updateOrCreate(
+                [
+                    'model_type' => CatalystDrep::class,
+                    'model_id' => $catalystDrep->id,
+                    'key' => 'ipfs_platform_statement_cid',
+                ],
+                [
+                    'content' => $cid,
+                ]
+            );
+
+            Meta::updateOrCreate(
+                [
+                    'model_type' => CatalystDrep::class,
+                    'model_id' => $catalystDrep->id,
+                    'key' => 'ipfs_platform_statement_gateway_url',
+                ],
+                [
+                    'content' => $gatewayUrl,
+                ]
+            );
+
+            return back()->with('success', [
+                'message' => 'Platform statement successfully published to IPFS',
+                'ipfs_cid' => $cid,
+                'gateway_url' => $gatewayUrl,
+                'filename' => $filename,
+            ]);
+
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Failed to publish platform statement to IPFS: ' . $e->getMessage()]);
         }
     }
 
@@ -273,6 +388,120 @@ class CatalystDrepController extends Controller
                 'info' => 'workflows.catalystDrepSignup.platformStatementInfo',
             ],
         ]);
+    }
+
+    /**
+     * Generate JSON-LD platform statement data for IPFS upload
+     */
+    private function generatePlatformStatementJsonLd(CatalystDrep $catalystDrep, string $locale = 'en', ?string $paymentAddress = null): array
+    {
+        // Build references array
+        $references = [];
+        if (!empty($catalystDrep->link)) {
+            $references[] = [
+                '@type' => 'Link',
+                'label' => $catalystDrep->name ?: 'DRep Link',
+                'uri' => $catalystDrep->link,
+            ];
+        }
+
+        return [
+            '@context' => [
+                '@language' => $this->convertToJsonLdLanguage($locale),
+                'CIP100' => 'https://github.com/cardano-foundation/CIPs/blob/master/CIP-0100/README.md#',
+                'CIP119' => 'https://github.com/cardano-foundation/CIPs/blob/master/CIP-0119/README.md#',
+                'hashAlgorithm' => 'CIP100:hashAlgorithm',
+                'body' => [
+                    '@id' => 'CIP119:body',
+                    '@context' => [
+                        'references' => [
+                            '@id' => 'CIP119:references',
+                            '@container' => '@set',
+                            '@context' => [
+                                'GovernanceMetadata' => 'CIP100:GovernanceMetadataReference',
+                                'Identity' => 'CIP119:IdentityReference',
+                                'Link' => 'CIP119:LinkReference',
+                                'Other' => 'CIP100:OtherReference',
+                                'label' => 'CIP100:reference-label',
+                                'uri' => 'CIP100:reference-uri',
+                                'referenceHash' => [
+                                    '@id' => 'CIP119:referenceHash',
+                                    '@context' => [
+                                        'hashDigest' => 'CIP119:hashDigest',
+                                        'hashAlgorithm' => 'CIP100:hashAlgorithm',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        'paymentAddress' => 'CIP119:paymentAddress',
+                        'givenName' => 'CIP119:givenName',
+                        'image' => [
+                            '@id' => 'CIP119:image',
+                            '@context' => [
+                                'ImageObject' => 'https://schema.org/ImageObject',
+                                'contentUrl' => 'CIP119:contentUrl',
+                                'sha256' => 'CIP119:sha256',
+                            ],
+                        ],
+                        'objectives' => 'CIP119:objectives',
+                        'motivations' => 'CIP119:motivations',
+                        'qualifications' => 'CIP119:qualifications',
+                        'doNotList' => 'CIP119:doNotList',
+                        'bio' => 'CIPQQQ:bio',
+                        'dRepName' => 'CIPQQQ:dRepName',
+                        'email' => 'CIPQQQ:email',
+                    ],
+                ],
+                'authors' => [
+                    '@id' => 'CIP100:authors',
+                    '@container' => '@set',
+                    '@context' => [
+                        'name' => 'http://xmlns.com/foaf/0.1/name',
+                        'witness' => [
+                            '@id' => 'CIP100:witness',
+                            '@context' => [
+                                'witnessAlgorithm' => 'CIP100:witnessAlgorithm',
+                                'publicKey' => 'CIP100:publicKey',
+                                'signature' => 'CIP100:signature',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'authors' => [],
+            'hashAlgorithm' => 'blake2b-256',
+            'body' => [
+                'givenName' => $catalystDrep->name,
+                'dRepName' => $catalystDrep->name,
+                'bio' => $catalystDrep->getTranslation('bio', $locale) ?: '',
+                'email' => $catalystDrep->email ?: '',
+                'objectives' => $catalystDrep->getTranslation('objective', $locale) ?: '',
+                'motivations' => $catalystDrep->getTranslation('motivation', $locale) ?: '',
+                'qualifications' => $catalystDrep->getTranslation('qualifications', $locale) ?: '',
+                'paymentAddress' => $paymentAddress ?: '', 
+                'references' => $references,
+            ],
+        ];
+    }
+
+    /**
+     * Convert locale code to JSON-LD language format
+     */
+    private function convertToJsonLdLanguage(string $locale): string
+    {
+        $languageMapping = [
+            'en' => 'en-us',
+            'es' => 'es-es', 
+            'fr' => 'fr-fr',
+            'de' => 'de-de',
+            'ja' => 'ja-jp',
+            'ko' => 'ko-kr',
+            'pt' => 'pt-pt',
+            'ru' => 'ru-ru',
+            'zh' => 'zh-cn',
+        ];
+
+        return $languageMapping[$locale] ?? 'en-us';
     }
 
     public function delegate()
@@ -395,5 +624,34 @@ class CatalystDrepController extends Controller
         return response()->json([
             'message' => 'Undelegation successful!'
         ], 200);
+    }
+
+    /**
+     * Transform CatalystDrep data to include translations for specific locale
+     */
+    private function transformCatalystDrepForLocale(CatalystDrep $catalystDrep, string $locale): array
+    {
+        $data = CatalystDrepData::from($catalystDrep)->toArray();
+        
+        // Override translatable fields with the specific locale data
+        foreach (['bio', 'motivation', 'qualifications', 'objective'] as $field) {
+            $translation = $catalystDrep->getTranslation($field, $locale, false);
+            if ($translation) {
+                $data[$field] = $translation;
+            } else {
+                // If no translation exists for this locale, try to get any available translation
+                $translations = $catalystDrep->getTranslations($field);
+                if (!empty($translations)) {
+                    // Get the first available translation
+                    $data[$field] = array_values($translations)[0];
+                } else {
+                    $data[$field] = '';
+                }
+            }
+        }
+        
+        $data['locale'] = $locale;
+        
+        return $data;
     }
 };

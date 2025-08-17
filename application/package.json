@@ -82,6 +82,7 @@
     "dotenv": "^17.0.1",
     "embla-carousel-react": "^8.5.1",
     "framer-motion": "^12.0.11",
+    "franc": "^6.2.0",
     "hast-util-sanitize": "^5.0.2",
     "laravel-react-i18n": "^2.0.5",
     "lodash": "^4.17.21",
