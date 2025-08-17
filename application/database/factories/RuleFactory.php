@@ -28,8 +28,8 @@ class RuleFactory extends Factory
         ];
 
         $subject = $this->faker->randomElement(array_keys($validPredicates));
-
         $predicate = $this->faker->randomElement($validPredicates[$subject]);
+        $metric = Metric::inRandomOrder()->first() ?? Metric::factory()->create();
 
         return [
             'title' => $this->faker->sentence,
@@ -37,7 +37,8 @@ class RuleFactory extends Factory
             'operator' => $this->faker->randomElement(Operators::toValues()),
             'predicate' => $predicate,
             'logical_operator' => $this->faker->randomElement(LogicalOperators::toValues()),
-            'model_id' => Metric::factory(),
+            'model_id' => $metric->id,
+            'old_model_id' => $metric->old_id ?? 1,
             'model_type' => Metric::class,
         ];
     }
@@ -45,8 +46,11 @@ class RuleFactory extends Factory
     public function homeMetricRule(): Factory
     {
         return $this->state(function () {
+            $metric = Metric::factory()->homeMetric()->create();
+            
             return [
-                'model_id' => Metric::factory()->homeMetric()->create()->id,
+                'model_id' => $metric->id,
+                'old_model_id' => $metric->old_id ?? 1,
                 'model_type' => Metric::class,
             ];
         });

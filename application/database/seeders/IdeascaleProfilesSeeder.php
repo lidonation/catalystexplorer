@@ -19,7 +19,7 @@ class IdeascaleProfilesSeeder extends Seeder
      */
     public function run(): void
     {
-        collect(range(1, 1000))
+        collect(range(1, 100))
             ->chunk(100)
             ->each(function ($chunk) {
                 $profiles = IdeascaleProfile::factory(count($chunk))->create();

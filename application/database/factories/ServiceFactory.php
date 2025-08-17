@@ -12,12 +12,13 @@ class ServiceFactory extends Factory
 {
     public function definition(): array
     {
+        $user = User::inRandomOrder()->first();
+        
         return [
             'title' => $this->faker->sentence(3),
             'description' => $this->faker->paragraph(),
             'type' => $this->faker->randomElement(['offered', 'needed']),
-            'user_id' => User::factory(),
-
+            'user_id' => $user ? $user->id : null,
             'name' => $this->faker->optional(0.3)->name(),
             'email' => $this->faker->optional(0.3)->safeEmail(),
             'website' => $this->faker->optional(0.2)->url(),
