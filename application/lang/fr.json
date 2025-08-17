@@ -314,6 +314,11 @@
     "bookmarks.viewAsPublic": "Voir en public",
     "bookmarks.editListItem": "Modifier l'élément de liste",
     "bookmarks.publishToIpfs": "Publier sur IPFS",
+    "selectLanguage": "Sélectionner la langue",
+    "selectLanguageForContent": "Sélectionnez une langue pour votre contenu",
+    "languageDetection.multipleLanguagesError": "Certains champs semblent être rédigés dans des langues différentes. Veuillez vous assurer que tout le contenu est dans la même langue.",
+    "languageDetection.languageMismatchError": "Votre contenu semble être en :detectedLanguage mais vous avez sélectionné :selectedLanguage. Veuillez mettre à jour votre sélection de langue.",
+    "languageDetection.defaultMismatchError": "Incompatibilité de langue détectée",
     "previous": "Précédent",
     "next": "Suivant",
     "workflows.tinderProposal.step1.selectFund": "Sélectionner un Fonds",
@@ -1009,5 +1014,4 @@
     "workflows.publishToIpfs.success.copyCidTitle": "Copier le CID",
     "workflows.publishToIpfs.success.openInNewTabTitle": "Ouvrir dans un nouvel onglet",
     "workflows.publishToIpfs.reviewDetails": "Vous êtes sur le point de publier votre liste sur IPFS. Consultez les détails ci-dessous."
-
 }

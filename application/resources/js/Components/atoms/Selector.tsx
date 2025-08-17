@@ -19,6 +19,8 @@ type SelectProps = {
     context?: string;
     basic?: boolean;
     className?: string;
+    popoverClassName?: string;
+    triggerClassName?: string;
     hideCheckbox?: boolean;
     placeholder?: string;
     disabled?: boolean;
@@ -33,6 +35,8 @@ export default function Selector({
     selectedItems = [],
     setSelectedItems,
     className,
+    popoverClassName = '',
+    triggerClassName = '',
     bgColor = 'bg-background',
     hideCheckbox = false,
     placeholder = '',
@@ -92,7 +96,7 @@ export default function Selector({
                         role="combobox"
                         aria-expanded={open}
                         aria-label={t('select') + ' ' + t('option')}
-                        className="border-input placeholder:text-muted-foreground ring-offset-background flex h-full w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                        className={cn("border-input placeholder:text-muted-foreground ring-offset-background flex h-full w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50", triggerClassName)}
                         data-testid={dataTestIdButton}
                     >
                         <span className="flex items-center gap-2 overflow-hidden" data-testid="selector-selected-items">
@@ -111,7 +115,7 @@ export default function Selector({
                     </button>
                 </PopoverTrigger>
                 <PopoverContent
-                    className="bg-background relative z-150 w-full min-w-[var(--radix-popover-trigger-width)] p-1"
+                    className={cn("bg-background relative z-150 w-full min-w-[var(--radix-popover-trigger-width)] p-1", popoverClassName)}
                     align="start"
                     data-testid="options-container"
                 >

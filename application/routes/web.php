@@ -264,6 +264,8 @@ Route::localized(
                         ->name('validateWallet');
                     Route::post('{catalystDrep}/capture-signature', [CatalystDrepController::class, 'captureSignature'])
                         ->name('captureSignature');
+                    Route::post('{catalystDrep}/publish-platform-statement', [CatalystDrepController::class, 'publishPlatformStatementToIpfs'])
+                        ->name('publishPlatformStatement');
                 });
 
             Route::prefix('/signature-capture/steps')->as('signature.')

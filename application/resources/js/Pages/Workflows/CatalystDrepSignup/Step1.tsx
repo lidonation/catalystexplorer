@@ -1,10 +1,11 @@
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import { StepDetails } from '@/types';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { useForm } from '@inertiajs/react';
 import {useLaravelReactI18n} from "laravel-react-i18n";
 import { ChevronRight } from 'lucide-react';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
@@ -22,9 +23,10 @@ interface Step1Props {
     stepDetails: StepDetails[];
     activeStep: number;
     catalystDrep?: CatalystDrepData;
+    savedLocale: string;
 }
 
-const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep ,catalystDrep}) => {
+const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, catalystDrep, savedLocale }) => {
     const { t } = useLaravelReactI18n();
     const [isFormValid, setIsFormValid] = useState(false);
     const formRef = useRef<DrepSignupFormHandles>(null);
@@ -35,6 +37,7 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep ,catalystDrep}) =
         bio: catalystDrep?.bio ?? '',
         link: catalystDrep?.link ?? '',
         willMaintain:  false,
+        locale: savedLocale,
     });
 
     const submitForm = () => {
@@ -43,6 +46,13 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep ,catalystDrep}) =
 
             if (!formData.data.willMaintain) {
                 form.setError({'willMaintain': "1"});
+                return;
+            }
+
+            // Validate language consistency before submission
+            const languageValidation = formRef.current.validateLanguages();
+            if (!languageValidation.isValid) {
+                form.setError({'bio': languageValidation.message || t('languageDetection.defaultMismatchError')});
                 return;
             }
 
@@ -62,10 +72,14 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep ,catalystDrep}) =
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
+                {/* Error Messages */}
+                <ErrorDisplay />
+
                 <DrepSignupForm
                     form={form}
                     setIsValid={setIsFormValid}
                     ref={formRef}
+                    savedLocale={savedLocale}
                 />
             </Content>
 

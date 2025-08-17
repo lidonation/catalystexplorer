@@ -7,23 +7,60 @@ import {
     generateLocalizedRoute,
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
-import { InertiaFormProps, useForm } from '@inertiajs/react';
-import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { InertiaFormProps, useForm, usePage } from '@inertiajs/react';
+import {useLaravelReactI18n} from "laravel-react-i18n";
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
+import { useLanguageDetection } from '@/hooks/useLanguageDetection';
+import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 import CatalysDrepData = App.DataTransferObjects.CatalystDrepData;
+import Paragraph from '@/Components/atoms/Paragraph';
+import IpfsSuccessDisplay from './partials/IpfsSuccessDisplay';
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface Step5Props {
     catalystDrep: CatalysDrepData;
     stepDetails: StepDetails[];
     activeStep: number;
+    savedLocale: string;
 }
 
-export interface DrepSignupFormFields extends CatalysDrepData {}
+interface PageProps {
+    flash?: {
+        success?: string | {
+            ipfs_cid: string;
+            gateway_url: string;
+            filename: string;
+        };
+    };
+    errorBags?: {
+        default?: {
+            error?: string[];
+        };
+    };
+    [key: string]: any;
+}
+
+export interface DrepSignupFormFields {
+    id?: string | null;
+    name?: string | null;
+    email?: string | null;
+    link?: string | null;
+    bio?: string | null;
+    motivation?: string | null;
+    qualifications?: string | null;
+    objective?: string | null;
+    stake_address?: string | null;
+    voting_power?: number | null;
+    last_active?: string | null;
+    status?: string | null;
+    locale?: string | null;
+    [key: string]: any;
+}
 
 export interface DrepSignupFormHandles {
     getFormData: InertiaFormProps<DrepSignupFormFields>;
@@ -33,29 +70,80 @@ const step5: React.FC<Step5Props> = ({
     stepDetails,
     activeStep,
     catalystDrep,
+    savedLocale,
 }) => {
     const { t } = useLaravelReactI18n();
+    const page = usePage<PageProps>();
+    const { userAddress } = useConnectWallet();
+    const [languageWarning, setLanguageWarning] = useState<string>('');
+    const [ipfsData, setIpfsData] = useState<{
+        cid: string;
+        gatewayUrl: string;
+        filename: string;
+    } | null>(null);
 
-    const form = useForm<DrepSignupFormFields>({
+    const { getSuggestedLanguage, validateLanguageConsistency } = useLanguageDetection();
+
+    const form = useForm({
         ...catalystDrep,
-    });
+        locale: savedLocale,
+    } as any);
 
     const { data, setData } = form;
 
     const localizedRoute = useLocalizedRoute;
 
+    // Check for flash success data on component mount
+    useEffect(() => {
+        const flashSuccess = page.props.flash?.success;
+        if (flashSuccess && typeof flashSuccess === 'object' && 'ipfs_cid' in flashSuccess) {
+            setIpfsData({
+                cid: flashSuccess.ipfs_cid,
+                gatewayUrl: flashSuccess.gateway_url,
+                filename: flashSuccess.filename,
+            });
+        }
+    }, [page.props.flash]);
+
+    const validateLanguages = useCallback(() => {
+        const validation = validateLanguageConsistency({
+            objective: data.objective || '',
+            motivation: data.motivation || '',
+            qualifications: data.qualifications || ''
+        }, savedLocale);
+        
+        if (!validation.isValid) {
+            setLanguageWarning(validation.message || 'Language mismatch detected between fields');
+            return false;
+        }
+        
+        setLanguageWarning('');
+        return true;
+    }, [data.objective, data.motivation, data.qualifications, savedLocale, validateLanguageConsistency]);
+
     const submitForm = () => {
-        form.patch(
-            generateLocalizedRoute('workflows.drepSignUp.patch', {
+        // Validate languages before submission
+        if (!validateLanguages()) {
+            return;
+        }
+        
+        form.data.locale = savedLocale;
+        form.data.paymentAddress = userAddress;
+        
+        form.post(
+            generateLocalizedRoute('workflows.drepSignUp.publishPlatformStatement', {
                 catalystDrep: catalystDrep.id,
             }),
             {
-                onError: (errors) => {
+                preserveScroll: true,
+                onSuccess: () => {
+                    // The IPFS data will be handled by the useEffect that watches for flash messages
+                    console.log('Platform statement published successfully');
+                },
+                onError: (errors: any) => {
+                    console.error('Failed to publish platform statement to IPFS:', errors);
                     for (const key in errors) {
-                        form.setError(
-                            key as keyof DrepSignupFormFields,
-                            errors[key],
-                        );
+                        (form as any).setError(key, errors[key]);
                     }
                 },
             },
@@ -69,11 +157,21 @@ const step5: React.FC<Step5Props> = ({
     const nextStep = localizedRoute('dreps.list');
 
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
+        <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}  wrapperClassName="!h-auto"
+           contentClassName="!max-h-none">
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
                 <div className="@container mx-auto mb-6 w-full max-w-2xl px-4">
+                    {/* Error Messages */}
+                    <ErrorDisplay/>
+
+                    {/* IPFS Results */}
+                    {ipfsData && (
+                        <IpfsSuccessDisplay ipfsData={ipfsData} />
+                    )}
+                
+
                     <div className="bg-primary-light mb-6 rounded-lg p-4 text-center">
                         <p className="text-slate-500">
                             {t(
@@ -83,6 +181,14 @@ const step5: React.FC<Step5Props> = ({
                     </div>
 
                     <form className="mb-8 space-y-6">
+                        {languageWarning && (
+                            <div className="mb-6 p-4 bg-error-light border border-error rounded-md">
+                                <p className="text-sm text-error">
+                                 {languageWarning}
+                                </p>
+                            </div>
+                        )}
+
                         {/* Bio */}
                         <div className="mt-3">
                             <label htmlFor="bio" className="mb-1 font-bold">
@@ -98,11 +204,11 @@ const step5: React.FC<Step5Props> = ({
                                 minLengthEnforced
                                 value={form.data.objective ?? ''}
                                 onChange={(e) =>
-                                    setData('objective', e.target.value)
+                                    (form as any).setData('objective', e.target.value)
                                 }
                                 className="h-30 w-full rounded-lg px-4 py-2"
                             />
-                            <InputError message={form.errors.objective} />
+                            <InputError message={(form.errors as any).objective} />
                         </div>
 
                         {/* Bio */}
@@ -123,11 +229,11 @@ const step5: React.FC<Step5Props> = ({
                                 minLengthEnforced
                                 value={form.data.motivation ?? ''}
                                 onChange={(e) =>
-                                    setData('motivation', e.target.value)
+                                    (form as any).setData('motivation', e.target.value)
                                 }
                                 className="h-30 w-full rounded-lg px-4 py-2"
                             />
-                            <InputError message={form.errors.motivation} />
+                            <InputError message={(form.errors as any).motivation} />
                         </div>
 
                         {/* Bio */}
@@ -150,44 +256,51 @@ const step5: React.FC<Step5Props> = ({
                                 minLengthEnforced
                                 value={form.data.qualifications ?? ''}
                                 onChange={(e) =>
-                                    setData('qualifications', e.target.value)
+                                    (form as any).setData('qualifications', e.target.value)
                                 }
                                 className="h-30 w-full rounded-lg px-4 py-2"
                             />
-                            <InputError message={form.errors.qualifications} />
+                            <InputError message={(form.errors as any).qualifications} />
                         </div>
                         <PrimaryButton
                             onClick={() => submitForm()}
                             type="button"
                             className="w-full text-sm lg:px-8 lg:py-2"
+                            disabled={form.processing}
                         >
-                            {t('workflows.catalystDrepSignup.submitStatement')}
+                            {form.processing ? (
+                                <>
+                                    {t('workflows.catalystDrepSignup.publishing')}
+                                </>
+                            ) : (
+                                t('workflows.catalystDrepSignup.submitStatementToIpfs')
+                            )}
                         </PrimaryButton>
+                        
                     </form>
                 </div>
-            </Content>
-            <Footer>
-                <PrimaryLink
-                    href={prevStep}
-                    className="text-sm lg:px-8 lg:py-2"
-                >
-                    <ChevronLeft className="h-4 w-4" />
-                    <span>{t('Previous')}</span>
-                </PrimaryLink>
+                <div className="flex justify-between items-center px-20 py-8">
+                    <PrimaryLink
+                        href={prevStep}
+                        className="text-sm lg:px-8 lg:py-2"
+                    >
+                        <ChevronLeft className="h-4 w-4" />
+                        <span>{t('Previous')}</span>
+                    </PrimaryLink>
 
-                <PrimaryLink
-                    className="text-sm lg:px-8 lg:py-2"
-                    disabled={
-                        !catalystDrep.objective ||
-                        !catalystDrep.qualifications ||
-                        !catalystDrep.motivation
-                    }
-                    href={nextStep}
-                >
-                    <span>{t('Next')}</span>
-                    <ChevronRight className="h-4 w-4" />
-                </PrimaryLink>
-            </Footer>
+                    <PrimaryLink
+                        className="text-sm lg:px-8 lg:py-2"
+                        disabled={
+                            !ipfsData?.cid
+                        }
+                        href={nextStep}
+                    >
+                        <span>{t('Next')}</span>
+                        <ChevronRight className="h-4 w-4" />
+                    </PrimaryLink>
+                </div>
+            </Content>
+           
         </WorkflowLayout>
     );
 };

@@ -2,10 +2,12 @@ import InputError from '@/Components/InputError';
 import Checkbox from '@/Components/atoms/Checkbox';
 import TextInput from '@/Components/atoms/TextInput';
 import Textarea from '@/Components/atoms/Textarea';
+import LanguageSelector from '@/Components/atoms/LanguageSelector';
 import { FormDataConvertible } from '@inertiajs/core';
 import { InertiaFormProps } from '@inertiajs/react';
-import { forwardRef, useEffect, useImperativeHandle } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useState, useCallback } from 'react';
 import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLanguageDetection } from '@/hooks/useLanguageDetection';
 
 export interface DrepSignupFormFields
     extends Record<string, FormDataConvertible> {
@@ -14,15 +16,18 @@ export interface DrepSignupFormFields
     bio: string;
     link: string;
     willMaintain: boolean;
+    locale: string;
 }
 
 interface DrepSignupFormProps {
     setIsValid: (valid: boolean) => void;
     form: InertiaFormProps<DrepSignupFormFields>;
+    savedLocale?: string;
 }
 
 export interface DrepSignupFormHandles {
     getFormData: InertiaFormProps<DrepSignupFormFields>;
+    validateLanguages: () => { isValid: boolean; message?: string };
 }
 
 const handleChange = (
@@ -34,23 +39,54 @@ const handleChange = (
 };
 
 const DrepSignupForm = forwardRef<DrepSignupFormHandles, DrepSignupFormProps>(
-    ({ setIsValid, form }, ref) => {
+    ({ setIsValid, form, savedLocale }, ref) => {
         const typedForm = form as InertiaFormProps<DrepSignupFormFields>;
         const { data } = typedForm;
         const setData = typedForm.setData as (field: keyof DrepSignupFormFields, value: any) => void;
         const errors = typedForm.errors as Partial<Record<keyof DrepSignupFormFields, string>>;
+        const [currentLocale, setCurrentLocale] = useState<string>(savedLocale || data.locale || 'en');
+        const [languageWarning, setLanguageWarning] = useState<string>('');
 
+        const { getSuggestedLanguage, validateLanguageConsistency } = useLanguageDetection();
         const { t } = useLaravelReactI18n();
+
+        const handleLanguageChange = useCallback((locale: string) => {
+            setCurrentLocale(locale);
+            setData('locale', locale);
+        }, [setData]);
+
+        const validateLanguages = useCallback(() => {
+            const validation = validateLanguageConsistency(
+                { bio: data.bio },
+                currentLocale
+            );
+            
+            if (!validation.isValid) {
+                setLanguageWarning(validation.message || 'Language mismatch detected');
+                return { isValid: false, message: validation.message };
+            }
+            
+            setLanguageWarning('');
+            return { isValid: true };
+        }, [data.bio, currentLocale, validateLanguageConsistency]);
 
         useImperativeHandle(ref, () => ({
             getFormData: form,
+            validateLanguages
         }));
 
         useEffect(() => {
             if (typedForm.data.email.length && typedForm.data.name.length) {
                 setIsValid(true);
             }
-        }, [typedForm.data.email, typedForm.data.name]);
+        }, [typedForm.data.email, typedForm.data.name, setIsValid]);
+
+        // Ensure locale is set in form data
+        useEffect(() => {
+            if (data.locale !== currentLocale) {
+                setData('locale', currentLocale);
+            }
+        }, [currentLocale, data.locale, setData]);
 
         return (
             <div className="rounded-lg p-4 lg:p-8">
@@ -88,6 +124,22 @@ const DrepSignupForm = forwardRef<DrepSignupFormHandles, DrepSignupFormProps>(
                             required
                         />
                         <InputError message={errors.email} />
+                    </div>
+
+                    {/* Language Display */}
+                    <div className="mt-3">
+                        <LanguageSelector
+                            selectedLanguage={currentLocale}
+                            onLanguageChange={handleLanguageChange}
+                            className=""
+                        />
+                        {languageWarning && (
+                            <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-md">
+                                <p className="text-sm text-amber-800">
+                                    ⚠️ {languageWarning}
+                                </p>
+                            </div>
+                        )}
                     </div>
 
                     {/* Bio */}
