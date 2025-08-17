@@ -21,7 +21,7 @@ class CatalystDrep extends Model
 
     public function stakeAddress(): Attribute
     {
-        return Attribute::make(get: fn () => $this->signatures()?->first()?->stake_address);
+        return Attribute::make(get: fn() => $this->signatures()?->first()?->stake_address);
     }
 
     public function lastActive(): Attribute
@@ -42,19 +42,20 @@ class CatalystDrep extends Model
     {
         return Attribute::make(
             get: function () {
-                return DB::select('SELECT reg.stake_pub,cvp.voting_power,
-                            cs.model_id AS model_id,
-                            funds.title AS fund_title
-                        FROM voting_powers cvp
-                        JOIN delegations d ON cvp.voter_id = d.cat_onchain_id
-                        LEFT JOIN snapshots cs ON cvp.snapshot_id = cs.id
-                        LEFT JOIN registrations reg ON d.registration_id = reg.id
-                        LEFT JOIN funds  ON cs.model_id = funds.id
-                        WHERE cvp.consumed = true
-                        AND cs.model_id IS NOT NULL
-                        AND reg.stake_pub = ?
-                        GROUP BY reg.stake_pub,funds.created_at,funds.title,cvp.voting_power,cs.model_id 
-                        ORDER BY funds.created_at desc
+                return DB::select('
+                SELECT reg.stake_pub, cvp.voting_power,
+                       cs.model_id AS model_id,
+                       funds.title AS fund_title
+                FROM voting_powers cvp
+                JOIN delegations d ON cvp.voter_id = d.cat_onchain_id
+                LEFT JOIN snapshots cs ON cvp.snapshot_id = cs.id
+                LEFT JOIN registrations reg ON d.registration_id = reg.id
+                LEFT JOIN funds ON cs.model_id::bigint = funds.id::text::bigint
+                WHERE cvp.consumed = true
+                  AND cs.model_id IS NOT NULL
+                  AND reg.stake_pub = ?
+                GROUP BY reg.stake_pub, funds.created_at, funds.title, cvp.voting_power, cs.model_id
+                ORDER BY funds.created_at DESC
             ', [$this->stake_address]);
             }
         );

@@ -979,6 +979,7 @@
     "dreps.drepList.delegators": "Delegators",
     "dreps.drepList.status": "Status",
     "dreps.drepList.delegate": "Delegate",
+    "dreps.drepList.undelegate": "Undelegate",
     "dreps.drepList.anHourAgo": "an hour ago",
     "dreps.drepList.copied": "Copied!",
     "dreps.drepList.unavailable": "Unavailable",
