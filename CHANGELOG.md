@@ -1,3 +1,10 @@
+## [1.11.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.11.0...v1.11.1) (2025-08-18)
+
+
+### Bug Fixes
+
+* resolve proposal filters failing ([c895ed9](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/c895ed9cec9742b42b8a4c21f3d1bb823a48abe0))
+
 # [1.11.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.10.0...v1.11.0) (2025-08-18)
 
 
