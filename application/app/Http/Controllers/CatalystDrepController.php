@@ -22,7 +22,6 @@ class CatalystDrepController extends Controller
     /**
      * Display a landing page.
      */
-
     public function index(Request $request): Response
     {
         $drep = '';
@@ -181,7 +180,7 @@ class CatalystDrepController extends Controller
 
             $catalystDrep->update($attributes);
 
-            if (!empty($bio)) {
+            if (! empty($bio)) {
                 $catalystDrep->setTranslation('bio', $locale, $bio);
                 $catalystDrep->save();
             }
@@ -189,7 +188,7 @@ class CatalystDrepController extends Controller
 
             $catalystDrep = CatalystDrep::create(array_merge($attributes, ['user_id' => Auth::user()->id]));
 
-            if (!empty($bio)) {
+            if (! empty($bio)) {
                 $catalystDrep->setTranslation('bio', $locale, $bio);
                 $catalystDrep->save();
             }
