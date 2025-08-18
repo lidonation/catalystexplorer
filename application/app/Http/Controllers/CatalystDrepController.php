@@ -22,7 +22,6 @@ class CatalystDrepController extends Controller
     /**
      * Display a landing page.
      */
-    protected array $queryParams = [];
 
     public function index(Request $request): Response
     {
@@ -34,7 +33,7 @@ class CatalystDrepController extends Controller
     /**
      * Display the specified resource.
      */
-    public function list(Request $request): Response
+    public function list(): Response
     {
         $user = Auth::user();
 
