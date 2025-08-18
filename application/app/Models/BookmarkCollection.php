@@ -123,7 +123,7 @@ class BookmarkCollection extends Model
     /**
      * Override the comments relationship to handle UUID-to-text conversion
      */
-    public function comments()
+    public function comments(): Comment
     {
         return Comment::where('commentable_type', static::class)
             ->where('commentable_id', (string) $this->getKey());

@@ -22,7 +22,7 @@ class Announcement extends Model implements HasMedia
     use HasAuthor, HasUuids, InteractsWithMedia, Prunable;
 
     protected $keyType = 'string';
-    
+
     public $incrementing = false;
 
     protected $fillable = [

@@ -195,14 +195,14 @@ export default function ModelSearch({
                                             className="bg-background text-content-accent checked:bg-primary focus:border-primary focus:ring-primary h-4 w-4 shadow-xs"
                                         />
                                         <div className="space-y-1">
-                                            <a href={generateLink(result)} target='_blank'>
+                                            {/* <a href={generateLink(result)} target='_blank'> */}
                                             <h3 className="hover:cursor-pointer text-lg font-bold">
                                                 {formatStat(
                                                     result,
                                                     model.labelField,
                                                 )}
                                             </h3>
-                                            </a>
+                                            {/* </a> */}
 
                                             <div className="flex flex-wrap gap-4 pt-1">
                                                 {model.statsField.map(

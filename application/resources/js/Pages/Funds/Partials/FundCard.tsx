@@ -22,7 +22,7 @@ const FundCard: React.FC<FundCardProps> = ({
     const { t } = useLaravelReactI18n();
 
     return (
-        <div className="bg-background flex w-full transform flex-row items-stretch space-x-6 overflow-hidden rounded-lg p-3 shadow-md sm:p-4" data-testid={`fund-card-${fund.uuid}`}>
+        <div className="bg-background flex w-full transform flex-row items-stretch space-x-6 overflow-hidden rounded-lg p-3 shadow-md sm:p-4" data-testid={`fund-card-${fund.id}`}>
             {/* Image Section */}
             <div className="flex flex-none flex-col items-center space-y-2 sm:items-start sm:space-y-4">
                 {/* Title */}

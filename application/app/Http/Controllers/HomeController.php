@@ -26,18 +26,12 @@ class HomeController extends Controller
         MetricRepository $metrics,
         AnnouncementRepository $announcements
     ): Response {
-
         return Inertia::render('Home/Index', [
             'posts' => Inertia::optional(
                 fn () => $this->getPosts($postRepository)
             ),
             'proposals' => Inertia::optional(
-                fn () => ProposalData::collect(
-                    $proposals->with(['users', 'campaign', 'fund'])
-                        ->limit(3)
-                        ->inRandomOrder()
-                        ->get()
-                )
+                fn () => $this->getProposals($proposals)
             ),
             'metrics' => Inertia::optional(
                 fn () => collect($this->getHomeMetrics($metrics))
@@ -49,48 +43,27 @@ class HomeController extends Controller
                     ->values()
             ),
             'announcements' => Inertia::optional(
-                fn () => AnnouncementData::collect($announcements
-                    ->limit(6)
-                    ->getQuery()
-                    ->where('context', '!=', 'home')
-                    ->latest('event_ends_at')
-                    ->get())
+                fn () => $this->getAnnouncements($announcements)
             ),
             'specialAnnouncements' => Inertia::optional(
-                fn () => AnnouncementData::collect(
-                    Announcement::query()
-                        ->where('context', 'special')
-                        ->latest('event_ends_at')
-                        ->limit(6)
-                        ->get()
-                        ->map(fn ($announcement) => [
-                            'id' => $announcement->id,
-                            'title' => $announcement->title,
-                            'content' => $announcement->content,
-                            'cta' => $announcement->cta,
-                            'hero_image_url' => $announcement->heroPhotoUrl,
-                        ])
-                )
+                fn () => $this->getSpecialAnnouncements()
             ),
         ]);
     }
 
     public function getPosts(PostRepository $postRepository)
     {
-
         $postRepository->setQuery([
             'tags' => 'project-catalyst',
         ]);
 
-        $posts = [];
-
         try {
-            $posts = $postRepository->paginate(4)->setMaxPages(1)->collect()->all();
+            return $postRepository->paginate(4)->setMaxPages(1)->collect()->all();
         } catch (\Throwable $e) {
             report($e);
 
-            $posts = new \Illuminate\Pagination\LengthAwarePaginator(
-                collect([]),
+            return new \Illuminate\Pagination\LengthAwarePaginator(
+                null,
                 0,
                 4,
                 request('page', 1),
@@ -100,13 +73,68 @@ class HomeController extends Controller
                 ]
             );
         }
+    }
 
-        return $posts;
+    private function getProposals(ProposalRepository $proposals)
+    {
+        try {
+            return ProposalData::collect(
+                $proposals->with(['users', 'campaign', 'fund'])
+                    ->limit(3)
+                    ->inRandomOrder()
+                    ->get()
+            );
+        } catch (\Throwable $e) {
+            report($e);
+
+            return collect([]);
+        }
+    }
+
+    private function getAnnouncements(AnnouncementRepository $announcements)
+    {
+        try {
+            return AnnouncementData::collect(
+                $announcements
+                    ->limit(6)
+                    ->getQuery()
+                    ->where('context', '!=', 'home')
+                    ->latest('event_ends_at')
+                    ->get()
+            );
+        } catch (\Throwable $e) {
+            report($e);
+
+            return collect([]);
+        }
+    }
+
+    private function getSpecialAnnouncements()
+    {
+        try {
+            return AnnouncementData::collect(
+                Announcement::query()
+                    ->where('context', 'special')
+                    ->latest('event_ends_at')
+                    ->limit(6)
+                    ->get()
+                    ->map(fn ($announcement) => [
+                        'id' => $announcement->id,
+                        'title' => $announcement->title,
+                        'content' => $announcement->content,
+                        'cta' => $announcement->cta,
+                        'hero_image_url' => $announcement->heroPhotoUrl,
+                    ])
+            );
+        } catch (\Throwable $e) {
+            report($e);
+
+            return collect([]);
+        }
     }
 
     private function getHomeMetrics(MetricRepository $metrics)
     {
-        // Retrieve the default metric limit from the configuration
         $defaultLimit = Config::get('app.metric_card.default_limit', 5);
 
         return MetricData::collect(

@@ -21,13 +21,16 @@ export function useSearchOptions<T>(domain?: string) {
     useEffect(() => {
 
         const fetchData = async () => {
-            const routeName = domain === 'ideascale-profiles'
-                ? 'api.ideascaleProfiles.index'
-                : `api.${domain}`;
+            let routeName = `api.${domain}`;
 
+            if (domain === 'ideascale-profiles') {
+                routeName = 'api.ideascaleProfiles.index'
+            } else if (domain === 'funds') {
+                routeName = 'api.funds.legacy'
+            }
 
             const response = await resolvePromise<ApiPaginatedData<T>>(
-                requestManager.sendRequest('get', route(routeName, { search: searchTerm, ids:uuids }))
+                requestManager.sendRequest('get', route(routeName, { search: searchTerm, ids: uuids }))
             );
 
             if (response) {

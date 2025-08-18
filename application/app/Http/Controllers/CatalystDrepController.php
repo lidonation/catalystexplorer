@@ -50,7 +50,7 @@ class CatalystDrepController extends Controller
                 )
             )->onEachSide(0),
             'filters' => [],
-            'delegatedDrepStakeAddress' => $delegatedDrepStakeAddress
+            'delegatedDrepStakeAddress' => $delegatedDrepStakeAddress,
         ]);
     }
 
@@ -256,7 +256,6 @@ class CatalystDrepController extends Controller
             $validated
         );
 
-
         // Attach the signature to the CatalystDrep if not already attached
         $catalystDrep->modelSignatures()->firstOrCreate([
             'model_id' => $catalystDrep->id,
@@ -285,7 +284,7 @@ class CatalystDrepController extends Controller
         unset($attributes['locale']);
 
         foreach (['objective', 'motivation', 'qualifications'] as $field) {
-            if (!empty($attributes[$field])) {
+            if (! empty($attributes[$field])) {
                 $catalystDrep->setTranslation($field, $locale, $attributes[$field]);
             }
         }
@@ -313,7 +312,7 @@ class CatalystDrepController extends Controller
 
         try {
             foreach (['objective', 'motivation', 'qualifications'] as $field) {
-                if (!empty($attributes[$field])) {
+                if (! empty($attributes[$field])) {
                     $catalystDrep->setTranslation($field, $locale, $attributes[$field]);
                 }
             }
@@ -357,7 +356,7 @@ class CatalystDrepController extends Controller
                 'filename' => $filename,
             ]);
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Failed to publish platform statement to IPFS: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Failed to publish platform statement to IPFS: '.$e->getMessage()]);
         }
     }
 
@@ -394,7 +393,7 @@ class CatalystDrepController extends Controller
     {
         // Build references array
         $references = [];
-        if (!empty($catalystDrep->link)) {
+        if (! empty($catalystDrep->link)) {
             $references[] = [
                 '@type' => 'Link',
                 'label' => $catalystDrep->name ?: 'DRep Link',
@@ -539,7 +538,7 @@ class CatalystDrepController extends Controller
 
         $signature = Signature::updateOrCreate(
             [
-                'stake_key'    => $validated['stake_key'],
+                'stake_key' => $validated['stake_key'],
                 'stake_address' => $validated['stakeAddress'],
                 'user_uuid' => Auth::user()->id,
             ],
@@ -577,18 +576,17 @@ class CatalystDrepController extends Controller
             ->where('signatures.stake_address', $drepStakeAddress['drep_stake_address'])
             ->value('catalyst_dreps.id');
 
-        if (!$drepId) {
+        if (! $drepId) {
             return response()->json([
                 'error' => 'DRep not found for provided stake address',
             ], 422);
         }
 
-
         DB::table('catalyst_drep_user')->updateOrInsert(
             [
-                'user_id'         => $user->id,
-                'catalyst_drep_id'         => $drepId,
-                'user_stake_address'     => $validated['stakeAddress'],
+                'user_id' => $user->id,
+                'catalyst_drep_id' => $drepId,
+                'user_stake_address' => $validated['stakeAddress'],
                 'catalyst_drep_stake_address' => $drepStakeAddress['drep_stake_address'],
             ],
             [
@@ -596,7 +594,6 @@ class CatalystDrepController extends Controller
                 'created_at' => now(),
             ]
         );
-
 
         return response()->json([
             'message' => 'Delegation successful!',
@@ -619,7 +616,7 @@ class CatalystDrepController extends Controller
         ])->delete();
 
         return response()->json([
-            'message' => 'Undelegation successful!'
+            'message' => 'Undelegation successful!',
         ], 200);
     }
 
@@ -638,7 +635,7 @@ class CatalystDrepController extends Controller
             } else {
                 // If no translation exists for this locale, try to get any available translation
                 $translations = $catalystDrep->getTranslations($field);
-                if (!empty($translations)) {
+                if (! empty($translations)) {
                     // Get the first available translation
                     $data[$field] = array_values($translations)[0];
                 } else {
@@ -651,4 +648,4 @@ class CatalystDrepController extends Controller
 
         return $data;
     }
-};
+}

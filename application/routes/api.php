@@ -28,7 +28,7 @@ Route::prefix('api')->as('api.')->group(function () {
 
     Route::get('/groups', [GroupController::class, 'groups'])->name('groups');
     Route::get('/groups/{group:id}', [GroupController::class, 'group'])->name('group');
-    Route::get('/groups/{hash}/connections', [GroupController::class, 'connections'])->name('groups.connections');
+    Route::get('/groups/{uuid}/connections', [GroupController::class, 'connections'])->name('groups.connections');
     Route::get('/groups/incremental-connections', [GroupController::class, 'incrementalConnections'])->name('groups.incremental-connections');
     Route::get('ideascale-profiles/incremental-connections', [IdeascaleProfilesController::class, 'incrementalConnections'])->name('ideascaleProfiles.incremental-connections');
     Route::get('/choices', [VoterHistoriesController::class, 'getChoices'])->name('choices');
@@ -72,20 +72,20 @@ Route::prefix('api')->as('api.')->group(function () {
     Route::get('/communities', [CommunityController::class, 'communities'])->name('communities');
     Route::get('/communities/{community:id}', [CommunitiesController::class, 'community'])->name('community');
 
-    Route::get('/communities/{hash}/connections', [CommunitiesController::class, 'connections'])->name('communities.connections');
+    Route::get('/communities/{uuid}/connections', [CommunitiesController::class, 'connections'])->name('communities.connections');
     Route::get('/communities/incremental-connections', [CommunitiesController::class, 'incrementalConnections'])->name('communities.incremental-connections');
-    Route::post('/communities/{hash}/join', [CommunitiesController::class, 'join'])->name('community.join');
+    Route::post('/communities/{uuid}/join', [CommunitiesController::class, 'join'])->name('community.join');
 
     Route::get('/proposal-charts-metrics', [ProposalsController::class, 'getProposalMetrics'])->name('proposalChartsMetrics');
 
     Route::prefix('bookmark-items')->as('bookmarks.')
         ->group(function () {
-            Route::post('/{modelType}/{hash}/{bookmarkCollection?}', [MyBookmarksController::class, 'store'])
+            Route::post('/{modelType}/{uuid}/{bookmarkCollection?}', [MyBookmarksController::class, 'store'])
                 ->middleware('auth')
                 ->name('store');
             Route::delete('/{bookmarkItem}', [MyBookmarksController::class, 'delete'])
                 ->name('remove');
-            Route::get('/{modelType}/{hash}/status', [MyBookmarksController::class, 'status'])
+            Route::get('/{modelType}/{uuid}/status', [MyBookmarksController::class, 'status'])
                 ->name('status');
         });
 
@@ -113,7 +113,7 @@ Route::prefix('api')->as('api.')->group(function () {
         Route::get('/', [IdeascaleProfilesController::class, 'ideascaleProfiles'])->name('index');
         Route::post('/claim-ideascale-profile/{ideascaleProfile}', [IdeascaleProfilesController::class, 'claimIdeascaleProfile'])->name('claim');
         Route::get('/{ideascaleProfile:id}', [IdeascaleProfilesController::class, 'ideascale_profile'])->name('show');
-        Route::get('/{hash}/connections', [IdeascaleProfilesController::class, 'connections'])->name('connections');
+        Route::get('/{uuid}/connections', [IdeascaleProfilesController::class, 'connections'])->name('connections');
     });
 
     Route::get('/fund-titles', [ProposalsController::class, 'fundTitles'])->name('fundTitles');

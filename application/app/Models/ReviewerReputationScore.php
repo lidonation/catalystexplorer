@@ -16,9 +16,9 @@ class ReviewerReputationScore extends Model
     protected $guarded = [];
 
     protected $keyType = 'int';
-    
+
     public $incrementing = true;
-    
+
     public function uniqueIds(): array
     {
         return [];

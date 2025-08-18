@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -117,9 +116,6 @@ class Community extends Model implements HasMedia
                     ->whereHas('fund', function ($q) {
                         $q->where('currency', CatalystCurrencySymbols::USD->name);
                     })->sum('amount_requested');
-
-                // Log the retrieved amount
-                Log::info("Amount awarded in USD for Proposal ID {$this->id}: {$amount}");
 
                 return $amount;
             },

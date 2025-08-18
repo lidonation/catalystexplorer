@@ -179,7 +179,7 @@ export type FundData = {
 amount: number | null;
 label: string | null;
 title: string | null;
-uuid: string;
+id: string;
 proposals_count?: number;
 funded_proposals_count?: number;
 completed_proposals_count?: number;

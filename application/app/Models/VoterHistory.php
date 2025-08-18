@@ -32,9 +32,9 @@ class VoterHistory extends Model
     public $meiliIndexName = 'cx_voter_histories';
 
     protected $keyType = 'int';
-    
+
     public $incrementing = true;
-    
+
     public function uniqueIds(): array
     {
         return [];

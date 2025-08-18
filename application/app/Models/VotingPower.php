@@ -9,18 +9,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class VotingPower extends Model
 {
     protected $keyType = 'int';
-    
+
     public $incrementing = true;
-    
+
     protected $fillable = [
-        'snapshot_id', 
-        'delegate', 
-        'voting_power', 
-        'voter_id', 
-        'consumed', 
-        'votes_cast'
+        'snapshot_id',
+        'delegate',
+        'voting_power',
+        'voter_id',
+        'consumed',
+        'votes_cast',
     ];
-    
+
     public function uniqueIds(): array
     {
         return [];

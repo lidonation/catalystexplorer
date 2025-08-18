@@ -536,7 +536,7 @@ class MyBookmarksController extends Controller
 
         $bookmarks->each->delete();
 
-        $bookmarkCollection->comments->each->delete();
+        $bookmarkCollection->comments()->get()->each->delete();
 
         $bookmarkCollection->delete();
 

@@ -14,7 +14,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 
 class SeedProposalsForCampaign implements ShouldQueue
 {
@@ -27,7 +26,7 @@ class SeedProposalsForCampaign implements ShouldQueue
     ) {}
 
     public function handle(): void
-    {  
+    {
         $proposals = Proposal::factory()
             ->count($count)
             ->hasAttached($this->ideascaleProfiles->random(fake()->randomElement([0, 1, 3, 4])))

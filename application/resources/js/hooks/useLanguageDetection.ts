@@ -16,7 +16,7 @@ interface LanguageValidation {
     message?: string;
 }
 
-export const useLanguageDetection = () => {
+const useLanguageDetection = () => {
     const { t } = useLaravelReactI18n();
     
     const detectLanguage = useCallback((text: string, minLength = 50): LanguageDetectionResult => {
@@ -169,3 +169,4 @@ export const useLanguageDetection = () => {
         supportedLocales: SUPPORTED_LOCALES
     }), [detectLanguage, validateLanguageConsistency, getSuggestedLanguage]);
 };
+export default useLanguageDetection

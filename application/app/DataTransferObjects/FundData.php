@@ -21,7 +21,7 @@ final class FundData extends Data
 
         public ?string $title,
 
-        public string $uuid,
+        public string $id,
 
         #[TypeScriptOptional]
         public ?int $proposals_count,

@@ -5,7 +5,6 @@ namespace App\Jobs;
 use App\Models\Campaign;
 use App\Models\CatalystProfile;
 use App\Models\Meta;
-use App\Models\Pivot\ProposalProfile;
 use App\Models\Proposal;
 use App\Models\Tag;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -204,7 +203,7 @@ class SyncProposalsJob implements ShouldQueue
         $profile->proposals()->sync([
             $this->proposalId => [
                 'profile_type' => CatalystProfile::class,
-            ]
+            ],
         ]);
     }
 }
