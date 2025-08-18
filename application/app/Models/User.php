@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Traits\HasSignatures;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -19,7 +20,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements HasMedia
 {
-    use HasFactory, HasRoles, HasUuids, InteractsWithMedia, MustVerifyEmail, Notifiable;
+    use HasFactory, HasRoles, HasUuids, InteractsWithMedia, MustVerifyEmail, Notifiable, HasSignatures;
 
     /**
      * The attributes that are mass assignable.
@@ -69,14 +70,14 @@ class User extends Authenticatable implements HasMedia
         $string = $this->name ?? $this->email;
 
         return Attribute::make(
-            get: fn () => "https://api.multiavatar.com/{$string}.png"
+            get: fn() => "https://api.multiavatar.com/{$string}.png"
         );
     }
 
     public function heroImgUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => count($this->getMedia('profile')) ? $this->getMedia('profile')[0]->getFullUrl() : $this->gravatar
+            get: fn() => count($this->getMedia('profile')) ? $this->getMedia('profile')[0]->getFullUrl() : $this->gravatar
         );
     }
 
@@ -102,7 +103,7 @@ class User extends Authenticatable implements HasMedia
 
     public function signatures()
     {
-        return $this->hasMany(Signature::class);
+        return $this->hasMany(Signature::class, 'user_uuid', 'id');
     }
 
     public function transactions()
@@ -143,5 +144,10 @@ class User extends Authenticatable implements HasMedia
     public function location()
     {
         return $this->belongsTo(Location::class);
+    }
+
+    public function stakeAddress(): Attribute
+    {
+        return Attribute::make(get: fn() => $this->signatures()?->first()?->stake_address);
     }
 }

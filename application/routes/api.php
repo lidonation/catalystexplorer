@@ -20,6 +20,7 @@ use App\Http\Controllers\VoterHistoriesController;
 use App\Http\Controllers\CompletedProjectNftsController;
 use App\Http\Controllers\Api\IdeascaleProfilesController;
 use App\Http\Controllers\CardanoBudgetProposalController;
+use App\Http\Controllers\CatalystDrepController;
 use Inertia\Inertia;
 
 Route::prefix('api')->as('api.')->group(function () {
@@ -42,10 +43,10 @@ Route::prefix('api')->as('api.')->group(function () {
     Route::prefix('v1')->as('v1.')->group(function () {
         Route::apiResource('proposals', ProposalController::class)
             ->only(['index', 'show']);
-        
+
         Route::apiResource('funds', FundController::class)
             ->only(['index', 'show']);
-        
+
         // Nested resource for fund proposals
         Route::get('funds/{fund}/proposals', [FundController::class, 'proposals'])
             ->name('funds.proposals');
@@ -113,7 +114,6 @@ Route::prefix('api')->as('api.')->group(function () {
         Route::post('/claim-ideascale-profile/{ideascaleProfile}', [IdeascaleProfilesController::class, 'claimIdeascaleProfile'])->name('claim');
         Route::get('/{ideascaleProfile:id}', [IdeascaleProfilesController::class, 'ideascale_profile'])->name('show');
         Route::get('/{hash}/connections', [IdeascaleProfilesController::class, 'connections'])->name('connections');
-
     });
 
     Route::get('/fund-titles', [ProposalsController::class, 'fundTitles'])->name('fundTitles');
@@ -161,4 +161,13 @@ Route::prefix('api')->as('api.')->group(function () {
             Route::post('/', [CommentController::class, 'store'])->name('store')
                 ->middleware('throttle:15,1');
         });
+
+    Route::prefix('/dreps')->as('dreps.')->middleware('auth')->group(
+        function () {
+            Route::post('delegate', [CatalystDrepController::class, 'delegate'])
+                ->name('delegate');
+            Route::post('undelegate', [CatalystDrepController::class, 'undelegate'])
+                ->name('undelegate');
+        }
+    );
 });

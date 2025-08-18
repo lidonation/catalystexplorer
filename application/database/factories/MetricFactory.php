@@ -27,7 +27,7 @@ class MetricFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence,
-            'user_id' => User::factory(),
+            'user_id' => User::inRandomOrder()->value('id'),
             'content' => $this->faker->sentence(8),
             'color' => $this->faker->hexColor(),
             'model' => $this->faker->randomElement([

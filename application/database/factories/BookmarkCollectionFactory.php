@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Enums\CommentsAllowance;
 use App\Models\BookmarkCollection;
 use App\Models\User;
+use App\Models\Fund;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class BookmarkCollectionFactory extends Factory
 {
+    protected $model = BookmarkCollection::class;
+
     /**
      * Define the model's default state.
      *
@@ -21,17 +23,29 @@ class BookmarkCollectionFactory extends Factory
      */
     public function definition(): array
     {
+        $user = User::inRandomOrder()->first();
+        
+        if (!$user) {
+            $user = User::factory()->create();
+        }
+
+        $fund = Fund::inRandomOrder()->first();
+
         return [
-            'user_id' => User::factory(),
-            'title' => $this->faker->sentence(),
-            'content' => $this->faker->paragraphs(3, true),
+            'user_id' => $user->id,
+            'title' => $this->faker->sentence(3),
+            'content' => $this->faker->paragraphs(2, true),
             'color' => $this->faker->safeHexColor(),
             'allow_comments' => $this->faker->boolean(),
             'visibility' => $this->faker->randomElement(['public', 'unlisted', 'private']),
             'status' => $this->faker->randomElement(['draft', 'published']),
-            'model_type' => BookmarkCollection::class,
-            'model_id' => $this->faker->optional()->randomNumber(5),
-            'type' => $this->faker->optional()->word(),
+            'type' => BookmarkCollection::class,
+            'model_type' => $fund ? Fund::class : null,
+            'model_id' => $fund?->id,
+            'type_type' => null,
+            'type_id' => null,
+            'fund_id' => $fund?->id,
+            'parent_id' => null,
         ];
     }
 }

@@ -12,6 +12,15 @@ use Illuminate\Support\Str;
 
 class Category extends Model
 {
+    protected $keyType = 'int';
+    
+    public $incrementing = true;
+    
+    public function uniqueIds(): array
+    {
+        return [];
+    }
+
     protected $fillable = [
         'parent_id',
         'name',
@@ -25,6 +34,8 @@ class Category extends Model
     protected $casts = [
         'is_active' => 'boolean',
         'level' => 'integer',
+        'id' => 'integer',
+        'parent_id' => 'integer',
     ];
 
     protected $appends = [];

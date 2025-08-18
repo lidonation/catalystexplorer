@@ -57,6 +57,8 @@ class Metas extends Resource
                 ->alwaysShow()
                 ->filterable()
                 ->hideFromIndex(),
+            Text::make(__('Model Id'), 'model_id')
+                ->filterable(),
             Text::make(__('Value'), 'content')
                 ->onlyOnIndex()
                 ->filterable()

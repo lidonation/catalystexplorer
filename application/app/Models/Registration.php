@@ -10,6 +10,15 @@ class Registration extends Model
 {
     protected $with = ['delegators'];
 
+    protected $keyType = 'int';
+    
+    public $incrementing = true;
+    
+    public function uniqueIds(): array
+    {
+        return [];
+    }
+
     public function delegators(): HasMany
     {
         return $this->hasMany(Delegation::class, 'registration_id');
