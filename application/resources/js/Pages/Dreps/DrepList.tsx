@@ -90,7 +90,7 @@ const Index = ({
 
                         <div className="bg-background-lighter rounded-b-lg p-4 shadow-md">
                             {catalystDreps && (
-                                <Paginator pagination={catalystDreps} />
+                                <Paginator pagination={catalystDreps } />
                             )}
                         </div>
                     </div>
