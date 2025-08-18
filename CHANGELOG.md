@@ -1,3 +1,11 @@
+## [1.11.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.11.1...v1.11.2) (2025-08-18)
+
+
+### Bug Fixes
+
+* resolve indexing errors for review and voter history ([06a41f4](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/06a41f454b8cf7b9aa073caee7dcfafc3b06d545))
+* resolve indexing errors for voter model ([2480e8c](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/2480e8caaa62fcdddfaf7d6546d4ead82907d2ff))
+
 ## [1.11.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.11.0...v1.11.1) (2025-08-18)
 
 
