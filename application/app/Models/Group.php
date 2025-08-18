@@ -63,8 +63,8 @@ class Group extends Model implements HasMedia
             'tags.id',
             'tags',
             'proposals.fund.title',
-            'proposals.campaign.uuid',
-            'proposals.communities.uuid',
+            'proposals.campaign.id',
+            'proposals.communities.id',
             'proposals.status',
             'proposals_funded',
             'proposals_completed',
@@ -74,8 +74,9 @@ class Group extends Model implements HasMedia
             'proposals_ideafest',
             'proposals_woman',
             'proposals_impact',
-            'ideascale_profiles.uuid',
-            'proposals.fund.uuid',
+            'ideascale_profiles.id',
+            'proposals.fund.id',
+            'proposals.fund.id',
         ];
     }
 
@@ -86,7 +87,7 @@ class Group extends Model implements HasMedia
             'proposals',
             'ideascale_profiles',
             'tags',
-            'ideascale_profiles.uuid',
+            'ideascale_profiles.id',
             'ideascale_profiles.name',
             'ideascale_profiles.username',
         ];
@@ -103,7 +104,7 @@ class Group extends Model implements HasMedia
             'amount_awarded_ada',
             'amount_awarded_usd',
             'amount_requested',
-            'ideascale_profiles.uuid',
+            'ideascale_profiles.id',
             'updated_at',
         ];
     }

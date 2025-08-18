@@ -12,15 +12,13 @@ import {useLaravelReactI18n} from "laravel-react-i18n";
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useState, useEffect, useCallback } from 'react';
 import Content from '../Partials/WorkflowContent';
-import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
-import { useLanguageDetection } from '@/hooks/useLanguageDetection';
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 import CatalysDrepData = App.DataTransferObjects.CatalystDrepData;
-import Paragraph from '@/Components/atoms/Paragraph';
 import IpfsSuccessDisplay from './partials/IpfsSuccessDisplay';
 import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
+import useLanguageDetection from '@/hooks/useLanguageDetection';
 
 interface Step5Props {
     catalystDrep: CatalysDrepData;

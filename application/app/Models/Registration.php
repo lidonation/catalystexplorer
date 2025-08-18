@@ -11,9 +11,9 @@ class Registration extends Model
     protected $with = ['delegators'];
 
     protected $keyType = 'int';
-    
+
     public $incrementing = true;
-    
+
     public function uniqueIds(): array
     {
         return [];
