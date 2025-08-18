@@ -8,9 +8,6 @@ nodeVersion := 20
 .PHONY: init
 init:
 	cp ./application/.env.example ./application/.env
-	chmod +x ./scripts/clone-carp.sh
-	chmod +x ./scripts/remove-carp.sh
-
 	docker run --rm --interactive --tty \
 		--volume ${PWD}:/app \
 		--workdir /app \
