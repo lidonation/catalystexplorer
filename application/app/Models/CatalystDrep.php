@@ -15,7 +15,7 @@ use Spatie\Translatable\HasTranslations;
 
 class CatalystDrep extends Model
 {
-    use HasAuthor, HasIpfsFiles, HasSignatures, HasUuids, SoftDeletes, HasTranslations;
+    use HasAuthor, HasIpfsFiles, HasSignatures, HasTranslations, HasUuids, SoftDeletes;
 
     public $guarded = [];
 
@@ -30,6 +30,7 @@ class CatalystDrep extends Model
         if (static::$supportedLocales === null) {
             static::$supportedLocales = config('locales.supported', ['en']);
         }
+
         return static::$supportedLocales;
     }
 
@@ -40,7 +41,7 @@ class CatalystDrep extends Model
 
     public function stakeAddress(): Attribute
     {
-        return Attribute::make(get: fn() => $this->signatures()?->first()?->stake_address);
+        return Attribute::make(get: fn () => $this->signatures()?->first()?->stake_address);
     }
 
     public function lastActive(): Attribute

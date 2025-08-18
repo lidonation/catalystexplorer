@@ -13,9 +13,9 @@ use Illuminate\Support\Str;
 class Category extends Model
 {
     protected $keyType = 'int';
-    
+
     public $incrementing = true;
-    
+
     public function uniqueIds(): array
     {
         return [];

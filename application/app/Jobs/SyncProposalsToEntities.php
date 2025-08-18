@@ -27,7 +27,7 @@ class SyncProposalsToEntities implements ShouldQueue
         $groups = Group::all();
         $communities = Community::all();
         $profiles = IdeascaleProfile::all();
-        
+
         $profiles->each(function ($profile) {
             $proposal = Proposal::inRandomOrder()->first();
             if ($proposal) {

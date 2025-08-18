@@ -20,7 +20,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements HasMedia
 {
-    use HasFactory, HasRoles, HasUuids, InteractsWithMedia, MustVerifyEmail, Notifiable, HasSignatures;
+    use HasFactory, HasRoles, HasSignatures, HasUuids, InteractsWithMedia, MustVerifyEmail, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -70,14 +70,14 @@ class User extends Authenticatable implements HasMedia
         $string = $this->name ?? $this->email;
 
         return Attribute::make(
-            get: fn() => "https://api.multiavatar.com/{$string}.png"
+            get: fn () => "https://api.multiavatar.com/{$string}.png"
         );
     }
 
     public function heroImgUrl(): Attribute
     {
         return Attribute::make(
-            get: fn() => count($this->getMedia('profile')) ? $this->getMedia('profile')[0]->getFullUrl() : $this->gravatar
+            get: fn () => count($this->getMedia('profile')) ? $this->getMedia('profile')[0]->getFullUrl() : $this->gravatar
         );
     }
 
@@ -148,6 +148,6 @@ class User extends Authenticatable implements HasMedia
 
     public function stakeAddress(): Attribute
     {
-        return Attribute::make(get: fn() => $this->signatures()?->first()?->stake_address);
+        return Attribute::make(get: fn () => $this->signatures()?->first()?->stake_address);
     }
 }

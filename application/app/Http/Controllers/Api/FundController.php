@@ -30,7 +30,10 @@ class FundController extends Controller
 
         $funds = QueryBuilder::for(Fund::class)
             ->allowedFilters([
-                AllowedFilter::exact('id'),
+                AllowedFilter::callback('ids', function ($query, $value) {
+                    $ids = is_array($value) ? $value : [$value];
+                    $query->whereIn('id', $ids);
+                }),
                 AllowedFilter::partial('title'),
                 AllowedFilter::exact('status'),
                 AllowedFilter::exact('currency'),
