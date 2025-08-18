@@ -110,7 +110,8 @@ class Campaigns extends Resource
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            BelongsTo::make(__('Fund'), 'fund', Funds::class),
+            BelongsTo::make(__('Fund'), 'fund', Funds::class)
+                ->filterable(),
 
             Textarea::make(__('Excerpt'), 'excerpt')
                 ->alwaysShow()

@@ -43,6 +43,7 @@ services:
       XDG_DATA_HOME: /var/www/caddy
     volumes:
       - ./application:/var/www
+      - ./docker/scripts:/scripts
       - ./data/app/data:/data
     networks:
       - catalystexplorer-net

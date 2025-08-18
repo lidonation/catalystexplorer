@@ -9,6 +9,7 @@ use App\Traits\HasAuthor;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Prunable;
 use Spatie\Image\Enums\CropPosition;
 use Spatie\MediaLibrary\HasMedia;
@@ -18,7 +19,11 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 #[ObservedBy([AnnouncementObserver::class])]
 class Announcement extends Model implements HasMedia
 {
-    use HasAuthor, InteractsWithMedia, Prunable;
+    use HasAuthor, HasUuids, InteractsWithMedia, Prunable;
+
+    protected $keyType = 'string';
+    
+    public $incrementing = false;
 
     protected $fillable = [
         'title',

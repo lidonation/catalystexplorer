@@ -42,7 +42,7 @@ export default function Success({
                 <div className="bg-background mx-auto my-8 flex h-3/4 w-[calc(100%-4rem)] items-center justify-center rounded-lg p-8 md:w-3/4">
                     <div className="flex h-full w-full flex-col items-center justify-center rounded p-8 md:w-3/4 md:shadow-sm">
                         <Title level="4" className="mx-4 text-center font-bold">
-                            {t('workflows.voting.success.title')}
+                            {t('workflows.catalystDrepSignup.success')}
                         </Title>
                         <VerificationBadge size={80} />
                         <Paragraph

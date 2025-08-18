@@ -106,9 +106,10 @@ stake_address: string | null;
 voting_power: number | null;
 last_active: string | null;
 status: string | null;
+locale: string | null;
 };
 export type CategoryData = {
-id: number;
+id: string;
 name: string;
 slug: string;
 type: string;

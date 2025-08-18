@@ -2,13 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\Milestone;
-use App\Models\ProjectSchedule;
-use Carbon\Carbon;
+use App\Models\Fund;
+use App\Models\Proposal;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProjectSchedule>
+ * @extends Factory<\App\Models\ProjectSchedule>
  */
 class ProjectScheduleFactory extends Factory
 {
@@ -19,40 +18,29 @@ class ProjectScheduleFactory extends Factory
      */
     public function definition(): array
     {
-        $status = $this->faker->randomElement(['completed', 'paused']);
-        $milestoneAmount =  $this->faker->numberBetween(1000, 10000);
-
+        $budget = $this->faker->randomFloat(2, 10000, 100000);
+        $status = $this->faker->randomElement(['null', 'paused', 'completed']);
+        
         return [
-            'id' => $this->faker->unique()->randomNumber(5, true),
             'title' => $this->faker->sentence(4),
-            'url' => $this->faker->url,
-            'proposal_id' => $this->faker->randomNumber(2),
-            'fund_id' => $this->faker->randomNumber(2),
+            'url' => $this->faker->url(),
             'project_id' => $this->faker->randomNumber(4),
-            'created_at' => Carbon::now()->subDays($this->faker->numberBetween(0, 3 * 365)),
-            'budget' => 4 * $milestoneAmount,
-            'milestone_count' => 4,
-            'funds_distributed' => $status == 'completed' ? 4 * $milestoneAmount : 2 * $milestoneAmount,
-            'starting_date' => Carbon::now()->addDays($this->faker->numberBetween(1, 60)),
+            'budget' => $budget,
+            'milestone_count' => $this->faker->numberBetween(3, 8),
+            'funds_distributed' => $status === 'completed' 
+                ? $budget 
+                : $this->faker->randomFloat(2, 0, $budget * 0.8),
+            'starting_date' => $this->faker->dateTimeBetween('now', '+60 days'),
             'currency' => $this->faker->randomElement(['usd', 'ada']),
             'status' => $status,
+            'created_at' => now()->subDays($this->faker->numberBetween(0, 365)),
+            
+            'proposal_id' => function() {
+                return Proposal::inRandomOrder()->value('id');
+            },
+            'fund_id' => function() {
+                return Fund::inRandomOrder()->value('id');
+            },
         ];
-    }
-
-    public function configure(): static
-    {
-        return $this->afterCreating(function (ProjectSchedule $projectSchedule) {
-            for ($i = 1; $i <= 4; $i++) {
-                Milestone::factory()
-                    ->create([
-                        'proposal_id' => $projectSchedule->proposal_id,
-                        'fund_id' => $projectSchedule->fund_id,
-                        'proposal_milestone_id' => $projectSchedule->id,
-                        'cost' => $projectSchedule->budget / 4,
-                        'milestone' => $i,
-                        'created_at' => $projectSchedule->created_at
-                    ]);
-            }
-        });
     }
 }

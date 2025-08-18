@@ -5,6 +5,7 @@ use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Pagination\AbstractPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Fluent;
 
 if (! function_exists('to_length_aware_paginator')) {
     function to_review_item($items) {}
@@ -38,5 +39,20 @@ if (! function_exists('to_length_aware_paginator')) {
         );
 
         return $pagination->onEachSide(1);
+    }
+
+    function toFluentDeep(array $array): Fluent
+    {
+        $result = [];
+
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $result[$key] = toFluentDeep($value);
+            } else {
+                $result[$key] = $value;
+            }
+        }
+
+        return new Fluent($result);
     }
 }

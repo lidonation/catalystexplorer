@@ -39,22 +39,31 @@ RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime \
 RUN apt-get update; \
     apt-get upgrade -yqq; \
     apt-get install -yqq --no-install-recommends --show-progress \
-    jpegoptim \
-    optipng \
-    pngquant \
-    gifsicle \
-    libavif-bin \
     apt-utils \
-    curl \
-    wget \
-    vim \
-    git \
-    ncdu \
-    procps \
     ca-certificates \
-    supervisor \
+    chromium \
+    curl \
+    ffmpeg \
+    gifsicle \
+    git \
+    jpegoptim \
+    libpng-dev \
+    libavif-bin \
     libsodium-dev \
     libbrotli-dev \
+    imagemagick \
+    libmagickwand-dev \
+    ncdu \
+    nodejs \
+    optipng \
+    pngquant \
+    procps \
+    python3 \
+    python3-venv \
+    python3-launchpadlib \
+    supervisor \
+    vim \
+    wget \
     # Install PHP extensions (included with dunglas/frankenphp)
     && install-php-extensions \
     bz2 \
@@ -67,6 +76,7 @@ RUN apt-get update; \
     opcache \
     exif \
     pdo_mysql \
+    imagick/imagick@master \
     zip \
     uv \
     intl \
@@ -87,6 +97,20 @@ RUN apt-get update; \
     && docker-php-source delete \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && rm /var/log/lastlog /var/log/faillog
+
+ENV CHROME_BIN=/usr/bin/chromium-browser \
+    CHROME_PATH=/usr/lib/chromium/ \
+    PUPPETEER_EXECUTABLE_PATH="/usr/bin/chromium-browser"
+
+COPY ./scripts /scripts/
+
+RUN chmod +x /scripts
+
+RUN mkdir /venv && chown -R 777 /venv
+
+RUN python3 -m venv /venv
+
+RUN /venv/bin/pip install --no-cache-dir blend_modes==2.0.2 numpy==1.26.3 pillow==10.3.0 cbor2 pycose brotli
 
 RUN userdel --remove --force www-data \
     && groupadd --force -g ${WWWGROUP} ${USER} \

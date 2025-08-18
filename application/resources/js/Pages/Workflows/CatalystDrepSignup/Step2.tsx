@@ -15,6 +15,7 @@ import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface Step1Props {
     catalystDrep: string;
@@ -61,6 +62,7 @@ const Step2: React.FC<Step1Props> = ({
 
             <Content>
                 <div className="mx-auto w-full max-w-3xl px-4">
+                     <ErrorDisplay/>
                     <ConnectWalletList />
                     <div
                         className={`bg-danger-light container mt-6 transform overflow-hidden rounded-lg py-3 text-center transition-all duration-500 ease-in-out ${
@@ -84,7 +86,7 @@ const Step2: React.FC<Step1Props> = ({
                     onClick={(e) => activeStep == 1 && e.preventDefault()}
                 >
                     <ChevronLeft className="h-4 w-4" />
-                    <span>{t('Previous')}</span>
+                    <span>{t('previous')}</span>
                 </PrimaryLink>
                 <PrimaryButton
                     className="text-sm lg:px-8 lg:py-3"

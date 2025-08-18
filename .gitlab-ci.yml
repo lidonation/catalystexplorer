@@ -417,7 +417,7 @@ build_web:
       when: manual
 
 build_web_base:
-  stage: .pre
+  stage: build
   image: docker:24.0.2-git
   retry: 0
   script:

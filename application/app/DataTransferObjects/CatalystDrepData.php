@@ -35,5 +35,7 @@ final class CatalystDrepData extends Data
 
         public ?string $status,
 
+        public ?string $locale,
+
     ) {}
 }

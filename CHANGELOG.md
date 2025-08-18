@@ -1,3 +1,10 @@
+# [1.10.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.9.0...v1.10.0) (2025-08-15)
+
+
+### Features
+
+* add funds api resource, and milestone data to proposal api resource ([7e9f0f1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/7e9f0f1b4371863498ab0cbe6f904ad4d8922c27))
+
 # [1.9.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.8.0...v1.9.0) (2025-08-15)
 
 

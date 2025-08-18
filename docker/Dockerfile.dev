@@ -46,21 +46,28 @@ RUN curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmo
 RUN apt-get update; \
     apt-get upgrade -yqq; \
     apt-get install -yqq --no-install-recommends --show-progress \
-    jpegoptim \
-    optipng \
-    pngquant \
-    gifsicle \
-    libavif-bin \
     apt-utils \
-    curl \
-    git \
-    ncdu \
     ca-certificates \
+    chromium \
+    curl \
+    ffmpeg \
+    gifsicle \
+    git \
+    jpegoptim \
+    libpng-dev \
+    libavif-bin \
     libsodium-dev \
     libbrotli-dev \
-    postgresql-client-17 \
+    imagemagick \
+    libmagickwand-dev \
+    ncdu \
+    nodejs \
+    optipng \
+    pngquant \
     procps \
-    sudo \
+    python3 \
+    python3-venv \
+    python3-launchpadlib \
     supervisor \
     vim \
     wget \
@@ -76,6 +83,7 @@ RUN apt-get update; \
     opcache \
     exif \
     pdo_mysql \
+    imagick/imagick@master \
     zip \
     uv \
     intl \
@@ -97,6 +105,19 @@ RUN apt-get update; \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && rm /var/log/lastlog /var/log/faillog
 
+ENV CHROME_BIN=/usr/bin/chromium-browser \
+    CHROME_PATH=/usr/lib/chromium/ \
+    PUPPETEER_EXECUTABLE_PATH="/usr/bin/chromium-browser"
+
+COPY ./scripts /scripts/
+
+RUN mkdir /venv && chown -R 777 /venv
+
+RUN python3 -m venv /venv
+
+RUN /venv/bin/pip install --no-cache-dir blend_modes==2.0.2 numpy==1.26.3 pillow==10.3.0 cbor2 pycose brotli
+
+
 RUN userdel --remove --force www-data \
     && groupadd --force -g ${WWWGROUP} ${USER} \
     && useradd -ms /bin/bash --no-log-init --no-user-group -g ${WWWGROUP} -u ${WWWUSER} ${USER} \
@@ -106,6 +127,8 @@ RUN userdel --remove --force www-data \
 
 RUN chown -R ${USER}:${USER} ${ROOT} /var/{log,run,www} \
     && chmod -R a+rw ${ROOT} /var/{log,run}
+
+RUN chmod +x /scripts/*
 
 USER ${USER}
 
