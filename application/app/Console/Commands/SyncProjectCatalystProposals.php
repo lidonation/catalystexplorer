@@ -56,7 +56,7 @@ class SyncProjectCatalystProposals extends Command
                 $decoded = (new DecodeCatalystDocument)($binary);
 
                 if (isset($decoded['payload']['setup'])) {
-                    SyncProposalsJob::dispatch($decoded, $this->argument('fund'));
+                    SyncProposalsJob::dispatchSync($decoded, $this->argument('fund'));
                 }
             }
         } while (! empty($ids));

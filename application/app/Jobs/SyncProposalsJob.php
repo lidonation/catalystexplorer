@@ -188,8 +188,6 @@ class SyncProposalsJob implements ShouldQueue
 
     protected function processPrimaryAuthor($data): void
     {
-        $catalystProfile = CatalystProfile::where('name', $data->applicant)->first();
-
         CatalystProfile::updateOrCreate(
             [
                 'name' => $data->applicant,
@@ -200,23 +198,13 @@ class SyncProposalsJob implements ShouldQueue
             ]
         );
 
-        $profile= CatalystProfile::where('name', $data->applicant)
-            ->first('id');
+        $profile = CatalystProfile::where('name', $data->applicant)
+            ->first();
 
-        $profile->proposals([
+        $profile->proposals()->sync([
             $this->proposalId => [
                 'profile_type' => CatalystProfile::class,
             ]
         ]);
-
-//        if ($profileId && $this->proposalId) {
-//            ProposalProfile::updateOrCreate(
-//                [
-//                    'profile_id' => $profileId,
-//                    'proposal_id' => $this->proposalId,
-//                    'profile_type' => CatalystProfile::class,
-//                ]
-//            );
-//        }
     }
 }

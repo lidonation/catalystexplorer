@@ -51,7 +51,7 @@ class Metas extends Resource
     public function fields(NovaRequest $request): array
     {
         $metaFields = [
-            ID::make('ID', 'id')->sortable(),
+            Text::make('ID', 'id')->sortable(),
             Text::make(__('Key'), 'key')->sortable()->filterable(),
             Markdown::make(__('Content'), 'content')
                 ->alwaysShow()
