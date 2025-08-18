@@ -6,7 +6,6 @@ namespace App\Http\Controllers;
 
 use App\DataTransferObjects\CatalystDrepData;
 use App\Models\CatalystDrep;
-use App\Models\Drep;
 use App\Models\Meta;
 use App\Models\Signature;
 use App\Models\User;
@@ -23,6 +22,7 @@ class CatalystDrepController extends Controller
     /**
      * Display a landing page.
      */
+
     public function index(Request $request): Response
     {
         $drep = '';
@@ -33,9 +33,8 @@ class CatalystDrepController extends Controller
     /**
      * Display the specified resource.
      */
-    public function list()
+    public function list(Request $request): Response
     {
-
         $user = Auth::user();
 
         $delegatedDrepStakeAddress = DB::table('catalyst_drep_user')
@@ -47,7 +46,7 @@ class CatalystDrepController extends Controller
             'catalystDreps' => to_length_aware_paginator(
                 CatalystDrepData::collect(
                     CatalystDrep::query()
-                        ->paginate(11, ['*'], 'p', 1)
+                        ->paginate(11, ['*'], 'p', $request->input('p'))
                 )
             )->onEachSide(0),
             'filters' => [],
@@ -182,7 +181,7 @@ class CatalystDrepController extends Controller
 
             $catalystDrep->update($attributes);
 
-            if (! empty($bio)) {
+            if (!empty($bio)) {
                 $catalystDrep->setTranslation('bio', $locale, $bio);
                 $catalystDrep->save();
             }
@@ -190,7 +189,7 @@ class CatalystDrepController extends Controller
 
             $catalystDrep = CatalystDrep::create(array_merge($attributes, ['user_id' => Auth::user()->id]));
 
-            if (! empty($bio)) {
+            if (!empty($bio)) {
                 $catalystDrep->setTranslation('bio', $locale, $bio);
                 $catalystDrep->save();
             }
@@ -356,7 +355,6 @@ class CatalystDrepController extends Controller
                 'gateway_url' => $gatewayUrl,
                 'filename' => $filename,
             ]);
-
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Failed to publish platform statement to IPFS: '.$e->getMessage()]);
         }

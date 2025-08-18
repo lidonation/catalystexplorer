@@ -7,7 +7,7 @@ import { FormDataConvertible } from '@inertiajs/core';
 import { InertiaFormProps } from '@inertiajs/react';
 import { forwardRef, useEffect, useImperativeHandle, useState, useCallback } from 'react';
 import {useLaravelReactI18n} from "laravel-react-i18n";
-import { useLanguageDetection } from '@/Hooks/useLanguageDetection';
+import useLanguageDetection from '@/hooks/useLanguageDetection';
 
 export interface DrepSignupFormFields
     extends Record<string, FormDataConvertible> {
