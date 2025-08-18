@@ -5,7 +5,9 @@ namespace App\Jobs;
 use App\Models\Campaign;
 use App\Models\CatalystProfile;
 use App\Models\Meta;
+use App\Models\Pivot\ProposalProfile;
 use App\Models\Proposal;
+use App\Models\Tag;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
@@ -20,7 +22,7 @@ class SyncProposalsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private int $proposalId;
+    private string $proposalId;
 
     /**
      * Create a new job instance.
@@ -62,11 +64,11 @@ class SyncProposalsJob implements ShouldQueue
         //  $proposal->slug = Str::limit(Str::slug($proposal->title), 150, '').'-'.'f'.$fundNumber;
 
         // Search for existing proposal
-        $existing = $connection->table('proposals')
-            ->where('slug', '=', "{$slug}-f14")
+        $existing = Proposal::where('slug', '=', "{$slug}-f14")
             ->first();
 
         $data = [
+            'id' => Str::uuid7(),
             'title' => json_encode($title),
             'problem' => json_encode(['en' => $proposalSummary->problem->statement]),
             'solution' => json_encode(['en' => $proposalSummary->solution->summary]),
@@ -90,7 +92,8 @@ class SyncProposalsJob implements ShouldQueue
         } else {
             $data['created_at'] = now();
 
-            $this->proposalId = $connection->table('proposals')->insertGetId($data);
+            $this->proposalId = $connection->table('proposals')
+                ->insertGetId($data);
         }
 
         // Metas
@@ -130,14 +133,12 @@ class SyncProposalsJob implements ShouldQueue
         })->implode("\n\n");
     }
 
-    protected function processTags($groupTags)
+    protected function processTags($groupTags): void
     {
-        $connection = DB::connection('pgsql');
-
-        $tagIds = collect($groupTags)->map(function ($tag) use ($connection) {
+        $tagIds = collect($groupTags)->map(function ($tag) {
             $slug = Str::slug($tag);
 
-            $connection->table('tags')->updateOrInsert(
+            Tag::updateOrInsert(
                 ['slug' => $slug],
                 [
                     'title' => ucfirst($tag),
@@ -146,8 +147,7 @@ class SyncProposalsJob implements ShouldQueue
             );
 
             // Fetch tag ID
-            return $connection->table('tags')
-                ->where('slug', $slug)
+            return Tag::where('slug', $slug)
                 ->value('id');
         })->filter();
 
@@ -156,17 +156,15 @@ class SyncProposalsJob implements ShouldQueue
                 [
                     'model_id' => $this->proposalId,
                     'tag_id' => $tagId,
-                    'model_type' => 'App\\Models\\Proposal',
+                    'model_type' => Proposal::class,
                 ],
             );
         }
     }
 
-    protected function processMetas($project_length, $applicant_type, $opensource)
+    protected function processMetas($project_length, $applicant_type, $opensource): void
     {
-
-        $connection = DB::connection('pgsql');
-        $modelType = 'App\\Models\\Proposal';
+        $modelType = Proposal::class;
 
         $metaItems = [
             ['key' => 'project_length', 'content' => $project_length],
@@ -175,7 +173,7 @@ class SyncProposalsJob implements ShouldQueue
         ];
 
         foreach ($metaItems as $meta) {
-            $connection->table('metas')->updateOrInsert(
+            Meta::updateOrInsert(
                 [
                     'model_id' => $this->proposalId,
                     'key' => $meta['key'],
@@ -188,11 +186,11 @@ class SyncProposalsJob implements ShouldQueue
         }
     }
 
-    protected function processPrimaryAuthor($data)
+    protected function processPrimaryAuthor($data): void
     {
-        $connection = DB::connection('pgsql');
+        $catalystProfile = CatalystProfile::where('name', $data->applicant)->first();
 
-        $connection->table('catalyst_profiles')->updateOrInsert(
+        CatalystProfile::updateOrCreate(
             [
                 'name' => $data->applicant,
             ],
@@ -202,18 +200,23 @@ class SyncProposalsJob implements ShouldQueue
             ]
         );
 
-        $profileId = $connection->table('catalyst_profiles')
-            ->where('username', $data->applicant)
-            ->value('id');
+        $profile= CatalystProfile::where('name', $data->applicant)
+            ->first('id');
 
-        if ($profileId && $this->proposalId) {
-            $connection->table('proposal_profiles')->updateOrInsert(
-                [
-                    'profile_id' => $profileId,
-                    'proposal_id' => $this->proposalId,
-                    'profile_type' => CatalystProfile::class,
-                ]
-            );
-        }
+        $profile->proposals([
+            $this->proposalId => [
+                'profile_type' => CatalystProfile::class,
+            ]
+        ]);
+
+//        if ($profileId && $this->proposalId) {
+//            ProposalProfile::updateOrCreate(
+//                [
+//                    'profile_id' => $profileId,
+//                    'proposal_id' => $this->proposalId,
+//                    'profile_type' => CatalystProfile::class,
+//                ]
+//            );
+//        }
     }
 }
