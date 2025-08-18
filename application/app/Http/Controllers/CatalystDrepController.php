@@ -33,7 +33,7 @@ class CatalystDrepController extends Controller
     /**
      * Display the specified resource.
      */
-    public function list(): Response
+    public function list(Request $request): Response
     {
         $user = Auth::user();
 
