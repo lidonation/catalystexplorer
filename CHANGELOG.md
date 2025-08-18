@@ -1,3 +1,10 @@
+# [1.11.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.10.0...v1.11.0) (2025-08-18)
+
+
+### Features
+
+* delegate to a drep ([37026eb](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/37026eb49e3ff8e8e19fb1c5f0f2c416ba47a993))
+
 # [1.10.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.9.0...v1.10.0) (2025-08-15)
 
 
