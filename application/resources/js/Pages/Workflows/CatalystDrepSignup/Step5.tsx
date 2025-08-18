@@ -18,7 +18,7 @@ import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 import CatalysDrepData = App.DataTransferObjects.CatalystDrepData;
 import IpfsSuccessDisplay from './partials/IpfsSuccessDisplay';
 import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
-import useLanguageDetection from '@/Hooks/useLanguageDetection';
+import useLanguageDetection from '@/hooks/useLanguageDetection';
 
 interface Step5Props {
     catalystDrep: CatalysDrepData;
