@@ -423,13 +423,8 @@ class Proposal extends Model
     public function toSearchableArray(): array
     {
         $array = $this->toArray();
+        $this->load(['fund', 'communities']);
 
-        // Remove hash field from indexing - we only use UUIDs now
-        if (isset($array['hash'])) {
-            unset($array['hash']);
-        }
-
-        // TESTING: Adding back tags relationship to isolate bigint issue
         return array_merge($array, [
             'funded' => (bool) $this->funded_at ? 1 : 0,
             'currency' => $this->currency,
@@ -438,6 +433,24 @@ class Proposal extends Model
             'link' => $this->link,
             'created_at_timestamp' => $this->created_at ? Carbon::parse($this->created_at)->timestamp : null,
             'tags' => $this->tags,
+            'fund' => [
+                'id' => $this->fund?->id,
+                'label' => $this->fund?->label,
+                'title' => $this->fund?->title,
+            ],
+            'communities' => $this->communities->map(fn ($community) => [
+                'id' => $community->id,
+                'name' => $community->title,
+            ]),
+            'group' => $this->communities->map(fn ($group) => [
+                'id' => $group->id,
+                'name' => $group->title,
+            ]),
+            'campaign' => [
+                'id' => $this->campaign?->id,
+                'label' => $this->campaign?->label,
+                'title' => $this->campaign?->title,
+            ],
         ]);
     }
 

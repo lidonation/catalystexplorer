@@ -23,7 +23,6 @@ class ProposalRepository extends Repository
 
                 $args['attributesToRetrieve'] = $attrs ?? [
                     'id',
-                    // 'hash', // Removed - now using UUID id instead
                     'amount_requested',
                     'amount_received',
                     'currency',
@@ -115,6 +114,7 @@ class ProposalRepository extends Repository
 
                 //                $options['offset'] = ! $returnBuilder ? (($this->currentPage ?? 1) - 1) * $this->limit : 0;
                 //                $options['limit'] = $this->limit;
+
                 return $index->search($query, $args);
             }
         );

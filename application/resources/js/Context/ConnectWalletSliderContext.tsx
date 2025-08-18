@@ -205,7 +205,6 @@ export function ConnectWalletProvider({
           if (rewardAddresses && rewardAddresses.length > 0) {
               const stakeKeyHex = rewardAddresses[0];
               setStakeKey(stakeKeyHex);
-              console.log('Stake key retrieved:', stakeKeyHex);
               const isTestnet = walletNetworkId === 0;
               derivedStakeAddress = deriveStakeAddress(stakeKeyHex, isTestnet);
               setStakeAddress(derivedStakeAddress);

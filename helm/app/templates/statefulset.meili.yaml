@@ -21,7 +21,7 @@ spec:
             claimName: "{{ .Values.namespace }}-meili-pvc"
       containers:
         - name: meilisearch
-          image: getmeili/meilisearch:v1.17.1
+          image: getmeili/meilisearch:v1.18.0
           resources:
             limits:
               memory: 16384Mi
