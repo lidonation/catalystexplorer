@@ -6,7 +6,6 @@ namespace App\Http\Controllers;
 
 use App\DataTransferObjects\CatalystDrepData;
 use App\Models\CatalystDrep;
-use App\Models\Drep;
 use App\Models\Meta;
 use App\Models\Signature;
 use App\Models\User;
@@ -23,6 +22,8 @@ class CatalystDrepController extends Controller
     /**
      * Display a landing page.
      */
+    protected array $queryParams = [];
+
     public function index(Request $request): Response
     {
         $drep = '';
@@ -33,11 +34,9 @@ class CatalystDrepController extends Controller
     /**
      * Display the specified resource.
      */
-    public function list()
+    public function list(Request $request): Response
     {
-
         $user = Auth::user();
-
 
         $delegatedDrepStakeAddress = DB::table('catalyst_drep_user')
             ->where('user_id', $user?->id)
@@ -48,7 +47,7 @@ class CatalystDrepController extends Controller
             'catalystDreps' => to_length_aware_paginator(
                 CatalystDrepData::collect(
                     CatalystDrep::query()
-                        ->paginate(11, ['*'], 'p', 1)
+                        ->paginate(11, ['*'], 'p', $request->input('p'))
                 )
             )->onEachSide(0),
             'filters' => [],
@@ -75,7 +74,7 @@ class CatalystDrepController extends Controller
     public function step1(Request $request): Response
     {
         $catalystDrep = CatalystDrep::find($request->catalystDrep);
-        
+
         $savedLocale = session('drep_signup_locale', 'en');
 
         return Inertia::render('Workflows/CatalystDrepSignup/Step1', [
@@ -161,7 +160,7 @@ class CatalystDrepController extends Controller
     public function saveDrep(Request $request)
     {
         $supportedLocales = implode(',', config('locales.supported', ['en']));
-        
+
         $attributes = $request->validate([
             'name' => 'required|min:3',
             'bio' => 'min:69',
@@ -172,25 +171,25 @@ class CatalystDrepController extends Controller
 
         $locale = $attributes['locale'] ?? 'en';
         $bio = $attributes['bio'] ?? null;
-        
+
         session(['drep_signup_locale' => $locale]);
-        
+
         unset($attributes['locale'], $attributes['bio']);
 
         $catalystDrep = CatalystDrep::where('user_id', Auth::user()->id)->first();
-        
+
         if ($catalystDrep) {
-            
+
             $catalystDrep->update($attributes);
-            
+
             if (!empty($bio)) {
                 $catalystDrep->setTranslation('bio', $locale, $bio);
                 $catalystDrep->save();
             }
         } else {
-           
+
             $catalystDrep = CatalystDrep::create(array_merge($attributes, ['user_id' => Auth::user()->id]));
-        
+
             if (!empty($bio)) {
                 $catalystDrep->setTranslation('bio', $locale, $bio);
                 $catalystDrep->save();
@@ -272,7 +271,7 @@ class CatalystDrepController extends Controller
     public function updateDrep(CatalystDrep $catalystDrep, Request $request)
     {
         $supportedLocales = implode(',', config('locales.supported', ['en']));
-        
+
         $attributes = $request->validate([
             'objective' => 'required|min:69',
             'motivation' => 'required|min:69',
@@ -281,9 +280,9 @@ class CatalystDrepController extends Controller
         ]);
 
         $locale = $attributes['locale'] ?? session('drep_signup_locale', 'en');
-        
+
         session(['drep_signup_locale' => $locale]);
-        
+
         unset($attributes['locale']);
 
         foreach (['objective', 'motivation', 'qualifications'] as $field) {
@@ -300,7 +299,7 @@ class CatalystDrepController extends Controller
     public function publishPlatformStatementToIpfs(CatalystDrep $catalystDrep, Request $request)
     {
         $supportedLocales = implode(',', config('locales.supported', ['en']));
-        
+
         $attributes = $request->validate([
             'objective' => 'required|min:69',
             'motivation' => 'required|min:69',
@@ -319,7 +318,7 @@ class CatalystDrepController extends Controller
                     $catalystDrep->setTranslation($field, $locale, $attributes[$field]);
                 }
             }
-            
+
             $catalystDrep->save();
 
             $jsonLdData = $this->generatePlatformStatementJsonLd($catalystDrep, $locale, $paymentAddress);
@@ -358,7 +357,6 @@ class CatalystDrepController extends Controller
                 'gateway_url' => $gatewayUrl,
                 'filename' => $filename,
             ]);
-
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Failed to publish platform statement to IPFS: ' . $e->getMessage()]);
         }
@@ -478,7 +476,7 @@ class CatalystDrepController extends Controller
                 'objectives' => $catalystDrep->getTranslation('objective', $locale) ?: '',
                 'motivations' => $catalystDrep->getTranslation('motivation', $locale) ?: '',
                 'qualifications' => $catalystDrep->getTranslation('qualifications', $locale) ?: '',
-                'paymentAddress' => $paymentAddress ?: '', 
+                'paymentAddress' => $paymentAddress ?: '',
                 'references' => $references,
             ],
         ];
@@ -491,7 +489,7 @@ class CatalystDrepController extends Controller
     {
         $languageMapping = [
             'en' => 'en-us',
-            'es' => 'es-es', 
+            'es' => 'es-es',
             'fr' => 'fr-fr',
             'de' => 'de-de',
             'ja' => 'ja-jp',
@@ -632,7 +630,7 @@ class CatalystDrepController extends Controller
     private function transformCatalystDrepForLocale(CatalystDrep $catalystDrep, string $locale): array
     {
         $data = CatalystDrepData::from($catalystDrep)->toArray();
-        
+
         // Override translatable fields with the specific locale data
         foreach (['bio', 'motivation', 'qualifications', 'objective'] as $field) {
             $translation = $catalystDrep->getTranslation($field, $locale, false);
@@ -649,9 +647,9 @@ class CatalystDrepController extends Controller
                 }
             }
         }
-        
+
         $data['locale'] = $locale;
-        
+
         return $data;
     }
 };
