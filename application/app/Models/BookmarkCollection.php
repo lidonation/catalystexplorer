@@ -244,12 +244,84 @@ class BookmarkCollection extends Model
             unset($array['hash']);
         }
 
-        return array_merge($array, $this->amount_received, $this->amount_requested, [
-            'proposals' => $this->proposals->pluck('model')->toArray(),
-            'ideascale_profiles' => $this->ideascale_profiles->pluck('model')->toArray(),
-            'reviews' => $this->reviews->pluck('model')->toArray(),
-            'groups' => $this->groups->pluck('model')->toArray(),
-            'communities' => $this->communities->pluck('model')->toArray(),
+        // Safely load relationships and handle potential UUID/polymorphic issues
+        $proposals = [];
+        $ideascale_profiles = [];
+        $reviews = [];
+        $groups = [];
+        $communities = [];
+        $amountReceived = [];
+        $amountRequested = [];
+
+        try {
+            $proposals = $this->proposals->pluck('model')->toArray();
+        } catch (\Exception $e) {
+            \Log::error('Error loading proposals for bookmark collection in toSearchableArray', [
+                'collection_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            $ideascale_profiles = $this->ideascale_profiles->pluck('model')->toArray();
+        } catch (\Exception $e) {
+            \Log::error('Error loading ideascale_profiles for bookmark collection in toSearchableArray', [
+                'collection_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            $reviews = $this->reviews->pluck('model')->toArray();
+        } catch (\Exception $e) {
+            \Log::error('Error loading reviews for bookmark collection in toSearchableArray', [
+                'collection_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            $groups = $this->groups->pluck('model')->toArray();
+        } catch (\Exception $e) {
+            \Log::error('Error loading groups for bookmark collection in toSearchableArray', [
+                'collection_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            $communities = $this->communities->pluck('model')->toArray();
+        } catch (\Exception $e) {
+            \Log::error('Error loading communities for bookmark collection in toSearchableArray', [
+                'collection_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            $amountReceived = $this->amount_received;
+        } catch (\Exception $e) {
+            \Log::error('Error calculating amount_received for bookmark collection in toSearchableArray', [
+                'collection_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            $amountRequested = $this->amount_requested;
+        } catch (\Exception $e) {
+            \Log::error('Error calculating amount_requested for bookmark collection in toSearchableArray', [
+                'collection_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        return array_merge($array, $amountReceived, $amountRequested, [
+            'proposals' => $proposals,
+            'ideascale_profiles' => $ideascale_profiles,
+            'reviews' => $reviews,
+            'groups' => $groups,
+            'communities' => $communities,
             'rationale' => $this->meta_info?->rationale,
         ]);
     }

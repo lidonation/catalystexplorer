@@ -130,16 +130,60 @@ class VoterHistory extends Model
      */
     public function toSearchableArray(): array
     {
-        $array = $this->load(['snapshot.fund'])->toArray();
+        // Safely load relationships with error handling
+        $array = $this->toArray();
 
         // Remove hash field from indexing - we only use UUIDs now
         if (isset($array['hash'])) {
             unset($array['hash']);
         }
 
+        // Initialize data with safe defaults
+        $snapshotData = null;
+        $votingPowerValue = null;
+
+        try {
+            $snapshotData = $this->snapshot;
+        } catch (\Exception $e) {
+            \Log::error('Error loading snapshot for voter history in toSearchableArray', [
+                'voter_history_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        // Try to load fund through snapshot with error handling
+        $fundData = null;
+        if ($snapshotData) {
+            try {
+                $fundData = $snapshotData->fund;
+            } catch (\Exception $e) {
+                \Log::error('Error loading fund through snapshot for voter history in toSearchableArray', [
+                    'voter_history_id' => $this->id,
+                    'snapshot_id' => $snapshotData->id,
+                    'snapshot_model_id' => $snapshotData->model_id ?? 'null',
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        try {
+            $votingPowerValue = $this->voting_power?->voting_power;
+        } catch (\Exception $e) {
+            \Log::error('Error loading voting power for voter history in toSearchableArray', [
+                'voter_history_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
         return array_merge(
             $array,
-            ['voting_power' => $this->voting_power?->voting_power]
+            [
+                'voting_power' => $votingPowerValue,
+                'snapshot' => $snapshotData ? array_merge(
+                    $snapshotData->toArray(),
+                    ['fund' => $fundData?->toArray()]
+                ) : null,
+            ]
         );
     }
 

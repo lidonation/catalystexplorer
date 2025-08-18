@@ -96,8 +96,7 @@ class Review extends Model
     public function discussion(): BelongsTo
     {
         return $this->belongsTo(Discussion::class, 'model_id', 'old_id')
-            ->where('reviews.model_type', Discussion::class)
-            ->whereRaw('reviews.model_id = discussions.old_id::text');
+            ->where('model_type', Discussion::class);
     }
 
     public function rating(): HasOne
@@ -195,8 +194,7 @@ class Review extends Model
 
     public function toSearchableArray(): array
     {
-        $this->load(['model', 'discussion', 'parent', 'reviewer.reputation_scores.fund', 'proposal']);
-
+        // Safely load relationships with error handling
         $array = $this->toArray();
 
         // Remove hash field from indexing - we only use UUIDs now
@@ -204,16 +202,98 @@ class Review extends Model
             unset($array['hash']);
         }
 
+        // Initialize data arrays with safe defaults
+        $modelData = null;
+        $discussionData = null;
+        $parentData = null;
+        $childrenData = [];
+        $ratingValue = null;
+        $rankingData = [];
+        $positiveRankingsCount = 0;
+        $negativeRankingsCount = 0;
+
+        try {
+            $modelData = $this->model?->toArray();
+        } catch (\Exception $e) {
+            \Log::error('Error loading model for review in toSearchableArray', [
+                'review_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            $discussionData = $this->discussion?->toArray();
+        } catch (\Exception $e) {
+            \Log::error('Error loading discussion for review in toSearchableArray', [
+                'review_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            $parentData = $this->parent?->toArray();
+        } catch (\Exception $e) {
+            \Log::error('Error loading parent for review in toSearchableArray', [
+                'review_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            $childrenData = $this->children;
+        } catch (\Exception $e) {
+            \Log::error('Error loading children for review in toSearchableArray', [
+                'review_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            $ratingValue = $this->rating?->rating;
+        } catch (\Exception $e) {
+            \Log::error('Error loading rating for review in toSearchableArray', [
+                'review_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            $rankingData = $this->rankings;
+        } catch (\Exception $e) {
+            \Log::error('Error loading rankings for review in toSearchableArray', [
+                'review_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            $positiveRankingsCount = $this->positiveRankings->count();
+        } catch (\Exception $e) {
+            \Log::error('Error loading positive rankings for review in toSearchableArray', [
+                'review_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            $negativeRankingsCount = $this->negativeRankings->count();
+        } catch (\Exception $e) {
+            \Log::error('Error loading negative rankings for review in toSearchableArray', [
+                'review_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
         return array_merge($array, [
             'model_type' => 'review',
-            'model' => $this->model?->toArray(),
-            'discussion' => $this->discussion?->toArray(),
-            'parent' => $this->parent?->toArray(),
-            'children' => $this->children,
-            'rating' => $this->rating?->rating,
-            'ranking' => $this->rankings,
-            'positive_rankings' => $this->positiveRankings->count(),
-            'negative_rankings' => $this->negativeRankings->count(),
+            'model' => $modelData,
+            'discussion' => $discussionData,
+            'parent' => $parentData,
+            'children' => $childrenData,
+            'rating' => $ratingValue,
+            'ranking' => $rankingData,
+            'positive_rankings' => $positiveRankingsCount,
+            'negative_rankings' => $negativeRankingsCount,
         ]);
     }
 }
