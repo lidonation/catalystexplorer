@@ -53,7 +53,7 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
 
     // Use Inertia form for data submission with existing preferences pre-populated
     const { data, setData, post, processing } = useForm({
-        [TinderWorkflowParams.SELECTED_FUND]: existingPreferences?.selectedFund ? String(existingPreferences.selectedFund) : String(latestFund.uuid) as string | null,
+        [TinderWorkflowParams.SELECTED_FUND]: existingPreferences?.selectedFund ? String(existingPreferences.selectedFund) : String(latestFund.id) as string | null,
         [TinderWorkflowParams.PROPOSAL_TYPES]: existingPreferences?.proposalTypes || [] as string[],
         [TinderWorkflowParams.PROPOSAL_SIZES]: existingPreferences?.proposalSizes || [] as string[],
         [TinderWorkflowParams.IMPACT_TYPES]: existingPreferences?.impactTypes || [] as string[],
@@ -62,7 +62,7 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, existingPreferen
     // Convert funds to have string values for the Selector component
     const fundOptions = funds.map(fund => ({
         label: fund.title || 'Untitled Fund',
-        value: String(fund.uuid)
+        value: String(fund.id)
     }));
 
     const proposalTypeOptions = campaigns?.map(campaign => ({

@@ -194,7 +194,7 @@ class BookmarksController extends Controller
         ];
 
         $countMap = [
-            Group::class => ['reviews', 'proposals', 'funded_proposals'],
+            Group::class => ['proposals', 'funded_proposals'],
             Community::class => ['ideascale_profiles', 'proposals'],
         ];
 

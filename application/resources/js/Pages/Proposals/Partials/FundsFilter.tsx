@@ -56,8 +56,6 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
         return <div>{t('loading')}</div>;
     }
 
-    console.log({ funds });
-
     return (
         <div className="w-full py-8" data-testid="funds-filter">
             <div className="overflow-x-auto pb-4">

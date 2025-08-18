@@ -28,11 +28,11 @@ class AnnouncementFactory extends Factory
             'event_starts_at' => $this->faker->dateTimeBetween('now', '+1 week'),
             'event_ends_at' => $this->faker->dateTimeBetween('+1 week', '+2 weeks'),
             'user_id' => $randomUser->old_id,
-            'cta' => json_encode([
+            'cta' => [
                 $this->faker->word => $this->faker->url,
                 $this->faker->word => $this->faker->url,
                 $this->faker->word => $this->faker->url, 
-            ]),
+            ],
         ];
     }
 }
