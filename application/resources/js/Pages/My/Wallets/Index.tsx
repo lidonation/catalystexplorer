@@ -82,7 +82,7 @@ const WalletsComponent: React.FC<WalletsPageProps> = ({ connectedWallets, error 
   }
 
   const hasWallets = connectedWallets?.data?.length > 0;
-
+  console.log({ connectedWallets });
   return (
       <div className=" w-full max-w-full px-4 py-4">
         <div className="flex justify-between items-center mb-6">

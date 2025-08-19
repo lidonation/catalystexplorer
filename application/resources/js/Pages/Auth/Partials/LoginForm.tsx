@@ -3,13 +3,17 @@ import Checkbox from '@/Components/atoms/Checkbox';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import TextInput from '@/Components/atoms/TextInput';
+import Title from '@/Components/atoms/Title';
 import ConnectWalletButton from '@/Components/ConnectWalletButton';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
+import Modal from '@/Components/layout/Modal.tsx';
+import RichContent from '@/Components/RichContent';
+import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { router, useForm } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { FormEventHandler, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface FormErrors {
     email?: string;
@@ -25,11 +29,11 @@ export default function LoginForm({ closeModal }: LoginFormProps) {
         email: '',
         password: '',
         remember: false,
-        redirect: window.location.href
-
+        redirect: window.location.href,
     });
 
     const [errors, setErrors] = useState<FormErrors>({});
+    const [activeConfirm, setActiveConfirm] = useState<boolean>(false);
 
     const validateEmail = (email: string): boolean => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -79,6 +83,15 @@ export default function LoginForm({ closeModal }: LoginFormProps) {
         );
     };
 
+    const {
+        connectedWalletProvider,
+        openConnectWalletSlider,
+        userAddress,
+        extractSignature,
+        stakeAddress,
+        stakeKey,
+    } = useConnectWallet();
+
     const { t } = useLaravelReactI18n();
 
     const handleForgotPassword = () => {
@@ -87,15 +100,60 @@ export default function LoginForm({ closeModal }: LoginFormProps) {
     };
 
     const handleRegister = () => {
-        if(closeModal) closeModal();
+        if (closeModal) closeModal();
         router.get(generateLocalizedRoute('register'));
-    }
+    };
+
+    const handleLogin = async () => {
+        if (!connectedWalletProvider || !userAddress) {
+            console.error('Wallet not connected');
+            return;
+        }
+        try {
+            const messageToSign = 'Catalyst Explorer Account sign in';
+
+            // Extract signature using the wallet
+            const signatureResult = await extractSignature(messageToSign);
+
+            if (!signatureResult) {
+                console.error('Failed to get signature');
+                return;
+            }
+            router.post(
+                generateLocalizedRoute('login.wallet'),
+                {
+                    walletAddress: userAddress,
+                    stake_key: stakeKey,
+                    stakeAddress: stakeAddress,
+                    signature: signatureResult.signature,
+                    signature_key: signatureResult.key,
+                },
+                {
+                    onError: (errors) => {
+                        console.error('Wallet connection errors:', errors);
+                    },
+                },
+            );
+        } catch (error) {
+            console.error('Error during signature process:', error);
+        }
+    };
+
+    const handleWalletLoginCancel = () => {};
 
     return (
         <>
-            <form onSubmit={submit} className="content-gap flex flex-col w-full p-4" data-testid="login-form">
+            <form
+                onSubmit={submit}
+                className="content-gap flex w-full flex-col p-4"
+                data-testid="login-form"
+            >
                 <div>
-                    <InputLabel htmlFor="email" value={t('email')} data-testid="email-input-label"/>
+                    <InputLabel
+                        htmlFor="email"
+                        value={t('email')}
+                        data-testid="email-input-label"
+                    />
 
                     <TextInput
                         id="email"
@@ -110,11 +168,19 @@ export default function LoginForm({ closeModal }: LoginFormProps) {
                         data-testid="email-input"
                     />
 
-                    <InputError message={errors?.email} className="mt-2" data-testid="email-error-text"/>
+                    <InputError
+                        message={errors?.email}
+                        className="mt-2"
+                        data-testid="email-error-text"
+                    />
                 </div>
 
                 <div>
-                    <InputLabel htmlFor="password" value={t('password')} data-testid="password-input-label"/>
+                    <InputLabel
+                        htmlFor="password"
+                        value={t('password')}
+                        data-testid="password-input-label"
+                    />
 
                     <TextInput
                         id="password"
@@ -128,7 +194,11 @@ export default function LoginForm({ closeModal }: LoginFormProps) {
                         data-testid="password-input"
                     />
 
-                    <InputError message={errors?.password} className="mt-2" data-testid="password-error-text"/>
+                    <InputError
+                        message={errors?.password}
+                        className="mt-2"
+                        data-testid="password-error-text"
+                    />
                 </div>
 
                 <div className="flex justify-between">
@@ -168,12 +238,27 @@ export default function LoginForm({ closeModal }: LoginFormProps) {
                     </PrimaryButton>
                 </div>
 
-                <div>
+                <div className="flex flex-col gap-2">
                     <ConnectWalletButton />
+
+                    <PrimaryButton
+                        className="flex h-10 w-full items-center justify-center rounded-md"
+                        disabled={processing || !connectedWalletProvider}
+                        type="submit"
+                        data-testid="login-submit-button"
+                        onClick={() => setActiveConfirm(true)}
+                    >
+                        {t('wallet.login')}
+                    </PrimaryButton>
                 </div>
 
-                <div className="flex w-full items-center justify-center" data-testid="login-no-account">
-                    <Paragraph className="text-4 mr-2">{t('registration.noAccount')}</Paragraph>
+                <div
+                    className="flex w-full items-center justify-center"
+                    data-testid="login-no-account"
+                >
+                    <Paragraph className="text-4 mr-2">
+                        {t('registration.noAccount')}
+                    </Paragraph>
                     <Button
                         type="button"
                         onClick={handleRegister}
@@ -184,6 +269,39 @@ export default function LoginForm({ closeModal }: LoginFormProps) {
                     </Button>
                 </div>
             </form>
+
+            <Modal
+                title={t('bookmarks.editList')}
+                isOpen={!!activeConfirm}
+                onClose={() => setActiveConfirm(false)}
+                logo={false}
+                centered
+            >
+                <div className="flex flex-col gap-4 p-4 text-center">
+                    <Title level="5">{t('wallet.login')}</Title>
+
+                    <RichContent
+                        content={t('wallet.login.confirm')}
+                        format={'html'}
+                    />
+
+                    <div className="flex justify-between gap-4">
+                        <PrimaryButton
+                            onClick={() => setActiveConfirm(false)}
+                            className="bg-primary flex-1 font-semibold"
+                        >
+                            {t('Cancel')}
+                        </PrimaryButton>
+
+                        <Button
+                            onClick={() => handleLogin()}
+                            className="bg-danger-mid text-content-light flex-1 rounded-md py-1.5 font-semibold"
+                        >
+                            {t('workflows.resetPassword.continue')}
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
         </>
     );
 }

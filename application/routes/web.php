@@ -51,8 +51,8 @@ Route::localized(
                 ->name('charts');
 
             Route::post('/test-modal', function () {
-    return response()->json(['message' => 'OK', 'time' => now()]);
-})->name('test');    
+                return response()->json(['message' => 'OK', 'time' => now()]);
+            })->name('test');
 
             Route::get('/csvs', fn() => Inertia::render('ComingSoon', ['context' => 'CSVs']))
                 ->name('csvs');
@@ -409,7 +409,7 @@ Route::localized(
                     ->name('show');
             });
 
-             Route::prefix('/wallets')->as('wallets.')->group(function () {
+            Route::prefix('/wallets')->as('wallets.')->group(function () {
                 Route::get('/{stakeKey?}/{catId?}', [WalletController::class, 'show'])
                     ->name('show');
             });

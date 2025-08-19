@@ -1013,5 +1013,6 @@
     "workflows.publishToIpfs.success.copied": "Copié !",
     "workflows.publishToIpfs.success.copyCidTitle": "Copier le CID",
     "workflows.publishToIpfs.success.openInNewTabTitle": "Ouvrir dans un nouvel onglet",
-    "workflows.publishToIpfs.reviewDetails": "Vous êtes sur le point de publier votre liste sur IPFS. Consultez les détails ci-dessous."
+    "workflows.publishToIpfs.reviewDetails": "Vous êtes sur le point de publier votre liste sur IPFS. Consultez les détails ci-dessous.",
+    "wallet.login": "Connexion portefeuille"
 }

@@ -1,5 +1,7 @@
 import Card from '@/Components/Card';
+import Button from '@/Components/atoms/Button';
 import Paragraph from '@/Components/atoms/Paragraph';
+import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import Switch from '@/Components/atoms/Switch';
 import { formatTimeAgo } from '@/Components/layout/TimeFormatter';
 import CheckIcon from '@/Components/svgs/CheckIcon';
@@ -7,19 +9,19 @@ import CopyIcon from '@/Components/svgs/CopyIcon';
 import LinkedInIcon from '@/Components/svgs/LinkedInIcons';
 import WebIcon from '@/Components/svgs/WebIcon';
 import XIcon from '@/Components/svgs/XIcon';
-import SocialProfilesForm from './Partials/EditSocialsForm';
-import ProfileFieldForm from './Partials/UpdateProfileInformationForm';
-import { generateLocalizedRoute } from '@/utils/localizedRoute';
-import { router, useForm } from '@inertiajs/react';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { truncateMiddle } from '@/utils/truncateMiddle';
+import { useForm } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import PasswordForm from './Partials/UpdatePasswordForm';
-import BaseModal from './Partials/UpdateProfilesModal';
+import SocialProfilesForm from './Partials/EditSocialsForm';
 import ProfileField from './Partials/ProfileField';
-import useProfileState, { ModalType } from './hooks/useProfileState';
 import ProfilePhotoUploader from './Partials/ProfilePhotoUploader';
 import ProfileSection from './Partials/ProfileSection';
-import Button from '@/Components/atoms/Button';
+import PasswordForm from './Partials/UpdatePasswordForm';
+import ProfileFieldForm from './Partials/UpdateProfileInformationForm';
+import BaseModal from './Partials/UpdateProfilesModal';
+import useProfileState, { ModalType } from './hooks/useProfileState';
 
 export interface User {
     id: number;
@@ -44,7 +46,6 @@ export interface ProfileSettingsProps {
     user: User;
 }
 
-
 export interface ModalFieldConfig {
     title: string;
     fieldName: string;
@@ -64,7 +65,9 @@ export interface SocialLinks {
 const generateSocialLinks = (user: User) => {
     return {
         twitter: user.twitter ? `https://x.com/${user.twitter}` : '',
-        linkedin: user.linkedin ? `https://www.linkedin.com/in/${user.linkedin}` : '',
+        linkedin: user.linkedin
+            ? `https://www.linkedin.com/in/${user.linkedin}`
+            : '',
         website: user.website || '',
     };
 };
@@ -88,7 +91,7 @@ export default function ProfileSettings({
         setCopySuccess,
         setPhotoPreview,
         setPhotoUploading,
-        setPhotoError
+        setPhotoError,
     } = useProfileState();
 
     const { data, setData } = useForm({
@@ -151,10 +154,18 @@ export default function ProfileSettings({
 
     const renderSocialIcon = (type: 'linkedin' | 'twitter' | 'website') => {
         const link = socialLinks[type];
-        const Icon = type === 'linkedin' ? LinkedInIcon : type === 'twitter' ? XIcon : WebIcon;
-        const title = type === 'linkedin' ? t('icons.titles.linkedIn') :
-            type === 'twitter' ? t('icons.titles.x') :
-                t('users.website');
+        const Icon =
+            type === 'linkedin'
+                ? LinkedInIcon
+                : type === 'twitter'
+                  ? XIcon
+                  : WebIcon;
+        const title =
+            type === 'linkedin'
+                ? t('icons.titles.linkedIn')
+                : type === 'twitter'
+                  ? t('icons.titles.x')
+                  : t('users.website');
 
         return (
             <div className="flex items-center space-x-2">
@@ -162,13 +173,21 @@ export default function ProfileSettings({
                     href={link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={link ? 'cursor-pointer' : 'pointer-events-none cursor-default'}
+                    className={
+                        link
+                            ? 'cursor-pointer'
+                            : 'pointer-events-none cursor-default'
+                    }
                 >
                     <Icon className="text-content" />
                 </a>
                 <Paragraph size="sm" className="text-content font-bold">
                     {link ? (
-                        <a href={link} target="_blank" rel="noopener noreferrer">
+                        <a
+                            href={link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
                             {title}
                         </a>
                     ) : (
@@ -184,7 +203,11 @@ export default function ProfileSettings({
         switch (state.currentModal) {
             case ModalType.PROFILE_FIELD:
                 return (
-                    <BaseModal isOpen={true} onClose={closeModal} title={state.modalConfig.title}>
+                    <BaseModal
+                        isOpen={true}
+                        onClose={closeModal}
+                        title={state.modalConfig.title}
+                    >
                         <ProfileFieldForm
                             fieldName={state.modalConfig.fieldName}
                             fieldLabel={state.modalConfig.fieldLabel}
@@ -199,7 +222,11 @@ export default function ProfileSettings({
                 );
             case ModalType.SOCIAL_PROFILES:
                 return (
-                    <BaseModal isOpen={true} onClose={closeModal} title={t('users.updateSocialProfiles')}>
+                    <BaseModal
+                        isOpen={true}
+                        onClose={closeModal}
+                        title={t('users.updateSocialProfiles')}
+                    >
                         <SocialProfilesForm
                             linkedinUrl={user.linkedin || ''}
                             twitterUrl={user.twitter || ''}
@@ -210,7 +237,11 @@ export default function ProfileSettings({
                 );
             case ModalType.PASSWORD:
                 return (
-                    <BaseModal isOpen={true} onClose={closeModal} title={t('updatePassword')}>
+                    <BaseModal
+                        isOpen={true}
+                        onClose={closeModal}
+                        title={t('updatePassword')}
+                    >
                         <PasswordForm onClose={closeModal} />
                     </BaseModal>
                 );
@@ -230,11 +261,17 @@ export default function ProfileSettings({
                             <ProfileSection title={t('users.about')}>
                                 <div className="py-4">
                                     {data.bio ? (
-                                        <Paragraph size="sm" className="text-gray-persist">
+                                        <Paragraph
+                                            size="sm"
+                                            className="text-gray-persist"
+                                        >
                                             {data.bio}
                                         </Paragraph>
                                     ) : (
-                                        <Paragraph size="sm" className="text-gray-persist">
+                                        <Paragraph
+                                            size="sm"
+                                            className="text-gray-persist"
+                                        >
                                             {t('users.noBiography')}
                                         </Paragraph>
                                     )}
@@ -252,18 +289,30 @@ export default function ProfileSettings({
                                 </div>
                             </ProfileSection>
                         </Card>
+
+                        <PrimaryLink
+                            className="lg:text-md mb-4 ml-auto px-4 py-2 text-sm text-nowrap w-full"
+                            href={useLocalizedRoute(
+                                'workflows.signature.index',
+                                {
+                                    step: 1,
+                                },
+                            )}
+                        >
+                            {`+ ${t('my.connectWallet')}`}
+                        </PrimaryLink>
                     </div>
 
                     {/* Joined date */}
                     <Paragraph size="sm" className="text-content mt-4">
                         {user.created_at
                             ? `JOINED ${new Date(user.created_at)
-                                .toLocaleDateString('en-US', {
-                                    month: 'long',
-                                    day: 'numeric',
-                                    year: 'numeric',
-                                })
-                                .toUpperCase()}`
+                                  .toLocaleDateString('en-US', {
+                                      month: 'long',
+                                      day: 'numeric',
+                                      year: 'numeric',
+                                  })
+                                  .toUpperCase()}`
                             : ''}
                     </Paragraph>
                 </div>
@@ -271,16 +320,16 @@ export default function ProfileSettings({
                 {/* Right column */}
                 <div className="col-span-8">
                     {/* Personal Info Card */}
-                    <Card className="bg-background rounded-lg shadow-sm mb-3">
+                    <Card className="bg-background mb-3 rounded-lg shadow-sm">
                         <ProfileSection title={t('users.personalInfo')}>
                             {/* Photo field */}
-                            <div className="flex items-center justify-between border-t border-background-lighter">
+                            <div className="border-background-lighter flex items-center justify-between border-t">
                                 <div className="flex w-full py-8">
                                     <div className="text-gray-persist w-1/4">
                                         {t('users.photo')}
                                     </div>
                                     <div className="w-3/4">
-                                        <div className="text-sm text-dark">
+                                        <div className="text-dark text-sm">
                                             {t('users.photoSizeInstructions')}
                                         </div>
                                     </div>
@@ -299,7 +348,7 @@ export default function ProfileSettings({
                             {/* Name field */}
                             <ProfileField
                                 label={t('profileWorkflow.name')}
-                                value={user.name}
+                                value={truncateMiddle(user.name)}
                                 onEdit={() => {
                                     openProfileFieldModal({
                                         title: t('users.updateProfileName'),
@@ -316,16 +365,28 @@ export default function ProfileSettings({
                                 label={t('users.socialProfiles')}
                                 value={
                                     <div className="flex space-x-2">
-                                        <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer"
-                                            className={`bg-background-transparent ${socialLinks.linkedin ? 'cursor-pointer' : 'pointer-events-none cursor-default'}`}>
+                                        <a
+                                            href={socialLinks.linkedin}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={`bg-background-transparent ${socialLinks.linkedin ? 'cursor-pointer' : 'pointer-events-none cursor-default'}`}
+                                        >
                                             <LinkedInIcon className="text-content h-7 w-7" />
                                         </a>
-                                        <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer"
-                                            className={`bg-background-transparent ${socialLinks.twitter ? 'cursor-pointer' : 'pointer-events-none cursor-default'}`}>
+                                        <a
+                                            href={socialLinks.twitter}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={`bg-background-transparent ${socialLinks.twitter ? 'cursor-pointer' : 'pointer-events-none cursor-default'}`}
+                                        >
                                             <XIcon className="text-content mr-1" />
                                         </a>
-                                        <a href={socialLinks.website} target="_blank" rel="noopener noreferrer"
-                                            className={`bg-background-transparent ${socialLinks.website ? 'cursor-pointer' : 'pointer-events-none cursor-default'}`}>
+                                        <a
+                                            href={socialLinks.website}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={`bg-background-transparent ${socialLinks.website ? 'cursor-pointer' : 'pointer-events-none cursor-default'}`}
+                                        >
                                             <WebIcon className="text-content" />
                                         </a>
                                     </div>
@@ -340,15 +401,20 @@ export default function ProfileSettings({
                                 placeholder={t('users.noAddress')}
                                 onEdit={() => {
                                     openProfileFieldModal({
-                                        title: user.city ? t('users.updateCity') : t('users.addCity'),
+                                        title: user.city
+                                            ? t('users.updateCity')
+                                            : t('users.addCity'),
                                         fieldName: 'city',
                                         fieldLabel: t('users.city'),
-                                        currentValue: user.city || data.city || '',
+                                        currentValue:
+                                            user.city || data.city || '',
                                         updateRoute: 'profile.update.field',
                                         inputType: 'text',
                                     });
                                 }}
-                                buttonText={user.city ? undefined : t('users.add')}
+                                buttonText={
+                                    user.city ? undefined : t('users.add')
+                                }
                             />
                         </ProfileSection>
                     </Card>
@@ -373,7 +439,11 @@ export default function ProfileSettings({
                             {/* Email field */}
                             <ProfileField
                                 label={t('profileWorkflow.email')}
-                                value={<span className="font-bold">{data.email}</span>}
+                                value={
+                                    <span className="font-bold">
+                                        {data.email}
+                                    </span>
+                                }
                                 onEdit={() => {
                                     openProfileFieldModal({
                                         title: t('users.updateEmailAddress'),
@@ -399,7 +469,9 @@ export default function ProfileSettings({
                                 value={
                                     <div className="flex items-center">
                                         <span className="profile-url-text text-content text-sm lg:text-base">
-                                            {`https://catalytexplorer.com/${user.name.replace(/\s+/g, '-').toLowerCase()}`}
+                                            {truncateMiddle(
+                                                `https://catalytexplorer.com/${user.name.replace(/\s+/g, '-').toLowerCase()}`,
+                                            )}
                                         </span>
                                         <Button
                                             className="text-content-light hover:text-content ml-2 text-sm transition-colors duration-300 ease-in-out"
@@ -415,7 +487,9 @@ export default function ProfileSettings({
                                             )}
                                         </Button>
                                         {state.copySuccess && (
-                                             <span className="text-primary ml-2 text-xs">{t('users.copied')}</span>
+                                            <span className="text-primary ml-2 text-xs">
+                                                {t('users.copied')}
+                                            </span>
                                         )}
                                     </div>
                                 }
