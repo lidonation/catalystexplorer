@@ -19,6 +19,8 @@ import CatalysDrepData = App.DataTransferObjects.CatalystDrepData;
 import IpfsSuccessDisplay from './partials/IpfsSuccessDisplay';
 import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import useLanguageDetection from '@/hooks/useLanguageDetection';
+import { LOCALE_MAPPING } from '@/constants/locales';
+import Paragraph from '@/Components/atoms/Paragraph';
 
 interface Step5Props {
     catalystDrep: CatalysDrepData;
@@ -168,6 +170,18 @@ const step5: React.FC<Step5Props> = ({
                     {ipfsData && (
                         <IpfsSuccessDisplay ipfsData={ipfsData} />
                     )}
+
+                    {/* Display Selected Language */}
+                    <div className="bg-slate-50 mb-6 rounded-lg p-4 border border-slate-200">
+                        <div className="flex items-center gap-2">
+                            <Paragraph className="text-sm font-medium text-slate-700">
+                                {t('Selected Language')}:
+                            </Paragraph>
+                            <Paragraph className="text-sm text-slate-900 font-semibold">
+                                {LOCALE_MAPPING[savedLocale as keyof typeof LOCALE_MAPPING]?.native || savedLocale}
+                            </Paragraph>
+                        </div>
+                    </div>
                 
 
                     <div className="bg-primary-light mb-6 rounded-lg p-4 text-center">
