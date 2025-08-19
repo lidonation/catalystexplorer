@@ -40,7 +40,6 @@ export default function DrepTable({
 
     const tableColumns = [
         { label: t('dreps.drepList.drep') },
-        // { label: t('dreps.drepList.registeredOn') },
         { label: t('dreps.drepList.lastActive') },
         { label: t('dreps.drepList.votingPower') },
         { label: t('dreps.drepList.delegators') },

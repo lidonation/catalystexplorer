@@ -1255,5 +1255,7 @@
     "workflows.publishToIpfs.success.copied": "Copied!",
     "workflows.publishToIpfs.success.copyCidTitle": "Copy CID",
     "workflows.publishToIpfs.success.openInNewTabTitle": "Open in new tab",
-    "workflows.publishToIpfs.reviewDetails": "You're about to publish your list to IPFS. Review the details below."
+    "workflows.publishToIpfs.reviewDetails": "You're about to publish your list to IPFS. Review the details below.",
+    "wallet.login": "Login with Wallet",
+    "wallet.login.confirm": "We are about to log you in using your connected wallet, the account linked to this wallet will be authenticated. If no linked account is found, one will be created using your address. You can update this account in you dashboard under 'My profile' page.<br><br> <strong>Already have an account?</strong> Login using email and add your wallet so you can login with either wallet or email."
 }

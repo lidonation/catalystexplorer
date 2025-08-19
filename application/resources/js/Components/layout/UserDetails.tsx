@@ -11,6 +11,7 @@ import LogOutIcon from '../svgs/LogOut';
 import RegisterUserIcon from '../svgs/Register';
 import UserAvatar from '../UserAvatar';
 import Modal from './Modal.tsx';
+import { truncateMiddle } from '@/utils/truncateMiddle.ts';
 
 interface UserDetailsProps {
     user: App.DataTransferObjects.UserData;
@@ -45,7 +46,10 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
     return (
         <>
             {user ? (
-                <div className="flex items-center justify-between" data-testid="user-details">
+                <div
+                    className="flex items-center justify-between"
+                    data-testid="user-details"
+                >
                     <div className="flex gap-3">
                         <div className="bg-background-light size-9 rounded-full">
                             <UserAvatar
@@ -64,7 +68,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                                 className="text-4 text-content font-semibold"
                                 data-testid="user-name"
                             >
-                                {user?.name}
+                                {truncateMiddle(user?.name)}
                             </Link>
 
                             <Paragraph className="text-5 text-content text-xs">
@@ -89,8 +93,14 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                 </div>
             ) : (
                 <>
-                    <nav className="flex flex-col justify-between" data-testid="user-sign-in-nav">
-                        <ul className="menu-gap-y flex flex-1 flex-row" data-testid="user-sign-in-list">
+                    <nav
+                        className="flex flex-col justify-between"
+                        data-testid="user-sign-in-nav"
+                    >
+                        <ul
+                            className="menu-gap-y flex flex-1 flex-row"
+                            data-testid="user-sign-in-list"
+                        >
                             <li
                                 className="hover:bg-background-lighter flex cursor-pointer items-center gap-1 px-2 py-1"
                                 onClick={() => setActiveModal('register')}

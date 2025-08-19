@@ -48,6 +48,27 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
+     * Handle an incoming authentication request.
+     */
+    public function walletLogin(LoginRequest $request)
+    {
+        $request->authenticateWallet();
+
+        $request->session()->regenerate();
+
+        $intendedDestination = session('url.intended');
+
+        session()->forget('url.intended');
+
+        if ($intendedDestination) {
+            return redirect($intendedDestination);
+        }
+
+        return redirect('/');
+
+    }
+
+    /**
      * Destroy an authenticated session.
      */
     public function destroy(Request $request): RedirectResponse

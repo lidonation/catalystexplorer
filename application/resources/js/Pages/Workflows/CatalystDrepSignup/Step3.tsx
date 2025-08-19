@@ -63,8 +63,6 @@ const Step3: React.FC<Step3Props> = ({
                 t('workflows.catalystDrepSignup.signMessage'),
             );
 
-            console.log({ signatureResult });
-
             if (!signatureResult) {
                 return;
             }
