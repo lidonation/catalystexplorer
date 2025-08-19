@@ -98,12 +98,12 @@ class User extends Authenticatable implements HasMedia
 
     public function communities(): BelongsToMany
     {
-        return $this->belongsToMany(Community::class, 'community_has_users', 'user_uuid', 'community_id', 'id', 'id');
+        return $this->belongsToMany(Community::class, 'community_has_users', 'user_id', 'community_id', 'id', 'id');
     }
 
     public function signatures()
     {
-        return $this->hasMany(Signature::class, 'user_uuid', 'id');
+        return $this->hasMany(Signature::class, 'user_id', 'id');
     }
 
     public function transactions()

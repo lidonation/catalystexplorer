@@ -50,6 +50,7 @@ const Step3: React.FC<Step3Props> = ({
         extractSignature,
         stakeAddress,
         stakeKey,
+        networkName,
     } = useConnectWallet();
 
     const [isSigning, setIsSigning] = useState(false);
@@ -103,7 +104,7 @@ const Step3: React.FC<Step3Props> = ({
 
             <Content>
                 <div className="bg-background-lighter mx-auto w-full max-w-md rounded-3xl p-6 shadow-md">
-                    <ErrorDisplay/>
+                    <ErrorDisplay />
                     <div className="space-y-4">
                         <SecondaryButton
                             className={`hover:bg-background-lighter flex w-full items-center justify-center gap-2 rounded-md px-4 py-1.5 text-sm sm:text-base`}
@@ -139,7 +140,7 @@ const Step3: React.FC<Step3Props> = ({
                             <span className="text-slate-500">
                                 {t('users.network')}
                             </span>
-                            <span className="font-medium">{t('Mainnet')}</span>
+                            <span className="font-medium ">{networkName}</span>
                         </div>
 
                         <div className="border-slate border-t border-dashed"></div>

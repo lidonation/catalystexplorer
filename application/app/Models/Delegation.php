@@ -8,14 +8,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Delegation extends Model
 {
-    protected $keyType = 'int';
+    protected $keyType = 'string';
 
-    public $incrementing = true;
+    public $incrementing = false;
 
     public function uniqueIds(): array
     {
-        return [];
+        return ['id'];
     }
+
+    protected $fillable = [
+        'registration_id',
+        'voting_pub',
+        'weight',
+        'cat_onchain_id',
+    ];
 
     public function registration(): BelongsTo
     {

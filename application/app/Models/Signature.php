@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\CatalysRoleEnum;
 use App\Services\WalletInfoService;
 use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Builder;
@@ -30,7 +31,6 @@ class Signature extends Model
         'wallet_provider',
         'wallet_name',
         'user_id',
-        'user_uuid',
     ];
 
     protected $casts = [
@@ -100,6 +100,18 @@ class Signature extends Model
     {
         return Attribute::make(
             get: fn () => $this->wallet_name ? ucfirst($this->wallet_name) : 'Unknown'
+        );
+    }
+
+    public function catalystProfileRegistration(): Attribute
+    {
+        return Attribute::make(
+            get: function (): ?Transaction {
+                return Transaction::where([
+                    'stake_pub' => $this->stake_address,
+                    'json_metadata->purpose_uuid' => CatalysRoleEnum::CATALYST_USER->value,
+                ])->first();
+            }
         );
     }
 

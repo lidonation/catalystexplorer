@@ -262,6 +262,10 @@ class CatalystDrepController extends Controller
             'signature_id' => $signature->id,
         ]);
 
+        // if (empty($signature->catalystProfileRegistration)) {
+        //     return back()->withErrors(['message' => 'workflows.catalystDrepSignup.hasCatalystProfile']);
+        // }
+
         return to_route('workflows.drepSignUp.index', ['step' => 4]);
     }
 
@@ -539,7 +543,7 @@ class CatalystDrepController extends Controller
             [
                 'stake_key' => $validated['stake_key'],
                 'stake_address' => $validated['stakeAddress'],
-                'user_uuid' => Auth::user()->id,
+                'user_id' => Auth::user()->id,
             ],
             $validated
         );
@@ -564,6 +568,7 @@ class CatalystDrepController extends Controller
                 'drep_stake_address.regex' => 'DRep stake address format is invalid.',
             ]
         );
+
         if (empty($drepStakeAddress['drep_stake_address'])) {
             return response()->json([
                 'error' => 'The DRep stake address is required and cannot be empty.',
@@ -571,7 +576,7 @@ class CatalystDrepController extends Controller
         }
 
         $drepId = DB::table('signatures')
-            ->join('catalyst_dreps', 'catalyst_dreps.user_id', '=', 'signatures.user_uuid')
+            ->join('catalyst_dreps', 'catalyst_dreps.user_id', '=', 'signatures.user_id')
             ->where('signatures.stake_address', $drepStakeAddress['drep_stake_address'])
             ->value('catalyst_dreps.id');
 

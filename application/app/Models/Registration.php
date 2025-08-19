@@ -10,14 +10,20 @@ class Registration extends Model
 {
     protected $with = ['delegators'];
 
-    protected $keyType = 'int';
+    protected $keyType = 'string';
 
-    public $incrementing = true;
+    public $incrementing = false;
 
     public function uniqueIds(): array
     {
-        return [];
+        return ['id'];
     }
+
+    protected $fillable = [
+        'tx',
+        'stake_pub',
+        'stake_key',
+    ];
 
     public function delegators(): HasMany
     {

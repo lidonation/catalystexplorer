@@ -67,7 +67,7 @@ const Index = () => {
                                         {t('dreps.landing.signUp')}
                                     </PrimaryLink>
                                     <Link
-                                        href={'dreps/list'}
+                                        href={useLocalizedRoute('dreps.list')}
                                         className="border-secondary text-secondary rounded-md border-2 bg-transparent px-6 py-3 text-center transition"
                                     >
                                         {t('dreps.landing.findDrep')}

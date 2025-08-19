@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class VotingPower extends Model
 {
-    protected $keyType = 'int';
+    protected $keyType = 'string';
 
-    public $incrementing = true;
+    public $incrementing = false;
 
     protected $fillable = [
         'snapshot_id',
@@ -23,7 +23,7 @@ class VotingPower extends Model
 
     public function uniqueIds(): array
     {
-        return [];
+        return ['id'];
     }
 
     public function snapshot(): BelongsTo
