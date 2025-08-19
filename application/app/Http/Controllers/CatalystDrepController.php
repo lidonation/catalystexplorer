@@ -250,7 +250,7 @@ class CatalystDrepController extends Controller
             [
                 'stake_key' => $validated['stake_key'],
                 'stake_address' => $validated['stakeAddress'],
-                'user_uuid' => Auth::user()->id,
+                'user_id' => Auth::user()->id,
             ],
             $validated
         );

@@ -92,14 +92,14 @@ class Signature extends Model
     protected function displayName(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->wallet_name ?: ($this->wallet_provider ?: 'Unknown')
+            get: fn () => $this->wallet_name ?: ($this->wallet_name ?: 'Unknown')
         );
     }
 
     protected function formattedWalletProvider(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->wallet_provider ? ucfirst($this->wallet_provider) : 'Unknown'
+            get: fn () => $this->wallet_name ? ucfirst($this->wallet_name) : 'Unknown'
         );
     }
 

@@ -48,7 +48,7 @@ function DesktopSidebar(props: any) {
                     <div className="px-4">
                       <div className="border-gray-200 flex flex-col gap-5 border-t-2 pt-5">
                             <UserDetails user={auth?.user as unknown as User} />
-                        <div className="bg-background-darker -mx-4 py-4">
+                        <div className="bg-background-darker -mx-4 p-4">
                             <ThemeSwitcher />
                         </div>
                         </div>

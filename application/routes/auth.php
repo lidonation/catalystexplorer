@@ -30,6 +30,9 @@ Route::localized(function () {
         Route::get('login', [AuthenticatedSessionController::class, 'create'])
             ->name('login');
 
+        Route::post('wallet-login', [AuthenticatedSessionController::class, 'walletLogin'])
+            ->name('login.wallet');
+
         Route::post('login', [AuthenticatedSessionController::class, 'store'])
             ->name('login.store');
 

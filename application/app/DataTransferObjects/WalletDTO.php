@@ -7,7 +7,7 @@ namespace App\DataTransferObjects;
 class WalletDTO
 {
     public function __construct(
-        public readonly int $id,
+        public readonly string $id,
         public readonly string $name,
         public readonly ?string $walletName,
         public readonly string $walletProvider,

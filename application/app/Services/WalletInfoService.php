@@ -216,7 +216,7 @@ class WalletInfoService
         }
     }
 
-    public function getUserWallets(int $userId, int $page = 1, int $limit = 4): LengthAwarePaginator
+    public function getUserWallets(string $userId, int $page = 1, int $limit = 4): LengthAwarePaginator
     {
         $uniqueStakeAddresses = Signature::forUser($userId)
             ->uniqueWallets()
@@ -231,7 +231,6 @@ class WalletInfoService
         $paginatedAddresses = $uniqueStakeAddresses->slice($offset, $limit);
 
         $signatures = Signature::whereIn('stake_address', $paginatedAddresses)
-            ->select('stake_address', 'wallet_provider', 'wallet_name', 'id', 'updated_at')
             ->get()
             ->groupBy('stake_address')
             ->map(fn ($group) => $group->first());

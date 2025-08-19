@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Invokables;
 
 use Illuminate\Support\Facades\Log;
