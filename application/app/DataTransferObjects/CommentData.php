@@ -17,7 +17,7 @@ class CommentData extends Data
         public string $text,
         public ?string $original_text,
         public string $created_at,
-        public ?int $parent_id,
+        public ?string $parent_id,
         public string $updated_at,
         public ?UserData $commentator,
         #[DataCollectionOf(CommentData::class)]

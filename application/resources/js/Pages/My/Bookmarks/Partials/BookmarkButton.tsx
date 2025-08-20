@@ -6,7 +6,7 @@ import BookmarkPage1 from '@/Pages/My/Lists/Partials/ListCreateFromBookmarkSave/
 import BookmarkPage2 from '@/Pages/My/Lists/Partials/ListCreateFromBookmarkSave/Step2';
 import BookmarkPage3 from '@/Pages/My/Lists/Partials/ListCreateFromBookmarkSave/Step3';
 import TransitionMenu from '@/Pages/My/Lists/Partials/TransitionMenu';
-import { useState, useRef } from 'react';
+import { useRef, useState } from 'react';
 
 interface BookmarkButtonProps {
     modelType: string;
@@ -23,7 +23,7 @@ export default function BookmarkButton({
     width = 24,
     height = 24,
     children,
-    dataTestId = 'bookmark-button'
+    dataTestId = 'bookmark-button',
 }: BookmarkButtonProps) {
     const {
         isBookmarked,
@@ -36,15 +36,15 @@ export default function BookmarkButton({
         associatedCollection,
     } = useBookmark({ modelType, itemId });
 
-     const buttonRef = useRef<HTMLButtonElement>(null);
+    const buttonRef = useRef<HTMLButtonElement>(null);
 
     const handleOpenChange = async (open: boolean) => {
-         setIsOpen(open);
-        // if (open && !isBookmarked) {
-        //     await createBookmark();
-        // } else {
-        //     setIsOpen(open);
-        // }
+        setIsOpen(open);
+        if (open && !isBookmarked) {
+            await createBookmark();
+        } else {
+            setIsOpen(open);
+        }
         if (!open && buttonRef.current) {
             buttonRef.current.blur();
         }
@@ -71,18 +71,18 @@ export default function BookmarkButton({
         <TransitionMenu
             trigger={
                 <button
-                    className="cursor-pointer rounded-full px-0 py-0.5 relative inline-flex gap-1"
+                    className="relative inline-flex cursor-pointer gap-1 rounded-full px-0 py-0.5"
                     aria-label={`bookmark-${modelType}`}
                     onPointerDown={(e) => {
-                    e.stopPropagation(); // optional
-                    toggleBookmark();
+                        e.stopPropagation(); // optional
+                        toggleBookmark();
                     }}
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
-                    data-testid = {dataTestId}
+                    data-testid={dataTestId}
                     style={{
                         outline: 'none', // Remove focus outline
-                        WebkitTapHighlightColor: 'transparent' // Remove tap highlight on mobile
+                        WebkitTapHighlightColor: 'transparent', // Remove tap highlight on mobile
                     }}
                 >
                     {children}

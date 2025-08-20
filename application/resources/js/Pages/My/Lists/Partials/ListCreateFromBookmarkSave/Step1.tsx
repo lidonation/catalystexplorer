@@ -70,7 +70,7 @@ const BookmarkPage1 = ({
                 className: 'bg-gray-800 text-white',
                 toastId: 'bookmark-removed-from-list',
             });
-        } else {
+        } else {            
             // Otherwise, add bookmark to the newly selected list
             await addBookmarkToList(listId, bookmarkId);
             setSelectedListId(listId);

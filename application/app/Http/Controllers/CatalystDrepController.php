@@ -162,7 +162,7 @@ class CatalystDrepController extends Controller
         $attributes = $request->validate([
             'name' => 'required|min:3',
             'bio' => 'min:69',
-            'link' => 'url:http,https',
+            'link' => 'url:http,https|nullable',
             'email' => 'email',
             'locale' => "string|in:{$supportedLocales}",
         ]);

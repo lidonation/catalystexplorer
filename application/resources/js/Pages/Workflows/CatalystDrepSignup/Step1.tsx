@@ -89,7 +89,7 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, catalystDrep, sa
                     disabled={!isFormValid}
                     onClick={() => (isFormValid ? submitForm() : '')}
                 >
-                    <span>{t('profileWorkflow.claimProfile')}</span>
+                    <span>{t('listQuickCreate.create')}</span>
                     <ChevronRight className="h-4 w-4" />
                 </PrimaryButton>
             </Footer>

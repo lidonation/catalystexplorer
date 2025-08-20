@@ -17,19 +17,24 @@ interface ErrorDisplayProps {
     title?: string;
 }
 
-const ErrorDisplay: React.FC<ErrorDisplayProps> = ({ 
-    className = "mb-6 p-4 bg-error-light/[50%] border border-error rounded-md max-w-2xl mx-auto",
-    title
+const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
+    className = 'mb-6 p-2 lg:mx-8 mx-4 border border-error rounded-md max-w-2xl ',
+    title,
 }) => {
     const page = usePage<PageProps>();
     const { t } = useLaravelReactI18n();
 
     const translateMessage = (message: string): string => {
-
-        if (typeof message === 'string' && /^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9][a-zA-Z0-9_]*)+$/.test(message)) {
+        if (
+            typeof message === 'string' &&
+            /^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9][a-zA-Z0-9_]*)+$/.test(message)
+        ) {
             try {
                 const translated = t(message);
-                console.log('Translation attempt:', { original: message, translated });
+                console.log('Translation attempt:', {
+                    original: message,
+                    translated,
+                });
                 return translated;
             } catch (error) {
                 console.warn('Translation failed for key:', message, error);
@@ -39,7 +44,10 @@ const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
         return message;
     };
 
-    if (!page.props.errorBags?.default || Object.keys(page.props.errorBags.default).length === 0) {
+    if (
+        !page.props.errorBags?.default ||
+        Object.keys(page.props.errorBags.default).length === 0
+    ) {
         return null;
     }
 
@@ -47,21 +55,31 @@ const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
         <div className={className}>
             <div className="text-error">
                 {title && (
-                    <Paragraph className="text-md font-bold mb-2">{title}</Paragraph>
+                    <Paragraph className="text-md mb-2 font-bold">
+                        {title}
+                    </Paragraph>
                 )}
                 <div className="text-sm">
-                    {Object.entries(page.props.errorBags.default).map(([key, messages]) => (
-                        <div key={key} className="mb-1">
-                            {Array.isArray(messages) 
-                                ? messages.map((message, index) => (
-                                    <Paragraph key={index} className="text-sm">
-                                        {translateMessage(String(message))}
+                    {Object.entries(page.props.errorBags.default).map(
+                        ([key, messages]) => (
+                            <div key={key} className="mb-1">
+                                {Array.isArray(messages) ? (
+                                    messages.map((message, index) => (
+                                        <Paragraph
+                                            key={index}
+                                            className="text-sm"
+                                        >
+                                            {translateMessage(String(message))}
+                                        </Paragraph>
+                                    ))
+                                ) : (
+                                    <Paragraph className="text-sm">
+                                        {translateMessage(String(messages))}
                                     </Paragraph>
-                                ))
-                                : <Paragraph className="text-sm">{translateMessage(String(messages))}</Paragraph>
-                            }
-                        </div>
-                    ))}
+                                )}
+                            </div>
+                        ),
+                    )}
                 </div>
             </div>
         </div>
