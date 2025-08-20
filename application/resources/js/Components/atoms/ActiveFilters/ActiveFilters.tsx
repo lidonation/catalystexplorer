@@ -1,10 +1,9 @@
-import { FilteredItem, useFilterContext } from '@/Context/FiltersContext';
+import { FilteredItem } from '@/Context/FiltersContext';
 import BooleanFilters from './BooleanFilters';
 import IDFilters from './IDFilters';
 import RangeFilters from './RangeFilters';
 import SortFilters from './SortFilters';
 import StatusFilters from './StatusFilters';
-
 
 export default function ActiveFilters({
     sortOptions,
@@ -18,14 +17,17 @@ export default function ActiveFilters({
     filters: FilteredItem[];
     setFilters: (filter: FilteredItem) => void;
 }) {
-    const statusFilters = ['coh', 'fs', 'ps', 'ds', 'c', 'pro'];
+    const statusFilters = ['coh', 'fs', 'ps', 'ds', 'c', 'pro', 'tt'];
     const rangeFilters = ['pl', 'b', 'aa', 'au', 'd', 'pr', 'vp', 'r', 'rs'];
     const sortFilters = ['st'];
     const idFilters = ['t', 'cam', 'com', 'ip', 'g', 'ri', 'f'];
     const booleanFilters = ['op', 'h'];
 
     return (
-        <div className="flex w-full flex-wrap gap-3 text-sm transition-all duration-300" data-testid="active-filters-container">
+        <div
+            className="flex w-full flex-wrap gap-3 text-sm transition-all duration-300"
+            data-testid="active-filters-container"
+        >
             {filters.map((filter) => {
                 if (!filter.label) {
                     return;
