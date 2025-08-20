@@ -1,12 +1,12 @@
 import Paginator from '@/Components/Paginator';
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
-import { FiltersProvider, useFilterContext } from '@/Context/FiltersContext';
+import { FiltersProvider } from '@/Context/FiltersContext';
+import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 import { Head } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { useEffect, useRef, useState } from 'react';
 import { CardanoTransactionTable } from './Partials/TransactionTable';
 import TransactionsFilters from './Partials/TransactionsFilters';
 import TransactionData = App.DataTransferObjects.TransactionData;
@@ -23,35 +23,6 @@ export default function Transactions({
     filters,
 }: Props) {
     const { t } = useLaravelReactI18n();
-    const [showFilters, setShowFilters] = useState(false);
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const dropdownRef = useRef<HTMLDivElement>(null);
-
-
-    const typeOptions = [
-        { value: '', label: 'Type' },
-        { value: 'proposal_payout', label: 'Proposal Payout' },
-        { value: 'voter_registration', label: 'Voter Registration' },
-    ];
-
-    const selectedOption = typeOptions.find(
-        (option) => option.value === (filters.type ?? ''),
-    );
-
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (
-                dropdownRef.current &&
-                !dropdownRef.current.contains(event.target as Node)
-            ) {
-                setIsDropdownOpen(false);
-            }
-        };
-
-        document.addEventListener('mousedown', handleClickOutside);
-        return () =>
-            document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
 
     return (
         <FiltersProvider defaultFilters={filters}>
@@ -75,15 +46,19 @@ export default function Transactions({
                     </div>
                     <hr className="mb-6 border-gray-200" />
 
-                    <div className='mb-4'>
+                    <div className="mb-4">
                         <TransactionsFilters />
                     </div>
                     <div className="overflow-hidden rounded-lg border-gray-200 shadow-md">
-                        <CardanoTransactionTable
-                            transactions={transactions?.data ?? []}
-                        />
+                        {transactions?.data?.length > 0 ? (
+                            <CardanoTransactionTable
+                                transactions={transactions?.data ?? []}
+                            />
+                        ) : (
+                            <RecordsNotFound />
+                        )}
                         <div className="w-full">
-                            {transactions && (
+                            {transactions?.data?.length && (
                                 <Paginator pagination={transactions} />
                             )}
                         </div>

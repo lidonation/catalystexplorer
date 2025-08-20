@@ -1085,6 +1085,7 @@
     "transactions.table.hash": "Hash",
     "transactions.table.stakeAddress": "Stake Address",
     "transactions.table.epoch": "Epoch",
+    "transactions.table.id": "Id",
     "transactions.table.block": "Block",
     "transactions.table.actions": "Actions",
     "transactions.table.view": "View",
