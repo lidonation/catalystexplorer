@@ -107,6 +107,7 @@ voting_power: number | null;
 last_active: string | null;
 status: string | null;
 locale: string | null;
+delegators: number | null;
 };
 export type CategoryData = {
 id: string;
