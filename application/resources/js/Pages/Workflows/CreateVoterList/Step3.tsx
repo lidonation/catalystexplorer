@@ -68,6 +68,9 @@ const Step3: React.FC<Step3Props> = ({
             selectedProposals,
         );
 
+        console.log({ bookmarkHash });
+        
+
     const form = useForm({
         proposals: selectedIds,
         bookmarkHash,

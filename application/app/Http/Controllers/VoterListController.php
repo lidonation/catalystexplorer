@@ -176,7 +176,7 @@ class VoterListController extends Controller
             'campaigns' => $campaigns,
             'selectedProposals' => $selectedProposals,
             'filters' => $filters,
-            // 'bookmarkHash' => $bookmarkHash,
+            'bookmarkHash' => $bookmarkHash,
             'fundSlug' => $fundSlug,
         ]);
     }

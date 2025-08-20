@@ -48,7 +48,6 @@ class NftFactory extends Factory
             'artist_id' => $artistId,
             'artist_uuid' => $user?->id,
             'user_id' => $artistId,
-            'user_uuid' => $user?->id,
             'model_type' => 'App\Models\IdeascaleProfile',
             'model_id' => $modelId,
             'status' => 'draft',

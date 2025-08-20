@@ -139,8 +139,6 @@ export default function LoginForm({ closeModal }: LoginFormProps) {
         }
     };
 
-    const handleWalletLoginCancel = () => {};
-
     return (
         <>
             <form

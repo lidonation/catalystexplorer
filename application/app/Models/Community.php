@@ -189,7 +189,7 @@ class Community extends Model implements HasMedia
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'community_has_users', 'community_id', 'user_uuid', 'id', 'id');
+        return $this->belongsToMany(User::class, 'community_has_users', 'community_id', 'user_id', 'id', 'id');
     }
 
     public function groups(): HasManyDeep

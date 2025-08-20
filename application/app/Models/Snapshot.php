@@ -12,13 +12,13 @@ class Snapshot extends Model
 {
     public $timestamps = false;
 
-    protected $keyType = 'int';
+    protected $keyType = 'string';
 
-    public $incrementing = true;
+    public $incrementing = false;
 
     public function uniqueIds(): array
     {
-        return [];
+        return ['id'];
     }
 
     protected $fillable = [
@@ -34,7 +34,6 @@ class Snapshot extends Model
     {
         return [
             'snapshot_at' => 'datetime:Y-m-d',
-            'id' => 'integer',
             'epoch' => 'integer',
             'order' => 'integer',
         ];

@@ -180,6 +180,7 @@
     "workflows.catalystDrepSignup.objectivesPlaceholder": "Write about your values and your approach to governance...",
     "workflows.catalystDrepSignup.qualificationsPlaceholder": "What makes your qualified for this role in catalyst",
     "workflows.catalystDrepSignup.2roundsRule": "To proceed, you need to have participated in at least 2 cayalyst voting rounds.",
+    "workflows.catalystDrepSignup.hasCatalystProfile": "To proceed, you need to have a catalyst profile linked to this connected wallet.",
     "workflows.catalystDrepSignup.signMessageInfo": "Verify wallet ownership.",
     "workflows.catalystDrepSignup.signMessage": "Sign so we can verify your wallet ownership.",
     "workflows.catalystDrepSignup.willMaintain": "I agree to store correctly this information and to maintain it",
