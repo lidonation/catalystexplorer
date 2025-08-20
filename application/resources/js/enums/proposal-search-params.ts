@@ -40,5 +40,6 @@ export enum ParamsEnum {
     TYPE = 'pt',
     VOTING_POWER = 'vp',
     TREND_CHART = 'tch',
-    CHART_OPTIONS = 'co'
+    CHART_OPTIONS = 'co',
+    TRANSACTION_TYPE = 'tt'
 }

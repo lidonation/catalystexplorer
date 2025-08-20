@@ -5,7 +5,7 @@ import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 import axiosClient from '@/utils/axiosClient';
 import { currency } from '@/utils/currency';
 import { Button } from '@headlessui/react';
-import { usePage } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
@@ -84,6 +84,9 @@ export default function DrepTable({
                 return;
             }
             if (!connectedWalletProvider || !stakeAddress) {
+                toast.info('Please connect your wallet to continue', {
+                    className: 'bg-background text-content',
+                });
                 openConnectWalletSlider();
                 return;
             }
@@ -91,7 +94,7 @@ export default function DrepTable({
             let signatureResult: { signature: string; key: string } | null =
                 null;
 
-            if (user) {
+            if (user && connectedWalletProvider) {
                 signatureResult = await extractSignature(
                     t('workflows.catalystDrepSignup.signMessage'),
                 );
@@ -106,8 +109,10 @@ export default function DrepTable({
                 drep_stake_address: drepStakeAddress,
             });
 
+            router.reload({ only: ['catalystDreps'] });
+
             if (res) {
-                setCurrentDelegatedDrep(drepStakeAddress); 
+                setCurrentDelegatedDrep(drepStakeAddress);
                 toast.success(res?.data?.message || 'Delegation Successful!', {
                     className: 'bg-background text-content',
                     toastId: 'delegation-successful',
@@ -140,6 +145,11 @@ export default function DrepTable({
 
             if (res) {
                 setCurrentDelegatedDrep(null);
+
+                router.reload({
+                    only: ['catalystDreps'],
+                });
+
                 toast.success(
                     res?.data?.message || 'Undelegation Successful!',
                     {
@@ -160,7 +170,6 @@ export default function DrepTable({
             );
         }
     };
-
     return (
         <div className="w-full overflow-x-auto overflow-y-auto rounded-t-lg shadow-md">
             <table className="w-full">
@@ -230,7 +239,7 @@ export default function DrepTable({
                                     : '-'}
                             </td>
                             <td className="border-dark/30 border px-4 py-2">
-                                {'-'}
+                                {drep?.delegators}
                             </td>
                             <td className="border-dark/30 border px-4 py-2">
                                 <div

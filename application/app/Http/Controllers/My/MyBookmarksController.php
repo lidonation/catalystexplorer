@@ -96,7 +96,7 @@ class MyBookmarksController extends Controller
             ]);
     }
 
-    public function store(Request $request, string $modelType, int $modelId): JsonResponse
+    public function store(Request $request, string $modelType, string $modelId): JsonResponse
     {
         try {
             if (! Auth::check()) {

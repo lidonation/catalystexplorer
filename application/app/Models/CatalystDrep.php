@@ -21,7 +21,7 @@ class CatalystDrep extends Model
 
     public $translatable = ['bio', 'motivation', 'qualifications', 'objective'];
 
-    public $appends = ['stake_address', 'voting_power', 'last_active'];
+    public $appends = ['stake_address', 'voting_power', 'last_active', 'delegators'];
 
     protected static $supportedLocales = null;
 
@@ -41,7 +41,7 @@ class CatalystDrep extends Model
 
     public function stakeAddress(): Attribute
     {
-        return Attribute::make(get: fn () => $this->signatures()?->first()?->stake_address);
+        return Attribute::make(get: fn() => $this->signatures()?->first()?->stake_address);
     }
 
     public function lastActive(): Attribute
@@ -56,6 +56,16 @@ class CatalystDrep extends Model
         return Attribute::make(get: function () {
             return collect($this->voting_history_data)->first()?->voting_power;
         });
+    }
+
+    public function delegators(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => DB::table('catalyst_drep_user')
+                ->where('catalyst_drep_id', $this->id)
+                ->distinct('user_stake_address') 
+                ->count('user_stake_address')
+        );
     }
 
     public function votingHistoryData(): Attribute

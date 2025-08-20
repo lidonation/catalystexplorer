@@ -97,6 +97,7 @@
     "react-refresh": "^0.14.2",
     "react-toastify": "^11.0.3",
     "recharts": "^2.7.0",
+    "rehype-raw": "^7.0.0",
     "rehype-sanitize": "^6.0.0",
     "remark-gfm": "^4.0.1",
     "tailwind-merge": "^2.5.4",

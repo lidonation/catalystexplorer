@@ -18,14 +18,12 @@ import { useLaravelReactI18n } from 'laravel-react-i18n';
 interface DrepListPageProps extends Record<string, unknown> {
     filters: SearchParams;
     catalystDreps: PaginatedData<CatalystDrepData[]>;
-    hasAuthenticatedUserDelegated?: boolean;
     delegatedDrepStakeAddress?: string;
 }
 
 const Index = ({
     filters,
     catalystDreps,
-    hasAuthenticatedUserDelegated,
     delegatedDrepStakeAddress,
 }: DrepListPageProps) => {
     const [showFilters, setShowFilters] = useState(false);
