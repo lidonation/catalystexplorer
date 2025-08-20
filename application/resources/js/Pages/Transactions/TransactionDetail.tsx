@@ -125,7 +125,7 @@ export default function TransactionDetail({
                                         '-',
                                     catId:
                                         transaction?.json_metadata
-                                            ?.voter_delegations[0]?.catId ?? '-',
+                                            ?.voter_delegations?.[0]?.catId ?? '-',
                                 },
                             )}
                         >
