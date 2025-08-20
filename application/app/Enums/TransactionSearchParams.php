@@ -20,6 +20,7 @@ use Spatie\Enum\Enum;
  * @method static self LIMIT()
  * @method static self SORT()
  * @method static self CAT_ID()
+ * @method static self TRANSACTION_TYPE()
  */
 final class TransactionSearchParams extends Enum
 {
@@ -39,7 +40,7 @@ final class TransactionSearchParams extends Enum
             'PAGE' => 'p',
             'LIMIT' => 'l',
             'SORT' => 'st',
-
+            'TRANSACTION_TYPE' => 'tt'
         ];
     }
 }

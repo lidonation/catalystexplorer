@@ -1089,6 +1089,7 @@
     "transactions.table.actions": "Actions",
     "transactions.table.view": "View",
     "transactions.table.voterRegistration": "Voter Registration",
+    "transactions.table.proposalPayout": "Proposal Payout",
     "transactions.table.type": "Type",
     "transactions.table.fund": "Fund",
     "transactions.table.fragmentId": "Fragment ID",

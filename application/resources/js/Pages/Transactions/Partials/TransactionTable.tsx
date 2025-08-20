@@ -1,9 +1,8 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import CopyableCell from '@/Components/CopyableCell';
-import RegisterTwo from '@/Components/svgs/RegisterTwo';
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import TransactionRow from './TransactionRow';
 import TransactionData = App.DataTransferObjects.TransactionData;
 
@@ -53,22 +52,17 @@ export const CardanoTransactionTable: React.FC<
     };
 
     const columns: ColumnConfig<TransactionData>[] = [
-      {
-        key: 'type',
+        {
+            key: 'type',
             header: t('transactions.table.type'),
             render: (tx) => (
-              <div className="bg-background-lighter flex items-start rounded px-4 py-3">
-                            {/* <RegisterTwo
-                                width={12}
-                                height={12}
-                                className="text-gray-persist mr-1"
-                            /> */}
-                            <Paragraph className="text-gray-persist text-xs font-bold whitespace-nowrap">
-                                {t('transactions.table.voterRegistration')}
-                            </Paragraph>
-                        </div>
-            )
-      },
+                <div className="bg-background-lighter flex items-start rounded px-4 py-3">
+                    <Paragraph className="text-gray-persist text-xs font-bold whitespace-nowrap">
+                        {tx?.type === 'cip36' || tx?.type === 'cip15' ? 'Voter Registration' : "Proposal Payout"}
+                    </Paragraph>
+                </div>
+            ),
+        },
         {
             key: 'id',
             header: t('transactions.table.id'),
@@ -105,12 +99,12 @@ export const CardanoTransactionTable: React.FC<
             header: t('transactions.table.stakeAddress'),
             render: (tx) => {
                 return (
-                  <div className="flex justify-start text-left">
-                    <CopyableCell
-                        displayText={formatAddress(tx?.stake_key ?? '')}
-                        fullText={tx?.stake_key ?? ''}
-                        title={t('transactions.table.copyStakeAddress')}
-                    />
+                    <div className="flex justify-start text-left">
+                        <CopyableCell
+                            displayText={formatAddress(tx?.stake_key ?? '')}
+                            fullText={tx?.stake_key ?? ''}
+                            title={t('transactions.table.copyStakeAddress')}
+                        />
                     </div>
                 );
             },
@@ -128,12 +122,12 @@ export const CardanoTransactionTable: React.FC<
             key: 'block',
             header: t('transactions.table.block'),
             render: (tx) => (
-              <div className="flex justify-start text-left">
-                <CopyableCell
-                    displayText={formatAddress(tx.block)}
-                    fullText={tx.block}
-                    title={t('transactions.table.copyBlockHash')}
-                />
+                <div className="flex justify-start text-left">
+                    <CopyableCell
+                        displayText={formatAddress(tx.block)}
+                        fullText={tx.block}
+                        title={t('transactions.table.copyBlockHash')}
+                    />
                 </div>
             ),
         },
@@ -160,7 +154,7 @@ export const CardanoTransactionTable: React.FC<
     return (
         <div className="w-full overflow-x-auto rounded-t-lg shadow-[0_-1px_4px_0_rgba(0,0,0,0.05)]">
             <div className="inline-block min-w-full overflow-hidden">
-                <table className="min-w-full divide-y divide-gray-200 border border-gray-200rounded-lg overflow-hidden">
+                <table className="border-gray-200rounded-lg min-w-full divide-y divide-gray-200 overflow-hidden border">
                     <thead className="bg-background-lighter">
                         <tr>
                             {columns.map((column) => (

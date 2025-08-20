@@ -41,6 +41,8 @@ class TransactionController
 
         $transactions = $this->query();
 
+        // dd($this->queryParams);
+
         return Inertia::render('Transactions/Index', [
             'transactions' => $transactions,
             'filters' => $this->queryParams,
@@ -163,7 +165,7 @@ class TransactionController
     {
         $this->queryParams = $request->validate([
             TransactionSearchParams::QUERY()->value => 'string|nullable',
-            TransactionSearchParams::TYPE()->value => 'string|nullable',
+            TransactionSearchParams::TRANSACTION_TYPE()->value => 'array|nullable',
             TransactionSearchParams::EPOCH()->value => 'array|nullable',
             TransactionSearchParams::TX_HASH()->value => 'string|nullable',
             TransactionSearchParams::BLOCK()->value => 'string|nullable',
@@ -230,7 +232,7 @@ class TransactionController
             ]
         );
 
-        return $pagination;
+        return $pagination->toArray();
     }
 
     protected function voterHistoryQuery()
@@ -281,8 +283,9 @@ class TransactionController
     {
         $filters = [];
 
-        if (! empty($this->queryParams[TransactionSearchParams::TYPE()->value])) {
-            $filters[] = "type = '{$this->queryParams[TransactionSearchParams::TYPE()->value]}'";
+        if (! empty($this->queryParams[TransactionSearchParams::TRANSACTION_TYPE()->value])) {
+             $transactionTypes = implode(',', $this->queryParams[TransactionSearchParams::TRANSACTION_TYPE()->value]);
+            $filters[] = "type IN [{$transactionTypes}]";
         }
 
         if (! empty($this->queryParams[TransactionSearchParams::TX_HASH()->value])) {
