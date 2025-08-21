@@ -142,7 +142,6 @@ export default function LoginForm({ closeModal }: LoginFormProps) {
     return (
         <>
             <form
-                onSubmit={submit}
                 className="content-gap flex w-full flex-col p-4"
                 data-testid="login-form"
             >
@@ -229,7 +228,7 @@ export default function LoginForm({ closeModal }: LoginFormProps) {
                     <PrimaryButton
                         className="flex h-10 w-full items-center justify-center rounded-md"
                         disabled={processing}
-                        type="submit"
+                        onClick={(e) => submit(e)}
                         data-testid="login-submit-button"
                     >
                         {t('signin')}
