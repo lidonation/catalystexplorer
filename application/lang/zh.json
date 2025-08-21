@@ -269,7 +269,7 @@
     "workflows.voterList.steps.listCreated": "列表已创建",
     "workflows.voterList.steps.votesSubmitted": "投票已提交",
     "workflows.voterList.steps.submitVotesInfo": "从您选定的提案列表中，请投出您的票",
-    "workflows.voterList.steps.submitReviewedVotes": "您已审查了您的选择。点击下面的"提交投票"完成您的选择并完成流程。",
+    "workflows.voterList.steps.submitReviewedVotes": "您已审查了您的选择。点击下面的\"提交投票\"完成您的选择并完成流程。",
     "workflows.voterList.steps.submitReviewedVotesInfo": "验证成功。继续并提交您的投票",
     "workflows.voterList.steps.votesSummary": "投票摘要",
     "workflows.voterList.steps.votesSummaryInfo": "突出显示的是您投票的摘要。要修改您的投票，请转到上一个屏幕进行修改。",
@@ -431,7 +431,7 @@
     "workflows.publishToIpfs.success.openInNewTabTitle": "在新标签页中打开",
     "workflows.publishToIpfs.noListSelected.title": "未选择投票列表",
     "workflows.publishToIpfs.noListSelected.message": "要将草案选票发布到 IPFS，您需要首先选择一个投票列表。",
-    "workflows.publishToIpfs.noListSelected.instructions": "转到您的投票列表，点击三个垂直点 (⋮)，然后点击"发布到 IPFS"。",
+    "workflows.publishToIpfs.noListSelected.instructions": "转到您的投票列表，点击三个垂直点 (⋮)，然后点击\"发布到 IPFS\"。",
     "workflows.publishToIpfs.noListSelected.goToLists": "转到我的列表",
     "workflows.publishToIpfs.error": "错误：",
     "workflows.publishToIpfs.items": "项目：",
@@ -1258,5 +1258,5 @@
     "endDate": "结束日期",
     "startDate": "开始日期",
     "wallet.login": "钱包登录",
-    "wallet.login.confirm": "我们即将使用您连接的钱包为您登录，与此钱包关联的账户将被验证。如果未找到关联账户，将使用您的地址创建一个。您可以在仪表板的"我的个人资料"页面中更新此账户。<br><br> <strong>已有账户？</strong>使用邮箱登录并添加您的钱包，这样您就可以使用钱包或邮箱登录。"
+    "wallet.login.confirm": "我们即将使用您连接的钱包为您登录，与此钱包关联的账户将被验证。如果未找到关联账户，将使用您的地址创建一个。您可以在仪表板的\"我的个人资料\"页面中更新此账户。<br><br> <strong>已有账户？</strong>使用邮箱登录并添加您的钱包，这样您就可以使用钱包或邮箱登录。"
 }
