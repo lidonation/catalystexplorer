@@ -1,3 +1,10 @@
+# [1.12.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.11.2...v1.12.0) (2025-08-20)
+
+
+### Features
+
+* **catalyst dreps:** show the selected languange on step5 ([9e7da95](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/9e7da9521fbeb8a2eadac9f1ea9ecfc2f2fb531c))
+
 ## [1.11.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.11.1...v1.11.2) (2025-08-18)
 
 
