@@ -239,10 +239,10 @@ export default function DrepTable({
                                     ? currency(drep.voting_power, 2, 'ADA')
                                     : '-'}
                             </td>
-                            <td className="border-dark/30 border px-4 py-2">
+                            {/* <td className="border-dark/30 border px-4 py-2">
                                 {drep?.delegators_count}
 
-                            </td>
+                            </td> */}
                             <td className="border-dark/30 border px-4 py-2">
                                 <div
                                     className={`flex items-center justify-center rounded border p-1.5 text-sm ${

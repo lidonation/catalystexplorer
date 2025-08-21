@@ -7,11 +7,12 @@ namespace App\Models;
 use App\Traits\HasAuthor;
 use App\Traits\HasIpfsFiles;
 use App\Traits\HasSignatures;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use Spatie\Translatable\HasTranslations;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class CatalystDrep extends Model
 {
@@ -69,7 +70,7 @@ class CatalystDrep extends Model
         });
     }
 
-    public function delegators()
+    public function delegators(): BelongsToMany
     {
         return $this->belongsToMany(
             User::class,
