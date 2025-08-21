@@ -1,13 +1,5 @@
 import React from 'react';
-
-interface ServiceData {
-  title: string;
-  type: 'offered' | 'needed';
-  name?: string;
-  user?: { name: string };
-  categories?: { name: string }[];
-  header_image_url?: string;
-}
+import ServiceData = App.DataTransferObjects.ServiceData;
 
 export default function ServiceCard({ service }: { service: ServiceData }) {
 

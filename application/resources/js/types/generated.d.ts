@@ -45,8 +45,8 @@ list_type?: string;
 export type BookmarkItemData = {
 id: string | null;
 user_id?: string;
-bookmark_collection_id?: number;
-model_id?: number;
+bookmark_collection_id?: string;
+model_id?: string;
 model?: App.DataTransferObjects.ProposalData | App.DataTransferObjects.ReviewData | App.DataTransferObjects.IdeascaleProfileData | App.DataTransferObjects.CommunityData | App.DataTransferObjects.GroupData;
 model_type?: string;
 title?: string;
@@ -58,7 +58,7 @@ updated_at?: string;
 deleted_at?: string;
 };
 export type CampaignData = {
-id: string;
+id: string | null;
 fund_id?: string;
 title: string | null;
 meta_title: string | null;
@@ -107,7 +107,7 @@ voting_power: number | null;
 last_active: string | null;
 status: string | null;
 locale: string | null;
-delegators: number | null;
+delegators_count: number | null;
 };
 export type CategoryData = {
 id: string;
@@ -128,7 +128,7 @@ id: string;
 text: string;
 original_text: string | null;
 created_at: string;
-parent_id: number | null;
+parent_id: string | null;
 updated_at: string;
 commentator: App.DataTransferObjects.UserData | null;
 nested_comments: any | null;
@@ -180,7 +180,7 @@ export type FundData = {
 amount: number | null;
 label: string | null;
 title: string | null;
-id: string;
+id: string | null;
 proposals_count?: number;
 funded_proposals_count?: number;
 completed_proposals_count?: number;
@@ -601,8 +601,8 @@ consumed_by_tx: string | null;
 };
 export type UserData = {
 id: string | null;
-name: string;
-email: string;
+name: string | null;
+email: string | null;
 hero_img_url: string | null;
 email_verified_at: string | null;
 locations: any | null;
