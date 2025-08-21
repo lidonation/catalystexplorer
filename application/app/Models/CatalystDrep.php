@@ -23,6 +23,8 @@ class CatalystDrep extends Model
 
     public $appends = ['stake_address', 'voting_power', 'last_active', 'delegators'];
 
+    public $withCount = ['delegators'];
+
     protected static $supportedLocales = null;
 
     public static function getSupportedLocales(): array
