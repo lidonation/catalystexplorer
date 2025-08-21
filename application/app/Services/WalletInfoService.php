@@ -18,12 +18,11 @@ use Saloon\Exceptions\Request\RequestException;
 class WalletInfoService
 {
     /**
-     * @param BlockfrostConnector|null $connector
-     * @param int|null $cacheTtl Cache time in seconds. Null disables caching.
+     * @param  int|null  $cacheTtl  Cache time in seconds. Null disables caching.
      */
     public function __construct(
         protected ?BlockfrostConnector $connector = null,
-        protected ?int $cacheTtl = null 
+        protected ?int $cacheTtl = null
     ) {
         $this->connector ??= app(BlockfrostConnector::class);
     }
@@ -98,7 +97,7 @@ class WalletInfoService
         } catch (RequestException $e) {
             $response = $e->getResponse();
             if ($response) {
-                Log::error('Blockfrost error body: ' . $response->body());
+                Log::error('Blockfrost error body: '.$response->body());
             }
             throw $e;
         }
@@ -117,14 +116,14 @@ class WalletInfoService
             $isDelegated = $accountData['active'] ?? false;
             $stake_address = $accountData['stake_address'] ?? $stakeAddress;
         } catch (\Throwable $e) {
-            Log::error("Failed decoding account response for {$stakeAddress}: " . $e->getMessage());
+            Log::error("Failed decoding account response for {$stakeAddress}: ".$e->getMessage());
         }
 
         try {
             $addressesData = $addressesResponse->json();
             $paymentAddresses = collect($addressesData)->pluck('address')->toArray();
         } catch (\Throwable $e) {
-            Log::error("Failed decoding addresses response for {$stakeAddress}: " . $e->getMessage());
+            Log::error("Failed decoding addresses response for {$stakeAddress}: ".$e->getMessage());
         }
 
         $ada = number_format($lovelaces / 1_000_000, 2);
@@ -168,7 +167,7 @@ class WalletInfoService
                 'choice_stats' => $choiceStats,
             ];
         } catch (\Exception $e) {
-            Log::error("Error fetching voting stats via MeiliSearch for {$stakeAddress}: " . $e->getMessage());
+            Log::error("Error fetching voting stats via MeiliSearch for {$stakeAddress}: ".$e->getMessage());
 
             return [
                 'all_time_votes' => 0,
@@ -195,7 +194,7 @@ class WalletInfoService
         $signatures = Signature::whereIn('stake_address', $paginatedAddresses)
             ->get()
             ->groupBy('stake_address')
-            ->map(fn($group) => $group->first());
+            ->map(fn ($group) => $group->first());
 
         $walletDTOs = $signatures->map(function (Signature $signature) {
             $walletStats = $signature->wallet_stats;

@@ -241,6 +241,7 @@ export default function DrepTable({
                             </td>
                             <td className="border-dark/30 border px-4 py-2">
                                 {drep?.delegators_count}
+                                
                             </td>
                             <td className="border-dark/30 border px-4 py-2">
                                 <div

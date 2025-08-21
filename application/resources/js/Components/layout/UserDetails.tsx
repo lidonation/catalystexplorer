@@ -53,7 +53,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                     <div className="flex gap-3">
                         <div className="bg-background-light size-9 rounded-full">
                             <UserAvatar
-                                name={user?.name}
+                                name={user?.name ?? 'Anonymous'}
                                 imageUrl={
                                     user?.hero_img_url
                                         ? user?.hero_img_url
@@ -68,7 +68,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                                 className="text-4 text-content font-semibold"
                                 data-testid="user-name"
                             >
-                                {truncateMiddle(user?.name)}
+                                {truncateMiddle(user?.name??'')}
                             </Link>
 
                             <Paragraph className="text-5 text-content text-xs">
