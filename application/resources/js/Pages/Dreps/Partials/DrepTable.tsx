@@ -228,7 +228,8 @@ export default function DrepTable({
                                 </span>
                             </td> */}
                             <td className="border-dark/30 border px-4 py-2">
-                                <span> {drep.last_active}</span> <br />
+                                <span> {drep.last_active ?? 'Fund 13'}</span>{' '}
+                                <br />
                                 {/* <span className="text-gray-persist mt-2">
                                     {t('dreps.drepList.anHourAgo')}
                                 </span> */}
