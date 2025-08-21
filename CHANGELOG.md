@@ -1,3 +1,10 @@
+## [1.13.4](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.13.3...v1.13.4) (2025-08-21)
+
+
+### Bug Fixes
+
+* drep delegator count and voting powerp ([7bcc6f2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/7bcc6f2278a365cb4858730f139ee63eb6c9ab00))
+
 ## [1.13.3](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.13.2...v1.13.3) (2025-08-21)
 
 
