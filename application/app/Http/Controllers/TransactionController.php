@@ -284,7 +284,7 @@ class TransactionController
         $filters = [];
 
         if (! empty($this->queryParams[TransactionSearchParams::TRANSACTION_TYPE()->value])) {
-             $transactionTypes = implode(',', $this->queryParams[TransactionSearchParams::TRANSACTION_TYPE()->value]);
+            $transactionTypes = implode(',', $this->queryParams[TransactionSearchParams::TRANSACTION_TYPE()->value]);
             $filters[] = "type IN [{$transactionTypes}]";
         }
 
