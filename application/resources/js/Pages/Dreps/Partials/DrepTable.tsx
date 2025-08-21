@@ -227,7 +227,7 @@ export default function DrepTable({
                                     {t('dreps.drepList.anHourAgo')}
                                 </span>
                             </td> */}
-                            <td className="border-dark/30 border px-4 py-2">
+                            <td className="border-dark/30 border px-4 py-2 text-nowrap">
                                 <span> {drep.last_active ?? 'Fund 13'}</span>{' '}
                                 <br />
                                 {/* <span className="text-gray-persist mt-2">
@@ -241,7 +241,7 @@ export default function DrepTable({
                             </td>
                             <td className="border-dark/30 border px-4 py-2">
                                 {drep?.delegators_count}
-                                
+
                             </td>
                             <td className="border-dark/30 border px-4 py-2">
                                 <div
