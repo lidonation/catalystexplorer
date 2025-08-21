@@ -1,11 +1,11 @@
-import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
+import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import { StepDetails } from '@/types';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { useForm } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronRight } from 'lucide-react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
@@ -17,7 +17,6 @@ import DrepSignupForm, {
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import CatalystDrepData = App.DataTransferObjects.CatalystDrepData;
 
-
 interface Step1Props {
     profile: IdeascaleProfileData;
     stepDetails: StepDetails[];
@@ -26,7 +25,12 @@ interface Step1Props {
     savedLocale: string;
 }
 
-const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, catalystDrep, savedLocale }) => {
+const Step1: React.FC<Step1Props> = ({
+    stepDetails,
+    activeStep,
+    catalystDrep,
+    savedLocale,
+}) => {
     const { t } = useLaravelReactI18n();
     const [isFormValid, setIsFormValid] = useState(false);
     const formRef = useRef<DrepSignupFormHandles>(null);
@@ -36,7 +40,7 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, catalystDrep, sa
         email: catalystDrep?.email ?? '',
         bio: catalystDrep?.bio ?? '',
         link: catalystDrep?.link ?? '',
-        willMaintain:  false,
+        willMaintain: false,
         locale: savedLocale,
     });
 
@@ -45,14 +49,18 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, catalystDrep, sa
             const formData = formRef.current.getFormData;
 
             if (!formData.data.willMaintain) {
-                form.setError({'willMaintain': "1"});
+                form.setError({ willMaintain: '1' });
                 return;
             }
 
             // Validate language consistency before submission
             const languageValidation = formRef.current.validateLanguages();
             if (!languageValidation.isValid) {
-                form.setError({'bio': languageValidation.message || t('languageDetection.defaultMismatchError')});
+                form.setError({
+                    bio:
+                        languageValidation.message ||
+                        t('languageDetection.defaultMismatchError'),
+                });
                 return;
             }
 

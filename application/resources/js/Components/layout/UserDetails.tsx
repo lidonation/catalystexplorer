@@ -98,7 +98,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                         data-testid="user-sign-in-nav"
                     >
                         <ul
-                            className="menu-gap-y flex flex-1 flex-row"
+                            className="menu-gap-y flex flex-1 flex-row justify-between"
                             data-testid="user-sign-in-list"
                         >
                             <li
@@ -107,9 +107,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                                 data-testid="register-link"
                             >
                                 <RegisterUserIcon className="text-dark" />
-                                <Paragraph className="text-3">
-                                    {t('register')}
-                                </Paragraph>
+                                <Paragraph size="sm">{t('register')}</Paragraph>
                             </li>
                             <li
                                 className="hover:bg-background-lighter flex cursor-pointer items-center gap-1 px-2 py-1"
@@ -117,9 +115,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                                 data-testid="login-link"
                             >
                                 <LoginIcon className="text-dark" />
-                                <Paragraph className="text-3">
-                                    {t('login')}
-                                </Paragraph>
+                                <Paragraph size="sm">{t('login')}</Paragraph>
                             </li>
                         </ul>
                     </nav>

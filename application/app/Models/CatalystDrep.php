@@ -41,7 +41,7 @@ class CatalystDrep extends Model
 
     public function stakeAddress(): Attribute
     {
-        return Attribute::make(get: fn() => $this->signatures()?->first()?->stake_address);
+        return Attribute::make(get: fn () => $this->signatures()?->first()?->stake_address);
     }
 
     public function lastActive(): Attribute
@@ -54,18 +54,27 @@ class CatalystDrep extends Model
     public function votingPower(): Attribute
     {
         return Attribute::make(get: function () {
-            return collect($this->voting_history_data)->first()?->voting_power;
+            $ownBalance = $this->signatures()?->first()?->wallet_balance ?? 0;
+
+            $delegatorBalance = $this->delegators()
+                ->with(['signatures'])
+                ->get()
+                ->sum(function ($delegator) {
+                    return $delegator->signatures()?->first()?->wallet_balance ?? 0;
+                });
+
+            return (float) $ownBalance + (float) $delegatorBalance;
         });
     }
 
-    public function delegators(): Attribute
+    public function delegators()
     {
-        return Attribute::make(
-            get: fn() => DB::table('catalyst_drep_user')
-                ->where('catalyst_drep_id', $this->id)
-                ->distinct('user_stake_address') 
-                ->count('user_stake_address')
-        );
+        return $this->belongsToMany(
+            User::class,
+            'catalyst_drep_user',
+            'catalyst_drep_id',
+            'user_id'
+        )->withPivot([]);
     }
 
     public function votingHistoryData(): Attribute

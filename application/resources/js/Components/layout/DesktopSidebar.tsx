@@ -6,6 +6,7 @@ import ThemeSwitcher from './ThemeSwitcher';
 import UserDetails from './UserDetails';
 import UserNavigation from './UserNavigation';
 import User = App.DataTransferObjects.UserData;
+import LangSwitcher from '../LangSwitcher';
 
 function DesktopSidebar(props: any) {
     const { t } = useLaravelReactI18n();
@@ -31,7 +32,7 @@ function DesktopSidebar(props: any) {
                 <CatalystLogo className="w-full" />
             </section>
 
-            <section className="overflow-y-auto h-full">
+            <section className="h-full overflow-y-auto">
                 <section
                     className={`flex flex-col gap-6 pb-5 ${!isOnMyRoute ? 'overflow-y-auto' : ''}`}
                 >
@@ -40,17 +41,20 @@ function DesktopSidebar(props: any) {
 
                 <section className="flex flex-col gap-6">
                     <div className="px-4">
-                        <div className="border-gray-200 border-t-2 pt-5">
+                        <div className="border-t-2 border-gray-200 pt-5">
                             <UserNavigation />
                         </div>
                     </div>
 
                     <div className="px-4">
-                      <div className="border-gray-200 flex flex-col gap-5 border-t-2 pt-5">
+                        <div className="flex flex-col gap-5 border-t-2 border-gray-200 pt-5">
                             <UserDetails user={auth?.user as unknown as User} />
-                        <div className="bg-background-darker -mx-4 p-4">
-                            <ThemeSwitcher />
-                        </div>
+                            
+                            <LangSwitcher />
+
+                            <div className="bg-background-darker -mx-4 p-4">
+                                <ThemeSwitcher />
+                            </div>
                         </div>
                     </div>
                 </section>
