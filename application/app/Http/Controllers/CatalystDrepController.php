@@ -44,7 +44,7 @@ class CatalystDrepController extends Controller
         return Inertia::render('Dreps/DrepList', [
             'catalystDreps' => to_length_aware_paginator(
                 CatalystDrepData::collect(
-                    CatalystDrep::query()
+                    CatalystDrep::query()->withCount('delegators')
                         ->paginate(11, ['*'], 'p', $request->input('p'))
                 )
             )->onEachSide(0),
