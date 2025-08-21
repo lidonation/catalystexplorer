@@ -1,4 +1,4 @@
-import { usePage } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useState } from 'react';
 import Selector from './atoms/Selector';
@@ -16,8 +16,6 @@ export default function LangSwitcher() {
     const { currentLocale, setLocale } = useLaravelReactI18n();
     const { locale } = usePage().props as any;
 
-    console.log({ locale });
-
     const [selectedLang, setSelectedLang] = useState(locale || currentLocale());
 
     useEffect(() => {
@@ -31,6 +29,7 @@ export default function LangSwitcher() {
         const newPath = pathParts.join('/') || '/';
 
         window.history.pushState({}, '', newPath + window.location.search);
+        router.reload();
     }, [selectedLang]);
 
     return (

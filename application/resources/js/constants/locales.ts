@@ -1,4 +1,4 @@
-export const SUPPORTED_LOCALES = ['en', 'es', 'fr', 'de', 'ja', 'ko', 'pt', 'ru', 'zh'] as const;
+export const SUPPORTED_LOCALES = ['en', 'es', 'fr', 'de', 'ja', 'zh'] as const;
 
 export const LOCALE_MAPPING = {
     en: { label: 'English', native: 'English' },
@@ -6,9 +6,6 @@ export const LOCALE_MAPPING = {
     fr: { label: 'French', native: 'Français' },
     de: { label: 'German', native: 'Deutsch' },
     ja: { label: 'Japanese', native: '日本語' },
-    ko: { label: 'Korean', native: '한국어' },
-    pt: { label: 'Portuguese', native: 'Português' },
-    ru: { label: 'Russian', native: 'Русский' },
     zh: { label: 'Chinese', native: '中文' },
 } as const;
 
@@ -18,7 +15,6 @@ export const FRANC_TO_LOCALE_MAP = {
     'fra': 'fr',
     'deu': 'de',
     'jpn': 'ja',
-    'cmn': 'zh', // Mandarin Chinese
     'zho': 'zh', // Chinese (general)
 } as const;
 

@@ -165,7 +165,7 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
             renderCell: (proposal: ProposalData) => (
                 <div className="flex items-center justify-center border border-light-gray-persist bg-light-gray-persist/[10%] px-1  rounded-md" data-testid={`proposal-fund-${proposal.id}`}>
                     {proposal.fund?.label && (
-                        <span className="items-center py-1 rounded-full text-xs font-medium text-content test-nowrap" data-testid={`proposal-fund-label-${proposal.id}`}>
+                        <span className="items-center py-1 rounded-full text-xs font-medium text-content text-nowrap" data-testid={`proposal-fund-label-${proposal.id}`}>
                             {proposal.fund.label}
                         </span>
                     )}

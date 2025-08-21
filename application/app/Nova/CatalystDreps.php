@@ -8,16 +8,15 @@ use App\Models\CatalystDrep;
 use App\Nova\Actions\EditModel;
 use App\Nova\Actions\MakeSearchable;
 use App\Nova\Actions\UpdateModelMedia;
-use Illuminate\Http\Request;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\BelongsToMany;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Fields\URL;
-use Laravel\Nova\Fields\Number;
-use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class CatalystDreps extends Resource
