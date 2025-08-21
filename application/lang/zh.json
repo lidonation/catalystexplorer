@@ -187,7 +187,7 @@
     "workflows.catalystDrepSignup.createAccount": "创建账户",
     "workflows.catalystDrepSignup.createAccountInfo": "\n1. 如果您已经有账户，请使用您的凭据登录。\n2. 如果您是新用户，请使用您的邮箱注册并创建一个安全密码。\n3. 验证您的邮箱以激活您的账户。",
     "workflows.catalystDrepSignup.connectWallet": "连接钱包",
-    "workflows.catalystDrepSignup.connectWalletInfo": "\n1. 选择支持的 Cardano 钱包（例如：Yoroi、Daedalus、Eternl）。\n2. 按照提示安全连接您的钱包。\n3. 我们将使用钱包验证您已参与至少 2 轮 catalyst 资助投票，之后您将能够继续注册。\n4. 点击"下一步"使用您的钱包签名消息。",
+    "workflows.catalystDrepSignup.connectWalletInfo": "\n1. 选择支持的 Cardano 钱包（例如：Yoroi、Daedalus、Eternl）。\n2. 按照提示安全连接您的钱包。\n3. 我们将使用钱包验证您已参与至少 2 轮 catalyst 资助投票，之后您将能够继续注册。\n4. 点击\"下一步\"使用您的钱包签名消息。",
     "workflows.catalystDrepSignup.signWallet": "签名交易",
     "workflows.catalystDrepSignup.signWalletInfo": "\n1. 批准一次性签名消息操作以验证您的钱包所有权。\n2. 此操作不会转移资金，但会将您的钱包链接到您的 DRep 账户。\n3. 按照钱包说明完成签名过程。",
     "workflows.catalystDrepSignup.success": "成功",
