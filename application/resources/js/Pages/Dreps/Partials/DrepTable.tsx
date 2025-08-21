@@ -42,7 +42,7 @@ export default function DrepTable({
         { label: t('dreps.drepList.drep') },
         { label: t('dreps.drepList.lastActive') },
         { label: t('dreps.drepList.votingPower') },
-        { label: t('dreps.drepList.delegators') },
+        // { label: t('dreps.drepList.delegators') },
         { label: t('dreps.drepList.status') },
         { label: t('dreps.drepList.delegate') },
     ];
