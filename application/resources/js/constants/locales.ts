@@ -18,12 +18,11 @@ export const FRANC_TO_LOCALE_MAP = {
     'fra': 'fr',
     'deu': 'de',
     'jpn': 'ja',
-    'kor': 'ko',
-    'por': 'pt',
-    'rus': 'ru',
     'cmn': 'zh', // Mandarin Chinese
     'zho': 'zh', // Chinese (general)
 } as const;
+
+
 
 export type SupportedLocale = typeof SUPPORTED_LOCALES[number];
 

@@ -1,3 +1,4 @@
+import { usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useState } from 'react';
 import Selector from './atoms/Selector';
@@ -8,37 +9,29 @@ const LANGS = [
     { value: 'fr', label: 'Français' },
     { value: 'de', label: 'Deutsch' },
     { value: 'ja', label: '日本語' },
-    { value: 'ko', label: '한국어' },
-    { value: 'pt', label: 'Português' },
-    { value: 'ru', label: 'Русский' },
     { value: 'zh', label: '中文' },
 ];
 
 export default function LangSwitcher() {
     const { currentLocale, setLocale } = useLaravelReactI18n();
+    const { locale } = usePage().props as any;
 
-    // Get initial locale from URL if available
-    const getInitialLocale = () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get('lang') || currentLocale();
-    };
+    console.log({ locale });
 
-    const [selectedLang, setSelectedLang] = useState(getInitialLocale);
+    const [selectedLang, setSelectedLang] = useState(locale || currentLocale());
 
     useEffect(() => {
         if (!selectedLang) return;
 
-        // Update i18n locale
         setLocale(selectedLang);
 
         const pathParts = window.location.pathname.split('/');
-        pathParts[1] = selectedLang; // replace locale
+        pathParts[1] = selectedLang;
+        pathParts[1] = selectedLang;
         const newPath = pathParts.join('/') || '/';
 
-        // Push new URL into history without reload
         window.history.pushState({}, '', newPath + window.location.search);
-    }, [selectedLang, setLocale]);
-
+    }, [selectedLang]);
 
     return (
         <Selector
