@@ -1,3 +1,15 @@
+# [1.13.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.12.0...v1.13.0) (2025-08-20)
+
+
+### Bug Fixes
+
+* showing the delegator count in real tine ([2e3259f](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/2e3259f408ad40d7e9fced02dd2f6370b5b35a2b))
+
+
+### Features
+
+* adding new transaction types ([ce5792b](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/ce5792b3740a76cb5c0320cd9dee05f0b3549a5f))
+
 # [1.12.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.11.2...v1.12.0) (2025-08-20)
 
 
