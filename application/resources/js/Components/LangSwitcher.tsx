@@ -14,17 +14,18 @@ const LANGS = [
 
 export default function LangSwitcher() {
     const { currentLocale, setLocale } = useLaravelReactI18n();
-    const { locale } = usePage().props as any;
+    const { locale } = usePage().props as { locale?: string };
 
-    const [selectedLang, setSelectedLang] = useState(locale || currentLocale());
+    const initialLang = typeof locale === 'string' ? locale : currentLocale();
+    const [selectedLang, setSelectedLang] = useState<string>(initialLang);
 
     useEffect(() => {
-        if (!selectedLang) return;
+        if (!selectedLang || typeof selectedLang !== 'string') return;
+        if (currentLocale() === selectedLang) return; 
 
         setLocale(selectedLang);
 
         const pathParts = window.location.pathname.split('/');
-        pathParts[1] = selectedLang;
         pathParts[1] = selectedLang;
         const newPath = pathParts.join('/') || '/';
 
@@ -32,13 +33,18 @@ export default function LangSwitcher() {
         router.reload();
     }, [selectedLang]);
 
+    const handleSelect = (lang: string) => {
+        if (lang === selectedLang) return; 
+        setSelectedLang(lang);
+    };
+
     return (
         <Selector
             options={LANGS}
             isMultiselect={false}
             context="language"
             selectedItems={selectedLang}
-            setSelectedItems={setSelectedLang}
+            setSelectedItems={handleSelect}
             placeholder="Select language"
             hideCheckbox
             triggerClassName="w-full"

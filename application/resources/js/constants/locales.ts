@@ -15,7 +15,7 @@ export const FRANC_TO_LOCALE_MAP = {
     'fra': 'fr',
     'deu': 'de',
     'jpn': 'ja',
-    'zho': 'zh', // Chinese (general)
+    'zho': 'zh',
 } as const;
 
 
