@@ -1,4 +1,4 @@
-import {createInertiaApp} from "@inertiajs/react";
+import {createInertiaApp, usePage} from "@inertiajs/react";
 import {resolvePageComponent} from "laravel-vite-plugin/inertia-helpers";
 import AppLayout from "./Layouts/AppLayout.js";
 import createServer from '@inertiajs/react/server';
@@ -40,12 +40,17 @@ createServer(async (page) => {
                     location: new URL((page.props as any).ziggy?.location),
                 });
             };
+
+                const { locale } = usePage().props as any;
+            
             return (
                 <RouteContext.Provider value={ssrRoute as any}>
                     <LaravelReactI18nProvider
-                        locale={'en'}
+                        locale={locale}
                         fallbackLocale={'en'}
-                        files={import.meta.glob('/lang/*.json', {eager: true})}
+                        files={import.meta.glob('/lang/*.json', {
+                            eager: true,
+                        })}
                     >
                         <ModalStackProvider>
                             <StrictMode>
