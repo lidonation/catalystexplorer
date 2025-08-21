@@ -14,15 +14,23 @@ export default function Footer() {
 
     return (
         <div className="relative z-10 flex min-h-96 w-full flex-col justify-between gap-16 rounded-t-xl bg-linear-to-r from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-1-dark)] pt-16 pb-12">
-            <section className="text-content-light container" data-testid="footer-links">
+            <section
+                className="text-content-light container"
+                data-testid="footer-links"
+            >
                 <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                    <div className="title-gap-y flex min-w-24 flex-col" data-testid="footer-proposals-links">
+                    <div
+                        className="title-gap-y flex min-w-24 flex-col"
+                        data-testid="footer-proposals-links"
+                    >
                         <h5 className="title-6">{t('proposals.proposals')}</h5>
                         <ul className="menu-gap-y flex flex-col">
                             <li>
                                 <Paragraph>
                                     <NavLinkItem
-                                        href={useLocalizedRoute('proposals.index')}
+                                        href={useLocalizedRoute(
+                                            'proposals.index',
+                                        )}
                                         data-testid="proposals-link"
                                         title={t('proposals.allProposals')}
                                         active={true}
@@ -34,7 +42,9 @@ export default function Footer() {
                             <li>
                                 <Paragraph>
                                     <NavLinkItem
-                                        href={useLocalizedRoute('reviews.index')}
+                                        href={useLocalizedRoute(
+                                            'reviews.index',
+                                        )}
                                         data-testid="reviews-link"
                                         title={t('proposalReviews')}
                                         active={true}
@@ -46,7 +56,9 @@ export default function Footer() {
                             <li>
                                 <Paragraph>
                                     <NavLinkItem
-                                        href={useLocalizedRoute('reports.index')}
+                                        href={useLocalizedRoute(
+                                            'reports.index',
+                                        )}
                                         data-testid="reports-link"
                                         title={t('monthlyReports')}
                                         active={false}
@@ -71,7 +83,10 @@ export default function Footer() {
                             </li>
                         </ul>
                     </div>
-                    <div className="title-gap-y flex min-w-24 flex-col" data-testid="footer-communities-links">
+                    <div
+                        className="title-gap-y flex min-w-24 flex-col"
+                        data-testid="footer-communities-links"
+                    >
                         <h5 className="title-6">
                             {t('ideascaleProfiles.ideascaleProfiles')}
                         </h5>
@@ -79,9 +94,13 @@ export default function Footer() {
                             <li>
                                 <Paragraph>
                                     <NavLinkItem
-                                        href={useLocalizedRoute('ideascaleProfiles.index')}
+                                        href={useLocalizedRoute(
+                                            'ideascaleProfiles.index',
+                                        )}
                                         data-testid="ideascale-profiles-link"
-                                        title={t('ideascaleProfiles.ideascaleProfiles')}
+                                        title={t(
+                                            'ideascaleProfiles.ideascaleProfiles',
+                                        )}
                                         active={true}
                                         disable={false}
                                         className="hover:!bg-transparent"
@@ -103,7 +122,9 @@ export default function Footer() {
                             <li>
                                 <Paragraph>
                                     <NavLinkItem
-                                        href={useLocalizedRoute('communities.index')}
+                                        href={useLocalizedRoute(
+                                            'communities.index',
+                                        )}
                                         data-testid="communities-link"
                                         title={t('communities.communities')}
                                         active={true}
@@ -126,13 +147,18 @@ export default function Footer() {
                             </li>
                         </ul>
                     </div>
-                    <div className="title-gap-y flex min-w-24 flex-col" data-testid="footer-data-links">
+                    <div
+                        className="title-gap-y flex min-w-24 flex-col"
+                        data-testid="footer-data-links"
+                    >
                         <h5 className="title-6">{t('data')}</h5>
                         <ul className="menu-gap-y flex flex-col">
                             <li>
                                 <Paragraph>
                                     <NavLinkItem
-                                        href={useLocalizedRoute('numbers.impact')}
+                                        href={useLocalizedRoute(
+                                            'numbers.impact',
+                                        )}
                                         data-testid="impact-link"
                                         title={t('impact')}
                                         active={false}
@@ -145,7 +171,9 @@ export default function Footer() {
                             <li>
                                 <Paragraph>
                                     <NavLinkItem
-                                        href={useLocalizedRoute('numbers.spending')}
+                                        href={useLocalizedRoute(
+                                            'numbers.spending',
+                                        )}
                                         data-testid="spending-link"
                                         title={t('spending')}
                                         active={false}
@@ -158,7 +186,9 @@ export default function Footer() {
                             <li>
                                 <Paragraph>
                                     <NavLinkItem
-                                        href={useLocalizedRoute('numbers.general')}
+                                        href={useLocalizedRoute(
+                                            'numbers.general',
+                                        )}
                                         data-testid="general-link"
                                         title={t('general')}
                                         active={false}
@@ -197,7 +227,9 @@ export default function Footer() {
                             <li>
                                 <Paragraph>
                                     <NavLinkItem
-                                        href={useLocalizedRoute('proposals.csvs')}
+                                        href={useLocalizedRoute(
+                                            'proposals.csvs',
+                                        )}
                                         data-testid="proposal-csvs-link"
                                         title={t('proposalCSVs')}
                                         active={false}
@@ -209,7 +241,10 @@ export default function Footer() {
                             </li>
                         </ul>
                     </div>
-                    <div className="title-gap-y flex min-w-24 flex-col" data-testid="footer-social-links">
+                    <div
+                        className="title-gap-y flex min-w-24 flex-col"
+                        data-testid="footer-social-links"
+                    >
                         <h5 className="title-6">{t('social')}</h5>
                         <ul className="menu-gap-y flex flex-col">
                             <li>
@@ -262,27 +297,39 @@ export default function Footer() {
                             </li>
                         </ul>
                     </div>
-                    <div className="title-gap-y flex min-w-24 flex-col" data-testid="footer-legal-links">
+                    <div
+                        className="title-gap-y flex min-w-24 flex-col"
+                        data-testid="footer-legal-links"
+                    >
                         <h5 className="title-6">{t('legal')}</h5>
                         <ul className="menu-gap-y flex flex-col">
                             <li>
-                                <Paragraph data-testid="terms-link">{t('terms')}</Paragraph>
+                                <Paragraph data-testid="terms-link">
+                                    {t('terms')}
+                                </Paragraph>
                             </li>
                             <li>
-                                <Paragraph data-testid="privacy-link">{t('privacy')}</Paragraph>
+                                <Paragraph data-testid="privacy-link">
+                                    {t('privacy')}
+                                </Paragraph>
                             </li>
                             <li>
-                                <Paragraph data-testid="cookies-link">{t('cookies')}</Paragraph>
+                                <Paragraph data-testid="cookies-link">
+                                    {t('cookies')}
+                                </Paragraph>
                             </li>
                             <li>
-                                <Paragraph data-testid="licence-link">{t('licenses')}</Paragraph>
+                                <Paragraph data-testid="licence-link">
+                                    {t('licenses')}
+                                </Paragraph>
                             </li>
                         </ul>
                     </div>
                 </div>
             </section>
             <section className="container" data-testid="footer-copyright">
-                <div className="flex justify-between border-t pt-8">
+                <div className="flex flex-wrap items-center justify-center gap-4 border-t pt-8 lg:justify-between">
+                    {' '}
                     <div className="">
                         <CatalystWhiteLogo />
                     </div>

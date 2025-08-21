@@ -130,7 +130,7 @@ class WalletInfoService
         }
 
         $ada = number_format($lovelaces / 1_000_000, 2);
-        $balance = "{$ada} ADA";
+        $balance = $ada;
 
         return [
             'balance' => $balance,
@@ -164,10 +164,9 @@ class WalletInfoService
         }
 
         $ada = number_format($lovelaces / 1_000_000, 2);
-        $balance = "{$ada} ADA";
 
         return [
-            'balance' => $balance,
+            'balance' => $ada,
             'status' => $isDelegated,
             'stakeAddress' => $stake_address,
             'payment_addresses' => $paymentAddresses,
