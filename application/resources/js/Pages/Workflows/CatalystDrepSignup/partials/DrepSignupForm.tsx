@@ -1,13 +1,19 @@
 import InputError from '@/Components/InputError';
 import Checkbox from '@/Components/atoms/Checkbox';
+import LanguageSelector from '@/Components/atoms/LanguageSelector';
 import TextInput from '@/Components/atoms/TextInput';
 import Textarea from '@/Components/atoms/Textarea';
-import LanguageSelector from '@/Components/atoms/LanguageSelector';
-import { FormDataConvertible } from '@inertiajs/core';
-import { InertiaFormProps } from '@inertiajs/react';
-import { forwardRef, useEffect, useImperativeHandle, useState, useCallback } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import useLanguageDetection from '@/hooks/useLanguageDetection';
+import { FormDataConvertible } from '@inertiajs/core';
+import { InertiaFormProps, usePage } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import {
+    forwardRef,
+    useCallback,
+    useEffect,
+    useImperativeHandle,
+    useState,
+} from 'react';
 
 export interface DrepSignupFormFields
     extends Record<string, FormDataConvertible> {
@@ -42,37 +48,50 @@ const DrepSignupForm = forwardRef<DrepSignupFormHandles, DrepSignupFormProps>(
     ({ setIsValid, form, savedLocale }, ref) => {
         const typedForm = form as InertiaFormProps<DrepSignupFormFields>;
         const { data } = typedForm;
-        const setData = typedForm.setData as (field: keyof DrepSignupFormFields, value: any) => void;
-        const errors = typedForm.errors as Partial<Record<keyof DrepSignupFormFields, string>>;
-        const [currentLocale, setCurrentLocale] = useState<string>(savedLocale || data.locale || 'en');
+        const setData = typedForm.setData as (
+            field: keyof DrepSignupFormFields,
+            value: any,
+        ) => void;
+        const errors = typedForm.errors as Partial<
+            Record<keyof DrepSignupFormFields, string>
+        >;
+        const { locale } = usePage().props as any;
+
+        const [currentLocale, setCurrentLocale] = useState<string>(locale);
         const [languageWarning, setLanguageWarning] = useState<string>('');
 
-        const { getSuggestedLanguage, validateLanguageConsistency } = useLanguageDetection();
+        const { getSuggestedLanguage, validateLanguageConsistency } =
+            useLanguageDetection();
         const { t } = useLaravelReactI18n();
 
-        const handleLanguageChange = useCallback((locale: string) => {
-            setCurrentLocale(locale);
-            setData('locale', locale);
-        }, [setData]);
+        const handleLanguageChange = useCallback(
+            (locale: string) => {
+                setCurrentLocale(locale);
+                setData('locale', locale);
+            },
+            [setData],
+        );
 
         const validateLanguages = useCallback(() => {
             const validation = validateLanguageConsistency(
                 { bio: data.bio },
-                currentLocale
+                currentLocale,
             );
-            
+
             if (!validation.isValid) {
-                setLanguageWarning(validation.message || 'Language mismatch detected');
+                setLanguageWarning(
+                    validation.message || 'Language mismatch detected',
+                );
                 return { isValid: false, message: validation.message };
             }
-            
+
             setLanguageWarning('');
             return { isValid: true };
         }, [data.bio, currentLocale, validateLanguageConsistency]);
 
         useImperativeHandle(ref, () => ({
             getFormData: form,
-            validateLanguages
+            validateLanguages,
         }));
 
         useEffect(() => {
@@ -86,7 +105,11 @@ const DrepSignupForm = forwardRef<DrepSignupFormHandles, DrepSignupFormProps>(
             if (data.locale !== currentLocale) {
                 setData('locale', currentLocale);
             }
-        }, [currentLocale, data.locale, setData]);
+        }, [currentLocale, data.locale, setData, locale]);
+
+        useEffect(() => {
+            setCurrentLocale(locale);
+        }, [locale]);
 
         return (
             <div className="rounded-lg p-4 lg:p-8">
@@ -134,7 +157,7 @@ const DrepSignupForm = forwardRef<DrepSignupFormHandles, DrepSignupFormProps>(
                             className=""
                         />
                         {languageWarning && (
-                            <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-md">
+                            <div className="mt-2 rounded-md border border-amber-200 bg-amber-50 p-3">
                                 <p className="text-sm text-amber-800">
                                     ⚠️ {languageWarning}
                                 </p>
