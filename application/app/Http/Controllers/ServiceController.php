@@ -161,10 +161,11 @@ class ServiceController extends Controller
     public function show(string $id): Response
     {
         $service = Service::find($id);
+        
 
         return Inertia::render('Services/Show', [
             'service' => ServiceData::fromModel($service->load([
-                'user:id,name,email',
+                'user:id,name,email,linkedin,website,bio',
                 'categories:id,name,slug',
                 'locations:id,city,region,country',
             ])),
@@ -304,8 +305,7 @@ class ServiceController extends Controller
             'activeStep' => intval($request->step),
             'serviceHash' => $validated[ServiceWorkflowParams::SERVICE_HASH()->value] ?? null,
             'serviceId' => $validated[ServiceWorkflowParams::SERVICE_HASH()->value] ?? $request->input('serviceId') ?? null,
-            'serviceId' => $validated[ServiceWorkflowParams::SERVICE_HASH()->value] ?? null,
-            'serviceId' => $validated[ServiceWorkflowParams::SERVICE_HASH()->value] ?? null,
+           
             'serviceData' => $serviceData,
             'defaults' => [
                 'contact' => [
