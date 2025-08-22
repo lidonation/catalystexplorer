@@ -30,7 +30,6 @@ export default function LangSwitcher() {
         const newPath = pathParts.join('/') || '/';
 
         window.history.pushState({}, '', newPath + window.location.search);
-        router.reload();
     }, [selectedLang]);
 
     const handleSelect = (lang: string) => {
