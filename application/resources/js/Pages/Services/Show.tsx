@@ -28,7 +28,7 @@ interface ServiceData {
         hero_img_url?: string;
     };
     effective_details?: {
-        name?: string;
+        name?: string | null;
         bio?: string;
         email?: string;
         website?: string;

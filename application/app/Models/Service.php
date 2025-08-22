@@ -25,7 +25,6 @@ class Service extends Model implements HasMedia
         'description',
         'type',
         'user_id',
-
         'name',
         'email',
         'website',
@@ -97,30 +96,29 @@ class Service extends Model implements HasMedia
         return $this->user?->bio ?? '';
     }
 
-    // Minimal “effective” accessors for contact details
-    public function getEffectiveNameAttribute(): ?string
+    public function getEffectiveNameAttribute(): string
     {
-        return $this->user?->name ?? $this->name;
+        return $this->user?->name ?? $this->name ?? '';
     }
 
-    public function getEffectiveEmailAttribute(): ?string
+    public function getEffectiveEmailAttribute(): string
     {
-        return $this->email ?? $this->user?->email;
+        return $this->email ?? $this->user?->email ?? '';
     }
 
-    public function getEffectiveWebsiteAttribute(): ?string
+    public function getEffectiveWebsiteAttribute(): string
     {
-        return $this->website ?? $this->user?->website;
+        return $this->website ?? $this->user?->website ?? '';
     }
 
-    public function getEffectiveGithubAttribute(): ?string
+    public function getEffectiveGithubAttribute(): string
     {
-        return $this->github ?? $this->user?->github;
+        return $this->github ?? $this->user?->github ?? '';
     }
 
-    public function getEffectiveLinkedinAttribute(): ?string
+    public function getEffectiveLinkedinAttribute(): string
     {
-        return $this->user?->linkedin ?? $this->linkedin;
+        return $this->user?->linkedin ?? $this->linkedin ?? '';
     }
 
     public function getEffectiveLocationAttribute(): ?string
@@ -151,8 +149,8 @@ class Service extends Model implements HasMedia
                 foreach ($terms as $term) {
                     $query->where(function ($q) use ($term) {
                         $q->where('title', 'ilike', "%{$term}%")
-                            ->orWhere('description', 'ilike', "%{$term}%")
-                            ->orWhereHas('user', fn ($q) => $q->where('name', 'ilike', "%{$term}%"));
+                          ->orWhere('description', 'ilike', "%{$term}%")
+                          ->orWhereHas('user', fn ($q) => $q->where('name', 'ilike', "%{$term}%"));
                     });
                 }
             });
@@ -166,7 +164,7 @@ class Service extends Model implements HasMedia
                 $relevanceCase[] = "CASE WHEN LOWER(description) LIKE '%{$term}%' THEN 10 ELSE 0 END";
             }
 
-            if (! empty($relevanceCase)) {
+            if (!empty($relevanceCase)) {
                 $relevanceQuery = '('.implode(' + ', $relevanceCase).')';
                 $q->orderByRaw("{$relevanceQuery} DESC");
             }
