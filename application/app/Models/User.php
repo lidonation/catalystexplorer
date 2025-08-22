@@ -74,17 +74,12 @@ class User extends Authenticatable implements HasMedia
         );
     }
 
-   public function heroImgUrl(): Attribute
-{
-    return Attribute::make(
-        get: fn ($value, $attributes) =>
-            $this->getMedia('profile')->isNotEmpty()
-                ? $this->getMedia('profile')->first()->getFullUrl()
-                : $this->gravatar
-    );
-}
-
-
+    public function heroImgUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => count($this->getMedia('profile')) ? $this->getMedia('profile')[0]->getFullUrl() : $this->gravatar
+        );
+    }
 
     public function ideascale_profiles()
     {
