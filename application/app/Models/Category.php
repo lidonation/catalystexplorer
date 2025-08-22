@@ -12,14 +12,11 @@ use Illuminate\Support\Str;
 
 class Category extends Model
 {
-    protected $keyType = 'int';
-
-    public $incrementing = true;
-
-    public function uniqueIds(): array
-    {
-        return [];
-    }
+    /**
+     * Primary key will be UUID, not auto-incrementing integer.
+     */
+    protected $keyType = 'string';
+    public $incrementing = false;
 
     protected $fillable = [
         'parent_id',
@@ -32,17 +29,19 @@ class Category extends Model
     ];
 
     protected $casts = [
+        'id' => 'string',
+        'parent_id' => 'string',
         'is_active' => 'boolean',
         'level' => 'integer',
-        'id' => 'integer',
-        'parent_id' => 'integer',
     ];
 
     protected $appends = [];
 
     protected $hidden = [];
 
-    // Self-referential relationships
+    /**
+     * Relationships
+     */
     public function parent(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'parent_id');
@@ -58,7 +57,9 @@ class Category extends Model
         return $this->morphToMany(Service::class, 'model', 'service_model');
     }
 
-    // Auto-generate slug
+    /**
+     * Mutator: auto-generate slug when setting name.
+     */
     protected function name(): Attribute
     {
         return Attribute::make(
@@ -69,9 +70,18 @@ class Category extends Model
         );
     }
 
+    /**
+     * Boot method: auto-generate UUID and set hierarchy fields.
+     */
     protected static function booted()
     {
         static::creating(function ($category) {
+            // Generate UUID if not already set
+            if (!$category->id) {
+                $category->id = (string) Str::uuid();
+            }
+
+            // Determine type and level
             if ($category->parent_id) {
                 $parent = static::find($category->parent_id);
                 $category->level = $parent?->level + 1;
@@ -83,6 +93,9 @@ class Category extends Model
         });
     }
 
+    /**
+     * Scope: only active top-level categories with active children.
+     */
     public function scopeWithActiveChildren($query)
     {
         return $query->where('is_active', true)

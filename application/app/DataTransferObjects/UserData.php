@@ -17,7 +17,7 @@ class UserData extends Data
 
         public ?string $name,
 
-        public ?string $email,
+        public? string $email = null,
 
         public ?string $hero_img_url,
 

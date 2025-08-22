@@ -46,7 +46,20 @@ class HomeController extends Controller
                 fn () => $this->getAnnouncements($announcements)
             ),
             'specialAnnouncements' => Inertia::optional(
-                fn () => $this->getSpecialAnnouncements()
+                fn () => AnnouncementData::collect(
+                    Announcement::query()
+                        ->where('context', 'special')
+                        ->latest('event_ends_at')
+                        ->limit(6)
+                        ->get()
+                        ->map(fn ($announcement) => [
+                            'id' => $announcement->id,
+                            'title' => $announcement->title,
+                            'content' => $announcement->content,
+                            'cta' => $announcement->cta ? (object) ['label' => $announcement->cta] : null,
+                            'hero_image_url' => $announcement->heroPhotoUrl,
+                        ])
+                )
             ),
         ]);
     }
