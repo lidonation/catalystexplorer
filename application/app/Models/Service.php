@@ -25,11 +25,9 @@ class Service extends Model implements HasMedia
         'description',
         'type',
         'user_id',
-
         'name',
         'email',
         'website',
-        'github',
         'linkedin',
     ];
 
@@ -93,6 +91,41 @@ class Service extends Model implements HasMedia
         );
     }
 
+    public function getEffectiveBioAttribute(): string
+    {
+        return $this->user?->bio ?? '';
+    }
+
+    public function getEffectiveNameAttribute(): string
+    {
+        return $this->user?->name ?? $this->name ?? '';
+    }
+
+    public function getEffectiveEmailAttribute(): string
+    {
+        return $this->email ?? $this->user?->email ?? '';
+    }
+
+    public function getEffectiveWebsiteAttribute(): string
+    {
+        return $this->website ?? $this->user?->website ?? '';
+    }
+
+    public function getEffectiveGithubAttribute(): string
+    {
+        return $this->github ?? $this->user?->github ?? '';
+    }
+
+    public function getEffectiveLinkedinAttribute(): string
+    {
+        return $this->user?->linkedin ?? $this->linkedin ?? '';
+    }
+
+    public function getEffectiveLocationAttribute(): ?string
+    {
+        return $this->locations->first()?->city ?? null;
+    }
+
     public function getEffectiveContactDetailsAttribute(): array
     {
         return [
@@ -102,6 +135,7 @@ class Service extends Model implements HasMedia
             'github' => $this->effective_github,
             'linkedin' => $this->effective_linkedin,
             'location' => $this->effective_location,
+            'bio' => $this->effective_bio,
         ];
     }
 
@@ -115,8 +149,8 @@ class Service extends Model implements HasMedia
                 foreach ($terms as $term) {
                     $query->where(function ($q) use ($term) {
                         $q->where('title', 'ilike', "%{$term}%")
-                            ->orWhere('description', 'ilike', "%{$term}%")
-                            ->orWhereHas('user', fn ($q) => $q->where('name', 'ilike', "%{$term}%"));
+                          ->orWhere('description', 'ilike', "%{$term}%")
+                          ->orWhereHas('user', fn ($q) => $q->where('name', 'ilike', "%{$term}%"));
                     });
                 }
             });
@@ -125,15 +159,12 @@ class Service extends Model implements HasMedia
             foreach ($terms as $term) {
                 $term = strtolower($term);
                 $relevanceCase[] = "CASE WHEN LOWER(title) = '{$term}' THEN 1000 ELSE 0 END";
-
                 $relevanceCase[] = "CASE WHEN LOWER(title) LIKE '{$term}%' THEN 500 ELSE 0 END";
-
                 $relevanceCase[] = "CASE WHEN LOWER(title) LIKE '%{$term}%' THEN 100 ELSE 0 END";
-
                 $relevanceCase[] = "CASE WHEN LOWER(description) LIKE '%{$term}%' THEN 10 ELSE 0 END";
             }
 
-            if (! empty($relevanceCase)) {
+            if (!empty($relevanceCase)) {
                 $relevanceQuery = '('.implode(' + ', $relevanceCase).')';
                 $q->orderByRaw("{$relevanceQuery} DESC");
             }
@@ -145,10 +176,7 @@ class Service extends Model implements HasMedia
         return $query->when($categoryIds, function ($q, $categoryIds) {
             $ids = is_array($categoryIds) ? $categoryIds : (array) $categoryIds;
             $q->whereHas('categories', function ($query) use ($ids) {
-                $query->whereIn(
-                    'service_model.model_id',
-                    $ids
-                );
+                $query->whereIn('service_model.model_id', $ids);
             });
         });
     }
@@ -161,7 +189,7 @@ class Service extends Model implements HasMedia
     public function scopeWithStandardRelations($query)
     {
         return $query->with([
-            'user:id,name,email',
+            'user:id,name,email,bio,linkedin,website',
             'categories:id,name,slug',
             'locations:id,city',
         ]);
