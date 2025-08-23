@@ -4,22 +4,23 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model as EloquentModel; // Use Laravel's base model
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class Snapshot extends Model
+class Snapshot extends EloquentModel
 {
+    use HasFactory;
+    
     public $timestamps = false;
 
-    protected $keyType = 'string';
-
-    public $incrementing = false;
-
-    public function uniqueIds(): array
-    {
-        return ['id'];
-    }
+    protected $primaryKey = 'id';
+    
+    protected $keyType = 'int';
+    
+    public $incrementing = true;
 
     protected $fillable = [
         'snapshot_name',
