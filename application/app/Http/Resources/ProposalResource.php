@@ -30,6 +30,7 @@ class ProposalResource extends JsonResource
             'problem' => $this->problem,
             'solution' => $this->solution,
             'experience' => $this->experience,
+            'content' => $this->content,
             'website' => $this->website,
             'quickpitch' => $this->quickpitch,
             'opensourced' => $this->opensourced,

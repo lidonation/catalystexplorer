@@ -8,9 +8,9 @@ use App\Models\CatalystDrepUser;
 use App\Nova\Actions\EditModel;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class CatalystDrepUsers extends Resource
@@ -110,8 +110,6 @@ class CatalystDrepUsers extends Resource
 
     /**
      * Get the filters available for the resource.
-     *
-     * @return array
      */
     public function filters(NovaRequest $request): array
     {
@@ -120,8 +118,6 @@ class CatalystDrepUsers extends Resource
 
     /**
      * Get the lenses available for the resource.
-     *
-     * @return array
      */
     public function lenses(NovaRequest $request): array
     {
@@ -143,7 +139,6 @@ class CatalystDrepUsers extends Resource
     {
         return __('DRep Delegation');
     }
-
 
     /**
      * Get the URI key for the resource.
