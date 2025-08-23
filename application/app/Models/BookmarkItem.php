@@ -8,14 +8,22 @@ use App\Enums\VoteEnum;
 use App\Observers\BookmarkItemObserver;
 use App\Traits\HasModel;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model as EloquentModel; // Use Laravel's base model
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[ObservedBy([BookmarkItemObserver::class])]
-class BookmarkItem extends Model
+class BookmarkItem extends EloquentModel
 {
-    use HasModel, SoftDeletes;
+    use HasFactory, HasModel, SoftDeletes;
+
+    protected $primaryKey = 'id';
+    
+    protected $keyType = 'int';
+    
+    public $incrementing = true;
 
     protected $guarded = [];
 
@@ -39,6 +47,5 @@ class BookmarkItem extends Model
         return [
             'vote' => VoteEnum::class,
         ];
-
     }
 }

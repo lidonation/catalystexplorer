@@ -13,14 +13,13 @@ class VoterHistoryFactory extends Factory
     public function definition()
     {
         return [
-            'stake_address' => $this->faker->sha256,
-            'fragment_id' => $this->faker->uuid,
-            'caster' => $this->faker->text,
-            'time' => $this->faker->dateTime->format('Y-m-d H:i:s'),
-            'raw_fragment' => $this->faker->text,
-            'proposal' => $this->faker->randomNumber(),
-            'choice' => $this->faker->numberBetween(1, 10),
-            'snapshot_id' => Snapshot::factory(),
+            'stake_address' => $this->faker->regexify('[a-f0-9]{64}'),
+            'fragment_id' => $this->faker->uuid(),
+            'caster' => $this->faker->uuid(),
+            'time' => $this->faker->dateTimeThisYear()->format('Y-m-d H:i:s'),
+            'raw_fragment' => $this->faker->text(200),
+            'proposal' => $this->faker->numberBetween(1, 1000),
+            'choice' => $this->faker->numberBetween(0, 2),
         ];
     }
 }

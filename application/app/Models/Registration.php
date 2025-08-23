@@ -4,20 +4,23 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Registration extends Model
+class Registration extends EloquentModel
 {
+    use HasFactory;
+    
+    protected $table = 'registrations';
+    
     protected $with = ['delegators'];
 
-    protected $keyType = 'string';
-
-    public $incrementing = false;
-
-    public function uniqueIds(): array
-    {
-        return ['id'];
-    }
+    protected $primaryKey = 'id';
+    
+    protected $keyType = 'int';
+    
+    public $incrementing = true;
 
     protected $fillable = [
         'tx',

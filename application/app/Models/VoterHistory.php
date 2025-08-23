@@ -5,15 +5,23 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model as EloquentModel; // Use Laravel's base model
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Znck\Eloquent\Traits\BelongsToThrough;
 
-class VoterHistory extends Model
+class VoterHistory extends EloquentModel
 {
-    use BelongsToThrough, Searchable, SoftDeletes;
+    use HasFactory, BelongsToThrough, Searchable, SoftDeletes;
+
+    protected $primaryKey = 'id';
+    
+    protected $keyType = 'int';
+    
+    public $incrementing = true;
 
     /**
      * The attributes that aren't mass assignable.
@@ -30,15 +38,6 @@ class VoterHistory extends Model
     protected $appends = [];
 
     public $meiliIndexName = 'cx_voter_histories';
-
-    protected $keyType = 'int';
-
-    public $incrementing = true;
-
-    public function uniqueIds(): array
-    {
-        return [];
-    }
 
     /**
      * Get the sortable attributes for the model.
