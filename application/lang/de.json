@@ -221,6 +221,7 @@
     "workflows.resetPassword.resend": "E-Mail erneut senden",
     "workflows.voterList.welcome": "Bevor Sie beginnen, lassen Sie uns Ihre Wählerliste einrichten. Eine Wählerliste ist eine Sammlung von Vorschlägen, die Sie unterstützen und die andere berücksichtigen sollen. Dies hilft, die Governance-Teilnahme zu rationalisieren. Bereit zu beginnen? In den nächsten Schritten benennen Sie Ihre Liste, fügen Vorschläge hinzu und erklären Ihre Begründung für deren Auswahl.",
     "workflows.voterList.proposalsOnly": "Im Gegensatz zu anderen Listentypen können nur Vorschläge zu Wählerlisten hinzugefügt werden.",
+    "workflows.voterList.prototype":"<strong>Hinweis: Dies ist noch ein Prototyp und nichts wird bisher on-chain übermittelt!</strong>",
     "workflows.voterList.title": "Titel",
     "workflows.voterList.description": "Beschreibung",
     "workflows.voterList.descriptionPlaceholder": "Beschreiben Sie den Zweck dieser Liste in wenigen Worten.",

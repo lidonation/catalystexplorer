@@ -221,6 +221,7 @@
     "workflows.resetPassword.resend": "Reenviar Email",
     "workflows.voterList.welcome": "Antes de comenzar, configuremos tu Lista de Votación. Una Lista de Votación es una colección de propuestas que apoyas y quieres que otros consideren. Esto ayuda a agilizar la participación en gobernanza. ¿Listo para comenzar? En los próximos pasos, nombrarás tu lista, añadirás propuestas y explicarás tu razonamiento para seleccionarlas.",
     "workflows.voterList.proposalsOnly": "A diferencia de otros tipos de lista, solo se pueden añadir propuestas a las listas de votación.",
+    "workflows.voterList.prototype":"<strong>Nota: ¡Esto sigue siendo un prototipo y nada se envía a la cadena todavía!</strong>",
     "workflows.voterList.title": "Título",
     "workflows.voterList.description": "Descripción",
     "workflows.voterList.descriptionPlaceholder": "Describe el propósito de esta lista en pocas palabras.",
