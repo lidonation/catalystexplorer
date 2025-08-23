@@ -9,6 +9,7 @@ import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 import {useLaravelReactI18n} from "laravel-react-i18n";
+import RichContent from '@/Components/RichContent';
 
 
 interface Step1Props {
@@ -34,12 +35,17 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                <div className="bg-background w-full h-full flex flex-col items-center justify-center p-8">
-                    <div className="max-w-2xl mb-8">
-                        <Paragraph className="mb-4 text-gray-persist">
+                <div className="bg-background flex h-full w-full flex-col items-center justify-center p-8">
+                    <div className="mb-8 max-w-2xl">
+                        <RichContent
+                            className="mb-4"
+                            content={t('workflows.voterList.prototype')}
+                            format={'html'}
+                        />
+                        <Paragraph className="text-gray-persist mb-4">
                             {t('workflows.voterList.welcome')}
                         </Paragraph>
-                        <Paragraph className="font-light italic text-gray-persist">
+                        <Paragraph className="text-gray-persist font-light italic">
                             {t('workflows.voterList.proposalsOnly')}
                         </Paragraph>
                     </div>

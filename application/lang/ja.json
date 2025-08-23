@@ -221,6 +221,7 @@
     "workflows.resetPassword.resend": "メール再送信",
     "workflows.voterList.welcome": "開始する前に、投票リストを設定しましょう。投票リストは、あなたがサポートし、他の人に検討してもらいたい提案のコレクションです。これによりガバナンス参加が合理化されます。準備はできましたか？次のステップでは、リストに名前を付け、提案を追加し、それらを選択した理由を説明します。",
     "workflows.voterList.proposalsOnly": "他のリストタイプとは異なり、投票リストには提案のみを追加できます。",
+    "workflows.voterList.prototype":"<strong>注意：これはまだプロトタイプであり、まだオンチェーンには何も送信されていません！</strong>",
     "workflows.voterList.title": "タイトル",
     "workflows.voterList.description": "説明",
     "workflows.voterList.descriptionPlaceholder": "このリストの目的を数語で説明してください。",

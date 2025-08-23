@@ -177,6 +177,7 @@
     "workflows.resetPassword.resend": "Renvoyer l'e-mail",
     "workflows.voterList.welcome": "Avant de commencer, configurons votre Liste de Vote. Une Liste de Vote est une collection de propositions que vous soutenez et que vous souhaitez que d'autres considèrent. Cela aide à simplifier la participation à la gouvernance. Prêt à commencer ? Dans les prochaines étapes, vous nommerez votre liste, ajouterez des propositions et expliquerez votre raisonnement pour les sélectionner.",
     "workflows.voterList.proposalsOnly": "Contrairement à d'autres types de listes, seules les propositions peuvent être ajoutées aux listes de vote.",
+    "workflows.voterList.prototype":"<strong>Note : Ceci est encore un prototype et rien n'est encore soumis sur la chaîne !</strong>",
     "workflows.voterList.title": "Titre",
     "workflows.voterList.description": "Description",
     "workflows.voterList.descriptionPlaceholder": "Décrivez en quelques mots l'objectif de cette liste.",
