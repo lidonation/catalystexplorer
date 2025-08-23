@@ -1,3 +1,11 @@
+# [1.14.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.13.5...v1.14.0) (2025-08-23)
+
+
+### Features
+
+* add content to proposal resource ([69f41d2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/69f41d23946680866a2e28a7de0afee75aeae135))
+* **single-service-page:** LN-1942 add Single Service Page ([64d2869](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/64d2869e2732ff1197f405bfc1eccfcdd4745344))
+
 ## [1.13.5](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.13.4...v1.13.5) (2025-08-21)
 
 
