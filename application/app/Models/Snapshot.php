@@ -13,13 +13,13 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class Snapshot extends EloquentModel
 {
     use HasFactory;
-    
+
     public $timestamps = false;
 
     protected $primaryKey = 'id';
-    
+
     protected $keyType = 'int';
-    
+
     public $incrementing = true;
 
     protected $fillable = [
