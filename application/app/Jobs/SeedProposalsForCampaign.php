@@ -27,19 +27,39 @@ class SeedProposalsForCampaign implements ShouldQueue
 
     public function handle(): void
     {
-        $proposals = Proposal::factory()
+        $count = fake()->numberBetween(10, 25);
+        
+        $factory = Proposal::factory()
             ->count($count)
-            ->hasAttached($this->ideascaleProfiles->random(fake()->randomElement([0, 1, 3, 4])))
             ->state([
                 'campaign_id' => $this->campaign->id,
                 'fund_id' => $this->campaign->fund->id,
-            ])
-            ->has(Meta::factory()->state(fn () => [
-                'key' => fake()->randomElement(['woman_proposal', 'impact_proposal', 'ideafest_proposal']),
-                'content' => fake()->randomElement([0, 1]),
-                'model_type' => Proposal::class,
-            ]))
-            ->hasAttached($this->tags->random(), ['model_type' => Proposal::class])
-            ->create();
+            ]);
+
+        if ($this->ideascaleProfiles->isNotEmpty()) {
+            $profileCount = fake()->randomElement([0, 1, 3, 4]);
+            if ($profileCount > 0) {
+                $selectedProfiles = $this->ideascaleProfiles->random(
+                    min($profileCount, $this->ideascaleProfiles->count())
+                );
+                $factory = $factory->hasAttached($selectedProfiles, [], 'ideascale_profiles');
+            }
+        }
+
+        $factory = $factory->has(Meta::factory()->state(fn () => [
+            'key' => fake()->randomElement(['woman_proposal', 'impact_proposal', 'ideafest_proposal']),
+            'content' => fake()->randomElement([0, 1]),
+            'model_type' => Proposal::class,
+        ]));
+
+        if ($this->tags->isNotEmpty()) {
+            $tagCount = fake()->numberBetween(1, 5);
+            $selectedTags = $this->tags->random(
+                min($tagCount, $this->tags->count())
+            );
+            $factory = $factory->hasAttached($selectedTags, ['model_type' => Proposal::class]);
+        }
+
+        $proposals = $factory->create();
     }
 }
