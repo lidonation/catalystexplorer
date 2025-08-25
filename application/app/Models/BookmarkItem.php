@@ -20,9 +20,9 @@ class BookmarkItem extends EloquentModel
     use HasFactory, HasModel, SoftDeletes;
 
     protected $primaryKey = 'id';
-    
+
     protected $keyType = 'int';
-    
+
     public $incrementing = true;
 
     protected $guarded = [];

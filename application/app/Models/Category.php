@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -12,14 +13,16 @@ use Illuminate\Support\Str;
 
 class Category extends Model
 {
-    protected $keyType = 'int';
+    use HasUuids;
 
-    public $incrementing = true;
+    // protected $keyType = 'int';
 
-    public function uniqueIds(): array
-    {
-        return [];
-    }
+    // public $incrementing = true;
+
+    // public function uniqueIds(): array
+    // {
+    //     return [];
+    // }
 
     protected $fillable = [
         'parent_id',
@@ -34,8 +37,9 @@ class Category extends Model
     protected $casts = [
         'is_active' => 'boolean',
         'level' => 'integer',
-        'id' => 'integer',
-        'parent_id' => 'integer',
+        // 'id' => 'string',
+        // 'parent_id' => 'string',
+
     ];
 
     protected $appends = [];

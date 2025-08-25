@@ -11,15 +11,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Registration extends EloquentModel
 {
     use HasFactory;
-    
+
     protected $table = 'registrations';
-    
+
     protected $with = ['delegators'];
 
     protected $primaryKey = 'id';
-    
+
     protected $keyType = 'int';
-    
+
     public $incrementing = true;
 
     protected $fillable = [
