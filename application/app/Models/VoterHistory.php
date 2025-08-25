@@ -15,12 +15,12 @@ use Znck\Eloquent\Traits\BelongsToThrough;
 
 class VoterHistory extends EloquentModel
 {
-    use HasFactory, BelongsToThrough, Searchable, SoftDeletes;
+    use BelongsToThrough, HasFactory, Searchable, SoftDeletes;
 
     protected $primaryKey = 'id';
-    
+
     protected $keyType = 'int';
-    
+
     public $incrementing = true;
 
     /**

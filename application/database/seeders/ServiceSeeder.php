@@ -20,29 +20,40 @@ class ServiceSeeder extends Seeder
         $this->createRealCategories();
 
         $allSubcategories = Category::whereNotNull('parent_id')->get();
+        if ($allSubcategories->isNotEmpty()) {
+            Service::factory(50)->create()->each(function ($service) use ($allSubcategories) {
+                $randomCount = random_int(1, min(3, $allSubcategories->count()));
+                $selectedSubcategories = $allSubcategories->random($randomCount);
 
-        Service::factory(50)->create()->each(function ($service) use ($allSubcategories) {
-            $selectedSubcategories = $allSubcategories->random(random_int(1, 3));
-
-            foreach ($selectedSubcategories as $category) {
-                DB::table('service_model')->insertOrIgnore([
-                    'id' => (string) \Str::uuid(),
-                    'service_id' => $service->id,
-                    'old_service_id' => $service->old_id ?? 1,
-                    'model_id' => (string) \Str::uuid(),
-                    'old_model_id' => $category->id,
-                    'model_type' => Category::class,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
-        });
+                foreach ($selectedSubcategories as $category) {
+                    DB::table('service_model')->insertOrIgnore([
+                        'service_id' => $service->id,
+                        'model_id' => $category->id,
+                        'model_type' => Category::class,
+                    ]);
+                }
+            });
+        } else {
+            Service::factory(50)->create();
+            $this->command->warn('No subcategories found. Services created without category assignments.');
+        }
     }
 
     private function createRealCategories(): void
     {
-        if (Category::where('name', 'Technical Services')->exists()) {
+        $existingStructure = Category::whereNull('parent_id')
+            ->whereIn('name', ['Technical Services', 'Design Services', 'Research & Strategy'])
+            ->with('children')
+            ->get();
+
+        if ($existingStructure->count() === 3 && $existingStructure->sum(fn($cat) => $cat->children->count()) > 0) {
+            $this->command->info('Categories with subcategories already exist. Skipping category creation.');
             return;
+        }
+        if (Category::exists()) {
+            $this->command->info('Clearing existing categories to create proper hierarchy...');
+            DB::table('service_model')->where('model_type', Category::class)->delete();
+            Category::query()->delete();
         }
 
         $categoryData = [
@@ -84,5 +95,6 @@ class ServiceSeeder extends Seeder
                 ]);
             }
         }
+        $this->command->info('Created categories with hierarchical structure.');
     }
 }
