@@ -1,3 +1,15 @@
+# [1.15.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.14.0...v1.15.0) (2025-08-26)
+
+
+### Bug Fixes
+
+* service pagination ([de5dc57](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/de5dc57c78ca6a79e795dd5282e9d6e4658e3d6a))
+
+
+### Features
+
+* add project_length to the api ([112bacf](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/112bacf3afca0be9c1b078501bf694cfde6b2717))
+
 # [1.14.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.13.5...v1.14.0) (2025-08-23)
 
 
