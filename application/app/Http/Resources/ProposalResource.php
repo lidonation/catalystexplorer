@@ -30,7 +30,7 @@ class ProposalResource extends JsonResource
             'problem' => $this->problem,
             'solution' => $this->solution,
             'experience' => $this->experience,
-            'content' => $this->content,
+            'content' => $this->when($request->boolean('include_content'), $this->content),
             'website' => $this->website,
             'quickpitch' => $this->quickpitch,
             'project_length' => $this->project_length,
