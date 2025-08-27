@@ -103,12 +103,12 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                     {campaign?.excerpt}
                 </Paragraph>
 
-                <div className="mt-6 flex w-full gap-4">
-                    <PrimaryButton className="w-2/3">
+                <div className="mt-6 flex flex-col md:flex-row w-full gap-4">
+                    <PrimaryButton className="md:w-2/3 w-full">
                         {t('activeFund.campaigns.viewProposals')}
                     </PrimaryButton>
                     <SecondaryButton
-                        className="border-primary text-primary flex w-1/3 items-center justify-center text-center"
+                        className="border-primary text-primary flex md:w-1/3 w-full items-center justify-center text-center"
                         onClick={onCreateList}
                     >
                         {t('activeFund.campaigns.createList')}

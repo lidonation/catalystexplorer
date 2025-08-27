@@ -54,7 +54,7 @@ const Index: React.FC<ActiveFundsProp> = ({
 
             <header>
                 <div
-                    className="relative flex w-full flex-col justify-center gap-8"
+                    className="relative flex w-full"
                     data-testid="active-fund-page"
                 >
                     <ActiveFundBanner fund={fund} />
@@ -62,9 +62,16 @@ const Index: React.FC<ActiveFundsProp> = ({
             </header>
 
             <div className="flex w-full flex-col">
-                <section className="flex w-full flex-col items-center px-8 py-6">
-                    <div className="mb-5 text-center">
-                        <Title level="2">
+                <section className="flex w-full flex-col items-center px-8 md:py-6 py-2">
+                    <div className="md:mb-5 mb-3 text-center">
+                        <Title level="2" className='hidden md:block'>
+                            {currency(
+                                fund?.amount_awarded ?? 0,
+                                2,
+                                fund?.currency ?? 'USD',
+                            )}
+                        </Title>
+                          <Title level="3" className='md:hidden block font-bold'>
                             {currency(
                                 fund?.amount_awarded ?? 0,
                                 2,
@@ -75,7 +82,7 @@ const Index: React.FC<ActiveFundsProp> = ({
                             {t('activeFund.budget')}
                         </Paragraph>
                     </div>
-                    <div className="flex w-full flex-col items-center justify-center gap-4 text-center md:flex-row md:gap-16 md:text-left">
+                    <div className="flex w-full flex-col items-center justify-center md:gap-4 gap-2 text-center md:flex-row md:gap-16 md:text-left">
                         <Paragraph className="flex">
                             <span className="mr-1">
                                 {t('activeFund.distributed')}:
@@ -101,22 +108,22 @@ const Index: React.FC<ActiveFundsProp> = ({
                             </span>
                         </Paragraph>
                     </div>
-                    <div className="mt-5 flex w-full flex-col items-center justify-center gap-4">
+                    <div className="md:mt-5 mt-4 flex w-full flex-col items-center justify-center md:gap-4 gap-2">
                         <SegmentedBar
                             segments={segments}
                             tooltipSegments={segments}
                         />
-                        <div className="flex gap-4">
+                        <div className="flex gap-4 px-4 md:px-0">
                             {segments.map((segment, index) => (
                                 <div
                                     key={index}
                                     className="flex items-center gap-1"
                                 >
                                     <ColorDot color={segment.color} size={3} />
-                                    <div className="text-highlight">
+                                    <div className="text-highlight text-sm">
                                         {segment.label}
                                     </div>
-                                    <div>{segment.value}</div>
+                                    <div className='text-sm'>{segment.value}</div>
                                 </div>
                             ))}
                         </div>

@@ -17,12 +17,21 @@ const ActiveFundBanner: React.FC<ActiveFundBannerProps> = ({ fund }) => {
                     alt={fund.title || 'Fund'}
                     className="h-full w-full object-cover"
                 />
-                <div className="absolute top-1/2 left-12 -translate-y-1/2 text-white">
+                <div className="absolute top-1/2 left-12 -translate-y-1/2 text-white hidden md:block">
                     <Title
                         level="1"
-                        className="font-bold"
+                        className="font-bold "
                     >{`${t('activeFund.title')} - ${fund?.title}`}</Title>
                     <Paragraph className="line-clamp-3 min-h-[4.5rem] w-96 leading-relaxed" size='md'>
+                        {t('activeFund.subtitle')}
+                    </Paragraph>
+                </div>
+                <div className="absolute top-1/2 left-6 right-6 -translate-y-1/2 text-white block md:hidden">
+                    <Title
+                        level="3"
+                        className="font-bold "
+                    >{`${t('activeFund.title')} - ${fund?.title}`}</Title>
+                    <Paragraph className=" leading-relaxed" size='md'>
                         {t('activeFund.subtitle')}
                     </Paragraph>
                 </div>
