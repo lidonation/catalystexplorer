@@ -442,7 +442,7 @@ class TinderProposalWorkflowController extends Controller
         $selectedFund = null;
         if (! empty($preferences['selectedFund'])) {
 
-            $selectedFund = Fund::byHash($preferences['selectedFund']);
+            $selectedFund = Fund::find($preferences['selectedFund']);
         }
 
         if (! $selectedFund) {
@@ -490,8 +490,8 @@ class TinderProposalWorkflowController extends Controller
 
         // Handle existing collections
         if ($leftBookmarkHash && $rightBookmarkHash) {
-            $leftBookmarkCollection = BookmarkCollection::byHash($leftBookmarkHash);
-            $rightBookmarkCollection = BookmarkCollection::byHash($rightBookmarkHash);
+            $leftBookmarkCollection = BookmarkCollection::find($leftBookmarkHash);
+            $rightBookmarkCollection = BookmarkCollection::find($rightBookmarkHash);
 
             if ($leftBookmarkCollection && $leftBookmarkCollection->user_id === $request->user()->id) {
                 $leftBookmarkCollection->update($bookmarkCollectionData);
@@ -866,14 +866,14 @@ class TinderProposalWorkflowController extends Controller
         $collectionIds = [];
 
         if ($leftBookmarkHash) {
-            $leftBookmarkCollection = BookmarkCollection::byHash($leftBookmarkHash);
+            $leftBookmarkCollection = BookmarkCollection::find($leftBookmarkHash);
             if ($leftBookmarkCollection && $leftBookmarkCollection->user_id === $request->user()->id) {
                 $collectionIds[] = $leftBookmarkCollection->id;
             }
         }
 
         if ($rightBookmarkHash) {
-            $rightBookmarkCollection = BookmarkCollection::byHash($rightBookmarkHash);
+            $rightBookmarkCollection = BookmarkCollection::find($rightBookmarkHash);
             if ($rightBookmarkCollection && $rightBookmarkCollection->user_id === $request->user()->id) {
                 $collectionIds[] = $rightBookmarkCollection->id;
             }
@@ -941,7 +941,7 @@ class TinderProposalWorkflowController extends Controller
             'vote' => 'nullable|integer|in:-1,0,1', // Accept VoteEnum values
         ]);
 
-        $bookmarkCollection = BookmarkCollection::byHash($validated['bookmarkCollection']);
+        $bookmarkCollection = BookmarkCollection::find($validated['bookmarkCollection']);
 
         if (! $bookmarkCollection || $bookmarkCollection->user_id !== Auth::id()) {
 
