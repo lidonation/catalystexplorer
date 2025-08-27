@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('catalyst_profiles', function (Blueprint $table) {
-            $table->string('catalyst_id')->nullable();
-        });
+        // Schema::table('catalyst_profiles', function (Blueprint $table) {
+        //     $table->string('catalyst_id')->nullable();
+        // });
     }
 
     /**
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('catalyst_profiles', function (Blueprint $table) {
-            //
+            $table->dropColumn('catalyst_id');
         });
     }
 };
