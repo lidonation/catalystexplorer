@@ -1,68 +1,86 @@
-id,title,subject,operator,predicate,logical_operator,model_id,model_type,created_at,updated_at,deleted_at
-28,Submitted Proposals,id,IS NOT NULL,,AND,31,App\Models\Metric,2025-07-23 12:46:17,2025-07-23 12:46:17,
-27,Completed Proposals,status,=,complete,AND,30,App\Models\Metric,2025-07-23 12:40:04,2025-07-24 16:53:12,
-25,Completed Proposals,status,=,complete,AND,29,App\Models\Metric,2025-07-23 12:33:05,2025-07-24 16:55:43,
-16,Completed Proposals,status,=,complete,AND,21,App\Models\Metric,2025-07-23 11:21:31,2025-07-24 16:58:15,
-6,Unfunded Proposals,status,=,unfunded,OR,4,App\Models\Metric,2025-07-16 09:30:04,2025-07-16 09:49:16,
-5,Funded Proposals,funding_status,=,funded,OR,4,App\Models\Metric,2025-07-16 09:29:04,2025-07-16 09:49:30,
-8,Completed Proposals,status,=,complete,OR,2,App\Models\Metric,2025-07-16 09:57:10,2025-07-16 13:49:38,
-7,In Progress Proposals,status,=,in_progress,OR,2,App\Models\Metric,2025-07-16 09:56:26,2025-07-16 13:49:55,
-15,Completed Proposals,status,=,complete,AND,14,App\Models\Metric,2025-07-23 10:18:51,2025-07-24 17:01:31,
-20,Funded Proposals,funding_status,=,"[funded, leftover]",AND,24,App\Models\Metric,2025-07-23 12:08:16,2025-07-30 10:19:35,
-29,Submitted Proposals,id,IS NOT NULL,,AND,44,App\Models\Metric,2025-07-25 09:12:40,2025-07-25 09:12:40,
-30,Submitted Proposals,id,IS NOT NULL,,AND,45,App\Models\Metric,2025-07-25 09:16:28,2025-07-25 09:16:28,
-31,Completed Proposals,status,=,complete,AND,46,App\Models\Metric,2025-07-25 09:23:04,2025-07-25 09:23:04,
-32,Completed Proposals,status,=,complete,AND,47,App\Models\Metric,2025-07-25 09:28:11,2025-07-25 09:28:11,
-3,In Progress Proposals,status,=,in_progress,AND,13,App\Models\Metric,2025-07-16 08:03:14,2025-07-19 09:40:38,
-33,In Progress Proposals,status,=,in_progress,AND,48,App\Models\Metric,2025-07-25 09:33:40,2025-07-25 09:33:40,
-4,Completed Proposals,status,=,complete,AND,13,App\Models\Metric,2025-07-16 08:04:35,2025-07-19 10:02:16,
-10,Unfunded Proposals,status,=,unfunded,AND,16,App\Models\Metric,2025-07-19 11:02:39,2025-07-19 11:02:39,
-34,In Progress Proposals,status,=,in_progress,AND,50,App\Models\Metric,2025-07-25 09:42:31,2025-07-25 09:42:31,
-35,In Progress Proposals,status,=,in_progress,AND,51,App\Models\Metric,2025-07-25 09:50:52,2025-07-25 09:50:52,
-49,Completed Proposals,status,=,complete,AND,61,App\Models\Metric,2025-07-25 10:53:50,2025-07-25 10:53:50,
-2,Unfunded Proposals,status,=,unfunded,AND,13,App\Models\Metric,2025-07-16 08:02:01,2025-07-19 11:09:50,
-11,Submitted Proposals,id,IS NOT NULL,,AND,17,App\Models\Metric,2025-07-19 11:20:35,2025-07-21 08:59:11,
-13,In Progress Proposals,status,=,in_progress,AND,18,App\Models\Metric,2025-07-22 16:37:07,2025-07-22 16:37:07,
-14,Unfunded Proposals,status,=,unfunded,AND,18,App\Models\Metric,2025-07-22 16:39:38,2025-07-22 16:39:38,
-12,Completed Proposals,status,=,complete,AND,18,App\Models\Metric,2025-07-22 16:14:20,2025-07-22 16:49:08,
-18,Unfunded Proposals,status,=,unfunded,AND,22,App\Models\Metric,2025-07-23 12:00:04,2025-07-23 12:00:04,
-21,Unfunded Proposals,status,=,unfunded,AND,25,App\Models\Metric,2025-07-23 12:12:09,2025-07-23 12:12:09,
-22,In Progress Proposals,status,=,in_progress,AND,27,App\Models\Metric,2025-07-23 12:21:48,2025-07-23 12:21:48,
-23,In Progress Proposals,status,=,in_progress,AND,28,App\Models\Metric,2025-07-23 12:24:59,2025-07-23 12:24:59,
-24,In Progress Proposals,status,=,in_progress,AND,29,App\Models\Metric,2025-07-23 12:30:11,2025-07-23 12:30:11,
-26,In Progress Proposals,status,=,in_progress,AND,30,App\Models\Metric,2025-07-23 12:37:33,2025-07-23 12:37:33,
-39,Unfunded Proposals,status,=,unfunded,AND,55,App\Models\Metric,2025-07-25 10:16:04,2025-07-25 10:16:04,
-41,Unfunded Proposals,status,=,unfunded,AND,56,App\Models\Metric,2025-07-25 10:23:57,2025-07-25 10:23:57,
-42,Unfunded Proposals,status,=,unfunded,AND,57,App\Models\Metric,2025-07-25 10:29:29,2025-07-25 10:29:29,
-43,Completed Proposals,status,=,complete,AND,57,App\Models\Metric,2025-07-25 10:32:29,2025-07-25 10:32:29,
-44,Unfunded Proposals,status,=,unfunded,AND,59,App\Models\Metric,2025-07-25 10:41:02,2025-07-25 10:41:02,
-45,Completed Proposals,status,=,complete,AND,59,App\Models\Metric,2025-07-25 10:41:29,2025-07-25 10:41:29,
-46,Unfunded Proposals,status,=,unfunded,AND,58,App\Models\Metric,2025-07-25 10:45:12,2025-07-25 10:45:12,
-47,Completed Proposals,status,=,complete,AND,58,App\Models\Metric,2025-07-25 10:45:59,2025-07-25 10:45:59,
-50,Unfunded Proposals,status,=,unfunded,AND,60,App\Models\Metric,2025-07-25 10:59:43,2025-07-25 10:59:43,
-51,Completed Proposals,status,=,complete,AND,60,App\Models\Metric,2025-07-25 11:00:12,2025-07-25 11:00:12,
-52,Unfunded Proposals,status,=,unfunded,AND,62,App\Models\Metric,2025-07-25 11:05:30,2025-07-25 11:05:30,
-53,In Progress Proposals,status,=,in_progress,AND,62,App\Models\Metric,2025-07-25 11:06:40,2025-07-25 11:06:40,
-54,Unfunded Proposals,status,=,unfunded,AND,61,App\Models\Metric,2025-07-25 11:10:38,2025-07-25 11:10:38,
-55,In Progress Proposals,status,=,in_progress,AND,61,App\Models\Metric,2025-07-25 11:11:09,2025-07-25 11:11:09,
-56,Unfunded Proposals,status,=,unfunded,AND,63,App\Models\Metric,2025-07-25 11:16:53,2025-07-25 11:16:53,
-57,In Progress Proposals,status,=,in_progress,AND,63,App\Models\Metric,2025-07-25 11:17:28,2025-07-25 11:17:28,
-40,Funded Proposals,funding_status,=,"[funded, leftover]",AND,56,App\Models\Metric,2025-07-25 10:21:52,2025-08-04 18:09:34,
-38,Funded Proposals,funding_status,=,"[funded, leftover]",AND,55,App\Models\Metric,2025-07-25 10:12:09,2025-08-04 18:11:18,
-9,Funded Proposals,funding_status,=,"[funded, leftover]",AND,16,App\Models\Metric,2025-07-19 10:41:58,2025-08-04 18:13:35,
-19,Funded Proposals,funding_status,=,"[funded, leftover]",AND,23,App\Models\Metric,2025-07-23 12:04:28,2025-08-04 18:18:21,
-58,Unfunded Proposals,status,=,unfunded,AND,64,App\Models\Metric,2025-07-25 11:22:06,2025-07-25 11:22:06,
-59,In Progress Proposals,status,=,in_progress,AND,64,App\Models\Metric,2025-07-25 11:23:17,2025-07-25 11:23:17,
-60,Completed Proposals,status,=,complete,AND,65,App\Models\Metric,2025-07-25 11:28:07,2025-07-25 11:28:07,
-61,In Progress Proposals,status,=,in_progress,AND,65,App\Models\Metric,2025-07-25 11:28:45,2025-07-25 11:28:45,
-62,Completed Proposals,status,=,complete,AND,66,App\Models\Metric,2025-07-25 11:34:06,2025-07-25 11:34:06,
-63,In Progress Proposals,status,=,in_progress,AND,66,App\Models\Metric,2025-07-25 11:34:46,2025-07-25 11:34:46,
-64,Unfunded Proposals,status,=,unfunded,AND,67,App\Models\Metric,2025-07-25 11:39:40,2025-07-25 11:39:40,
-65,Completed Proposals,status,=,complete,AND,67,App\Models\Metric,2025-07-25 11:40:07,2025-07-25 11:40:07,
-66,In Progress Proposals,status,=,in_progress,AND,67,App\Models\Metric,2025-07-25 11:40:46,2025-07-25 11:40:46,
-67,Unfunded Proposals,status,=,unfunded,AND,68,App\Models\Metric,2025-07-25 11:46:26,2025-07-25 11:46:26,
-68,Completed Proposals,status,=,complete,AND,68,App\Models\Metric,2025-07-25 11:46:51,2025-07-25 11:46:51,
-69,In Progress Proposals,status,=,in_progress,AND,68,App\Models\Metric,2025-07-25 11:47:23,2025-07-25 11:47:23,
-71,Funded Proposals,funding_status,=,"[funded, leftover]",AND,52,App\Models\Metric,2025-07-29 19:03:47,2025-07-30 08:15:33,
-37,Funded Proposals,funding_status,=,"[funded, leftover]",AND,54,App\Models\Metric,2025-07-25 10:05:13,2025-07-30 08:20:22,
-17,Funded Proposals,funding_status,=,"[funded, leftover]",AND,22,App\Models\Metric,2025-07-23 11:41:05,2025-08-04 18:42:37,
+old_id,title,subject,operator,predicate,logical_operator,old_model_id,model_type,created_at,updated_at,deleted_at,id,model_id
+826,Submitted Proposals,id,IS NOT NULL,,AND,9,App\Models\Metric,2025-07-23 12:46:17,2025-08-26 16:13:10,,6c75115c-207e-4199-9405-1c81e418bfc7,9fba5fa8-0b41-4246-aee0-ec35502b5bdf
+,In Progress Proposals,status,=,in_progress,AND,9,App\Models\Metric,2025-07-25 11:06:40,2025-08-26 15:47:09,,44c079f0-d3b4-4607-afa2-e6955aa3d1b9,9fba5fa7-fe8c-47ba-b103-1e24e2bd2b93
+,Completed Proposals,status,=,complete,AND,9,App\Models\Metric,2025-07-25 11:00:12,2025-08-26 15:39:10,,6790c8d3-5b4e-4fa2-b8b1-f01732e6ef26,9fba5fa7-fe8c-47ba-b103-1e24e2bd2b93
+714,Funded Proposals,funding_status,=,"[funded, leftover]",AND,9,App\Models\Metric,2025-07-23 12:04:28,2025-08-26 15:51:15,,3ac56726-1d1e-4c9a-9214-b56bee778ad0,9fba9c0f-540d-4b3a-b2b3-4bd6c981e4dc
+,Funded Proposals,funding_status,=,"[funded, leftover]",AND,9,App\Models\Metric,2025-07-23 11:41:05,2025-08-26 15:29:25,,91a2ec29-88fa-4dc2-806c-33bdd7b4337d,9fba9b80-7d26-424d-af12-f26641f00c6b
+,Funded Proposals,funding_status,=,"[funded, leftover]",AND,9,App\Models\Metric,2025-07-25 10:12:09,2025-08-26 15:50:06,,4c7c5841-a56f-4883-96bb-8e14b724ac40,9fba5fa8-8095-4916-9c4c-34e59365e139
+9,Funded Proposals,funding_status,=,"[funded, leftover]",AND,9,App\Models\Metric,2025-08-26 11:58:40,2025-08-26 14:39:21,,ed1b9d54-b854-4f43-a7f3-85f1c3c68805,9fba5fa8-7cbc-4680-b921-4531de4d2040
+108,Unfunded Proposals,status,=,unfunded,AND,,App\Models\Metric,2025-08-26 20:09:34,2025-08-26 20:09:34,,9fbaa005-bde9-44de-97b6-2942667d3a4c,9fba9b80-7d26-424d-af12-f26641f00c6b
+115,Funded Proposals,funding_status,=,"[funded, leftover]",AND,,App\Models\Metric,2025-08-26 20:39:45,2025-08-26 20:39:45,,9fbaaad0-3a8a-42b8-b116-bbb71c50fcf1,9fba5fa8-34d1-4bb8-b543-1a0d83d59b40
+123,Completed Proposals,status,=,complete,AND,,App\Models\Metric,2025-08-26 21:11:18,2025-08-26 21:11:18,,9fbab61a-2238-40cc-8884-569d25732a33,9fbab5c7-defa-42dc-bf7d-517aa7e69501
+130,Unfunded Proposals,status,=,unfunded,AND,,App\Models\Metric,2025-08-26 21:29:27,2025-08-26 21:29:27,,9fbabc96-f0be-4dcf-83de-d1b30aed4510,9fba5fa8-c4e7-4ac4-b885-44429e5a53f3
+137,Completed Proposals,status,=,complete,AND,,App\Models\Metric,2025-08-26 21:39:01,2025-08-26 21:39:01,,9fbac003-75ad-4b81-8096-6c630a276579,9fbabf68-8dc8-4de3-9a2b-fdbdcf2acaa7
+138,In Progress Proposals,status,=,in_progress,AND,,App\Models\Metric,2025-08-26 21:39:37,2025-08-26 21:39:37,,9fbac03a-5dd5-4864-aa6d-c8e5fb883041,9fbabf68-8dc8-4de3-9a2b-fdbdcf2acaa7
+422,In Progress Proposals,status,=,in_progress,AND,9,App\Models\Metric,2025-07-25 11:17:28,2025-08-26 15:18:22,,8a35ac52-ee80-481c-8479-d102b84b093b,9fba5fa8-a1e0-4d9f-b0e7-a5aa5c3b7d2a
+9,In Progress Proposals,status,=,in_progress,AND,9,App\Models\Metric,2025-07-23 12:21:48,2025-08-26 16:03:40,,2ef32198-b7d7-4b42-997b-9a0c0996df4a,9fba5fa8-a56d-43ca-aabf-2273d42eaf19
+274,Completed Proposals,status,=,complete,AND,9,App\Models\Metric,2025-07-22 16:14:20,2025-08-26 15:53:21,,55b5afce-b4c1-4fdc-95f2-808a1cbb58c2,9fba5fa8-03a6-4768-8886-a33782b59abf
+2,Completed Proposals,status,=,complete,AND,9,App\Models\Metric,2025-07-25 11:46:51,2025-08-26 16:03:02,,4613b9fd-c7a9-4d58-bd7e-a438a4ff651e,9fba5fa8-3c43-4b97-9d9d-b3319c501c10
+5,Completed Proposals,status,=,complete,AND,9,App\Models\Metric,2025-07-25 10:45:59,2025-08-26 16:49:17,,186e2f7c-f885-4e55-bb78-1cf7e510725e,9fba5fa8-54a5-4f7e-b0ac-603cb6414231
+,In Progress Proposals,status,=,in_progress,AND,9,App\Models\Metric,2025-07-25 11:34:46,2025-08-26 15:58:55,,3e1242c2-bab6-4d2c-af85-62b51e119ee0,9fba5fa8-5f03-4ffc-afcd-1514652b1681
+3094,Submitted Proposals,id,IS NOT NULL,,AND,9,App\Models\Metric,2025-07-25 09:12:40,2025-08-26 16:15:11,,3fef3cf5-8d71-4110-8607-0c89152fbe11,9fba5fa8-08aa-4881-a3ab-e593df74f608
+109,Unfunded Proposals,status,=,unfunded,AND,,App\Models\Metric,2025-08-26 20:11:32,2025-08-26 20:11:32,,9fbaa0b9-80e3-4cd3-aadf-0f0598df7dee,9fba9c0f-540d-4b3a-b2b3-4bd6c981e4dc
+116,Completed Proposals,status,=,complete,AND,,App\Models\Metric,2025-08-26 20:44:25,2025-08-26 20:44:25,,9fbaac7c-3797-42c1-ae76-1a1f1509bae7,9fba5fa8-10bc-4da2-a2d1-15cfed90b149
+124,In Progress Proposals,status,=,in_progress,AND,,App\Models\Metric,2025-08-26 21:12:13,2025-08-26 21:12:13,,9fbab66d-19e0-485c-a452-edccc7979860,9fbab5c7-defa-42dc-bf7d-517aa7e69501
+131,Completed Proposals,status,=,complete,AND,,App\Models\Metric,2025-08-26 21:30:05,2025-08-26 21:30:05,,9fbabcd1-a6b4-4860-b25b-e19577afd698,9fba5fa8-c4e7-4ac4-b885-44429e5a53f3
+139,Submitted Proposals,id,IS NOT NULL,,AND,,App\Models\Metric,2025-08-26 21:44:01,2025-08-26 21:44:01,,9fbac1cc-be52-4efe-b9ac-7a855b4a4f71,9fba5fa8-062d-4653-a02f-83ad2f2a2fb9
+9915,Unfunded Proposals,status,=,unfunded,AND,9,App\Models\Metric,2025-07-25 11:05:30,2025-08-26 15:41:09,,3a4cf099-864f-4f7a-bc91-8f2222a68725,9fba5fa8-7cbc-4680-b921-4531de4d2040
+2,Unfunded Proposals,status,=,unfunded,AND,9,App\Models\Metric,2025-07-25 11:28:45,2025-08-26 20:06:10,2025-08-26 20:06:10,0bbfa049-57c1-45bf-81d2-c62a866c35de,9fba5fa8-7cbc-4680-b921-4531de4d2040
+110,Completed Proposals,status,=,complete,AND,,App\Models\Metric,2025-08-26 20:15:55,2025-08-26 20:15:55,,9fbaa24a-c03e-4f0f-a852-28e1aebc151c,9fba5fa8-9e2b-4895-89c0-aaed9dc4be2d
+837,Completed Proposals,status,=,complete,AND,9,App\Models\Metric,2025-07-25 11:39:40,2025-08-26 20:19:00,,0f736529-aa11-44a8-8959-4f2ea576c899,9fba5fa8-9a87-487c-bbf1-ad6277c5a791
+7,Completed Proposals,status,=,complete,AND,9,App\Models\Metric,2025-07-25 10:59:43,2025-08-26 20:21:34,,195e44ab-e39a-4ef6-8236-77ef19c82ca1,9fba5fa8-8926-4ab9-9c2d-fd10d6987b60
+117,Completed Proposals,status,=,complete,AND,,App\Models\Metric,2025-08-26 20:51:56,2025-08-26 20:51:56,,9fbaaf2c-8271-4f28-b2e8-253b945b82bb,9fbaaeba-32f2-4b11-a667-153c63d809b6
+125,In Progress Proposals,status,=,in_progress,AND,,App\Models\Metric,2025-08-26 21:17:30,2025-08-26 21:17:30,,9fbab850-ad2a-4c2d-a92e-4241a37f8cf1,9fba5fa8-315d-402c-acd6-0c50f9e3513a
+132,In Progress Proposals,status,=,in_progress,AND,,App\Models\Metric,2025-08-26 21:30:33,2025-08-26 21:30:33,,9fbabcfb-b376-44c7-9c8a-f82139a58b6b,9fba5fa8-c4e7-4ac4-b885-44429e5a53f3
+26,Unfunded Proposals,status,=,unfunded,AND,9,App\Models\Metric,2025-07-25 11:10:38,2025-08-26 14:59:57,,afc1ee0d-b29e-4daf-aec2-698dabd9b006,9fba5fa8-8926-4ab9-9c2d-fd10d6987b60
+9,Unfunded Proposals,status,=,unfunded,AND,9,App\Models\Metric,2025-08-26 11:36:41,2025-08-26 15:33:58,,59241e50-19ae-45a6-9c46-43f70cd4f775,9fba5fa8-9a87-487c-bbf1-ad6277c5a791
+9223372036854775807,Unfunded Proposals,status,=,unfunded,AND,9,App\Models\Metric,2025-07-25 10:23:57,2025-08-26 15:37:45,,55f50f5e-9752-4662-97d0-5463b6e6fe87,9fba5fa8-855c-47d1-b879-87369ec0539e
+2,Unfunded Proposals,status,=,unfunded,AND,9,App\Models\Metric,2025-07-25 11:40:07,2025-08-26 16:48:01,,18ec62d9-e18c-4836-8d3b-5974b1f63928,9fba5fa8-9e2b-4895-89c0-aaed9dc4be2d
+,Unfunded Proposals,status,=,unfunded,AND,9,App\Models\Metric,2025-07-25 11:46:26,2025-08-26 14:48:56,,d7a2a7ba-f637-4ec2-a966-54b8428252d9,9fba5fa8-8095-4916-9c4c-34e59365e139
+8,Unfunded Proposals,status,=,unfunded,AND,9,App\Models\Metric,2025-07-25 11:22:06,2025-08-26 14:56:46,,d67525cd-05f7-4502-9759-22c93030549c,9fba5fa8-013f-4ab3-8f97-483ce0e93e11
+9,Unfunded Proposals,status,=,unfunded,AND,9,App\Models\Metric,2025-07-25 10:45:12,2025-08-26 14:52:13,,d685b93f-f9a1-4e5f-bb17-859fbf3c297e,9fba5fa8-0e00-4bcb-9efc-0aa8e7e77658
+,Unfunded Proposals,status,=,unfunded,AND,9,App\Models\Metric,2025-07-25 11:16:53,2025-08-26 15:24:27,,a5983149-7ac2-4c09-92a7-b1c6e72439ce,9fba7dc7-53eb-429a-b654-6d39c9804b9a
+7379,Unfunded Proposals,status,=,unfunded,AND,9,App\Models\Metric,2025-07-22 16:39:38,2025-08-26 15:32:35,,7ad161f6-243a-49ac-bf43-b57b5838d390,9fba7d3e-9b8a-46a2-9a48-151062d87767
+,Submitted Proposals,id,IS NOT NULL,,AND,9,App\Models\Metric,2025-07-19 11:20:35,2025-08-25 13:38:53,,751c8c72-7d0d-40e6-b694-56b4779450cb,9fba5fa8-4e6e-4ac9-a58d-249216d79f65
+111,Completed Proposals,status,=,complete,AND,,App\Models\Metric,2025-08-26 20:26:40,2025-08-26 20:26:40,,9fbaa622-9233-4799-8e07-69e458f03943,9fba5fa8-855c-47d1-b879-87369ec0539e
+118,Completed Proposals,status,=,complete,AND,,App\Models\Metric,2025-08-26 20:54:03,2025-08-26 20:54:03,,9fbaafee-5768-43ca-b2e5-10d74139b4e1,9fba5fa8-c144-43c3-80cd-950352a4efcf
+126,In Progress Proposals,status,=,in_progress,AND,,App\Models\Metric,2025-08-26 21:20:16,2025-08-26 21:20:16,,9fbab94d-b62d-45be-9643-3f6c82522771,9fba5fa8-2d30-43f8-8caf-fa314b4ac7bf
+133,Unfunded Proposals,status,=,unfunded,AND,,App\Models\Metric,2025-08-26 21:34:30,2025-08-26 21:34:30,,9fbabe65-30c8-4ade-9f4e-b8b63fbe13df,9fbabde4-21f1-46fa-9bf9-2b0f122b0912
+112,Funded Proposals,funding_status,=,"[funded, leftover]",AND,,App\Models\Metric,2025-08-26 20:31:02,2025-08-26 20:31:02,,9fbaa7b3-48d6-4926-84ee-d60acf3d31ef,9fba74c5-df4a-47fe-97c2-67299d9412f6
+119,In Progress Proposals,status,=,in_progress,AND,,App\Models\Metric,2025-08-26 20:54:27,2025-08-26 20:54:27,,9fbab013-66b1-4667-8332-188d9bbb8725,9fba5fa8-c144-43c3-80cd-950352a4efcf
+127,Unfunded Proposals,status,=,unfunded,AND,,App\Models\Metric,2025-08-26 21:24:35,2025-08-26 21:24:35,,9fbabad9-8dbc-4a58-b6ff-5c8e7bc792d5,9fba5fa8-c87c-4c7c-a6c0-1587e348b3ff
+134,Completed Proposals,status,=,complete,AND,,App\Models\Metric,2025-08-26 21:34:55,2025-08-26 21:34:55,,9fbabe8a-db9a-4127-8be9-64841887534f,9fbabde4-21f1-46fa-9bf9-2b0f122b0912
+8806,Completed Proposals,status,=,complete,AND,9,App\Models\Metric,2025-07-23 11:21:31,2025-08-26 09:39:40,2025-08-26 09:39:40,30c1f1d6-8056-4495-9de2-39bd7c5e69ec,9fba5fa8-10bc-4da2-a2d1-15cfed90b149
+101,Aspernatur corrupti voluptatem dignissimos unde explicabo.,amount_requested,NOT IN,10,AND,1,App\Models\Metric,2025-08-26 13:54:50,2025-08-26 15:27:03,2025-08-26 15:27:03,9fba1a00-f3dc-4033-8571-0034779e4a2c,9fb7c6fb-804b-4b6b-a34e-905af79c091f
+59,Pariatur atque aut et id quis praesentium.,amount_requested,<=,30,OR,1,App\Models\Metric,2025-08-26 13:25:32,2025-08-26 15:45:32,2025-08-26 15:45:32,9fba0f86-c95f-4240-8da2-7eadc1861e37,9fb7c6fb-f0af-4517-afec-52aa34b5cd4e
+98,Quis rerum harum ut voluptate ipsam.,status,>,approved,AND,1,App\Models\Metric,2025-08-26 13:54:50,2025-08-26 15:56:55,2025-08-26 15:56:55,9fba1a00-e3b1-4a5f-ad94-5f14d6ce7bef,9fb7c6fb-7569-4d33-a58a-173edd143fc6
+99,Aliquid id magni molestiae quo.,amount_requested,<,100,AND,1,App\Models\Metric,2025-08-26 13:54:50,2025-08-26 16:15:49,2025-08-26 16:15:49,9fba1a00-eca4-4506-b505-812ca637a69e,9fb7c6fb-545f-4ed4-a8a7-a35edebde1ac
+107,Libero nulla aspernatur recusandae.,amount_requested,IS NOT NULL,100,OR,1,App\Models\Metric,2025-08-26 13:54:50,2025-08-26 16:53:05,2025-08-26 16:53:05,9fba1a01-2b3e-4ed1-a2e4-56a8393d9d4f,9fba1a01-2092-4518-8ec3-5606e48765f7
+106,Nesciunt et quia quo ut.,id,=,2,AND,1,App\Models\Metric,2025-08-26 13:54:50,2025-08-26 16:53:23,2025-08-26 16:53:23,9fba1a01-2901-426e-93f0-1f366eea000d,9fba1a01-1b3e-4013-b62a-49fec911dcce
+105,Non tenetur quia sunt nisi rerum optio.,id,!=,2,AND,1,App\Models\Metric,2025-08-26 13:54:50,2025-08-26 16:53:29,2025-08-26 16:53:29,9fba1a01-26fc-471b-8620-59b500bb34d8,9fba1a01-1692-4ae5-8e6d-0fe3dc5c5020
+104,Quidem distinctio veniam dolore omnis numquam reprehenderit.,status,<,approved,AND,1,App\Models\Metric,2025-08-26 13:54:50,2025-08-26 16:53:35,2025-08-26 16:53:35,9fba1a01-24d9-4672-a65d-c530e7014b7c,9fba1a01-0fa1-4c02-a3da-c1fed6ea9ed2
+103,Praesentium quia possimus maxime.,id,IS NOT NULL,1,AND,1,App\Models\Metric,2025-08-26 13:54:50,2025-08-26 16:53:48,2025-08-26 16:53:48,9fba1a01-22bd-4a99-bcb3-dc1f59bf2cfd,9fba1a01-07a6-4401-87d6-7aad7d767b70
+102,Iusto nesciunt eaque nam odio soluta.,status,!=,rejected,OR,1,App\Models\Metric,2025-08-26 13:54:50,2025-08-26 16:53:57,2025-08-26 16:53:57,9fba1a00-f6d0-4952-ab3b-e23011d9388d,9faf9a5d-ef07-45b0-b7ed-799b874faf65
+100,Dolorem dolores placeat enim sit laborum corrupti cum.,id,>,2,OR,1,App\Models\Metric,2025-08-26 13:54:50,2025-08-26 16:56:32,2025-08-26 16:56:32,9fba1a00-f0a4-464a-8d0e-5e8c2d120ff0,9fba178f-d5d5-4f2f-9fd8-3f8aec09f0e5
+67,Qui autem ea aut aperiam mollitia illo quod rem.,status,<=,approved,AND,1,App\Models\Metric,2025-08-26 13:25:32,2025-08-26 16:56:43,2025-08-26 16:56:43,9fba0f87-09df-446f-abe6-4c73f34b571e,9fba0f86-fbc8-4553-a003-8093b8ccc707
+66,Corporis minima tempora harum temporibus ad.,amount_requested,IN,100,AND,1,App\Models\Metric,2025-08-26 13:25:32,2025-08-26 16:56:53,2025-08-26 16:56:53,9fba0f87-073f-4c40-ba00-1b451d03406a,9fba0f86-f53b-4aed-a461-bbf70c2f95f3
+65,Assumenda sit eaque eum consequatur neque amet.,status,IS NOT NULL,approved,OR,1,App\Models\Metric,2025-08-26 13:25:32,2025-08-26 16:56:58,2025-08-26 16:56:58,9fba0f87-0473-446b-8eb1-692c24120f4f,9fba0f86-ee69-4ab0-a278-8abbd85502c3
+64,Est sunt harum odit.,amount_requested,NOT IN,20,AND,1,App\Models\Metric,2025-08-26 13:25:32,2025-08-26 16:57:04,2025-08-26 16:57:04,9fba0f87-01c1-4e6e-a13f-1c016b64b000,9fba0f86-e783-422c-950c-a8c7c81b65f9
+63,Accusamus ut modi dolorum ducimus consequatur.,amount_requested,<=,10,AND,1,App\Models\Metric,2025-08-26 13:25:32,2025-08-26 16:57:16,2025-08-26 16:57:16,9fba0f86-fedd-4256-8697-68080f771a5a,9fba0f86-e008-4b7d-9296-bbbd5b9095f6
+62,Ad omnis et unde ut adipisci aut fuga.,amount_requested,>,20,OR,1,App\Models\Metric,2025-08-26 13:25:32,2025-08-26 16:57:24,2025-08-26 16:57:24,9fba0f86-d245-4ae9-88c9-c865c954a2b7,9faf9a5d-d744-477c-ad07-e360ec323a28
+61,Perferendis exercitationem et quod quos dolore quisquam.,amount_requested,=,10,OR,1,App\Models\Metric,2025-08-26 13:25:32,2025-08-26 16:57:30,2025-08-26 16:57:30,9fba0f86-cefc-45f0-a431-b10827eca505,9faf9a5d-ef07-45b0-b7ed-799b874faf65
+60,Non provident nemo aut quaerat.,status,<=,pending,AND,1,App\Models\Metric,2025-08-26 13:25:32,2025-08-26 16:57:41,2025-08-26 16:57:41,9fba0f86-cc3d-4098-9456-9dd991dbe6b2,9faf9a5d-bba4-45f6-9810-2c01bcfc9c6a
+58,Sit suscipit placeat repellat eius ut qui facilis.,status,>=,pending,OR,1,App\Models\Metric,2025-08-26 13:25:32,2025-08-26 16:57:51,2025-08-26 16:57:51,9fba0f86-bf1c-44ce-b9f1-f555de8c8422,9faf9a5d-b931-482d-b3b1-267330e68a63
+113,Funded Proposals,funding_status,=,"[funded, leftover]",AND,,App\Models\Metric,2025-08-26 20:33:32,2025-08-26 20:33:32,,9fbaa897-dd5f-41f5-bdf7-ddd847c7b0a0,9fba5fa8-7904-4bd5-b7d0-4cc11568041b
+120,In Progress Proposals,status,=,in_progress,AND,,App\Models\Metric,2025-08-26 20:58:43,2025-08-26 20:58:43,,9fbab198-bb12-48d3-8e9d-ed518b74a02f,9fbaaeba-32f2-4b11-a667-153c63d809b6
+128,Completed Proposals,status,=,complete,AND,,App\Models\Metric,2025-08-26 21:25:13,2025-08-26 21:25:13,,9fbabb13-549f-47f0-8001-58f6b6d0d36e,9fba5fa8-c87c-4c7c-a6c0-1587e348b3ff
+135,In Progress Proposals,status,=,in_progress,AND,,App\Models\Metric,2025-08-26 21:35:21,2025-08-26 21:35:21,,9fbabeb3-c28a-4548-a8d5-625e7f184fa6,9fbabde4-21f1-46fa-9bf9-2b0f122b0912
+345,In Progress Proposals,status,=,in_progress,AND,9,App\Models\Metric,2025-07-23 12:24:59,2025-08-26 10:48:01,2025-08-26 10:48:01,9cd70ae8-2009-4d63-a754-1b40c20d765a,9fba5fa8-2d30-43f8-8caf-fa314b4ac7bf
+,Funded Proposals,funding_status,=,"[funded, leftover]",AND,9,App\Models\Metric,2025-07-29 19:03:47,2025-08-26 10:06:04,2025-08-26 10:06:04,bca06aee-cc43-43f1-bf80-977a7d00a283,9fba74c5-df4a-47fe-97c2-67299d9412f6
+9,Completed Proposals,status,=,complete,AND,9,App\Models\Metric,2025-08-26 12:18:16,2025-08-26 12:19:13,2025-08-26 12:19:13,22a1e505-b2ed-447b-8f63-b6cae20502a7,9fba5fa8-10bc-4da2-a2d1-15cfed90b149
+9,In Progress Proposals,status,=,in_progress,AND,9,App\Models\Metric,2025-08-26 12:39:08,2025-08-26 12:40:29,2025-08-26 12:40:29,1e9d9c3f-ec85-4782-9563-32688354958d,9fba5fa8-2d30-43f8-8caf-fa314b4ac7bf
+114,Funded Proposals,funding_status,=,"[funded, leftover]",AND,,App\Models\Metric,2025-08-26 20:37:52,2025-08-26 20:37:52,,9fbaaa24-1677-42b3-8b76-95149f84e4df,9fba5fa8-74d3-4c0e-9622-b4fb53050aca
+122,Completed Proposals,status,=,complete,AND,,App\Models\Metric,2025-08-26 21:01:42,2025-08-26 21:01:42,,9fbab2a9-efb6-435e-9e58-1294ca1f4292,9fba5fa8-b024-4491-9dfc-add74d457b05
+121,In Progress Proposals,status,=,in_progress,AND,,App\Models\Metric,2025-08-26 21:01:40,2025-08-26 21:04:35,,9fbab2a6-e3fc-4817-9a94-0f13b70f91c7,9fba5fa8-b024-4491-9dfc-add74d457b05
+129,In Progress Proposals,status,=,in_progress,AND,,App\Models\Metric,2025-08-26 21:25:57,2025-08-26 21:25:57,,9fbabb56-17f8-4237-9a12-0f2420da4556,9fba5fa8-c87c-4c7c-a6c0-1587e348b3ff
+136,Unfunded Proposals,status,=,unfunded,AND,,App\Models\Metric,2025-08-26 21:38:11,2025-08-26 21:38:11,,9fbabfb6-5ea7-4679-b61a-a361cebd7ed3,9fbabf68-8dc8-4de3-9a2b-fdbdcf2acaa7
