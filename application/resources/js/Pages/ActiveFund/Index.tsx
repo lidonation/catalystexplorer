@@ -64,7 +64,7 @@ const Index: React.FC<ActiveFundsProp> = ({
             <div className="flex w-full flex-col">
                 <section className="flex w-full flex-col items-center px-8 md:py-6 py-2">
                     <div className="md:mb-5 mb-3 text-center">
-                        <Title level="2" className='hidden md:block'>
+                        <Title level="2" className='hidden md:block font-bold'>
                             {currency(
                                 fund?.amount_awarded ?? 0,
                                 2,
