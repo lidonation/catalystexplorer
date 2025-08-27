@@ -425,6 +425,14 @@ Route::localized(
             });
         });
 
+        Route::prefix('/active-fund')->as('activeFund.')->group(
+            function () {
+                Route::get('/', [FundsController::class, 'activeFund'])
+                    ->name('index');
+            }
+        );
+        
+
         // Dreps
         Route::prefix('/dreps')->as('dreps.')->group(
             function () {

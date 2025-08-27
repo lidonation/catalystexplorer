@@ -85,5 +85,6 @@ final class FundData extends Data
 
         #[TypeScriptOptional]
         public ?string $parent_id
+
     ) {}
 }

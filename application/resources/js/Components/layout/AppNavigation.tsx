@@ -21,6 +21,7 @@ import MoreIcon from '../svgs/MoreIcon';
 import NoteIcon from '../svgs/NoteIcon';
 import NumbersIcon from '../svgs/NumbersIcon';
 import PeopleIcon from '../svgs/PeopleIcon';
+import NotificationBoxIcon from '../svgs/NotificationBoxIcon';
 
 function AppNavigation() {
     const { t } = useLaravelReactI18n();
@@ -103,6 +104,17 @@ function AppNavigation() {
                 />
             ),
             hasDropdown: true,
+            hideOnMyRoute: true,
+        },
+         {
+            href: useLocalizedRoute('activeFund.index'),
+            title: t('activeFund'),
+            icon: (isActive: boolean) => (
+                <NotificationBoxIcon
+                    className={isActive ? 'text-primary-100' : 'text-dark'}
+                />
+            ),
+            hasDropdown: false,
             hideOnMyRoute: true,
         },
         {
