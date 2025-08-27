@@ -249,6 +249,27 @@ class Proposal extends Model
         );
     }
 
+    public function projectLength(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                $metaValue = $this->meta_info?->project_length ?? null;
+
+                if ($metaValue === null || $metaValue === '') {
+                    $metaValue = $this->metas()
+                        ->where('key', 'project_length')
+                        ->value('content');
+                }
+
+                if ($metaValue !== null && $metaValue !== '') {
+                    return is_numeric($metaValue) ? (int) $metaValue : $metaValue;
+                }
+
+                return $value;
+            }
+        );
+    }
+
     public function quickPitchId(): Attribute
     {
         return Attribute::make(

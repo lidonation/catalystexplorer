@@ -118,6 +118,7 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
     };
 
     const addBookmarkToList = async (listId: string, bookmarkId: string) => {
+        
         try {
             const res = await api.post(route('api.collections.bookmarks.add'), {
                 bookmark_collection_id: listId,

@@ -7,26 +7,29 @@ namespace Database\Seeders;
 use App\Models\Metric;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use OpenSpout\Reader\CSV\Reader as CSVReader;
 
 class MetricSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1️⃣ Original factory-based seeding
+
         Metric::factory()
             ->count(6)
             ->recycle(User::factory()->create())
-            ->create();
+            ->create([
+                'context' => fake()->randomElement(['home', 'funds']),
+            ]);
 
         Metric::factory()
             ->count(6)
             ->recycle(User::factory()->create())
             ->homeMetric()
-            ->create();
+            ->create([
+                'context' => fake()->randomElement(['home', 'funds']),
+            ]);
 
-        // 2️⃣ CSV import
+
         $csvPath = database_path('data/metrics.csv');
 
         if (!file_exists($csvPath)) {
@@ -40,14 +43,6 @@ class MetricSeeder extends Seeder
         $headers = [];
         $processedCount = 0;
 
-        // Get available user UUIDs for random assignment
-        $userIds = User::pluck('id')->toArray();
-        
-        if (empty($userIds)) {
-            $this->command->warn("No users found for metric assignment");
-            return;
-        }
-
         try {
             foreach ($reader->getSheetIterator() as $sheet) {
                 foreach ($sheet->getRowIterator() as $rowIndex => $row) {
@@ -58,11 +53,14 @@ class MetricSeeder extends Seeder
                         continue;
                     }
 
-                    if (empty(array_filter($cells))) {
-                        continue;
-                    }
+                    $cells = array_pad($cells, count($headers), null);
+                    $cells = array_slice($cells, 0, count($headers));
 
                     $record = array_combine($headers, $cells);
+
+
+
+                    // $record = array_combine($headers, $cells);
 
                     if (empty($record['title'])) {
                         $this->command->warn("Skipping row {$rowIndex}: Missing title");
@@ -71,18 +69,19 @@ class MetricSeeder extends Seeder
 
                     try {
                         Metric::create([
-                            'user_id' => !empty($userIds) ? fake()->randomElement($userIds) : null,
-                            'title' => trim($record['title']),
-                            'content' => $record['content'] ?? null,
-                            'field' => $record['field'] ?? null,
-                            'context' => $record['context'] ?? null,
-                            'color' => $record['color'] ?? null,
-                            'model' => $record['model'] ?? null,
-                            'type' => $record['type'] ?? null,
-                            'query' => $record['query'] ?? null,
+                            'id' => $record['id'],
+                            'user_id'  => null,
+                            'title'    => trim($record['title']),
+                            'content'  => $record['content'] ?? null,
+                            'field'    => $record['field'] ?? null,
+                            'context'  => $record['context'] ?? null,
+                            'color'    => $record['color'] ?? null,
+                            'model'    => $record['model'] ?? null,
+                            'type'     => $record['type'] ?? null,
+                            'query'    => $record['query'] ?? null,
                             'count_by' => $record['count_by'] ?? null,
-                            'status' => $record['status'] ?? null,
-                            'order' => trim($record['order']) !== '' ? (int) $record['order'] : null,
+                            'status'   => $record['status'] ?? null,
+                            'order'    => trim($record['order']) !== '' ? (int) $record['order'] : null,
                         ]);
 
                         $processedCount++;

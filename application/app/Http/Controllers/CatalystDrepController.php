@@ -44,7 +44,7 @@ class CatalystDrepController extends Controller
         return Inertia::render('Dreps/DrepList', [
             'catalystDreps' => to_length_aware_paginator(
                 CatalystDrepData::collect(
-                    CatalystDrep::query()
+                    CatalystDrep::withCount(['delegators'])
                         ->paginate(11, ['*'], 'p', $request->input('p'))
                 )
             )->onEachSide(0),
@@ -162,7 +162,7 @@ class CatalystDrepController extends Controller
         $attributes = $request->validate([
             'name' => 'required|min:3',
             'bio' => 'min:69',
-            'link' => 'url:http,https',
+            'link' => 'url:http,https|nullable',
             'email' => 'email',
             'locale' => "string|in:{$supportedLocales}",
         ]);
@@ -210,21 +210,21 @@ class CatalystDrepController extends Controller
             ],
         ]);
 
-        $prevVotingHistory = DB::select('SELECT reg.stake_pub,
-                            COUNT(DISTINCT cs.model_id) AS distinct_fund_ids
-                        FROM public.voting_powers cvp
-                        JOIN public.delegations d ON cvp.voter_id = d.cat_onchain_id
-                        LEFT JOIN public.snapshots cs ON cvp.snapshot_id = cs.id
-                        LEFT JOIN public.registrations reg ON d.registration_id = reg.id
-                        WHERE cvp.consumed = true
-                        AND cs.model_id IS NOT NULL
-                        AND reg.stake_pub = ?
-                        GROUP BY reg.stake_pub
-            ', [$request->stakeAddress]);
+        // $prevVotingHistory = DB::select('SELECT reg.stake_pub,
+        //                     COUNT(DISTINCT cs.model_id) AS distinct_fund_ids
+        //                 FROM public.voting_powers cvp
+        //                 JOIN public.delegations d ON cvp.voter_id = d.cat_onchain_id
+        //                 LEFT JOIN public.snapshots cs ON cvp.snapshot_id = cs.id
+        //                 LEFT JOIN public.registrations reg ON d.registration_id = reg.id
+        //                 WHERE cvp.consumed = true
+        //                 AND cs.model_id IS NOT NULL
+        //                 AND reg.stake_pub = ?
+        //                 GROUP BY reg.stake_pub
+        //     ', [$request->stakeAddress]);
 
-        if (empty($prevVotingHistory) || $prevVotingHistory[0]?->distinct_fund_ids < 2) {
-            return back()->withErrors(['message' => 'workflows.catalystDrepSignup.2roundsRule']);
-        }
+        // if (empty($prevVotingHistory) || $prevVotingHistory[0]?->distinct_fund_ids < 2) {
+        //     return back()->withErrors(['message' => 'workflows.catalystDrepSignup.2roundsRule']);
+        // }
 
         return to_route('workflows.drepSignUp.index', ['step' => 3]);
     }

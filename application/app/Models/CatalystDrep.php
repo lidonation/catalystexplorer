@@ -9,6 +9,7 @@ use App\Traits\HasIpfsFiles;
 use App\Traits\HasSignatures;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use Spatie\Translatable\HasTranslations;
@@ -21,7 +22,9 @@ class CatalystDrep extends Model
 
     public $translatable = ['bio', 'motivation', 'qualifications', 'objective'];
 
-    public $appends = ['stake_address', 'voting_power', 'last_active'];
+    public $appends = ['stake_address', 'voting_power', 'last_active', 'delegators'];
+
+    public $withCount = ['delegators'];
 
     protected static $supportedLocales = null;
 
@@ -54,8 +57,27 @@ class CatalystDrep extends Model
     public function votingPower(): Attribute
     {
         return Attribute::make(get: function () {
-            return collect($this->voting_history_data)->first()?->voting_power;
+            $ownBalance = $this->signatures()?->first()?->wallet_balance ?? 0;
+
+            $delegatorBalance = $this->delegators()
+                ->with(['signatures'])
+                ->get()
+                ->sum(function ($delegator) {
+                    return $delegator->signatures()?->first()?->wallet_balance ?? 0;
+                });
+
+            return (float) $ownBalance + (float) $delegatorBalance;
         });
+    }
+
+    public function delegators(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            User::class,
+            'catalyst_drep_user',
+            'catalyst_drep_id',
+            'user_id'
+        )->withPivot([]);
     }
 
     public function votingHistoryData(): Attribute

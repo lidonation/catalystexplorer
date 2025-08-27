@@ -79,7 +79,7 @@ const MetaDataPreview = ({
                         <div className="bg-background h-16 w-16 overflow-hidden rounded-full">
                             <Image
                                 imageUrl={artistImageUrl}
-                                alt={artist?.name}
+                                alt={artist?.name ?? 'Anonymous'}
                                 className="text-content h-full w-full object-cover"
                             />
                         </div>

@@ -59,7 +59,7 @@ const BookmarkCollectionCard = ({
                                     ? user?.hero_img_url
                                     : undefined
                             }
-                            name={user?.name}
+                            name={user?.name ?? 'Anonymous'}
                         />
 
                         <span className="lg:text-md text-xs font-semibold">

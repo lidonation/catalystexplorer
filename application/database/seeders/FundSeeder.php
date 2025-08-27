@@ -18,22 +18,22 @@ class FundSeeder extends Seeder
     public function run(): void
     {
         $startDate = now()->subYears(3);
+        
+        $user = User::factory()->create();
 
         $funds = Fund::factory()
             ->count(fake()->numberBetween(10, 15))
-            ->recycle(User::factory()->create())
+            ->state(['user_id' => $user->id])
             ->sequence(fn($seq) => [
-                'title' => 'Fund ' . $seq->index + 1,
+                'title' => 'Fund ' . ($seq->index + 1),
                 'created_at' => $startDate->copy()->addMonths(($seq->index + 1) * 3),
                 'launched_at' => $startDate->copy()->addMonths(($seq->index + 1) * 3)->addDays(7),
             ])
             ->create();
 
         $funds->each(function (Fund $fund) {
-
-            AttachImageJob::dispatch($fund,  'hero');
-
-            AttachImageJob::dispatch($fund,  'banner');
+            AttachImageJob::dispatch($fund, 'hero');
+            AttachImageJob::dispatch($fund, 'banner');
         });
     }
 }

@@ -120,15 +120,6 @@ class BookmarkCollection extends Model
             ->where('model_type', Review::class);
     }
 
-    /**
-     * Override the comments relationship to handle UUID-to-text conversion
-     */
-    public function comments(): Comment
-    {
-        return Comment::where('commentable_type', static::class)
-            ->where('commentable_id', (string) $this->getKey());
-    }
-
     public function typesCount(): Attribute
     {
         return Attribute::make(

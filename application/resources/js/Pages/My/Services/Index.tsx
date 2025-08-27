@@ -32,7 +32,7 @@ const MyServicesComponent: React.FC<MyServicesProps> = ({ services, filters }) =
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      const params = new URLSearchParams();
+      const params = new URLSearchParams(window.location.search);
       if (search) params.set('search', search);
       router.get(`/my/services?${params.toString()}`, {}, {
         preserveState: true,

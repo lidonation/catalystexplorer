@@ -247,7 +247,9 @@ const View = (props: BookmarkCollectionListProps) => {
                                     ? bookmarkCollection.author?.hero_img_url
                                     : undefined
                             }
-                            name={bookmarkCollection?.author?.name}
+                            name={
+                                bookmarkCollection?.author?.name ?? 'Anonymous'
+                            }
                         />
 
                         <span className="lg:text-md text-xs font-semibold">

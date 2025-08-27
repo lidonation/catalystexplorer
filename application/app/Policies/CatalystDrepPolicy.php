@@ -14,7 +14,7 @@ class CatalystDrepPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,7 @@ class CatalystDrepPolicy
      */
     public function view(User $user, CatalystDrep $drep): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -30,7 +30,7 @@ class CatalystDrepPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -38,7 +38,7 @@ class CatalystDrepPolicy
      */
     public function update(User $user, CatalystDrep $drep): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -46,7 +46,7 @@ class CatalystDrepPolicy
      */
     public function delete(User $user, CatalystDrep $drep): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -54,7 +54,7 @@ class CatalystDrepPolicy
      */
     public function restore(User $user, CatalystDrep $drep): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -62,6 +62,6 @@ class CatalystDrepPolicy
      */
     public function forceDelete(User $user, CatalystDrep $drep): bool
     {
-        return false;
+        return true;
     }
 }

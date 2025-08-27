@@ -40,7 +40,7 @@ final class TransactionSearchParams extends Enum
             'PAGE' => 'p',
             'LIMIT' => 'l',
             'SORT' => 'st',
-            'TRANSACTION_TYPE' => 'tt'
+            'TRANSACTION_TYPE' => 'tt',
         ];
     }
 }

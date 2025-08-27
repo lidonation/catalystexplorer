@@ -17,8 +17,12 @@ use Saloon\Exceptions\Request\RequestException;
 
 class WalletInfoService
 {
+    /**
+     * @param  int|null  $cacheTtl  Cache time in seconds. Null disables caching.
+     */
     public function __construct(
-        protected ?BlockfrostConnector $connector = null
+        protected ?BlockfrostConnector $connector = null,
+        protected ?int $cacheTtl = null
     ) {
         $this->connector ??= app(BlockfrostConnector::class);
     }
@@ -37,20 +41,16 @@ class WalletInfoService
         }
 
         try {
-            return Cache::remember("wallet_stats_{$stakeAddress}", now()->addHours(2), function () use ($stakeAddress) {
+            if ($this->cacheTtl !== null && $this->cacheTtl > 0) {
+                return Cache::remember("wallet_stats_{$stakeAddress}", now()->addSeconds($this->cacheTtl), function () use ($stakeAddress) {
+                    return $this->buildWalletStats($stakeAddress);
+                });
+            }
 
-                $blockfrostData = $this->getBlockfrostData($stakeAddress);
-                $votingData = $this->getVotingStats($stakeAddress);
-                $result = array_merge($blockfrostData, $votingData);
-
-                Log::info("✔️ Wallet stats completed for {$stakeAddress}", [
-                    'result' => $result,
-                ]);
-
-                return $result;
-            });
+            // No caching, compute directly
+            return $this->buildWalletStats($stakeAddress);
         } catch (\Throwable $e) {
-            Log::error("💥 WalletStats Exception for {$stakeAddress}: {$e->getMessage()}", [
+            Log::error("WalletStats Exception for {$stakeAddress}: {$e->getMessage()}", [
                 'trace' => $e->getTraceAsString(),
             ]);
 
@@ -63,6 +63,19 @@ class WalletInfoService
                 'stakeAddress' => $stakeAddress,
             ];
         }
+    }
+
+    private function buildWalletStats(string $stakeAddress): array
+    {
+        $blockfrostData = $this->getBlockfrostData($stakeAddress);
+        $votingData = $this->getVotingStats($stakeAddress);
+        $result = array_merge($blockfrostData, $votingData);
+
+        Log::info("Wallet stats completed for {$stakeAddress}", [
+            'result' => $result,
+        ]);
+
+        return $result;
     }
 
     private function getBlockfrostData(string $stakeAddress): array
@@ -84,60 +97,10 @@ class WalletInfoService
         } catch (RequestException $e) {
             $response = $e->getResponse();
             if ($response) {
-                Log::error('💥 Blockfrost error body: '.$response->body());
+                Log::error('Blockfrost error body: '.$response->body());
             }
             throw $e;
         }
-    }
-
-    private function processBlockfrostResponse1(string $stakeAddress, $accountResponse, $addressesResponse): array
-    {
-        if ($accountResponse === null || $accountResponse instanceof \Exception) {
-            $lovelaces = 0;
-            $isDelegated = false;
-            $stake_address = $stakeAddress;
-        } elseif ($accountResponse->status() === 404) {
-            $lovelaces = 0;
-            $isDelegated = false;
-            $stake_address = $stakeAddress;
-            Log::info("Account not found (404) for {$stakeAddress}");
-        } elseif (! $accountResponse->successful()) {
-            Log::warning("Account API failed for {$stakeAddress}: ".$accountResponse->status());
-
-            $errorBody = $accountResponse->body();
-            Log::debug("❗ Raw error response: {$errorBody}");
-            $lovelaces = 0;
-            $isDelegated = false;
-            $stake_address = $stakeAddress;
-        } else {
-            $accountData = $accountResponse->json();
-            $lovelaces = (int) ($accountData['controlled_amount'] ?? 0);
-            $isDelegated = $accountData['active'] ?? false;
-            $stake_address = $accountData['stake_address'] ?? $stakeAddress;
-        }
-
-        $paymentAddresses = [];
-        if ($addressesResponse !== null && ! ($addressesResponse instanceof \Exception) && $addressesResponse->successful()) {
-            $addressesData = $addressesResponse->json();
-            $paymentAddresses = collect($addressesData)->pluck('address')->toArray();
-            Log::info('✔️ Found '.count($paymentAddresses)." payment addresses for {$stakeAddress}");
-        } else {
-            if ($addressesResponse !== null && ! ($addressesResponse instanceof \Exception)) {
-                Log::warning("Failed to fetch payment addresses for {$stakeAddress}: ".$addressesResponse->status());
-            } else {
-                Log::warning("Addresses request failed or null for {$stakeAddress}");
-            }
-        }
-
-        $ada = number_format($lovelaces / 1_000_000, 2);
-        $balance = "{$ada} ADA";
-
-        return [
-            'balance' => $balance,
-            'status' => $isDelegated,
-            'stakeAddress' => $stake_address,
-            'payment_addresses' => $paymentAddresses,
-        ];
     }
 
     private function processBlockfrostResponse(string $stakeAddress, $accountResponse, $addressesResponse): array
@@ -153,21 +116,20 @@ class WalletInfoService
             $isDelegated = $accountData['active'] ?? false;
             $stake_address = $accountData['stake_address'] ?? $stakeAddress;
         } catch (\Throwable $e) {
-            Log::error("❌ Failed decoding account response for {$stakeAddress}: ".$e->getMessage());
+            Log::error("Failed decoding account response for {$stakeAddress}: ".$e->getMessage());
         }
 
         try {
             $addressesData = $addressesResponse->json();
             $paymentAddresses = collect($addressesData)->pluck('address')->toArray();
         } catch (\Throwable $e) {
-            Log::error("❌ Failed decoding addresses response for {$stakeAddress}: ".$e->getMessage());
+            Log::error("Failed decoding addresses response for {$stakeAddress}: ".$e->getMessage());
         }
 
         $ada = number_format($lovelaces / 1_000_000, 2);
-        $balance = "{$ada} ADA";
 
         return [
-            'balance' => $balance,
+            'balance' => $ada,
             'status' => $isDelegated,
             'stakeAddress' => $stake_address,
             'payment_addresses' => $paymentAddresses,
@@ -204,7 +166,6 @@ class WalletInfoService
                 'funds_participated' => $fundsParticipated,
                 'choice_stats' => $choiceStats,
             ];
-
         } catch (\Exception $e) {
             Log::error("Error fetching voting stats via MeiliSearch for {$stakeAddress}: ".$e->getMessage());
 

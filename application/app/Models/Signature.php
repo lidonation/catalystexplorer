@@ -115,6 +115,15 @@ class Signature extends Model
         );
     }
 
+    public function walletBalance(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return $this->walletStats['balance'];
+            }
+        );
+    }
+
     protected function signatureCount(): Attribute
     {
         return Attribute::make(

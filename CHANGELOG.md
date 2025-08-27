@@ -1,3 +1,81 @@
+# [1.15.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.14.0...v1.15.0) (2025-08-26)
+
+
+### Bug Fixes
+
+* service pagination ([de5dc57](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/de5dc57c78ca6a79e795dd5282e9d6e4658e3d6a))
+
+
+### Features
+
+* add project_length to the api ([112bacf](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/112bacf3afca0be9c1b078501bf694cfde6b2717))
+
+# [1.14.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.13.5...v1.14.0) (2025-08-23)
+
+
+### Features
+
+* add content to proposal resource ([69f41d2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/69f41d23946680866a2e28a7de0afee75aeae135))
+* **single-service-page:** LN-1942 add Single Service Page ([64d2869](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/64d2869e2732ff1197f405bfc1eccfcdd4745344))
+
+## [1.13.5](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.13.4...v1.13.5) (2025-08-21)
+
+
+### Bug Fixes
+
+* drep delegator count and voting powerp ([f87baa7](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/f87baa7275ce01f1c6cc527369b8609626280c73))
+
+## [1.13.4](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.13.3...v1.13.4) (2025-08-21)
+
+
+### Bug Fixes
+
+* drep delegator count and voting powerp ([7bcc6f2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/7bcc6f2278a365cb4858730f139ee63eb6c9ab00))
+
+## [1.13.3](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.13.2...v1.13.3) (2025-08-21)
+
+
+### Bug Fixes
+
+* drep delegator count and voting powerp ([37c2f1e](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/37c2f1e31ea60b778aa5ef491f06cf881d8ca009))
+* drep delegator count and voting powerp ([bcbff0e](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/bcbff0e68f580f5ca35f4242d5361af1d5e4c6d3))
+* drep delegator count and voting powerp ([cbec131](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/cbec131c30b17cb2a8d111efe276fec79430dc22))
+
+## [1.13.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.13.1...v1.13.2) (2025-08-21)
+
+
+### Bug Fixes
+
+* drep delegator count and voting powerp ([9d98db3](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/9d98db39930c0585ef7d882cff9d9e26569bad89))
+* drep delegator count and voting powerp ([b736fe5](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/b736fe50ad44e3a8e27084f21ff71b7df0d60567))
+* drep delegator count and voting powerp ([1c3eccc](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/1c3eccc8fb369a7f27c14caf2463598e2a96bfd6))
+
+## [1.13.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.13.0...v1.13.1) (2025-08-21)
+
+
+### Bug Fixes
+
+* drep delegator count and voting power ([0786b76](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/0786b7668bd06effaa1dfb3d502e67a018fd1042))
+
+# [1.13.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.12.0...v1.13.0) (2025-08-20)
+
+
+### Bug Fixes
+
+* showing the delegator count in real tine ([2e3259f](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/2e3259f408ad40d7e9fced02dd2f6370b5b35a2b))
+
+
+### Features
+
+* adding new transaction types ([ce5792b](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/ce5792b3740a76cb5c0320cd9dee05f0b3549a5f))
+
+# [1.12.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.11.2...v1.12.0) (2025-08-20)
+
+
+### Features
+
+* **catalyst dreps:** show the selected languange on step5 ([9e7da95](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/9e7da9521fbeb8a2eadac9f1ea9ecfc2f2fb531c))
+
 ## [1.11.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.11.1...v1.11.2) (2025-08-18)
 
 

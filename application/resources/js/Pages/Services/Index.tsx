@@ -63,7 +63,7 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      const params = new URLSearchParams();
+      const params = new URLSearchParams(window.location.search);
       if (search) params.set('search', search);
       if (selectedCategories.length) params.set('categories', selectedCategories.join(','));
       if (selectedType) params.set('type', selectedType);

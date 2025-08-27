@@ -110,7 +110,7 @@ RUN mkdir /venv && chown -R 777 /venv
 
 RUN python3 -m venv /venv
 
-RUN /venv/bin/pip install --no-cache-dir blend_modes==2.0.2 numpy==1.26.3 pillow==10.3.0 cbor2 pycose brotli
+RUN /venv/bin/pip install --no-cache-dir blend_modes==2.0.2 numpy==1.26.3 pillow==10.3.0 cbor2 pycose brotli pycardano
 
 RUN userdel --remove --force www-data \
     && groupadd --force -g ${WWWGROUP} ${USER} \
