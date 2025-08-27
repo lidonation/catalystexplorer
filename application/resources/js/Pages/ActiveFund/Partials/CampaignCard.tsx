@@ -13,12 +13,14 @@ interface CampaignCardProps {
     fund: FundData;
     campaign: CampaignData;
     className?: string;
+    onCreateList?: () => void;
 }
 
 const CampaignCard: React.FC<CampaignCardProps> = ({
     fund,
     campaign,
     className,
+    onCreateList,
 }) => {
     const { t } = useLaravelReactI18n();
 
@@ -42,15 +44,6 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
         },
     ] as Segments[];
 
-    const formatFundString = (
-        input: string | undefined,
-    ): string | undefined => {
-        const parts = input?.split('-'); // Split at '-'
-        if (parts?.length === 2) {
-            return `${parts[0].charAt(0).toUpperCase()}${parts[1]}`;
-        }
-        return input; // Return original if format is incorrect
-    };
     return (
         <div className={className} data-testid="campaign-card">
             <div className="bg-content-light h-60 overflow-hidden rounded-t-xl">
@@ -114,8 +107,11 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                     <PrimaryButton className="w-2/3">
                         {t('activeFund.campaigns.viewProposals')}
                     </PrimaryButton>
-                    <SecondaryButton className="border-primary text-primary flex w-1/3 items-center justify-center text-center">
-                        Create List
+                    <SecondaryButton
+                        className="border-primary text-primary flex w-1/3 items-center justify-center text-center"
+                        onClick={onCreateList}
+                    >
+                        {t('activeFund.campaigns.createList')}
                     </SecondaryButton>
                 </div>
             </div>

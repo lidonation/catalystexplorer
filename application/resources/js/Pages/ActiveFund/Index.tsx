@@ -6,17 +6,16 @@ import { Segments } from '@/types/segments';
 import { currency } from '@/utils/currency';
 import { Head } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { useEffect } from 'react';
+import { useState } from 'react';
+import CreateListPicker from '../Bookmarks/Partials/CreateListPicker';
 import ActiveFundBanner from './Partials/ActiveFundBanner';
 import CampaignCard from './Partials/CampaignCard';
-import Fund from '../Funds/Fund';
 
 interface ActiveFundsProp extends Record<string, unknown> {
     search?: string | null;
     fund: App.DataTransferObjects.FundData;
     campaigns: App.DataTransferObjects.CampaignData[];
     amountDistributed: number;
-    amountAwarded: number;
     amountRemaining: number;
 }
 
@@ -25,14 +24,11 @@ const Index: React.FC<ActiveFundsProp> = ({
     fund,
     campaigns,
     amountDistributed,
-    amountAwarded,
     amountRemaining,
 }) => {
     const { t } = useLaravelReactI18n();
-
-    useEffect(() => {
-        console.log('fund', fund);
-    });
+    const [showListPicker, setShowListPicker] = useState(false);
+    const [campaignId, setCampaignId] = useState<string | null>('');
 
     const segments = [
         {
@@ -66,10 +62,14 @@ const Index: React.FC<ActiveFundsProp> = ({
             </header>
 
             <div className="flex w-full flex-col">
-                <section className="w-full px-8 py-6 flex flex-col items-center">
+                <section className="flex w-full flex-col items-center px-8 py-6">
                     <div className="mb-5 text-center">
-                        <Title level='2'>
-                            {currency(fund?.amount_awarded ?? 0, 2, fund?.currency ?? 'USD')}
+                        <Title level="2">
+                            {currency(
+                                fund?.amount_awarded ?? 0,
+                                2,
+                                fund?.currency ?? 'USD',
+                            )}
                         </Title>
                         <Paragraph className="text-content/70">
                             {t('activeFund.budget')}
@@ -81,7 +81,11 @@ const Index: React.FC<ActiveFundsProp> = ({
                                 {t('activeFund.distributed')}:
                             </span>
                             <span className="font-bold">
-                                {currency(amountDistributed, 2, fund?.currency ?? 'USD')}
+                                {currency(
+                                    amountDistributed,
+                                    2,
+                                    fund?.currency ?? 'USD',
+                                )}
                             </span>
                         </Paragraph>
                         <Paragraph className="flex">
@@ -89,7 +93,11 @@ const Index: React.FC<ActiveFundsProp> = ({
                                 {t('activeFund.remaining')}:
                             </span>
                             <span className="font-bold">
-                                {currency(amountRemaining, 2, fund?.currency ?? 'USD')}
+                                {currency(
+                                    amountRemaining,
+                                    2,
+                                    fund?.currency ?? 'USD',
+                                )}
                             </span>
                         </Paragraph>
                     </div>
@@ -114,17 +122,32 @@ const Index: React.FC<ActiveFundsProp> = ({
                         </div>
                     </div>
                 </section>
-                <section className='px-8 mt-5 w-full'>
-                    <Title level='3' className='mb-6'>{t('activeFund.campaignsTitle')}</Title>
-                    <div className='grid md:grid-cols-2 grid-cols-1 gap-4 w-full'>
-                        {
-                            campaigns?.map((campaign, index)=>(
-                               <CampaignCard campaign={campaign} key={index} fund={fund} className='bg-background shadow-sm rounded-xl w-full'/> 
-                            ))
-                        }
+                <section className="mt-5 w-full px-8">
+                    <Title level="3" className="mb-6">
+                        {t('activeFund.campaignsTitle')}
+                    </Title>
+                    <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+                        {campaigns?.map((campaign, index) => (
+                            <CampaignCard
+                                campaign={campaign}
+                                key={index}
+                                fund={fund}
+                                className="bg-background w-full rounded-xl shadow-sm"
+                                onCreateList={() => {
+                                    setShowListPicker(true);
+                                    setCampaignId(campaign?.id);
+                                }}
+                            />
+                        ))}
                     </div>
                 </section>
             </div>
+            <CreateListPicker
+                showPickingList={showListPicker}
+                setPickingList={setShowListPicker}
+                context='funds'
+                campaign={campaignId}
+            ></CreateListPicker>
         </>
     );
 };

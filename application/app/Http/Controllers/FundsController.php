@@ -134,6 +134,14 @@ class FundsController extends Controller
         $activeFund = Fund::where('status', 'governance')
             ->withCount(['funded_proposals', 'completed_proposals', 'unfunded_proposals', 'proposals'])
             ->first();
+
+        if (!$activeFund) {
+            $activeFund = Fund::whereNotNull('launched_at')
+                ->orderBy('launched_at', 'desc')
+                ->withCount(['funded_proposals', 'completed_proposals', 'unfunded_proposals', 'proposals'])
+                ->first();
+        }
+        
         $activeFund->append(['banner_img_url']);
 
         $amountAwarded = $activeFund->funded_proposals()->sum('amount_requested');
@@ -152,7 +160,6 @@ class FundsController extends Controller
             'fund' => FundData::from($activeFund),
             'campaigns' => $campaigns,
             'amountDistributed' => $amountDistributed,
-            'amountAwarded' => $amountAwarded,
             'amountRemaining' => $amountRemaining,
         ]);
     }
