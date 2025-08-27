@@ -455,7 +455,7 @@ class CommunitiesController extends Controller
     public function incrementalConnections(Request $request): array
     {
         $hash = $request->get('hash');
-        $community = Community::byHash($hash);
+        $community = Community::find($hash);
 
         $connections = $community->getIncrementalConnectionsData($request);
 

@@ -250,7 +250,7 @@ class ServiceController extends Controller
         $serviceData = [];
 
         if (! empty($validated[ServiceWorkflowParams::SERVICE_HASH()->value])) {
-            $existingService = Service::byHash($validated[ServiceWorkflowParams::SERVICE_HASH()->value]);
+            $existingService = Service::find($validated[ServiceWorkflowParams::SERVICE_HASH()->value]);
             if ($existingService && $existingService->user_id === auth()->id()) {
                 $serviceData = [
                     ServiceWorkflowParams::TITLE()->value => $existingService->title,
@@ -342,7 +342,7 @@ class ServiceController extends Controller
         $existingService = null;
 
         if (! empty($validated[ServiceWorkflowParams::SERVICE_HASH()->value])) {
-            $existingService = Service::byHash($validated[ServiceWorkflowParams::SERVICE_HASH()->value]);
+            $existingService = Service::find($validated[ServiceWorkflowParams::SERVICE_HASH()->value]);
         }
 
         $serviceData = [
