@@ -123,7 +123,7 @@ const Index: React.FC<ActiveFundsProp> = ({
                     </div>
                 </section>
                 <section className="mt-5 w-full px-8">
-                    <Title level="3" className="mb-6">
+                    <Title level="3" className="mb-6 font-bold">
                         {t('activeFund.campaignsTitle')}
                     </Title>
                     <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
