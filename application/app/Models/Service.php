@@ -33,7 +33,7 @@ class Service extends Model implements HasMedia
         'linkedin',
     ];
 
-    protected $appends = ['header_image_url'];
+    protected $appends = ['header_image_url', 'effective_contact_details'];
 
     protected $hidden = [];
 
@@ -91,6 +91,35 @@ class Service extends Model implements HasMedia
             get: fn () => $this->getFirstMediaUrl('header')
                   ?: asset('images/default-service-header.jpg')
         );
+    }
+     public function getEffectiveNameAttribute(): ?string
+    {
+        return $this->name ?? $this->user?->name;
+    }
+
+    public function getEffectiveEmailAttribute(): ?string
+    {
+        return $this->email ?? $this->user?->email;
+    }
+
+    public function getEffectiveWebsiteAttribute(): ?string
+    {
+        return $this->website ?? $this->user?->website;
+    }
+
+    public function getEffectiveGithubAttribute(): ?string
+    {
+        return $this->github ?? $this->user?->github;
+    }
+
+    public function getEffectiveLinkedinAttribute(): ?string
+    {
+        return $this->linkedin ?? $this->user?->linkedin;
+    }
+
+    public function getEffectiveLocationAttribute(): ?string
+    {
+        return $this->locations->first()?->city ?? $this->user?->location?->city ?? null;
     }
 
     public function getEffectiveContactDetailsAttribute(): array
