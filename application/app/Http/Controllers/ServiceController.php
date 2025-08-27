@@ -50,9 +50,8 @@ class ServiceController extends Controller
             })
             ->when($request->type, fn ($q, $type) => $q->where('type', $type))
             ->latest()
-            ->paginate(12)
+            ->paginate(12, ['*'], 'p')
             ->withQueryString()
-            ->setPageName('page')
             ->onEachSide(1);
 
         $transformedServices = $services->getCollection()->map(fn ($service) => ServiceData::fromModel($service))->toArray();
@@ -71,7 +70,7 @@ class ServiceController extends Controller
             ->when($request->search, fn ($q) => $q->search($request->search))
             ->when($request->type, fn ($q, $type) => $q->where('type', $type))
             ->orderBy($request->sort ?? 'created_at', $request->order ?? 'desc')
-            ->paginate(12)
+            ->paginate(12, ['*'], 'p')
             ->withQueryString();
 
         $transformedServices = $services->getCollection()->map(fn ($service) => ServiceData::fromModel($service))->toArray();

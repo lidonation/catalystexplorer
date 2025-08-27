@@ -53,7 +53,7 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
 
     const allKeys = [
         {
-            key: 'totalProposals',
+            key: 'Submitted Proposals',
             label: t('proposals.totalProposals'),
             color: '#4fadce',
             filterParam: ParamsEnum.SUBMITTED_PROPOSALS,
@@ -113,7 +113,7 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
             {} as Record<string, number>,
         );
 
-        const totalProposals = allData?.totalProposals || 0;
+        const totalProposals = allData?.['Submitted Proposals'] || 0;
         const fundedProposals = allData?.['Funded Proposals'] || 0;
         const completedProposals = allData?.['Completed Proposals'] || 0;
         const inProgressProposals = allData?.['In Progress Proposals'] || 0;
