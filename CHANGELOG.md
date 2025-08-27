@@ -1,3 +1,18 @@
+# [1.16.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.15.1...v1.16.0) (2025-08-27)
+
+
+### Bug Fixes
+
+* changing proposal payout value from simple_transfer to x509_envelope ([6dd3a2a](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/6dd3a2ab6c6bc28909d1395f9a2080abe882181b))
+* tinder list workflow ([04543c9](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/04543c94089e3b528fc3b308cb65fc87a6d0b66b))
+* tinder list workflow ([e60ddcf](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/e60ddcf5e9ce22934f283f681e5a509f9f40b939))
+
+
+### Features
+
+* active fund landing page ([77f3a4c](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/77f3a4cefbd0466d1cfba5c33e27e5dd5c141299))
+* **proposals:** ln-1966-ce added tabular view for proposals ([a3e4d64](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/a3e4d641ebd8b0243437929f18df909247ffd906))
+
 ## [1.15.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.15.0...v1.15.1) (2025-08-27)
 
 
