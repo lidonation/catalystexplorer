@@ -40,7 +40,7 @@ const TransactionsFilters = () => {
                                 actualValues: ['cip36', 'cip15'],
                             },
                             {
-                                value: 'simple_transfer',
+                                value: 'x509_envelope',
                                 label: t('transactions.table.proposalPayout'),
                             },
                         ]}
@@ -54,7 +54,7 @@ const TransactionsFilters = () => {
                                     actualValues: ['cip36', 'cip15'],
                                 },
                                 {
-                                    value: 'simple_transfer',
+                                    value: 'x509_envelope',
                                     label: t(
                                         'transactions.table.proposalPayout',
                                     ),
@@ -88,8 +88,8 @@ const TransactionsFilters = () => {
                                     actualValues: ['cip36', 'cip15'],
                                 },
                                 {
-                                    value: 'simple_transfer',
-                                    actualValues: ['simple_transfer'],
+                                    value: 'x509_envelope',
+                                    actualValues: ['x509_envelope'],
                                 },
                             ];
 
