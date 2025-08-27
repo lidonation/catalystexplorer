@@ -102,7 +102,7 @@ const BookmarkCollectionManager = (
                             <ProposalTable
                                 actionType='view'
                                 disableSorting={true}
-                                proposals={props.proposals.data}
+                                proposals={props.proposals}
                                 columnVisibility={{
                                     fund: true,
                                     proposal: false,
@@ -118,12 +118,6 @@ const BookmarkCollectionManager = (
                                 isHorizontal={false}
                                 isMini={false}
                             />
-                        )}
-                        {proposalDisplayMode === 'table' && (
-                            <Paginator pagination={props.proposals} linkProps={{
-                                preserveState: true,
-                                preserveScroll: false,
-                            }} />
                         )}
                     </div>
                 ) : null;

@@ -68,7 +68,7 @@ class FundsController extends Controller
             'fund' => $fund,
             'filters' => $this->queryParams,
             'metrics' => Inertia::optional(
-                fn () => MetricData::collect(
+                fn() => MetricData::collect(
                     $metrics
                         ->limit(6)
                         ->getQuery()
@@ -88,7 +88,7 @@ class FundsController extends Controller
                             }
 
                             $filteredData = collect($chartData['data'])
-                                ->reject(fn ($item) => $item['x'] === $fund->title || empty($item['y']))
+                                ->reject(fn($item) => $item['x'] === $fund->title || empty($item['y']))
                                 ->values();
 
                             if ($currentFundData && ! empty($currentFundData['y'])) {
@@ -125,7 +125,42 @@ class FundsController extends Controller
                         ->filter()
                 )
             ),
-            'campaigns' => Inertia::optional(fn () => CampaignData::collect($campaigns)),
+            'campaigns' => Inertia::optional(fn() => CampaignData::collect($campaigns)),
+        ]);
+    }
+
+    public function activeFund()
+    {
+        $activeFund = Fund::where('status', 'governance')
+            ->withCount(['funded_proposals', 'completed_proposals', 'unfunded_proposals', 'proposals'])
+            ->first();
+
+        if (!$activeFund) {
+            $activeFund = Fund::whereNotNull('launched_at')
+                ->orderBy('launched_at', 'desc')
+                ->withCount(['funded_proposals', 'completed_proposals', 'unfunded_proposals', 'proposals'])
+                ->first();
+        }
+        
+        $activeFund->append(['banner_img_url']);
+
+        $amountAwarded = $activeFund->funded_proposals()->sum('amount_requested');
+        $amountDistributed = $activeFund->funded_proposals()->sum('amount_received');
+        $amountRemaining = $amountAwarded - $amountDistributed;
+
+
+        $campaigns = $this->getCampaigns($activeFund);
+        $campaigns->append([
+            'total_requested',
+            'total_awarded',
+            'total_distributed',
+        ]);
+
+        return Inertia::render('ActiveFund/Index', [
+            'fund' => FundData::from($activeFund),
+            'campaigns' => $campaigns,
+            'amountDistributed' => $amountDistributed,
+            'amountRemaining' => $amountRemaining,
         ]);
     }
 
