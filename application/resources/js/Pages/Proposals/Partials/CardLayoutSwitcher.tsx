@@ -2,6 +2,7 @@ import ArrowCurvedIcon from '@/Components/svgs/ArrowCurved';
 import CardSwitchIcon from '@/Components/svgs/CardSwitchIcon';
 import ListBulletIcon from '@/Components/svgs/ListBulletIcon';
 import MiniCardSwitchIcon from '@/Components/svgs/MiniCardSwitchIcon';
+import TableIcon from '@/Components/svgs/TableIcon';
 import VideoCameraIcon from '@/Components/svgs/VideoCameraIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
@@ -11,18 +12,22 @@ interface CardLayoutSwitcherProps {
     isHorizontal: boolean;
     quickPitchView: boolean;
     isMini: boolean;
+    isTableView: boolean;
     setIsHorizontal: (value: boolean) => void;
     setIsMini: (value: boolean) => void;
     setGlobalQuickPitchView: (value: boolean) => void;
+    setIsTableView: (value: boolean) => void;
 }
 
 export default function CardLayoutSwitcher({
     isHorizontal,
     quickPitchView,
     isMini,
+    isTableView,
     setIsHorizontal,
     setIsMini,
     setGlobalQuickPitchView,
+    setIsTableView,
 }: CardLayoutSwitcherProps) {
     const { filters, setFilters } = useFilterContext();
 
@@ -44,9 +49,32 @@ export default function CardLayoutSwitcher({
         setIsMini(value);
     };
 
+    const setTable = (value: boolean) => {
+        setIsTableView(value);
+        if (value) {
+            setIsMini(false);
+            setQuickpitch(false);
+        }
+    };
+
     return (
         <div className="relative">
             <div className="z- bg-background flex overflow-hidden rounded-lg border-[2px] border-gray-300 shadow-m">
+                
+                 <Button
+                    onClick={() => {
+                        setTable(!isTableView)
+                    }}
+                    className={`flex flex-1 items-center justify-center w-[60px] h-[50px] ${
+                        isTableView
+                            ? 'bg-background-lighter text-primary'
+                            : 'hover:bg-background-lighter text-gray-500 cursor-pointer'
+                    } border-r-[2px] border-gray-300`}
+                    data-testid="card-layout-switcher-table-button"
+                >
+                    <TableIcon />
+                </Button>
+                
                 <Button
                     onClick={() => {
                         setHorizontal(false);
@@ -54,9 +82,10 @@ export default function CardLayoutSwitcher({
                             setMini(!isMini);
                             setQuickpitch(false)
                         }
+                        setTable(false)
                     }}
                     className={`flex flex-1 items-center justify-center w-[60px] h-[50px]${
-                        !isHorizontal
+                        !isHorizontal && !isTableView
                             ? 'bg-background-lighter text-primary cursor-pointer'
                             : ' text-gray-500 cursor-pointer'
                     } border-r-[2px] border-gray-300 hover:bg-background-lighter`}
@@ -111,9 +140,10 @@ export default function CardLayoutSwitcher({
                     onClick={() => {
                         setHorizontal(true)
                         setIsMini(false)
+                        setTable(false)
                     }}
                     className={`flex flex-1 items-center justify-center w-[60px] h-[50px] ${
-                        isHorizontal
+                        isHorizontal && !isTableView
                             ? 'bg-background-lighter text-primary'
                             : 'hover:bg-background-lighter text-gray-500 cursor-pointer'
                     } border-r-[2px] border-gray-300`}
@@ -126,12 +156,13 @@ export default function CardLayoutSwitcher({
                     onClick={() => {
                         setQuickpitch(!quickPitchView)
                         setIsMini(false)
+                        setIsTableView(false)
                     }}
                     className={`flex flex-1 items-center justify-center w-[60px] h-[50px] ${
-                        quickPitchView
+                        quickPitchView && !isTableView
                             ? 'bg-background-lighter text-primary'
                             : 'hover:bg-background-lighter text-gray-500 cursor-pointer'
-                    }`}
+                    } border-r-[2px] border-gray-300`}
                     data-testid="card-layout-switcher-quick-pitch-button"
                 >
                     <VideoCameraIcon />

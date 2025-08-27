@@ -6,19 +6,24 @@ import { ListProvider } from '@/Context/ListContext';
 import { useMetrics } from '@/Context/MetricsContext';
 // import { usePlayer } from '@/Context/PlayerContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
+import Paginator from '@/Components/Paginator';
 import ProposalSortingOptions from '@/lib/ProposalSortOptions';
 import { PageProps } from '@/types';
 import { PaginatedData } from '@/types/paginated-data';
 import { ProposalMetrics } from '@/types/proposal-metrics';
 import { SearchParams } from '@/types/search-params';
-import { Head } from '@inertiajs/react';
+import { Head, WhenVisible } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import {useLaravelReactI18n} from "laravel-react-i18n";
+import { motion, AnimatePresence } from 'framer-motion';
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import FundFiltersContainer from './Partials/FundFiltersContainer';
 import ProposalFilters from './Partials/ProposalFilters';
 import ProposalPaginatedList from './Partials/ProposalPaginatedList';
+import ProposalTable from './Partials/ProposalTable';
+import ProposalTableLoading from './Partials/ProposalTableLoading';
 import ProposalData = App.DataTransferObjects.ProposalData;
+import ProposalTableView from './Partials/ProposalTableView';
 // @ts-ignore
 
 interface HomePageProps extends Record<string, unknown> {
@@ -41,6 +46,7 @@ export default function Index({
 
     const [isHorizontal, setIsHorizontal] = useState(false);
     const [isMini, setIsMini] = useState(false);
+    const [isTableView, setIsTableView] = useState(false);
     const [showFilters, setShowFilters] = useState(false);
 
     const [quickPitchView, setQuickPitchView] = useState(
@@ -109,19 +115,47 @@ export default function Index({
                         isHorizontal={isHorizontal}
                         quickPitchView={quickPitchView}
                         isMini={isMini}
+                        isTableView={isTableView}
                         setIsMini={setIsMini}
                         setIsHorizontal={setIsHorizontal}
                         setGlobalQuickPitchView={setQuickPitchView}
+                        setIsTableView={setIsTableView}
                     />
                 </section>
 
-                <ProposalPaginatedList
-                    proposals={proposals}
-                    isHorizontal={isHorizontal}
-                    isMini={isMini}
-                    quickPitchView={quickPitchView}
-                    setQuickPitchView={setQuickPitchView}
-                />
+                 <AnimatePresence mode="wait">
+                    <motion.div
+                        key={isTableView ? 'table' : 'list'}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.4, ease: 'easeInOut' }}
+                    >
+                        {isTableView ? (
+                            <ProposalTableView
+                                proposals={proposals}
+                                actionType='view'
+                                disableSorting={true}
+                                columnVisibility={{
+                                    fund: true,
+                                    proposal: false,
+                                    title: true,
+                                    yesVotes: true,
+                                    abstainVotes: true,
+                                    teams: false
+                                }}
+                            />
+                        ) : (
+                            <ProposalPaginatedList
+                                proposals={proposals}
+                                isHorizontal={isHorizontal}
+                                isMini={isMini}
+                                quickPitchView={quickPitchView}
+                                setQuickPitchView={setQuickPitchView}
+                            />
+                        )}
+                    </motion.div>
+                </AnimatePresence>
             </FiltersProvider>
         </ListProvider>
     );
