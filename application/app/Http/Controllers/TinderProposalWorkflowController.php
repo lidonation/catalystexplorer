@@ -118,6 +118,7 @@ class TinderProposalWorkflowController extends Controller
             'leftBookmarkCollectionId' => $validated[TinderWorkflowParams::LEFT_BOOKMARK_COLLECTION_HASH()->value] ?? null,
             'rightBookmarkCollectionHash' => $validated[TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value] ?? null,
             'rightBookmarkCollectionId' => $validated[TinderWorkflowParams::RIGHT_BOOKMARK_COLLECTION_HASH()->value] ?? null,
+            'campaign' => $request->get('campaign'),
         ]);
     }
 
