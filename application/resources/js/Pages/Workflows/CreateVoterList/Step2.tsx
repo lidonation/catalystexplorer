@@ -24,6 +24,7 @@ import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface Step2Props {
     stepDetails: StepDetails[];
@@ -109,6 +110,7 @@ const Step2: React.FC<Step2Props> = ({
             <Content>
                 <div className="bg-background mx-auto max-h-[35rem] w-full max-w-3xl space-y-4 overflow-y-auto p-6 lg:p-8">
                     <div className="space-y-6 rounded-lg border border-gray-100 p-6 shadow-sm">
+                        <ErrorDisplay />
                         {!voterList.fund && (
                             <div className="mb-6 flex items-center justify-end">
                                 <div className="flex items-center">

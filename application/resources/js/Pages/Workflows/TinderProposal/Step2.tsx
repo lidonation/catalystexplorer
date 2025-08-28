@@ -18,6 +18,7 @@ import Paragraph from '@/Components/atoms/Paragraph';
 import { StatusEnum, VisibilityEnum } from '@/enums/votes-enums';
 import { TinderWorkflowParams } from '@/enums/tinder-workflow-params';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface Step2Props {
     stepDetails: any[];
@@ -114,6 +115,9 @@ const Step2: React.FC<Step2Props> = ({
 
             <Content>
                 <div className="bg-background mx-auto max-w-3xl px-12 xl:px-20 py-4 sm:py-8 border-black">
+                     
+                      <ErrorDisplay />
+                      
                     <div className="space-y-6 rounded-lg border border-gray-100 p-6 shadow-sm max-h-[60vh] overflow-y-auto scrolling-touch">
                         <div>
                             <ValueLabel className="text-content">

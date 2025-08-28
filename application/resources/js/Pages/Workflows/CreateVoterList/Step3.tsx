@@ -28,6 +28,7 @@ import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 import ProposalSearchBar from './partials/ProposalSearchBar';
 import ProposalData = App.DataTransferObjects.ProposalData;
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface Campaign {
     id: number;
@@ -187,6 +188,9 @@ const Step3: React.FC<Step3Props> = ({
 
                 <Content>
                     <div className="mx-auto w-full max-w-3xl">
+
+                        <ErrorDisplay />
+                        
                         <div className="bg-background top-0 z-10 mb-4 w-full items-center justify-center px-4 pt-4">
                             <ProposalSearchBar
                                 handleSearch={handleSearch}
