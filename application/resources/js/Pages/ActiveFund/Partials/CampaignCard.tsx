@@ -1,9 +1,11 @@
 import Paragraph from '@/Components/atoms/Paragraph';
-import PrimaryButton from '@/Components/atoms/PrimaryButton';
+import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import SecondaryButton from '@/Components/atoms/SecondaryButton';
 import Title from '@/Components/atoms/Title';
 import { Segments } from '@/types/segments';
 import { currency } from '@/utils/currency';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { Link } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React from 'react';
 import FundData = App.DataTransferObjects.FundData;
@@ -65,7 +67,14 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                     level="3"
                     className="flex items-center justify-between text-lg font-semibold"
                 >
-                    {campaign?.title}
+                    <Link
+                        href={useLocalizedRoute(
+                            'funds.fund.campaigns.campaign.show',
+                            { fund: fund?.slug, campaign: campaign.slug },
+                        )}
+                    >
+                        {campaign?.title}
+                    </Link>
                 </Title>
 
                 <div className="bg-purple-light my-5 px-5 py-5">
@@ -103,12 +112,18 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                     {campaign?.excerpt}
                 </Paragraph>
 
-                <div className="mt-6 flex flex-col md:flex-row w-full gap-4">
-                    <PrimaryButton className="md:w-2/3 w-full">
+                <div className="mt-6 flex w-full flex-col gap-4 md:flex-row">
+                    <PrimaryLink
+                        className="w-full md:w-2/3"
+                        href={useLocalizedRoute(
+                            'funds.fund.campaigns.campaign.show',
+                            { fund: fund?.slug, campaign: campaign.slug },
+                        )}
+                    >
                         {t('activeFund.campaigns.viewProposals')}
-                    </PrimaryButton>
+                    </PrimaryLink>
                     <SecondaryButton
-                        className="border-primary text-primary flex md:w-1/3 w-full items-center justify-center text-center"
+                        className="border-primary text-primary flex w-full items-center justify-center text-center md:w-1/3"
                         onClick={onCreateList}
                     >
                         {t('activeFund.campaigns.createList')}
