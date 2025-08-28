@@ -11,8 +11,6 @@ import ServiceMap from './Partials/ServiceMap';
 type Category = {
     id: string;
     name: string;
-    slug: string;
-    hash: string;
 };
 type Location = {
     id: string;
@@ -20,7 +18,6 @@ type Location = {
     country: string;
 };
 interface User {
-    id: string;
     name: string;
     hero_img_url?: string;
     bio?: string;
@@ -58,11 +55,10 @@ export default function Show({ service }: ShowProps) {
         }
     };
 
-    console.log(service);
     return (
-        <div className="pt:5 flex flex-col gap-8 border-b border-gray-300 bg-gray-100 px-4 text-slate-600 md:flex-row md:flex-wrap md:gap-12 md:px-8 md:pt-12">
-            <div className="sticky flex flex-shrink-0 flex-col md:w-80">
-                <div className="top-0 flex flex-row items-center pb-4">
+        <div className="flex flex-col gap-8 border-b border-gray-300 bg-gray-100 px-4 pt-5 text-slate-600 md:flex-row md:gap-12 md:px-8 md:pt-12">
+            <div className="flex flex-shrink-0 flex-col md:sticky md:top-4 md:w-80 md:self-start">
+                <div className="flex flex-row items-center pb-4">
                     <img
                         src={service.user?.hero_img_url ?? ''}
                         className="h-15 w-15 rounded-full border border-white opacity-100"
@@ -155,7 +151,7 @@ export default function Show({ service }: ShowProps) {
                     <Title className="mb-5 text-base font-semibold text-slate-900">
                         Get in touch
                     </Title>
-                    <div className="flex flex-col flex-wrap gap-5 sm:flex-row sm:flex-wrap">
+                    <div className="flex flex-col gap-5 sm:flex-row sm:flex-wrap">
                         <div className="h-52 w-full sm:w-84">
                             {service.locations?.length ? (
                                 <ServiceMap
