@@ -1,27 +1,24 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
+import GlobalMap from '@/Components/GlobalMap';
 import NetworkLink from '@/Components/NetworkLink';
 import GitHubIcon from '@/Components/svgs/GithubIcon';
 import LinkedInIcon from '@/Components/svgs/LinkedInIcons';
 import LocationIcon from '@/Components/svgs/LocationIcon';
 import SuccessBadge from '@/Components/svgs/SuccessBadge';
+import { MapProvider } from '@/Context/MapContext';
 import { Globe } from 'lucide-react';
-import ServiceMap from './Partials/ServiceMap';
+import { useEffect, useState } from 'react';
 
-type Category = {
-    id: string;
-    name: string;
-};
-type Location = {
-    id: string;
-    city: string;
-    country: string;
-};
+type Category = { id: string; name: string };
+type Location = { id: string; city: string; country: string };
+
 interface User {
     name: string;
     hero_img_url?: string;
     bio?: string;
 }
+
 type effective_details = {
     website?: string;
     github?: string;
@@ -44,7 +41,58 @@ interface ShowProps {
     service: Service;
 }
 
+type Point = {
+    lat: number;
+    lng: number;
+    label: string;
+    icon: string;
+};
+
 export default function Show({ service }: ShowProps) {
+    const [points, setPoints] = useState<Point[]>([]);
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    useEffect(() => {
+        async function fetchCoordinates() {
+            if (!service.locations?.length) return;
+
+            const resolvedPoints = await Promise.all(
+                service.locations.map(async (loc) => {
+                    const query = encodeURIComponent(
+                        `${loc.city}, ${loc.country}`,
+                    );
+                    const res = await fetch(
+                        `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${
+                            import.meta.env.VITE_MAPBOX_ACCESS_TOKEN
+                        }`,
+                    );
+                    const data = await res.json();
+                    console.log('Mapbox response for:', query, data);
+
+                    if (data?.features?.length > 0) {
+                        const coords = data.features[0].geometry.coordinates;
+                        console.log('Extracted coords:', coords);
+
+                        return {
+                            lat: coords[1],
+                            lng: coords[0],
+                            label: `${loc.city}, ${loc.country}`,
+                            icon: 'https://cdn-icons-png.flaticon.com/128/684/684908.png',
+                        };
+                    }
+                    return null;
+                }),
+            );
+
+            setPoints(resolvedPoints.filter(Boolean) as Point[]);
+        }
+        fetchCoordinates();
+    }, [service.locations]);
+
     const formatUrl = (url: string) => {
         try {
             const hostname = new URL(url).hostname.replace(/^www\./, '');
@@ -56,7 +104,7 @@ export default function Show({ service }: ShowProps) {
     };
 
     return (
-        <div className="flex flex-col gap-8 border-b border-gray-300 bg-gray-100 px-4 pt-5 text-slate-600 md:flex-row md:gap-12 md:px-8 md:pt-12">
+        <div className="flex flex-col gap-8 border-b border-gray-300 bg-gray-100 px-4 py-5 text-slate-600 md:flex-row md:gap-12 md:px-8 md:pt-12 md:pb-10">
             <div className="flex flex-shrink-0 flex-col md:sticky md:top-4 md:w-80 md:self-start">
                 <div className="flex flex-row items-center pb-4">
                     <img
@@ -72,9 +120,11 @@ export default function Show({ service }: ShowProps) {
                     </Title>
                     <SuccessBadge />
                 </div>
+
                 <Paragraph size="md" className="pb-6 font-normal">
                     {service.user?.bio ?? 'No bio available.'}
                 </Paragraph>
+
                 <div>
                     <Title
                         level="2"
@@ -92,6 +142,7 @@ export default function Show({ service }: ShowProps) {
                             </span>
                         ))}
                     </div>
+
                     <div className="flex flex-col">
                         <Title
                             level="2"
@@ -126,12 +177,12 @@ export default function Show({ service }: ShowProps) {
                 </div>
             </div>
 
-            <div className="flex flex-1 shrink-0 flex-col">
+            <div className="flex min-w-0 flex-1 flex-col">
                 {service.header_image_url && (
                     <img
                         src={service.header_image_url}
                         alt={service.title}
-                        className="mb-6 h-48 w-full rounded-lg object-cover md:mb-7 md:h-104"
+                        className="mb-6 h-48 w-full max-w-full rounded-lg object-cover md:mb-7 md:h-104"
                     />
                 )}
 
@@ -143,25 +194,37 @@ export default function Show({ service }: ShowProps) {
                 </Title>
 
                 {service.description && (
-                    <Paragraph size="md" className="mb-6 font-normal md:mb-7">
+                    <Paragraph
+                        size="md"
+                        className="mb-6 font-normal break-words md:mb-7"
+                    >
                         {service.description}
                     </Paragraph>
                 )}
+
                 <div className="gap-5">
                     <Title className="mb-5 text-base font-semibold text-slate-900">
                         Get in touch
                     </Title>
                     <div className="flex flex-col gap-5 sm:flex-row sm:flex-wrap">
                         <div className="h-52 w-full sm:w-84">
-                            {service.locations?.length ? (
-                                <ServiceMap
-                                    cities={
-                                        service.locations.map(
-                                            (loc) => loc.city,
-                                        ) ?? []
-                                    }
-                                />
-                            ) : null}
+                            {isClient && points.length > 0 ? (
+                                <MapProvider
+                                    customConfig={{
+                                        config: {
+                                            initialViewState: {
+                                                latitude: points[0].lat,
+                                                longitude: points[0].lng,
+                                                zoom: 10,
+                                            },
+                                        },
+                                    }}
+                                >
+                                    <GlobalMap points={points} />
+                                </MapProvider>
+                            ) : (
+                                <p>Loading map...</p>
+                            )}
                         </div>
 
                         <div className="mb-5 w-full sm:flex-1 sm:pt-11 md:pt-11">

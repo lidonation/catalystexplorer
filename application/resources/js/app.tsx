@@ -1,13 +1,14 @@
 // import '../../node_modules/plyr/dist/plyr.css';
-import { createInertiaApp, usePage } from '@inertiajs/react';
+import { createInertiaApp } from '@inertiajs/react';
 import { ModalStackProvider, initFromPageProps } from '@inertiaui/modal-react';
 import { LaravelReactI18nProvider } from 'laravel-react-i18n';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import { StrictMode } from 'react';
 import { hydrateRoot } from 'react-dom/client';
 import '../scss/app.scss';
 import './bootstrap';
-import { RouteContext } from './Hooks/useRoute';
+import { RouteContext } from './hooks/useRoute';
 import AppLayout from './Layouts/AppLayout';
 
 const appName = import.meta.env.VITE_APP_NAME || 'CatalystExplorer';
@@ -29,7 +30,7 @@ createInertiaApp({
     // @ts-ignore
     setup({ el, App, props }) {
         initFromPageProps(props);
-        const { locale } = props.initialPage.props as any; 
+        const { locale } = props.initialPage.props as any;
 
         return hydrateRoot(
             el,

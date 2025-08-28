@@ -36,7 +36,7 @@ const customConfig: Partial<MapProps> = {
     zoom: 2,
 };
 
-const App: React.FC = () => {
+const Map: React.FC = () => {
     return (
         <MapProvider customConfig={customConfig} show3DBuildings={true}>
             <div className="min-h-screen bg-gray-100 p-4 dark:bg-gray-800">
@@ -46,4 +46,4 @@ const App: React.FC = () => {
     );
 };
 
-export default App;
+export default Map;
