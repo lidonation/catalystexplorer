@@ -1,3 +1,11 @@
+## [1.16.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.16.0...v1.16.1) (2025-08-28)
+
+
+### Bug Fixes
+
+* active fund page corrections ([a6296b3](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/a6296b35cc85a9fbe73db43cffc665f8ea04cb5d))
+* using latest() instead of status, governance to fetch the active fund ([286bd78](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/286bd78fdc830af74437c7d72e4e0967c7f97721))
+
 # [1.16.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.15.1...v1.16.0) (2025-08-27)
 
 
