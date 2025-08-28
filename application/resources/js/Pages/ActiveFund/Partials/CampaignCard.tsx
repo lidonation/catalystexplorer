@@ -1,6 +1,5 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
-import SecondaryButton from '@/Components/atoms/SecondaryButton';
 import Title from '@/Components/atoms/Title';
 import { Segments } from '@/types/segments';
 import { currency } from '@/utils/currency';
@@ -47,7 +46,10 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
     ] as Segments[];
 
     return (
-        <div className={className} data-testid="campaign-card">
+        <div
+            className={`flex flex-col ${className ?? ''}`}
+            data-testid="campaign-card"
+        >
             <div className="bg-content-light h-60 overflow-hidden rounded-t-xl">
                 {heroImageUrl ? (
                     <img
@@ -62,7 +64,8 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                 )}
             </div>
 
-            <div className="w-full px-5 py-5">
+            {/* Content wrapper grows to fill height */}
+            <div className="flex w-full flex-1 flex-col px-5 py-5">
                 <Title
                     level="3"
                     className="flex items-center justify-between text-lg font-semibold"
@@ -112,22 +115,16 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                     {campaign?.excerpt}
                 </Paragraph>
 
-                <div className="mt-6 flex w-full flex-col gap-4 md:flex-row">
+                {/* This block gets pushed to the bottom */}
+                <div className="mt-auto flex w-full flex-col gap-4 md:flex-row">
                     <PrimaryLink
-                        className="w-full md:w-2/3"
-                        href={useLocalizedRoute(
-                            'funds.fund.campaigns.campaign.show',
-                            { fund: fund?.slug, campaign: campaign.slug },
-                        )}
+                        className="w-full"
+                        href={useLocalizedRoute('proposals.index', {
+                            cam: [campaign?.id],
+                        })}
                     >
                         {t('activeFund.campaigns.viewProposals')}
                     </PrimaryLink>
-                    <SecondaryButton
-                        className="border-primary text-primary flex w-full items-center justify-center text-center md:w-1/3"
-                        onClick={onCreateList}
-                    >
-                        {t('activeFund.campaigns.createList')}
-                    </SecondaryButton>
                 </div>
             </div>
         </div>
