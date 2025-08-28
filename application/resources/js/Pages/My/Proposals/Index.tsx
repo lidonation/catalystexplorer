@@ -58,11 +58,8 @@ export default function MyProposals({ proposals, filters }: MyProposalsProps) {
                             {proposals?.data && proposals?.data?.length > 0 ? (
                                 <div>
                                     <ProposalTable
-                                        proposals={proposals?.data}
+                                        proposals={proposals}
                                     />
-                                    <div className="mt-4 flex w-full items-center justify-center">
-                                        <Paginator pagination={proposals} />
-                                    </div>
                                 </div>
                             ) : (
                                 <div className="py-8 text-center">

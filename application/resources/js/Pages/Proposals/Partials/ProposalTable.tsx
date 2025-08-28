@@ -13,6 +13,8 @@ import { ParamsEnum } from '@/enums/proposal-search-params';
 import { router } from '@inertiajs/react';
 import { Link } from '@inertiajs/react';
 import { shortNumber } from '@/utils/shortNumber';
+import Paginator from '@/Components/Paginator';
+import { PaginatedData } from '@/types/paginated-data';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import Paragraph from '@/Components/atoms/Paragraph';
@@ -51,7 +53,7 @@ interface ColumnVisibility {
 }
 
 interface ProposalTableProps {
-    proposals: ProposalData[];
+    proposals: PaginatedData<ProposalData[]>;
     columnVisibility?: ColumnVisibility;
     actionType?: ActionType; // Controls which action column to show
     disableSorting?: boolean; // If true, all columns become unsortable
@@ -320,15 +322,15 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
     );
 
     return (
-        <div className="w-full overflow-x-auto rounded-t-lg border border-gray-200 shadow-[0_-1px_4px_0_rgba(0,0,0,0.05)]" data-testid="proposal-table-container">
-            <div className="inline-block min-w-full overflow-hidden" data-testid="proposal-table-wrapper">
-                <table className="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg overflow-hidden" data-testid="proposal-table">
-                    <thead className="bg-background-lighter" data-testid="proposal-table-header">
+        <div className="mb-8 rounded-lg border-2 border-gray-200 bg-background shadow-md">
+            <div className="overflow-x-auto">
+                <table className="w-max min-w-full">
+                    <thead className="border-gray-200 whitespace-nowrap bg-background-lighter" data-testid="proposal-table-header">
                         <tr data-testid="proposal-table-header-row">
                             {columns.map(column => (
                                 <th
                                     key={column.key}
-                                    className="sticky top-0 border border-gray-200 px-4 py-3 text-left first:rounded-tl-lg last:rounded-tr-lg"
+                                    className="border-gray-200 border-b border-r px-4 py-3 text-left font-medium text-content last:border-r-0"
                                     data-testid={`proposal-table-header-${column.key}`}
                                 >
                                     <TableHeaderCell
@@ -343,20 +345,20 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                         </tr>
                     </thead>
                     <tbody data-testid="proposal-table-body">
-                        {proposals.map((proposal, index) => {
+                        {proposals.data && proposals.data.map((proposal, index) => {
                             const proposalHash = proposal.id ?? '';
                             const helpers = getRowHelpers(proposalHash);
 
                             return (
                                 <tr
                                     key={proposalHash}
-                                    className={index < proposals.length - 1 ? 'border-b border-gray-200' : ''}
+                                    className={index < proposals.data.length - 1 ? 'border-b border-gray-200' : ''}
                                     data-testid={`proposal-table-row-${proposalHash}`}
                                 >
                                     {columns.map(column => (
                                         <td
                                             key={`${proposalHash}-${column.key}`}
-                                            className="border border-gray-200 px-4 py-3"
+                                            className="border-gray-200 border-b border-r px-4 py-4 text-content last:border-r-0"
                                             data-testid={`proposal-table-cell-${proposalHash}-${column.key}`}
                                         >
                                             {column.renderCell(proposal, helpers)}
@@ -368,6 +370,20 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                     </tbody>
                 </table>
             </div>
+
+            {proposals &&
+                proposals.data &&
+                proposals.data.length > 0 && (
+                    <div className="border-t border-gray-200 px-4 py-4">
+                        <Paginator
+                            pagination={proposals}
+                            linkProps={{
+                                preserveState: true,
+                                preserveScroll: false,
+                            }}
+                        />
+                    </div>
+                )}
         </div>
     );
 };

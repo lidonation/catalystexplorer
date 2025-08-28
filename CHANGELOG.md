@@ -1,3 +1,10 @@
+## [1.15.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.15.0...v1.15.1) (2025-08-27)
+
+
+### Bug Fixes
+
+* recreating the metrics and rules seeders ([0493aa7](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/0493aa7caa675242fb261896dc157dacee7d6719))
+
 # [1.15.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.14.0...v1.15.0) (2025-08-26)
 
 
