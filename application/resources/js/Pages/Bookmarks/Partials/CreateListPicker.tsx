@@ -10,13 +10,9 @@ import { Dispatch, SetStateAction } from 'react';
 export default function CreateListPicker({
     showPickingList,
     setPickingList,
-    context,
-    campaign,
 }: {
     showPickingList: boolean;
     setPickingList: Dispatch<SetStateAction<boolean>>;
-    context?: 'bookmarks' | 'funds';
-    campaign?: string | null;
 }) {
     const { t } = useLaravelReactI18n();
 
@@ -59,27 +55,18 @@ export default function CreateListPicker({
                     </div>
 
                     <div
-                        className={`border-border-secondary -mr-px border p-4 ${context === 'funds' ? 'col-span-full w-full' : 'col-span-1'}`}
+                        className="border-border-secondary -mr-px border p-4 col-span-1"
                     >
                         <div className="flex h-full flex-col justify-between gap-3">
                             <Paragraph className="sm:p-2">
                                 {t('my.createTinderListBlurb')}
                             </Paragraph>
-                            <div
-                                className={`${context === 'funds' ? 'flex items-center justify-center' : ''}`}
-                            >
+                            <div>
                                 <SecondaryLink
-                                    href={
-                                        context === 'funds'
-                                            ? `${useLocalizedRoute(
-                                                  'workflows.tinderProposal.index',
-                                                  { step: 1 },
-                                              )}?campaign=${campaign ?? ''}`
-                                            : useLocalizedRoute(
-                                                  'workflows.tinderProposal.index',
-                                                  { step: 1 },
-                                              )
-                                    }
+                                    href={useLocalizedRoute(
+                                        'workflows.tinderProposal.index',
+                                        { step: 1 },
+                                    )}
                                     data-testid="create-tinder-list-button"
                                     aria-label="Create tinder list"
                                 >
@@ -89,27 +76,25 @@ export default function CreateListPicker({
                         </div>
                     </div>
 
-                    {context !== 'funds' && (
-                        <div className="border-border-secondary col-span-1 border p-4">
-                            <div className="flex h-full flex-col justify-between gap-3">
-                                <Paragraph className="sm:p-2">
-                                    {t('my.createListBlurb')}
-                                </Paragraph>
-                                <div>
-                                    <SecondaryLink
-                                        href={useLocalizedRoute(
-                                            'workflows.bookmarks.index',
-                                            { step: 1 },
-                                        )}
-                                        data-testid="create-bookmark-list-button"
-                                        aria-label="Create bookmark list"
-                                    >
-                                        {`+ ${t('my.createBookmarkList')}`}
-                                    </SecondaryLink>
-                                </div>
+                    <div className="border-border-secondary col-span-1 border p-4">
+                        <div className="flex h-full flex-col justify-between gap-3">
+                            <Paragraph className="sm:p-2">
+                                {t('my.createListBlurb')}
+                            </Paragraph>
+                            <div>
+                                <SecondaryLink
+                                    href={useLocalizedRoute(
+                                        'workflows.bookmarks.index',
+                                        { step: 1 },
+                                    )}
+                                    data-testid="create-bookmark-list-button"
+                                    aria-label="Create bookmark list"
+                                >
+                                    {`+ ${t('my.createBookmarkList')}`}
+                                </SecondaryLink>
                             </div>
                         </div>
-                    )}
+                    </div>
                 </section>
             </div>
         </Modal>
