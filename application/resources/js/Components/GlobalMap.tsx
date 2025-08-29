@@ -18,16 +18,10 @@ export default function GlobalMap({ points }: { points: MapPoint[] }) {
     const [isLoaded, setIsLoaded] = useState(false);
     const [selectedPoint, setSelectedPoint] = useState<MapPoint | null>(null);
 
-    // Center/zoom when points change
     useEffect(() => {
         if (!mapRef.current || !isLoaded || points.length === 0) return;
 
         if (points.length === 1) {
-            console.log(
-                'Centering on single point:',
-                points[0].lng,
-                points[0].lat,
-            );
             mapRef.current.flyTo({
                 center: [points[0].lng, points[0].lat],
                 zoom: 13,
@@ -36,7 +30,7 @@ export default function GlobalMap({ points }: { points: MapPoint[] }) {
         } else {
             const bounds = new mapboxgl.LngLatBounds();
             points.forEach((p) => bounds.extend([p.lng, p.lat]));
-            console.log('Fitting bounds:', bounds);
+
             mapRef.current.fitBounds(bounds, { padding: 50, maxZoom: 15 });
         }
     }, [points, isLoaded]);

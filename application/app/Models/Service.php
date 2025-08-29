@@ -92,7 +92,8 @@ class Service extends Model implements HasMedia
                   ?: asset('images/default-service-header.jpg')
         );
     }
-     public function getEffectiveNameAttribute(): ?string
+
+    public function getEffectiveNameAttribute(): ?string
     {
         return $this->name ?? $this->user?->name;
     }

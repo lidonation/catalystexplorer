@@ -71,11 +71,9 @@ export default function Show({ service }: ShowProps) {
                         }`,
                     );
                     const data = await res.json();
-                    console.log('Mapbox response for:', query, data);
 
                     if (data?.features?.length > 0) {
                         const coords = data.features[0].geometry.coordinates;
-                        console.log('Extracted coords:', coords);
 
                         return {
                             lat: coords[1],

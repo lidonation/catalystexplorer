@@ -1,26 +1,26 @@
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
+import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import Textarea from '@/Components/atoms/Textarea';
 import InputError from '@/Components/InputError';
+import { LOCALE_MAPPING } from '@/constants/locales';
+import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
+import useLanguageDetection from '@/Hooks/useLanguageDetection';
 import { StepDetails } from '@/types';
 import {
     generateLocalizedRoute,
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { InertiaFormProps, useForm, usePage } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Content from '../Partials/WorkflowContent';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
-import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
-import CatalysDrepData = App.DataTransferObjects.CatalystDrepData;
 import IpfsSuccessDisplay from './partials/IpfsSuccessDisplay';
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
-import useLanguageDetection from '@/hooks/useLanguageDetection';
-import { LOCALE_MAPPING } from '@/constants/locales';
-import Paragraph from '@/Components/atoms/Paragraph';
+import CatalysDrepData = App.DataTransferObjects.CatalystDrepData;
 
 interface Step5Props {
     catalystDrep: CatalysDrepData;
@@ -31,11 +31,13 @@ interface Step5Props {
 
 interface PageProps {
     flash?: {
-        success?: string | {
-            ipfs_cid: string;
-            gateway_url: string;
-            filename: string;
-        };
+        success?:
+            | string
+            | {
+                  ipfs_cid: string;
+                  gateway_url: string;
+                  filename: string;
+              };
     };
     errorBags?: {
         default?: {
@@ -82,7 +84,8 @@ const step5: React.FC<Step5Props> = ({
         filename: string;
     } | null>(null);
 
-    const { getSuggestedLanguage, validateLanguageConsistency } = useLanguageDetection();
+    const { getSuggestedLanguage, validateLanguageConsistency } =
+        useLanguageDetection();
 
     const form = useForm({
         ...catalystDrep,
@@ -96,7 +99,11 @@ const step5: React.FC<Step5Props> = ({
     // Check for flash success data on component mount
     useEffect(() => {
         const flashSuccess = page.props.flash?.success;
-        if (flashSuccess && typeof flashSuccess === 'object' && 'ipfs_cid' in flashSuccess) {
+        if (
+            flashSuccess &&
+            typeof flashSuccess === 'object' &&
+            'ipfs_cid' in flashSuccess
+        ) {
             setIpfsData({
                 cid: flashSuccess.ipfs_cid,
                 gatewayUrl: flashSuccess.gateway_url,
@@ -106,34 +113,49 @@ const step5: React.FC<Step5Props> = ({
     }, [page.props.flash]);
 
     const validateLanguages = useCallback(() => {
-        const validation = validateLanguageConsistency({
-            objective: data.objective || '',
-            motivation: data.motivation || '',
-            qualifications: data.qualifications || ''
-        }, savedLocale);
-        
+        const validation = validateLanguageConsistency(
+            {
+                objective: data.objective || '',
+                motivation: data.motivation || '',
+                qualifications: data.qualifications || '',
+            },
+            savedLocale,
+        );
+
         if (!validation.isValid) {
-            setLanguageWarning(validation.message || 'Language mismatch detected between fields');
+            setLanguageWarning(
+                validation.message ||
+                    'Language mismatch detected between fields',
+            );
             return false;
         }
-        
+
         setLanguageWarning('');
         return true;
-    }, [data.objective, data.motivation, data.qualifications, savedLocale, validateLanguageConsistency]);
+    }, [
+        data.objective,
+        data.motivation,
+        data.qualifications,
+        savedLocale,
+        validateLanguageConsistency,
+    ]);
 
     const submitForm = () => {
         // Validate languages before submission
         if (!validateLanguages()) {
             return;
         }
-        
+
         form.data.locale = savedLocale;
         form.data.paymentAddress = userAddress;
-        
+
         form.post(
-            generateLocalizedRoute('workflows.drepSignUp.publishPlatformStatement', {
-                catalystDrep: catalystDrep.id,
-            }),
+            generateLocalizedRoute(
+                'workflows.drepSignUp.publishPlatformStatement',
+                {
+                    catalystDrep: catalystDrep.id,
+                },
+            ),
             {
                 preserveScroll: true,
                 onSuccess: () => {
@@ -141,7 +163,10 @@ const step5: React.FC<Step5Props> = ({
                     console.log('Platform statement published successfully');
                 },
                 onError: (errors: any) => {
-                    console.error('Failed to publish platform statement to IPFS:', errors);
+                    console.error(
+                        'Failed to publish platform statement to IPFS:',
+                        errors,
+                    );
                     for (const key in errors) {
                         (form as any).setError(key, errors[key]);
                     }
@@ -157,32 +182,34 @@ const step5: React.FC<Step5Props> = ({
     const nextStep = localizedRoute('dreps.list');
 
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}  wrapperClassName="!h-auto"
-           contentClassName="!max-h-none">
+        <WorkflowLayout
+            asideInfo={stepDetails[activeStep - 1].info ?? ''}
+            wrapperClassName="!h-auto"
+            contentClassName="!max-h-none"
+        >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
                 <div className="@container mx-auto mb-6 w-full max-w-2xl px-4">
                     {/* Error Messages */}
-                    <ErrorDisplay/>
+                    <ErrorDisplay />
 
                     {/* IPFS Results */}
-                    {ipfsData && (
-                        <IpfsSuccessDisplay ipfsData={ipfsData} />
-                    )}
+                    {ipfsData && <IpfsSuccessDisplay ipfsData={ipfsData} />}
 
                     {/* Display Selected Language */}
-                    <div className="bg-slate-50 mb-6 rounded-lg p-4 border border-slate-200">
+                    <div className="mb-6 rounded-lg border border-slate-200 bg-slate-50 p-4">
                         <div className="flex items-center gap-2">
                             <Paragraph className="text-sm font-medium text-slate-700">
                                 {t('Selected Language')}:
                             </Paragraph>
-                            <Paragraph className="text-sm text-slate-900 font-semibold">
-                                {LOCALE_MAPPING[savedLocale as keyof typeof LOCALE_MAPPING]?.native || savedLocale}
+                            <Paragraph className="text-sm font-semibold text-slate-900">
+                                {LOCALE_MAPPING[
+                                    savedLocale as keyof typeof LOCALE_MAPPING
+                                ]?.native || savedLocale}
                             </Paragraph>
                         </div>
                     </div>
-                
 
                     <div className="bg-primary-light mb-6 rounded-lg p-4 text-center">
                         <p className="text-slate-500">
@@ -194,9 +221,9 @@ const step5: React.FC<Step5Props> = ({
 
                     <form className="mb-8 space-y-6">
                         {languageWarning && (
-                            <div className="mb-6 p-4 bg-error-light border border-error rounded-md">
-                                <p className="text-sm text-error">
-                                 {languageWarning}
+                            <div className="bg-error-light border-error mb-6 rounded-md border p-4">
+                                <p className="text-error text-sm">
+                                    {languageWarning}
                                 </p>
                             </div>
                         )}
@@ -216,11 +243,16 @@ const step5: React.FC<Step5Props> = ({
                                 minLengthEnforced
                                 value={form.data.objective ?? ''}
                                 onChange={(e) =>
-                                    (form as any).setData('objective', e.target.value)
+                                    (form as any).setData(
+                                        'objective',
+                                        e.target.value,
+                                    )
                                 }
                                 className="h-30 w-full rounded-lg px-4 py-2"
                             />
-                            <InputError message={(form.errors as any).objective} />
+                            <InputError
+                                message={(form.errors as any).objective}
+                            />
                         </div>
 
                         {/* Bio */}
@@ -241,11 +273,16 @@ const step5: React.FC<Step5Props> = ({
                                 minLengthEnforced
                                 value={form.data.motivation ?? ''}
                                 onChange={(e) =>
-                                    (form as any).setData('motivation', e.target.value)
+                                    (form as any).setData(
+                                        'motivation',
+                                        e.target.value,
+                                    )
                                 }
                                 className="h-30 w-full rounded-lg px-4 py-2"
                             />
-                            <InputError message={(form.errors as any).motivation} />
+                            <InputError
+                                message={(form.errors as any).motivation}
+                            />
                         </div>
 
                         {/* Bio */}
@@ -268,11 +305,16 @@ const step5: React.FC<Step5Props> = ({
                                 minLengthEnforced
                                 value={form.data.qualifications ?? ''}
                                 onChange={(e) =>
-                                    (form as any).setData('qualifications', e.target.value)
+                                    (form as any).setData(
+                                        'qualifications',
+                                        e.target.value,
+                                    )
                                 }
                                 className="h-30 w-full rounded-lg px-4 py-2"
                             />
-                            <InputError message={(form.errors as any).qualifications} />
+                            <InputError
+                                message={(form.errors as any).qualifications}
+                            />
                         </div>
                         <PrimaryButton
                             onClick={() => submitForm()}
@@ -282,16 +324,19 @@ const step5: React.FC<Step5Props> = ({
                         >
                             {form.processing ? (
                                 <>
-                                    {t('workflows.catalystDrepSignup.publishing')}
+                                    {t(
+                                        'workflows.catalystDrepSignup.publishing',
+                                    )}
                                 </>
                             ) : (
-                                t('workflows.catalystDrepSignup.submitStatementToIpfs')
+                                t(
+                                    'workflows.catalystDrepSignup.submitStatementToIpfs',
+                                )
                             )}
                         </PrimaryButton>
-                        
                     </form>
                 </div>
-                <div className="flex justify-between items-center px-20 py-8">
+                <div className="flex items-center justify-between px-20 py-8">
                     <PrimaryLink
                         href={prevStep}
                         className="text-sm lg:px-8 lg:py-2"
@@ -302,9 +347,7 @@ const step5: React.FC<Step5Props> = ({
 
                     <PrimaryLink
                         className="text-sm lg:px-8 lg:py-2"
-                        disabled={
-                            !ipfsData?.cid
-                        }
+                        disabled={!ipfsData?.cid}
                         href={nextStep}
                     >
                         <span>{t('Next')}</span>
@@ -312,7 +355,6 @@ const step5: React.FC<Step5Props> = ({
                     </PrimaryLink>
                 </div>
             </Content>
-           
         </WorkflowLayout>
     );
 };

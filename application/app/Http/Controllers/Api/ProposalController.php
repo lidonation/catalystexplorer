@@ -7,13 +7,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProposalResource;
 use App\Models\Proposal;
+use App\QueryBuilders\Sorts\ProjectLengthSort;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
-use App\QueryBuilders\Sorts\ProjectLengthSort;
 
 class ProposalController extends Controller
 {
@@ -58,7 +58,7 @@ class ProposalController extends Controller
                 AllowedSort::field('status'),
                 AllowedSort::field('amount_requested'),
                 AllowedSort::field('amount_received'),
-                AllowedSort::custom('project_length', new ProjectLengthSort()),
+                AllowedSort::custom('project_length', new ProjectLengthSort),
                 AllowedSort::field('yes_votes_count'),
                 AllowedSort::field('no_votes_count'),
                 AllowedSort::field('funded_at'),
