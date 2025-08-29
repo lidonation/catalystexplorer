@@ -5,6 +5,7 @@ import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import {useLaravelReactI18n} from "laravel-react-i18n";
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface PasswordFormProps {
     onClose: () => void;
@@ -39,6 +40,9 @@ export default function PasswordForm({ onClose }: PasswordFormProps) {
 
     return (
         <form onSubmit={submit} className="p-4">
+
+            <ErrorDisplay/>
+            
             <div className="mb-4">
                 <InputLabel
                     htmlFor="current_password"

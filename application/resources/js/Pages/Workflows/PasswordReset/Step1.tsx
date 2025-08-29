@@ -13,6 +13,7 @@ import Title from "@/Components/atoms/Title";
 import Content from "../Partials/WorkflowContent";
 import {useLaravelReactI18n} from "laravel-react-i18n";
 import CheckInbox from "@/Components/svgs/CheckInbox";
+import ErrorDisplay from "@/Components/atoms/ErrorDisplay";
 
 interface Step1Props {
     stepDetails: StepDetails[];
@@ -62,6 +63,9 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, status }) => {
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
+                
+                <ErrorDisplay />
+
                 {currentState === 'email-form' && (
                     <div className="container p-10">
                         {status && (
