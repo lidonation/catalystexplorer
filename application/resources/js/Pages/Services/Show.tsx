@@ -102,8 +102,8 @@ export default function Show({ service }: ShowProps) {
     };
 
     return (
-        <div className="flex flex-col gap-8 border-b border-gray-300 bg-gray-100 px-4 py-5 text-slate-600 md:flex-row md:gap-12 md:px-8 md:pt-12 md:pb-10">
-            <div className="flex flex-shrink-0 flex-col md:sticky md:top-4 md:w-80 md:self-start">
+        <div className="flex flex-col gap-8 border-b border-gray-300 bg-gray-100 px-4 py-5 text-slate-600 sm:flex-row sm:gap-12 sm:px-8 sm:pt-12 sm:pb-10">
+            <div className="flex flex-col sm:sticky sm:top-4 sm:max-w-80 sm:self-start">
                 <div className="flex flex-row items-center pb-4">
                     <img
                         src={service.user?.hero_img_url ?? ''}
@@ -119,7 +119,7 @@ export default function Show({ service }: ShowProps) {
                     <SuccessBadge />
                 </div>
 
-                <Paragraph size="md" className="pb-6 font-normal">
+                <Paragraph size="sm" className="pb-6 font-normal">
                     {service.user?.bio ?? 'No bio available.'}
                 </Paragraph>
 
@@ -148,7 +148,7 @@ export default function Show({ service }: ShowProps) {
                         >
                             Networks
                         </Title>
-                        <ul className="space-y-2 md:space-y-2.5">
+                        <ul className="space-y-2 sm:space-y-2.5">
                             {service.effective_details?.website && (
                                 <NetworkLink
                                     icon={<Globe />}
@@ -180,7 +180,7 @@ export default function Show({ service }: ShowProps) {
                     <img
                         src={service.header_image_url}
                         alt={service.title}
-                        className="mb-6 h-48 w-full max-w-full rounded-lg object-cover md:mb-7 md:h-104"
+                        className="mb-6 h-48 w-full max-w-full rounded-lg object-cover sm:mb-7 sm:h-104"
                     />
                 )}
 
@@ -193,8 +193,8 @@ export default function Show({ service }: ShowProps) {
 
                 {service.description && (
                     <Paragraph
-                        size="md"
-                        className="mb-6 font-normal break-words md:mb-7"
+                        size="sm"
+                        className="mb-6 font-normal break-words sm:mb-7"
                     >
                         {service.description}
                     </Paragraph>
@@ -204,7 +204,7 @@ export default function Show({ service }: ShowProps) {
                     <Title className="mb-5 text-base font-semibold text-slate-900">
                         Get in touch
                     </Title>
-                    <div className="flex flex-col gap-5 sm:flex-row sm:flex-wrap">
+                    <div className="flex flex-col gap-5 sm:flex-row">
                         <div className="h-52 w-full sm:w-84">
                             {isClient && points.length > 0 ? (
                                 <MapProvider
@@ -225,7 +225,7 @@ export default function Show({ service }: ShowProps) {
                             )}
                         </div>
 
-                        <div className="mb-5 w-full sm:flex-1 sm:pt-11 md:pt-11">
+                        <div className="mb-5 w-full sm:flex-1 sm:pt-11">
                             <ul className="space-y-2">
                                 {service.effective_details?.website && (
                                     <NetworkLink
