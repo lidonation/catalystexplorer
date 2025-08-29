@@ -14,14 +14,12 @@ interface CampaignCardProps {
     fund: FundData;
     campaign: CampaignData;
     className?: string;
-    onCreateList?: () => void;
 }
 
 const CampaignCard: React.FC<CampaignCardProps> = ({
     fund,
     campaign,
-    className,
-    onCreateList,
+    className
 }) => {
     const { t } = useLaravelReactI18n();
 

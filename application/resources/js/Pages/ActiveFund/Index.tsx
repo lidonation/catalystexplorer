@@ -10,6 +10,7 @@ import { useState } from 'react';
 import CreateListPicker from '../Bookmarks/Partials/CreateListPicker';
 import ActiveFundBanner from './Partials/ActiveFundBanner';
 import CampaignCard from './Partials/CampaignCard';
+import CreateListBanner from './Partials/CreateListBanner';
 
 interface ActiveFundsProp extends Record<string, unknown> {
     search?: string | null;
@@ -27,7 +28,6 @@ const Index: React.FC<ActiveFundsProp> = ({
     amountRemaining,
 }) => {
     const { t } = useLaravelReactI18n();
-    const [showListPicker, setShowListPicker] = useState(false);
     const [campaignId, setCampaignId] = useState<string | null>('');
 
     const segments = [
@@ -62,16 +62,16 @@ const Index: React.FC<ActiveFundsProp> = ({
             </header>
 
             <div className="flex w-full flex-col">
-                <section className="flex w-full flex-col items-center px-8 md:py-6 py-2">
-                    <div className="md:mb-5 mb-3 text-center">
-                        <Title level="2" className='hidden md:block font-bold'>
+                <section className="flex w-full flex-col items-center px-8 py-2 md:py-6">
+                    <div className="mb-3 text-center md:mb-5">
+                        <Title level="2" className="hidden font-bold md:block">
                             {currency(
                                 fund?.amount_awarded ?? 0,
                                 2,
                                 fund?.currency ?? 'USD',
                             )}
                         </Title>
-                          <Title level="3" className='md:hidden block font-bold'>
+                        <Title level="3" className="block font-bold md:hidden">
                             {currency(
                                 fund?.amount_awarded ?? 0,
                                 2,
@@ -82,7 +82,7 @@ const Index: React.FC<ActiveFundsProp> = ({
                             {t('activeFund.budget')}
                         </Paragraph>
                     </div>
-                    <div className="flex w-full flex-col items-center justify-center md:gap-4 gap-2 text-center md:flex-row md:gap-16 md:text-left">
+                    <div className="flex w-full flex-col items-center justify-center gap-2 text-center md:flex-row md:gap-4 md:gap-16 md:text-left">
                         <Paragraph className="flex">
                             <span className="mr-1">
                                 {t('activeFund.distributed')}:
@@ -108,7 +108,7 @@ const Index: React.FC<ActiveFundsProp> = ({
                             </span>
                         </Paragraph>
                     </div>
-                    <div className="md:mt-5 mt-4 flex w-full flex-col items-center justify-center md:gap-4 gap-2">
+                    <div className="my-5 flex w-full flex-col items-center justify-center gap-2 md:mt-5 md:gap-4">
                         <SegmentedBar
                             segments={segments}
                             tooltipSegments={segments}
@@ -123,11 +123,16 @@ const Index: React.FC<ActiveFundsProp> = ({
                                     <div className="text-highlight text-sm">
                                         {segment.label}
                                     </div>
-                                    <div className='text-sm'>{segment.value}</div>
+                                    <div className="text-sm">
+                                        {segment.value}
+                                    </div>
                                 </div>
                             ))}
                         </div>
                     </div>
+                </section>
+                <section className='px-8 w-full my-4'>
+                    <CreateListBanner />
                 </section>
                 <section className="mt-5 w-full px-8">
                     <Title level="3" className="mb-6 font-bold">
@@ -140,21 +145,11 @@ const Index: React.FC<ActiveFundsProp> = ({
                                 key={index}
                                 fund={fund}
                                 className="bg-background w-full rounded-xl shadow-sm"
-                                onCreateList={() => {
-                                    setShowListPicker(true);
-                                    setCampaignId(campaign?.id);
-                                }}
                             />
                         ))}
                     </div>
                 </section>
             </div>
-            <CreateListPicker
-                showPickingList={showListPicker}
-                setPickingList={setShowListPicker}
-                context='funds'
-                campaign={campaignId}
-            ></CreateListPicker>
         </>
     );
 };
