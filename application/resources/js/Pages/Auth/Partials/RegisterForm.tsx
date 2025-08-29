@@ -8,6 +8,7 @@ import PrimaryButton from '../../../Components/atoms/PrimaryButton';
 import InputLabel from '../../../Components/InputLabel';
 import Button from '@/Components/atoms/Button';
 import Paragraph from '@/Components/atoms/Paragraph';
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface FormErrors {
     name?: string;
@@ -97,6 +98,9 @@ export default function RegisterForm({ closeModal }: RegisterFormProps) {
 
     return (
         <form onSubmit={submit} className="content-gap flex flex-col w-full p-4" data-testid="register-form">
+            
+            <ErrorDisplay/>
+
             <div>
                 <InputLabel htmlFor="name" value={t('name')} data-testid="name-input-label"/>
 
