@@ -15,7 +15,7 @@ ARG TZ=UTC
 ARG APP_DIR=/var/www
 ARG APP_ENV
 ARG APP_DOMAIN
-ARG NODE_VERSION=20
+ARG NODE_VERSION=22
 
 ENV DEBIAN_FRONTEND=noninteractive \
     TERM=xterm-color \
@@ -35,6 +35,13 @@ SHELL ["/bin/bash", "-eou", "pipefail", "-c"]
 
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime \
     && echo ${TZ} > /etc/timezone
+
+# Install curl and gpg first for repository setup
+RUN apt-get update && apt-get install -yqq --no-install-recommends curl gpg
+
+# Add PostgreSQL APT repository for version 17
+RUN curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgresql-keyring.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/postgresql-keyring.gpg] https://apt.postgresql.org/pub/repos/apt/ trixie-pgdg main" > /etc/apt/sources.list.d/postgresql.list
 
 RUN apt-get update; \
     apt-get upgrade -yqq; \
@@ -78,7 +85,6 @@ RUN apt-get update; \
     pdo_mysql \
     imagick/imagick@master \
     zip \
-    uv \
     intl \
     gd \
     redis \
@@ -96,7 +102,7 @@ RUN apt-get update; \
     && apt-get clean \
     && docker-php-source delete \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && rm /var/log/lastlog /var/log/faillog
+    && rm -f /var/log/lastlog /var/log/faillog
 
 ENV CHROME_BIN=/usr/bin/chromium-browser \
     CHROME_PATH=/usr/lib/chromium/ \
@@ -104,20 +110,42 @@ ENV CHROME_BIN=/usr/bin/chromium-browser \
 
 COPY ./scripts /scripts/
 
-RUN chmod +x /scripts
+RUN chmod +x /scripts/*
 
 RUN mkdir /venv && chown -R 777 /venv
 
 RUN python3 -m venv /venv
 
-RUN /venv/bin/pip install --no-cache-dir blend_modes==2.0.2 numpy==1.26.3 pillow==10.3.0 cbor2 pycose brotli pycardano
+# --- Python & Pillow build deps ---
+RUN apt-get update && apt-get install -y \
+    python3-dev \
+    build-essential \
+    libjpeg-dev \
+    zlib1g-dev \
+    libfreetype6-dev \
+    liblcms2-dev \
+    libopenjp2-7-dev \
+    libtiff-dev \
+    tk-dev \
+    tcl-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    libwebp-dev \
+    libimagequant-dev \
+    libxcb1-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN /venv/bin/pip install --no-cache-dir --upgrade pip setuptools wheel \
+    && /venv/bin/pip install --no-cache-dir blend_modes==2.0.2 numpy==1.26.3 pillow==10.4.0 cbor2 pycose brotli pycardano
 
 RUN userdel --remove --force www-data \
     && groupadd --force -g ${WWWGROUP} ${USER} \
     && useradd -ms /bin/bash --no-log-init --no-user-group -g ${WWWGROUP} -u ${WWWUSER} ${USER} \
+    && groupadd --force -g 1001 sail \
+    && useradd -ms /bin/bash --no-log-init --no-user-group -g sail -u 1001 sail \
     && setcap -r /usr/local/bin/frankenphp
 
-RUN chown -R ${USER}:${USER} ${ROOT} /var/{log,run} \
+RUN chown -R ${USER}:${USER} ${ROOT} /var/{log,run,www} \
     && chmod -R a+rw ${ROOT} /var/{log,run}
 
 RUN cp ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
