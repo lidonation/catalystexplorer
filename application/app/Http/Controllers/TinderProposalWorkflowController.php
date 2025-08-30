@@ -453,7 +453,7 @@ class TinderProposalWorkflowController extends Controller
         $existingTinderCollectionList = null;
 
         if (! empty($validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value])) {
-            $existingTinderCollectionList = TinderCollection::byhash($validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value]);
+            $existingTinderCollectionList = TinderCollection::find($validated[TinderWorkflowParams::TINDER_COLLECTION_HASH()->value]);
         }
 
         $tinderCollectionData = [

@@ -39,7 +39,7 @@ final class BookmarkCollectionData extends Data
         public ?string $model_type,
 
         #[TypeScriptOptional]
-        public ?int $model_id,
+        public ?string $model_id,
 
         #[TypeScriptOptional]
         public ?int $items_count,
