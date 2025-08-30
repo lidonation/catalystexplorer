@@ -25,37 +25,52 @@ return new class extends Migration
         DB::transaction(
             function () {
 
-                Proposal::where('fund_id', 'b77b307e-2e83-4f9d-8be1-ba9f600299f3')
-                    ->whereNotNull('ideascale_link')
-                    ->each(function ($p) {
-            
-                        $attributes = $p->toArray();
-                        unset($attributes['yes_votes_count']);
-                        unset($attributes['no_votes_count']);
-                        unset($attributes['funded_at']);
-                        unset($attributes['amount_received']);
-                        unset($attributes['quickpitch']);
-                        unset($attributes['abstain_votes_count']);
-                        unset($attributes['funding_updated_at']);
-                        unset($attributes['ideascale_link']);
-                        unset($attributes['metas']);
+                $proposalIds = [
+                    21977,
+                    22070,
+                    12977,
+                    20965,
+                    21714,
+                    9255,
+                    13315,
+                    12621,
+                    2026,
+                    21201,
+                    21717,
+                    13680,
+                    13431,
+                    21553,
+                    14267,
+                    20673,
+                    20802,
+                    21277,
+                    21740,
+                    21337,
+                    21523,
+                    21570,
+                    21891,
+                    21976,
+                    22117,
+                    21530,
+                    13993,
+                    22136,
+                    21182,
+                    13097,
+                    21932
+                ];
 
-                        $uuid = (string) Str::uuid();
-                        $attributes['id'] = $uuid;
+                // update or create proposal
 
-                        dump($p->title);
-
-                        $newProposal = Proposal::create($attributes);
-
-                        $oldValues = $this->getPrevValues($p->old_id);
-
-                        $this->updateDependancies($newProposal, $p, $oldValues);
-                    });
+                collect($proposalIds)->each(
+                    function ($id) {
+                        return $this->createProposal($id);
+                    }
+                );
             }
         );
     }
 
-    public function  getPrevValues(int $proposalId)
+    public function  createProposal(int $proposalId)
     {
         $baseUrl = config('services.lido.api_base_url');
 
@@ -69,6 +84,7 @@ return new class extends Migration
             }
 
             $data = $response->json();
+
 
             if (! isset($data['data']) || ! is_array($data['data'])) {
                 throw new \UnexpectedValueException("Invalid API response structure");
@@ -88,21 +104,37 @@ return new class extends Migration
             $fund = Fund::where('title', $proposal->fund->label)->first();
 
             $campaign = Campaign::where('title', $proposal->campaign->label)->first();
+            
+            $proposal = Proposal::updateOrCreate(
+                [
+                    'fund_id' => $fund->id,
+                    'slug' => $proposal->slug
+                ],
+                [
+                    'title' => $proposal->title,
+                    'status'           => $proposal->status ?? null,
+                    'funding_status'   => $proposal->funding_status ?? null,
+                    'problem'          => $proposal->problem ?? null,
+                    'solution'         => $proposal->solution ?? null,
+                    'content'          => $proposal->content ?? null,
+                    'amount_requested' => $proposal->amount_requested ?? null,
+                    'currency' => $proposal->currency,
+                    'amount_received' => $proposal->amount_received,
+                    'ideascale_link' => $proposal->ideascale_link,
+                    'no_votes_count' => $proposal->no_votes_count,
+                    'yes_votes_count' => $proposal->yes_votes_count,
+                    'abstain_votes_count' => $proposal->abstain_votes_count,
+                    'campaign_id' => $campaign?->id,
+                    'type' => 'proposal',
+                    'quickPitch' => $proposal->quickPitch,
+                    'quickpitch_length' => $proposal->quickpitch_length,
+                    'opensource' => $proposal->opensource
+                ]
+            );
 
-            return [
-                "status"           => $proposal->status ?? null,
-                "funding_status"   => $proposal->funding_status ?? null,
-                "slug"             => $proposal->slug ?? null,
-                'problem'          => $proposal->problem ?? null,
-                'solution'         => $proposal->solution ?? null,
-                'content'          => $proposal->content ?? null,
-                'amount_requested' => $proposal->amount_requested ?? null,
-                'campaign_id' => $campaign?->id,
-                'fund_id' => $fund->id,
-            ];
+            
         } catch (\Throwable $e) {
-            report($e);
-            throwException($e);
+            throw $e;
         }
     }
 
