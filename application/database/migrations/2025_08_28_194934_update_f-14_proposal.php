@@ -93,6 +93,7 @@ return new class extends Migration
             $proposals = collect($data['data']);
             $proposal = $proposals->firstWhere('id', $proposalId);
 
+
             if (! $proposal) {
                 return [
                     'error' => "Proposal with ID {$proposalId} not found",
@@ -103,8 +104,14 @@ return new class extends Migration
 
             $fund = Fund::where('title', $proposal->fund->label)->first();
 
+            if (! $fund) {
+                return [
+                    'error' => "Fund  not found",
+                ];
+            }
+
             $campaign = Campaign::where('title', $proposal->campaign->label)->first();
-            
+
             $proposal = Proposal::updateOrCreate(
                 [
                     'fund_id' => $fund->id,
@@ -131,8 +138,6 @@ return new class extends Migration
                     'opensource' => $proposal->opensource
                 ]
             );
-
-            
         } catch (\Throwable $e) {
             throw $e;
         }
