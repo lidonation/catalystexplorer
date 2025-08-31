@@ -15,7 +15,7 @@ ARG TZ=UTC
 ARG APP_DIR=/var/www
 ARG APP_ENV
 ARG APP_DOMAIN
-ARG NODE_VERSION=20
+ARG NODE_VERSION=22
 
 ENV DEBIAN_FRONTEND=noninteractive \
     TERM=xterm-color \
@@ -68,6 +68,7 @@ RUN apt-get update; \
     nodejs \
     optipng \
     pngquant \
+    postgresql-client-17 \
     procps \
     python3 \
     python3-dev \
@@ -90,7 +91,6 @@ RUN apt-get update; \
     pdo_mysql \
     imagick/imagick@master \
     zip \
-    uv \
     intl \
     gd \
     redis \
@@ -108,7 +108,7 @@ RUN apt-get update; \
     && apt-get clean \
     && docker-php-source delete \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && rm /var/log/lastlog /var/log/faillog
+    && rm -f /var/log/lastlog /var/log/faillog
 
 ENV CHROME_BIN=/usr/bin/chromium-browser \
     CHROME_PATH=/usr/lib/chromium/ \
@@ -116,7 +116,7 @@ ENV CHROME_BIN=/usr/bin/chromium-browser \
 
 COPY ./scripts /scripts/
 
-RUN chmod +x /scripts
+RUN chmod +x /scripts/*
 
 RUN mkdir /venv && chown -R 777 /venv
 
@@ -127,9 +127,11 @@ RUN /venv/bin/pip install --no-cache-dir blend_modes==2.0.2 numpy==1.26.3 pillow
 RUN userdel --remove --force www-data \
     && groupadd --force -g ${WWWGROUP} ${USER} \
     && useradd -ms /bin/bash --no-log-init --no-user-group -g ${WWWGROUP} -u ${WWWUSER} ${USER} \
+    && groupadd --force -g 1001 sail \
+    && useradd -ms /bin/bash --no-log-init --no-user-group -g sail -u 1001 sail \
     && setcap -r /usr/local/bin/frankenphp
 
-RUN chown -R ${USER}:${USER} ${ROOT} /var/{log,run} \
+RUN chown -R ${USER}:${USER} ${ROOT} /var/{log,run,www} \
     && chmod -R a+rw ${ROOT} /var/{log,run}
 
 RUN cp ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini

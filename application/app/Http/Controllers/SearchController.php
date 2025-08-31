@@ -111,6 +111,7 @@ class SearchController extends Controller
         try {
             $posts = $postRepository->paginate(10)->collect()->all();
         } catch (\Throwable $e) {
+           
             report($e);
 
             $posts = new \Illuminate\Pagination\LengthAwarePaginator(
