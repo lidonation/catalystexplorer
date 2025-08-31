@@ -950,7 +950,6 @@ class ProposalsController extends Controller
 
         $proposalMetricRules = $request->input('rules', []);
         $chartType = $request->input('chartType');
-        Log::info('Found Rules:::'.json_encode($proposalMetricRules));
 
         if (empty($proposalMetricRules)) {
             return [];
@@ -961,7 +960,6 @@ class ProposalsController extends Controller
         $proposalRuleTitlesKey = implode(',', $proposalRuleTitles);
 
         $metrics = $this->findMatchingMetrics($chartType, $proposalRuleTitles, $proposalRuleTitlesKey);
-        Log::info('Found Metrics:::'.json_encode($metrics));
         if ($metrics->isEmpty()) {
             return [];
         }
@@ -977,13 +975,6 @@ class ProposalsController extends Controller
      */
     private function findMatchingMetrics(string $chartType, array $proposalRuleTitles, string $proposalRuleTitlesKey)
     {
-        Log::info(
-            Metric::with(['rules' => function ($query) use ($proposalRuleTitles) {
-                $query->whereIn('title', $proposalRuleTitles);
-            }])->where('type', $chartType)->toRawSql()
-        );
-
-        Log::info('Rules Titles:::'.json_encode($proposalRuleTitles));
 
         return Metric::with([
             'rules' => fn ($query) => $query->whereIn('title', $proposalRuleTitles),

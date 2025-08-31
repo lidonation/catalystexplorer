@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
+use App\DataTransferObjects\ProposalData;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProposalResource;
 use App\Models\Proposal;
 use App\QueryBuilders\Sorts\ProjectLengthSort;
+use App\Repositories\ProposalRepository;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Fluent;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\AllowedSort;
@@ -93,8 +98,42 @@ class ProposalController extends Controller
     /**
      * Legacy endpoint for backwards compatibility
      */
-    public function proposals(): AnonymousResourceCollection
+    public function proposals(): array
     {
-        return $this->index(request());
+        $per_page = request('per_page', 24);
+
+        $requestValues = request(['ids']);
+
+        $ids = null;
+
+        if (! empty($requestValues['ids'])) {
+            $ids = implode(',', $requestValues['ids'] ?? []);
+            $args['filter'] = "id IN [{$ids}]";
+        }
+
+        $page = request('page') ?? 1;
+        $args['offset'] = ($page - 1) * $per_page;
+        $args['limit'] = $per_page;
+
+        $proposals = app(ProposalRepository::class);
+
+        $builder = $proposals->search(
+            request('search') ?? '',
+            $args
+        );
+
+        $response = new Fluent($builder->raw());
+
+        $pagination = new LengthAwarePaginator(
+            ProposalData::collect($response->hits),
+            $response->estimatedTotalHits,
+            $per_page,
+            $page,
+            [
+                'pageName' => 'p',
+            ]
+        );
+
+        return $pagination->onEachSide(1)->toArray();
     }
 }
