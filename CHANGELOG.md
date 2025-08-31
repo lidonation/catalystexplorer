@@ -1,3 +1,16 @@
+# [1.17.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.16.1...v1.17.0) (2025-08-31)
+
+
+### Bug Fixes
+
+* type error on list dto ([87cebff](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/87cebff3433a3e135815981f3683dd2450bc1ee4))
+
+
+### Features
+
+* adding a create-list-banner to the active funds page ([7b6a6e1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/7b6a6e1da050f5256db5b39db14ae24f5a8b9ce9))
+* **forms:** showing errors caught during form submissions across the site ([1ef3c1b](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/1ef3c1bfabfc9d1bc0825fbf68bbac086d20db9c))
+
 ## [1.16.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.16.0...v1.16.1) (2025-08-28)
 
 
