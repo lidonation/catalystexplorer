@@ -203,3 +203,73 @@ it('serializes CampaignData with MapInputName attributes correctly', function ()
         ->not->toHaveKey('total_awarded')
         ->not->toHaveKey('total_distributed');
 });
+
+// Type Validation Tests
+it('validates CampaignData field types from factory', function () {
+    $campaign = Campaign::factory()->create();
+    $dto = $campaign->toDto();
+
+    expect($dto->id)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->fund_id)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->title)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->meta_title)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->slug)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->excerpt)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->comment_prompt)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->content)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->hero_img_url)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->amount)->toSatisfy(fn($v) => is_null($v) || is_float($v) || is_int($v));
+    expect($dto->created_at)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->updated_at)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->label)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->currency)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->proposals_count)->toSatisfy(fn($v) => is_null($v) || is_int($v));
+    expect($dto->unfunded_proposals_count)->toSatisfy(fn($v) => is_null($v) || is_int($v));
+    expect($dto->funded_proposals_count)->toSatisfy(fn($v) => is_null($v) || is_int($v));
+    expect($dto->completed_proposals_count)->toSatisfy(fn($v) => is_null($v) || is_int($v));
+    expect($dto->total_requested)->toSatisfy(fn($v) => is_null($v) || is_float($v) || is_int($v));
+    expect($dto->total_awarded)->toSatisfy(fn($v) => is_null($v) || is_float($v) || is_int($v));
+    expect($dto->total_distributed)->toSatisfy(fn($v) => is_null($v) || is_float($v) || is_int($v));
+    expect($dto->fund)->toSatisfy(fn($v) => is_null($v) || $v instanceof \App\DataTransferObjects\FundData);
+});
+
+it('rejects invalid types for CampaignData numeric fields', function () {
+    expect(fn() => CampaignData::from([
+        'id' => 'x',
+        'amount' => 'not-a-number',
+        'proposals_count' => 'ten',
+        'total_requested' => 'nope'
+    ]))->toThrow();
+});
+
+it('accepts null values for CampaignData nullable fields', function () {
+    $dto = CampaignData::from([
+        'id' => null,
+        'fund_id' => null,
+        'title' => null,
+        'meta_title' => null,
+        'slug' => null,
+        'excerpt' => null,
+        'comment_prompt' => null,
+        'content' => null,
+        'hero_img_url' => null,
+        'amount' => null,
+        'created_at' => null,
+        'updated_at' => null,
+        'label' => null,
+        'currency' => null,
+        'proposals_count' => null,
+        'unfunded_proposals_count' => null,
+        'funded_proposals_count' => null,
+        'completed_proposals_count' => null,
+        'total_requested' => null,
+        'total_awarded' => null,
+        'total_distributed' => null,
+        'fund' => null,
+    ]);
+
+    expect($dto->id)->toBeNull();
+    expect($dto->amount)->toBeNull();
+    expect($dto->proposals_count)->toBeNull();
+    expect($dto->total_requested)->toBeNull();
+});

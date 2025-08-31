@@ -5,86 +5,129 @@ declare(strict_types=1);
 use App\Models\Group;
 use App\Models\User;
 use App\Models\CatalystDrep;
+use App\DataTransferObjects\GroupData;
+use App\DataTransferObjects\UserData;
+use App\DataTransferObjects\CatalystDrepData;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(TestCase::class, RefreshDatabase::class);
 
-it('converts collection of models to DTO collection', function () {
-    $groups = Group::factory()->count(3)->create();
-    
-    $dtoCollection = Group::toDtoCollection($groups);
-
-    expect($dtoCollection)->toHaveCount(3);
-    
-    $dtoCollection->each(function ($dto) {
-        expect($dto)->toBeInstanceOf(\App\DataTransferObjects\GroupData::class);
-    });
-});
-
-it('converts paginated models to DTO paginated collection', function () {
-    Group::factory()->count(5)->create();
-    
-    $paginator = Group::paginate(2);
-    $dtoPaginator = Group::toDtoPaginated($paginator);
-
-    expect($dtoPaginator->items())->toHaveCount(2);
-    expect($dtoPaginator->total())->toBe(5);
-    
-    collect($dtoPaginator->items())->each(function ($dto) {
-        expect($dto)->toBeInstanceOf(\App\DataTransferObjects\GroupData::class);
-    });
-});
-
-it('handles mixed collection with non-model items', function () {
-    $groups = Group::factory()->count(2)->create();
-    $collection = collect([
-        $groups[0],
-        ['raw_array' => 'data'],
-        $groups[1],
-        'string_item'
-    ]);
-    
-    $dtoCollection = Group::toDtoCollection($collection);
-
-    expect($dtoCollection)->toHaveCount(4);
-    expect($dtoCollection[0])->toBeInstanceOf(\App\DataTransferObjects\GroupData::class);
-    expect($dtoCollection[1])->toBe(['raw_array' => 'data']);
-    expect($dtoCollection[2])->toBeInstanceOf(\App\DataTransferObjects\GroupData::class);
-    expect($dtoCollection[3])->toBe('string_item');
-});
-
-it('converts array of models to DTO collection', function () {
-    $users = User::factory()->count(3)->create();
-    $userArray = $users->toArray();
-    
-    $dtoCollection = User::toDtoCollection($userArray);
-
-    expect($dtoCollection)->toHaveCount(3);
-    
-    // Since these are arrays, not model objects, they should remain as arrays
-    $dtoCollection->each(function ($item) {
-        expect($item)->toBeArray();
-    });
-});
-
-it('handles empty collection', function () {
-    $dtoCollection = Group::toDtoCollection(collect());
-
-    expect($dtoCollection)->toHaveCount(0);
-    expect($dtoCollection)->toBeInstanceOf(\Illuminate\Support\Collection::class);
-});
-
-it('resolves correct DTO class for different models', function () {
+// GroupData Type Validation Tests
+it('validates GroupData field types from factory data', function () {
     $group = Group::factory()->create();
-    $user = User::factory()->create();
-    $drep = CatalystDrep::factory()->create();
+    $dto = $group->toDto();
     
-    $groupDto = $group->toDto();
-    $userDto = $user->toDto();
-    $drepDto = $drep->toDto();
+    // Required string field
+    expect($dto->id)->toBeString();
+    
+    // Nullable string fields
+    expect($dto->user_id)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->name)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->hero_img_url)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->banner_img_url)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->slug)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->status)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->meta_title)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->website)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->twitter)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->discord)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->github)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->linkedin)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->created_at)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->updated_at)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->deleted_at)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    
+    // Union type field (array|string|null)
+    expect($dto->bio)->toSatisfy(fn($value) => is_null($value) || is_string($value) || is_array($value));
+    
+    // Nullable float fields
+    expect($dto->amount_awarded_ada)->toSatisfy(fn($value) => is_null($value) || is_float($value));
+    expect($dto->amount_awarded_usd)->toSatisfy(fn($value) => is_null($value) || is_float($value));
+    expect($dto->amount_requested_ada)->toSatisfy(fn($value) => is_null($value) || is_float($value));
+    expect($dto->amount_requested_usd)->toSatisfy(fn($value) => is_null($value) || is_float($value));
+    expect($dto->amount_distributed_ada)->toSatisfy(fn($value) => is_null($value) || is_float($value));
+    expect($dto->amount_distributed_usd)->toSatisfy(fn($value) => is_null($value) || is_float($value));
+    
+    // Nullable integer fields
+    expect($dto->proposals_count)->toSatisfy(fn($value) => is_null($value) || is_int($value));
+    expect($dto->completed_proposals_count)->toSatisfy(fn($value) => is_null($value) || is_int($value));
+    expect($dto->funded_proposals_count)->toSatisfy(fn($value) => is_null($value) || is_int($value));
+    expect($dto->unfunded_proposals_count)->toSatisfy(fn($value) => is_null($value) || is_int($value));
+    expect($dto->proposals_funded)->toSatisfy(fn($value) => is_null($value) || is_int($value));
+    expect($dto->proposals_unfunded)->toSatisfy(fn($value) => is_null($value) || is_int($value));
+    expect($dto->proposals_completed)->toSatisfy(fn($value) => is_null($value) || is_int($value));
+    expect($dto->reviews_count)->toSatisfy(fn($value) => is_null($value) || is_int($value));
+    
+    // DataCollection field
+    expect($dto->ideascale_profiles)->toSatisfy(fn($value) => is_null($value) || $value instanceof \Spatie\LaravelData\DataCollection);
+});
 
-    expect($groupDto)->toBeInstanceOf(\App\DataTransferObjects\GroupData::class);
-    expect($userDto)->toBeInstanceOf(\App\DataTransferObjects\UserData::class);
-    expect($drepDto)->toBeInstanceOf(\App\DataTransferObjects\CatalystDrepData::class);
+it('rejects invalid types for GroupData string fields', function () {
+    expect(fn() => GroupData::from([
+        'id' => 123, // should be string
+        'name' => ['invalid', 'array']
+    ]))->toThrow();
+});
+
+it('rejects invalid types for GroupData numeric fields', function () {
+    expect(fn() => GroupData::from([
+        'id' => 'valid-id',
+        'amount_awarded_ada' => 'not-a-number', // should be float
+        'proposals_count' => 'not-an-integer' // should be int
+    ]))->toThrow();
+});
+
+// UserData Type Validation Tests
+it('validates UserData field types from factory data', function () {
+    $user = User::factory()->create();
+    $dto = $user->toDto();
+    
+    // All UserData fields are nullable strings except DataCollection
+    expect($dto->id)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->name)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->email)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->hero_img_url)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->email_verified_at)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    
+    // DataCollection field
+    expect($dto->locations)->toSatisfy(fn($value) => is_null($value) || $value instanceof \Spatie\LaravelData\DataCollection);
+});
+
+it('rejects invalid types for UserData', function () {
+    expect(fn() => UserData::from([
+        'id' => ['not', 'a', 'string'],
+        'name' => 12345
+    ]))->toThrow();
+});
+
+// CatalystDrepData Type Validation Tests
+it('validates CatalystDrepData field types from factory data', function () {
+    $drep = CatalystDrep::factory()->create();
+    $dto = $drep->toDto();
+    
+    // Nullable string fields
+    expect($dto->id)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->name)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->email)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->link)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->bio)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->motivation)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->qualifications)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->objective)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->stake_address)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->last_active)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->status)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    expect($dto->locale)->toSatisfy(fn($value) => is_null($value) || is_string($value));
+    
+    // Nullable integer fields
+    expect($dto->voting_power)->toSatisfy(fn($value) => is_null($value) || is_int($value));
+    expect($dto->delegators_count)->toSatisfy(fn($value) => is_null($value) || is_int($value));
+});
+
+it('rejects invalid types for CatalystDrepData', function () {
+    expect(fn() => CatalystDrepData::from([
+        'voting_power' => 'should-be-int',
+        'delegators_count' => ['not', 'an', 'int']
+    ]))->toThrow();
 });

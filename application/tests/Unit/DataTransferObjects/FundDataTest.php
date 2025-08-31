@@ -171,3 +171,47 @@ it('handles parent relationship in FundData', function () {
         fn($value) => $value === null || is_string($value)
     );
 });
+
+// Type Validation Tests
+it('validates FundData field types from factory', function () {
+    $fund = Fund::factory()->create();
+    $dto = $fund->toDto();
+
+    expect($dto->id)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->amount)->toSatisfy(fn($v) => is_null($v) || is_float($v) || is_int($v));
+    expect($dto->label)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->title)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->proposals_count)->toSatisfy(fn($v) => is_null($v) || is_int($v));
+    expect($dto->amount_requested)->toSatisfy(fn($v) => is_null($v) || is_int($v));
+    expect($dto->amount_awarded)->toSatisfy(fn($v) => is_null($v) || is_int($v));
+    expect($dto->launched_at)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->awarded_at)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->review_started_at)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+});
+
+it('rejects invalid types for FundData numeric fields', function () {
+    expect(fn() => FundData::from([
+        'amount' => 'not-a-number',
+        'proposals_count' => 'ten',
+        'amount_awarded' => 'nope'
+    ]))->toThrow();
+});
+
+it('accepts null values for FundData nullable fields', function () {
+    $dto = FundData::from([
+        'amount' => null,
+        'label' => null,
+        'title' => null,
+        'id' => null,
+        'proposals_count' => null,
+        'amount_requested' => null,
+        'amount_awarded' => null,
+        'launched_at' => null,
+        'awarded_at' => null,
+        'review_started_at' => null,
+    ]);
+
+    expect($dto->amount)->toBeNull();
+    expect($dto->proposals_count)->toBeNull();
+    expect($dto->launched_at)->toBeNull();
+});

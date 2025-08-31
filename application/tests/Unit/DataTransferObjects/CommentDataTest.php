@@ -141,7 +141,7 @@ it('handles Comment without commentator', function () {
         'text' => 'Anonymous comment',
         'commentator_id' => null,
         'commentator_type' => null,
-        'commentable_type' => 'App\Models\Post',
+        'commentable_type' => 'App\\Models\\Post',
         'commentable_id' => 1,
     ]);
     $comment->save();
@@ -151,4 +151,56 @@ it('handles Comment without commentator', function () {
     expect($dto)->toBeInstanceOf(CommentData::class)
         ->and($dto->text)->toBe('Anonymous comment')
         ->and($dto->commentator)->toBeNull();
+});
+
+// Type Validation Tests
+it('validates CommentData field types from factory', function () {
+    $user = User::factory()->create();
+    $comment = new Comment([
+        'text' => 'Type check',
+        'commentator_id' => $user->id,
+        'commentator_type' => User::class,
+        'commentable_type' => 'App\\Models\\Post',
+        'commentable_id' => 1,
+    ]);
+    $comment->save();
+    $comment->load('commentator');
+
+    $dto = $comment->toDto();
+
+    expect($dto->id)->toBeString();
+    expect($dto->text)->toBeString();
+    expect($dto->original_text)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->created_at)->toBeString();
+    expect($dto->updated_at)->toBeString();
+    expect($dto->parent_id)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->commentator)->toSatisfy(fn($v) => is_null($v) || $v instanceof UserData);
+    expect($dto->nested_comments)->toSatisfy(fn($v) => is_null($v) || $v instanceof \Spatie\LaravelData\DataCollection);
+});
+
+it('rejects invalid types for CommentData', function () {
+    expect(fn() => CommentData::from([
+        'id' => 'abc',
+        'text' => ['invalid'],
+        'created_at' => 123,
+        'updated_at' => 123
+    ]))->toThrow();
+});
+
+it('accepts null values for CommentData nullable fields', function () {
+    $dto = CommentData::from([
+        'id' => '1',
+        'text' => 'ok',
+        'original_text' => null,
+        'created_at' => now()->format('Y-m-d H:i:s'),
+        'parent_id' => null,
+        'updated_at' => now()->format('Y-m-d H:i:s'),
+        'commentator' => null,
+        'nested_comments' => null,
+    ]);
+
+    expect($dto->original_text)->toBeNull();
+    expect($dto->parent_id)->toBeNull();
+    expect($dto->commentator)->toBeNull();
+    expect($dto->nested_comments)->toBeNull();
 });

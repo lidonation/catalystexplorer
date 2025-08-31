@@ -219,3 +219,88 @@ it('handles link attribute in ProposalData', function () {
 
     expect($dto->link)->toBeString();
 });
+
+// Type Validation Tests
+it('validates ProposalData field types from factory', function () {
+    $proposal = Proposal::factory()->create();
+    $dto = $proposal->toDto();
+
+    expect($dto->id)->toBeString();
+    expect($dto->title)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->slug)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->website)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->excerpt)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->content)->toSatisfy(fn($v) => is_null($v) || is_string($v) || is_array($v));
+    expect($dto->amount_requested)->toSatisfy(fn($v) => is_null($v) || is_float($v) || is_int($v));
+    expect($dto->amount_received)->toSatisfy(fn($v) => is_null($v) || is_float($v) || is_int($v));
+    expect($dto->yes_votes_count)->toSatisfy(fn($v) => is_null($v) || is_int($v));
+    expect($dto->no_votes_count)->toSatisfy(fn($v) => is_null($v) || is_int($v));
+    expect($dto->abstain_votes_count)->toSatisfy(fn($v) => is_null($v) || is_int($v));
+    expect($dto->ranking_total)->toSatisfy(fn($v) => is_null($v) || is_int($v));
+    expect($dto->alignment_score)->toSatisfy(fn($v) => is_null($v) || is_int($v));
+    expect($dto->feasibility_score)->toSatisfy(fn($v) => is_null($v) || is_int($v));
+    expect($dto->auditability_score)->toSatisfy(fn($v) => is_null($v) || is_int($v));
+    expect($dto->opensource)->toSatisfy(fn($v) => is_null($v) || is_bool($v));
+    expect($dto->order)->toSatisfy(fn($v) => is_null($v) || is_int($v));
+});
+
+it('rejects invalid types for ProposalData numeric and boolean fields', function () {
+    expect(fn() => ProposalData::from([
+        'id' => 'x',
+        'amount_requested' => 'nope',
+        'yes_votes_count' => 'ten',
+        'opensource' => 'true',
+        'link' => 'https://example.com' // required field
+    ]))->toThrow();
+});
+
+it('accepts null values for ProposalData nullable fields', function () {
+    $dto = ProposalData::from([
+        'id' => 'id-1',
+        'campaign' => null,
+        'schedule' => null,
+        'title' => null,
+        'slug' => null,
+        'website' => null,
+        'excerpt' => null,
+        'content' => null,
+        'amount_requested' => null,
+        'amount_received' => null,
+        'definition_of_success' => null,
+        'status' => null,
+        'funding_status' => null,
+        'funded_at' => null,
+        'deleted_at' => null,
+        'funding_updated_at' => null,
+        'yes_votes_count' => null,
+        'no_votes_count' => null,
+        'abstain_votes_count' => null,
+        'comment_prompt' => null,
+        'social_excerpt' => null,
+        'ideascale_link' => null,
+        'projectcatalyst_io_link' => null,
+        'type' => null,
+        'meta_title' => null,
+        'problem' => null,
+        'solution' => null,
+        'experience' => null,
+        'currency' => null,
+        'minted_nfts_fingerprint' => null,
+        'ranking_total' => null,
+        'alignment_score' => null,
+        'feasibility_score' => null,
+        'auditability_score' => null,
+        'quickpitch' => null,
+        'quickpitch_length' => null,
+        'users' => null,
+        'reviews' => null,
+        'fund' => null,
+        'opensource' => null,
+        'link' => 'https://example.com',
+        'order' => null,
+    ]);
+
+    expect($dto->amount_requested)->toBeNull();
+    expect($dto->yes_votes_count)->toBeNull();
+    expect($dto->opensource)->toBeNull();
+});

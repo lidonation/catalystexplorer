@@ -72,3 +72,39 @@ it('handles unverified user in UserData', function () {
     expect($dto)->toBeInstanceOf(UserData::class)
         ->and($dto->email_verified_at)->toBeNull();
 });
+
+// Type Validation Tests
+it('validates UserData field types from factory', function () {
+    $user = User::factory()->create();
+    $dto = $user->toDto();
+
+    expect($dto->id)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->name)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->email)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->hero_img_url)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->email_verified_at)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->locations)->toSatisfy(fn($v) => is_null($v) || $v instanceof \Spatie\LaravelData\DataCollection);
+});
+
+it('rejects invalid types for UserData', function () {
+    expect(fn() => UserData::from([
+        'id' => ['invalid'],
+        'name' => 123
+    ]))->toThrow();
+});
+
+it('accepts null values for UserData nullable fields', function () {
+    $dto = UserData::from([
+        'id' => null,
+        'name' => null,
+        'email' => null,
+        'hero_img_url' => null,
+        'email_verified_at' => null,
+        'locations' => null,
+    ]);
+
+    expect($dto->id)->toBeNull();
+    expect($dto->name)->toBeNull();
+    expect($dto->email_verified_at)->toBeNull();
+    expect($dto->locations)->toBeNull();
+});

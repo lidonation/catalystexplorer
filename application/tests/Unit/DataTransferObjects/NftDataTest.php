@@ -239,3 +239,38 @@ it('handles different NFT rarity values', function () {
         ->and($rareDto->rarity)->toBe('rare')
         ->and($legendaryDto->rarity)->toBe('legendary');
 });
+
+// Type Validation Tests
+it('validates NftData field types from factory', function () {
+    $nft = Nft::factory()->create();
+    $dto = $nft->toDto();
+
+    expect($dto->id)->toBeInt();
+    expect($dto->hash)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->qty)->toBeInt();
+    expect($dto->name)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->fingerprint)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->minted_at)->toSatisfy(fn($v) => is_null($v) || $v instanceof \Carbon\Carbon);
+});
+
+it('rejects invalid types for NftData', function () {
+    expect(fn() => NftData::from([
+        'id' => 1,
+        'qty' => 'one'
+    ]))->toThrow();
+});
+
+it('accepts null values for nullable NftData fields', function () {
+    $dto = NftData::from([
+        'id' => 1,
+        'hash' => null,
+        'name' => null,
+        'fingerprint' => null,
+        'minted_at' => null,
+        'qty' => 1,
+    ]);
+
+    expect($dto->hash)->toBeNull();
+    expect($dto->name)->toBeNull();
+    expect($dto->minted_at)->toBeNull();
+});

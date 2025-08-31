@@ -181,3 +181,75 @@ it('preserves all VoteEnum values correctly', function () {
         expect($dto->vote)->toBe($voteCase);
     }
 });
+
+// Type Validation Tests
+it('validates all BookmarkItemData field types', function () {
+    $item = BookmarkItem::factory()->create();
+    $dto = $item->toDto();
+    
+    // Nullable string fields
+    expect($dto->id)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->user_id)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->bookmark_collection_id)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->model_id)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->model_type)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->title)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->content)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->created_at)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->updated_at)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->deleted_at)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    
+    // Nullable integer field
+    expect($dto->action)->toSatisfy(fn($v) => is_null($v) || is_int($v));
+    
+    // VoteEnum field (nullable)
+    expect($dto->vote)->toSatisfy(fn($v) => is_null($v) || $v instanceof VoteEnum);
+    
+    // Union type model field
+    expect($dto->model)->toSatisfy(fn($v) => 
+        $v instanceof \App\DataTransferObjects\ProposalData ||
+        $v instanceof \App\DataTransferObjects\ReviewData ||
+        $v instanceof \App\DataTransferObjects\IdeascaleProfileData ||
+        $v instanceof \App\DataTransferObjects\CommunityData ||
+        $v instanceof \App\DataTransferObjects\GroupData
+    );
+});
+
+it('rejects invalid BookmarkItemData types', function () {
+    expect(fn() => BookmarkItemData::from([
+        'id' => 123 // should be string or null
+    ]))->toThrow();
+    
+    expect(fn() => BookmarkItemData::from([
+        'id' => 'valid-id',
+        'action' => 'not-integer' // should be int or null
+    ]))->toThrow();
+});
+
+it('accepts null values for BookmarkItemData nullable fields', function () {
+    $validModel = \App\DataTransferObjects\GroupData::from([
+        'id' => 'test-id'
+    ]);
+    
+    $dto = BookmarkItemData::from([
+        'id' => null,
+        'user_id' => null,
+        'bookmark_collection_id' => null,
+        'model_id' => null,
+        'model' => $validModel, // This field is required (not nullable)
+        'model_type' => null,
+        'title' => null,
+        'content' => null,
+        'action' => null,
+        'vote' => null,
+        'created_at' => null,
+        'updated_at' => null,
+        'deleted_at' => null
+    ]);
+    
+    expect($dto->id)->toBeNull();
+    expect($dto->user_id)->toBeNull();
+    expect($dto->action)->toBeNull();
+    expect($dto->vote)->toBeNull();
+    expect($dto->model)->toBeInstanceOf(\App\DataTransferObjects\GroupData::class);
+});

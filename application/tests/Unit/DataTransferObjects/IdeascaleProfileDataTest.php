@@ -225,3 +225,66 @@ it('handles title and hero_img_url in IdeascaleProfileData', function () {
         fn($value) => $value === null || is_string($value)
     );
 });
+
+// Type Validation Tests
+it('validates IdeascaleProfileData field types from factory', function () {
+    $profile = IdeascaleProfile::factory()->create();
+    $dto = $profile->toDto();
+
+    expect($dto->id)->toBeString();
+    expect($dto->ideascaleId)->toSatisfy(fn($v) => is_null($v) || is_int($v));
+    expect($dto->username)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->email)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->name)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->createdAt)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->updatedAt)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->amount_awarded_usd)->toSatisfy(fn($v) => is_null($v) || is_int($v));
+    expect($dto->amount_requested_ada)->toSatisfy(fn($v) => is_null($v) || is_float($v) || is_int($v));
+});
+
+it('rejects invalid types for IdeascaleProfileData numeric fields', function () {
+    expect(fn() => IdeascaleProfileData::from([
+        'ideascaleId' => 'not-int',
+        'amount_awarded_usd' => 'not-int',
+        'amount_requested_ada' => 'not-float'
+    ]))->toThrow();
+});
+
+it('accepts null values for IdeascaleProfileData nullable fields', function () {
+    $dto = IdeascaleProfileData::from([
+        'id' => '1',
+        'ideascaleId' => null,
+        'username' => null,
+        'email' => null,
+        'name' => null,
+        'bio' => null,
+        'createdAt' => null,
+        'updatedAt' => null,
+        'twitter' => null,
+        'linkedin' => null,
+        'discord' => null,
+        'ideascale' => null,
+        'telegram' => null,
+        'title' => null,
+        'hero_img_url' => null,
+        'amount_awarded_usd' => null,
+        'amount_awarded_ada' => null,
+        'amount_requested_ada' => null,
+        'amount_requested_usd' => null,
+        'co_proposals_count' => null,
+        'own_proposals_count' => null,
+        'completed_proposals_count' => null,
+        'funded_proposals_count' => null,
+        'unfunded_proposals_count' => null,
+        'proposals_count' => null,
+        'reviews_count' => null,
+        'collaborating_proposals_count' => null,
+        'groups' => null,
+        'claimed_by' => null,
+        'reviews' => null,
+    ]);
+
+    expect($dto->ideascaleId)->toBeNull();
+    expect($dto->username)->toBeNull();
+    expect($dto->amount_awarded_usd)->toBeNull();
+});

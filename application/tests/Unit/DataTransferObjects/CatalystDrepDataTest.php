@@ -89,3 +89,54 @@ it('creates CatalystDrepData from array data', function () {
         ->and($dto->locale)->toBe('en')
         ->and($dto->delegators_count)->toBe(0);
 });
+
+// Type Validation Tests
+it('validates CatalystDrepData field types from factory', function () {
+    $drep = CatalystDrep::factory()->create();
+    $dto = $drep->toDto();
+
+    expect($dto->id)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->name)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->email)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->link)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->bio)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->motivation)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->qualifications)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->objective)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->stake_address)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->voting_power)->toSatisfy(fn($v) => is_null($v) || is_int($v));
+    expect($dto->last_active)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->status)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->locale)->toSatisfy(fn($v) => is_null($v) || is_string($v));
+    expect($dto->delegators_count)->toSatisfy(fn($v) => is_null($v) || is_int($v));
+});
+
+it('rejects invalid types for CatalystDrepData integer fields', function () {
+    expect(fn() => CatalystDrepData::from([
+        'voting_power' => 'nope',
+        'delegators_count' => 'nope'
+    ]))->toThrow();
+});
+
+it('accepts null values for CatalystDrepData nullable fields', function () {
+    $dto = CatalystDrepData::from([
+        'id' => null,
+        'name' => null,
+        'email' => null,
+        'link' => null,
+        'bio' => null,
+        'motivation' => null,
+        'qualifications' => null,
+        'objective' => null,
+        'stake_address' => null,
+        'voting_power' => null,
+        'last_active' => null,
+        'status' => null,
+        'locale' => null,
+        'delegators_count' => null,
+    ]);
+
+    expect($dto->name)->toBeNull();
+    expect($dto->voting_power)->toBeNull();
+    expect($dto->delegators_count)->toBeNull();
+});
