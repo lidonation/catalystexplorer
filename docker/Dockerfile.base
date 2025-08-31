@@ -37,11 +37,15 @@ RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime \
     && echo ${TZ} > /etc/timezone
 
 # Install curl and gpg first for repository setup
-RUN apt-get update && apt-get install -yqq --no-install-recommends curl gpg
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl gnupg lsb-release
 
-# Add PostgreSQL APT repository for version 17
-RUN curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgresql-keyring.gpg \
-    && echo "deb [signed-by=/usr/share/keyrings/postgresql-keyring.gpg] https://apt.postgresql.org/pub/repos/apt/ trixie-pgdg main" > /etc/apt/sources.list.d/postgresql.list
+# Add the PostgreSQL APT repository and key
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" \
+    > /etc/apt/sources.list.d/pgdg.list \
+    && curl -sSL https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+    | gpg --dearmor \
+    | tee /etc/apt/trusted.gpg.d/postgresql.gpg > /dev/null
 
 RUN apt-get update; \
     apt-get upgrade -yqq; \
@@ -67,6 +71,7 @@ RUN apt-get update; \
     postgresql-client-17 \
     procps \
     python3 \
+    python3-dev \
     python3-venv \
     python3-launchpadlib \
     supervisor \
@@ -117,27 +122,7 @@ RUN mkdir /venv && chown -R 777 /venv
 
 RUN python3 -m venv /venv
 
-# --- Python & Pillow build deps ---
-RUN apt-get update && apt-get install -y \
-    python3-dev \
-    build-essential \
-    libjpeg-dev \
-    zlib1g-dev \
-    libfreetype6-dev \
-    liblcms2-dev \
-    libopenjp2-7-dev \
-    libtiff-dev \
-    tk-dev \
-    tcl-dev \
-    libharfbuzz-dev \
-    libfribidi-dev \
-    libwebp-dev \
-    libimagequant-dev \
-    libxcb1-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN /venv/bin/pip install --no-cache-dir --upgrade pip setuptools wheel \
-    && /venv/bin/pip install --no-cache-dir blend_modes==2.0.2 numpy==1.26.3 pillow==10.4.0 cbor2 pycose brotli pycardano
+RUN /venv/bin/pip install --no-cache-dir blend_modes==2.0.2 numpy==1.26.3 pillow==11.3.0 cbor2 pycose brotli pycardano
 
 RUN userdel --remove --force www-data \
     && groupadd --force -g ${WWWGROUP} ${USER} \
