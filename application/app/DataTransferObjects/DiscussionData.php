@@ -14,7 +14,7 @@ final class DiscussionData extends Data
         #[TypeScriptOptional]
         public ?string $user_id,
 
-        public int $model_id,
+        public string $model_id,
 
         public string $model_type,
 
