@@ -16,6 +16,7 @@ import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ClaimProfileForm, { ClaimFormHandles, IdeascaleProfileFormFields } from './partials/ClaimProfileForm';
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface Step1Props {
     profile: IdeascaleProfileData;
@@ -71,6 +72,9 @@ const Step2: React.FC<Step1Props> = ({ profile, stepDetails, activeStep }) => {
 
             {profile?.id && (
                 <Content>
+
+                     <ErrorDisplay/>
+
                     <ClaimProfileForm
                         form={form}
                         setIsValid={setIsFormValid}

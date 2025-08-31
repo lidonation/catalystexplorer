@@ -1,4 +1,5 @@
 import InputError from '@/Components/InputError';
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import TextInput from '@/Components/atoms/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
@@ -19,6 +20,8 @@ export default function ForgotPassword({ status }: { status?: string }) {
     return (
         <GuestLayout>
             <Head title="Forgot Password" />
+
+            <ErrorDisplay />
 
             <div className="text-4 text-dark mb-4">
                 Forgot your password? No problem. Just let us know your email

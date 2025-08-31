@@ -13,6 +13,7 @@ import { FormEventHandler, useState } from "react";
 import CatalystLogo from "@/Components/atoms/CatalystLogo";
 import Title from "@/Components/atoms/Title";
 import { generateLocalizedRoute, useLocalizedRoute } from "@/utils/localizedRoute";
+import ErrorDisplay from "@/Components/atoms/ErrorDisplay";
 
 interface Step2Props {
     stepDetails: StepDetails[];
@@ -58,6 +59,9 @@ const Step2: React.FC<Step2Props> = ({ stepDetails, activeStep, token, email }) 
                         <div className="flex justify-center p-5">
                             <CatalystLogo />
                         </div>
+                        
+                        <ErrorDisplay/>
+
                         <Title level='4' className='text-content text-center font-inter text-base font-bold leading-6'>
                             {t('workflows.resetPassword.reset')}
                         </Title>

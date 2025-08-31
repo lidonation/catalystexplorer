@@ -9,6 +9,7 @@ import {useLaravelReactI18n} from "laravel-react-i18n";
 import Title from './atoms/Title';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import ConnectWalletButton from './ConnectWalletButton';
+import ErrorDisplay from './atoms/ErrorDisplay';
 
 interface LoginFormProps {
     title?: string;
@@ -46,6 +47,9 @@ export default function LoginForm({ title, postRoute }: LoginFormProps) {
     return (
         <div className="not-prose flex items-center justify-center py-12">
             <div className="bg-background  mx-4 w-full max-w-md rounded-2xl p-6  sm:mx-0 sm:p-8">
+
+                <ErrorDisplay  />
+                
                 {/* Conditionally render the title only if it's provided */}
                 {title && (
                     <Title

@@ -16,6 +16,7 @@ import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 import CampaignData = App.DataTransferObjects.CampaignData;
 import FundData = App.DataTransferObjects.FundData;
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface Step1Props {
     stepDetails: any[];
@@ -226,6 +227,9 @@ const Step1: React.FC<Step1Props> = ({
                 <Content>
                     <div className="bg-background mx-auto max-w-3xl border-black px-12 py-4 sm:py-8 xl:px-20">
                         <div className="scrolling-touch max-h-[60vh] space-y-6 overflow-y-auto rounded-lg border border-gray-100 p-6 shadow-sm">
+
+                            <ErrorDisplay />
+                            
                             <div className="space-y-6">
                                 {/* Fund Selection */}
                                 <div>
