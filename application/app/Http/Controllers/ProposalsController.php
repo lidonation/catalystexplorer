@@ -983,23 +983,25 @@ class ProposalsController extends Controller
             }])->where('type', $chartType)->toRawSql()
         );
 
-        return Metric::with(['rules' => function ($query) use ($proposalRuleTitles) {
-            $query->whereIn('title', $proposalRuleTitles);
-        }])
+        Log::info('Rules Titles:::'.json_encode($proposalRuleTitles));
+
+        return Metric::with([
+            'rules' => fn ($query) => $query->whereIn('title', $proposalRuleTitles),
+        ])
             ->where('type', $chartType)
-            ->get()
-            ->filter(function ($metric) use ($proposalRuleTitles, $proposalRuleTitlesKey) {
-                $metricRuleTitles = $metric->rules->pluck('title')->toArray();
-
-                if (count($metricRuleTitles) !== count($proposalRuleTitles)) {
-                    return false;
-                }
-
-                sort($metricRuleTitles);
-                $metricRuleTitlesKey = implode(',', $metricRuleTitles);
-
-                return $metricRuleTitlesKey === $proposalRuleTitlesKey;
-            });
+            ->get();
+        //            ->filter(function ($metric) use ($proposalRuleTitles, $proposalRuleTitlesKey) {
+        //                $metricRuleTitles = $metric->rules->pluck('title')->toArray();
+        //
+        //                if (count($metricRuleTitles) !== count($proposalRuleTitles)) {
+        //                    return false;
+        //                }
+        //
+        //                sort($metricRuleTitles);
+        //                $metricRuleTitlesKey = implode(',', $metricRuleTitles);
+        //
+        //                return $metricRuleTitlesKey === $proposalRuleTitlesKey;
+        //            });
     }
 
     /**
