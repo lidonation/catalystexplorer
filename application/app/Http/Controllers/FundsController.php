@@ -68,7 +68,7 @@ class FundsController extends Controller
             'fund' => $fund,
             'filters' => $this->queryParams,
             'metrics' => Inertia::optional(
-                fn() => MetricData::collect(
+                fn () => MetricData::collect(
                     $metrics
                         ->limit(6)
                         ->getQuery()
@@ -88,7 +88,7 @@ class FundsController extends Controller
                             }
 
                             $filteredData = collect($chartData['data'])
-                                ->reject(fn($item) => $item['x'] === $fund->title || empty($item['y']))
+                                ->reject(fn ($item) => $item['x'] === $fund->title || empty($item['y']))
                                 ->values();
 
                             if ($currentFundData && ! empty($currentFundData['y'])) {
@@ -125,7 +125,7 @@ class FundsController extends Controller
                         ->filter()
                 )
             ),
-            'campaigns' => Inertia::optional(fn() => CampaignData::collect($campaigns)),
+            'campaigns' => Inertia::optional(fn () => CampaignData::collect($campaigns)),
         ]);
     }
 
@@ -140,7 +140,6 @@ class FundsController extends Controller
         $amountAwarded = $activeFund->funded_proposals()->sum('amount_requested');
         $amountDistributed = $activeFund->funded_proposals()->sum('amount_received');
         $amountRemaining = $amountAwarded - $amountDistributed;
-
 
         $campaigns = $this->getCampaigns($activeFund);
         $campaigns->append([
