@@ -15,13 +15,13 @@ export default function CreateListBanner() {
             }}
         >
             <div className="text-content-darker w-full">
-                <Title level="4" className="mb-4 font-bold">
+                <Title level="2" className="mb-4 font-bold">
                     {t('activeFund.bannerTitle')}
                 </Title>
                 <Paragraph>{t('activeFund.bannerSubtitle')}</Paragraph>
             </div>
             <div className="flex h-full w-full items-center justify-center">
-                <div className="grid h-fit w-full grid-cols-1 gap-2 md:grid-cols-3">
+                <div className="grid h-fit w-full grid-cols-1 gap-2 md:grid-cols-2">
                     <PrimaryLink
                         className="text-center"
                         href={useLocalizedRoute(
@@ -29,7 +29,7 @@ export default function CreateListBanner() {
                             { step: 1 },
                         )}
                     >
-                        {t('my.createVotingList')}
+                        {t('my.createVotingListWithStandardUi')}
                     </PrimaryLink>
                     <PrimaryLink
                         className="text-center"
@@ -38,15 +38,7 @@ export default function CreateListBanner() {
                             { step: 1 },
                         )}
                     >
-                        {t('my.createTinderList')}
-                    </PrimaryLink>
-                    <PrimaryLink
-                        className="text-center"
-                        href={useLocalizedRoute('workflows.bookmarks.index', {
-                            step: 1,
-                        })}
-                    >
-                        {t('activeFund.createBookmarkList')}
+                        {t('my.createVotingListWithCardedUi')}
                     </PrimaryLink>
                 </div>
             </div>

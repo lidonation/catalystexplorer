@@ -11,7 +11,8 @@ const ActiveFundBanner: React.FC<ActiveFundBannerProps> = ({ fund }) => {
     const { t } = useLaravelReactI18n();
     return (
         <section className="container py-8">
-            <div className="relative flex md:h-120 h-60 w-full items-center justify-center overflow-hidden rounded-lg bg-linear-to-r from-gray-100 to-gray-900">
+            <div
+                className="relative flex md:h-120 h-60 w-full items-center justify-center overflow-hidden rounded-lg bg-linear-to-r from-gray-100 to-gray-900">
                 <img
                     src={fund.banner_img_url}
                     alt={fund.title || 'Fund'}
@@ -22,16 +23,18 @@ const ActiveFundBanner: React.FC<ActiveFundBannerProps> = ({ fund }) => {
                         level="1"
                         className="font-bold "
                     >{`${t('activeFund.title')} - ${fund?.title}`}</Title>
-                    <Paragraph className="line-clamp-3 min-h-[4.5rem] w-96 leading-relaxed" size='md'>
-                        {t('activeFund.subtitle')}
-                    </Paragraph>
+                    <div className='p-5 bg-black/20 rounded-xl'>
+                        <Paragraph className="line-clamp-3 min-h-[4.5rem] leading-relaxed w-100" size="md">
+                            {t('activeFund.subtitle')}
+                        </Paragraph>
+                    </div>
                 </div>
                 <div className="absolute top-1/2 left-6 right-6 -translate-y-1/2 text-white block md:hidden">
                     <Title
                         level="3"
                         className="font-bold "
                     >{`${t('activeFund.title')} - ${fund?.title}`}</Title>
-                    <Paragraph className=" leading-relaxed" size='md'>
+                    <Paragraph className=" leading-relaxed" size="md">
                         {t('activeFund.subtitle')}
                     </Paragraph>
                 </div>
