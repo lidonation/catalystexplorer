@@ -176,16 +176,6 @@ const LineChart: React.FC<LineChartProps> = ({
             d.data.some((point) => point.y > 0),
     );
 
-    useEffect(() => {
-        console.log('Filter states:', {
-            isSubmittedSelected,
-            isApprovedSelected,
-            isCompletedSelected,
-            isUnfundedSelected,
-            isInProgressSelected,
-        });
-    }, [lineData, hasPlottableData]);
-
     if (!hasPlottableData || lineData.length === 0) {
         return (
             <div className="flex h-64 items-center justify-center">

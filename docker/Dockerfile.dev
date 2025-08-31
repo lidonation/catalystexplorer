@@ -37,11 +37,15 @@ RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime \
     && echo ${TZ} > /etc/timezone
 
 # Install curl and gpg first for repository setup
-RUN apt-get update && apt-get install -yqq --no-install-recommends curl gpg
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl gnupg lsb-release
 
-# Add PostgreSQL APT repository for version 17
-RUN curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgresql-keyring.gpg \
-    && echo "deb [signed-by=/usr/share/keyrings/postgresql-keyring.gpg] https://apt.postgresql.org/pub/repos/apt/ bookworm-pgdg main" > /etc/apt/sources.list.d/postgresql.list
+# Add the PostgreSQL APT repository and key
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" \
+    > /etc/apt/sources.list.d/pgdg.list \
+    && curl -sSL https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+    | gpg --dearmor \
+    | tee /etc/apt/trusted.gpg.d/postgresql.gpg > /dev/null
 
 RUN apt-get update; \
     apt-get upgrade -yqq; \
@@ -64,6 +68,7 @@ RUN apt-get update; \
     nodejs \
     optipng \
     pngquant \
+    postgresql-client-17 \
     procps \
     python3 \
     python3-venv \
@@ -85,7 +90,6 @@ RUN apt-get update; \
     pdo_mysql \
     imagick/imagick@master \
     zip \
-    uv \
     intl \
     gd \
     redis \
@@ -102,22 +106,20 @@ RUN apt-get update; \
     && apt-get -y autoremove \
     && apt-get clean \
     && docker-php-source delete \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && rm /var/log/lastlog /var/log/faillog
-
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* 
 ENV CHROME_BIN=/usr/bin/chromium-browser \
     CHROME_PATH=/usr/lib/chromium/ \
     PUPPETEER_EXECUTABLE_PATH="/usr/bin/chromium-browser"
 
 COPY ./scripts /scripts/
 
+RUN apt-get update && apt-get install -y  python3-dev
+
 RUN mkdir /venv && chown -R 777 /venv
 
 RUN python3 -m venv /venv
 
-RUN /venv/bin/pip install --no-cache-dir blend_modes==2.0.2 numpy==1.26.3 pillow==10.3.0 cbor2 pycose brotli pycardano
-
-RUN apt-get update && apt-get install -y postgresql-client
+RUN /venv/bin/pip install --no-cache-dir blend_modes==2.0.2 numpy==1.26.3 pillow==11.3.0 cbor2 pycose brotli pycardano
 
 RUN userdel --remove --force www-data \
     && groupadd --force -g ${WWWGROUP} ${USER} \
