@@ -34,7 +34,10 @@ const Step8: React.FC<Step8Props> = ({
         bk: bookmarkHash,
     });
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep - 1]?.info || ''}>
+        <WorkflowLayout
+            title="Create Voter List"
+            asideInfo={stepDetails[activeStep - 1]?.info || ''}
+        >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>

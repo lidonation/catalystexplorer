@@ -144,7 +144,10 @@ const Step9: React.FC<Step9Props> = ({
                 replace: true,
             }}
         >
-            <WorkflowLayout asideInfo={stepDetails[activeStep - 1]?.info || ''}>
+            <WorkflowLayout
+                title="Create Voter List"
+                asideInfo={stepDetails[activeStep - 1]?.info || ''}
+            >
                 <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
                 <Content>

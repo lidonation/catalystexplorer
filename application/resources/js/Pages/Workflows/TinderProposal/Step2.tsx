@@ -110,15 +110,17 @@ const Step2: React.FC<Step2Props> = ({
     };
 
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
+        <WorkflowLayout
+            title="Tinder Proposal"
+            asideInfo={stepDetails[activeStep - 1].info ?? ''}
+        >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                <div className="bg-background mx-auto max-w-3xl px-12 xl:px-20 py-4 sm:py-8 border-black">
-                     
-                      <ErrorDisplay />
-                      
-                    <div className="space-y-6 rounded-lg border border-gray-100 p-6 shadow-sm max-h-[60vh] overflow-y-auto scrolling-touch">
+                <div className="bg-background mx-auto max-w-3xl border-black px-12 py-4 sm:py-8 xl:px-20">
+                    <ErrorDisplay />
+
+                    <div className="scrolling-touch max-h-[60vh] space-y-6 overflow-y-auto rounded-lg border border-gray-100 p-6 shadow-sm">
                         <div>
                             <ValueLabel className="text-content">
                                 {t('workflows.tinderProposal.step2.title')}
@@ -127,15 +129,24 @@ const Step2: React.FC<Step2Props> = ({
                             <TextInput
                                 id="title"
                                 className="w-full rounded-sm placeholder:text-sm"
-                                placeholder={t('workflows.tinderProposal.step2.titlePlaceholder')}
+                                placeholder={t(
+                                    'workflows.tinderProposal.step2.titlePlaceholder',
+                                )}
                                 value={form.data[TinderWorkflowParams.TITLE]}
                                 onChange={(e) =>
-                                    form.setData(TinderWorkflowParams.TITLE, e.target.value)
+                                    form.setData(
+                                        TinderWorkflowParams.TITLE,
+                                        e.target.value,
+                                    )
                                 }
                                 required
                                 data-testid="tinder-proposal-title-input"
                             />
-                            <InputError message={form.errors[TinderWorkflowParams.TITLE]} />
+                            <InputError
+                                message={
+                                    form.errors[TinderWorkflowParams.TITLE]
+                                }
+                            />
                         </div>
 
                         <div className="mt-3">
@@ -150,12 +161,19 @@ const Step2: React.FC<Step2Props> = ({
                                 required
                                 value={form.data[TinderWorkflowParams.CONTENT]}
                                 onChange={(e) =>
-                                    form.setData(TinderWorkflowParams.CONTENT, e.target.value)
+                                    form.setData(
+                                        TinderWorkflowParams.CONTENT,
+                                        e.target.value,
+                                    )
                                 }
                                 className="h-30 w-full rounded-lg px-4 py-2"
-                                data-testid='tinder-proposal-content-textarea'
+                                data-testid="tinder-proposal-content-textarea"
                             />
-                            <InputError message={form.errors[TinderWorkflowParams.CONTENT]} />
+                            <InputError
+                                message={
+                                    form.errors[TinderWorkflowParams.CONTENT]
+                                }
+                            />
                         </div>
 
                         <div className="grid grid-cols-12 items-center gap-4">
@@ -167,9 +185,16 @@ const Step2: React.FC<Step2Props> = ({
                             <div className="col-span-9">
                                 <RadioGroup
                                     name="visibility"
-                                    selectedValue={form.data[TinderWorkflowParams.VISIBILITY]}
+                                    selectedValue={
+                                        form.data[
+                                            TinderWorkflowParams.VISIBILITY
+                                        ]
+                                    }
                                     onChange={(value) =>
-                                        form.setData(TinderWorkflowParams.VISIBILITY, value)
+                                        form.setData(
+                                            TinderWorkflowParams.VISIBILITY,
+                                            value,
+                                        )
                                     }
                                     options={[
                                         {
@@ -198,7 +223,7 @@ const Step2: React.FC<Step2Props> = ({
                                         },
                                     ]}
                                     labelClassName="text-gray-persist ml-2"
-                                    data-testid='tinder-visibility-radio-group'
+                                    data-testid="tinder-visibility-radio-group"
                                 />
                             </div>
                         </div>
@@ -211,7 +236,12 @@ const Step2: React.FC<Step2Props> = ({
                             </div>
                             <div className="col-span-9 flex items-center gap-2">
                                 <CustomSwitch
-                                    checked={form.data[TinderWorkflowParams.COMMENTS_ENABLED]}
+                                    checked={
+                                        form.data[
+                                            TinderWorkflowParams
+                                                .COMMENTS_ENABLED
+                                        ]
+                                    }
                                     onCheckedChange={(checked) =>
                                         form.setData(
                                             TinderWorkflowParams.COMMENTS_ENABLED,
@@ -221,11 +251,9 @@ const Step2: React.FC<Step2Props> = ({
                                     color="bg-primary"
                                     size="md"
                                     className="!w-auto"
-                                    data-testid='tinder-comments-switch'
+                                    data-testid="tinder-comments-switch"
                                 />
-                                <Paragraph
-                                    className="text-gray-persist"
-                                >
+                                <Paragraph className="text-gray-persist">
                                     {t('workflows.voterList.commentsEnabled')}
                                 </Paragraph>
                             </div>
@@ -248,12 +276,19 @@ const Step2: React.FC<Step2Props> = ({
                                             className="mr-2 h-4 w-4 rounded-sm"
                                             style={{
                                                 backgroundColor:
-                                                    form.data[TinderWorkflowParams.COLOR],
+                                                    form.data[
+                                                        TinderWorkflowParams
+                                                            .COLOR
+                                                    ],
                                             }}
                                         />
                                         <input
                                             type="text"
-                                            value={form.data[TinderWorkflowParams.COLOR]}
+                                            value={
+                                                form.data[
+                                                    TinderWorkflowParams.COLOR
+                                                ]
+                                            }
                                             onChange={(e) =>
                                                 form.setData(
                                                     TinderWorkflowParams.COLOR,
@@ -266,7 +301,11 @@ const Step2: React.FC<Step2Props> = ({
                                         <input
                                             type="color"
                                             id="color-picker"
-                                            value={form.data[TinderWorkflowParams.COLOR]}
+                                            value={
+                                                form.data[
+                                                    TinderWorkflowParams.COLOR
+                                                ]
+                                            }
                                             onChange={(e) =>
                                                 form.setData(
                                                     TinderWorkflowParams.COLOR,
@@ -290,9 +329,14 @@ const Step2: React.FC<Step2Props> = ({
                             <div className="col-span-9">
                                 <RadioGroup
                                     name="status"
-                                    selectedValue={form.data[TinderWorkflowParams.STATUS]}
+                                    selectedValue={
+                                        form.data[TinderWorkflowParams.STATUS]
+                                    }
                                     onChange={(value) =>
-                                        form.setData(TinderWorkflowParams.STATUS, value)
+                                        form.setData(
+                                            TinderWorkflowParams.STATUS,
+                                            value,
+                                        )
                                     }
                                     options={[
                                         {
@@ -314,23 +358,21 @@ const Step2: React.FC<Step2Props> = ({
                                 />
                             </div>
                         </div>
-
                     </div>
                 </div>
             </Content>
 
             <Footer>
-                <div className="flex items-center justify-center w-full px-5 lg:px-15 pb-4">
+                <div className="flex w-full items-center justify-center px-5 pb-4 lg:px-15">
                     <PrimaryButton
-                        className="text-sm lg:px-8 lg:py-3 w-full"
+                        className="w-full text-sm lg:px-8 lg:py-3"
                         disabled={!isFormValid}
                         onClick={submitForm}
-                        data-testid='tinder-save-button'
+                        data-testid="tinder-save-button"
                     >
                         <span>{t('workflows.tinderProposal.step2.save')}</span>
                     </PrimaryButton>
                 </div>
-
             </Footer>
         </WorkflowLayout>
     );

@@ -58,12 +58,14 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, status }) => {
     };
 
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
+        <WorkflowLayout
+            title="Reset Password"
+            asideInfo={stepDetails[activeStep - 1].info ?? ''}
+        >
             <Head title="Forgot Password" />
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                
                 <ErrorDisplay />
 
                 {currentState === 'email-form' && (
@@ -74,29 +76,49 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, status }) => {
                             </div>
                         )}
 
-                        <form onSubmit={submit} className="mt-4 max-w-md min-h-[300px] mx-auto p-6 bg-background rounded-lg shadow">
+                        <form
+                            onSubmit={submit}
+                            className="bg-background mx-auto mt-4 min-h-[300px] max-w-md rounded-lg p-6 shadow"
+                        >
                             <div className="mt-4 flex flex-col">
                                 <div className="flex justify-center p-5">
                                     <CatalystLogo />
                                 </div>
-                                <Paragraph className='text-center text-dark mb-4' children={t('workflows.resetPassword.enterEmail')}/>
-                                <label htmlFor="email" className="text-dark">{t('workflows.resetPassword.email')}</label>
+                                <Paragraph
+                                    className="text-dark mb-4 text-center"
+                                    children={t(
+                                        'workflows.resetPassword.enterEmail',
+                                    )}
+                                />
+                                <label htmlFor="email" className="text-dark">
+                                    {t('workflows.resetPassword.email')}
+                                </label>
                                 <TextInput
                                     id="email"
                                     type="email"
-                                    placeholder={t('workflows.resetPassword.email')}
+                                    placeholder={t(
+                                        'workflows.resetPassword.email',
+                                    )}
                                     name="email"
                                     value={data.email}
                                     className="mt-1 block w-full"
                                     isFocused={true}
-                                    onChange={(e) => setData('email', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('email', e.target.value)
+                                    }
                                 />
 
-                                <InputError message={errors.email} className="mt-2" />
+                                <InputError
+                                    message={errors.email}
+                                    className="mt-2"
+                                />
                             </div>
 
                             <div className="py-4">
-                                <PrimaryButton className="w-full py-3" disabled={processing}>
+                                <PrimaryButton
+                                    className="w-full py-3"
+                                    disabled={processing}
+                                >
                                     {t('workflows.resetPassword.continue')}
                                 </PrimaryButton>
                             </div>
@@ -105,18 +127,25 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, status }) => {
                 )}
 
                 {currentState === 'confirmation' && (
-                    <div className="p-10 m-8 max-w-md min-h-[300px] mx-auto p-6 bg-background rounded-lg shadow-lg">
+                    <div className="bg-background m-8 mx-auto min-h-[300px] max-w-md rounded-lg p-6 p-10 shadow-lg">
                         <div className="flex justify-center p-5">
                             <CatalystLogo />
                         </div>
-                        <Title level='4' className="text-content text-center font-inter text-base font-bold leading-6 mb-4">{t('workflows.resetPassword.checkInbox')}</Title>
+                        <Title
+                            level="4"
+                            className="text-content font-inter mb-4 text-center text-base leading-6 font-bold"
+                        >
+                            {t('workflows.resetPassword.checkInbox')}
+                        </Title>
 
                         <div className="mb-4 flex justify-center">
-                            <CheckInbox className='w-[87px] h-[87px]'/>
+                            <CheckInbox className="h-[87px] w-[87px]" />
                         </div>
 
                         <div className="text-4 text-dark mb-6">
-                            <Paragraph>{t('workflows.resetPassword.sent')}</Paragraph>
+                            <Paragraph>
+                                {t('workflows.resetPassword.sent')}
+                            </Paragraph>
                         </div>
 
                         <PrimaryButton

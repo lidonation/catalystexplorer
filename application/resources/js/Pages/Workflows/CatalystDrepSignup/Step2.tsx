@@ -57,12 +57,15 @@ const Step2: React.FC<Step1Props> = ({
     };
 
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
+        <WorkflowLayout
+            title="Drep SignUp"
+            asideInfo={stepDetails[activeStep - 1].info ?? ''}
+        >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
                 <div className="mx-auto w-full max-w-3xl px-4">
-                     <ErrorDisplay/>
+                    <ErrorDisplay />
                     <ConnectWalletList />
                     <div
                         className={`bg-danger-light container mt-6 transform overflow-hidden rounded-lg py-3 text-center transition-all duration-500 ease-in-out ${
@@ -71,7 +74,7 @@ const Step2: React.FC<Step1Props> = ({
                                 : 'max-w-0 translate-x-full px-0'
                         }`}
                     >
-                        <p className=" text-slate-500 lg:min-w-max">
+                        <p className="text-slate-500 lg:min-w-max">
                             {t(error)}
                         </p>
                     </div>

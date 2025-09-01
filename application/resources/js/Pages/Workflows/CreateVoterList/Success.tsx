@@ -10,10 +10,8 @@ const Success: React.FC = () => {
     const { t } = useLaravelReactI18n();
 
     return (
-        <WorkflowLayout>
+        <WorkflowLayout title="Create Voter List">
             <Content>
-
-
                 <div className="bg-background mx-auto flex min-h-[600px] w-full flex-col items-center justify-center rounded-lg p-8 md:w-3/4">
                     <div className="flex h-full w-full flex-col items-center justify-center gap-3 rounded p-8 md:w-3/4">
                         <Title level="4" className="mx-4 text-center font-bold">

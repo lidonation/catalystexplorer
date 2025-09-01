@@ -462,6 +462,8 @@ class Proposal extends Model
             'communities' => $this->communities->map(fn ($community) => [
                 'id' => $community->id,
                 'name' => $community->title,
+                'amount' => $this->campaign?->amount,
+                'currency' => $this->campaign?->currency,
             ]),
             'group' => $this->communities->map(fn ($group) => [
                 'id' => $group->id,
@@ -471,6 +473,8 @@ class Proposal extends Model
                 'id' => $this->campaign?->id,
                 'label' => $this->campaign?->label,
                 'title' => $this->campaign?->title,
+                'amount' => $this->campaign?->amount,
+                'currency' => $this->campaign?->currency,
             ],
         ]);
     }

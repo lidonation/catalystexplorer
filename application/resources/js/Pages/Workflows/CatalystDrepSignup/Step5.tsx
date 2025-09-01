@@ -157,32 +157,35 @@ const step5: React.FC<Step5Props> = ({
     const nextStep = localizedRoute('dreps.list');
 
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}  wrapperClassName="!h-auto"
-           contentClassName="!max-h-none">
+        <WorkflowLayout
+            title="Drep SignUp"
+            asideInfo={stepDetails[activeStep - 1].info ?? ''}
+            wrapperClassName="!h-auto"
+            contentClassName="!max-h-none"
+        >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
                 <div className="@container mx-auto mb-6 w-full max-w-2xl px-4">
                     {/* Error Messages */}
-                    <ErrorDisplay/>
+                    <ErrorDisplay />
 
                     {/* IPFS Results */}
-                    {ipfsData && (
-                        <IpfsSuccessDisplay ipfsData={ipfsData} />
-                    )}
+                    {ipfsData && <IpfsSuccessDisplay ipfsData={ipfsData} />}
 
                     {/* Display Selected Language */}
-                    <div className="bg-slate-50 mb-6 rounded-lg p-4 border border-slate-200">
+                    <div className="mb-6 rounded-lg border border-slate-200 bg-slate-50 p-4">
                         <div className="flex items-center gap-2">
                             <Paragraph className="text-sm font-medium text-slate-700">
                                 {t('Selected Language')}:
                             </Paragraph>
-                            <Paragraph className="text-sm text-slate-900 font-semibold">
-                                {LOCALE_MAPPING[savedLocale as keyof typeof LOCALE_MAPPING]?.native || savedLocale}
+                            <Paragraph className="text-sm font-semibold text-slate-900">
+                                {LOCALE_MAPPING[
+                                    savedLocale as keyof typeof LOCALE_MAPPING
+                                ]?.native || savedLocale}
                             </Paragraph>
                         </div>
                     </div>
-                
 
                     <div className="bg-primary-light mb-6 rounded-lg p-4 text-center">
                         <p className="text-slate-500">
@@ -194,9 +197,9 @@ const step5: React.FC<Step5Props> = ({
 
                     <form className="mb-8 space-y-6">
                         {languageWarning && (
-                            <div className="mb-6 p-4 bg-error-light border border-error rounded-md">
-                                <p className="text-sm text-error">
-                                 {languageWarning}
+                            <div className="bg-error-light border-error mb-6 rounded-md border p-4">
+                                <p className="text-error text-sm">
+                                    {languageWarning}
                                 </p>
                             </div>
                         )}
@@ -216,11 +219,16 @@ const step5: React.FC<Step5Props> = ({
                                 minLengthEnforced
                                 value={form.data.objective ?? ''}
                                 onChange={(e) =>
-                                    (form as any).setData('objective', e.target.value)
+                                    (form as any).setData(
+                                        'objective',
+                                        e.target.value,
+                                    )
                                 }
                                 className="h-30 w-full rounded-lg px-4 py-2"
                             />
-                            <InputError message={(form.errors as any).objective} />
+                            <InputError
+                                message={(form.errors as any).objective}
+                            />
                         </div>
 
                         {/* Bio */}
@@ -241,11 +249,16 @@ const step5: React.FC<Step5Props> = ({
                                 minLengthEnforced
                                 value={form.data.motivation ?? ''}
                                 onChange={(e) =>
-                                    (form as any).setData('motivation', e.target.value)
+                                    (form as any).setData(
+                                        'motivation',
+                                        e.target.value,
+                                    )
                                 }
                                 className="h-30 w-full rounded-lg px-4 py-2"
                             />
-                            <InputError message={(form.errors as any).motivation} />
+                            <InputError
+                                message={(form.errors as any).motivation}
+                            />
                         </div>
 
                         {/* Bio */}
@@ -268,11 +281,16 @@ const step5: React.FC<Step5Props> = ({
                                 minLengthEnforced
                                 value={form.data.qualifications ?? ''}
                                 onChange={(e) =>
-                                    (form as any).setData('qualifications', e.target.value)
+                                    (form as any).setData(
+                                        'qualifications',
+                                        e.target.value,
+                                    )
                                 }
                                 className="h-30 w-full rounded-lg px-4 py-2"
                             />
-                            <InputError message={(form.errors as any).qualifications} />
+                            <InputError
+                                message={(form.errors as any).qualifications}
+                            />
                         </div>
                         <PrimaryButton
                             onClick={() => submitForm()}
@@ -282,16 +300,19 @@ const step5: React.FC<Step5Props> = ({
                         >
                             {form.processing ? (
                                 <>
-                                    {t('workflows.catalystDrepSignup.publishing')}
+                                    {t(
+                                        'workflows.catalystDrepSignup.publishing',
+                                    )}
                                 </>
                             ) : (
-                                t('workflows.catalystDrepSignup.submitStatementToIpfs')
+                                t(
+                                    'workflows.catalystDrepSignup.submitStatementToIpfs',
+                                )
                             )}
                         </PrimaryButton>
-                        
                     </form>
                 </div>
-                <div className="flex justify-between items-center px-20 py-8">
+                <div className="flex items-center justify-between px-20 py-8">
                     <PrimaryLink
                         href={prevStep}
                         className="text-sm lg:px-8 lg:py-2"
@@ -302,9 +323,7 @@ const step5: React.FC<Step5Props> = ({
 
                     <PrimaryLink
                         className="text-sm lg:px-8 lg:py-2"
-                        disabled={
-                            !ipfsData?.cid
-                        }
+                        disabled={!ipfsData?.cid}
                         href={nextStep}
                     >
                         <span>{t('Next')}</span>
@@ -312,7 +331,6 @@ const step5: React.FC<Step5Props> = ({
                     </PrimaryLink>
                 </div>
             </Content>
-           
         </WorkflowLayout>
     );
 };
