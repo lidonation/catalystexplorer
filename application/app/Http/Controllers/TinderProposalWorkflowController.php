@@ -995,6 +995,9 @@ class TinderProposalWorkflowController extends Controller
             [
                 'title' => 'workflows.tinderProposal.stepDetails.mySwipeList',
             ],
+            [
+                'disclaimer'=> 'workflows.voterList.prototype'
+            ]
         ];
     }
 }

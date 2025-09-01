@@ -107,6 +107,7 @@ const Step2: React.FC<Step2Props> = ({
         <WorkflowLayout
             title="Create Voter List"
             asideInfo={stepDetails[activeStep - 1].info ?? ''}
+            disclaimer={stepDetails[10].disclaimer ?? ''}
         >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 

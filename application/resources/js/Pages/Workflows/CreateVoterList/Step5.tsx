@@ -4,9 +4,10 @@ import Title from '@/Components/atoms/Title';
 import { VerificationBadge } from '@/Components/svgs/VerificationBadge';
 import { StepDetails } from '@/types';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import Content from '../Partials/WorkflowContent';
 import WorkflowLayout from '../WorkflowLayout';
+import RichContent from '@/Components/RichContent';
 
 interface SuccessProps {
     stepDetails: StepDetails[];
@@ -33,10 +34,16 @@ export default function step5({
         <WorkflowLayout
             title="Create Voter List"
             asideInfo={stepDetails[activeStep - 1]?.info ?? ''}
+            disclaimer={stepDetails[10]?.disclaimer ?? ''}
         >
             <Content>
                 <div className="bg-background mx-auto flex min-h-[600px] w-full flex-col items-center justify-between rounded-lg p-8 md:w-3/4">
                     <div className="flex h-full w-full flex-col items-center justify-center gap-3 rounded p-8 md:w-3/4">
+                        <RichContent
+                            className="mb-4 text-center"
+                            content={t('workflows.voterList.prototype')}
+                            format={'html'}
+                        />
                         <Title level="4" className="mx-4 text-center font-bold">
                             {t('workflows.voterList.success.title')}
                         </Title>

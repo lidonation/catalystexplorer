@@ -224,6 +224,7 @@ const Step1: React.FC<Step1Props> = ({
             <WorkflowLayout
                 title="Tinder Proposal"
                 asideInfo={stepDetails[activeStep - 1]?.info || ''}
+                disclaimer={stepDetails[4]?.disclaimer ?? ''}
             >
                 <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
