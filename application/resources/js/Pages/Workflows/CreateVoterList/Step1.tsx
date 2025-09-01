@@ -3,7 +3,7 @@ import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import { StepDetails } from '@/types';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { ChevronLeft,ChevronRight } from 'lucide-react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';

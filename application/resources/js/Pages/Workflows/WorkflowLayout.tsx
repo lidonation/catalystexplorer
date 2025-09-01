@@ -21,7 +21,8 @@ interface WorkflowLayoutProps {
     wrapperClassName?: string;
     contentClassName?: string;
     slideOver?: WorkflowSlideOverConfig;
-    title:string;
+    title: string;
+    disclaimer?: string;
 }
 
 export default function WorkflowLayout({
@@ -30,7 +31,8 @@ export default function WorkflowLayout({
     wrapperClassName,
     contentClassName,
     slideOver,
-    title
+    title,
+    disclaimer,
 }: WorkflowLayoutProps) {
     const { t } = useLaravelReactI18n();
     const isLogin = window.location.pathname.endsWith('login');
@@ -84,6 +86,18 @@ export default function WorkflowLayout({
                                                 format="markdown"
                                             />
                                         </div>
+                                        <div className="mt-6">
+                                            <RichContent
+                                                className="text-center text-white"
+                                                content={
+                                                    disclaimer &&
+                                                    (t(disclaimer) as
+                                                        | string
+                                                        | undefined)
+                                                }
+                                                format="html"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -105,6 +119,16 @@ export default function WorkflowLayout({
                                     }
                                     className="text-center text-white"
                                     format="markdown"
+                                />
+                            </div>
+                            <div className="mt-6">
+                                <RichContent
+                                    className="text-center text-white"
+                                    content={
+                                        disclaimer &&
+                                        (t(disclaimer) as string | undefined)
+                                    }
+                                    format="html"
                                 />
                             </div>
                         </div>
