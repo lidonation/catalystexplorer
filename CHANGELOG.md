@@ -1,3 +1,16 @@
+# [1.18.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.17.0...v1.18.0) (2025-09-01)
+
+
+### Bug Fixes
+
+* page title and funds percentages ([2447cd9](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/2447cd96191d3304db7c0fd2dde256297c05455e))
+* page title and funds percentages ([95d9b62](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/95d9b62971ff5910d17c5ee814f42a13fa57defd))
+
+
+### Features
+
+* adding prototype disclaimer to thr tinder and voting list workflows ([26a8a60](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/26a8a60d09655e6521144463047b5605a648d6d8))
+
 # [1.17.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.16.1...v1.17.0) (2025-08-31)
 
 
