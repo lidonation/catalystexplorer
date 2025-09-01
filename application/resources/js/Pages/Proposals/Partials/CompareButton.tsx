@@ -33,7 +33,12 @@ const CompareButton: React.FC<CompareButtonProps> = ({
                 proposalId,
             );
         } else {
-            await IndexedDBService.create('proposal_comparisons', data);
+            const proposalData = {
+                ...data,
+                hash: proposalId,
+            } as ProposalData;
+
+            await IndexedDBService.create('proposal_comparisons', proposalData);
         }
     };
     return (
