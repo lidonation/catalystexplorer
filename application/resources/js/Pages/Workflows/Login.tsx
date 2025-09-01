@@ -10,7 +10,7 @@ const WorkflowLogin: React.FC<{ title: string; intendedRoute: string }> = ({
     const { t } = useLaravelReactI18n();
 
     return (
-        <WorkflowLayout asideInfo="">
+        <WorkflowLayout asideInfo="" title={t('login')}>
             <LoginForm
                 title={''}
                 postRoute={useLocalizedRoute('workflows.login')}
