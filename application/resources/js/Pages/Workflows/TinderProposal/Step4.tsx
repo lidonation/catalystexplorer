@@ -255,6 +255,7 @@ const Step4Content: React.FC<Step4Props> = ({
 
     return (
         <WorkflowLayout
+            title="Tinder Proposal"
             asideInfo={stepDetails[activeStep - 1]?.info || ''}
             slideOver={{
                 isOpen: isOpen,
@@ -268,22 +269,27 @@ const Step4Content: React.FC<Step4Props> = ({
         >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
             <div className="mx-auto mt-5 flex w-full flex-col items-center justify-center">
-                
                 <ErrorDisplay />
 
-                <div className="mx-5 px-8 mx-auto w-full overflow-y-auto" data-testid="step-4-header">
+                <div
+                    className="mx-5 mx-auto w-full overflow-y-auto px-8"
+                    data-testid="step-4-header"
+                >
                     <Title className="text-content mt-5 mb-2 text-center text-lg font-black">
                         {t('workflows.tinderProposal.step4.swipeList')}
                     </Title>
                     <Paragraph
                         size="sm"
-                        className="text-md text-gray-persist mb-8 text-center  px-4"
+                        className="text-md text-gray-persist mb-8 px-4 text-center"
                     >
                         {t(
                             'workflows.tinderProposal.step4.organizeSwipesDescription',
                         )}
                     </Paragraph>
-                    <div className="space-y-5 py-4" data-testid="swipe-cards-container">
+                    <div
+                        className="space-y-5 py-4"
+                        data-testid="swipe-cards-container"
+                    >
                         {/* Right Swipes Card */}
                         {rightBookmarkCollection && (
                             <SwipeCard
@@ -292,7 +298,7 @@ const Step4Content: React.FC<Step4Props> = ({
                                 swipeCount={rightSwipeCount}
                                 onEditList={() => handleEditList('right')}
                                 isDeleted={deletedCollections.has('right')}
-                                data-testid='right-swipes-card'  
+                                data-testid="right-swipes-card"
                             />
                         )}
 
@@ -304,7 +310,7 @@ const Step4Content: React.FC<Step4Props> = ({
                                 swipeCount={leftSwipeCount}
                                 onEditList={() => handleEditList('left')}
                                 isDeleted={deletedCollections.has('left')}
-                                data-testid='left-swipes-card'
+                                data-testid="left-swipes-card"
                             />
                         )}
                     </div>
@@ -348,7 +354,7 @@ const Step4Content: React.FC<Step4Props> = ({
                     <PrimaryLink
                         href={keepSwipingStep}
                         className="w-[100%] text-sm lg:px-8 lg:py-3"
-                        data-testid='keep-swiping-button'
+                        data-testid="keep-swiping-button"
                     >
                         <Paragraph size="sm">
                             {t('workflows.tinderProposal.step4.keepSwiping')}
@@ -357,7 +363,7 @@ const Step4Content: React.FC<Step4Props> = ({
                     <PrimaryLink
                         href={refineInterestsStep}
                         className="xl-[75%] bg-background w-[100%] text-sm lg:px-8 lg:py-3"
-                        data-testid='refine-interests-button'
+                        data-testid="refine-interests-button"
                     >
                         <Paragraph size="sm" className="text-primary">
                             {t(

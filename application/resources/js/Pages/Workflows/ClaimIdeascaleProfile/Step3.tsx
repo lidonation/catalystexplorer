@@ -36,7 +36,10 @@ const Step2: React.FC<Step1Props> = ({
               });
 
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
+        <WorkflowLayout
+            title="Claim Profile"
+            asideInfo={stepDetails[activeStep - 1].info ?? ''}
+        >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
@@ -75,7 +78,7 @@ const Step2: React.FC<Step1Props> = ({
                     href="https://cardano.ideascale.com/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="bg-primary flex items-center gap-3 justify-center text-sm flex-row rounded-lg px-4 text-white transition lg:px-8 lg:py-3"
+                    className="bg-primary flex flex-row items-center justify-center gap-3 rounded-lg px-4 text-sm text-white transition lg:px-8 lg:py-3"
                 >
                     <span>{t('profileWorkflow.goToIdeascale')}</span>
                     <ChevronRight className="h-4 w-4" />

@@ -462,15 +462,23 @@ class Proposal extends Model
             'communities' => $this->communities->map(fn ($community) => [
                 'id' => $community->id,
                 'name' => $community->title,
+                'amount' => $this->campaign?->amount,
+                'currency' => $this->campaign?->currency,
             ]),
-            'group' => $this->communities->map(fn ($group) => [
+            'groups' => $this->groups->map(fn ($group) => [
                 'id' => $group->id,
                 'name' => $group->title,
+            ]),
+            'users' => $this->team->map(fn ($profile) => [
+                'id' => $profile?->model?->id,
+                'name' => $profile?->model?->name,
             ]),
             'campaign' => [
                 'id' => $this->campaign?->id,
                 'label' => $this->campaign?->label,
                 'title' => $this->campaign?->title,
+                'amount' => $this->campaign?->amount,
+                'currency' => $this->campaign?->currency,
             ],
         ]);
     }
@@ -506,19 +514,17 @@ class Proposal extends Model
         );
     }
 
-    public function team(): BelongsToMany
+    public function team(): HasMany
     {
-        return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
+        return $this->hasMany(ProposalProfile::class, 'proposal_id', 'id')
+            ->with([
+                'model',
+            ]);
     }
 
     public function author(): BelongsTo
     {
         return $this->belongsTo(IdeascaleProfile::class, 'user_id', 'old_id', 'author');
-    }
-
-    public function users(): BelongsToMany
-    {
-        return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
     }
 
     public function catalyst_profiles(): BelongsToMany
@@ -531,10 +537,20 @@ class Proposal extends Model
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
     }
 
-    public function proposal_profiles()
+    public function users(): HasMany
     {
         return $this->hasMany(ProposalProfile::class, 'proposal_id', 'id')
-            ->with(['profiles']);
+            ->with([
+                'model',
+            ]);
+    }
+
+    public function proposal_profiles(): HasMany
+    {
+        return $this->hasMany(ProposalProfile::class, 'proposal_id', 'id')
+            ->with([
+                'model',
+            ]);
     }
 
     public function completedProjectNft(): Attribute

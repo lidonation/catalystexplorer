@@ -19,7 +19,7 @@ const NetworkLink: React.FC<NetworkLinkProps> = ({
     width = 25,
     height = 24,
 }) => {
-    const baseClasses = `flex items-center gap-2.5 truncate text-slate-900`;
+    const baseClasses = `flex items-center gap-2.5 truncate text-white`;
 
     const displayText = url && formatUrl ? formatUrl(url) : (label ?? '');
 

@@ -102,7 +102,7 @@ export default function Show({ service }: ShowProps) {
     };
 
     return (
-        <div className="flex flex-col gap-8 border-b border-gray-300 bg-gray-100 px-4 py-5 text-slate-600 sm:flex-row sm:gap-12 sm:px-8 sm:pt-12 sm:pb-10">
+        <div className="bg-background flex flex-col gap-8 border-b border-gray-300 px-4 py-5 text-slate-600 sm:flex-row sm:gap-12 sm:px-8 sm:pt-12 sm:pb-10">
             <div className="flex flex-col sm:sticky sm:top-4 sm:max-w-80 sm:self-start">
                 <div className="flex flex-row items-center pb-4">
                     <img
@@ -112,7 +112,7 @@ export default function Show({ service }: ShowProps) {
                     />
                     <Title
                         level="1"
-                        className="w-36 flex-wrap pl-4 text-xl leading-6 font-semibold tracking-tight text-slate-900"
+                        className="w-36 flex-wrap pl-4 text-xl leading-6 font-semibold tracking-tight text-white"
                     >
                         {service.user?.name ?? 'Unknown User'}
                     </Title>
@@ -126,7 +126,7 @@ export default function Show({ service }: ShowProps) {
                 <div>
                     <Title
                         level="2"
-                        className="pb-4 text-base font-semibold text-slate-900"
+                        className="pb-4 text-base font-semibold text-white"
                     >
                         Services
                     </Title>
@@ -144,7 +144,7 @@ export default function Show({ service }: ShowProps) {
                     <div className="flex flex-col">
                         <Title
                             level="2"
-                            className="pb-4 text-base font-semibold text-slate-900"
+                            className="pb-4 text-base font-semibold text-white"
                         >
                             Networks
                         </Title>
@@ -186,7 +186,7 @@ export default function Show({ service }: ShowProps) {
 
                 <Title
                     level="2"
-                    className="mb-4 text-base font-semibold text-slate-900"
+                    className="mb-4 text-base font-semibold text-white"
                 >
                     {service.title}
                 </Title>
@@ -201,7 +201,7 @@ export default function Show({ service }: ShowProps) {
                 )}
 
                 <div className="gap-5">
-                    <Title className="mb-5 text-base font-semibold text-slate-900">
+                    <Title className="mb-5 text-base font-semibold text-white">
                         Get in touch
                     </Title>
                     <div className="flex flex-col gap-5 sm:flex-row">

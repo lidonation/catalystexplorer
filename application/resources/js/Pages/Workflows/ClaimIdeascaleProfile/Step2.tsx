@@ -67,13 +67,15 @@ const Step2: React.FC<Step1Props> = ({ profile, stepDetails, activeStep }) => {
     };
 
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
+        <WorkflowLayout
+            title="Claim Profile"
+            asideInfo={stepDetails[activeStep - 1].info ?? ''}
+        >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             {profile?.id && (
                 <Content>
-
-                     <ErrorDisplay/>
+                    <ErrorDisplay />
 
                     <ClaimProfileForm
                         form={form}

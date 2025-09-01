@@ -154,11 +154,14 @@ const Step2: React.FC<Step2Props> = ({
     };
 
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep - 1]?.info || ''}>
+        <WorkflowLayout
+            title="Register Signature"
+            asideInfo={stepDetails[activeStep - 1]?.info || ''}
+        >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                <div className="flex items-center justify-center min-h-[60vh] pb-8">
+                <div className="flex min-h-[60vh] items-center justify-center pb-8">
                     <div className="w-full max-w-3xl rounded-lg p-6">
                         <Title level="4" className="mb-6 text-center">
                             {t('workflows.signature.signWallet')}
@@ -171,7 +174,9 @@ const Step2: React.FC<Step2Props> = ({
 
                             {success && (
                                 <div className="bg-success-light border-success-strong container mt-6 rounded-lg border px-6 py-3 text-center">
-                                    <p className="text-green-700">{t(success)}</p>
+                                    <p className="text-green-700">
+                                        {t(success)}
+                                    </p>
                                 </div>
                             )}
 
@@ -182,7 +187,10 @@ const Step2: React.FC<Step2Props> = ({
                             >
                                 {isSigning ? (
                                     <div className="flex items-center justify-center">
-                                        <Loader2 size={16} className="mr-2 animate-spin" />
+                                        <Loader2
+                                            size={16}
+                                            className="mr-2 animate-spin"
+                                        />
                                         {t('workflows.signature.signing')}
                                     </div>
                                 ) : (
@@ -192,10 +200,11 @@ const Step2: React.FC<Step2Props> = ({
 
                             {error && (
                                 <div
-                                    className={`bg-danger-light container mt-6 transform overflow-hidden rounded-lg py-3 text-center transition-all duration-500 ease-in-out ${error.length
+                                    className={`bg-danger-light container mt-6 transform overflow-hidden rounded-lg py-3 text-center transition-all duration-500 ease-in-out ${
+                                        error.length
                                             ? 'border-danger-strong max-w-full translate-x-0 border px-6'
                                             : 'max-w-0 translate-x-full px-0'
-                                        }`}
+                                    }`}
                                 >
                                     <p className="text-slate-500">{t(error)}</p>
                                 </div>
@@ -218,9 +227,12 @@ const Step2: React.FC<Step2Props> = ({
                     disabled={!isComplete || !!error}
                     onClick={() =>
                         router.visit(
-                            generateLocalizedRoute('workflows.signature.index', {
-                                step: activeStep + 1,
-                            }),
+                            generateLocalizedRoute(
+                                'workflows.signature.index',
+                                {
+                                    step: activeStep + 1,
+                                },
+                            ),
                         )
                     }
                 >

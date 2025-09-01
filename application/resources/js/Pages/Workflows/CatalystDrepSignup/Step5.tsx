@@ -183,6 +183,7 @@ const step5: React.FC<Step5Props> = ({
 
     return (
         <WorkflowLayout
+            title="Drep SignUp"
             asideInfo={stepDetails[activeStep - 1].info ?? ''}
             wrapperClassName="!h-auto"
             contentClassName="!max-h-none"
