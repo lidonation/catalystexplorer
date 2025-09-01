@@ -147,7 +147,7 @@ export default function ProposalCardHeader({
                         </Link>
                     )}
                     <div className="flex justify-end italic py-0.5" data-testid="proposal-card-fund">
-                        <span>~ {proposal.fund?.title}</span>
+                        <span>~ {proposal.fund?.label}</span>
                     </div>
                 </div>
 
