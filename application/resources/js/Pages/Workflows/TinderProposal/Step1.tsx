@@ -221,15 +221,17 @@ const Step1: React.FC<Step1Props> = ({
                 preserveScroll: true,
             }}
         >
-            <WorkflowLayout asideInfo={stepDetails[activeStep - 1]?.info || ''}>
+            <WorkflowLayout
+                title="Tinder Proposal"
+                asideInfo={stepDetails[activeStep - 1]?.info || ''}
+            >
                 <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
                 <Content>
                     <div className="bg-background mx-auto max-w-3xl border-black px-12 py-4 sm:py-8 xl:px-20">
                         <div className="scrolling-touch max-h-[60vh] space-y-6 overflow-y-auto rounded-lg border border-gray-100 p-6 shadow-sm">
-
                             <ErrorDisplay />
-                            
+
                             <div className="space-y-6">
                                 {/* Fund Selection */}
                                 <div>

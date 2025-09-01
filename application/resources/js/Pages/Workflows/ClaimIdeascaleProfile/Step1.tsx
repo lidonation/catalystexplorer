@@ -69,7 +69,10 @@ const Step1: React.FC<Step1Props> = ({ profiles, stepDetails, activeStep }) => {
         : '';
 
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
+        <WorkflowLayout
+            title="Claim Profile"
+            asideInfo={stepDetails[activeStep - 1].info ?? ''}
+        >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
@@ -89,9 +92,7 @@ const Step1: React.FC<Step1Props> = ({ profiles, stepDetails, activeStep }) => {
                                         <input
                                             type="radio"
                                             id={
-                                                profile.id as
-                                                    | string
-                                                    | undefined
+                                                profile.id as string | undefined
                                             }
                                             name="hosting"
                                             value="hosting-small"
@@ -104,9 +105,7 @@ const Step1: React.FC<Step1Props> = ({ profiles, stepDetails, activeStep }) => {
                                         />
                                         <label
                                             htmlFor={
-                                                profile.id as
-                                                    | string
-                                                    | undefined
+                                                profile.id as string | undefined
                                             }
                                             className="peer-checked:border-primary peer-checked:text-primary peer-checked:border-primary inline-flex w-full cursor-pointer items-center justify-between rounded-lg border border-gray-100 text-gray-500 peer-checked:border-2"
                                         >

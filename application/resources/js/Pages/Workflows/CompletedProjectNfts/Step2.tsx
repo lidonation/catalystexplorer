@@ -93,7 +93,10 @@ const Step2: React.FC<Step2Props> = ({
                 replace: true,
             }}
         >
-            <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
+            <WorkflowLayout
+                title="Completed Projects Nfts"
+                asideInfo={stepDetails[activeStep - 1].info ?? ''}
+            >
                 <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
                 <Content>
@@ -107,14 +110,16 @@ const Step2: React.FC<Step2Props> = ({
                     </div>
 
                     <ProposalList
-                        onProposalClick={(hash) => setSelectedProposalHash(hash)}
+                        onProposalClick={(hash) =>
+                            setSelectedProposalHash(hash)
+                        }
                         proposals={proposals || []}
                         profileHash={profileHash as string}
                     />
                 </Content>
 
                 <Footer>
-                    <div className="items-center justify-between gap-4 lg:flex-row w-full">
+                    <div className="w-full items-center justify-between gap-4 lg:flex-row">
                         {proposals &&
                             proposals.data &&
                             proposals.data.length > 0 &&
@@ -126,7 +131,7 @@ const Step2: React.FC<Step2Props> = ({
                                         preserveScroll: true,
                                     }}
                                 />
-                        )}
+                            )}
                         <div className="flex justify-between">
                             <PrimaryLink
                                 href={prevStep}

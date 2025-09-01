@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { router } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import ServiceCard from '@/Components/ServiceCard';
 import Paragraph from '@/Components/atoms/Paragraph';
@@ -46,54 +46,67 @@ const MyServicesComponent: React.FC<MyServicesProps> = ({ services, filters }) =
   const hasServices = services?.data?.length > 0;
 
   return (
-    <div className="w-full max-w-full py-4 px-8 xl:px-20" data-testid="my-services-page">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <Title level="1" className="text-2xl font-semibold text-content" data-testid="my-services-page-title">{t('services.myServices')}</Title>
-          <Paragraph className="text-base text-slate-500">
-            {t('services.myServicesDesc')}
-          </Paragraph>
-        </div>
-        <PrimaryLink
-          className="lg:text-md mb-4 ml-auto px-4 py-2 text-sm text-nowrap"
-          href={useLocalizedRoute('workflows.createService.index', {
-              step: 1,
-          })}
-          data-testid="add-service-button"
-        >
-          +  {t('services.AddService')}
-        </PrimaryLink>
-      </div>
-
-      <section className="mb-6" data-testid="services-search-section">
-        <SearchControls
-          search={search}
-          onSearchChange={setSearch}
-          onFiltersToggle={() => {}}
-          showFilters={false}
-          viewType="user"
-          data-testid="my-services-search-controls"
-        />
-      </section>
-
-      {hasServices ? (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" data-testid="my-services-grid">
-            {services.data.map(service => (
-              <ServiceCard key={service.id} service={service} />
-            ))}
+      <div
+          className="w-full max-w-full px-8 py-4 xl:px-20"
+          data-testid="my-services-page"
+      >
+          <Head title="My Service Page" />
+          <div className="mb-6 flex items-center justify-between">
+              <div>
+                  <Title
+                      level="1"
+                      className="text-content text-2xl font-semibold"
+                      data-testid="my-services-page-title"
+                  >
+                      {t('services.myServices')}
+                  </Title>
+                  <Paragraph className="text-base text-slate-500">
+                      {t('services.myServicesDesc')}
+                  </Paragraph>
+              </div>
+              <PrimaryLink
+                  className="lg:text-md mb-4 ml-auto px-4 py-2 text-sm text-nowrap"
+                  href={useLocalizedRoute('workflows.createService.index', {
+                      step: 1,
+                  })}
+                  data-testid="add-service-button"
+              >
+                  + {t('services.AddService')}
+              </PrimaryLink>
           </div>
 
-          <div className="mt-8 w-full">
-            <Paginator pagination={services} />
-        </div>
-        </>
-      ) : (
-        <div className="flex flex-col items-center justify-center py-20">
-          <RecordsNotFound />
-        </div>
-      )}
-    </div>
+          <section className="mb-6" data-testid="services-search-section">
+              <SearchControls
+                  search={search}
+                  onSearchChange={setSearch}
+                  onFiltersToggle={() => {}}
+                  showFilters={false}
+                  viewType="user"
+                  data-testid="my-services-search-controls"
+              />
+          </section>
+
+          {hasServices ? (
+              <>
+                  <div
+                      className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+                      data-testid="my-services-grid"
+                  >
+                      {services.data.map((service) => (
+                          <ServiceCard key={service.id} service={service} />
+                      ))}
+                  </div>
+
+                  <div className="mt-8 w-full">
+                      <Paginator pagination={services} />
+                  </div>
+              </>
+          ) : (
+              <div className="flex flex-col items-center justify-center py-20">
+                  <RecordsNotFound />
+              </div>
+          )}
+      </div>
   );
 };
 

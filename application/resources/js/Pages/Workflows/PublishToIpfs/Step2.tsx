@@ -142,142 +142,271 @@ const Step2: React.FC<Step2Props> = ({
     };
 
     return (
-        <WorkflowLayout 
-           asideInfo={stepDetails[activeStep - 1].info ?? ''}
-           wrapperClassName="!h-auto"
-           contentClassName="!max-h-none"
-           data-testid="step2-workflow-layout"
+        <WorkflowLayout
+            title="Publish To IPFS"
+            asideInfo={stepDetails[activeStep - 1].info ?? ''}
+            wrapperClassName="!h-auto"
+            contentClassName="!max-h-none"
+            data-testid="step2-workflow-layout"
         >
-            <Nav stepDetails={stepDetails} activeStep={activeStep} data-testid="step2-navigation" />
+            <Nav
+                stepDetails={stepDetails}
+                activeStep={activeStep}
+                data-testid="step2-navigation"
+            />
 
-          
-                <div className="bg-background w-full overflow-y-auto p-6 lg:p-8" data-testid="step2-main-content">
-                    
-                    {Object.keys(flashErrors).length > 0 && (
-                        <div className="mb-6 p-4 bg-error-light border border-error rounded-md" data-testid="step2-error-banner">
-                            <div className="text-error" data-testid="step2-error-content">
-                                <Paragraph className='text-md font-bold' data-testid="step2-error-title">{t('workflows.publishToIpfs.error')}</Paragraph>
-                                {Object.entries(flashErrors).map(([key, messages]) => (
-                                    <div key={key} data-testid={`step2-error-${key}`}>
-                                        {Array.isArray(messages) ? messages.join(', ') : messages}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-        
-                    {bookmarkCollection ? (
-                        <>
-                            <Paragraph className="text-center mb-6 text-gray-persist" data-testid="step2-review-message">
-                                {t('workflows.publishToIpfs.reviewDetails')}
+            <div
+                className="bg-background w-full overflow-y-auto p-6 lg:p-8"
+                data-testid="step2-main-content"
+            >
+                {Object.keys(flashErrors).length > 0 && (
+                    <div
+                        className="bg-error-light border-error mb-6 rounded-md border p-4"
+                        data-testid="step2-error-banner"
+                    >
+                        <div
+                            className="text-error"
+                            data-testid="step2-error-content"
+                        >
+                            <Paragraph
+                                className="text-md font-bold"
+                                data-testid="step2-error-title"
+                            >
+                                {t('workflows.publishToIpfs.error')}
                             </Paragraph>
-                            <div className="border border-gray-persist/20 rounded-lg shadow-md p-6" data-testid="step2-bookmark-collection-section">
-                                <div className="mb-6" data-testid="step2-collection-header">
-                                    <Title className="mb-2" data-testid="step2-collection-title">
-                                        {bookmarkCollection.title}
-                                    </Title>
-                                    <Paragraph
-                                        className="text-gray-persist break-words max-w-full overflow-hidden"
-                                        style={{ wordBreak: 'break-word', whiteSpace: 'pre-line' }}
-                                        data-testid="step2-collection-description"
+                            {Object.entries(flashErrors).map(
+                                ([key, messages]) => (
+                                    <div
+                                        key={key}
+                                        data-testid={`step2-error-${key}`}
                                     >
-                                        {bookmarkCollection.content || t('workflows.publishToIpfs.noDescriptionAvailable')}
-                                    </Paragraph>
-                                    <div className="mt-3 text-sm  flex items-center gap-4" data-testid="step2-collection-metadata">
-                                        <Paragraph className='text-md font-bold' data-testid="step2-items-count">{t('workflows.publishToIpfs.items')} <span className="text-gray-persist font-medium">{bookmarkCollection.types_count?.proposals || 0}</span></Paragraph>
-                                        <Paragraph className="text-light-gray-persist" data-testid="step2-separator">{t('workflows.publishToIpfs.separator')}</Paragraph>
-                                        <Paragraph className='text-md font-bold' data-testid="step2-created-date">{t('workflows.publishToIpfs.created')} <span className="text-gray-persist font-medium">{bookmarkCollection.created_at 
-                                            ? new Date(bookmarkCollection.created_at).toLocaleDateString('en-GB', { 
-                                                day: 'numeric', 
-                                                month: 'long', 
-                                                year: 'numeric' 
-                                            })
-                                            : t('workflows.publishToIpfs.unknown')
-                                        }</span></Paragraph>
+                                        {Array.isArray(messages)
+                                            ? messages.join(', ')
+                                            : messages}
                                     </div>
-                                </div>
-
-                                <BookmarkCollectionManager
-                                    {...getCurrentTypeData()}
-                                    bookmarkCollection={bookmarkCollection}
-                                    showHead={false}
-                                    showHeader={false}
-                                    showComments={false}
-                                    showEditButton={false}
-                                    showDropdownMenu={false}
-                                    showSearchBar={false}
-                                    activeTab={activeTab}
-                                    onTabChange={handleTabChange}
-                                    proposalDisplayMode='table'
-                                    data-testid="step2-bookmark-collection-manager"
-                                />
-                            </div>
-                        </>
-                    ) : (
-                        <div className="text-center py-12 px-6 bg-background" data-testid="step2-no-list-selected">
-                            <div className="max-w-md mx-auto" data-testid="step2-no-list-content">
-                                <div className="mb-6" data-testid="step2-no-list-icon-section">
-                                    <ArchiveIcon 
-                                        className="mx-auto h-16 w-16 text-light-gray-persist mb-4" 
-                                        width={64}
-                                        height={64}
-                                        data-testid="step2-archive-icon"
-                                    />
-                                    <Title level="3" className="text-content mb-2" data-testid="step2-no-list-title">
-                                        {t('workflows.publishToIpfs.noListSelected.title')}
-                                    </Title>
-                                    <Paragraph className="text-content mb-4" data-testid="step2-no-list-message">
-                                        {t('workflows.publishToIpfs.noListSelected.message')}
-                                    </Paragraph>
-                                </div>
-                                
-                                <div className="rounded-lg p-4 mb-6" data-testid="step2-instructions-section">
-                                    <div className="flex items-start" data-testid="step2-instructions-content">
-                                        <div className="text-sm">
-                                            <Paragraph className="font-bold" data-testid="step2-instructions-title">{t('workflows.publishToIpfs.howToGetStarted')}</Paragraph>
-                                            <Paragraph className="mt-1 text-gray-persist" data-testid="step2-instructions-text">
-                                                {t('workflows.publishToIpfs.noListSelected.instructions')}
-                                            </Paragraph>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <PrimaryLink
-                                    href={generateLocalizedRoute('my.lists.index')}
-                                    className="inline-flex items-center px-6 py-3 bg-primary hover:bg-primary/[0.8] text-white font-medium rounded-md transition-colors"
-                                    data-testid="step2-go-to-lists-button"
-                                >
-                                    {t('workflows.publishToIpfs.noListSelected.goToLists')}
-                                </PrimaryLink>
-                            </div>
+                                ),
+                            )}
                         </div>
-                    )}
-                </div>
-           
-            
+                    </div>
+                )}
+
+                {bookmarkCollection ? (
+                    <>
+                        <Paragraph
+                            className="text-gray-persist mb-6 text-center"
+                            data-testid="step2-review-message"
+                        >
+                            {t('workflows.publishToIpfs.reviewDetails')}
+                        </Paragraph>
+                        <div
+                            className="border-gray-persist/20 rounded-lg border p-6 shadow-md"
+                            data-testid="step2-bookmark-collection-section"
+                        >
+                            <div
+                                className="mb-6"
+                                data-testid="step2-collection-header"
+                            >
+                                <Title
+                                    className="mb-2"
+                                    data-testid="step2-collection-title"
+                                >
+                                    {bookmarkCollection.title}
+                                </Title>
+                                <Paragraph
+                                    className="text-gray-persist max-w-full overflow-hidden break-words"
+                                    style={{
+                                        wordBreak: 'break-word',
+                                        whiteSpace: 'pre-line',
+                                    }}
+                                    data-testid="step2-collection-description"
+                                >
+                                    {bookmarkCollection.content ||
+                                        t(
+                                            'workflows.publishToIpfs.noDescriptionAvailable',
+                                        )}
+                                </Paragraph>
+                                <div
+                                    className="mt-3 flex items-center gap-4 text-sm"
+                                    data-testid="step2-collection-metadata"
+                                >
+                                    <Paragraph
+                                        className="text-md font-bold"
+                                        data-testid="step2-items-count"
+                                    >
+                                        {t('workflows.publishToIpfs.items')}{' '}
+                                        <span className="text-gray-persist font-medium">
+                                            {bookmarkCollection.types_count
+                                                ?.proposals || 0}
+                                        </span>
+                                    </Paragraph>
+                                    <Paragraph
+                                        className="text-light-gray-persist"
+                                        data-testid="step2-separator"
+                                    >
+                                        {t('workflows.publishToIpfs.separator')}
+                                    </Paragraph>
+                                    <Paragraph
+                                        className="text-md font-bold"
+                                        data-testid="step2-created-date"
+                                    >
+                                        {t('workflows.publishToIpfs.created')}{' '}
+                                        <span className="text-gray-persist font-medium">
+                                            {bookmarkCollection.created_at
+                                                ? new Date(
+                                                      bookmarkCollection.created_at,
+                                                  ).toLocaleDateString(
+                                                      'en-GB',
+                                                      {
+                                                          day: 'numeric',
+                                                          month: 'long',
+                                                          year: 'numeric',
+                                                      },
+                                                  )
+                                                : t(
+                                                      'workflows.publishToIpfs.unknown',
+                                                  )}
+                                        </span>
+                                    </Paragraph>
+                                </div>
+                            </div>
+
+                            <BookmarkCollectionManager
+                                {...getCurrentTypeData()}
+                                bookmarkCollection={bookmarkCollection}
+                                showHead={false}
+                                showHeader={false}
+                                showComments={false}
+                                showEditButton={false}
+                                showDropdownMenu={false}
+                                showSearchBar={false}
+                                activeTab={activeTab}
+                                onTabChange={handleTabChange}
+                                proposalDisplayMode="table"
+                                data-testid="step2-bookmark-collection-manager"
+                            />
+                        </div>
+                    </>
+                ) : (
+                    <div
+                        className="bg-background px-6 py-12 text-center"
+                        data-testid="step2-no-list-selected"
+                    >
+                        <div
+                            className="mx-auto max-w-md"
+                            data-testid="step2-no-list-content"
+                        >
+                            <div
+                                className="mb-6"
+                                data-testid="step2-no-list-icon-section"
+                            >
+                                <ArchiveIcon
+                                    className="text-light-gray-persist mx-auto mb-4 h-16 w-16"
+                                    width={64}
+                                    height={64}
+                                    data-testid="step2-archive-icon"
+                                />
+                                <Title
+                                    level="3"
+                                    className="text-content mb-2"
+                                    data-testid="step2-no-list-title"
+                                >
+                                    {t(
+                                        'workflows.publishToIpfs.noListSelected.title',
+                                    )}
+                                </Title>
+                                <Paragraph
+                                    className="text-content mb-4"
+                                    data-testid="step2-no-list-message"
+                                >
+                                    {t(
+                                        'workflows.publishToIpfs.noListSelected.message',
+                                    )}
+                                </Paragraph>
+                            </div>
+
+                            <div
+                                className="mb-6 rounded-lg p-4"
+                                data-testid="step2-instructions-section"
+                            >
+                                <div
+                                    className="flex items-start"
+                                    data-testid="step2-instructions-content"
+                                >
+                                    <div className="text-sm">
+                                        <Paragraph
+                                            className="font-bold"
+                                            data-testid="step2-instructions-title"
+                                        >
+                                            {t(
+                                                'workflows.publishToIpfs.howToGetStarted',
+                                            )}
+                                        </Paragraph>
+                                        <Paragraph
+                                            className="text-gray-persist mt-1"
+                                            data-testid="step2-instructions-text"
+                                        >
+                                            {t(
+                                                'workflows.publishToIpfs.noListSelected.instructions',
+                                            )}
+                                        </Paragraph>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <PrimaryLink
+                                href={generateLocalizedRoute('my.lists.index')}
+                                className="bg-primary hover:bg-primary/[0.8] inline-flex items-center rounded-md px-6 py-3 font-medium text-white transition-colors"
+                                data-testid="step2-go-to-lists-button"
+                            >
+                                {t(
+                                    'workflows.publishToIpfs.noListSelected.goToLists',
+                                )}
+                            </PrimaryLink>
+                        </div>
+                    </div>
+                )}
+            </div>
+
             <Footer data-testid="step2-footer">
                 <PrimaryLink
                     href={prevStep}
-                    className="inline-flex items-center px-4 py-3 mb-8 bg-primary hover:bg-primary/[0.8] text-white text-sm font-medium rounded-md transition-colors"
+                    className="bg-primary hover:bg-primary/[0.8] mb-8 inline-flex items-center rounded-md px-4 py-3 text-sm font-medium text-white transition-colors"
                     data-testid="ipfs-step2-previous-button"
                 >
-                    <ChevronLeft className="h-4 w-4 mr-2" data-testid="step2-previous-icon" />
-                    <span data-testid="step2-previous-text">{t('workflows.publishToIpfs.previous')}</span>
+                    <ChevronLeft
+                        className="mr-2 h-4 w-4"
+                        data-testid="step2-previous-icon"
+                    />
+                    <span data-testid="step2-previous-text">
+                        {t('workflows.publishToIpfs.previous')}
+                    </span>
                 </PrimaryLink>
                 {bookmarkCollection && (
                     <PrimaryButton
-                        className="inline-flex items-center px-4 py-3 mb-8 bg-success hover:bg-success/[0.8] text-white text-sm font-medium rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="bg-success hover:bg-success/[0.8] mb-8 inline-flex items-center rounded-md px-4 py-3 text-sm font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                         disabled={!isFormValid || form.processing}
                         onClick={submitForm}
                         data-testid="ipfs-step2-publish-button"
                     >
                         {form.processing ? (
                             <>
-                               <Paragraph className="text-white" data-testid="step2-publishing-text">{t('workflows.publishToIpfs.publishingToIpfs')}</Paragraph>
+                                <Paragraph
+                                    className="text-white"
+                                    data-testid="step2-publishing-text"
+                                >
+                                    {t(
+                                        'workflows.publishToIpfs.publishingToIpfs',
+                                    )}
+                                </Paragraph>
                             </>
                         ) : (
                             <>
-                                <Paragraph className="text-white" data-testid="step2-publish-text">{t('workflows.publishToIpfs.publishToIpfs')}</Paragraph>
+                                <Paragraph
+                                    className="text-white"
+                                    data-testid="step2-publish-text"
+                                >
+                                    {t('workflows.publishToIpfs.publishToIpfs')}
+                                </Paragraph>
                             </>
                         )}
                     </PrimaryButton>

@@ -59,11 +59,14 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
     };
 
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep - 1]?.info || ''}>
+        <WorkflowLayout
+            title="Register Signature"
+            asideInfo={stepDetails[activeStep - 1]?.info || ''}
+        >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                <div className="flex items-center justify-center min-h-[60vh] pb-8">
+                <div className="flex min-h-[60vh] items-center justify-center pb-8">
                     <div className="w-full max-w-3xl">
                         <ConnectWalletList />
                     </div>

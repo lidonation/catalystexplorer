@@ -49,23 +49,34 @@ const Step2: React.FC<Step2Props> = ({ stepDetails, activeStep, token, email }) 
     };
 
     return (
-        <WorkflowLayout asideInfo={asideInfo}>
-            <Head title='Reset Password'/>
+        <WorkflowLayout title="Reset Password" asideInfo={asideInfo}>
+            <Head title="Reset Password" />
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
                 <div className="container p-10">
-                    <form onSubmit={submit} className="mt-4 max-w-md min-h-[300px] mx-auto p-6 bg-background rounded-lg shadow-lg">
+                    <form
+                        onSubmit={submit}
+                        className="bg-background mx-auto mt-4 min-h-[300px] max-w-md rounded-lg p-6 shadow-lg"
+                    >
                         <div className="flex justify-center p-5">
                             <CatalystLogo />
                         </div>
-                        
-                        <ErrorDisplay/>
 
-                        <Title level='4' className='text-content text-center font-inter text-base font-bold leading-6'>
+                        <ErrorDisplay />
+
+                        <Title
+                            level="4"
+                            className="text-content font-inter text-center text-base leading-6 font-bold"
+                        >
                             {t('workflows.resetPassword.reset')}
                         </Title>
-                        <Paragraph className='text-center text-dark mt-2 mb-2' children={t('workflows.resetPassword.enterNewPassword')}/>
+                        <Paragraph
+                            className="text-dark mt-2 mb-2 text-center"
+                            children={t(
+                                'workflows.resetPassword.enterNewPassword',
+                            )}
+                        />
                         <div className="mt-4">
                             <InputLabel
                                 htmlFor="password"
@@ -79,9 +90,14 @@ const Step2: React.FC<Step2Props> = ({ stepDetails, activeStep, token, email }) 
                                 className="mt-1 block w-full"
                                 autoComplete="new-password"
                                 isFocused={true}
-                                onChange={(e) => setData('password', e.target.value)}
+                                onChange={(e) =>
+                                    setData('password', e.target.value)
+                                }
                             />
-                            <InputError message={errors.password} className="mt-2" />
+                            <InputError
+                                message={errors.password}
+                                className="mt-2"
+                            />
                         </div>
 
                         <div className="mt-4">
@@ -97,7 +113,10 @@ const Step2: React.FC<Step2Props> = ({ stepDetails, activeStep, token, email }) 
                                 className="mt-1 block w-full"
                                 autoComplete="new-password"
                                 onChange={(e) =>
-                                    setData('password_confirmation', e.target.value)
+                                    setData(
+                                        'password_confirmation',
+                                        e.target.value,
+                                    )
                                 }
                             />
 
@@ -108,15 +127,22 @@ const Step2: React.FC<Step2Props> = ({ stepDetails, activeStep, token, email }) 
                         </div>
 
                         <div className="mt-4 flex items-center justify-end">
-                            <PrimaryButton className="w-full py-3" disabled={processing}>
-                               {t('workflows.resetPassword.submit')}
+                            <PrimaryButton
+                                className="w-full py-3"
+                                disabled={processing}
+                            >
+                                {t('workflows.resetPassword.submit')}
                             </PrimaryButton>
                         </div>
-                        <div className="p-6 gap-1 flex w-full items-center justify-center">
-                            <Paragraph>{t('workflows.resetPassword.alreadyHaveAccount')}</Paragraph>
+                        <div className="flex w-full items-center justify-center gap-1 p-6">
+                            <Paragraph>
+                                {t(
+                                    'workflows.resetPassword.alreadyHaveAccount',
+                                )}
+                            </Paragraph>
                             <Link
                                 href={generateLocalizedRoute('register')}
-                                className="text-primary font-medium hover:underline ml-1"
+                                className="text-primary ml-1 font-medium hover:underline"
                             >
                                 {t('signup')}
                             </Link>

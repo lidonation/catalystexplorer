@@ -30,7 +30,10 @@ export default function step5({
     });
 
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep - 1]?.info ?? ''}>
+        <WorkflowLayout
+            title="Create Voter List"
+            asideInfo={stepDetails[activeStep - 1]?.info ?? ''}
+        >
             <Content>
                 <div className="bg-background mx-auto flex min-h-[600px] w-full flex-col items-center justify-between rounded-lg p-8 md:w-3/4">
                     <div className="flex h-full w-full flex-col items-center justify-center gap-3 rounded p-8 md:w-3/4">

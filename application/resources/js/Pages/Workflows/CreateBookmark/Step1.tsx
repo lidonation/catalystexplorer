@@ -32,7 +32,10 @@ const Step1: React.FC<Step1Props> = ({
     const { t } = useLaravelReactI18n();
 
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
+        <WorkflowLayout
+            title="Create Bookmark"
+            asideInfo={stepDetails[activeStep - 1].info ?? ''}
+        >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
