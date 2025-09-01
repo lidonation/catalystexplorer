@@ -55,17 +55,17 @@ const Step6: React.FC<Step6Props> = ({
     const proposalData = selectedProposals.data.map((item) => {
         const model = item.model as ProposalData;
         const normalized: ExtendedProposalData = {
-            id: model.id,
-            campaign: model.campaign ?? null,
-            schedule: model.schedule ?? null,
-            title: model.title,
-            slug: model.slug,
-            status: model.status ?? null,
+            id: model?.id,
+            campaign: model?.campaign ?? null,
+            schedule: model?.schedule ?? null,
+            title: model?.title,
+            slug: model?.slug,
+            status: model?.status ?? null,
             users: null,
             reviews: null,
-            fund: bookmarkCollection.fund,
-            link: model.link,
-            amount_requested: model.amount_requested,
+            fund: bookmarkCollection?.fund,
+            link: model?.link ?? null,
+            amount_requested: model?.amount_requested,
             vote: item?.vote ?? null,
             exists: true,
         } as ExtendedProposalData;
@@ -160,6 +160,7 @@ const Step6: React.FC<Step6Props> = ({
             <WorkflowLayout
                 title="Create Voter List"
                 asideInfo={stepDetails[activeStep - 1]?.info || ''}
+                disclaimer={stepDetails[10]?.disclaimer ?? ''}
             >
                 <Nav stepDetails={stepDetails} activeStep={activeStep} />
 

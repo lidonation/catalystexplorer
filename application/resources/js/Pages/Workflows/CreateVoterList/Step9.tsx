@@ -52,12 +52,12 @@ const Step9: React.FC<Step9Props> = ({
     const proposalData = selectedProposals.data.map((item) => {
         let model = item.model as ProposalData;
         return {
-            id: model.id,
-            title: model.title,
-            slug: model.slug,
-            fund: bookmarkCollection.fund,
-            amount_requested: model.amount_requested,
-            vote: item?.vote,
+            id: model?.id,
+            title: model?.title ?? '',
+            slug: model?.slug ?? '',
+            fund: bookmarkCollection?.fund ?? '',
+            amount_requested: model?.amount_requested ?? 0,
+            vote: item?.vote ?? null,
             exists: true,
         } as ExtendedProposalData;
     });
@@ -147,6 +147,7 @@ const Step9: React.FC<Step9Props> = ({
             <WorkflowLayout
                 title="Create Voter List"
                 asideInfo={stepDetails[activeStep - 1]?.info || ''}
+                disclaimer={stepDetails[10]?.disclaimer ?? ''}
             >
                 <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
