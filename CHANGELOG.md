@@ -1,3 +1,10 @@
+## [1.18.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.18.0...v1.18.1) (2025-09-01)
+
+
+### Bug Fixes
+
+* voting list bug ([0cd27d8](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/0cd27d8a90eb7512d9e3d40b35458dd43d6ee4ce))
+
 # [1.18.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.17.0...v1.18.0) (2025-09-01)
 
 
