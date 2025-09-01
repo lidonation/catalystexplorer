@@ -129,6 +129,33 @@ class FundsController extends Controller
         ]);
     }
 
+    public function activeFund()
+    {
+        $activeFund = Fund::latest('launched_at')
+            ->withCount(['funded_proposals', 'completed_proposals', 'unfunded_proposals', 'proposals'])
+            ->first();
+
+        $activeFund->append(['banner_img_url']);
+
+        $amountAwarded = $activeFund->funded_proposals()->sum('amount_requested');
+        $amountDistributed = $activeFund->funded_proposals()->sum('amount_received');
+        $amountRemaining = $amountAwarded - $amountDistributed;
+
+        $campaigns = $this->getCampaigns($activeFund);
+        $campaigns->append([
+            'total_requested',
+            'total_awarded',
+            'total_distributed',
+        ]);
+
+        return Inertia::render('ActiveFund/Index', [
+            'fund' => FundData::from($activeFund),
+            'campaigns' => $campaigns,
+            'amountDistributed' => $amountDistributed,
+            'amountRemaining' => $amountRemaining,
+        ]);
+    }
+
     protected function getProps(Request $request): void
     {
         $this->queryParams = $request->validate([

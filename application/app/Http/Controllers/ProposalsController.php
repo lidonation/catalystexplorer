@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Stringable;
 use Inertia\Inertia;
@@ -890,49 +891,115 @@ class ProposalsController extends Controller
 
     public function getProposalMetrics(Request $request)
     {
-        $referer = $request->headers->get('referer');
-        $refererParams = [];
+        // Create cache key based on request parameters
+        $cacheKey = $this->generateMetricsCacheKey($request);
 
-        if ($referer) {
-            $parsedUrl = parse_url($referer);
-            if (isset($parsedUrl['query'])) {
-                $refererParams = SymfonyRequest::create('?'.$parsedUrl['query'])->query->all();
-            }
+        return Cache::remember($cacheKey, 300, function () use ($request) {
+            return $this->computeProposalMetrics($request);
+        });
+    }
+
+    /**
+     * Generate a cache key for metrics based on request parameters
+     */
+    private function generateMetricsCacheKey(Request $request): string
+    {
+        $keyData = [
+            'rules' => $request->input('rules', []),
+            'chartType' => $request->input('chartType'),
+            'referer_params' => $this->extractRefererParams($request),
+            'query_params' => $request->query->all(),
+        ];
+
+        return 'proposal_metrics_'.md5(json_encode($keyData));
+    }
+
+    /**
+     * Extract and parse referer parameters.
+     */
+    private function extractRefererParams(Request $request): array
+    {
+        $referer = $request->headers->get('referer');
+        if (! $referer) {
+            return [];
         }
 
-        $mergedRequest = $request->duplicate(
-            array_merge($request->query->all(), $refererParams),
-            $request->request->all()
-        );
+        $parsedUrl = parse_url($referer);
+        if (! isset($parsedUrl['query'])) {
+            return [];
+        }
+
+        parse_str($parsedUrl['query'], $refererParams);
+
+        return $refererParams;
+    }
+
+    /**
+     * Compute proposal metrics.
+     */
+    private function computeProposalMetrics(Request $request): array
+    {
+        $refererParams = $this->extractRefererParams($request);
+        $allParams = $refererParams + $request->query->all();
+
+        $mergedRequest = $allParams !== $request->query->all()
+            ? $request->duplicate($allParams, $request->request->all())
+            : $request;
 
         $this->getProps($mergedRequest);
 
         $proposalMetricRules = $request->input('rules', []);
         $chartType = $request->input('chartType');
 
-        $proposalRuleTitles = array_unique($proposalMetricRules);
+        if (empty($proposalMetricRules)) {
+            return [];
+        }
+
+        $proposalRuleTitles = array_values(array_unique($proposalMetricRules));
         sort($proposalRuleTitles);
+        $proposalRuleTitlesKey = implode(',', $proposalRuleTitles);
 
-        $metricIds = Metric::with('rules')
-            ->where('type', $chartType)
-            ->get()
-            ->filter(function ($metric) use ($proposalRuleTitles) {
-                $metricRuleTitles = $metric->rules->pluck('title')->toArray();
-
-                sort($metricRuleTitles);
-                sort($proposalRuleTitles);
-
-                return $metricRuleTitles === $proposalRuleTitles;
-            })
-            ->pluck('id')
-            ->toArray();
-
-        $metrics = Metric::whereIn('id', $metricIds)->get();
+        $metrics = $this->findMatchingMetrics($chartType, $proposalRuleTitles, $proposalRuleTitlesKey);
+        if ($metrics->isEmpty()) {
+            return [];
+        }
 
         $searchQuery = $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '';
-
         $filters = $this->getUserFilters();
 
+        return $this->processMetricsData($metrics, $filters, $searchQuery, $chartType);
+    }
+
+    /**
+     * Find matching metrics
+     */
+    private function findMatchingMetrics(string $chartType, array $proposalRuleTitles, string $proposalRuleTitlesKey)
+    {
+
+        return Metric::with([
+            'rules' => fn ($query) => $query->whereIn('title', $proposalRuleTitles),
+        ])
+            ->where('type', $chartType)
+            ->get();
+        //            ->filter(function ($metric) use ($proposalRuleTitles, $proposalRuleTitlesKey) {
+        //                $metricRuleTitles = $metric->rules->pluck('title')->toArray();
+        //
+        //                if (count($metricRuleTitles) !== count($proposalRuleTitles)) {
+        //                    return false;
+        //                }
+        //
+        //                sort($metricRuleTitles);
+        //                $metricRuleTitlesKey = implode(',', $metricRuleTitles);
+        //
+        //                return $metricRuleTitlesKey === $proposalRuleTitlesKey;
+        //            });
+    }
+
+    /**
+     * Process metrics data efficiently
+     */
+    private function processMetricsData($metrics, array $filters, string $searchQuery, string $chartType): array
+    {
         $multiSeriesData = [];
 
         foreach ($metrics as $metric) {

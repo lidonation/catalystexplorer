@@ -97,7 +97,6 @@ export default function ModelSearch({
     const model = modelTypes[domain];
     const { selectedItemsByType, toggleSelection } = useBookmarkContext();
     const selectedHashes = selectedItemsByType[domain] || [];
-    
 
     useEscapeKey(() => setSearchTerm(''));
 
@@ -171,7 +170,7 @@ export default function ModelSearch({
             {searchTerm && options.length > 0 && (
                 <div className="bg-background absolute right-0 left-0 z-30 mt-2 max-h-[30rem] overflow-y-auto rounded-xl bg-white px-2 py-4 shadow-xl">
                     {options.map((result) => {
-                        
+
                         const uuid = result.id;
                         const isSelected = selectedHashes.includes(uuid);
 

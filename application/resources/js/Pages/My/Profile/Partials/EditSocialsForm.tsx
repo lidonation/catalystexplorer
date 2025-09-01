@@ -8,6 +8,7 @@ import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import {useLaravelReactI18n} from "laravel-react-i18n";
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface SocialProfilesFormProps {
     linkedinUrl?: string;
@@ -44,6 +45,9 @@ export default function SocialProfilesForm({
 
     return (
         <form onSubmit={submit} className="p-4">
+            
+            <ErrorDisplay />
+            
             <div className="mb-4">
                 <InputLabel
                     htmlFor="linkedin"
