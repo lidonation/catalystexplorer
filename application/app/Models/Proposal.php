@@ -185,31 +185,31 @@ class Proposal extends Model
 
     public function scopeFilter($query, array $filters)
     {
-        $idsFromHash = ! empty($filters['hashes']) ? (array) $filters['hashes'] : null;
+        $idsFromHash = !empty($filters['hashes']) ? (array)$filters['hashes'] : null;
 
         $query->when(
             $idsFromHash ?? false,
-            fn (Builder $query, $search) => $query->whereIn('id', $idsFromHash)
+            fn(Builder $query, $search) => $query->whereIn('id', $idsFromHash)
         );
 
         $query->when(
             $filters['search'] ?? false,
-            fn (Builder $query, $search) => $query->where('title', 'ILIKE', '%'.$search.'%')
+            fn(Builder $query, $search) => $query->where('title', 'ILIKE', '%' . $search . '%')
         );
 
         $query->when(
             $filters['user_id'] ?? false,
-            fn (Builder $query, $user_id) => $query->where('user_id', $user_id)
+            fn(Builder $query, $user_id) => $query->where('user_id', $user_id)
         );
 
         $query->when(
             $filters['campaign_id'] ?? false,
-            fn (Builder $query, $campaign_id) => $query->where('campaign_id', $campaign_id)
+            fn(Builder $query, $campaign_id) => $query->where('campaign_id', $campaign_id)
         );
 
         $query->when(
             $filters['fund_id'] ?? false,
-            fn (Builder $query, $fund_id) => $query->whereRelation('fund_id', '=', $fund_id)
+            fn(Builder $query, $fund_id) => $query->whereRelation('fund_id', '=', $fund_id)
         );
     }
 
@@ -221,7 +221,7 @@ class Proposal extends Model
     public function currency(): Attribute
     {
         return Attribute::make(
-            get: fn ($currency) => $currency ?? $this->campaign?->currency ?? $this->fund?->currency ?? CatalystCurrencies::ADA()->value,
+            get: fn($currency) => $currency ?? $this->campaign?->currency ?? $this->fund?->currency ?? CatalystCurrencies::ADA()->value,
         );
     }
 
@@ -245,7 +245,7 @@ class Proposal extends Model
     public function amountReceived(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => ($this->schedule?->funds_distributed ?? $value)
+            get: fn($value) => ($this->schedule?->funds_distributed ?? $value)
         );
     }
 
@@ -262,7 +262,7 @@ class Proposal extends Model
                 }
 
                 if ($metaValue !== null && $metaValue !== '') {
-                    return is_numeric($metaValue) ? (int) $metaValue : $metaValue;
+                    return is_numeric($metaValue) ? (int)$metaValue : $metaValue;
                 }
 
                 return $value;
@@ -273,7 +273,7 @@ class Proposal extends Model
     public function quickPitchId(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->quickpitch ? collect(
+            get: fn() => $this->quickpitch ? collect(
                 explode(
                     '/',
                     $this->quickpitch
@@ -325,7 +325,7 @@ class Proposal extends Model
     {
         return Attribute::make(
             get: function () {
-                return config('app.url')."/en/proposals/{$this->slug}";
+                return config('app.url') . "/en/proposals/{$this->slug}";
             }
         );
     }
@@ -418,7 +418,7 @@ class Proposal extends Model
 
     public function ratingsAverage(): Attribute
     {
-        return Attribute::make(get: fn () => $this->ratings->avg('rating'));
+        return Attribute::make(get: fn() => $this->ratings->avg('rating'));
     }
 
     /**
@@ -447,7 +447,7 @@ class Proposal extends Model
         $this->load(['fund', 'communities']);
 
         return array_merge($array, [
-            'funded' => (bool) $this->funded_at ? 1 : 0,
+            'funded' => (bool)$this->funded_at ? 1 : 0,
             'currency' => $this->currency,
             'amount_requested' => $this->amount_requested ? intval($this->amount_requested) : 0,
             'amount_received' => $this->amount_received ? intval($this->amount_received) : 0,
@@ -459,15 +459,19 @@ class Proposal extends Model
                 'label' => $this->fund?->label,
                 'title' => $this->fund?->title,
             ],
-            'communities' => $this->communities->map(fn ($community) => [
+            'communities' => $this->communities->map(fn($community) => [
                 'id' => $community->id,
                 'name' => $community->title,
                 'amount' => $this->campaign?->amount,
                 'currency' => $this->campaign?->currency,
             ]),
-            'group' => $this->communities->map(fn ($group) => [
+            'groups' => $this->groups->map(fn($group) => [
                 'id' => $group->id,
                 'name' => $group->title,
+            ]),
+            'users' => $this->team->map(fn($profile) => [
+                'id' => $profile?->model?->id,
+                'name' => $profile?->model?->name,
             ]),
             'campaign' => [
                 'id' => $this->campaign?->id,
@@ -510,19 +514,17 @@ class Proposal extends Model
         );
     }
 
-    public function team(): BelongsToMany
+    public function team(): HasMany
     {
-        return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
+        return $this->hasMany(ProposalProfile::class, 'proposal_id', 'id')
+            ->with([
+                'model'
+            ]);
     }
 
     public function author(): BelongsTo
     {
         return $this->belongsTo(IdeascaleProfile::class, 'user_id', 'old_id', 'author');
-    }
-
-    public function users(): BelongsToMany
-    {
-        return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
     }
 
     public function catalyst_profiles(): BelongsToMany
@@ -535,10 +537,20 @@ class Proposal extends Model
         return $this->belongsToMany(IdeascaleProfile::class, 'ideascale_profile_has_proposal', 'proposal_id', 'ideascale_profile_id');
     }
 
-    public function proposal_profiles()
+    public function users(): HasMany
     {
         return $this->hasMany(ProposalProfile::class, 'proposal_id', 'id')
-            ->with(['profiles']);
+            ->with([
+                'model'
+            ]);
+    }
+
+    public function proposal_profiles(): HasMany
+    {
+        return $this->hasMany(ProposalProfile::class, 'proposal_id', 'id')
+            ->with([
+                'model'
+            ]);
     }
 
     public function completedProjectNft(): Attribute
@@ -549,7 +561,7 @@ class Proposal extends Model
 
                 return Nft::whereRelation(
                     'ideascale_profile',
-                    fn ($q) => $q->whereIn('ideascale_profiles.id', $this->users->pluck('id')->toArray())
+                    fn($q) => $q->whereIn('ideascale_profiles.id', $this->users->pluck('id')->toArray())
                 )
                     ->whereJsonContains('metadata->Project Title', $englishTitle)
                     ->get();
@@ -573,7 +585,7 @@ class Proposal extends Model
             'amount_received' => 'integer',
             'amount_requested' => 'integer',
             'created_at' => DateFormatCast::class,
-            'currency' => CatalystCurrencies::class.':nullable',
+            'currency' => CatalystCurrencies::class . ':nullable',
             'funded_at' => DateFormatCast::class,
             'funding_updated_at' => DateFormatCast::class,
             'offchain_metas' => 'array',

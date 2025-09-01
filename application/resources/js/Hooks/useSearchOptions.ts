@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import requestManager from '@/utils/request-manager';
 import ApiPaginatedData from '../types/api-paginated-data';
 
@@ -9,9 +9,7 @@ export function useSearchOptions<T>(domain?: string) {
 
     const resolvePromise = async <T>(promise: Promise<T>): Promise<T | null> => {
         try {
-            const response = await promise;
-
-            return response;
+            return await promise;
         } catch (error) {
             console.error('Error resolving promise:', error);
             return null;
@@ -19,7 +17,6 @@ export function useSearchOptions<T>(domain?: string) {
     };
 
     useEffect(() => {
-
         const fetchData = async () => {
             let routeName = `api.${domain}`;
 
@@ -39,10 +36,8 @@ export function useSearchOptions<T>(domain?: string) {
         };
 
         if (searchTerm.length || uuids.length) {
-            fetchData();
+            fetchData().then();
         }
-
-
     }, [domain, searchTerm, uuids]);
 
     return { searchTerm, setSearchTerm, options, uuids, setUuids };

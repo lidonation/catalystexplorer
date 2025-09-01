@@ -76,7 +76,8 @@ Route::prefix('api')->as('api.')->group(function () {
     Route::get('/communities/incremental-connections', [CommunitiesController::class, 'incrementalConnections'])->name('communities.incremental-connections');
     Route::post('/communities/{uuid}/join', [CommunitiesController::class, 'join'])->name('community.join');
 
-    Route::get('/proposal-charts-metrics', [ProposalsController::class, 'getProposalMetrics'])->name('proposalChartsMetrics');
+    Route::get('/proposal-charts-metrics', [ProposalsController::class, 'getProposalMetrics'])
+        ->name('proposalChartsMetrics');
 
     Route::prefix('bookmark-items')->as('bookmarks.')
         ->group(function () {

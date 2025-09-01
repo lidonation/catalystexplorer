@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Fluent;
 
 class Metric extends Model
 {
@@ -91,7 +92,7 @@ class Metric extends Model
         );
     }
 
-    public function multiSeriesSearchData(array $userFilters, string $searchQuery, string $type)
+    public function multiSeriesSearchData(array $userFilters, string $searchQuery, string $type): array
     {
 
         if (! $this->rules || $this->rules->count() < 1) {
@@ -123,7 +124,7 @@ class Metric extends Model
 
         try {
             $builder = $proposals->search($searchQuery, $searchOptions);
-            $response = new \Illuminate\Support\Fluent($builder->raw());
+            $response = new Fluent($builder->raw());
             $facetData = $response->facetDistribution[$facetKey] ?? [];
 
             if ($countBy === 'year') {
@@ -227,7 +228,7 @@ class Metric extends Model
             }
 
             $builder = $proposals->search($searchQuery, $searchOptions);
-            $response = new \Illuminate\Support\Fluent($builder->raw());
+            $response = new Fluent($builder->raw());
 
             $facetCounts = $response->facetDistribution[$facetKey] ?? [];
 
@@ -335,7 +336,7 @@ class Metric extends Model
             }
 
             $builder = $proposals->search($searchQuery, $searchOptions);
-            $response = new \Illuminate\Support\Fluent($builder->raw());
+            $response = new Fluent($builder->raw());
             $facetCounts = $response->facetDistribution[$facetKey] ?? [];
 
             if ($countBy === 'year') {

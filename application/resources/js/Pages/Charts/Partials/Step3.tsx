@@ -146,7 +146,7 @@ export default function Step3({
             const urlParams = new URLSearchParams(currentQueryString);
 
 
-            onLoadingChange?.(true); 
+            onLoadingChange?.(true);
             try {
                 const response = await axios.get(
                     `${route('api.proposalChartsMetrics')}?${urlParams.toString()}`,
@@ -154,18 +154,17 @@ export default function Step3({
                         params: { rules, chartType },
                     },
                 );
-                onChartDataReceived?.(response?.data); 
-                console.log('test', response?.data);
+                onChartDataReceived?.(response?.data);
             } catch (error: any) {
                 console.error(
                     'Error fetching proposal metrics:',
                     error.response?.data || error.message,
                 );
             } finally {
-                onLoadingChange?.(false); 
+                onLoadingChange?.(false);
             }
         },
-        [],
+        [onLoadingChange, onChartDataReceived],
     );
 
     const handleComplete = useCallback(() => {
@@ -173,22 +172,11 @@ export default function Step3({
         onCompletionChange(true);
         onNext();
         onExploreCharts();
-    }, [
-        sendProposalMetrics,
-        rules,
-        chartType,
-        onCompletionChange,
-        onNext,
-        onExploreCharts,
-    ]);
+    }, [sendProposalMetrics, rules, onCompletionChange, onNext, onExploreCharts]);
 
     const buttonClassName = useMemo(() => {
         return `mt-4 w-full ${!isChartsSelected || disabled ? 'cursor-not-allowed opacity-50' : ''}`;
     }, [isChartsSelected, disabled]);
-
-    useEffect(()=>{
-        console.log('options', chartOptions);
-    })
 
     return (
         <div className={disabled ? 'pointer-events-none opacity-50' : ''}>
