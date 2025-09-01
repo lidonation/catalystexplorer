@@ -91,7 +91,7 @@ class VoterListController extends Controller
                 ->flatMap(
                     fn ($item) => [
                         [
-                            'hash' => optional(Proposal::find($item->model_id))->id,
+                            'id' => optional(Proposal::find($item->model_id))->id,
                             'vote' => $item->vote?->value,
                         ],
                     ]
