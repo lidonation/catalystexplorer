@@ -518,6 +518,7 @@ const Step3: React.FC<Step3Props> = ({
                 asideInfo={stepDetails[activeStep - 1]?.info || ''}
                 wrapperClassName="!h-auto"
                 contentClassName="!max-h-none"
+                disclaimer={stepDetails[4]?.disclaimer ?? ''}
             >
                 <Nav stepDetails={stepDetails} activeStep={activeStep} />
 

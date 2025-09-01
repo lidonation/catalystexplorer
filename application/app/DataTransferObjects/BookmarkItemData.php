@@ -25,7 +25,7 @@ final class BookmarkItemData extends Data
         public ?string $model_id,
 
         #[TypeScriptOptional]
-        public ProposalData|ReviewData|IdeascaleProfileData|CommunityData|GroupData $model,
+        public ProposalData|ReviewData|IdeascaleProfileData|CommunityData|GroupData|null $model,
 
         #[TypeScriptOptional]
         public ?string $model_type,
@@ -49,6 +49,6 @@ final class BookmarkItemData extends Data
         public ?string $updated_at,
 
         #[TypeScriptOptional]
-        public ?string $deleted_at
+        public ?string $deleted_at,
     ) {}
 }
