@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { router } from '@inertiajs/react';
 import requestManager from '@/utils/request-manager';
 import ApiPaginatedData from '../types/api-paginated-data';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 
 export function useSearchOptions<T>(domain?: string, fundId?: string | null) {
    
@@ -40,7 +41,7 @@ export function useSearchOptions<T>(domain?: string, fundId?: string | null) {
             };
 
             if (domain === 'proposals' && fundId) {
-                queryParams['filter[fund_id]'] = fundId;
+                queryParams[ParamsEnum.FUNDS] = fundId;
             }
 
             const response = await resolvePromise<ApiPaginatedData<T>>(
