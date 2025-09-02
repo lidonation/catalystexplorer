@@ -1,3 +1,10 @@
+# [1.19.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.18.1...v1.19.0) (2025-09-02)
+
+
+### Features
+
+* **proposals table:** ln-1995 edited propsals tabular view ([8cd2854](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/8cd28544bda40f88ce70a7930de1f2b7622e5741))
+
 ## [1.18.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.18.0...v1.18.1) (2025-09-01)
 
 
