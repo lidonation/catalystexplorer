@@ -23,7 +23,7 @@ const ActiveFundBanner: React.FC<ActiveFundBannerProps> = ({ fund }) => {
                         level="1"
                         className="font-bold "
                     >{`${t('activeFund.title')} - ${fund?.title}`}</Title>
-                    <div className='p-5 bg-black/20 rounded-xl'>
+                    <div className='p-5 bg-black/30 rounded-xl'>
                         <Paragraph className="line-clamp-3 min-h-[4.5rem] leading-relaxed w-100" size="md">
                             {t('activeFund.subtitle')}
                         </Paragraph>

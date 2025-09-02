@@ -38,6 +38,7 @@ export default function Success({
         <WorkflowLayout
             title="Drep SignUp"
             asideInfo={stepDetails[activeStep - 1]?.info || ''}
+            disclaimer={t('workflows.voterList.prototype')}
         >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 

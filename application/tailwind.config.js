@@ -53,6 +53,8 @@ export default {
                 //     'error-secondary' : 'var(--content-error-secondary-color)'
                 // },
                 content: 'var(--cx-content)',
+                'pink': 'var(--cx-content-pink)',
+                'yellow': 'var(--cx-content-yellow)',
                 'content-highlight-intro': 'var(--cx-content-highlight)',
                 'content-light': 'var(--cx-content-light)',
                 'content-dark': 'var(--cx-content-dark)',

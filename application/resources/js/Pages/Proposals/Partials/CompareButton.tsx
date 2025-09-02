@@ -2,7 +2,6 @@ import CompareIcon from '@/Components/svgs/CompareIcon';
 import ToolTipHover from '@/Components/ToolTipHover';
 import { IndexedDBService } from '@/Services/IndexDbService';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { getUuid } from '@/utils/getPreferredId';
 import ProposalData = App.DataTransferObjects.ProposalData;
 import { useState } from 'react';
 type CompareButtonProps = {
@@ -11,15 +10,17 @@ type CompareButtonProps = {
     tooltipDescription: string;
     data: ProposalData;
     'data-testid'?: string;
+    buttonTheme?: string;
 };
 const CompareButton: React.FC<CompareButtonProps> = ({
     data,
     tooltipDescription = 'Compare proposal',
     'data-testid': dataTestId,
+    buttonTheme = 'text-white'
 }: CompareButtonProps) => {
     const [isHovered, setIsHovered] = useState(false);
     const proposalId = data.id ?? '';
-    
+
     // Live query to check if the proposal is already in the DB
     const existingProposal = useLiveQuery(
         async () => await IndexedDBService.get('proposal_comparisons', proposalId),
@@ -44,7 +45,7 @@ const CompareButton: React.FC<CompareButtonProps> = ({
     return (
         <button
             type="button"
-            className="relative hover:cursor-pointer"
+            className={`relative hover:cursor-pointer ${alreadyExists ? 'text-success' : buttonTheme}`}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             onClick={toggleInList}

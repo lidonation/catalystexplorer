@@ -266,7 +266,7 @@ const Step4Content: React.FC<Step4Props> = ({
             }}
             wrapperClassName="!h-auto"
             contentClassName="!max-h-none"
-            disclaimer={stepDetails[4]?.disclaimer ?? ''}
+            disclaimer={t('workflows.voterList.prototype')}
         >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
             <div className="mx-auto mt-5 flex w-full flex-col items-center justify-center">

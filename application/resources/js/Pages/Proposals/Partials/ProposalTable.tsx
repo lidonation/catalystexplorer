@@ -192,11 +192,13 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                         tooltipDescription="Compare Proposals"
                         data={proposal}
                         data-testid={`compare-button`}
+                        buttonTheme='text-content'
                     />
                     <BookmarkButton
                         modelType="proposals"
                         itemId={proposal.id ?? ''}
                         data-testid="bookmark-button"
+                        buttonTheme='text-content'
                     />
                 </div>
             ),

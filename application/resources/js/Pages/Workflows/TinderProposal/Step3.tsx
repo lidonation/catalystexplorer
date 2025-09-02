@@ -1,26 +1,22 @@
-import { generateLocalizedRoute, useLocalizedRoute } from '@/utils/localizedRoute';
-import { ChevronLeft, ChevronRight, ThumbsUpIcon } from 'lucide-react';
-import React, { useEffect, useState, useRef, useMemo } from 'react';
-import { useLaravelReactI18n } from "laravel-react-i18n";
-import { router } from '@inertiajs/react';
-import api from '@/utils/axiosClient';
+import Button from '@/Components/atoms/Button';
 import Paragraph from '@/Components/atoms/Paragraph';
-import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
-import Title from '@/Components/atoms/Title';
-import Content from '../Partials/WorkflowContent';
+import PrimaryLink from '@/Components/atoms/PrimaryLink';
+import ThumbsDownIcon from '@/Components/svgs/ThumbsDownIcon';
+import { FiltersProvider } from '@/Context/FiltersContext';
+import { TinderWorkflowParams } from '@/enums/tinder-workflow-params';
+import { VoteEnum } from '@/enums/votes-enums';
+import ProposalCard from '@/Pages/Proposals/Partials/ProposalCard';
+import { SearchParams } from '@/types/search-params';
+import api from '@/utils/axiosClient';
+import { generateLocalizedRoute } from '@/utils/localizedRoute';
+import { router } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { ThumbsUpIcon } from 'lucide-react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
-import ProposalCard from '@/Pages/Proposals/Partials/ProposalCard';
-import { shortNumber } from '@/utils/shortNumber';
-import Button from '@/Components/atoms/Button';
-import ThumbsDownIcon from '@/Components/svgs/ThumbsDownIcon';
-import { TinderWorkflowParams } from '@/enums/tinder-workflow-params';
-import { VoteEnum } from '@/enums/votes-enums';
-import { FiltersProvider, useFilterContext } from '@/Context/FiltersContext';
-import { ParamsEnum } from '@/enums/proposal-search-params';
-import { SearchParams } from '@/types/search-params';
 
 interface Step3Props {
     stepDetails: any[];
@@ -76,7 +72,7 @@ const Step3: React.FC<Step3Props> = ({
     savedCurrentIndex = 0,
     savedTotalSeen = 0,
     startingPage = 1,
-    currentIndexWithinPage = 0
+    currentIndexWithinPage = 0,
 }) => {
     const { t } = useLaravelReactI18n();
     const [currentIndex, setCurrentIndex] = useState(currentIndexWithinPage);
@@ -85,7 +81,9 @@ const Step3: React.FC<Step3Props> = ({
     const [swipeOffset, setSwipeOffset] = useState({ x: 0, y: 0 });
     const [isDragging, setIsDragging] = useState(false);
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-    const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null);
+    const [swipeDirection, setSwipeDirection] = useState<
+        'left' | 'right' | null
+    >(null);
     const [swipedCardIndex, setSwipedCardIndex] = useState<number | null>(null);
     const [isButtonClick, setIsButtonClick] = useState(false);
     const currentDragOffset = useRef({ x: 0, y: 0 });
@@ -94,53 +92,82 @@ const Step3: React.FC<Step3Props> = ({
     const [allProposals, setAllProposals] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [hasMorePages, setHasMorePages] = useState(true);
-    const [swipedLeftProposals, setSwipedLeftProposals] = useState<string[]>(Array.isArray(existingSwipedLeft) ? existingSwipedLeft : []);
-    const [swipedRightProposals, setSwipedRightProposals] = useState<string[]>(Array.isArray(existingSwipedRight) ? existingSwipedRight : []);
-    const [processingProposals, setProcessingProposals] = useState<Set<string>>(new Set());
+    const [swipedLeftProposals, setSwipedLeftProposals] = useState<string[]>(
+        Array.isArray(existingSwipedLeft) ? existingSwipedLeft : [],
+    );
+    const [swipedRightProposals, setSwipedRightProposals] = useState<string[]>(
+        Array.isArray(existingSwipedRight) ? existingSwipedRight : [],
+    );
+    const [processingProposals, setProcessingProposals] = useState<Set<string>>(
+        new Set(),
+    );
 
     // Queue system for API calls
-    const [apiQueue, setApiQueue] = useState<Array<{
-        id: string;
-        proposalSlug: string;
-        direction: 'left' | 'right';
-        targetCollectionHash: string;
-        voteValue: number;
-        retryCount: number;
-    }>>([]);
+    const [apiQueue, setApiQueue] = useState<
+        Array<{
+            id: string;
+            proposalSlug: string;
+            direction: 'left' | 'right';
+            targetCollectionHash: string;
+            voteValue: number;
+            retryCount: number;
+        }>
+    >([]);
     const [isProcessingQueue, setIsProcessingQueue] = useState(false);
 
     // Track current page - start from the calculated starting page
     const [currentPage, setCurrentPage] = useState(startingPage);
 
     useEffect(() => {
-        const safeExistingSwipedLeft = Array.isArray(existingSwipedLeft) ? existingSwipedLeft : [];
-        const safeExistingSwipedRight = Array.isArray(existingSwipedRight) ? existingSwipedRight : [];
-    }, [swipedLeftProposals, swipedRightProposals, existingSwipedLeft, existingSwipedRight]);
+        const safeExistingSwipedLeft = Array.isArray(existingSwipedLeft)
+            ? existingSwipedLeft
+            : [];
+        const safeExistingSwipedRight = Array.isArray(existingSwipedRight)
+            ? existingSwipedRight
+            : [];
+    }, [
+        swipedLeftProposals,
+        swipedRightProposals,
+        existingSwipedLeft,
+        existingSwipedRight,
+    ]);
 
-    const editSettingsStep = generateLocalizedRoute('workflows.tinderProposal.index', {
-        [TinderWorkflowParams.STEP]: 1,
-        [TinderWorkflowParams.EDIT]: 1,
-        [TinderWorkflowParams.TINDER_COLLECTION_HASH]: collectionHash,
-        [TinderWorkflowParams.LEFT_BOOKMARK_COLLECTION_HASH]: leftBookmarkCollectionHash,
-        [TinderWorkflowParams.RIGHT_BOOKMARK_COLLECTION_HASH]: rightBookmarkCollectionHash,
-    });
+    const editSettingsStep = generateLocalizedRoute(
+        'workflows.tinderProposal.index',
+        {
+            [TinderWorkflowParams.STEP]: 1,
+            [TinderWorkflowParams.EDIT]: 1,
+            [TinderWorkflowParams.TINDER_COLLECTION_HASH]: collectionHash,
+            [TinderWorkflowParams.LEFT_BOOKMARK_COLLECTION_HASH]:
+                leftBookmarkCollectionHash,
+            [TinderWorkflowParams.RIGHT_BOOKMARK_COLLECTION_HASH]:
+                rightBookmarkCollectionHash,
+        },
+    );
 
     useEffect(() => {
         if (proposals?.data) {
-            const safeExistingSwipedLeft = Array.isArray(existingSwipedLeft) ? existingSwipedLeft : [];
-            const safeExistingSwipedRight = Array.isArray(existingSwipedRight) ? existingSwipedRight : [];
-            const allSwipedSlugs = [...safeExistingSwipedLeft, ...safeExistingSwipedRight];
+            const safeExistingSwipedLeft = Array.isArray(existingSwipedLeft)
+                ? existingSwipedLeft
+                : [];
+            const safeExistingSwipedRight = Array.isArray(existingSwipedRight)
+                ? existingSwipedRight
+                : [];
+            const allSwipedSlugs = [
+                ...safeExistingSwipedLeft,
+                ...safeExistingSwipedRight,
+            ];
 
             if (isLoadMore) {
                 // Append new proposals to existing ones, but filter out any already swiped proposals
-                const filteredNewProposals = proposals.data.filter(proposal =>
-                    !allSwipedSlugs.includes(proposal.slug)
+                const filteredNewProposals = proposals.data.filter(
+                    (proposal) => !allSwipedSlugs.includes(proposal.slug),
                 );
-                setAllProposals(prev => [...prev, ...filteredNewProposals]);
+                setAllProposals((prev) => [...prev, ...filteredNewProposals]);
             } else {
                 // Replace with initial proposals, filtering out already swiped ones
-                const filteredProposals = proposals.data.filter(proposal =>
-                    !allSwipedSlugs.includes(proposal.slug)
+                const filteredProposals = proposals.data.filter(
+                    (proposal) => !allSwipedSlugs.includes(proposal.slug),
                 );
                 setAllProposals(filteredProposals);
 
@@ -150,9 +177,14 @@ const Step3: React.FC<Step3Props> = ({
 
             setHasMorePages(proposals.current_page < proposals.last_page);
             setIsLoading(false);
-
         }
-    }, [proposals, isLoadMore, existingSwipedLeft, existingSwipedRight, currentIndexWithinPage]);
+    }, [
+        proposals,
+        isLoadMore,
+        existingSwipedLeft,
+        existingSwipedRight,
+        currentIndexWithinPage,
+    ]);
 
     const buildUpdatedFilters = (updates: Partial<SearchParams> = {}) => {
         const baseFilters: Record<string, any> = { ...filters };
@@ -198,8 +230,8 @@ const Step3: React.FC<Step3Props> = ({
                 },
                 onError: () => {
                     setIsLoading(false);
-                }
-            }
+                },
+            },
         );
     };
 
@@ -209,12 +241,28 @@ const Step3: React.FC<Step3Props> = ({
         const threshold = 5; // Load more when 5 cards remaining (reduced from 10)
 
         // Don't auto-load more if we just returned to a saved page and haven't started swiping yet
-        const isReturningToSavedPage = currentIndexWithinPage === 0 && currentIndex === 0 && startingPage > 1;
+        const isReturningToSavedPage =
+            currentIndexWithinPage === 0 &&
+            currentIndex === 0 &&
+            startingPage > 1;
 
-        if (remainingCards <= threshold && hasMorePages && !isLoading && allProposals.length > 0 && !isReturningToSavedPage) {
+        if (
+            remainingCards <= threshold &&
+            hasMorePages &&
+            !isLoading &&
+            allProposals.length > 0 &&
+            !isReturningToSavedPage
+        ) {
             loadMoreProposals();
         }
-    }, [currentIndex, allProposals.length, hasMorePages, isLoading, currentIndexWithinPage, startingPage]);
+    }, [
+        currentIndex,
+        allProposals.length,
+        hasMorePages,
+        isLoading,
+        currentIndexWithinPage,
+        startingPage,
+    ]);
 
     // Process API queue
     const processApiQueue = async () => {
@@ -225,31 +273,44 @@ const Step3: React.FC<Step3Props> = ({
 
         for (const item of currentQueue) {
             try {
-                await api.post(generateLocalizedRoute('workflows.tinderProposal.addBookmarkItem'), {
-                    proposalSlug: item.proposalSlug,
-                    modelType: 'proposals',
-                    bookmarkCollection: item.targetCollectionHash,
-                    vote: item.voteValue
-                });
+                await api.post(
+                    generateLocalizedRoute(
+                        'workflows.tinderProposal.addBookmarkItem',
+                    ),
+                    {
+                        proposalSlug: item.proposalSlug,
+                        modelType: 'proposals',
+                        bookmarkCollection: item.targetCollectionHash,
+                        vote: item.voteValue,
+                    },
+                );
 
-                setApiQueue(prev => prev.filter(queueItem => queueItem.id !== item.id));
+                setApiQueue((prev) =>
+                    prev.filter((queueItem) => queueItem.id !== item.id),
+                );
 
-                setProcessingProposals(prev => {
+                setProcessingProposals((prev) => {
                     const newSet = new Set(prev);
                     newSet.delete(item.proposalSlug);
                     return newSet;
                 });
-
             } catch (error) {
                 if (item.retryCount < 3) {
-                    setApiQueue(prev => prev.map(queueItem =>
-                        queueItem.id === item.id
-                            ? { ...queueItem, retryCount: queueItem.retryCount + 1 }
-                            : queueItem
-                    ));
+                    setApiQueue((prev) =>
+                        prev.map((queueItem) =>
+                            queueItem.id === item.id
+                                ? {
+                                      ...queueItem,
+                                      retryCount: queueItem.retryCount + 1,
+                                  }
+                                : queueItem,
+                        ),
+                    );
                 } else {
-                    setApiQueue(prev => prev.filter(queueItem => queueItem.id !== item.id));
-                    setProcessingProposals(prev => {
+                    setApiQueue((prev) =>
+                        prev.filter((queueItem) => queueItem.id !== item.id),
+                    );
+                    setProcessingProposals((prev) => {
                         const newSet = new Set(prev);
                         newSet.delete(item.proposalSlug);
                         return newSet;
@@ -258,7 +319,7 @@ const Step3: React.FC<Step3Props> = ({
             }
 
             // Small delay between requests to avoid overwhelming the server
-            await new Promise(resolve => setTimeout(resolve, 100));
+            await new Promise((resolve) => setTimeout(resolve, 100));
         }
 
         setIsProcessingQueue(false);
@@ -275,9 +336,12 @@ const Step3: React.FC<Step3Props> = ({
         }
     }, [apiQueue.length, isProcessingQueue]);
 
-
-    const handleCardSwipe = (direction: 'left' | 'right', fromButton: boolean = false) => {
-        if (isAnimating || !allProposals || currentIndex >= allProposals.length) return;
+    const handleCardSwipe = (
+        direction: 'left' | 'right',
+        fromButton: boolean = false,
+    ) => {
+        if (isAnimating || !allProposals || currentIndex >= allProposals.length)
+            return;
 
         const currentProposal = allProposals[currentIndex];
         const proposalSlug = currentProposal?.slug;
@@ -296,23 +360,27 @@ const Step3: React.FC<Step3Props> = ({
         // Update local state immediately for responsive UI
         if (proposalSlug) {
             if (direction === 'left') {
-                setSwipedLeftProposals(prev => [...prev, proposalSlug]);
+                setSwipedLeftProposals((prev) => [...prev, proposalSlug]);
             } else {
-                setSwipedRightProposals(prev => [...prev, proposalSlug]);
+                setSwipedRightProposals((prev) => [...prev, proposalSlug]);
             }
         }
 
         if (proposalSlug) {
             if (!processingProposals.has(proposalSlug)) {
-                setProcessingProposals(prev => new Set(prev).add(proposalSlug));
+                setProcessingProposals((prev) =>
+                    new Set(prev).add(proposalSlug),
+                );
 
-                const targetCollectionHash = direction === 'left'
-                    ? leftBookmarkCollectionHash
-                    : rightBookmarkCollectionHash;
+                const targetCollectionHash =
+                    direction === 'left'
+                        ? leftBookmarkCollectionHash
+                        : rightBookmarkCollectionHash;
 
                 if (targetCollectionHash) {
                     // Determine vote value based on swipe direction
-                    const voteValue = direction === 'left' ? VoteEnum.NO : VoteEnum.YES;
+                    const voteValue =
+                        direction === 'left' ? VoteEnum.NO : VoteEnum.YES;
 
                     // Add to queue instead of making immediate API call
                     const queueItem = {
@@ -321,13 +389,13 @@ const Step3: React.FC<Step3Props> = ({
                         direction,
                         targetCollectionHash,
                         voteValue,
-                        retryCount: 0
+                        retryCount: 0,
                     };
 
-                    setApiQueue(prev => [...prev, queueItem]);
+                    setApiQueue((prev) => [...prev, queueItem]);
                 } else {
                     // No target collection, remove from processing
-                    setProcessingProposals(prev => {
+                    setProcessingProposals((prev) => {
                         const newSet = new Set(prev);
                         newSet.delete(proposalSlug);
                         return newSet;
@@ -335,12 +403,12 @@ const Step3: React.FC<Step3Props> = ({
                 }
             }
         } else {
-           //
+            //
         }
 
         // After animation completes, advance to next card and clean up
         setTimeout(() => {
-            setCurrentIndex(prev => prev + 1);
+            setCurrentIndex((prev) => prev + 1);
             setIsAnimating(false);
             setSwipeDirection(null);
             setSwipedCardIndex(null);
@@ -422,28 +490,48 @@ const Step3: React.FC<Step3Props> = ({
         if (!allProposals || allProposals.length === 0) return [];
 
         // During animation, show both the swiped card and the upcoming cards
-        if (swipedCardIndex !== null && isAnimating && allProposals[swipedCardIndex]) {
+        if (
+            swipedCardIndex !== null &&
+            isAnimating &&
+            allProposals[swipedCardIndex]
+        ) {
             const swipedCard = allProposals[swipedCardIndex];
-            const nextCards = allProposals.slice(currentIndex + 1, currentIndex + 4);
+            const nextCards = allProposals.slice(
+                currentIndex + 1,
+                currentIndex + 4,
+            );
 
             return [
-                { ...swipedCard, _isSwipedCard: true, _originalIndex: swipedCardIndex },
-                ...nextCards.map((card, idx) => ({ ...card, _isSwipedCard: false, _originalIndex: currentIndex + 1 + idx }))
+                {
+                    ...swipedCard,
+                    _isSwipedCard: true,
+                    _originalIndex: swipedCardIndex,
+                },
+                ...nextCards.map((card, idx) => ({
+                    ...card,
+                    _isSwipedCard: false,
+                    _originalIndex: currentIndex + 1 + idx,
+                })),
             ].filter(Boolean);
         }
 
         // Normal state: show current + next 2 cards
-        return allProposals.slice(currentIndex, currentIndex + 3).map((card, idx) => ({
-            ...card,
-            _isSwipedCard: false,
-            _originalIndex: currentIndex + idx
-        }));
+        return allProposals
+            .slice(currentIndex, currentIndex + 3)
+            .map((card, idx) => ({
+                ...card,
+                _isSwipedCard: false,
+                _originalIndex: currentIndex + idx,
+            }));
     }, [allProposals, currentIndex, swipedCardIndex, isAnimating]);
 
     const cardsToRender = getCardsToRender;
 
     // Check if we have a top card that can be dragged
-    const hasTopCard = cardsToRender.length > 0 && !cardsToRender[0]._isSwipedCard && !isAnimating;
+    const hasTopCard =
+        cardsToRender.length > 0 &&
+        !cardsToRender[0]._isSwipedCard &&
+        !isAnimating;
 
     // Add global event listeners for mouse/touch events
     useEffect(() => {
@@ -490,7 +578,11 @@ const Step3: React.FC<Step3Props> = ({
     useEffect(() => {
         // Redirect to step 1 if no preferences are found
         if (!preferences || !preferences.selectedFund) {
-            router.visit(generateLocalizedRoute('workflows.tinderProposal.index', { [TinderWorkflowParams.STEP]: 1 }));
+            router.visit(
+                generateLocalizedRoute('workflows.tinderProposal.index', {
+                    [TinderWorkflowParams.STEP]: 1,
+                }),
+            );
         }
     }, [preferences]);
 
@@ -500,9 +592,11 @@ const Step3: React.FC<Step3Props> = ({
             generateLocalizedRoute('workflows.tinderProposal.index', {
                 [TinderWorkflowParams.STEP]: 4,
                 [TinderWorkflowParams.TINDER_COLLECTION_HASH]: collectionHash,
-                [TinderWorkflowParams.LEFT_BOOKMARK_COLLECTION_HASH]: leftBookmarkCollectionHash,
-                [TinderWorkflowParams.RIGHT_BOOKMARK_COLLECTION_HASH]: rightBookmarkCollectionHash,
-            })
+                [TinderWorkflowParams.LEFT_BOOKMARK_COLLECTION_HASH]:
+                    leftBookmarkCollectionHash,
+                [TinderWorkflowParams.RIGHT_BOOKMARK_COLLECTION_HASH]:
+                    rightBookmarkCollectionHash,
+            }),
         );
     };
 
@@ -518,7 +612,7 @@ const Step3: React.FC<Step3Props> = ({
                 asideInfo={stepDetails[activeStep - 1]?.info || ''}
                 wrapperClassName="!h-auto"
                 contentClassName="!max-h-none"
-                disclaimer={stepDetails[4]?.disclaimer ?? ''}
+                disclaimer={t('workflows.voterList.prototype')}
             >
                 <Nav stepDetails={stepDetails} activeStep={activeStep} />
 

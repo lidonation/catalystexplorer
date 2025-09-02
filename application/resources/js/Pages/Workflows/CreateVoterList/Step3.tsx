@@ -186,7 +186,7 @@ const Step3: React.FC<Step3Props> = ({
             <WorkflowLayout
                 title="Create Voter List"
                 asideInfo={stepDetails[activeStep - 1].info ?? ''}
-                disclaimer={stepDetails[10]?.disclaimer ?? ''}
+                disclaimer={t('workflows.voterList.prototype')}
             >
                 <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
