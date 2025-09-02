@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\DataTransferObjects\ProposalData;
+use App\Enums\ProposalSearchParams;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProposalResource;
 use App\Models\Proposal;
@@ -102,12 +103,22 @@ class ProposalController extends Controller
         $per_page = request('per_page', 24);
 
         $requestValues = request(['ids']);
+        $fundId = request(ProposalSearchParams::FUNDS()->value);
 
-        $ids = null;
+        $filters = [];
 
         if (! empty($requestValues['ids'])) {
             $ids = implode(',', $requestValues['ids'] ?? []);
-            $args['filter'] = "id IN [{$ids}]";
+            $filters[] = "id IN [{$ids}]";
+        }
+
+        if (! empty($fundId)) {
+            $filters[] = "fund.id = {$fundId}";
+        }
+
+        $args = [];
+        if (!empty($filters)) {
+            $args['filter'] = implode(' AND ', $filters);
         }
 
         $page = request('page') ?? 1;
