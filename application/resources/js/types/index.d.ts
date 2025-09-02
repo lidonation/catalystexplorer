@@ -30,6 +30,7 @@ export type Post = {
 export type StepDetails = {
     title: string;
     info: string;
+    disclaimer: string;
 };
 
 type DateTime = string;

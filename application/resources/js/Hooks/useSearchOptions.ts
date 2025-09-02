@@ -17,9 +17,7 @@ export function useSearchOptions<T>(domain?: string, fundId?: string | null) {
 
     const resolvePromise = async <T>(promise: Promise<T>): Promise<T | null> => {
         try {
-            const response = await promise;
-
-            return response;
+            return await promise;
         } catch (error) {
             console.error('Error resolving promise:', error);
             return null;
@@ -27,7 +25,6 @@ export function useSearchOptions<T>(domain?: string, fundId?: string | null) {
     };
 
     useEffect(() => {
-
         const fetchData = async () => {
             let routeName = `api.${domain}`;
 
@@ -56,7 +53,7 @@ export function useSearchOptions<T>(domain?: string, fundId?: string | null) {
         };
 
         if (searchTerm.length || uuids.length) {
-            fetchData();
+            fetchData().then();
         }
 
 

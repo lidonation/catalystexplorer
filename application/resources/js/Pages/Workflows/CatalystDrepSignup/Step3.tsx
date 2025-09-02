@@ -99,7 +99,11 @@ const Step3: React.FC<Step3Props> = ({
     };
 
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep - 1]?.info || ''}>
+        <WorkflowLayout
+            title="Drep SignUp"
+            asideInfo={stepDetails[activeStep - 1]?.info || ''}
+            disclaimer={t('workflows.voterList.prototype')}
+        >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
@@ -140,7 +144,7 @@ const Step3: React.FC<Step3Props> = ({
                             <span className="text-slate-500">
                                 {t('users.network')}
                             </span>
-                            <span className="font-medium ">{networkName}</span>
+                            <span className="font-medium">{networkName}</span>
                         </div>
 
                         <div className="border-slate border-t border-dashed"></div>

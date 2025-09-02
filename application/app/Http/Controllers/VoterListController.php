@@ -91,7 +91,7 @@ class VoterListController extends Controller
                 ->flatMap(
                     fn ($item) => [
                         [
-                            'hash' => optional(Proposal::find($item->model_id))->id,
+                            'id' => optional(Proposal::find($item->model_id))->id,
                             'vote' => $item->vote?->value,
                         ],
                     ]
@@ -237,7 +237,7 @@ class VoterListController extends Controller
     {
         $bookmarkHash = $request->input(key: QueryParamsEnum::BOOKMARK_COLLECTION()->value) ?? $request->input('bookmarkId');
 
-        $bookmarkCollection = BookmarkCollection::find($bookmarkHash)?->load('fund');
+        $bookmarkCollection = BookmarkCollection::findOrFail($bookmarkHash)->load('fund');
 
         $page = (int) $request->input(ProposalSearchParams::PAGE()->value, 1);
         $limit = (int) $request->input('limit', 8);
@@ -524,7 +524,7 @@ class VoterListController extends Controller
             [
                 'title' => 'workflows.voterList.success.title',
                 'info' => 'workflows.voterList.success.successInfo',
-            ],
+            ]
         ]);
     }
 }

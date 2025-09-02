@@ -12,7 +12,7 @@ class RatingData extends Data
 {
     public function __construct(
         public int $rating,
-        public int $review_id,
-        public int $model_id,
+        public string $review_id,
+        public string $model_id,
     ) {}
 }

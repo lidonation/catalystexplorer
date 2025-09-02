@@ -35,7 +35,11 @@ export default function Success({
     const { t } = useLaravelReactI18n();
 
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep - 1]?.info || ''}>
+        <WorkflowLayout
+            title="Drep SignUp"
+            asideInfo={stepDetails[activeStep - 1]?.info || ''}
+            disclaimer={t('workflows.voterList.prototype')}
+        >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>

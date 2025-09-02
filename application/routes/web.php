@@ -3,13 +3,11 @@
 use App\Http\Controllers\VoterController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DrepController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\FundsController;
 use App\Http\Controllers\ChartsController;
 use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\SearchController;
-use App\Http\Controllers\NumbersController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewsController;
 use App\Http\Middleware\WorkflowMiddleware;
@@ -26,7 +24,6 @@ use App\Http\Controllers\JormungandrController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\CatalystDrepController;
 use App\Http\Controllers\VoterHistoriesController;
-use App\Http\Controllers\VotingWorkflowController;
 use App\Http\Controllers\IdeascaleProfilesController;
 use App\Http\Controllers\SignatureWorkflowController;
 use App\Http\Controllers\TinderProposalWorkflowController;
@@ -43,12 +40,11 @@ Route::localized(
         Route::get('/', [HomeController::class, 'index'])
             ->name('home');
 
+
         Route::prefix('/proposals')->as('proposals.')->group(function () {
             Route::get('/', [ProposalsController::class, 'index'])
                 ->name('index');
 
-            Route::get('/charts', [ProposalsController::class, 'charts'])
-                ->name('charts');
 
             Route::post('/test-modal', function () {
                 return response()->json(['message' => 'OK', 'time' => now()]);
@@ -81,10 +77,8 @@ Route::localized(
             ->name('proposals.index');
 
         //routes for demoing routing pages onto modals
-        Route::get('/proposals/charts', [ProposalsController::class, 'charts'])
-            ->name('proposals.charts');
-        Route::get('/proposals/charts/detail', [ProposalsController::class, 'chartDetail'])
-            ->name('proposals.charts.detail');
+//        Route::get('/proposals/charts', [ProposalsController::class, 'charts'])
+//            ->name('charts');
 
         Route::prefix('/funds')->as('funds.')->group(function () {
             Route::get('/', [FundsController::class, 'index'])
@@ -292,8 +286,6 @@ Route::localized(
                         ->name('saveStep2');
                     Route::post('/3/save', [TinderProposalWorkflowController::class, 'saveStep3'])
                         ->name('saveStep3');
-                    Route::post('/4/save', [TinderProposalWorkflowController::class, 'saveStep4'])
-                        ->name('saveStep4');
                     Route::post('/add-bookmark-item', [TinderProposalWorkflowController::class, 'addBookmarkItem'])
                         ->name('addBookmarkItem');
                     Route::get('/fetch-proposals', [TinderProposalWorkflowController::class, 'fetchMoreProposals'])
@@ -377,8 +369,12 @@ Route::localized(
                 ->name('view');
         });
 
-        Route::get('/charts', [ChartsController::class, 'index'])
-            ->name('charts.index');
+        Route::prefix('charts')->as('charts.')->group(function () {
+            Route::get('/charts', [ChartsController::class, 'index'])
+                ->name('index');
+            Route::get('/proposals', [ProposalsController::class, 'charts'])
+                ->name('proposals');
+        });
 
         Route::prefix('/completed-project-nfts')->as('completedProjectsNfts.')->group(
             function () {
@@ -428,7 +424,7 @@ Route::localized(
                     ->name('index');
             }
         );
-        
+
 
         // Dreps
         Route::prefix('/dreps')->as('dreps.')->group(
@@ -501,7 +497,6 @@ Route::localized(
     }
 
 );
-
 
 
 require __DIR__ . '/auth.php';

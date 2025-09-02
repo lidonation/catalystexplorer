@@ -3,7 +3,7 @@ import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import { StepDetails } from '@/types';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { ChevronLeft,ChevronRight } from 'lucide-react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
@@ -31,7 +31,10 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
     const { t } = useLaravelReactI18n();
 
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
+        <WorkflowLayout
+            title="Create Voter List"
+            asideInfo={stepDetails[activeStep - 1].info ?? ''}
+        >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>

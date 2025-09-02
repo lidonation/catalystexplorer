@@ -90,6 +90,7 @@ class Funds extends Resource
 
             HasMany::make('Metadata', 'metas', Metas::class),
 
+            HasMany::make('Campaigns', 'campaigns', Campaigns::class),
             HasMany::make('Proposals', 'proposals', Proposals::class),
         ];
     }

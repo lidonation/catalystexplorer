@@ -246,7 +246,6 @@ const Manage = (props: BookmarkCollectionListProps) => {
                 }
             >
                 {/* Sticky or fixed header with padding */}
-
                 <div className="container w-full py-4 lg:relative">
                     <div className="top-6 right-8 z-50 mb-6 flex flex-row justify-between gap-4 lg:absolute lg:mb-0 lg:ml-auto">
                         <button
@@ -255,8 +254,10 @@ const Manage = (props: BookmarkCollectionListProps) => {
                         >
                             {`${t('bookmarks.listSetting')}`}
                         </button>
+
                         <DropdownMenu items={dropdownMenuItems} />
                     </div>
+
                     <BookmarkModelSearch
                         activeTab={activeTab}
                         handleTabchange={(e) => setActiveTab(e as typeof type)}
@@ -272,7 +273,6 @@ const Manage = (props: BookmarkCollectionListProps) => {
             </BookmarkProvider>
 
             {/* comments */}
-
             {!!bookmarkCollection.allow_comments && (
                 <div className="container my-8">
                     <Comments

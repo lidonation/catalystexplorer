@@ -13,6 +13,7 @@ import { TinderWorkflowParams } from '@/enums/tinder-workflow-params';
 import Button from '@/Components/atoms/Button';
 import EditIcon2 from '@/Components/svgs/EditIcon2';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface SlideOverContentProps {
     editForm: any; // Using any for now since UseFormReturnType is not available
@@ -39,6 +40,9 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
     return (
         <div data-testid="edit-voter-list">
             <div>
+
+                <ErrorDisplay />
+                
                 {!isEditingFields && (
                     <div className="flex items-center mb-2">
                         <Paragraph size='lg' className="font-semibold">

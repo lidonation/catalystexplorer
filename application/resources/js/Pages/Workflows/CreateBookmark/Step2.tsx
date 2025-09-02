@@ -23,6 +23,7 @@ import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface Step2Props {
     stepDetails: StepDetails[];
@@ -88,11 +89,16 @@ const Step2: React.FC<Step2Props> = ({
     };
 
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep - 1].info ?? ''}>
+        <WorkflowLayout
+            title="Create Bookmark"
+            asideInfo={stepDetails[activeStep - 1].info ?? ''}
+        >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
                 <div className="bg-background border-gray-light mx-6 mb-12 max-w-3xl space-y-6 rounded-lg border p-6 shadow-sm lg:p-8">
+                    <ErrorDisplay />
+
                     <div>
                         <ValueLabel className="text-content">
                             {t('workflows.voterList.title')}

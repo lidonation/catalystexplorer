@@ -12,7 +12,7 @@ const GraphButton = () => {
         <>
             {onProposals && (
                 <Link
-                    href={useLocalizedRoute('proposals.charts')}
+                    href={useLocalizedRoute('charts.proposals')}
                     className="bg-bg-dark flex items-center justify-center overflow-hidden rounded-xl px-4 py-3 shadow-lg mb-4 transition-all hover:bg-opacity-90"
                     preserveState={false}
                     data-testid="proposals-charts-button"

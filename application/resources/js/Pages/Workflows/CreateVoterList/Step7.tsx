@@ -97,7 +97,11 @@ const Step7: React.FC<Step7Props> = ({
     };
 
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep - 1]?.info || ''}>
+        <WorkflowLayout
+            title="Create Voter List"
+            asideInfo={stepDetails[activeStep - 1]?.info || ''}
+            disclaimer={t('workflows.voterList.prototype')}
+        >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
@@ -137,7 +141,7 @@ const Step7: React.FC<Step7Props> = ({
                         if (connectedWalletProvider) {
                             handleSubmit();
                         }
-                }}
+                    }}
                 >
                     <span>{t('Next')}</span>
                     <ChevronRight className="h-4 w-4" />

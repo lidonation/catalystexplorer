@@ -137,61 +137,119 @@ const Step1: React.FC<Step1Props> = ({
     };
 
     return (
-        <WorkflowLayout  wrapperClassName="!h-auto"
-            contentClassName="!max-h-none" asideInfo={stepDetails[activeStep - 1].info ?? ''}>
+        <WorkflowLayout
+            title="Create Service"
+            wrapperClassName="!h-auto"
+            contentClassName="!max-h-none"
+            asideInfo={stepDetails[activeStep - 1].info ?? ''}
+        >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                <div className="bg-background w-full overflow-y-auto p-6 lg:p-8 overflow-x-visible ">
-                    <div className="max-w-3xl mx-auto space-y-6">
+                <div className="bg-background w-full overflow-x-visible overflow-y-auto p-6 lg:p-8">
+                    <div className="mx-auto max-w-3xl space-y-6">
                         {/* Service Type Selection */}
                         <div data-testid="service-type-selection">
-                            <Paragraph size='xs' className="font-medium mb-4">
-                                {t('workflows.createService.step1.howToContribute')}
+                            <Paragraph size="xs" className="mb-4 font-medium">
+                                {t(
+                                    'workflows.createService.step1.howToContribute',
+                                )}
                                 {flashErrors[ServiceWorkflowParams.TYPE] && (
-                                    <Paragraph className="text-error ml-2" data-testid="service-type-flash-error">
-                                        {flashErrors[ServiceWorkflowParams.TYPE][0]}
+                                    <Paragraph
+                                        className="text-error ml-2"
+                                        data-testid="service-type-flash-error"
+                                    >
+                                        {
+                                            flashErrors[
+                                                ServiceWorkflowParams.TYPE
+                                            ][0]
+                                        }
                                     </Paragraph>
                                 )}
                                 {form.errors[ServiceWorkflowParams.TYPE] && (
-                                    <Paragraph className="text-error ml-2" data-testid="service-type-form-error">
-                                        {form.errors[ServiceWorkflowParams.TYPE]}
+                                    <Paragraph
+                                        className="text-error ml-2"
+                                        data-testid="service-type-form-error"
+                                    >
+                                        {
+                                            form.errors[
+                                                ServiceWorkflowParams.TYPE
+                                            ]
+                                        }
                                     </Paragraph>
                                 )}
                             </Paragraph>
                             <div className="space-y-3">
-                                <div className="flex items-center cursor-pointer" data-testid="service-type-offered">
+                                <div
+                                    className="flex cursor-pointer items-center"
+                                    data-testid="service-type-offered"
+                                >
                                     <input
                                         type="radio"
                                         name="serviceType"
                                         value="offered"
-                                        checked={form.data[ServiceWorkflowParams.TYPE] === 'offered'}
-                                        onChange={() => handleTypeChange('offered')}
-                                        className="mr-3 h-4 w-4 text-primary focus:ring-primary"
+                                        checked={
+                                            form.data[
+                                                ServiceWorkflowParams.TYPE
+                                            ] === 'offered'
+                                        }
+                                        onChange={() =>
+                                            handleTypeChange('offered')
+                                        }
+                                        className="text-primary focus:ring-primary mr-3 h-4 w-4"
                                         data-testid="service-type-offered-radio"
                                     />
-                                    <Paragraph size='xs' className="text-gray-persist">
-                                        {t('workflows.createService.step1.offerService')}
+                                    <Paragraph
+                                        size="xs"
+                                        className="text-gray-persist"
+                                    >
+                                        {t(
+                                            'workflows.createService.step1.offerService',
+                                        )}
                                     </Paragraph>
-                                    <Paragraph size='sm' className="ml-2 px-2 py-1 justify-center items-center bg-success text-white rounded-full whitespace-nowrap text-xs sm:text-sm">
-                                        {t('workflows.createService.step1.offeringServiceBadge')}
+                                    <Paragraph
+                                        size="sm"
+                                        className="bg-success ml-2 items-center justify-center rounded-full px-2 py-1 text-xs whitespace-nowrap text-white sm:text-sm"
+                                    >
+                                        {t(
+                                            'workflows.createService.step1.offeringServiceBadge',
+                                        )}
                                     </Paragraph>
                                 </div>
-                                <label className="flex items-center cursor-pointer" data-testid="service-type-needed">
+                                <label
+                                    className="flex cursor-pointer items-center"
+                                    data-testid="service-type-needed"
+                                >
                                     <input
                                         type="radio"
                                         name="serviceType"
                                         value="needed"
-                                        checked={form.data[ServiceWorkflowParams.TYPE] === 'needed'}
-                                        onChange={() => handleTypeChange('needed')}
-                                        className="mr-3 h-4 w-4 text-primary focus:ring-primary"
+                                        checked={
+                                            form.data[
+                                                ServiceWorkflowParams.TYPE
+                                            ] === 'needed'
+                                        }
+                                        onChange={() =>
+                                            handleTypeChange('needed')
+                                        }
+                                        className="text-primary focus:ring-primary mr-3 h-4 w-4"
                                         data-testid="service-type-needed-radio"
                                     />
-                                    <Paragraph size='xs' className="text-gray-persist">
-                                        {t('workflows.createService.step1.needService')}
+                                    <Paragraph
+                                        size="xs"
+                                        className="text-gray-persist"
+                                    >
+                                        {t(
+                                            'workflows.createService.step1.needService',
+                                        )}
                                     </Paragraph>
-                                    <Paragraph size='sm' className="ml-2 px-2 py-1 bg-warning justify-center items-center text-white rounded-full whitespace-nowrap text-xs sm:text-sm">
-                                        {t('workflows.createService.step1.requestingServiceBadge')}
+                                    <Paragraph
+                                        size="sm"
+                                        className="bg-warning ml-2 items-center justify-center rounded-full px-2 py-1 text-xs whitespace-nowrap text-white sm:text-sm"
+                                    >
+                                        {t(
+                                            'workflows.createService.step1.requestingServiceBadge',
+                                        )}
                                     </Paragraph>
                                 </label>
                             </div>
@@ -199,16 +257,35 @@ const Step1: React.FC<Step1Props> = ({
 
                         {/* Service Title */}
                         <div data-testid="service-title-field">
-                            <Paragraph size='xs' className="block font-medium mb-2">
-                                {t('workflows.createService.step1.serviceTitle')}
+                            <Paragraph
+                                size="xs"
+                                className="mb-2 block font-medium"
+                            >
+                                {t(
+                                    'workflows.createService.step1.serviceTitle',
+                                )}
                                 {flashErrors[ServiceWorkflowParams.TITLE] && (
-                                    <Paragraph className="text-error ml-2" data-testid="service-title-flash-error">
-                                        {flashErrors[ServiceWorkflowParams.TITLE][0]}
+                                    <Paragraph
+                                        className="text-error ml-2"
+                                        data-testid="service-title-flash-error"
+                                    >
+                                        {
+                                            flashErrors[
+                                                ServiceWorkflowParams.TITLE
+                                            ][0]
+                                        }
                                     </Paragraph>
                                 )}
                                 {form.errors[ServiceWorkflowParams.TITLE] && (
-                                    <Paragraph className="text-error ml-2" data-testid="service-title-form-error">
-                                        {form.errors[ServiceWorkflowParams.TITLE]}
+                                    <Paragraph
+                                        className="text-error ml-2"
+                                        data-testid="service-title-form-error"
+                                    >
+                                        {
+                                            form.errors[
+                                                ServiceWorkflowParams.TITLE
+                                            ]
+                                        }
                                     </Paragraph>
                                 )}
                             </Paragraph>
@@ -216,28 +293,59 @@ const Step1: React.FC<Step1Props> = ({
                                 id="title"
                                 type="text"
                                 value={form.data[ServiceWorkflowParams.TITLE]}
-                                onChange={(e) => handleInputChange(ServiceWorkflowParams.TITLE, e.target.value)}
-                                className="w-full border border-gray-persist/[50%] rounded-lg"
+                                onChange={(e) =>
+                                    handleInputChange(
+                                        ServiceWorkflowParams.TITLE,
+                                        e.target.value,
+                                    )
+                                }
+                                className="border-gray-persist/[50%] w-full rounded-lg border"
                                 data-testid="service-title-input"
                             />
                         </div>
 
                         {/* Image Header */}
                         <div data-testid="service-header-image-field">
-                            <Paragraph size='xs' className="block font-medium  mb-2">
+                            <Paragraph
+                                size="xs"
+                                className="mb-2 block font-medium"
+                            >
                                 {t('workflows.createService.step1.imageHeader')}
-                                {flashErrors[ServiceWorkflowParams.HEADER_IMAGE] && (
-                                    <Paragraph className="text-error ml-2" data-testid="service-header-image-flash-error">
-                                        {flashErrors[ServiceWorkflowParams.HEADER_IMAGE][0]}
+                                {flashErrors[
+                                    ServiceWorkflowParams.HEADER_IMAGE
+                                ] && (
+                                    <Paragraph
+                                        className="text-error ml-2"
+                                        data-testid="service-header-image-flash-error"
+                                    >
+                                        {
+                                            flashErrors[
+                                                ServiceWorkflowParams
+                                                    .HEADER_IMAGE
+                                            ][0]
+                                        }
                                     </Paragraph>
                                 )}
-                                {form.errors[ServiceWorkflowParams.HEADER_IMAGE] && (
-                                    <Paragraph className="text-error ml-2" data-testid="service-header-image-form-error">
-                                        {form.errors[ServiceWorkflowParams.HEADER_IMAGE]}
+                                {form.errors[
+                                    ServiceWorkflowParams.HEADER_IMAGE
+                                ] && (
+                                    <Paragraph
+                                        className="text-error ml-2"
+                                        data-testid="service-header-image-form-error"
+                                    >
+                                        {
+                                            form.errors[
+                                                ServiceWorkflowParams
+                                                    .HEADER_IMAGE
+                                            ]
+                                        }
                                     </Paragraph>
                                 )}
                             </Paragraph>
-                            <div className="border border-gray-persist/[50%] rounded-lg overflow-hidden hover:border-gray-persist transition-colors relative h-48" data-testid="service-header-image-upload-area">
+                            <div
+                                className="border-gray-persist/[50%] hover:border-gray-persist relative h-48 overflow-hidden rounded-lg border transition-colors"
+                                data-testid="service-header-image-upload-area"
+                            >
                                 <input
                                     type="file"
                                     accept="image/*"
@@ -246,38 +354,63 @@ const Step1: React.FC<Step1Props> = ({
                                     id="imageUpload"
                                     data-testid="service-header-image-input"
                                 />
-                                <label htmlFor="imageUpload" className="cursor-pointer block w-full h-full">
+                                <label
+                                    htmlFor="imageUpload"
+                                    className="block h-full w-full cursor-pointer"
+                                >
                                     {headerImage && headerImagePreview ? (
-                                        <div data-testid="service-header-image-selected" className="relative w-full h-full group">
-                                            <img 
-                                                src={headerImagePreview} 
-                                                alt="Selected header" 
-                                                className="w-full h-full object-cover"
+                                        <div
+                                            data-testid="service-header-image-selected"
+                                            className="group relative h-full w-full"
+                                        >
+                                            <img
+                                                src={headerImagePreview}
+                                                alt="Selected header"
+                                                className="h-full w-full object-cover"
                                             />
-                                            <div className="absolute inset-0 bg-dark bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-70 transition-opacity">
-                                                <Paragraph className="text-white text-sm font-medium">
-                                                    {t('workflows.createService.step1.clickToReplaceImage')}
+                                            <div className="bg-dark bg-opacity-50 absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-70">
+                                                <Paragraph className="text-sm font-medium text-white">
+                                                    {t(
+                                                        'workflows.createService.step1.clickToReplaceImage',
+                                                    )}
                                                 </Paragraph>
                                             </div>
                                         </div>
-                                    ) : serviceData?.[ServiceWorkflowParams.HEADER_IMAGE_URL] ? (
-                                        <div data-testid="service-header-image-existing" className="relative w-full h-full group">
-                                            <img 
-                                                src={serviceData[ServiceWorkflowParams.HEADER_IMAGE_URL]} 
-                                                alt="Service header" 
-                                                className="w-full h-full object-cover"
+                                    ) : serviceData?.[
+                                          ServiceWorkflowParams.HEADER_IMAGE_URL
+                                      ] ? (
+                                        <div
+                                            data-testid="service-header-image-existing"
+                                            className="group relative h-full w-full"
+                                        >
+                                            <img
+                                                src={
+                                                    serviceData[
+                                                        ServiceWorkflowParams
+                                                            .HEADER_IMAGE_URL
+                                                    ]
+                                                }
+                                                alt="Service header"
+                                                className="h-full w-full object-cover"
                                             />
-                                            <div className="absolute inset-0 bg-dark bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-70 transition-opacity">
-                                                <Paragraph className="text-white text-sm font-medium">
-                                                    {t('workflows.createService.step1.clickToReplaceImage')}
+                                            <div className="bg-dark bg-opacity-50 absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-70">
+                                                <Paragraph className="text-sm font-medium text-white">
+                                                    {t(
+                                                        'workflows.createService.step1.clickToReplaceImage',
+                                                    )}
                                                 </Paragraph>
                                             </div>
                                         </div>
                                     ) : (
-                                        <div className="flex flex-col items-center justify-center w-full h-full text-center p-8" data-testid="service-header-image-placeholder">
-                                            <ImageFrameIcon className='text-gray-persist/[20%] mb-2' />
+                                        <div
+                                            className="flex h-full w-full flex-col items-center justify-center p-8 text-center"
+                                            data-testid="service-header-image-placeholder"
+                                        >
+                                            <ImageFrameIcon className="text-gray-persist/[20%] mb-2" />
                                             <Paragraph className="text-gray-persist text-sm">
-                                                {t('workflows.createService.step1.clickToUploadImage')}
+                                                {t(
+                                                    'workflows.createService.step1.clickToUploadImage',
+                                                )}
                                             </Paragraph>
                                         </div>
                                     )}
@@ -287,24 +420,51 @@ const Step1: React.FC<Step1Props> = ({
 
                         {/* Description */}
                         <div data-testid="service-description-field">
-                            <Paragraph size='xs' className="block mb-2">
+                            <Paragraph size="xs" className="mb-2 block">
                                 {t('workflows.createService.step1.description')}
-                                {flashErrors[ServiceWorkflowParams.DESCRIPTION] && (
-                                    <Paragraph className="text-error ml-2" data-testid="service-description-flash-error">
-                                        {flashErrors[ServiceWorkflowParams.DESCRIPTION][0]}
+                                {flashErrors[
+                                    ServiceWorkflowParams.DESCRIPTION
+                                ] && (
+                                    <Paragraph
+                                        className="text-error ml-2"
+                                        data-testid="service-description-flash-error"
+                                    >
+                                        {
+                                            flashErrors[
+                                                ServiceWorkflowParams
+                                                    .DESCRIPTION
+                                            ][0]
+                                        }
                                     </Paragraph>
                                 )}
-                                {form.errors[ServiceWorkflowParams.DESCRIPTION] && (
-                                    <Paragraph className="text-error ml-2" data-testid="service-description-form-error">
-                                        {form.errors[ServiceWorkflowParams.DESCRIPTION]}
+                                {form.errors[
+                                    ServiceWorkflowParams.DESCRIPTION
+                                ] && (
+                                    <Paragraph
+                                        className="text-error ml-2"
+                                        data-testid="service-description-form-error"
+                                    >
+                                        {
+                                            form.errors[
+                                                ServiceWorkflowParams
+                                                    .DESCRIPTION
+                                            ]
+                                        }
                                     </Paragraph>
                                 )}
                             </Paragraph>
                             <Textarea
                                 id="description"
-                                value={form.data[ServiceWorkflowParams.DESCRIPTION]}
-                                onChange={(e) => handleInputChange(ServiceWorkflowParams.DESCRIPTION, e.target.value)}
-                                className="w-full h-32 border border-gray-persist/[50%] rounded-lg"
+                                value={
+                                    form.data[ServiceWorkflowParams.DESCRIPTION]
+                                }
+                                onChange={(e) =>
+                                    handleInputChange(
+                                        ServiceWorkflowParams.DESCRIPTION,
+                                        e.target.value,
+                                    )
+                                }
+                                className="border-gray-persist/[50%] h-32 w-full rounded-lg border"
                                 data-testid="service-description-textarea"
                             />
                         </div>
@@ -315,31 +475,54 @@ const Step1: React.FC<Step1Props> = ({
                                 categories={categories}
                                 selectedCategories={selectedCategories}
                                 onChange={handleCategoriesChange}
-                                placeholder={t('workflows.createService.step1.selectCategories')}
-                                label={t('workflows.createService.step1.category')}
+                                placeholder={t(
+                                    'workflows.createService.step1.selectCategories',
+                                )}
+                                label={t(
+                                    'workflows.createService.step1.category',
+                                )}
                             />
                             {flashErrors[ServiceWorkflowParams.CATEGORIES] && (
                                 <div className="mt-1">
-                                    <Paragraph className="text-error text-sm" data-testid="service-categories-flash-error">
-                                        {flashErrors[ServiceWorkflowParams.CATEGORIES][0]}
+                                    <Paragraph
+                                        className="text-error text-sm"
+                                        data-testid="service-categories-flash-error"
+                                    >
+                                        {
+                                            flashErrors[
+                                                ServiceWorkflowParams.CATEGORIES
+                                            ][0]
+                                        }
                                     </Paragraph>
                                 </div>
                             )}
                             {form.errors[ServiceWorkflowParams.CATEGORIES] && (
                                 <div className="mt-1">
-                                    <Paragraph className="text-error text-sm" data-testid="service-categories-form-error">
-                                        {form.errors[ServiceWorkflowParams.CATEGORIES]}
+                                    <Paragraph
+                                        className="text-error text-sm"
+                                        data-testid="service-categories-form-error"
+                                    >
+                                        {
+                                            form.errors[
+                                                ServiceWorkflowParams.CATEGORIES
+                                            ]
+                                        }
                                     </Paragraph>
                                 </div>
                             )}
                         </div>
                     </div>
-                    <div className='mt-8 flex justify-between' data-testid="service-step1-navigation">
+                    <div
+                        className="mt-8 flex justify-between"
+                        data-testid="service-step1-navigation"
+                    >
                         <PrimaryLink
                             href={prevStep}
                             className="text-sm lg:px-8 lg:py-3"
                             disabled={activeStep == 1}
-                            onClick={(e) => activeStep == 1 && e.preventDefault()}
+                            onClick={(e) =>
+                                activeStep == 1 && e.preventDefault()
+                            }
                             data-testid="service-step1-previous-button"
                         >
                             <ChevronLeft className="h-4 w-4" />
@@ -347,7 +530,7 @@ const Step1: React.FC<Step1Props> = ({
                         </PrimaryLink>
                         <PrimaryButton
                             className="text-sm lg:px-8 lg:py-3"
-                            disabled={ !isFormValid || form.processing}
+                            disabled={!isFormValid || form.processing}
                             onClick={submitForm}
                             data-testid="service-step1-next-button"
                         >

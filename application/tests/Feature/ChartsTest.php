@@ -17,7 +17,7 @@ beforeEach(function () {
 });
 
 it('renders charts modal successfully', function () {
-    $this->get(route('proposals.charts'))
+    $this->get(route('charts.proposals'))
         ->assertStatus(200)
         ->assertInertia(
             fn(Assert $page) =>
@@ -38,7 +38,7 @@ it('passes correct props to charts component', function () {
         'status' => ProposalStatus::complete()->value,
     ]);
 
-    $this->get(route('proposals.charts'))->assertInertia(
+    $this->get(route('charts.proposals'))->assertInertia(
         fn(Assert $page) =>
         $page->component('Proposals/Index')
             ->has('_inertiaui_modal.props.filters')
@@ -50,7 +50,7 @@ it('passes correct props to charts component', function () {
 });
 
 it('does not require authentication to access charts', function () {
-    $this->get(route('proposals.charts'))->assertStatus(200);
+    $this->get(route('charts.proposals'))->assertStatus(200);
 });
 
 it('returns chart data by fund with correct structure', function () {
@@ -63,7 +63,7 @@ it('returns chart data by fund with correct structure', function () {
         'status' => ProposalStatus::complete()->value,
     ]);
 
-    $this->get(route('proposals.charts'))->assertInertia(
+    $this->get(route('charts.proposals'))->assertInertia(
         fn(Assert $page) =>
         $page->component('Proposals/Index')
             ->has('_inertiaui_modal.props.chartDataByFund')
@@ -85,7 +85,7 @@ it('returns chart data by year with correct structure', function () {
         'status' => ProposalStatus::complete()->value,
     ]);
 
-    $this->get(route('proposals.charts'))->assertInertia(
+    $this->get(route('charts.proposals'))->assertInertia(
         fn(Assert $page) =>
         $page->component('Proposals/Index')
             ->has('_inertiaui_modal.props.chartDataByYear')
@@ -105,7 +105,7 @@ it('sorts fund data by fund number', function () {
     Fund::factory()->create(['title' => 'Fund 10']);
     Fund::factory()->create(['title' => 'Fund 11']);
 
-    $this->get(route('proposals.charts'))->assertInertia(
+    $this->get(route('charts.proposals'))->assertInertia(
         fn(Assert $page) =>
         $page->component('Proposals/Index')
             ->has('_inertiaui_modal.props.chartDataByFund')
@@ -120,7 +120,7 @@ it('sorts year data chronologically', function () {
     Proposal::factory()->create(['created_at' => '2022-01-01']);
     Proposal::factory()->create(['created_at' => '2024-01-01']);
 
-    $this->get(route('proposals.charts'))->assertInertia(
+    $this->get(route('charts.proposals'))->assertInertia(
         fn(Assert $page) =>
         $page->component('Proposals/Index')
             ->has('_inertiaui_modal.props.chartDataByYear')
@@ -132,7 +132,7 @@ it('sorts year data chronologically', function () {
 
 
 it('handles empty data gracefully', function () {
-    $this->get(route('proposals.charts'))->assertInertia(
+    $this->get(route('charts.proposals'))->assertInertia(
         fn(Assert $page) =>
         $page->component('Proposals/Index')
             ->has('_inertiaui_modal.props.chartDataByFund')

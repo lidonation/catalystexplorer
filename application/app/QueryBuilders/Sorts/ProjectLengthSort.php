@@ -38,4 +38,3 @@ class ProjectLengthSort implements Sort
         $query->orderByRaw("$orderExpr $direction NULLS LAST");
     }
 }
-

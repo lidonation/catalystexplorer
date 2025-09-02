@@ -52,37 +52,44 @@ const Step3: React.FC<Step3Props> = ({ stepDetails, activeStep }) => {
     };
 
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep - 1]?.info || ''}>
+        <WorkflowLayout
+            title="Register Signature"
+            asideInfo={stepDetails[activeStep - 1]?.info || ''}
+        >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                <div className="flex items-center justify-center min-h-[60vh] pb-8">
+                <div className="flex min-h-[60vh] items-center justify-center pb-8">
                     <div className="mx-auto max-w-md rounded-lg p-6 text-center">
                         <Title level="4" className="mb-6">
                             {t('workflows.signature.nameWallet')}
                         </Title>
 
-                        <div className="mb-6 relative">
+                        <div className="relative mb-6">
                             <input
                                 type="text"
-                                placeholder={t('workflows.signature.inputWalletNamePlaceHolder')}
+                                placeholder={t(
+                                    'workflows.signature.inputWalletNamePlaceHolder',
+                                )}
                                 value={walletName}
                                 onChange={(e) => setWalletName(e.target.value)}
-                                className="w-full rounded-md border border-light-gray-persist bg-background p-3 focus:outline-none focus:border-light-gray-persist focus:ring-0"
+                                className="border-light-gray-persist bg-background focus:border-light-gray-persist w-full rounded-md border p-3 focus:ring-0 focus:outline-none"
                             />
 
-                            <div className="flex justify-between mt-1">
-                                <Paragraph className="text-xs text-gray-persist">
-                                    {t('workflows.signature.walletNameCondition')}
+                            <div className="mt-1 flex justify-between">
+                                <Paragraph className="text-gray-persist text-xs">
+                                    {t(
+                                        'workflows.signature.walletNameCondition',
+                                    )}
                                 </Paragraph>
                             </div>
 
-                            <Paragraph className="text-sm text-gray-persist mt-2">
+                            <Paragraph className="text-gray-persist mt-2 text-sm">
                                 {t('workflows.signature.walletNameDescription')}
                             </Paragraph>
 
                             {error && (
-                                <Paragraph className="text-sm text-slate-500 mt-2">
+                                <Paragraph className="mt-2 text-sm text-slate-500">
                                     {error}
                                 </Paragraph>
                             )}

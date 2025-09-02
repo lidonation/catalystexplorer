@@ -1,5 +1,6 @@
 import Button from '@/Components/atoms/Button';
 import Checkbox from '@/Components/atoms/Checkbox';
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import TextInput from '@/Components/atoms/TextInput';
@@ -141,6 +142,8 @@ export default function LoginForm({ closeModal }: LoginFormProps) {
 
     return (
         <>
+            <ErrorDisplay/>
+            
             <form
                 className="content-gap flex w-full flex-col p-4"
                 data-testid="login-form"

@@ -68,9 +68,6 @@ class ProposalsController extends Controller
 
     public int $sumCompletedUSD = 0;
 
-    /**
-     * Display the user's profile form.
-     */
     public function index(Request $request)
     {
         $this->getProps($request);
@@ -106,75 +103,37 @@ class ProposalsController extends Controller
     public function proposal(Request $request, $slug): Response
     {
         $proposal = Proposal::where('slug', $slug)->firstOrFail();
+
         $this->getProps($request);
 
         $proposalId = $proposal->id;
 
         $cacheKey = "proposal:{$proposalId}:base_data";
 
-        $proposalData = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($proposal) {
-            // Only load relationships that work with current schema
-            $proposal->load(['groups', 'author']);
+        $proposalData = Cache::remember($cacheKey, now()->addMinutes(0), function () use ($proposal) {
+            $proposal->load([
+                'fund',
+                'groups',
+                'team',
+                //                'team.proposals',
+                //                'reviews',
+                'author',
+            ]);
 
-            // Manually build data instead of using toArray() to avoid hidden field issues
-            $data = [
-                'id' => $proposal->getKey(), // Use getKey() to get the primary key value
-                'user_id' => $proposal->user_id,
-                'title' => $proposal->title,
-                'slug' => $proposal->slug,
-                'website' => $proposal->website,
-                'excerpt' => $proposal->excerpt,
-                'content' => $proposal->content,
-                'amount_requested' => $proposal->amount_requested,
-                'amount_received' => $proposal->amount_received,
-                'definition_of_success' => $proposal->definition_of_success,
-                'status' => $proposal->status,
-                'funding_status' => $proposal->funding_status,
-                'funded_at' => $proposal->funded_at,
-                'deleted_at' => $proposal->deleted_at,
-                'funding_updated_at' => $proposal->funding_updated_at,
-                'yes_votes_count' => $proposal->yes_votes_count,
-                'no_votes_count' => $proposal->no_votes_count,
-                'abstain_votes_count' => $proposal->abstain_votes_count,
-                'comment_prompt' => $proposal->comment_prompt,
-                'social_excerpt' => $proposal->social_excerpt,
-                'ideascale_link' => $proposal->ideascale_link,
-                'projectcatalyst_io_link' => $proposal->projectcatalyst_io_url ?? null,
-                'type' => $proposal->type,
-                'meta_title' => $proposal->meta_title,
-                'problem' => $proposal->problem,
-                'solution' => $proposal->solution,
-                'experience' => $proposal->experience,
-                'currency' => $proposal->currency,
-                'minted_nfts_fingerprint' => null, // TODO: implement if needed
-                'ranking_total' => $proposal->ranking_total,
-                'quickpitch' => $proposal->quickpitch,
-                'quickpitch_length' => $proposal->quickpitch_length,
-                'opensource' => $proposal->opensource,
-                'link' => $proposal->link,
-                'order' => null, // TODO: implement if needed
-                'campaign' => null, // Will be loaded as relationship
-                'schedule' => null, // Will be loaded as relationship
-                'fund' => null, // Will be loaded as relationship
-                'reviews' => [], // Will be loaded separately
-            ];
+            $data = $proposal->toArray();
 
-            // Temporarily disable these due to UUID/text type mismatch issues
-            $data['alignment_score'] = 0; // $proposal->getDiscussionRankingScore('Impact Alignment') ?? 0;
-            $data['feasibility_score'] = 0; // $proposal->getDiscussionRankingScore('Feasibility') ?? 0;
-            $data['auditability_score'] = 0; // $proposal->getDiscussionRankingScore('Value for money') ?? 0;
+            $data['alignment_score'] = $proposal->getDiscussionRankingScore('Impact Alignment') ?? 0;
+            $data['feasibility_score'] = $proposal->getDiscussionRankingScore('Feasibility') ?? 0;
+            $data['auditability_score'] = $proposal->getDiscussionRankingScore('Value for money') ?? 0;
 
-            // Use old bigint-based relationships for now since UUID pivot tables don't exist
             try {
                 $ideascaleProfiles = $proposal->ideascaleProfiles;
                 $ideascaleProfileIds = $ideascaleProfiles ? $ideascaleProfiles->pluck('id')->toArray() : [];
                 $counts = $this->getCounts($ideascaleProfileIds);
 
                 $data['users'] = $ideascaleProfiles ? $ideascaleProfiles->map(function ($u) {
-                    // Avoid loading proposals for now to prevent circular issues
                     return [
                         'id' => $u->id,
-                        'hash' => $u->hash,
                         'ideascale_id' => $u->ideascale_id,
                         'username' => $u->username,
                         'name' => $u->name,
@@ -185,8 +144,6 @@ class ProposalsController extends Controller
                     ];
                 })->toArray() : [];
             } catch (\Exception $e) {
-                \Log::error('Error loading ideascale profiles: '.$e->getMessage());
-                $ideascaleProfileIds = [];
                 $counts = ['userCompleteProposalsCount' => 0, 'userOutstandingProposalsCount' => 0, 'catalystConnectionCount' => 0];
                 $data['users'] = [];
             }
@@ -204,61 +161,8 @@ class ProposalsController extends Controller
 
         $teamConnections = $this->generateTeamNetworkData($proposal);
 
-        // Create ProposalData directly from the proposal to avoid cache filtering issues
-        try {
-            $proposalDataDirect = [
-                'id' => $proposal->getKey(),
-                'title' => $proposal->title,
-                'slug' => $proposal->slug,
-                'website' => $proposal->website,
-                'excerpt' => $proposal->excerpt,
-                'content' => $proposal->content,
-                'amount_requested' => $proposal->amount_requested,
-                'amount_received' => $proposal->amount_received,
-                'definition_of_success' => $proposal->definition_of_success,
-                'status' => $proposal->status,
-                'funding_status' => $proposal->funding_status,
-                'funded_at' => $proposal->funded_at,
-                'deleted_at' => $proposal->deleted_at,
-                'funding_updated_at' => $proposal->funding_updated_at,
-                'yes_votes_count' => $proposal->yes_votes_count,
-                'no_votes_count' => $proposal->no_votes_count,
-                'abstain_votes_count' => $proposal->abstain_votes_count,
-                'comment_prompt' => $proposal->comment_prompt,
-                'social_excerpt' => $proposal->social_excerpt,
-                'ideascale_link' => $proposal->ideascale_link,
-                'projectcatalyst_io_link' => $proposal->projectcatalyst_io_url ?? null,
-                'type' => $proposal->type,
-                'meta_title' => $proposal->meta_title,
-                'problem' => $proposal->problem,
-                'solution' => $proposal->solution,
-                'experience' => $proposal->experience,
-                'currency' => $proposal->currency,
-                'minted_nfts_fingerprint' => null,
-                'ranking_total' => $proposal->ranking_total,
-                'alignment_score' => 0,
-                'feasibility_score' => 0,
-                'auditability_score' => 0,
-                'quickpitch' => $proposal->quickpitch,
-                'quickpitch_length' => $proposal->quickpitch_length,
-                'users' => [],
-                'reviews' => [],
-                'fund' => null,
-                'opensource' => $proposal->opensource,
-                'link' => $proposal->link,
-                'order' => null,
-                'campaign' => null,
-                'schedule' => null,
-            ];
-
-            $proposalDataObj = ProposalData::from($proposalDataDirect);
-        } catch (\Exception $e) {
-            \Log::error('Error creating ProposalData: '.$e->getMessage());
-            throw $e;
-        }
-
         $props = [
-            'proposal' => $proposalDataObj,
+            'proposal' => ProposalData::from($proposal),
             'proposals' => Inertia::optional(
                 fn () => Cache::remember(
                     "proposal:{$proposalId}:proposals:page:{$currentPage}",
@@ -290,7 +194,7 @@ class ProposalsController extends Controller
                                     'content' => $review->content,
                                     'status' => $review->status ?? 'published',
                                     'rating' => null, // TODO: implement rating relationship
-                                    'proposal' => null, // Avoid circular reference
+                                    'proposal' => null,
                                     'reviewer' => null, // TODO: implement reviewer relationship
                                     'ranking_total' => $review->ranking_total ?? 0,
                                     'positive_rankings' => $review->positive_rankings ?? 0,
@@ -523,7 +427,10 @@ class ProposalsController extends Controller
         }
 
         if (isset($this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value])) {
-            $filters[] = 'opensource = '.$this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value];
+            $filters[] = 'opensource='.match ($this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value]) {
+                '0' => 'false',
+                '1' => 'true'
+            };
         }
 
         $filters[] = 'type='.($this->queryParams[ProposalSearchParams::TYPE()->value] ?? 'proposal');
@@ -561,7 +468,7 @@ class ProposalsController extends Controller
 
         if (! empty($this->queryParams[ProposalSearchParams::COMMUNITIES()->value])) {
             $communityHashes = implode(',', $this->queryParams[ProposalSearchParams::COMMUNITIES()->value]);
-            $filters[] = "communities.hash IN [{$communityHashes}]";
+            $filters[] = "communities.id IN [{$communityHashes}]";
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value])) {
@@ -693,7 +600,7 @@ class ProposalsController extends Controller
 
         $fundTitles = $funds->map(function ($fund) {
             return [
-                'hash' => $fund->hash,
+                'id' => $fund->id,
                 'title' => $fund->title,
             ];
         });
@@ -781,7 +688,7 @@ class ProposalsController extends Controller
             'type' => get_class($author),
             'name' => $author->name ?? $author->username ?? 'Author',
             'photo' => $author->hero_img_url ?? null,
-            'hash' => $author->hash,
+            'hash' => $author->id,
         ];
 
         try {
@@ -797,7 +704,7 @@ class ProposalsController extends Controller
                         'type' => get_class($member),
                         'name' => $member->name ?? $member->username ?? 'Team Member',
                         'photo' => $member->hero_img_url ?? null,
-                        'hash' => $member->hash,
+                        'hash' => $member->id,
                     ];
 
                     $teamConnections['links'][] = [
@@ -873,9 +780,9 @@ class ProposalsController extends Controller
             'opensource' => $proposal->opensource,
             'link' => $proposal->link,
             'order' => null, // TODO: implement if needed
-            'campaign' => null, // Will be loaded as relationship
-            'schedule' => null, // Will be loaded as relationship
-            'fund' => null, // Will be loaded as relationship
+            'campaign' => null,
+            'schedule' => null,
+            'fund' => null,
         ];
 
         // Temporarily disable these due to UUID/text type mismatch issues
@@ -890,49 +797,115 @@ class ProposalsController extends Controller
 
     public function getProposalMetrics(Request $request)
     {
-        $referer = $request->headers->get('referer');
-        $refererParams = [];
+        // Create cache key based on request parameters
+        $cacheKey = $this->generateMetricsCacheKey($request);
 
-        if ($referer) {
-            $parsedUrl = parse_url($referer);
-            if (isset($parsedUrl['query'])) {
-                $refererParams = SymfonyRequest::create('?'.$parsedUrl['query'])->query->all();
-            }
+        return Cache::remember($cacheKey, 300, function () use ($request) {
+            return $this->computeProposalMetrics($request);
+        });
+    }
+
+    /**
+     * Generate a cache key for metrics based on request parameters
+     */
+    private function generateMetricsCacheKey(Request $request): string
+    {
+        $keyData = [
+            'rules' => $request->input('rules', []),
+            'chartType' => $request->input('chartType'),
+            'referer_params' => $this->extractRefererParams($request),
+            'query_params' => $request->query->all(),
+        ];
+
+        return 'proposal_metrics_'.md5(json_encode($keyData));
+    }
+
+    /**
+     * Extract and parse referer parameters.
+     */
+    private function extractRefererParams(Request $request): array
+    {
+        $referer = $request->headers->get('referer');
+        if (! $referer) {
+            return [];
         }
 
-        $mergedRequest = $request->duplicate(
-            array_merge($request->query->all(), $refererParams),
-            $request->request->all()
-        );
+        $parsedUrl = parse_url($referer);
+        if (! isset($parsedUrl['query'])) {
+            return [];
+        }
+
+        parse_str($parsedUrl['query'], $refererParams);
+
+        return $refererParams;
+    }
+
+    /**
+     * Compute proposal metrics.
+     */
+    private function computeProposalMetrics(Request $request): array
+    {
+        $refererParams = $this->extractRefererParams($request);
+        $allParams = $refererParams + $request->query->all();
+
+        $mergedRequest = $allParams !== $request->query->all()
+            ? $request->duplicate($allParams, $request->request->all())
+            : $request;
 
         $this->getProps($mergedRequest);
 
         $proposalMetricRules = $request->input('rules', []);
         $chartType = $request->input('chartType');
 
-        $proposalRuleTitles = array_unique($proposalMetricRules);
+        if (empty($proposalMetricRules)) {
+            return [];
+        }
+
+        $proposalRuleTitles = array_values(array_unique($proposalMetricRules));
         sort($proposalRuleTitles);
+        $proposalRuleTitlesKey = implode(',', $proposalRuleTitles);
 
-        $metricIds = Metric::with('rules')
-            ->where('type', $chartType)
-            ->get()
-            ->filter(function ($metric) use ($proposalRuleTitles) {
-                $metricRuleTitles = $metric->rules->pluck('title')->toArray();
-
-                sort($metricRuleTitles);
-                sort($proposalRuleTitles);
-
-                return $metricRuleTitles === $proposalRuleTitles;
-            })
-            ->pluck('id')
-            ->toArray();
-
-        $metrics = Metric::whereIn('id', $metricIds)->get();
+        $metrics = $this->findMatchingMetrics($chartType, $proposalRuleTitles, $proposalRuleTitlesKey);
+        if ($metrics->isEmpty()) {
+            return [];
+        }
 
         $searchQuery = $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '';
-
         $filters = $this->getUserFilters();
 
+        return $this->processMetricsData($metrics, $filters, $searchQuery, $chartType);
+    }
+
+    /**
+     * Find matching metrics
+     */
+    private function findMatchingMetrics(string $chartType, array $proposalRuleTitles, string $proposalRuleTitlesKey)
+    {
+
+        return Metric::with([
+            'rules' => fn ($query) => $query->whereIn('title', $proposalRuleTitles),
+        ])
+            ->where('type', $chartType)
+            ->get();
+        //            ->filter(function ($metric) use ($proposalRuleTitles, $proposalRuleTitlesKey) {
+        //                $metricRuleTitles = $metric->rules->pluck('title')->toArray();
+        //
+        //                if (count($metricRuleTitles) !== count($proposalRuleTitles)) {
+        //                    return false;
+        //                }
+        //
+        //                sort($metricRuleTitles);
+        //                $metricRuleTitlesKey = implode(',', $metricRuleTitles);
+        //
+        //                return $metricRuleTitlesKey === $proposalRuleTitlesKey;
+        //            });
+    }
+
+    /**
+     * Process metrics data efficiently
+     */
+    private function processMetricsData($metrics, array $filters, string $searchQuery, string $chartType): array
+    {
         $multiSeriesData = [];
 
         foreach ($metrics as $metric) {

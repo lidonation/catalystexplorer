@@ -4,9 +4,7 @@ import Title from '@/Components/atoms/Title';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import { ListProvider } from '@/Context/ListContext';
 import { useMetrics } from '@/Context/MetricsContext';
-// import { usePlayer } from '@/Context/PlayerContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
-import Paginator from '@/Components/Paginator';
 import ProposalSortingOptions from '@/lib/ProposalSortOptions';
 import { PageProps } from '@/types';
 import { PaginatedData } from '@/types/paginated-data';
@@ -142,7 +140,7 @@ export default function Index({
                                     title: true,
                                     yesVotes: true,
                                     abstainVotes: true,
-                                    teams: false
+                                    teams: true
                                 }}
                             />
                         ) : (

@@ -60,7 +60,7 @@ export default function CardLayoutSwitcher({
     return (
         <div className="relative">
             <div className="z- bg-background flex overflow-hidden rounded-lg border-[2px] border-gray-300 shadow-m">
-                
+
                  <Button
                     onClick={() => {
                         setTable(!isTableView)
@@ -74,7 +74,7 @@ export default function CardLayoutSwitcher({
                 >
                     <TableIcon />
                 </Button>
-                
+
                 <Button
                     onClick={() => {
                         setHorizontal(false);
@@ -136,21 +136,21 @@ export default function CardLayoutSwitcher({
                     </div>
                 </Button>
 
-                <Button
-                    onClick={() => {
-                        setHorizontal(true)
-                        setIsMini(false)
-                        setTable(false)
-                    }}
-                    className={`flex flex-1 items-center justify-center w-[60px] h-[50px] ${
-                        isHorizontal && !isTableView
-                            ? 'bg-background-lighter text-primary'
-                            : 'hover:bg-background-lighter text-gray-500 cursor-pointer'
-                    } border-r-[2px] border-gray-300`}
-                    data-testid="card-layout-switcher-horizontal-button"
-                >
-                    <ListBulletIcon />
-                </Button>
+                {/*<Button*/}
+                {/*    onClick={() => {*/}
+                {/*        setHorizontal(true)*/}
+                {/*        setIsMini(false)*/}
+                {/*        setTable(false)*/}
+                {/*    }}*/}
+                {/*    className={`flex flex-1 items-center justify-center w-[60px] h-[50px] ${*/}
+                {/*        isHorizontal && !isTableView*/}
+                {/*            ? 'bg-background-lighter text-primary'*/}
+                {/*            : 'hover:bg-background-lighter text-gray-500 cursor-pointer'*/}
+                {/*    } border-r-[2px] border-gray-300`}*/}
+                {/*    data-testid="card-layout-switcher-horizontal-button"*/}
+                {/*>*/}
+                {/*    <ListBulletIcon />*/}
+                {/*</Button>*/}
 
                 <Button
                     onClick={() => {

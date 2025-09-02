@@ -27,7 +27,10 @@ export default function Success({
     const nextStep = localizedRoute('my.lists.index');
 
     return (
-        <WorkflowLayout asideInfo={stepDetails[activeStep - 1]?.info ?? ''}>
+        <WorkflowLayout
+            title="Create Bookmark"
+            asideInfo={stepDetails[activeStep - 1]?.info ?? ''}
+        >
             <Content>
                 <div className="bg-background mx-auto my-8 flex h-3/4 w-[calc(100%-4rem)] items-center justify-center rounded-lg p-8 md:w-3/4">
                     <div className="flex h-full w-full flex-col items-center justify-center gap-3 rounded p-8 md:w-3/4 md:shadow-sm">

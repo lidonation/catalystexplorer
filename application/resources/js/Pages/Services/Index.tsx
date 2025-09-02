@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { router } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import ServiceCategories from '@/Components/ServiceCategories';
 import SearchControls from './Partials/SearchControls';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
@@ -87,83 +87,118 @@ const ServicesComponent: React.FC<ServicesIndexProps> = ({
   const hasServices = services?.data?.length > 0;
 
   return (
-    <div className="w-full max-w-full py-4 px-8 xl:px-20" data-testid="services-page">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <Title className="text-2xl font-semibold text-content" data-testid="services-page-title" >{t('services.catalystServices')}</Title>
-          <Paragraph className="text-base text-slate-500"> {t('services.catalystServicesDesc')}
-          </Paragraph>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-5 md-grid-cols-2 gap-8 items-start">
-        <div className="hidden lg:block lg:col-span-1">
-          <section className="sticky top-8" data-testid="categories-sidebar">
-            <ServiceCategories
-              categories={categories}
-              selectedCategories={selectedCategories}
-              onCategoryToggle={handleCategoryToggle}
-            />
-          </section>
-        </div>
-
-        <div className="col-span-4" data-testid="services-main-content">
-          <div className="lg:hidden mb-4">
-            <Button
-              onClick={() => setShowMobileCategories(!showMobileCategories)}
-              className="px-6 h-10 w-full flex items-center justify-center gap-2 hover:bg-background-tertiary hover:text-content-secondary focus:bg-background-accent active:bg-background-tertiary bg-primary active:text-content-secondary text-content-light"
-              dataTestId="mobile-categories-toggle"
-            >
-              {showMobileCategories ? t('services.hideCategories') : t('services.showCategories')}
-            </Button>
+      <div
+          className="w-full max-w-full px-8 py-4 xl:px-20"
+          data-testid="services-page"
+      >
+          <Head title={'Services page'} />
+          <div className="mb-6 flex items-center justify-between">
+              <div>
+                  <Title
+                      className="text-content text-2xl font-semibold"
+                      data-testid="services-page-title"
+                  >
+                      {t('services.catalystServices')}
+                  </Title>
+                  <Paragraph className="text-base text-slate-500">
+                      {' '}
+                      {t('services.catalystServicesDesc')}
+                  </Paragraph>
+              </div>
           </div>
-          {showMobileCategories && (
-            <div className="lg:hidden mb-6 p-4 rounded-lg border border-gray-200 shadow-sm" data-testid="mobile-categories">
-              <ServiceCategories
-                categories={categories}
-                selectedCategories={selectedCategories}
-                onCategoryToggle={handleCategoryToggle}
-              />
-            </div>
-          )}
 
-          <Section className="mb-6" data-testid="services-search-controls">
-            <SearchControls
-              search={search}
-              onSearchChange={setSearch}
-              onFiltersToggle={() => setShowTypeFilter(!showTypeFilter)}
-              showFilters={showTypeFilter}
-            />
-          </Section>
-
-          {showTypeFilter && (
-            <Section className="mb-6" data-testid="type-filter-section">
-              <ServiceTypeFilter
-                selectedType={selectedType}
-                onTypeChange={setSelectedType}
-              />
-            </Section>
-          )}
-
-          {hasServices ? (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" data-testid="services-grid">
-                {services.data.map(service => (
-                  <ServiceCard key={service.id} service={service} />
-                ))}
+          <div className="md-grid-cols-2 grid grid-cols-1 items-start gap-8 lg:grid-cols-5">
+              <div className="hidden lg:col-span-1 lg:block">
+                  <section
+                      className="sticky top-8"
+                      data-testid="categories-sidebar"
+                  >
+                      <ServiceCategories
+                          categories={categories}
+                          selectedCategories={selectedCategories}
+                          onCategoryToggle={handleCategoryToggle}
+                      />
+                  </section>
               </div>
-              <div className="mt-8 w-full">
-                  <Paginator pagination={services} />
+
+              <div className="col-span-4" data-testid="services-main-content">
+                  <div className="mb-4 lg:hidden">
+                      <Button
+                          onClick={() =>
+                              setShowMobileCategories(!showMobileCategories)
+                          }
+                          className="hover:bg-background-tertiary hover:text-content-secondary focus:bg-background-accent active:bg-background-tertiary bg-primary active:text-content-secondary text-content-light flex h-10 w-full items-center justify-center gap-2 px-6"
+                          dataTestId="mobile-categories-toggle"
+                      >
+                          {showMobileCategories
+                              ? t('services.hideCategories')
+                              : t('services.showCategories')}
+                      </Button>
+                  </div>
+                  {showMobileCategories && (
+                      <div
+                          className="mb-6 rounded-lg border border-gray-200 p-4 shadow-sm lg:hidden"
+                          data-testid="mobile-categories"
+                      >
+                          <ServiceCategories
+                              categories={categories}
+                              selectedCategories={selectedCategories}
+                              onCategoryToggle={handleCategoryToggle}
+                          />
+                      </div>
+                  )}
+
+                  <Section
+                      className="mb-6"
+                      data-testid="services-search-controls"
+                  >
+                      <SearchControls
+                          search={search}
+                          onSearchChange={setSearch}
+                          onFiltersToggle={() =>
+                              setShowTypeFilter(!showTypeFilter)
+                          }
+                          showFilters={showTypeFilter}
+                      />
+                  </Section>
+
+                  {showTypeFilter && (
+                      <Section
+                          className="mb-6"
+                          data-testid="type-filter-section"
+                      >
+                          <ServiceTypeFilter
+                              selectedType={selectedType}
+                              onTypeChange={setSelectedType}
+                          />
+                      </Section>
+                  )}
+
+                  {hasServices ? (
+                      <>
+                          <div
+                              className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+                              data-testid="services-grid"
+                          >
+                              {services.data.map((service) => (
+                                  <ServiceCard
+                                      key={service.id}
+                                      service={service}
+                                  />
+                              ))}
+                          </div>
+                          <div className="mt-8 w-full">
+                              <Paginator pagination={services} />
+                          </div>
+                      </>
+                  ) : (
+                      <div className="flex flex-col items-center justify-center py-20">
+                          <RecordsNotFound />
+                      </div>
+                  )}
               </div>
-            </>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-20">
-              <RecordsNotFound />
-            </div>
-          )}
-        </div>
+          </div>
       </div>
-    </div>
   );
 };
 

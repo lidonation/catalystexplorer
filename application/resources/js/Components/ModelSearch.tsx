@@ -102,7 +102,7 @@ export default function ModelSearch({
         useSearchOptions<any>(domain, bookmarkCollection.fund_id);
     const model = modelTypes[domain];
     const selectedHashes = selectedItemsByType[domain] || [];
-    
+
     const clearSearch = () => {
         setSearchTerm('');
         setIsRestoringScroll(false);
@@ -113,6 +113,7 @@ export default function ModelSearch({
     };
     
     useEscapeKey(clearSearch);
+
 
     useEffect(() => {
         inputRef.current?.focus();
@@ -246,7 +247,7 @@ export default function ModelSearch({
                     }`}
                 >
                     {options.map((result) => {
-                        
+
                         const uuid = result.id;
                         const isSelected = selectedHashes.includes(uuid);
 

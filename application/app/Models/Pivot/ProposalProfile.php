@@ -11,10 +11,10 @@ class ProposalProfile extends Pivot
 {
     protected $table = 'proposal_profiles';
 
-    public function profiles(): MorphTo
+    public function model(): MorphTo
     {
         return $this->morphTo(
-            name: 'profiles',
+            name: 'model',
             type: 'profile_type',
             id: 'profile_id',
             ownerKey: 'id'

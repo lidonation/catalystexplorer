@@ -5,6 +5,7 @@ import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect } from 'react';
 import {useLaravelReactI18n} from "laravel-react-i18n";
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface ProfileFieldFormProps {
     fieldName: string;
@@ -65,6 +66,9 @@ export default function ProfileFieldForm({
 
     return (
         <form onSubmit={submit} className="lg:p-4">
+            
+            <ErrorDisplay />
+
             <div className="mb-4">
                 <InputLabel
                     htmlFor={fieldName}
