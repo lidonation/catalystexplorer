@@ -75,7 +75,7 @@ const BookmarkCollectionCard = ({
                     </div>
                     <Paragraph
                         size="sm"
-                        className="text-muted-foreground lg:text-md lg:w-5/6"
+                        className="text-muted-foreground w-1/2  lg:text-md lg:w-5/6 break-words whitespace-normal"
                     >
                         {collection?.content || 'No description available.'}
                     </Paragraph>
@@ -143,7 +143,7 @@ const BookmarkCollectionCard = ({
                     );
                 })}
             </div>
-            <div className="top-4 right-4 lg:absolute">
+            <div className="top-4 right-4 absolute">
                 <DropdownMenu items={dropdownMenuItems} />
             </div>
 
