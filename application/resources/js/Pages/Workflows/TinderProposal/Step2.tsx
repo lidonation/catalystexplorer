@@ -113,7 +113,7 @@ const Step2: React.FC<Step2Props> = ({
         <WorkflowLayout
             title="Tinder Proposal"
             asideInfo={stepDetails[activeStep - 1].info ?? ''}
-            disclaimer={stepDetails[4]?.disclaimer ?? ''}
+            disclaimer={t('workflows.voterList.prototype')}
         >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
