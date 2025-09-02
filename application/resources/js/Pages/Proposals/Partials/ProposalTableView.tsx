@@ -33,7 +33,7 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
         title: true,
         yesVotes: true,
         abstainVotes: true,
-        teams: false
+        teams: true
     },
 }) => {
 
