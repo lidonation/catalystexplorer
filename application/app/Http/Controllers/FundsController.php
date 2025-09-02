@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\DataTransferObjects\CampaignData;
 use App\DataTransferObjects\FundData;
 use App\DataTransferObjects\MetricData;
+use App\DataTransferObjects\ProposalData;
 use App\Enums\CampaignsSortBy;
 use App\Enums\CatalystCurrencies;
 use App\Enums\ProposalFundingStatus;
@@ -16,6 +17,7 @@ use App\Models\Fund;
 use App\Models\Proposal;
 use App\Repositories\FundRepository;
 use App\Repositories\MetricRepository;
+use App\Repositories\ProposalRepository;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -129,7 +131,7 @@ class FundsController extends Controller
         ]);
     }
 
-    public function activeFund()
+    public function activeFund(ProposalRepository $proposals)
     {
         $activeFund = Fund::latest('launched_at')
             ->withCount(['funded_proposals', 'completed_proposals', 'unfunded_proposals', 'proposals'])
@@ -149,6 +151,9 @@ class FundsController extends Controller
         ]);
 
         return Inertia::render('ActiveFund/Index', [
+            'proposals' => Inertia::optional(
+                fn () => $this->getProposals($activeFund, $proposals)
+            ),
             'fund' => FundData::from($activeFund),
             'campaigns' => $campaigns,
             'amountDistributed' => $amountDistributed,
@@ -190,6 +195,24 @@ class FundsController extends Controller
         }
 
         return $query->get();
+    }
+
+    private function getProposals(Fund $activeFund, ProposalRepository $proposals)
+    {
+        try {
+            return ProposalData::collect(
+                $proposals->with(['users', 'campaign', 'fund'])
+                    ->whereNotNull('quickpitch')
+                    ->where('fund_id', '=', $activeFund->id)
+                    ->limit(3)
+                    ->inRandomOrder()
+                    ->get()
+            );
+        } catch (\Throwable $e) {
+            report($e);
+
+            return collect([]);
+        }
     }
 
     public function getProposalsCountByYear()
