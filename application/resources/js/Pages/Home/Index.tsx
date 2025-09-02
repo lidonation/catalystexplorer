@@ -20,6 +20,7 @@ import MetricData = App.DataTransferObjects.MetricData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import PostData = App.DataTransferObjects.PostData;
 import AnnouncementData = App.DataTransferObjects.AnnouncementData;
+import { useLocalizedRoute } from '@/utils/localizedRoute.ts';
 
 interface HomePageProps extends Record<string, unknown> {
     posts: PostData[];
@@ -107,18 +108,18 @@ export default function Index({
                 >
                     <div className="flex items-center justify-between py-8">
                         <div data-testid="proposals-header">
-                            <Title level="2">{t('proposals.proposals')}</Title>
+                            <Title level="2">{t('proposals.proposalCelebrateCompletedProposals')}</Title>
                             <Paragraph
                                 size="sm"
                                 className="text-4 text-content-dark opacity-70"
                             >
-                                {t('proposals.listSubtitle')}
+                                {t('proposals.celebrateCompletedProposalsSubtitle')}
                             </Paragraph>
                         </div>
                         <div>
                             <SecondaryLink
                                 className="text-content-dark font-bold"
-                                href="/proposals"
+                                href={useLocalizedRoute('proposals.index')}
                                 data-testid="see-more-proposals"
                             >
                                 {t('proposals.seeMoreProposals')}

@@ -8,6 +8,7 @@ use App\DataTransferObjects\AnnouncementData;
 use App\DataTransferObjects\MetricData;
 use App\DataTransferObjects\ProposalData;
 use App\Enums\MetricsContext;
+use App\Enums\ProposalStatus;
 use App\Enums\StatusEnum;
 use App\Models\Announcement;
 use App\Repositories\AnnouncementRepository;
@@ -81,6 +82,7 @@ class HomeController extends Controller
             return ProposalData::collect(
                 $proposals->with(['users', 'campaign', 'fund'])
                     ->limit(3)
+                    ->where('status', '=', ProposalStatus::complete()->value)
                     ->inRandomOrder()
                     ->get()
             );

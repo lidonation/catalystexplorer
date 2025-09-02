@@ -4,17 +4,26 @@ import Title from '@/Components/atoms/Title';
 import SegmentedBar from '@/Components/SegmentedBar';
 import { Segments } from '@/types/segments';
 import { currency } from '@/utils/currency';
-import { Head } from '@inertiajs/react';
+import { Head, WhenVisible } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useState } from 'react';
 import ActiveFundBanner from './Partials/ActiveFundBanner';
 import CampaignCard from './Partials/CampaignCard';
 import CreateListBanner from './Partials/CreateListBanner';
+import SupportCxBanner from '@/Pages/ActiveFund/Partials/SupportCxBanner.tsx';
+import SecondaryLink from '@/Components/SecondaryLink.tsx';
+import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading.tsx';
+import ProposalList from '@/Pages/Proposals/Partials/ProposalList.tsx';
+import ProposalData = App.DataTransferObjects.ProposalData;
+import { useLocalizedRoute } from '@/utils/localizedRoute.ts';
+import { ParamsEnum } from '@/enums/proposal-search-params.ts';
+import { CatalystFundsEnums } from '@/enums/catalyst-funds-enums.ts';
 
 interface ActiveFundsProp extends Record<string, unknown> {
     search?: string | null;
     fund: App.DataTransferObjects.FundData;
     campaigns: App.DataTransferObjects.CampaignData[];
+    proposals: ProposalData[];
     amountDistributed: number;
     amountRemaining: number;
 }
@@ -23,6 +32,7 @@ const Index: React.FC<ActiveFundsProp> = ({
     search,
     fund,
     campaigns,
+    proposals,
     amountDistributed,
     amountRemaining,
 }) => {
@@ -47,6 +57,10 @@ const Index: React.FC<ActiveFundsProp> = ({
         },
     ] as Segments[];
 
+    const proposalAttrs = {
+        quickPitchView: true
+    };
+
     return (
         <>
             <Head title="Active Fund" />
@@ -60,9 +74,9 @@ const Index: React.FC<ActiveFundsProp> = ({
                 </div>
             </header>
 
-            <div className="flex w-full flex-col">
-                <section className="flex w-full flex-col items-center px-8 py-2 md:py-6">
-                    <div className="mb-3 text-center md:mb-5">
+            <div className="flex w-full flex-col pb-4">
+                <section className="flex w-full flex-col items-center px-8 py-2 md:py-4">
+                    <div className="text-center">
                         <Title level="2" className="hidden font-bold md:block">
                             {currency(
                                 fund?.amount_awarded ?? 0,
@@ -107,7 +121,7 @@ const Index: React.FC<ActiveFundsProp> = ({
                             </span>
                         </Paragraph>
                     </div>
-                    <div className="my-5 flex w-full flex-col items-center justify-center gap-2 md:mt-5 md:gap-4">
+                    <div className="flex w-full flex-col items-center justify-center gap-2">
                         <SegmentedBar
                             segments={segments}
                             tooltipSegments={segments}
@@ -133,6 +147,49 @@ const Index: React.FC<ActiveFundsProp> = ({
                 <section className='px-8 w-full my-4'>
                     <CreateListBanner />
                 </section>
+
+                <section
+                    className="proposals-wrapper container"
+                    data-testid="proposals-section"
+                >
+                    <div className="flex items-center justify-between py-8">
+                        <div data-testid="proposals-header">
+                            <Title level="2">{t('proposals.proposalQuickPitches')}</Title>
+                            <Paragraph
+                                size="sm"
+                                className="text-4 text-content-dark opacity-70"
+                            >
+                                {t('proposals.quickPitchesListSubtitle')}
+                            </Paragraph>
+                        </div>
+                        <div>
+                            <SecondaryLink
+                                className="text-content-dark font-bold"
+                                href={useLocalizedRoute('proposals.index', {
+                                    [ParamsEnum.QUICK_PITCHES]: 1,
+                                    [ParamsEnum.FUNDS]: CatalystFundsEnums.FOURTEEN
+                                })}
+                                data-testid="see-more-proposals"
+                            >
+                                {t('proposals.seeMoreQuickPitches')}
+                            </SecondaryLink>
+                        </div>
+                    </div>
+                    <WhenVisible
+                        fallback={<VerticalCardLoading />}
+                        data="proposals"
+                    >
+                        <ProposalList
+                            proposalAttrs={proposalAttrs}
+                            proposals={proposals}
+                        />
+                    </WhenVisible>
+                </section>
+
+                <section className='px-8 w-full my-4 mt-8'>
+                    <SupportCxBanner />
+                </section>
+
                 <section className="mt-5 w-full px-8">
                     <Title level="3" className="mb-6 font-bold">
                         {t('activeFund.campaignsTitle')}

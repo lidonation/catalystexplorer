@@ -9,11 +9,17 @@ type ProposalCardProps = {
     isHorizontal: boolean;
     hideFooter?: boolean;
     globalQuickPitchView?: boolean;
+    proposalAttrs?: {};
     setGlobalQuickPitchView?: (value: boolean) => void;
 };
 
 const ProposalCard = React.memo(
-    ({ proposal, isHorizontal, globalQuickPitchView, hideFooter}: ProposalCardProps) => {
+    ({
+         proposal,
+         proposalAttrs = {},
+         isHorizontal = false,
+         globalQuickPitchView,
+         hideFooter}: ProposalCardProps) => {
         const { t } = useLaravelReactI18n();
 
         const [userSelected, setUserSelected] =
@@ -90,10 +96,14 @@ const ProposalCard = React.memo(
             ],
         );
 
+        const props = {...layoutProps, ...proposalAttrs};
+
+        console.log({layoutProps});
+
         return isHorizontal ? (
-            <ProposalHorizontalCard {...layoutProps} />
+            <ProposalHorizontalCard {...props} />
         ) : (
-            <ProposalVerticalCard {...layoutProps} />
+            <ProposalVerticalCard  {...props} />
         );
     },
 );

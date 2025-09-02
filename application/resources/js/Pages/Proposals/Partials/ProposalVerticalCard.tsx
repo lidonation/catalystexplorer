@@ -11,19 +11,19 @@ import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascalePr
 import {useCallback, useState, useRef, useEffect} from 'react';
 
 export default function ProposalVerticalCard({
-                                                 proposal,
-                                                 userSelected,
-                                                 noSelectedUser,
-                                                 handleUserClick,
-                                                 quickPitchView,
-                                                 toggleLocalQuickPitchView,
-                                                 isHorizontal,
-                                                 t,
-                                                 hasQuickPitch,
-                                                 yesVotes,
-                                                 abstainVotes,
-                                                 hideFooter = false,
-                                             }: any) {
+     proposal,
+     userSelected,
+     noSelectedUser,
+     handleUserClick,
+     quickPitchView,
+     toggleLocalQuickPitchView,
+     isHorizontal,
+     t,
+     hasQuickPitch,
+     yesVotes,
+     abstainVotes,
+     hideFooter = false,
+ }: any) {
     const [cardHeight, setCardHeight] = useState<number | null>(null);
     const cardRef = useRef<HTMLElement>(null);
 

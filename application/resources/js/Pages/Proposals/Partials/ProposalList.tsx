@@ -4,12 +4,14 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface ProposalProps {
     proposals: ProposalData[];
-    isHorizontal: boolean;
+    proposalAttrs?: {};
+    isHorizontal?: boolean;
 }
 
 const ProposalList: React.FC<ProposalProps> = ({
     proposals,
-    isHorizontal,
+    isHorizontal = false,
+    proposalAttrs = {},
 }) => {
     return (
         <div className="grid w-full grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3" data-testid="proposal-list">
@@ -20,6 +22,7 @@ const ProposalList: React.FC<ProposalProps> = ({
                         proposal={proposal}
                         isHorizontal={isHorizontal}
                         globalQuickPitchView={false}
+                        proposalAttrs={proposalAttrs}
                     />
                 ))}
         </div>
