@@ -9,7 +9,7 @@ interface KeyValueProps extends HTMLAttributes<HTMLDivElement> {
 
 export default function KeyValue({valueKey, value, className = '', ...props}: KeyValueProps) {
     return (
-        <div className='text-content text-lg font-semibold space-y-0' {...props}>
+        <div className={`text-content text-lg font-semibold space-y-0 ${className}`} {...props}>
             <div className='text-2xl'>
                 {value}
             </div>
