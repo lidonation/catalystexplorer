@@ -34,7 +34,7 @@ export default function step5({
         <WorkflowLayout
             title="Create Voter List"
             asideInfo={stepDetails[activeStep - 1]?.info ?? ''}
-            disclaimer={stepDetails[10]?.disclaimer ?? ''}
+            disclaimer={t('workflows.voterList.prototype')}
         >
             <Content>
                 <div className="bg-background mx-auto flex min-h-[600px] w-full flex-col items-center justify-between rounded-lg p-8 md:w-3/4">

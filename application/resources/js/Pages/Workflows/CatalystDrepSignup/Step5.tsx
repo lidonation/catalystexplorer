@@ -162,6 +162,7 @@ const step5: React.FC<Step5Props> = ({
             asideInfo={stepDetails[activeStep - 1].info ?? ''}
             wrapperClassName="!h-auto"
             contentClassName="!max-h-none"
+            disclaimer={t('workflows.voterList.prototype')}
         >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
