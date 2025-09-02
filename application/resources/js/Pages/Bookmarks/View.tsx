@@ -164,7 +164,7 @@ const BookmarkContent = (props: BookmarkCollectionListProps) => {
                 {isAuthor && (
                     <div className="top-6 right-8 z-50 ml-auto flex justify-end gap-4 lg:absolute">
                         <Link
-                            href={generateLocalizedRoute('lists.manage', {
+                            href={generateLocalizedRoute('my.lists.manage', {
                                 bookmarkCollection: bookmarkCollection.id,
                                 type: 'proposals',
                             })}

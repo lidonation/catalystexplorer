@@ -6,9 +6,10 @@ import Title from '@/Components/atoms/Title';
 import capitalizeFirstLetter from '@/utils/caps';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { formatTimestamp } from '@/utils/timeStamp';
-import { usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { Clock, MessageCircle } from 'lucide-react';
+import DropdownMenu, { DropdownMenuItem } from '../../../Bookmarks/Partials/DropdownMenu';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 
 const BookmarkCollectionCard = ({
@@ -22,6 +23,32 @@ const BookmarkCollectionCard = ({
     const user = collection?.author;
 
     const isAuthor = auth?.user?.id == user?.id;
+
+    const viewListRoute = useLocalizedRoute('lists.view', {
+        bookmarkCollection: collection?.id
+    });
+
+    const manageListRoute = useLocalizedRoute('my.lists.manage', {
+        bookmarkCollection: collection?.id,
+        type: 'proposals',
+    });
+
+    const dropdownMenuItems: DropdownMenuItem[] = [
+        {
+            label: t('workflows.bookmarks.viewList'),
+            type: 'button',
+            onClick: () => {
+                router.visit(viewListRoute);
+            }
+        },
+        ...(isAuthor ? [{
+            label: t('my.manage'),
+            type: 'button' as const,
+            onClick: () => {
+                router.visit(manageListRoute);
+            }
+        }] : [])
+    ];
     return (
         <Card
             className="relative flex w-full gap-1 lg:gap-3"
@@ -32,9 +59,16 @@ const BookmarkCollectionCard = ({
             <div className="flex flex-row items-center justify-between pb-2">
                 <div className="space-y-2">
                     <div className="flex items-center gap-3">
-                        <Title level="4" className="font-bold lg:text-2xl">
-                            {collection.title}
-                        </Title>
+                        <Link
+                            href={useLocalizedRoute('lists.view', {
+                                bookmarkCollection: collection?.id,
+                                type: 'proposals',
+                            })}
+                        >
+                            <Title level="4" className="font-bold lg:text-2xl hover:text-primary cursor-pointer transition-colors">
+                                {collection.title}
+                            </Title>
+                        </Link>
                         <div className="bg-primary-light text-primary border-primary rounded-lg border px-2 py-1 text-sm text-nowrap lg:px-4">
                             {`${collection?.items_count} ${t('my.items')}`}
                         </div>
@@ -110,47 +144,7 @@ const BookmarkCollectionCard = ({
                 })}
             </div>
             <div className="top-4 right-4 lg:absolute">
-                {user?.id && isAuthor && collection?.id ? (
-                    <div
-                        className="flex flex-col gap-2 lg:flex-row lg:gap-3"
-                        data-testid="button-container"
-                    >
-                        <PrimaryLink
-                            data-testid="manage-button"
-                            aria-label={`Manage ${collection.title} collection`}
-                            className="bg-success w-full px-4 py-1.5 font-medium text-white lg:w-auto lg:whitespace-nowrap"
-                            href={useLocalizedRoute('lists.manage', {
-                                bookmarkCollection: collection?.id,
-                                type: 'proposals',
-                            })}
-                        >
-                            {t('my.manage')}
-                        </PrimaryLink>
-                        <PrimaryLink
-                            data-testid="view-list-button"
-                            aria-label={`View ${collection.title} list`}
-                            href={useLocalizedRoute('lists.view', {
-                                bookmarkCollection: collection?.id,
-                            })}
-                            className="bg-success w-full px-4 py-1.5 hover:bg-green-600 lg:w-auto lg:whitespace-nowrap"
-                        >
-                            {t('View List')}
-                        </PrimaryLink>
-                    </div>
-                ) : (
-                    collection?.id && (
-                        <PrimaryLink
-                            data-testid="view-list-button"
-                            aria-label={`View ${collection.title} list`}
-                            href={useLocalizedRoute('lists.view', {
-                                bookmarkCollection: collection?.id,
-                            })}
-                            className="bg-success w-full px-4 hover:bg-green-600"
-                        >
-                            {t('View List')}
-                        </PrimaryLink>
-                    )
-                )}
+                <DropdownMenu items={dropdownMenuItems} />
             </div>
 
             <div

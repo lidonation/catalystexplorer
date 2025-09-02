@@ -66,7 +66,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
     const [activeTab, setTab] = useState(type);
 
     const setActiveTab = (val: typeof type) => {
-        const route = generateLocalizedRoute('lists.manage', {
+        const route = generateLocalizedRoute('my.lists.manage', {
             bookmarkCollection: bookmarkCollection.id,
             type: val,
         });
