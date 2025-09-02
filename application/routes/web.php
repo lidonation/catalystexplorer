@@ -40,12 +40,11 @@ Route::localized(
         Route::get('/', [HomeController::class, 'index'])
             ->name('home');
 
+
         Route::prefix('/proposals')->as('proposals.')->group(function () {
             Route::get('/', [ProposalsController::class, 'index'])
                 ->name('index');
 
-            Route::get('/charts', [ProposalsController::class, 'charts'])
-                ->name('charts');
 
             Route::post('/test-modal', function () {
                 return response()->json(['message' => 'OK', 'time' => now()]);
@@ -78,10 +77,8 @@ Route::localized(
             ->name('proposals.index');
 
         //routes for demoing routing pages onto modals
-        Route::get('/proposals/charts', [ProposalsController::class, 'charts'])
-            ->name('proposals.charts');
-        Route::get('/proposals/charts/detail', [ProposalsController::class, 'chartDetail'])
-            ->name('proposals.charts.detail');
+//        Route::get('/proposals/charts', [ProposalsController::class, 'charts'])
+//            ->name('charts');
 
         Route::prefix('/funds')->as('funds.')->group(function () {
             Route::get('/', [FundsController::class, 'index'])
@@ -375,8 +372,12 @@ Route::localized(
                 ->name('view');
         });
 
-        Route::get('/charts', [ChartsController::class, 'index'])
-            ->name('charts.index');
+        Route::prefix('charts')->as('charts.')->group(function () {
+            Route::get('/charts', [ChartsController::class, 'index'])
+                ->name('index');
+            Route::get('/proposals', [ProposalsController::class, 'charts'])
+                ->name('proposals');
+        });
 
         Route::prefix('/completed-project-nfts')->as('completedProjectsNfts.')->group(
             function () {
@@ -426,7 +427,7 @@ Route::localized(
                     ->name('index');
             }
         );
-        
+
 
         // Dreps
         Route::prefix('/dreps')->as('dreps.')->group(
@@ -499,7 +500,6 @@ Route::localized(
     }
 
 );
-
 
 
 require __DIR__ . '/auth.php';

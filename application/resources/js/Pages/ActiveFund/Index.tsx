@@ -7,7 +7,6 @@ import { currency } from '@/utils/currency';
 import { Head } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useState } from 'react';
-import CreateListPicker from '../Bookmarks/Partials/CreateListPicker';
 import ActiveFundBanner from './Partials/ActiveFundBanner';
 import CampaignCard from './Partials/CampaignCard';
 import CreateListBanner from './Partials/CreateListBanner';
