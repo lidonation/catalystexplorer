@@ -1,3 +1,10 @@
+# [1.20.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.19.0...v1.20.0) (2025-09-02)
+
+
+### Features
+
+* adding disclaimers to the create drep workflow ([397a44e](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/397a44edce3c7aa5835629fd9aa15a20c3ccd900))
+
 # [1.19.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.18.1...v1.19.0) (2025-09-02)
 
 
