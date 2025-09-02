@@ -524,9 +524,6 @@ class VoterListController extends Controller
             [
                 'title' => 'workflows.voterList.success.title',
                 'info' => 'workflows.voterList.success.successInfo',
-            ],
-            [
-                'disclaimer' => 'workflows.voterList.prototype',
             ]
         ]);
     }
