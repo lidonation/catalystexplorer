@@ -3,6 +3,8 @@ import ManageProposalButton from '@/Pages/My/Proposals/partials/ManageProposalBu
 import ProposalCardHeader from '@/Pages/Proposals/Partials/ProposalCardHeader';
 import ProposalFundingPercentages from '@/Pages/Proposals/Partials/ProposalFundingPercentages';
 import ProposalFundingStatus from '@/Pages/Proposals/Partials/ProposalFundingStatus';
+import CompareButton from './CompareButton';
+import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import React, { useCallback, useState } from 'react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import YesVoteIcon from '@/Components/svgs/YesVoteIcon';
@@ -165,7 +167,39 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                         data-testid={`proposal-card-${proposal.id}`}
                     />
                 </div>
-            )
+            ),
+        },
+        {
+            key: 'action',
+            label: t('proposals.action'),
+            renderCell: (proposal: ProposalData) => (
+                <div data-testid={`proposal-action-${proposal.id}`}>
+                    <ManageProposalButton
+                        proposal={proposal}
+                        data-testid={`manage-proposal-button-${proposal.id}`}
+                    />
+                </div>
+            ),
+        },
+        {
+            key: 'viewProposal',
+            label: t('proposals.action'),
+            renderCell: (proposal: ProposalData) => (
+                <div className='flex items-center gap-3 w-20' data-testid={`proposal-view-${proposal.id}`}>
+                    <CompareButton
+                        model="proposal"
+                        hash={proposal.id ?? ''}
+                        tooltipDescription="Compare Proposals"
+                        data={proposal}
+                        data-testid={`compare-button`}
+                    />
+                    <BookmarkButton
+                        modelType="proposals"
+                        itemId={proposal.id ?? ''}
+                        data-testid="bookmark-button"
+                    />
+                </div>
+            ),
         },
         {
             key: 'fund',
@@ -284,35 +318,6 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                 </div>
             )
         },
-        {
-            key: 'action',
-            label: t('proposals.action'),
-            renderCell: (proposal: ProposalData) => (
-                <div data-testid={`proposal-action-${proposal.id}`}>
-                    <ManageProposalButton
-                        proposal={proposal}
-                        data-testid={`manage-proposal-button-${proposal.id}`}
-                    />
-                </div>
-            )
-        },
-        {
-            key: 'viewProposal',
-            label: t('proposals.action'),
-            renderCell: (proposal: ProposalData) => (
-                <div className="w-32" data-testid={`proposal-view-${proposal.id}`}>
-                    <Link
-                        href={proposal.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors duration-200 font-medium text-sm"
-                        data-testid={`view-proposal-button-${proposal.id}`}
-                    >
-                        {t('proposalComparison.viewProposal')}
-                    </Link>
-                </div>
-            )
-        }
     ].filter(column => mergedVisibility[column.key as keyof ColumnVisibility] !== false);
 
     const getRowHelpers = useCallback(

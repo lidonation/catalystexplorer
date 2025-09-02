@@ -140,7 +140,7 @@ export default function Index({
                                     title: true,
                                     yesVotes: true,
                                     abstainVotes: true,
-                                    teams: false
+                                    teams: true
                                 }}
                             />
                         ) : (
