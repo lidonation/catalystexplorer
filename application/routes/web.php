@@ -365,9 +365,6 @@ Route::localized(
         Route::prefix('lists')->as('lists.')->group(function () {
             Route::get('/', [BookmarksController::class, 'index'])
                 ->name('index');
-            Route::get('/{bookmarkCollection}/manage/{type?}', [BookmarksController::class, 'manage'])
-                ->middleware('auth')
-                ->name('manage');
             Route::get('/{bookmarkCollection}/{type?}', [BookmarksController::class, 'view'])
                 ->name('view');
         });
