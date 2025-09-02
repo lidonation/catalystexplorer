@@ -233,7 +233,7 @@
     "workflows.resetPassword.resend": "Resend Email",
     "workflows.voterList.welcome": "Before you start, let's set up your Voting List. A Voting List is a collection of proposals that you support and want others to consider. This helps streamline governance participation. Ready to begin? In the next steps, you'll name your list, add proposals, and explain your rationale for selecting them.",
     "workflows.voterList.proposalsOnly": "Unlike other list types, only proposals can be added to voting lists.",
-    "workflows.voterList.prototype":"<strong>NB: This is still a prototype an nothing is submited onchain yet!</strong>",
+    "workflows.voterList.prototype":"<strong>NB: This is still a prototype and nothing is submited onchain yet!</strong>",
     "workflows.voterList.title": "Title",
     "workflows.voterList.description": "Description",
     "workflows.voterList.descriptionPlaceholder": "Describe the purpose of this list in a few words.",

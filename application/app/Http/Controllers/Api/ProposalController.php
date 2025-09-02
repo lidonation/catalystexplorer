@@ -10,7 +10,6 @@ use App\Http\Resources\ProposalResource;
 use App\Models\Proposal;
 use App\QueryBuilders\Sorts\ProjectLengthSort;
 use App\Repositories\ProposalRepository;
-use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;

@@ -76,7 +76,11 @@ const Step1: React.FC<Step1Props> = ({
     };
 
     return (
-        <WorkflowLayout title='Drep SignUp' asideInfo={stepDetails[activeStep - 1].info ?? ''}>
+        <WorkflowLayout
+            title="Drep SignUp"
+            asideInfo={stepDetails[activeStep - 1].info ?? ''}
+            disclaimer={t('workflows.voterList.prototype')}
+        >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>

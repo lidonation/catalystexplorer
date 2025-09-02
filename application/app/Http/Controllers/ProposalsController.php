@@ -19,7 +19,6 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Stringable;
 use Inertia\Inertia;
@@ -69,7 +68,6 @@ class ProposalsController extends Controller
 
     public int $sumCompletedUSD = 0;
 
-
     public function index(Request $request)
     {
         $this->getProps($request);
@@ -82,7 +80,7 @@ class ProposalsController extends Controller
             [
                 'proposals' => app()->environment('testing')
                     ? $proposal
-                    : Inertia::optional(callback: fn() => $proposal),
+                    : Inertia::optional(callback: fn () => $proposal),
                 'filters' => $this->queryParams,
                 'funds' => $this->fundsCount,
                 'search' => $this->search,
@@ -117,15 +115,14 @@ class ProposalsController extends Controller
                 'fund',
                 'groups',
                 'team',
-//                'team.proposals',
-//                'reviews',
-                'author'
+                //                'team.proposals',
+                //                'reviews',
+                'author',
             ]);
 
             $data = $proposal->toArray();
 
-
-            $data['alignment_score'] =  $proposal->getDiscussionRankingScore('Impact Alignment') ?? 0;
+            $data['alignment_score'] = $proposal->getDiscussionRankingScore('Impact Alignment') ?? 0;
             $data['feasibility_score'] = $proposal->getDiscussionRankingScore('Feasibility') ?? 0;
             $data['auditability_score'] = $proposal->getDiscussionRankingScore('Value for money') ?? 0;
 
@@ -167,16 +164,16 @@ class ProposalsController extends Controller
         $props = [
             'proposal' => ProposalData::from($proposal),
             'proposals' => Inertia::optional(
-                fn() => Cache::remember(
+                fn () => Cache::remember(
                     "proposal:{$proposalId}:proposals:page:{$currentPage}",
                     now()->addMinutes(10),
-                    fn() => to_length_aware_paginator(
+                    fn () => to_length_aware_paginator(
                         ProposalData::collect($proposal)
                     )->onEachSide(0)
                 )
             ),
             'reviews' => Inertia::optional(
-                fn() => Cache::remember(
+                fn () => Cache::remember(
                     "proposal:{$proposalId}:reviews:page:{$currentPage}",
                     now()->addMinutes(10),
                     function () use ($proposal) {
@@ -209,7 +206,7 @@ class ProposalsController extends Controller
                                 ReviewData::collect($reviewsData)
                             )->onEachSide(0);
                         } catch (\Exception $e) {
-                            \Log::error('Error loading reviews for proposal: ' . $e->getMessage());
+                            \Log::error('Error loading reviews for proposal: '.$e->getMessage());
 
                             return to_length_aware_paginator(
                                 collect([])
@@ -221,7 +218,7 @@ class ProposalsController extends Controller
             'aggregatedRatings' => Cache::remember(
                 "proposal:{$proposalId}:aggregated_ratings",
                 now()->addMinutes(10),
-                fn() => $proposalData['aggregated_ratings'] ?? []
+                fn () => $proposalData['aggregated_ratings'] ?? []
             ),
             'connections' => $teamConnections,
             'userCompleteProposalsCount' => $proposalData['userCompleteProposalsCount'] ?? 0,
@@ -255,7 +252,7 @@ class ProposalsController extends Controller
     public function myProposals(Request $request): Response
     {
         $userId = Auth::id();
-        $ideascaleProfile = IdeascaleProfile::where('claimed_by_uuid', $userId)->get()->map(fn($p) => $p->id);
+        $ideascaleProfile = IdeascaleProfile::where('claimed_by_uuid', $userId)->get()->map(fn ($p) => $p->id);
 
         if ($ideascaleProfile->isEmpty()) {
             return Inertia::render('My/Proposals/Index', [
@@ -275,7 +272,7 @@ class ProposalsController extends Controller
 
         $proposals = null;
 
-        if (!empty($request[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
+        if (! empty($request[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
             $proposals = $this->query();
         }
 
@@ -293,7 +290,7 @@ class ProposalsController extends Controller
         if ($referer) {
             $parsedUrl = parse_url($referer);
             if (isset($parsedUrl['query'])) {
-                $refererParams = SymfonyRequest::create('?' . $parsedUrl['query'])->query->all();
+                $refererParams = SymfonyRequest::create('?'.$parsedUrl['query'])->query->all();
             }
         }
 
@@ -353,7 +350,7 @@ class ProposalsController extends Controller
         ]);
 
         // format sort params for meili
-        if (!empty($this->queryParams[ProposalSearchParams::SORTS()->value])) {
+        if (! empty($this->queryParams[ProposalSearchParams::SORTS()->value])) {
             $sort = collect(
                 explode(
                     ':',
@@ -373,21 +370,20 @@ class ProposalsController extends Controller
             'filter' => $this->getUserFilters(),
         ];
 
-        if ((bool)$this->sortBy && (bool)$this->sortOrder) {
+        if ((bool) $this->sortBy && (bool) $this->sortOrder) {
             $args['sort'] = ["$this->sortBy:$this->sortOrder"];
         }
 
         $page = isset($this->queryParams[ProposalSearchParams::PAGE()->value])
-            ? (int)$this->queryParams[ProposalSearchParams::PAGE()->value]
+            ? (int) $this->queryParams[ProposalSearchParams::PAGE()->value]
             : 1;
 
         $limit = isset($this->queryParams[ProposalSearchParams::LIMIT()->value])
-            ? (int)$this->queryParams[ProposalSearchParams::LIMIT()->value]
+            ? (int) $this->queryParams[ProposalSearchParams::LIMIT()->value]
             : 24;
 
         $args['offset'] = ($page - 1) * $limit;
         $args['limit'] = $limit;
-
 
         $proposals = app(ProposalRepository::class);
 
@@ -431,62 +427,62 @@ class ProposalsController extends Controller
         }
 
         if (isset($this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value])) {
-            $filters[] = 'opensource=' . match ($this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value]) {
+            $filters[] = 'opensource='.match ($this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value]) {
                 '0' => 'false',
                 '1' => 'true'
             };
         }
 
-        $filters[] = 'type=' . ($this->queryParams[ProposalSearchParams::TYPE()->value] ?? 'proposal');
+        $filters[] = 'type='.($this->queryParams[ProposalSearchParams::TYPE()->value] ?? 'proposal');
 
         if (isset($this->queryParams[ProposalSearchParams::QUICK_PITCHES()->value])) {
             $filters[] = 'quickpitch IS NOT NULL';
         }
 
         // filter by budget range
-        if (!empty($this->queryParams[ProposalSearchParams::BUDGETS()->value])) {
-            $budgetRange = collect((object)$this->queryParams[ProposalSearchParams::BUDGETS()->value]);
+        if (! empty($this->queryParams[ProposalSearchParams::BUDGETS()->value])) {
+            $budgetRange = collect((object) $this->queryParams[ProposalSearchParams::BUDGETS()->value]);
             $filters[] = "(amount_requested  {$budgetRange->first()} TO  {$budgetRange->last()})";
         }
 
         // filter by challenge
-        if (!empty($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value])) {
+        if (! empty($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value])) {
             $campaignIds = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
-            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "campaign.id = {$c}", $campaignIds)) . ')';
+            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "campaign.id = {$c}", $campaignIds)).')';
         }
 
-        if (!empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
+        if (! empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
             $tagIds = ($this->queryParams[ProposalSearchParams::TAGS()->value]);
-            $filters[] = '(' . implode(' OR ', array_map(fn($c) => "tags.id = {$c}", $tagIds)) . ')';
+            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "tags.id = {$c}", $tagIds)).')';
         }
 
-        if (!empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
+        if (! empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
             $ideascaleProfileIds = implode(',', $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value]);
             $filters[] = "users.id IN [{$ideascaleProfileIds}]";
         }
 
-        if (!empty($this->queryParams[ProposalSearchParams::GROUPS()->value])) {
+        if (! empty($this->queryParams[ProposalSearchParams::GROUPS()->value])) {
             $groupIds = implode(',', $this->queryParams[ProposalSearchParams::GROUPS()->value]);
             $filters[] = "groups.id IN [{$groupIds}]";
         }
 
-        if (!empty($this->queryParams[ProposalSearchParams::COMMUNITIES()->value])) {
+        if (! empty($this->queryParams[ProposalSearchParams::COMMUNITIES()->value])) {
             $communityHashes = implode(',', $this->queryParams[ProposalSearchParams::COMMUNITIES()->value]);
             $filters[] = "communities.id IN [{$communityHashes}]";
         }
 
-        if (!empty($this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value])) {
-            $projectLength = collect((object)$this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value]);
+        if (! empty($this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value])) {
+            $projectLength = collect((object) $this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value]);
             $filters[] = "(project_length  {$projectLength->first()} TO  {$projectLength->last()})";
         }
 
-        if (!empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {
-            $cohortFilters = array_map(fn($cohort) => "{$cohort} = 1", $this->queryParams[ProposalSearchParams::COHORT()->value]);
-            $filters[] = '(' . implode(' OR ', $cohortFilters) . ')';
+        if (! empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {
+            $cohortFilters = array_map(fn ($cohort) => "{$cohort} = 1", $this->queryParams[ProposalSearchParams::COHORT()->value]);
+            $filters[] = '('.implode(' OR ', $cohortFilters).')';
         }
 
-        if (!empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
-            $fundIds = (array)$this->queryParams[ProposalSearchParams::FUNDS()->value];
+        if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
+            $fundIds = (array) $this->queryParams[ProposalSearchParams::FUNDS()->value];
             $funds = implode("','", $fundIds);
             $filters[] = "fund.id IN ['{$funds}']";
         }
@@ -614,7 +610,7 @@ class ProposalsController extends Controller
 
     public function funds(Request $request)
     {
-        $funds = Fund::when($request->search, fn($q, $search) => $q->where('title', 'ilike', "{$search}%"))->get();
+        $funds = Fund::when($request->search, fn ($q, $search) => $q->where('title', 'ilike', "{$search}%"))->get();
 
         return FundData::collect($funds);
     }
@@ -666,12 +662,12 @@ class ProposalsController extends Controller
         $author = $proposal->author;
 
         try {
-            if (!$author) {
+            if (! $author) {
                 $team = $proposal->team;
                 $author = $team ? $team->first() : null;
             }
         } catch (\Exception $e) {
-            \Log::error('Error loading team for network data: ' . $e->getMessage());
+            \Log::error('Error loading team for network data: '.$e->getMessage());
             $author = null;
         }
 
@@ -683,7 +679,7 @@ class ProposalsController extends Controller
             'rootNodeType' => $author ? get_class($author) : null,
         ];
 
-        if (!$author) {
+        if (! $author) {
             return $teamConnections;
         }
 
@@ -727,7 +723,7 @@ class ProposalsController extends Controller
                 }
             }
         } catch (\Exception $e) {
-            \Log::error('Error loading team members for network data: ' . $e->getMessage());
+            \Log::error('Error loading team members for network data: '.$e->getMessage());
         }
 
         $teamConnections['links'] = array_values(array_unique(array_map(function ($link) {
@@ -821,7 +817,7 @@ class ProposalsController extends Controller
             'query_params' => $request->query->all(),
         ];
 
-        return 'proposal_metrics_' . md5(json_encode($keyData));
+        return 'proposal_metrics_'.md5(json_encode($keyData));
     }
 
     /**
@@ -830,12 +826,12 @@ class ProposalsController extends Controller
     private function extractRefererParams(Request $request): array
     {
         $referer = $request->headers->get('referer');
-        if (!$referer) {
+        if (! $referer) {
             return [];
         }
 
         $parsedUrl = parse_url($referer);
-        if (!isset($parsedUrl['query'])) {
+        if (! isset($parsedUrl['query'])) {
             return [];
         }
 
@@ -887,7 +883,7 @@ class ProposalsController extends Controller
     {
 
         return Metric::with([
-            'rules' => fn($query) => $query->whereIn('title', $proposalRuleTitles),
+            'rules' => fn ($query) => $query->whereIn('title', $proposalRuleTitles),
         ])
             ->where('type', $chartType)
             ->get();
