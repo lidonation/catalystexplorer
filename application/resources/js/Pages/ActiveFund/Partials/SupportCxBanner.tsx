@@ -53,13 +53,14 @@ export default function SupportCxBanner() {
                                 Our Track Record
                             </Title>
                             <div className='flex flex-row flex-wrap gap-x-4 justify-start'>
-                                <KeyValue className='flex flex-row-reverse flex-wrap items-center justify-between gap-2' valueKey='Devs Onboarded:' value={30} />
-                                <KeyValue className='flex flex-row-reverse flex-wrap items-center justify-between gap-2' valueKey='Opensource Contrib.:' value={5} />
-                                <KeyValue className='flex flex-row-reverse flex-wrap items-center justify-between gap-2' valueKey='Completed Projects:' value={16} />
-                                <KeyValue className='flex flex-row-reverse flex-wrap items-center justify-between gap-2' valueKey='Serving Since Fund:' value={5} />
-                                <KeyValue className='flex flex-row-reverse flex-nowrap items-center justify-between gap-2' valueKey='Catalyst Checkins Iss.:' value='~440' />
-                                <KeyValue className='flex flex-row-reverse flex-nowrap items-center justify-between gap-2' valueKey='Cardano Over Coffee Hours:' value='~740' />
-                                <KeyValue className='flex flex-row-reverse flex-nowrap items-center justify-between gap-2' valueKey='Free API Requests Served:' value='~1,400,000' />
+                                <KeyValue className='flex flex-row-reverse flex-wrap items-center justify-between gap-2' valueKey='Devs Onboarded' value={30} />
+                                <KeyValue className='flex flex-row-reverse flex-wrap items-center justify-between gap-2' valueKey='Opensource Contrib.' value={5} />
+                                <KeyValue className='flex flex-row-reverse flex-wrap items-center justify-between gap-2' valueKey='Completed Projects' value={16} />
+                                <KeyValue className='flex flex-row-reverse flex-wrap items-center justify-between gap-2' valueKey='Serving Since Fund' value={5} />
+                                <KeyValue className='flex flex-row-reverse flex-nowrap items-center justify-between gap-2' valueKey='Catalyst Checkins Iss.' value='~440' />
+                                <KeyValue className='flex flex-row-reverse flex-nowrap items-center justify-between gap-2' valueKey='Cardano Over Coffee Hrs' value='~740' />
+                                <KeyValue className='flex flex-row-reverse flex-nowrap items-center justify-between gap-2' valueKey='Catalyst Spreadsheet Wranngled' value='13' />
+                                <KeyValue className='flex flex-row-reverse flex-nowrap items-center justify-between gap-2' valueKey='Free API Requests Served' value='~1,400,000' />
                             </div>
                         </div>
 
