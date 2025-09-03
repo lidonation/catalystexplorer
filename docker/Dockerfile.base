@@ -53,7 +53,6 @@ RUN apt-get update; \
     apt-utils \
     ca-certificates \
     chromium \
-    curl \
     ffmpeg \
     gifsicle \
     git \
@@ -100,6 +99,7 @@ RUN apt-get update; \
     postgresql-client-17 \
     procps \
     python3 \
+    python3-dev \
     python3-venv \
     python3-launchpadlib \
     supervisor \
@@ -131,12 +131,11 @@ RUN apt-get update; \
     && apt-get install -y nodejs \
     && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /etc/apt/keyrings/yarn.gpg >/dev/null \
     && apt-get update \
-    && npm install -g svgo yarn puppeteer  \
+    && npm install -g svgo yarn puppeteer \
     && apt-get -y autoremove \
     && apt-get clean \
     && docker-php-source delete \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && rm -f /var/log/lastlog /var/log/faillog
 
  # Install chromium
 RUN npx puppeteer browsers install chrome
