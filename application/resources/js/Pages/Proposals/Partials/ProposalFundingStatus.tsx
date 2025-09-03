@@ -1,4 +1,7 @@
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+
 export default function ProposalFundingStatus({ funding_status = 'pending' }) {
+    const { t } = useLaravelReactI18n();
     let bgColor = '';
     let textColor = '';
     let status = '';
@@ -6,23 +9,23 @@ export default function ProposalFundingStatus({ funding_status = 'pending' }) {
     if (funding_status === 'pending') {
         bgColor = '';
         textColor = '';
-        status = 'Pending';
+        status = t('funding.status.pending');
     } else if (funding_status === 'withdrawn') {
         bgColor = '';
         textColor = '';
-        status = 'Withdrawn';
+        status = t('funding.status.withdrawn');
     } else if (funding_status === 'complete') {
         bgColor = 'bg-success-light';
         textColor = 'text-success';
-        status = 'Fully Paid';
+        status = t('funding.status.fullyPaid');
     } else if (funding_status === 'funded') {
         bgColor = 'bg-eye-logo';
         textColor = 'text-primary';
-        status = 'Funded';
+        status = t('funding.status.funded');
     } else if (funding_status === 'leftover') {
         bgColor = 'bg-eye-logo';
         textColor = 'text-primary';
-        status = 'Funded';
+        status = t('funding.status.funded');
     }
     if (
         funding_status === 'not_approved' ||
@@ -31,7 +34,7 @@ export default function ProposalFundingStatus({ funding_status = 'pending' }) {
     ) {
         bgColor = '';
         textColor = '';
-        status = 'Not Funded';
+        status = t('funding.status.notFunded');
     }
 
     return (

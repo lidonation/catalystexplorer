@@ -122,6 +122,7 @@
     "awarded": "Premiado",
     "distributed": "Distribuído",
     "requested": "Solicitado",
+    "received": "Recebido",
     "submitted": "Submetido",
     "funded": "Financiado",
     "approved": "Aprovado",
@@ -1276,5 +1277,15 @@
     "endDate": "Data de Término",
     "startDate": "Data de Início",
     "wallet.login": "Login com Carteira",
-    "wallet.login.confirm": "Estamos prestes a fazer seu login usando sua carteira conectada, a conta vinculada a esta carteira será autenticada. Se nenhuma conta vinculada for encontrada, uma será criada usando seu endereço. Você pode atualizar esta conta no seu painel sob a página 'Meu perfil'.<br><br> <strong>Já tem uma conta?</strong> Faça login usando email e adicione sua carteira para que possa fazer login com carteira ou email."
+    "wallet.login.confirm": "Estamos prestes a fazer seu login usando sua carteira conectada, a conta vinculada a esta carteira será autenticada. Se nenhuma conta vinculada for encontrada, uma será criada usando seu endereço. Você pode atualizar esta conta no seu painel sob a página 'Meu perfil'.<br><br> <strong>Já tem uma conta?</strong> Faça login usando email e adicione sua carteira para que possa fazer login com carteira ou email.",
+    "funding.status.pending": "Pendente",
+    "funding.status.withdrawn": "Retirado",
+    "funding.status.fullyPaid": "Totalmente pago",
+    "funding.status.funded": "Financiado",
+    "funding.status.notFunded": "Não Financiado",
+    "project.status.votePending": "Votação Pendente",
+    "project.status.withdrawn": "Retirado",
+    "project.status.complete": "Completo",
+    "project.status.inProgress": "Em Progresso",
+    "project.status.unfunded": "Não Financiado"
 }
