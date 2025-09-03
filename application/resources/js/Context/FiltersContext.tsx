@@ -189,7 +189,7 @@ export function FiltersProvider({
 
     const getFilters = (filter: FilteredItem) => {
         // Create a new array to avoid mutating the previous state
-        let updatedFilters = updateFilter([...filters], filter);
+        const updatedFilters = updateFilter([...filters], filter);
         // const currentUrl = window.location.origin + window.location.pathname;
         const queryString = new URLSearchParams(
             formatToParams(updatedFilters),

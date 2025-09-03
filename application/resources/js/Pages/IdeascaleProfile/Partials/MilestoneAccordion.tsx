@@ -2,9 +2,9 @@ import Button from '@/Components/atoms/Button';
 import Title from '@/Components/atoms/Title';
 import PercentageProgressBar from '@/Components/PercentageProgressBar';
 import { shortNumber } from '@/utils/shortNumber';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import MilestoneApprovalButtons from './MilestoneApprovalButtons';
 import MilestoneDateProgressBar from './MilestoneDateProgressBar';
 import MilestoneTrackButton from './MilestoneTrackButton';
@@ -72,7 +72,7 @@ const MilestoneAccordion: React.FC<MilestoneAccordionProps> = ({
             {activeMilestones.map((milestone, index) => (
                 <div
                     key={index}
-                    className="border-background-lighter w-full border-t pt-4 px-4"
+                    className="border-background-lighter w-full border-t px-4 pt-4"
                 >
                     <div className="flex w-full items-center justify-between">
                         <div className="flex w-full flex-col gap-4">

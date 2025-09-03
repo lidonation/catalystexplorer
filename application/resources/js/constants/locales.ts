@@ -10,22 +10,20 @@ export const LOCALE_MAPPING = {
 } as const;
 
 export const FRANC_TO_LOCALE_MAP = {
-    'eng': 'en',
-    'spa': 'es',
-    'fra': 'fr',
-    'deu': 'de',
-    'jpn': 'ja',
-    'zho': 'zh',
+    eng: 'en',
+    spa: 'es',
+    fra: 'fr',
+    deu: 'de',
+    jpn: 'ja',
+    zho: 'zh',
 } as const;
 
-
-
-export type SupportedLocale = typeof SUPPORTED_LOCALES[number];
+export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
 // Helper function to get language options for selectors
 export const getLanguageOptions = () => {
-    return SUPPORTED_LOCALES.map(locale => ({
+    return SUPPORTED_LOCALES.map((locale) => ({
         label: LOCALE_MAPPING[locale].native,
-        value: locale
+        value: locale,
     }));
 };

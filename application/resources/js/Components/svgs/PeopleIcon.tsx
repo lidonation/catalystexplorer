@@ -6,7 +6,7 @@ type PeopleIconProps = {
 };
 export default function PeopleIcon({
     className,
-    stroke = "currentColor",
+    stroke = 'currentColor',
     width = 24,
     height = 24,
 }: PeopleIconProps) {

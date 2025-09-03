@@ -1,6 +1,6 @@
 import TickIcon from '@/Components/svgs/TickIcon';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface StepTrackerProps {
     totalSteps: number;
@@ -39,12 +39,13 @@ const StepTracker: React.FC<StepTrackerProps> = ({
                                 className={`flex h-8 w-8 items-center justify-center rounded-full transition-all duration-300 ${stepNumber <= currentStep ? activeColor : inactiveColor} ${stepNumber <= currentStep ? borderActiveColor : `border-2 ${borderInactiveColor}`}`}
                             >
                                 {stepNumber <= currentStep ? (
-                                    <TickIcon width={16} className="text-background"/>
+                                    <TickIcon
+                                        width={16}
+                                        className="text-background"
+                                    />
                                 ) : (
                                     <p
-                                        className={
-                                            `truncate text-xs sm:text-sm ${stepNumber <= currentStep ? activeTextColor : 'text-content'}`
-                                        }
+                                        className={`truncate text-xs sm:text-sm ${stepNumber <= currentStep ? activeTextColor : 'text-content'}`}
                                     >
                                         {String(stepNumber).padStart(2, '0')}
                                     </p>
@@ -54,7 +55,7 @@ const StepTracker: React.FC<StepTrackerProps> = ({
                             <p
                                 className={`mt-2 truncate text-xs sm:text-sm ${stepNumber <= currentStep ? activeTextColor : inactiveTextColor}`}
                             >
-                               {`${t('completedProjectNfts.step')} ${stepNumber}`}
+                                {`${t('completedProjectNfts.step')} ${stepNumber}`}
                             </p>
                         </div>
 

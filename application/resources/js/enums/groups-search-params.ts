@@ -11,5 +11,5 @@ export enum GroupsParamsEnum {
     IDEASCALE_PROFILES = 'ip',
     QUERY = 'q',
     SORTS = 'st',
-    TAGS = 't'
+    TAGS = 't',
 }

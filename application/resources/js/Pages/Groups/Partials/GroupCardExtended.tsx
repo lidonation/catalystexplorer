@@ -6,8 +6,8 @@ import { Segments } from '@/types/segments';
 import { currency } from '@/utils/currency';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import GroupHeroSection from './GroupHeroSection';
 import GroupData = App.DataTransferObjects.GroupData;
 

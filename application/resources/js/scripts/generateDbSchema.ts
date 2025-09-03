@@ -1,15 +1,14 @@
 import fs from 'fs';
-import path from 'path';
+import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const typeTableMap: Record<string, string> = {
-    "proposal_comparisons": 'ProposalData',
-    "user_setting": 'UserSettingData',
-    "key_value_store": 'KeyValueStoreData'
+    proposal_comparisons: 'ProposalData',
+    user_setting: 'UserSettingData',
+    key_value_store: 'KeyValueStoreData',
 };
 
 const inputFile = path.resolve(__dirname, '../../js/types/generated.d.ts');
@@ -29,7 +28,7 @@ while ((match = typeRegex.exec(file)) !== null) {
 
     // Find the matching table name for this type
     const tableEntry = Object.entries(typeTableMap).find(
-        ([, value]) => value === typeName
+        ([, value]) => value === typeName,
     );
 
     if (!tableEntry) continue;

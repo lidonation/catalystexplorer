@@ -1,50 +1,55 @@
-import EditIcon from '@/Components/svgs/EditIcon';
 import Paragraph from '@/Components/atoms/Paragraph';
+import EditIcon from '@/Components/svgs/EditIcon';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ReactNode } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface ProfileFieldProps {
-  label: string;
-  value: string | ReactNode;
-  placeholder?: string;
-  onEdit?: () => void;
-  buttonText?: string;
+    label: string;
+    value: string | ReactNode;
+    placeholder?: string;
+    onEdit?: () => void;
+    buttonText?: string;
 }
 
 export default function ProfileField({
-  label,
-  value,
-  placeholder,
-  onEdit,
-  buttonText
+    label,
+    value,
+    placeholder,
+    onEdit,
+    buttonText,
 }: ProfileFieldProps) {
+    const { t } = useLaravelReactI18n();
 
-  const { t } = useLaravelReactI18n();
+    const hasValue = value !== undefined && value !== null && value !== '';
 
-  const hasValue = value !== undefined && value !== null && value !== '';
-
-  return (
-    <div className="border-t border-background-lighter py-3 transition-colors duration-300 ease-in-out">
-      <div className="flex items-center justify-between">
-        <div className="flex w-full">
-          <div className="text-gray-persist w-1/4">{label}</div>
-          <div className="text-content w-3/4">
-            {hasValue ? value : (
-              <Paragraph className="text-dark">
-                {placeholder || t('users.notProvided')}
-              </Paragraph>
-            )}
-          </div>
+    return (
+        <div className="border-background-lighter border-t py-3 transition-colors duration-300 ease-in-out">
+            <div className="flex items-center justify-between">
+                <div className="flex w-full">
+                    <div className="text-gray-persist w-1/4">{label}</div>
+                    <div className="text-content w-3/4">
+                        {hasValue ? (
+                            value
+                        ) : (
+                            <Paragraph className="text-dark">
+                                {placeholder || t('users.notProvided')}
+                            </Paragraph>
+                        )}
+                    </div>
+                </div>
+                {onEdit && (
+                    <button
+                        className={hasValue ? 'text-primary' : 'text-accent'}
+                        onClick={onEdit}
+                    >
+                        {hasValue ? (
+                            <EditIcon className="text-primary" />
+                        ) : (
+                            buttonText || t('users.add')
+                        )}
+                    </button>
+                )}
+            </div>
         </div>
-        {onEdit && (
-          <button
-            className={hasValue ? 'text-primary' : 'text-accent'}
-            onClick={onEdit}
-          >
-            {hasValue ? <EditIcon className="text-primary" /> : (buttonText || t('users.add'))}
-          </button>
-        )}
-      </div>
-    </div>
-  );
+    );
 }

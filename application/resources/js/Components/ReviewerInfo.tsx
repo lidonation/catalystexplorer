@@ -1,8 +1,8 @@
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import ValueLabel from '@/Components/atoms/ValueLabel';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import Paragraph from './atoms/Paragraph';
 import ReputationBadge from './ReputationBadge';
 import ReviewData = App.DataTransferObjects.ReviewData;
-import ValueLabel from "@/Components/atoms/ValueLabel";
 
 export interface ReviewerInfoProps {
     review: ReviewData;
@@ -17,23 +17,24 @@ export const ReviewerInfo: React.FC<ReviewerInfoProps> = ({
 
     return (
         <div className={`flex items-center gap-1 ${className}`}>
-            <ReputationBadge review={review}/>
+            <ReputationBadge review={review} />
 
             <div className="flex flex-col">
-                {( !!review?.reviewer?.claimed_by) ? (
+                {review?.reviewer?.claimed_by ? (
                     <Paragraph className="text-content text-1 font-bold">
                         {review?.reviewer?.claimed_by?.name}
                     </Paragraph>
                 ) : (
                     <div className="flex items-center gap-2">
                         <ValueLabel>{t('reviews.reviewer')}</ValueLabel>
-                        <Paragraph className="font-bold text-content mr-2">
+                        <Paragraph className="text-content mr-2 font-bold">
                             {review?.reviewer?.catalyst_reviewer_id}
                         </Paragraph>
                     </div>
                 )}
                 <Paragraph className="text-gray-persist text-sm">
-                    {review?.reviewer?.reviews_count ?? '-'} {t('reviews.reviews')}
+                    {review?.reviewer?.reviews_count ?? '-'}{' '}
+                    {t('reviews.reviews')}
                 </Paragraph>
             </div>
         </div>

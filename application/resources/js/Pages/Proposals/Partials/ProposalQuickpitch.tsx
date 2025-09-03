@@ -1,9 +1,9 @@
-'use client'
+'use client';
 import Title from '@/Components/atoms/Title';
 import { PageProps } from '@/types';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import 'plyr-react/plyr.css';
-import React, { useMemo, useState, useEffect, Suspense } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import React, { Suspense, useEffect, useMemo, useState } from 'react';
 
 const Plyr = React.lazy(() => import('plyr-react'));
 
@@ -25,7 +25,6 @@ export default function ProposalQuickpitch({
     const { t } = useLaravelReactI18n();
     const [isClient, setIsClient] = useState(false);
 
-    
     useEffect(() => {
         setIsClient(true);
     }, []);
@@ -43,21 +42,33 @@ export default function ProposalQuickpitch({
     }, [quickpitch]);
 
     const LoadingSpinner = () => (
-        <div className="flex items-center justify-center w-full h-full bg-background">
+        <div className="bg-background flex h-full w-full items-center justify-center">
             <div className="text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+                <div className="border-primary mx-auto mb-2 h-8 w-8 animate-spin rounded-full border-b-2"></div>
             </div>
         </div>
     );
 
     return (
-        <section aria-labelledby="video-heading" className="h-full" data-testid="proposal-quickpitch-section">
-            <Title level='2' id="video-heading" className="sr-only" data-testid="proposal-quickpitch-title">
+        <section
+            aria-labelledby="video-heading"
+            className="h-full"
+            data-testid="proposal-quickpitch-section"
+        >
+            <Title
+                level="2"
+                id="video-heading"
+                className="sr-only"
+                data-testid="proposal-quickpitch-title"
+            >
                 {t('proposals.projectVideo')}
             </Title>
             <div className="relative h-full w-full overflow-hidden rounded-2xl">
                 {videoData.error ? (
-                    <div className="flex h-full items-center justify-center p-4" data-testid="proposal-quickpitch-error">
+                    <div
+                        className="flex h-full items-center justify-center p-4"
+                        data-testid="proposal-quickpitch-error"
+                    >
                         <div className="max-w-lg text-center">
                             <p className="mb-2">{videoData.error}</p>
                             {quickpitch && (
@@ -68,7 +79,8 @@ export default function ProposalQuickpitch({
                         </div>
                     </div>
                 ) : (
-                    videoData.id && isClient && (
+                    videoData.id &&
+                    isClient && (
                         <Suspense fallback={<LoadingSpinner />}>
                             <Plyr
                                 key={videoData.id}

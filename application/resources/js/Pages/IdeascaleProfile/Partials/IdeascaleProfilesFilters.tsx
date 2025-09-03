@@ -3,17 +3,15 @@ import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/atoms/Selector';
 import { useFilterContext } from '@/Context/FiltersContext'; // Import the custom hook
 import { ParamsEnum } from '@/enums/proposal-search-params';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import FundingStatusToggle from './FundingStatusToggle';
 
 export default function IdeascaleProfilesFilters() {
     const { t } = useLaravelReactI18n();
     const { filters, setFilters, getFilter } = useFilterContext();
     const [fundingStatus, setFundingStatus] = useState(
-        getFilter(ParamsEnum.FUNDING_STATUS)?.[0] == 'funded'
-            ? true
-            : false,
+        getFilter(ParamsEnum.FUNDING_STATUS)?.[0] == 'funded' ? true : false,
     );
     const budgetRange = [0, 10000000];
 

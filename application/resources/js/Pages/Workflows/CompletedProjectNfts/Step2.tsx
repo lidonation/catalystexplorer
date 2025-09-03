@@ -1,23 +1,23 @@
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import Paginator from '@/Components/Paginator';
+import { FiltersProvider } from '@/Context/FiltersContext';
 import ProposalList from '@/Pages/CompletedProjectNfts/Partials/ProposalList';
 import ProposalSearchBar from '@/Pages/CompletedProjectNfts/Partials/ProposalSearchBar';
-import { FiltersProvider } from '@/Context/FiltersContext';
 import { StepDetails } from '@/types';
 import { PaginatedData } from '@/types/paginated-data';
+import { SearchParams } from '@/types/search-params';
 import {
     generateLocalizedRoute,
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { router, usePage } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useCallback, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
-import { SearchParams } from '@/types/search-params';
 
 interface Step2Props {
     profiles: Record<number, string>;
@@ -32,7 +32,7 @@ const Step2: React.FC<Step2Props> = ({
     activeStep,
     proposals,
     profiles,
-    filters
+    filters,
 }) => {
     const { t } = useLaravelReactI18n();
     const [selectedProposalHash, setSelectedProposalHash] = useState<
@@ -78,7 +78,7 @@ const Step2: React.FC<Step2Props> = ({
         [activeStep, profiles, locale],
     );
 
-    const profileHash : string = profiles?.[0] || '';
+    const profileHash: string = profiles?.[0] || '';
 
     const filtersWithProfiles = {
         ...filters,

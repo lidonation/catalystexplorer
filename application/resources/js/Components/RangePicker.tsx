@@ -34,10 +34,13 @@ const RangePicker = React.forwardRef<
             onValueChange?.(newValue);
         };
 
-        const currentValue = value ?? localValue??[];
+        const currentValue = value ?? localValue ?? [];
 
         return (
-            <div className="flex flex-col" data-testid={`range-picker-container-${context}`}>
+            <div
+                className="flex flex-col"
+                data-testid={`range-picker-container-${context}`}
+            >
                 <span className="mb-4">{context}</span>
                 <SliderPrimitive.Root
                     ref={ref}
@@ -50,7 +53,10 @@ const RangePicker = React.forwardRef<
                     {...props}
                     data-testid="range-picker-slider"
                 >
-                    <SliderPrimitive.Track className="bg-content-light relative h-2 w-full grow overflow-hidden rounded-full" data-testid="range-picker-track">
+                    <SliderPrimitive.Track
+                        className="bg-content-light relative h-2 w-full grow overflow-hidden rounded-full"
+                        data-testid="range-picker-track"
+                    >
                         <SliderPrimitive.Range className="bg-primary absolute h-full" />
                     </SliderPrimitive.Track>
                     {currentValue &&
@@ -62,7 +68,10 @@ const RangePicker = React.forwardRef<
                             />
                         ))}
                 </SliderPrimitive.Root>
-                <div className="mt-2 flex justify-between text-sm font-bold" data-testid="range-picker-values">
+                <div
+                    className="mt-2 flex justify-between text-sm font-bold"
+                    data-testid="range-picker-values"
+                >
                     <strong>{shortNumber(currentValue?.[0])}</strong>
                     <strong>{shortNumber(currentValue?.[1])}</strong>
                 </div>

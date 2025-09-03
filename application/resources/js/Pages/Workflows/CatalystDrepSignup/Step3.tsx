@@ -1,3 +1,5 @@
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
+import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import SecondaryButton from '@/Components/atoms/SecondaryButton';
 import Image from '@/Components/Image';
@@ -7,16 +9,14 @@ import {
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { router } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 import CatalysDrepData = App.DataTransferObjects.CatalystDrepData;
-import PrimaryButton from '@/Components/atoms/PrimaryButton';
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface SignatureData {
     stake_key?: string;

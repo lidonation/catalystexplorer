@@ -5,10 +5,10 @@ type EditIconProps = {
 };
 
 export default function EditIcon({
-                                     className,
-                                     width = 24,
-                                     height = 24,
-                                 }: EditIconProps) {
+    className,
+    width = 24,
+    height = 24,
+}: EditIconProps) {
     return (
         <svg
             width={width}
@@ -40,12 +40,7 @@ export default function EditIcon({
             />
 
             {/* Small circle in the top-right */}
-            <circle
-                cx="17"
-                cy="7"
-                r="1.5"
-                fill="currentColor"
-            />
+            <circle cx="17" cy="7" r="1.5" fill="currentColor" />
         </svg>
     );
 }

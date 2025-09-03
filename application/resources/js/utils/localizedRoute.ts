@@ -1,5 +1,5 @@
-import {Config, useRoute} from 'ziggy-js';
 import { usePage } from '@inertiajs/react';
+import { Config, useRoute } from 'ziggy-js';
 
 export function useLocalizedRoute(name: string, params?: Record<string, any>) {
     const { locale, ziggy } = usePage().props as any;

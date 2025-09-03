@@ -11,7 +11,10 @@ interface Step1Props {
     onRulesChange?: (rules: string[]) => void;
 }
 
-export default function Step1({ onCompletionChange, onRulesChange }: Step1Props) {
+export default function Step1({
+    onCompletionChange,
+    onRulesChange,
+}: Step1Props) {
     const { t } = useLaravelReactI18n();
     const [rules, setRules] = useState<string[]>([]);
 
@@ -206,7 +209,9 @@ export default function Step1({ onCompletionChange, onRulesChange }: Step1Props)
                     <Checkbox
                         id="in-progress-proposals"
                         value="in_progress"
-                        checked={proposalTypes?.includes('in_progress') || false}
+                        checked={
+                            proposalTypes?.includes('in_progress') || false
+                        }
                         onChange={handleInProgressChange}
                         className="checked:bg-primary"
                         data-testid="in-progress-proposals-checkbox"

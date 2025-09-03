@@ -1,11 +1,17 @@
 import TextInput from '@/Components/atoms/TextInput';
 import useEscapeKey from '@/Hooks/useEscapeKey';
-import React, { useCallback, useEffect, useRef, useState, forwardRef } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { router } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import React, {
+    forwardRef,
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 import Button from './atoms/Button';
 import CloseIcon from './svgs/CloseIcon';
 import SearchLensIcon from './svgs/SearchLensIcon';
-import { router } from '@inertiajs/react';
 
 interface SearchBarProps {
     autoFocus?: boolean;
@@ -15,7 +21,7 @@ interface SearchBarProps {
     initialSearch?: string;
     placeholder?: string;
     border?: string | null;
-    reloadOnClear?:boolean
+    reloadOnClear?: boolean;
 }
 
 const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
@@ -61,7 +67,10 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
         }, [handleSearch]);
 
         return (
-            <div className="w-full rounded-md shadow-sm" data-testid="searchbar-container">
+            <div
+                className="w-full rounded-md shadow-sm"
+                data-testid="searchbar-container"
+            >
                 <label className="relative flex w-full items-center gap-2 pl-0">
                     <div className="absolute left-0 flex h-full w-10 items-center justify-center">
                         <SearchLensIcon width={16} className="text-content" />

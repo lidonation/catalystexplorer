@@ -1,21 +1,20 @@
 import Paragraph from '@/Components/atoms/Paragraph';
-import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
+import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import TextInput from '@/Components/atoms/TextInput';
 import Textarea from '@/Components/atoms/Textarea';
+import ImageFrameIcon from '@/Components/svgs/ImageFrameIcon';
+import { ServiceWorkflowParams } from '@/enums/service-workflow-params';
 import { StepDetails } from '@/types';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
-import { ChevronLeft, ChevronRight, Upload } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
+import { useForm, usePage } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import Content from '../Partials/WorkflowContent';
-import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
-import { useLaravelReactI18n } from "laravel-react-i18n";
 import CategoriesSelector from './Partials/CategoriesSelector';
-import ImageFrameIcon from '@/Components/svgs/ImageFrameIcon';
-import { useForm, usePage } from '@inertiajs/react';
-import { ServiceWorkflowParams } from '@/enums/service-workflow-params';
 
 interface Step1Props {
     stepDetails: StepDetails[];
@@ -49,39 +48,43 @@ interface PageProps {
     [key: string]: any;
 }
 
-const Step1: React.FC<Step1Props> = ({ 
-    stepDetails, 
-    activeStep, 
-    categories, 
+const Step1: React.FC<Step1Props> = ({
+    stepDetails,
+    activeStep,
+    categories,
     serviceHash,
-    serviceData 
+    serviceData,
 }) => {
     const form = useForm({
         [ServiceWorkflowParams.SERVICE_HASH]: serviceHash || '',
         [ServiceWorkflowParams.TYPE]: serviceData?.type || 'offered',
         [ServiceWorkflowParams.TITLE]: serviceData?.title || '',
         [ServiceWorkflowParams.DESCRIPTION]: serviceData?.description || '',
-        [ServiceWorkflowParams.CATEGORIES]: serviceData?.categories?.map(String) || [] as string[],
-        [ServiceWorkflowParams.HEADER_IMAGE]: null as File | null
+        [ServiceWorkflowParams.CATEGORIES]:
+            serviceData?.categories?.map(String) || ([] as string[]),
+        [ServiceWorkflowParams.HEADER_IMAGE]: null as File | null,
     });
 
     const page = usePage<PageProps>();
     const flashErrors = page.props.flash?.error || {};
 
     const [selectedCategories, setSelectedCategories] = useState<string[]>(
-        serviceData?.categories?.map(String) || []
+        serviceData?.categories?.map(String) || [],
     );
     const [headerImage, setHeaderImage] = useState<File | null>(null);
-    const [headerImagePreview, setHeaderImagePreview] = useState<string | null>(null);
+    const [headerImagePreview, setHeaderImagePreview] = useState<string | null>(
+        null,
+    );
     const [isFormValid, setIsFormValid] = useState(false);
 
     const { t } = useLaravelReactI18n();
 
-    const prevStep = activeStep === 1
-        ? ''
-        : generateLocalizedRoute('workflows.createService.index', {
-            step: activeStep - 1,
-        });
+    const prevStep =
+        activeStep === 1
+            ? ''
+            : generateLocalizedRoute('workflows.createService.index', {
+                  step: activeStep - 1,
+              });
 
     useEffect(() => {
         validateForm();
@@ -90,8 +93,8 @@ const Step1: React.FC<Step1Props> = ({
     const validateForm = () => {
         setIsFormValid(
             !!form.data[ServiceWorkflowParams.TITLE].trim() &&
-            !!form.data[ServiceWorkflowParams.DESCRIPTION].trim() &&
-            selectedCategories.length > 0
+                !!form.data[ServiceWorkflowParams.DESCRIPTION].trim() &&
+                selectedCategories.length > 0,
         );
     };
 
@@ -113,7 +116,7 @@ const Step1: React.FC<Step1Props> = ({
         if (file) {
             setHeaderImage(file);
             form.setData(ServiceWorkflowParams.HEADER_IMAGE, file);
-            
+
             const reader = new FileReader();
             reader.onload = (e) => {
                 setHeaderImagePreview(e.target?.result as string);
@@ -121,18 +124,20 @@ const Step1: React.FC<Step1Props> = ({
             reader.readAsDataURL(file);
         }
     };
-    
+
     const submitForm = () => {
         form.post(
-            generateLocalizedRoute('workflows.createService.saveServiceDetails'),
+            generateLocalizedRoute(
+                'workflows.createService.saveServiceDetails',
+            ),
             {
-            onSuccess: (page) => {
-                //
+                onSuccess: (page) => {
+                    //
+                },
+                onError: (errors) => {
+                    //
+                },
             },
-           onError: (errors) => {
-               //
-            },    
-            }
         );
     };
 

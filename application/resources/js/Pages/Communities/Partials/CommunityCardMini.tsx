@@ -1,19 +1,18 @@
-import PrimaryLink from '@/Components/atoms/PrimaryLink';
+import Button from '@/Components/atoms/Button';
+import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import Value from '@/Components/atoms/Value';
+import ValueLabel from '@/Components/atoms/ValueLabel';
 import Card from '@/Components/Card';
 import Divider from '@/Components/Divider';
 import RichContent from '@/Components/RichContent';
 import CommunitiesIcon from '@/Components/svgs/CommunitiesSvg';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
-import { Link, router, usePage } from '@inertiajs/react';
-import React, { useState, useEffect } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import CommunityData = App.DataTransferObjects.CommunityData;
-import ValueLabel from '@/Components/atoms/ValueLabel';
-import Paragraph from '@/Components/atoms/Paragraph';
 import { truncateEnd } from '@/utils/truncateEnd';
-import Button from '@/Components/atoms/Button';
+import { Link, router, usePage } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import React, { useEffect, useState } from 'react';
+import CommunityData = App.DataTransferObjects.CommunityData;
 
 interface CommunityCardMiniProps {
     community: CommunityData & { is_member?: boolean };
@@ -22,18 +21,19 @@ interface CommunityCardMiniProps {
 }
 
 const CommunityCardMini: React.FC<CommunityCardMiniProps> = ({
-                                                                 community,
-                                                                 embedded = true,
-                                                                 isMember,
-                                                             }) => {
+    community,
+    embedded = true,
+    isMember,
+}) => {
     const { t } = useLaravelReactI18n();
     const { props } = usePage<{ isMember?: boolean }>();
 
-    const initialMemberStatus = isMember !== undefined
-        ? isMember
-        : (community.is_member !== undefined
-            ? community.is_member
-            : (props.isMember || false));
+    const initialMemberStatus =
+        isMember !== undefined
+            ? isMember
+            : community.is_member !== undefined
+              ? community.is_member
+              : props.isMember || false;
 
     const [joined, setJoined] = useState(initialMemberStatus);
     const [isLoading, setIsLoading] = useState(false);
@@ -58,16 +58,20 @@ const CommunityCardMini: React.FC<CommunityCardMiniProps> = ({
         setIsLoading(true);
 
         try {
-            await router.post(joinUrl, {}, {
-                preserveScroll: true,
-                onSuccess: () => {
-                    setJoined(true);
-                    setIsLoading(false);
+            await router.post(
+                joinUrl,
+                {},
+                {
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        setJoined(true);
+                        setIsLoading(false);
+                    },
+                    onError: () => {
+                        setIsLoading(false);
+                    },
                 },
-                onError: () => {
-                    setIsLoading(false);
-                }
-            });
+            );
         } catch (error) {
             setIsLoading(false);
             console.error('Error joining community:', error);
@@ -76,17 +80,23 @@ const CommunityCardMini: React.FC<CommunityCardMiniProps> = ({
 
     return (
         <Card className="border-border-dark-on-dark flex-1 justify-between overflow-hidden border">
-            <div className="self-stretch inline-flex justify-between items-center">
-                <div className="flex justify-start items-center gap-2">
+            <div className="inline-flex items-center justify-between self-stretch">
+                <div className="flex items-center justify-start gap-2">
                     <CommunitiesIcon className="text-dark h-4 w-3.5" />
                     <div className="flex gap-2">
-                        <ValueLabel className="text-sm text-content">Members: </ValueLabel>
-                        <Value className="text-content font-semibold text-sm">{community.users_count}</Value>
+                        <ValueLabel className="text-content text-sm">
+                            Members:{' '}
+                        </ValueLabel>
+                        <Value className="text-content text-sm font-semibold">
+                            {community.users_count}
+                        </Value>
                     </div>
                 </div>
-                <div className="flex justify-center items-center gap-2 flex-wrap content-center">
-                    <div className="px-2 py-2 bg-background-darker rounded flex justify-center items-center">
-                        <Paragraph className="justify-start text-gray-persist text-sm">Published</Paragraph>
+                <div className="flex flex-wrap content-center items-center justify-center gap-2">
+                    <div className="bg-background-darker flex items-center justify-center rounded px-2 py-2">
+                        <Paragraph className="text-gray-persist justify-start text-sm">
+                            Published
+                        </Paragraph>
                     </div>
                 </div>
             </div>
@@ -116,20 +126,20 @@ const CommunityCardMini: React.FC<CommunityCardMiniProps> = ({
 
                     <div className="align-center flex justify-center py-4">
                         {joined ? (
-                            <div className="px-4 py-2 bg-background-darker text-gray-persist border border-dark rounded-xl font-medium cursor-default">
+                            <div className="bg-background-darker text-gray-persist border-dark cursor-default rounded-xl border px-4 py-2 font-medium">
                                 {t('Joined')}
                             </div>
                         ) : (
                             <Button
                                 onClick={handleJoinCommunity}
                                 disabled={isLoading}
-                                className={`px-4 py-2 gap-2 flex rounded-xl font-medium transition-colors ${
+                                className={`flex gap-2 rounded-xl px-4 py-2 font-medium transition-colors ${
                                     isLoading
                                         ? 'bg-gray-persist text-content cursor-not-allowed'
                                         : 'bg-primary hover:bg-primary-dark text-light-persist cursor-pointer'
                                 }`}
                             >
-                                <CommunitiesIcon className="pt-1 text-light-persist h-4 w-3.5" />
+                                <CommunitiesIcon className="text-light-persist h-4 w-3.5 pt-1" />
                                 {isLoading ? t('Joining...') : t('Join')}
                             </Button>
                         )}

@@ -9,11 +9,11 @@ import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Head } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useState } from 'react';
 import DrepFilters from './Partials/DrepFilters';
 import DrepTable from './Partials/DrepTable';
 import CatalystDrepData = App.DataTransferObjects.CatalystDrepData;
-import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 interface DrepListPageProps extends Record<string, unknown> {
     filters: SearchParams;
@@ -46,7 +46,7 @@ const Index = ({
 
                 <section className="container py-8">
                     <div className="bg-background w-full rounded-md p-4 shadow-xs">
-                        <div className="flex flex-col md:flex-row gap-4 w-full justify-between py-4">
+                        <div className="flex w-full flex-col justify-between gap-4 py-4 md:flex-row">
                             <Title level="4">{t('dreps.dreps')}</Title>
                             <PrimaryLink
                                 className="bg-primary text-content-light cursor-pointer p-2 text-white"
@@ -88,7 +88,7 @@ const Index = ({
 
                         <div className="bg-background-lighter rounded-b-lg p-4 shadow-md">
                             {catalystDreps && (
-                                <Paginator pagination={catalystDreps } />
+                                <Paginator pagination={catalystDreps} />
                             )}
                         </div>
                     </div>

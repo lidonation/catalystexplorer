@@ -1,6 +1,6 @@
 import { Head } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import Paragraph from './atoms/Paragraph';
 import ProgressBar from './PercentageProgressBar';
 import StarIcon from './svgs/StarIcon';
@@ -67,16 +67,16 @@ const AggregatedReviewsSummary: React.FC<AggregatedReviewsSummaryPageProps> = ({
                         </Paragraph>
                     </div>
                     <div className="col-span-4 flex items-center justify-center p-4 text-white">
-
                         <div className="flex w-full flex-col gap-4">
                             {Object.entries(aggregatedRatings || {})
                                 .sort(([a], [b]) => Number(b) - Number(a))
                                 .filter(([_, count]) => count > 0)
                                 .map(([rating, count]) => {
-
-                                    const totalRatings = Object.values(aggregatedRatings || {}).reduce(
+                                    const totalRatings = Object.values(
+                                        aggregatedRatings || {},
+                                    ).reduce(
                                         (sum, count) => sum + (count as number),
-                                        0
+                                        0,
                                     );
 
                                     return (
@@ -89,7 +89,11 @@ const AggregatedReviewsSummary: React.FC<AggregatedReviewsSummaryPageProps> = ({
                                                     primaryBackgroundColor="bg-gray-persist/30"
                                                     secondaryBackgroudColor="bg-primary/80"
                                                     value={count}
-                                                    total={totalRatings > 0 ? totalRatings : 1}
+                                                    total={
+                                                        totalRatings > 0
+                                                            ? totalRatings
+                                                            : 1
+                                                    }
                                                 />
                                             </div>
                                             <div className="flex items-center justify-center gap-2">
@@ -100,7 +104,7 @@ const AggregatedReviewsSummary: React.FC<AggregatedReviewsSummaryPageProps> = ({
                                                 />
                                                 <Paragraph
                                                     size="lg"
-                                                    className="font-bold text-content"
+                                                    className="text-content font-bold"
                                                 >
                                                     {rating}
                                                 </Paragraph>
@@ -109,7 +113,6 @@ const AggregatedReviewsSummary: React.FC<AggregatedReviewsSummaryPageProps> = ({
                                     );
                                 })}
                         </div>
-
                     </div>
                 </div>
             </div>

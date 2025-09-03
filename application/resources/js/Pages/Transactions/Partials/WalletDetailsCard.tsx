@@ -1,9 +1,9 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import { adaFormat } from '@/utils/adaFormat';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import DetailRow from './DetailRow';
 import TransactionData = App.DataTransferObjects.TransactionData;
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface WalletDetailsCardProps {
     transaction?: TransactionData;

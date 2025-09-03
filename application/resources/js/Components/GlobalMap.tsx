@@ -3,7 +3,8 @@ import { useThemeContext } from '@/Context/ThemeContext';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import Map, { Layer, Marker, Source } from 'react-map-gl';
+import { Map, Layer, Marker, Source } from 'react-map-gl/mapbox';
+import type { MapProps } from 'react-map-gl/mapbox';
 
 // Define the type for map points
 interface MapPoint {
@@ -49,7 +50,7 @@ const GlobalMap: React.FC<GlobalMapProps> = ({ points }) => {
     return (
         <div className={`h-[700px] w-full`}>
             <Map
-                ref={(ref) => (mapRef.current = ref?.getMap() ?? null)}
+                ref={(ref: any) => (mapRef.current = ref?.getMap() ?? null)}
                 // 🔑 Basic configuration
                 mapboxAccessToken={config.mapboxAccessToken}
                 mapStyle={
@@ -104,7 +105,7 @@ const GlobalMap: React.FC<GlobalMapProps> = ({ points }) => {
                 onLoad={() => setIsLoaded(true)}
                 // 🔄 Performance optimizations
                 trackResize={config?.trackResize ?? true} // Auto-adjust size on window resize
-                optimizeForTerrain={true} // Optimize rendering for terrain
+                // optimizeForTerrain removed in react-map-gl v8
             >
                 {/* 3D Buildings Layer */}
                 {isLoaded && show3DBuildings && (

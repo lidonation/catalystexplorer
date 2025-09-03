@@ -1,14 +1,14 @@
+import Button from '@/Components/atoms/Button';
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
+import Paragraph from '@/Components/atoms/Paragraph';
 import TextInput from '@/Components/atoms/TextInput';
 import InputError from '@/Components/InputError';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
-import { Link, router, useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { FormEventHandler, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import PrimaryButton from '../../../Components/atoms/PrimaryButton';
 import InputLabel from '../../../Components/InputLabel';
-import Button from '@/Components/atoms/Button';
-import Paragraph from '@/Components/atoms/Paragraph';
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface FormErrors {
     name?: string;
@@ -97,12 +97,19 @@ export default function RegisterForm({ closeModal }: RegisterFormProps) {
     };
 
     return (
-        <form onSubmit={submit} className="content-gap flex flex-col w-full p-4" data-testid="register-form">
-            
-            <ErrorDisplay/>
+        <form
+            onSubmit={submit}
+            className="content-gap flex w-full flex-col p-4"
+            data-testid="register-form"
+        >
+            <ErrorDisplay />
 
             <div>
-                <InputLabel htmlFor="name" value={t('name')} data-testid="name-input-label"/>
+                <InputLabel
+                    htmlFor="name"
+                    value={t('name')}
+                    data-testid="name-input-label"
+                />
 
                 <TextInput
                     id="name"
@@ -116,11 +123,19 @@ export default function RegisterForm({ closeModal }: RegisterFormProps) {
                     data-testid="name-input"
                 />
 
-                <InputError message={errors?.name} className="mt-2" data-testid="name-error-text"/>
+                <InputError
+                    message={errors?.name}
+                    className="mt-2"
+                    data-testid="name-error-text"
+                />
             </div>
 
             <div>
-                <InputLabel htmlFor="email" value={t('email')} data-testid="email-input-label"/>
+                <InputLabel
+                    htmlFor="email"
+                    value={t('email')}
+                    data-testid="email-input-label"
+                />
 
                 <TextInput
                     id="email"
@@ -134,11 +149,19 @@ export default function RegisterForm({ closeModal }: RegisterFormProps) {
                     data-testid="email-input"
                 />
 
-                <InputError message={errors?.email} className="mt-2" data-testid="email-error-text"/>
+                <InputError
+                    message={errors?.email}
+                    className="mt-2"
+                    data-testid="email-error-text"
+                />
             </div>
 
             <div>
-                <InputLabel htmlFor="password" value={t('password')} data-testid="password-input-label"/>
+                <InputLabel
+                    htmlFor="password"
+                    value={t('password')}
+                    data-testid="password-input-label"
+                />
 
                 <TextInput
                     id="password"
@@ -154,7 +177,11 @@ export default function RegisterForm({ closeModal }: RegisterFormProps) {
                 <Paragraph className="text-4 text-dark mt-1">
                     {t('registration.passwordCharacters')}
                 </Paragraph>
-                <InputError message={errors?.password} className="mt-2" data-testid="password-error-text"/>
+                <InputError
+                    message={errors?.password}
+                    className="mt-2"
+                    data-testid="password-error-text"
+                />
             </div>
 
             <div>
@@ -196,8 +223,13 @@ export default function RegisterForm({ closeModal }: RegisterFormProps) {
                 </PrimaryButton>
             </div>
 
-            <div className="flex w-full items-center justify-center" data-testid="register-already-registered">
-                <Paragraph className="mr-2">{t('registration.alreadyRegistered')}</Paragraph>
+            <div
+                className="flex w-full items-center justify-center"
+                data-testid="register-already-registered"
+            >
+                <Paragraph className="mr-2">
+                    {t('registration.alreadyRegistered')}
+                </Paragraph>
                 <Button
                     type="button"
                     onClick={handleLoginClick}

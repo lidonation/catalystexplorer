@@ -28,7 +28,7 @@ export enum ParamsEnum {
     IDEASCALE_PROFILES = 'ip',
     PROJECT_STATUS = 'ps',
     REVIEWER_IDS = 'ri',
-    RATINGS = 'r', 
+    RATINGS = 'r',
     REPUTATION_SCORES = 'rs',
     HELPFUL = 'h',
     QUERY = 'q',
@@ -41,5 +41,5 @@ export enum ParamsEnum {
     VOTING_POWER = 'vp',
     TREND_CHART = 'tch',
     CHART_OPTIONS = 'co',
-    TRANSACTION_TYPE = 'tt'
+    TRANSACTION_TYPE = 'tt',
 }

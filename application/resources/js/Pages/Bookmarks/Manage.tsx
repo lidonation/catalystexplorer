@@ -9,24 +9,26 @@ import { FiltersProvider } from '@/Context/FiltersContext';
 import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 import EventBus from '@/utils/eventBus';
-import { generateLocalizedRoute } from '@/utils/localizedRoute';
-import { Head, Link, router } from '@inertiajs/react';
+import {
+    generateLocalizedRoute,
+    useLocalizedRoute,
+} from '@/utils/localizedRoute';
+import { Head, router } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import CommunitiesPaginatedList from '../Communities/Partials/CommunitiesPaginatedList';
 import GroupPaginatedList from '../Groups/Partials/GroupPaginatedList';
 import IdeascaleProfilePaginatedList from '../IdeascaleProfile/Partials/IdeascaleProfilePaginatedList';
 import ProposalPaginatedList from '../Proposals/Partials/ProposalPaginatedList';
 import BookmarkModelSearch from './Partials/BookmarkModelSearch';
-import EditListForm, { ListForm } from './Partials/EditListForm';
 import DropdownMenu, { DropdownMenuItem } from './Partials/DropdownMenu';
+import EditListForm, { ListForm } from './Partials/EditListForm';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import CommunityData = App.DataTransferObjects.CommunityData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import GroupData = App.DataTransferObjects.GroupData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ReviewData = App.DataTransferObjects.ReviewData;
-import { useLocalizedRoute } from '@/utils/localizedRoute';
 
 type BookmarkCollectionListProps =
     | {
@@ -106,22 +108,25 @@ const Manage = (props: BookmarkCollectionListProps) => {
             }),
             onClick: () => {
                 // Handle navigation if needed
-            }
+            },
         },
         {
             label: t('bookmarks.editListItem'),
             type: 'button',
             onClick: () => {
                 setActiveEditModal(true);
-            }
+            },
         },
         {
             label: t('bookmarks.publishToIpfs'),
             type: 'link',
-            href: hasItems && isVoterList ? useLocalizedRoute('workflows.publishToIpfs.index', {
-                step: 1,
-                bookmarkHash: bookmarkCollection.id
-            }) : undefined,
+            href:
+                hasItems && isVoterList
+                    ? useLocalizedRoute('workflows.publishToIpfs.index', {
+                          step: 1,
+                          bookmarkHash: bookmarkCollection.id,
+                      })
+                    : undefined,
             disabled: !hasItems || !isVoterList,
             disabledTooltip: getPublishToIpfsTooltip(),
             onClick: () => {
@@ -129,8 +134,8 @@ const Manage = (props: BookmarkCollectionListProps) => {
                     return;
                 }
                 // Navigation is handled by the href
-            }
-        }
+            },
+        },
     ];
 
     const handleUpdate = (form: ListForm) => {
@@ -207,9 +212,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
                 };
             case 'communities':
                 return {
-                    communities: props.communities.data.map(
-                        (item) => item.id,
-                    ),
+                    communities: props.communities.data.map((item) => item.id),
                 };
             case 'groups':
                 return { groups: props.groups.data.map((item) => item.id) };
@@ -231,9 +234,7 @@ const Manage = (props: BookmarkCollectionListProps) => {
             <Head title={t('bookmarks.listTitle')} />
 
             <header className="container mt-4 flex flex-col items-start lg:mt-6">
-                <Title level="1">
-                    {bookmarkCollection.title ?? ''}
-                </Title>
+                <Title level="1">{bookmarkCollection.title ?? ''}</Title>
                 <p className="text-content">
                     {t(bookmarkCollection.content ?? '')}
                 </p>
@@ -288,7 +289,6 @@ const Manage = (props: BookmarkCollectionListProps) => {
                 isOpen={!!activeEditModal}
                 onClose={() => setActiveEditModal(false)}
                 logo={false}
-
             >
                 <EditListForm
                     bookmarkCollection={bookmarkCollection}

@@ -1,17 +1,16 @@
+import Title from '@/Components/atoms/Title';
+import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import {
     SearchResultCounts,
     SearchResultData,
     TabConfig,
 } from '@/types/search';
 import { Head, WhenVisible } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useRef, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import DynamicSearchResults, {
-} from './Partials/DynamicSearchResults';
-import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import DynamicSearchResults from './Partials/DynamicSearchResults';
 import ResultTabs from './Partials/ResultTabs';
 import SearchResultsLoading from './Partials/SearchResultsLoading';
-import Title from '@/Components/atoms/Title';
 
 interface SearchResultsProps extends SearchResultData {
     counts: SearchResultCounts;
@@ -123,7 +122,7 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
 
     if (TAB_CONFIG.length === 0) {
         return (
-            <div className="w-full py-8 px-4">
+            <div className="w-full px-4 py-8">
                 <RecordsNotFound context="search" />
                 {/* <EmptyState query={query as string} translation={t} /> */}
             </div>
@@ -137,7 +136,7 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
                 <div className="sticky top-0 z-50 backdrop-blur-md">
                     <div className="w-full px-4 py-4">
                         <div className="mb-4 flex w-full flex-col">
-                            <Title level='3'>
+                            <Title level="3">
                                 {t('searchResults.results.title')}
                             </Title>
                         </div>
@@ -150,11 +149,11 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
                     </div>
                 </div>
 
-                <div className="w-full flex flex-col gap-16 scroll-smooth py-8 px-4">
+                <div className="flex w-full flex-col gap-16 scroll-smooth px-4 py-8">
                     {TAB_CONFIG.map((tab) => (
                         <section
                             key={tab.name}
-                            className="min-h-screen scroll-mt-[120px] w-full"
+                            className="min-h-screen w-full scroll-mt-[120px]"
                             id={`section-${tab.name}`}
                         >
                             <WhenVisible
@@ -162,12 +161,16 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
                                 fallback={
                                     <SearchResultsLoading
                                         type={tab.name}
-                                        count={counts[tab.name as keyof SearchResultCounts] || 0}
+                                        count={
+                                            counts[
+                                                tab.name as keyof SearchResultCounts
+                                            ] || 0
+                                        }
                                         // count={5}
                                     />
                                 }
                             >
-                                <div className="flex flex-col gap-2 w-full">
+                                <div className="flex w-full flex-col gap-2">
                                     <DynamicSearchResults
                                         name={tab.name}
                                         data={results[tab.name] as any}

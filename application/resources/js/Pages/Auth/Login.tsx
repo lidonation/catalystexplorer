@@ -1,6 +1,6 @@
+import AuthLayout from '@/Components/layout/AuthLayout';
 import { Head } from '@inertiajs/react';
 import LoginForm from './Partials/LoginForm';
-import AuthLayout from '@/Components/layout/AuthLayout';
 
 export default function Login({}: {
     status?: string;

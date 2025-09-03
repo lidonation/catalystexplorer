@@ -48,10 +48,7 @@ const DrepSignupForm = forwardRef<DrepSignupFormHandles, DrepSignupFormProps>(
     ({ setIsValid, form, savedLocale }, ref) => {
         const typedForm = form as InertiaFormProps<DrepSignupFormFields>;
         const { data } = typedForm;
-        const setData = typedForm.setData as (
-            field: keyof DrepSignupFormFields,
-            value: any,
-        ) => void;
+        const setData = typedForm.setData as any;
         const errors = typedForm.errors as Partial<
             Record<keyof DrepSignupFormFields, string>
         >;

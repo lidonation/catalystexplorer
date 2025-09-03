@@ -4,7 +4,10 @@ const FundCardLoader = () => {
     return (
         <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {fundCards.map((index) => (
-                <div className="w-full rounded-lg bg-background p-4 sm:p-6 shadow-xs flex flex-col sm:flex-row gap-6 sm:gap-8" key={index}>
+                <div
+                    className="bg-background flex w-full flex-col gap-6 rounded-lg p-4 shadow-xs sm:flex-row sm:gap-8 sm:p-6"
+                    key={index}
+                >
                     {/* Left Section: Avatar and Title Skeleton */}
                     <div className="flex max-w-[200px] min-w-[120px] flex-none flex-col items-center space-y-4 sm:w-1/3 sm:items-start sm:space-y-0">
                         {/* Title Skeleton */}

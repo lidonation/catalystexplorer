@@ -1,7 +1,7 @@
-import React from "react";
-import { Link } from "@inertiajs/react";
-import { useFilterContext } from "@/Context/FiltersContext";
-import { ParamsEnum } from "@/enums/proposal-search-params";
+import { useFilterContext } from '@/Context/FiltersContext';
+import { ParamsEnum } from '@/enums/proposal-search-params';
+import { Link } from '@inertiajs/react';
+import React from 'react';
 
 interface BookmarkNavigationProps {
     counts: Record<string, number>;
@@ -15,13 +15,13 @@ interface BookmarkNavigationProps {
 }
 
 const BookmarkNavigation: React.FC<BookmarkNavigationProps> = ({
-    activeType, 
+    activeType,
     onTypeChange,
     proposals = [],
     people = [],
     groups = [],
     reviews = [],
-    isSticky = false
+    isSticky = false,
 }) => {
     const { getFilter } = useFilterContext();
     const searchQuery = getFilter(ParamsEnum.QUERY) || '';
@@ -29,35 +29,36 @@ const BookmarkNavigation: React.FC<BookmarkNavigationProps> = ({
     const filterItems = (items: any[], fields: string[]) => {
         if (!searchQuery) return items;
 
-        return items.filter(item => {
+        return items.filter((item) => {
             if (!item) return false;
-            return fields.some(field => 
-                item[field]?.toLowerCase().includes(searchQuery.toLowerCase())
+            return fields.some((field) =>
+                item[field]?.toLowerCase().includes(searchQuery.toLowerCase()),
             );
         });
     };
 
     const modelTypes = [
-        { 
-            name: 'Proposals', 
-            type: 'proposals', 
-            count: filterItems(proposals, ['title', 'description', 'challenge']).length 
+        {
+            name: 'Proposals',
+            type: 'proposals',
+            count: filterItems(proposals, ['title', 'description', 'challenge'])
+                .length,
         },
-        { 
-            name: 'People', 
-            type: 'people', 
-            count: filterItems(people, ['name', 'email']).length 
+        {
+            name: 'People',
+            type: 'people',
+            count: filterItems(people, ['name', 'email']).length,
         },
-        { 
-            name: 'Groups', 
-            type: 'groups', 
-            count: filterItems(groups, ['name', 'description']).length 
+        {
+            name: 'Groups',
+            type: 'groups',
+            count: filterItems(groups, ['name', 'description']).length,
         },
-        { 
-            name: 'Reviews', 
-            type: 'reviews', 
-            count: filterItems(reviews, ['title', 'content']).length 
-        }
+        {
+            name: 'Reviews',
+            type: 'reviews',
+            count: filterItems(reviews, ['title', 'content']).length,
+        },
     ];
 
     const handleTabClick = (type: string) => {
@@ -65,7 +66,9 @@ const BookmarkNavigation: React.FC<BookmarkNavigationProps> = ({
     };
 
     return (
-        <nav className={`border-b border-gray-200 ${isSticky ? 'fixed top-0 left-0 right-0 z-10 bg-background' : ''}`}>
+        <nav
+            className={`border-b border-gray-200 ${isSticky ? 'bg-background fixed top-0 right-0 left-0 z-10' : ''}`}
+        >
             <div className="flex space-x-8">
                 {modelTypes.map(({ name, type, count }) => (
                     <Link
@@ -74,25 +77,25 @@ const BookmarkNavigation: React.FC<BookmarkNavigationProps> = ({
                         onClick={() => handleTabClick(type)}
                         preserveState
                         preserveScroll
-                        className={`group flex items-center gap-2 py-2 outline-hidden transition-colors hover:text-content-dark ${
-                        activeType === type &&
-                        '-mb-px border-b-2 border-b-primary text-primary'
+                        className={`group hover:text-content-dark flex items-center gap-2 py-2 outline-hidden transition-colors ${
+                            activeType === type &&
+                            'border-b-primary text-primary -mb-px border-b-2'
                         }`}
                     >
                         {name}
                         <span
-                        className={`flex min-w-[2em] items-center justify-center rounded-full border px-2 py-0.5 text-sm transition-all ${
-                            activeType === type &&
-                            'border-primary bg-blue-50'
-                        }`}
+                            className={`flex min-w-[2em] items-center justify-center rounded-full border px-2 py-0.5 text-sm transition-all ${
+                                activeType === type &&
+                                'border-primary bg-blue-50'
+                            }`}
                         >
-                        {count}
+                            {count}
                         </span>
                     </Link>
                 ))}
             </div>
         </nav>
-    )
-}
+    );
+};
 
 export default BookmarkNavigation;

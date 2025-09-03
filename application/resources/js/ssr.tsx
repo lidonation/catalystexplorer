@@ -1,12 +1,12 @@
-import {createInertiaApp, usePage} from "@inertiajs/react";
-import {resolvePageComponent} from "laravel-vite-plugin/inertia-helpers";
-import AppLayout from "./Layouts/AppLayout.js";
+import { createInertiaApp, usePage } from '@inertiajs/react';
 import createServer from '@inertiajs/react/server';
-import {initFromPageProps, ModalStackProvider} from "@inertiaui/modal-react";
-import {StrictMode} from "react";
-import ReactDOMServer from "react-dom/server";
-import {LaravelReactI18nProvider} from "laravel-react-i18n";
-import { RouteContext } from "./Hooks/useRoute.js";
+import { initFromPageProps, ModalStackProvider } from '@inertiaui/modal-react';
+import { LaravelReactI18nProvider } from 'laravel-react-i18n';
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+import { StrictMode } from 'react';
+import ReactDOMServer from 'react-dom/server';
+import { RouteContext } from './Hooks/useRoute.js';
+import AppLayout from './Layouts/AppLayout.js';
 
 const appName = import.meta.env.VITE_APP_NAME || 'CatalystExplorer';
 
@@ -20,20 +20,25 @@ createServer(async (page) => {
             const page = resolvePageComponent(
                 `./Pages/${name}.tsx`,
                 // @ts-ignore
-                import.meta.glob('./Pages/**/*.tsx', {eager: true}),
+                import.meta.glob('./Pages/**/*.tsx', { eager: true }),
             );
 
             page.then((module: any) => {
                 module.default.layout =
                     module.default.layout ||
-                    ((module: any) => <AppLayout children={module}/>);
+                    ((module: any) => <AppLayout children={module} />);
             });
             return page;
         },
-        setup({App, props}) {
+        setup({ App, props }) {
             initFromPageProps(props);
 
-            const ssrRoute = (name: any, params: any, absolute: any, config: any) => {
+            const ssrRoute = (
+                name: any,
+                params: any,
+                absolute: any,
+                config: any,
+            ) => {
                 return route(name, params, absolute, {
                     ...(page.props as any).ziggy,
                     ...config,
@@ -41,8 +46,8 @@ createServer(async (page) => {
                 });
             };
 
-                const { locale } = usePage().props as any;
-            
+            const { locale } = usePage().props as any;
+
             return (
                 <RouteContext.Provider value={ssrRoute as any}>
                     <LaravelReactI18nProvider
@@ -64,5 +69,5 @@ createServer(async (page) => {
         progress: {
             color: '#2596be',
         },
-    }).then()
+    }).then();
 });

@@ -5,8 +5,8 @@ import { copyToClipboard } from '@/utils/copyClipboard';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { truncateMiddle } from '@/utils/truncateMiddle';
 import { Head, Link } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronLeft, CopyIcon } from 'lucide-react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import DetailRow from './Partials/DetailRow';
 import MetadataCard from './Partials/MetadataCard';
 import TransactionDetailsCard from './Partials/TransactionDetailsCard';
@@ -35,7 +35,10 @@ export default function TransactionDetail({
             <header className="mt-10">
                 <div className="container mx-auto">
                     <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-4">
-                        <Title level="1" className="text-content lg:text-4xl  text-3xl">
+                        <Title
+                            level="1"
+                            className="text-content text-3xl lg:text-4xl"
+                        >
                             {t('transactions.message')}
                         </Title>
                         <div className="inline-block">
@@ -125,7 +128,8 @@ export default function TransactionDetail({
                                         '-',
                                     catId:
                                         transaction?.json_metadata
-                                            ?.voter_delegations?.[0]?.catId ?? '-',
+                                            ?.voter_delegations?.[0]?.catId ??
+                                        '-',
                                 },
                             )}
                         >

@@ -1,16 +1,16 @@
-import { useLocalizedRoute } from '@/utils/localizedRoute';
-import { ChevronLeft } from 'lucide-react';
-import React from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import Title from '@/Components/atoms/Title';
+import { SubmitIcon } from '@/Components/svgs/SubmitIcon';
+import { StepDetails } from '@/types';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { ChevronLeft } from 'lucide-react';
+import React from 'react';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
-import { SubmitIcon } from '@/Components/svgs/SubmitIcon';
-import { StepDetails } from '@/types';
 
 interface Step8Props {
     stepDetails: StepDetails[];

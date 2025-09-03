@@ -1,8 +1,8 @@
 import Image from '@/Components/Image';
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 import capitalizeFirstLetter from '@/utils/caps';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { Loader2 } from 'lucide-react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import Button from './atoms/Button';
 import Paragraph from './atoms/Paragraph';
 import Title from './atoms/Title';
@@ -24,7 +24,7 @@ const ConnectWalletList = () => {
         connectWallet(walletName);
     };
     return (
-        <div className="mx-auto flex  items-center justify-center flex-col">
+        <div className="mx-auto flex flex-col items-center justify-center">
             <Title level="4" className="mb-6 text-center">
                 {t('connectWallet')}
             </Title>
@@ -91,7 +91,7 @@ const ConnectWalletList = () => {
                                         handleConnectWallet(walletName)
                                     }
                                     disabled={isConnecting !== null}
-                                    className={`group w-full hover:border-primary mx-auto flex max-w-sm items-center justify-between rounded-lg p-3 shadow-[0px_4px_8px_var(--cx-background-lighter)] transition-colors ${isConnecting === walletName ? 'border-primary' : ''}`}
+                                    className={`group hover:border-primary mx-auto flex w-full max-w-sm items-center justify-between rounded-lg p-3 shadow-[0px_4px_8px_var(--cx-background-lighter)] transition-colors ${isConnecting === walletName ? 'border-primary' : ''}`}
                                 >
                                     <div className="flex items-center">
                                         {window.cardano?.[walletName]?.icon && (

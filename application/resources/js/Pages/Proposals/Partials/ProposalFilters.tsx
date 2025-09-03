@@ -3,7 +3,7 @@ import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/atoms/Selector';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 const ProposalFilters = () => {
     const { setFilters, getFilter } = useFilterContext();
@@ -13,9 +13,15 @@ const ProposalFilters = () => {
 
     return (
         <>
-            <div className="bg-background w-full overflow-x-auto rounded-xl p-4" data-testid="proposal-filters">
+            <div
+                className="bg-background w-full overflow-x-auto rounded-xl p-4"
+                data-testid="proposal-filters"
+            >
                 <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-5">
-                    <div className="col-span-1 flex flex-col gap-2 pb-4" data-testid="funding-status-filter">
+                    <div
+                        className="col-span-1 flex flex-col gap-2 pb-4"
+                        data-testid="funding-status-filter"
+                    >
                         <span>{t('proposals.filters.fundingStatus')}</span>
                         <Selector
                             data-testid="funding-status-selector"
@@ -116,7 +122,10 @@ const ProposalFilters = () => {
                         />
                     </div>
 
-                    <div className="col-span-1 flex flex-col gap-2 pb-4" data-testid="opensource-filter">
+                    <div
+                        className="col-span-1 flex flex-col gap-2 pb-4"
+                        data-testid="opensource-filter"
+                    >
                         <span>{t('proposals.filters.opensource')}</span>
                         <Selector
                             data-testid="opensource-selector"
@@ -149,7 +158,10 @@ const ProposalFilters = () => {
                         />
                     </div>
 
-                    <div className="col-span-1 flex flex-col gap-2 pb-4" data-testid="project-status-filter">
+                    <div
+                        className="col-span-1 flex flex-col gap-2 pb-4"
+                        data-testid="project-status-filter"
+                    >
                         <span>{t('proposals.filters.projectStatus')}</span>
                         <Selector
                             data-testid="project-status-selector"
@@ -180,7 +192,10 @@ const ProposalFilters = () => {
                         />
                     </div>
 
-                    <div className="col-span-1 flex flex-col gap-2 pb-4" data-testid="tags-filter">
+                    <div
+                        className="col-span-1 flex flex-col gap-2 pb-4"
+                        data-testid="tags-filter"
+                    >
                         <span>{t('proposals.filters.tags')}</span>
                         <SearchSelect
                             key={'tags'}
@@ -197,11 +212,14 @@ const ProposalFilters = () => {
                             multiple={true}
                             valueField={'id'}
                             labelField={'title'}
-                            dataTestId='tags-filter-search-select'
+                            dataTestId="tags-filter-search-select"
                         />
                     </div>
 
-                    <div className="col-span-2 flex flex-col gap-2 pb-4 lg:col-span-1" data-testid="campaigns-filter">
+                    <div
+                        className="col-span-2 flex flex-col gap-2 pb-4 lg:col-span-1"
+                        data-testid="campaigns-filter"
+                    >
                         <span>{t('proposals.filters.campaigns')}</span>
                         <SearchSelect
                             key={'campaigns'}
@@ -218,13 +236,16 @@ const ProposalFilters = () => {
                             multiple={true}
                             valueField={'id'}
                             labelField={'title'}
-                            dataTestId='campaigns-filter-search-select'
+                            dataTestId="campaigns-filter-search-select"
                         />
                     </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl md:grid-cols-2 lg:grid-cols-4">
-                    <div className="col-span-1 flex flex-col gap-2 pb-4" data-testid="groups-filter">
+                    <div
+                        className="col-span-1 flex flex-col gap-2 pb-4"
+                        data-testid="groups-filter"
+                    >
                         <span>{t('proposals.filters.groups')}</span>
                         <SearchSelect
                             key={'groups'}
@@ -241,11 +262,14 @@ const ProposalFilters = () => {
                             multiple={true}
                             valueField={'id'}
                             labelField={'name'}
-                            dataTestId='groups-filter-search-select'
+                            dataTestId="groups-filter-search-select"
                         />
                     </div>
 
-                    <div className="col-span-1 flex flex-col gap-2 pb-4" data-testid="communities-filter">
+                    <div
+                        className="col-span-1 flex flex-col gap-2 pb-4"
+                        data-testid="communities-filter"
+                    >
                         <span>{t('proposals.filters.communities')}</span>
                         <SearchSelect
                             key={'communities'}
@@ -262,11 +286,14 @@ const ProposalFilters = () => {
                             multiple={true}
                             valueField={'id'}
                             labelField={'title'}
-                            dataTestId='communities-filter-search-select'
+                            dataTestId="communities-filter-search-select"
                         />
                     </div>
 
-                    <div className="col-span-1 flex flex-col gap-2 pb-4" data-testid="cohort-filter">
+                    <div
+                        className="col-span-1 flex flex-col gap-2 pb-4"
+                        data-testid="cohort-filter"
+                    >
                         <span>{t('proposals.filters.communityCohort')}</span>
                         <Selector
                             data-testid="cohort-selector"
@@ -305,7 +332,10 @@ const ProposalFilters = () => {
                         />
                     </div>
 
-                    <div className="col-span-1 flex flex-col gap-2 pb-4" data-testid="ideascale-profiles-filter">
+                    <div
+                        className="col-span-1 flex flex-col gap-2 pb-4"
+                        data-testid="ideascale-profiles-filter"
+                    >
                         <span>{t('proposals.filters.proposers')}</span>
                         <SearchSelect
                             domain={'ideascaleProfiles.index'}
@@ -323,7 +353,7 @@ const ProposalFilters = () => {
                             multiple={true}
                             valueField={'id'}
                             labelField={'name'}
-                            dataTestId='ideascale-profiles-filter-search-select'
+                            dataTestId="ideascale-profiles-filter-search-select"
                         />
                     </div>
                 </div>
@@ -351,7 +381,10 @@ const ProposalFilters = () => {
                         />
                     </div>
 
-                    <div className="pb-4" data-testid="project-length-range-filter">
+                    <div
+                        className="pb-4"
+                        data-testid="project-length-range-filter"
+                    >
                         <RangePicker
                             key={'Project Length'}
                             context={t('proposals.filters.projectLength')}

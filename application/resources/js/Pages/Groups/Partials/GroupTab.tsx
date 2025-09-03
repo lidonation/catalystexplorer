@@ -1,6 +1,5 @@
-import { Link } from '@inertiajs/react';
-import type { Tab } from '@/utils/routeTabs';
 import TabNavigation from '@/Components/TabNavigation';
+import type { Tab } from '@/utils/routeTabs';
 
 interface GroupTabProps {
     tabs: Tab[];
@@ -9,10 +8,6 @@ interface GroupTabProps {
 
 export default function GroupTabs({ tabs, activeTab }: GroupTabProps) {
     return (
-        <TabNavigation
-            tabs={tabs}
-            activeTab={activeTab}
-            centerTabs={true}
-        />
+        <TabNavigation tabs={tabs} activeTab={activeTab} centerTabs={true} />
     );
 }

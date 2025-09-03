@@ -1,13 +1,13 @@
-import React from 'react';
-import { usePage } from '@inertiajs/react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import WorkflowLayout from '../WorkflowLayout';
-import Nav from '../Partials/WorkflowNav';
-import PrimaryLink from '@/Components/atoms/PrimaryLink';
-import { generateLocalizedRoute } from '@/utils/localizedRoute';
-import { StepDetails } from '@/types';
 import Paragraph from '@/Components/atoms/Paragraph';
+import PrimaryLink from '@/Components/atoms/PrimaryLink';
+import { StepDetails } from '@/types';
+import { generateLocalizedRoute } from '@/utils/localizedRoute';
+import { usePage } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React from 'react';
+import Nav from '../Partials/WorkflowNav';
+import WorkflowLayout from '../WorkflowLayout';
 
 interface Step1Props {
     stepDetails: StepDetails[];
@@ -23,20 +23,23 @@ interface PageProps {
     [key: string]: any;
 }
 
-const Step1: React.FC<Step1Props> = ({ 
-    stepDetails, 
+const Step1: React.FC<Step1Props> = ({
+    stepDetails,
     activeStep,
     bookmarkHash,
 }) => {
     const page = usePage<PageProps>();
     const { t } = useLaravelReactI18n();
-    
-    const nextStepUrl = generateLocalizedRoute('workflows.publishToIpfs.index', {
-        step: 2,
-        ...(bookmarkHash && { bookmarkHash }),
-    });
 
-    const prevStep = ''; 
+    const nextStepUrl = generateLocalizedRoute(
+        'workflows.publishToIpfs.index',
+        {
+            step: 2,
+            ...(bookmarkHash && { bookmarkHash }),
+        },
+    );
+
+    const prevStep = '';
 
     return (
         <WorkflowLayout

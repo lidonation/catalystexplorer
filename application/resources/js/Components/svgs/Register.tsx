@@ -9,7 +9,7 @@ export default function RegisterUserIcon({
     className,
     width = 22,
     height = 22,
-    onClick
+    onClick,
 }: RegisterUserIconProps) {
     return (
         <svg

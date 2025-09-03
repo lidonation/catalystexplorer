@@ -1,4 +1,4 @@
-import React, {HTMLAttributes, ReactNode} from "react";
+import { HTMLAttributes, ReactNode } from 'react';
 
 interface ValueLabelProps extends HTMLAttributes<HTMLDivElement> {
     children: ReactNode;
@@ -6,11 +6,13 @@ interface ValueLabelProps extends HTMLAttributes<HTMLDivElement> {
     className?: string;
 }
 
-export default function Value({children, className = '', ...props}: ValueLabelProps) {
+export default function Value({
+    children,
+    className = '',
+    ...props
+}: ValueLabelProps) {
     return (
-        <div
-            className={`text-sm ${className}`}
-            {...props}>
+        <div className={`text-sm ${className}`} {...props}>
             {children}
         </div>
     );

@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext } from 'react';
-import { MapProps } from 'react-map-gl';
+import { MapRef, MapProps } from 'react-map-gl/mapbox';
 
 interface PointsType {
     lat: number;

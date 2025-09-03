@@ -1,15 +1,14 @@
+import PrimaryButton from '@/Components/atoms/PrimaryButton.tsx';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import CreateListPicker from '@/Pages/Bookmarks/Partials/CreateListPicker.tsx';
 import { PaginatedData } from '@/types/paginated-data';
 import { Head, WhenVisible } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { putConfig } from '@inertiaui/modal-react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { useState } from 'react';
 import BookmarkCollectionList from './Partials/BookmarkCollectionList';
 import BookmarkCollectionListLoader from './Partials/BookmarkCollectionListLoader';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
-import { putConfig } from '@inertiaui/modal-react';
-import PrimaryButton from "@/Components/atoms/PrimaryButton.tsx";
-import {useState} from "react";
-import CreateListPicker from "@/Pages/Bookmarks/Partials/CreateListPicker.tsx";
-
 
 interface MyListProps {
     bookmarkCollections: PaginatedData<BookmarkCollectionData[]>;
@@ -28,11 +27,11 @@ export default function MyList({ bookmarkCollections }: MyListProps) {
         <>
             <Head title="My List" />
 
-            <div className="flex flex-col w-full max-w-full px-4 py-2 sm:px-6 lg:px-8">
+            <div className="flex w-full max-w-full flex-col px-4 py-2 sm:px-6 lg:px-8">
                 <div className="mb-6 flex items-center">
                     <div className="m-auto mt-8">
-                        <PrimaryButton 
-                            className="" 
+                        <PrimaryButton
+                            className=""
                             onClick={() => setPickingList(true)}
                             data-testid="create-new-list-button"
                         >
@@ -48,9 +47,7 @@ export default function MyList({ bookmarkCollections }: MyListProps) {
                         data="groups"
                     >
                         <BookmarkCollectionList
-                            bookmarkCollections={
-                                bookmarkCollections.data||[]
-                            }
+                            bookmarkCollections={bookmarkCollections.data || []}
                         />
                     </WhenVisible>
                 ) : (
@@ -59,8 +56,8 @@ export default function MyList({ bookmarkCollections }: MyListProps) {
                     </div>
                 )}
 
-                <CreateListPicker 
-                    showPickingList={showListPicker} 
+                <CreateListPicker
+                    showPickingList={showListPicker}
                     setPickingList={setPickingList}
                     data-testid="create-list-picker"
                 />

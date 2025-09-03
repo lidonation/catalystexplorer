@@ -44,7 +44,6 @@ export default function Step3({
     const currentParams = new URLSearchParams(window.location.search);
     const paramsObject = Object.fromEntries(currentParams);
 
-
     useEffect(() => {
         setTrendChartDisabled(false);
     }, [selectedChart]);
@@ -56,7 +55,6 @@ export default function Step3({
     const chartOptions = useMemo(() => {
         const isDistributionChart = selectedChart === 'distributionChart';
         const isTrendChart = selectedChart === 'trendChart';
-
 
         const allOptions = [
             { label: t('charts.barChart'), value: 'barChart' },
@@ -70,7 +68,6 @@ export default function Step3({
         return allOptions.map((option) => {
             let isDisabled = false;
 
-
             if (isDistributionChart) {
                 isDisabled = [
                     'barChart',
@@ -82,7 +79,6 @@ export default function Step3({
             } else if (isTrendChart) {
                 isDisabled = ['treeMap'].includes(option.value);
             }
-
 
             return {
                 ...option,
@@ -100,9 +96,7 @@ export default function Step3({
             const isDistributionChart = selectedChart === 'distributionChart';
             const isTrendChart = selectedChart === 'trendChart';
 
-
             let disabledOptions: string[] = [];
-
 
             if (isDistributionChart) {
                 disabledOptions = [
@@ -145,7 +139,6 @@ export default function Step3({
             const currentQueryString = window.location.search;
             const urlParams = new URLSearchParams(currentQueryString);
 
-
             onLoadingChange?.(true);
             try {
                 const response = await axios.get(
@@ -172,7 +165,13 @@ export default function Step3({
         onCompletionChange(true);
         onNext();
         onExploreCharts();
-    }, [sendProposalMetrics, rules, onCompletionChange, onNext, onExploreCharts]);
+    }, [
+        sendProposalMetrics,
+        rules,
+        onCompletionChange,
+        onNext,
+        onExploreCharts,
+    ]);
 
     const buttonClassName = useMemo(() => {
         return `mt-4 w-full ${!isChartsSelected || disabled ? 'cursor-not-allowed opacity-50' : ''}`;
@@ -197,11 +196,10 @@ export default function Step3({
                 className={buttonClassName}
                 disabled={!isChartsSelected}
                 onClick={handleComplete}
-                data-testid='view-charts-button'
+                data-testid="view-charts-button"
             >
                 {t('charts.viewCharts')}
             </PrimaryButton>
         </div>
     );
 }
-

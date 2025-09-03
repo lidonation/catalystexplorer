@@ -40,17 +40,19 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
         total,
     } = pagination;
 
-    const pageLinks = links?.filter(
-        link => !link.label.includes('&laquo;') &&
+    const pageLinks =
+        links?.filter(
+            (link) =>
+                !link.label.includes('&laquo;') &&
                 !link.label.includes('&raquo;') &&
                 link.label !== 'Previous' &&
-                link.label !== 'Next'
-    ) || [];
+                link.label !== 'Next',
+        ) || [];
 
     const getMobilePageLinks = () => {
         if (pageLinks.length <= 7) return pageLinks;
 
-        const currentIdx = pageLinks.findIndex(link => link.active);
+        const currentIdx = pageLinks.findIndex((link) => link.active);
         const start = Math.max(0, currentIdx - 2);
         const end = Math.min(pageLinks.length, currentIdx + 3);
 
@@ -75,7 +77,11 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
     };
 
     const mobilePageLinks = getMobilePageLinks();
-    const renderPageLink = (link: any, index: number, size: 'sm' | 'md' = 'md') => (
+    const renderPageLink = (
+        link: any,
+        index: number,
+        size: 'sm' | 'md' = 'md',
+    ) => (
         <PaginationItem key={index}>
             {link.label === '...' ? (
                 <PaginationEllipsis />
@@ -84,7 +90,11 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                     href={buildUrl(ParamsEnum.PAGE, link.label, 'Current Page')}
                     onClick={(e) => {
                         e.preventDefault();
-                        setPagination(ParamsEnum.PAGE, link.label, 'Current Page');
+                        setPagination(
+                            ParamsEnum.PAGE,
+                            link.label,
+                            'Current Page',
+                        );
                     }}
                     aria-current={link.active ? 'page' : undefined}
                     className={cn(
@@ -92,11 +102,11 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                         size === 'sm'
                             ? 'size-7 text-xs'
                             : size === 'md'
-                            ? 'size-8 text-sm'
-                            : 'size-8 text-base',
+                              ? 'size-8 text-sm'
+                              : 'size-8 text-base',
                         link.active
                             ? 'bg-gray-200 font-semibold'
-                            : 'hover:bg-gray-100'
+                            : 'hover:bg-gray-100',
                     )}
                     {...linkProps}
                     data-testid={`pagination-link-${link.label}`}
@@ -108,79 +118,101 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
     );
 
     const previousButton = (className = '') => (
-        <PaginationItem className="list-none flex-shrink-0">
+        <PaginationItem className="flex-shrink-0 list-none">
             <PaginationPrevious
                 linkProps={linkProps}
-                href={prev_page_url ? buildUrl(ParamsEnum.PAGE, current_page - 1, 'Current Page') : ''}
+                href={
+                    prev_page_url
+                        ? buildUrl(
+                              ParamsEnum.PAGE,
+                              current_page - 1,
+                              'Current Page',
+                          )
+                        : ''
+                }
                 className={cn(
                     className,
-                    !prev_page_url ? 'pointer-events-none opacity-50' : ''
+                    !prev_page_url ? 'pointer-events-none opacity-50' : '',
                 )}
             />
         </PaginationItem>
     );
 
     const nextButton = (className = '') => (
-        <PaginationItem className="list-none flex-shrink-0">
+        <PaginationItem className="flex-shrink-0 list-none">
             <PaginationNext
                 linkProps={linkProps}
-                href={next_page_url ? buildUrl(ParamsEnum.PAGE, current_page + 1, 'Current Page') : ''}
+                href={
+                    next_page_url
+                        ? buildUrl(
+                              ParamsEnum.PAGE,
+                              current_page + 1,
+                              'Current Page',
+                          )
+                        : ''
+                }
                 className={cn(
                     className,
-                    !next_page_url ? 'pointer-events-none opacity-50' : ''
+                    !next_page_url ? 'pointer-events-none opacity-50' : '',
                 )}
             />
         </PaginationItem>
     );
 
     return (
-        <div className="flex items-center justify-center py-4" data-testid="pagination-component">
+        <div
+            className="flex items-center justify-center py-4"
+            data-testid="pagination-component"
+        >
+            <div className="flex w-full items-center justify-between gap-1 md:hidden">
+                {previousButton('px-2 py-1 text-xs')}
 
-            <div className="flex md:hidden items-center justify-between w-full gap-1">
-                {previousButton("px-2 py-1 text-xs")}
-
-                <div className="flex-1 flex justify-center min-w-0">
+                <div className="flex min-w-0 flex-1 justify-center">
                     <ul className="flex list-none items-center gap-1">
-                        {mobilePageLinks.map((link, index) => renderPageLink(link, index, 'sm'))}
+                        {mobilePageLinks.map((link, index) =>
+                            renderPageLink(link, index, 'sm'),
+                        )}
                     </ul>
                 </div>
 
-                {nextButton("px-2 py-1 text-xs")}
+                {nextButton('px-2 py-1 text-xs')}
             </div>
-            <div className="hidden md:flex lg:hidden items-center justify-between w-full">
+            <div className="hidden w-full items-center justify-between md:flex lg:hidden">
                 {previousButton()}
 
                 <div className="flex items-center gap-4">
                     <ul className="flex list-none items-center gap-1">
-                        {mobilePageLinks.map((link, index) => renderPageLink(link, index, 'md'))}
+                        {mobilePageLinks.map((link, index) =>
+                            renderPageLink(link, index, 'md'),
+                        )}
                     </ul>
 
                     <div className="text-sm" data-testid="pagination-info">
-                        {from}-{to} of <span className="font-bold">{total}</span>
+                        {from}-{to} of{' '}
+                        <span className="font-bold">{total}</span>
                     </div>
                 </div>
 
                 {nextButton()}
             </div>
-            <div className="hidden lg:flex items-center justify-between w-full">
-                <div className="flex-shrink-0">
-                    {previousButton()}
-                </div>
+            <div className="hidden w-full items-center justify-between lg:flex">
+                <div className="flex-shrink-0">{previousButton()}</div>
 
                 <div className="flex items-center gap-8">
                     <div className="flex items-center gap-1">
                         <ul className="flex list-none items-center gap-1">
-                            {pageLinks.map((link, index) => renderPageLink(link, index, 'md'))}
+                            {pageLinks.map((link, index) =>
+                                renderPageLink(link, index, 'md'),
+                            )}
                         </ul>
                     </div>
                     <div className="text-sm" data-testid="pagination-info">
-                        Showing {from} - {to} of <span className="font-bold">{total}</span>
+                        Showing {from} - {to} of{' '}
+                        <span className="font-bold">{total}</span>
                     </div>
                 </div>
 
-                <div className="flex-shrink-0">
-                    {nextButton()}
-                </div>
+                <div className="flex-shrink-0">{nextButton()}</div>
             </div>
         </div>
     );

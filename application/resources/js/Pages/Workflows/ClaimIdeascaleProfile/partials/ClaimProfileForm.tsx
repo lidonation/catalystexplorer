@@ -3,8 +3,8 @@ import TextInput from '@/Components/atoms/TextInput';
 import Textarea from '@/Components/atoms/Textarea';
 import { FormDataConvertible } from '@inertiajs/core';
 import { InertiaFormProps } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { forwardRef, useEffect, useImperativeHandle } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 export interface IdeascaleProfileFormFields
     extends Record<string, FormDataConvertible> {
@@ -30,8 +30,10 @@ const ClaimProfileForm = forwardRef<ClaimFormHandles, ClaimProfileFormProps>(
     ({ setIsValid, form }, ref) => {
         const typedForm = form as InertiaFormProps<IdeascaleProfileFormFields>;
         const { data } = typedForm;
-        const setData = typedForm.setData as (field: keyof IdeascaleProfileFormFields, value: any) => void;
-        const errors = typedForm.errors as Partial<Record<keyof IdeascaleProfileFormFields, string>>;
+        const setData = typedForm.setData as any;
+        const errors = typedForm.errors as Partial<
+            Record<keyof IdeascaleProfileFormFields, string>
+        >;
 
         const { t } = useLaravelReactI18n();
 
@@ -122,9 +124,7 @@ const ClaimProfileForm = forwardRef<ClaimFormHandles, ClaimProfileFormProps>(
                                 }
                                 className="border-dark w-full"
                             />
-                            <InputError
-                                message={errors.ideascaleProfile}
-                            />
+                            <InputError message={errors.ideascaleProfile} />
                         </div>
                         <div>
                             <label htmlFor="twitter" className="text-sm">

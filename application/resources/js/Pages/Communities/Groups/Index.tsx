@@ -1,7 +1,7 @@
 import GroupCardExtended from '@/Pages/Groups/Partials/GroupCardExtended';
 import GroupCardLoader from '@/Pages/Groups/Partials/GroupCardMiniLoader';
-import { Head, WhenVisible } from '@inertiajs/react';
 import { PaginatedData } from '@/types/paginated-data';
+import { Head, WhenVisible } from '@inertiajs/react';
 import CommunityLayout from '../CommunityLayout';
 import CommunityData = App.DataTransferObjects.CommunityData;
 import GroupData = App.DataTransferObjects.GroupData;

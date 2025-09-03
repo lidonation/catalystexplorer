@@ -1,7 +1,7 @@
+import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import { Head } from '@inertiajs/react';
 import CommunityLayout from '../CommunityLayout';
 import CommunityData = App.DataTransferObjects.CommunityData;
-import RecordsNotFound from '@/Layouts/RecordsNotFound';
 
 interface EventsPageProps {
     community: CommunityData;
@@ -12,14 +12,17 @@ interface EventsPageProps {
 export default function Proposals({
     community,
     ownProposals,
-    coProposals
+    coProposals,
 }: EventsPageProps) {
-
     return (
-        <CommunityLayout community={community} ownProposalsCount={ownProposals} coProposalsCount={coProposals}>
+        <CommunityLayout
+            community={community}
+            ownProposalsCount={ownProposals}
+            coProposalsCount={coProposals}
+        >
             <Head title={`${community?.title} - Events`} />
             <div>
-                <RecordsNotFound/>
+                <RecordsNotFound />
             </div>
         </CommunityLayout>
     );

@@ -1,19 +1,19 @@
-import { Head, useForm } from "@inertiajs/react";
-import WorkflowLayout from "../WorkflowLayout";
+import CatalystLogo from '@/Components/atoms/CatalystLogo';
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
+import Paragraph from '@/Components/atoms/Paragraph';
+import PrimaryButton from '@/Components/atoms/PrimaryButton';
+import TextInput from '@/Components/atoms/TextInput';
+import Title from '@/Components/atoms/Title';
+import InputError from '@/Components/InputError';
+import CheckInbox from '@/Components/svgs/CheckInbox';
 import { StepDetails } from '@/types';
-import { FormEventHandler, useState, useEffect } from "react";
-import TextInput from "@/Components/atoms/TextInput";
-import InputError from "@/Components/InputError";
-import PrimaryButton from "@/Components/atoms/PrimaryButton";
-import Nav from "../Partials/WorkflowNav";
-import { useLocalizedRoute } from "@/utils/localizedRoute";
-import Paragraph from "@/Components/atoms/Paragraph";
-import CatalystLogo from "@/Components/atoms/CatalystLogo";
-import Title from "@/Components/atoms/Title";
-import Content from "../Partials/WorkflowContent";
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import CheckInbox from "@/Components/svgs/CheckInbox";
-import ErrorDisplay from "@/Components/atoms/ErrorDisplay";
+import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { Head, useForm } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { FormEventHandler, useEffect, useState } from 'react';
+import Content from '../Partials/WorkflowContent';
+import Nav from '../Partials/WorkflowNav';
+import WorkflowLayout from '../WorkflowLayout';
 
 interface Step1Props {
     stepDetails: StepDetails[];
@@ -49,7 +49,7 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, status }) => {
             onSuccess: () => {
                 setCurrentState('confirmation');
                 setEmailSent(true);
-            }
+            },
         });
     };
 

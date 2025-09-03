@@ -1,3 +1,4 @@
+import Paragraph from '@/Components/atoms/Paragraph';
 import {
     Tooltip,
     TooltipContent,
@@ -5,9 +6,8 @@ import {
     TooltipTrigger,
 } from '@/Components/atoms/Tooltip';
 import { useScreenDimension } from '@/Hooks/useScreenDimension';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import Paragraph from '@/Components/atoms/Paragraph';
 
 interface AnnouncementCountdownChipProps {
     event_starts_at: string;
@@ -85,7 +85,7 @@ const AnnouncementCountdownChip = ({
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <div
-                            className="shadow-2xs text-4 inline-flex items-center text-nowrap rounded-md border border-border-secondary px-2 text-content"
+                            className="text-4 border-border-secondary text-content inline-flex items-center rounded-md border px-2 text-nowrap shadow-2xs"
                             role="status"
                             aria-label={`${t('announcements.timeRemaining')}: ${remainingTime}`}
                         >
@@ -103,8 +103,9 @@ const AnnouncementCountdownChip = ({
     }
 
     return (
-        <div className="shadow-2xs text-4 inline-flex items-center text-nowrap rounded-md border border-border-secondary px-2 text-content">
-            {formatTimeRemaining(timeRemaining) + ` ${t('announcements.remaining')}`}
+        <div className="text-4 border-border-secondary text-content inline-flex items-center rounded-md border px-2 text-nowrap shadow-2xs">
+            {formatTimeRemaining(timeRemaining) +
+                ` ${t('announcements.remaining')}`}
         </div>
     );
 };

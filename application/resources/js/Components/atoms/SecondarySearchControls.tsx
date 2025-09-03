@@ -5,6 +5,7 @@ import FilterLinesIcon from '@/Components/svgs/FilterLinesIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { VoteEnums } from '@/enums/vote-search-enums';
 import { router } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import {
     Dispatch,
     SetStateAction,
@@ -12,7 +13,6 @@ import {
     useEffect,
     useState,
 } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import ActiveFilters from './ActiveFilters/ActiveFilters';
 
 function SecondarySearchControls({
@@ -50,9 +50,7 @@ function SecondarySearchControls({
         setFilters({
             param: searchParam,
             value: search,
-            label: t(
-                searchLabel === 'Search' ? 'vote.search' : searchLabel
-            ),
+            label: t(searchLabel === 'Search' ? 'vote.search' : searchLabel),
         });
         setSearchQuery(search);
         const url = new URL(window.location.href);
@@ -69,7 +67,7 @@ function SecondarySearchControls({
                 param: searchParam,
                 value: search,
                 label: t(
-                    searchLabel === 'Search' ? 'vote.search' : searchLabel
+                    searchLabel === 'Search' ? 'vote.search' : searchLabel,
                 ),
             });
             url.searchParams.set(searchParam, search);
@@ -127,7 +125,7 @@ function SecondarySearchControls({
                     >
                         <FilterLinesIcon className={'size-6'} />
                         <span>{t('filters')}</span>
-                       {filtersCount > 0 && <span>({filtersCount})</span>}
+                        {filtersCount > 0 && <span>({filtersCount})</span>}
                     </Button>
 
                     <Selector
@@ -188,7 +186,11 @@ function SecondarySearchControls({
             </div>
 
             <div className="container mx-auto flex justify-start px-0">
-                <ActiveFilters sortOptions={sortOptions} filters={filters} setFilters={setFilters} />
+                <ActiveFilters
+                    sortOptions={sortOptions}
+                    filters={filters}
+                    setFilters={setFilters}
+                />
             </div>
         </div>
     );

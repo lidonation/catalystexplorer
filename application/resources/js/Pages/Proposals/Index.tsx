@@ -146,11 +146,16 @@ export default function Index({
 
                 <header>
                     <div className="container">
-                        <Title level="1" data-testid="proposal-page-title">{t('proposals.proposals')}</Title>
+                        <Title level="1" data-testid="proposal-page-title">
+                            {t('proposals.proposals')}
+                        </Title>
                     </div>
 
                     <div className="container">
-                        <Paragraph className="text-content" data-testid="proposal-page-subtitle">
+                        <Paragraph
+                            className="text-content"
+                            data-testid="proposal-page-subtitle"
+                        >
                             {t('proposals.pageSubtitle')}
                         </Paragraph>
                     </div>
@@ -215,7 +220,7 @@ export default function Index({
                         {currentIsTableView ? (
                             <ProposalTableView
                                 proposals={proposals}
-                                actionType='view'
+                                actionType="view"
                                 disableSorting={true}
                                 columns={['title', 'viewProposal', 'fund', 'status', 'funding', 'teams', 'yesVotes', 'abstainVotes']}
                                 iconOnlyActions={true}

@@ -1,4 +1,4 @@
-import { router, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useState } from 'react';
 import Selector from './atoms/Selector';
@@ -21,7 +21,7 @@ export default function LangSwitcher() {
 
     useEffect(() => {
         if (!selectedLang || typeof selectedLang !== 'string') return;
-        if (currentLocale() === selectedLang) return; 
+        if (currentLocale() === selectedLang) return;
 
         setLocale(selectedLang);
 
@@ -33,7 +33,7 @@ export default function LangSwitcher() {
     }, [selectedLang]);
 
     const handleSelect = (lang: string) => {
-        if (lang === selectedLang) return; 
+        if (lang === selectedLang) return;
         setSelectedLang(lang);
     };
 

@@ -1,6 +1,6 @@
 import Paragraph from '@/Components/atoms/Paragraph'; // Added import for Paragraph component
 import { PaginatedData } from '@/types/paginated-data';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import CompletedProposalCard from './CompletedProposalCard';
 import ProposalData = App.DataTransferObjects.ProposalData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
@@ -29,7 +29,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
     }
 
     return (
-        <div className="space-y-2 p-4 lg:mt-4 lg:space-y-3 lg:p-6 overflow-y-auto max-h-96">
+        <div className="max-h-96 space-y-2 overflow-y-auto p-4 lg:mt-4 lg:space-y-3 lg:p-6">
             {proposals?.data &&
                 proposals?.data.map((proposal, index) => (
                     <div className="w-full" key={index}>
@@ -42,8 +42,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
                             disabled={!!proposal.minted_nfts_fingerprint}
                             required
                             onChange={() =>
-                                onProposalClick &&
-                                onProposalClick(proposal.id)
+                                onProposalClick && onProposalClick(proposal.id)
                             }
                         />
                         <label

@@ -1,8 +1,8 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import CopyableCell from '@/Components/CopyableCell';
 import { currency } from '@/utils/currency';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import CatalystVoteRow from './CatalystVotesRow';
 import VoterHistoryData = App.DataTransferObjects.VoterHistoryData;
 

@@ -1,4 +1,4 @@
-export function shortNumber(value?: number|null, digits = 0) {
+export function shortNumber(value?: number | null, digits = 0) {
     if (!value) {
         return '0';
     }

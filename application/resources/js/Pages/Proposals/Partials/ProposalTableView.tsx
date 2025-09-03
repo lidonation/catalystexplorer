@@ -135,7 +135,7 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
                             transition={{ duration: 0.4, ease: 'easeIn' }}
                         >
                             <ProposalTable
-                                actionType={actionType} 
+                                actionType={actionType}
                                 disableSorting={disableSorting}
                                 proposals={proposals}
                                 columns={columns}

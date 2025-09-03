@@ -1,3 +1,4 @@
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
@@ -7,16 +8,18 @@ import {
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { useForm } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useRef, useState } from 'react';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
+import ClaimProfileForm, {
+    ClaimFormHandles,
+    IdeascaleProfileFormFields,
+} from './partials/ClaimProfileForm';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
-import ClaimProfileForm, { ClaimFormHandles, IdeascaleProfileFormFields } from './partials/ClaimProfileForm';
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface Step1Props {
     profile: IdeascaleProfileData;
@@ -59,8 +62,12 @@ const Step2: React.FC<Step1Props> = ({ profile, stepDetails, activeStep }) => {
                     },
                 ),
                 {
-                    onError: (errors: Record<keyof IdeascaleProfileFormFields, string>) =>
-                        form.setError(errors),
+                    onError: (
+                        errors: Record<
+                            keyof IdeascaleProfileFormFields,
+                            string
+                        >,
+                    ) => form.setError(errors),
                 },
             );
         }

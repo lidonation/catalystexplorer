@@ -1,11 +1,10 @@
-import { CatalystWhiteLogo } from '@/Components/svgs/CatalystWhiteLogo.tsx';
 import Paragraph from '@/Components/atoms/Paragraph';
-import NavLinkItem from '../atoms/NavLinkItem';
+import { CatalystWhiteLogo } from '@/Components/svgs/CatalystWhiteLogo.tsx';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
-import { useLaravelReactI18n } from "laravel-react-i18n";
-import { Config, useRoute } from 'ziggy-js';
 import { usePage } from '@inertiajs/react';
-
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { Config, useRoute } from 'ziggy-js';
+import NavLinkItem from '../atoms/NavLinkItem';
 
 export default function Footer() {
     const { t } = useLaravelReactI18n();

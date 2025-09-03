@@ -1,7 +1,7 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import ArrowLeftIcon from '@/Components/svgs/ArrowLeft';
 import { useList } from '@/Context/ListContext';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { TransitionListPageProps } from '../../../../../types/general';
 
 const BookmarkPage3 = ({ onNavigate }: TransitionListPageProps) => {

@@ -5,6 +5,7 @@ import FilterLinesIcon from '@/Components/svgs/FilterLinesIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import { router } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import {
     Dispatch,
     SetStateAction,
@@ -12,7 +13,6 @@ import {
     useEffect,
     useState,
 } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import ActiveFilters from './ActiveFilters/ActiveFilters';
 
 function SearchControls({
@@ -79,7 +79,10 @@ function SearchControls({
     ).length;
 
     return (
-        <div className="sticky top-0 z-10 mx-auto flex w-full flex-col gap-3 px-0 py-3 backdrop-blur-md" data-testid="search-controls-container">
+        <div
+            className="sticky top-0 z-10 mx-auto flex w-full flex-col gap-3 px-0 py-3 backdrop-blur-md"
+            data-testid="search-controls-container"
+        >
             <div className="flex flex-col items-center justify-end gap-2 lg:flex-row">
                 <SearchBar
                     border={'border-gray-300'}

@@ -3,8 +3,8 @@ import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import Claimed from '@/Components/svgs/ClaimedIcon';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { usePage } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useEffect, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import { toast } from 'react-toastify';
 
 interface ClaimedButtonProps {
@@ -28,7 +28,7 @@ const ClaimedButton: React.FC<ClaimedButtonProps> = ({
     const [localClaimedBy, setLocalClaimedBy] = useState(claimedBy);
     const [buttonState, setButtonState] = useState<
         'unclaimed' | 'claiming' | 'claimed'
-    >(!!claimedBy ? 'claimed' : 'unclaimed');
+    >(claimedBy ? 'claimed' : 'unclaimed');
 
     const { auth } = usePage().props as any;
     const isAuthenticated = auth && auth.user;
@@ -36,7 +36,7 @@ const ClaimedButton: React.FC<ClaimedButtonProps> = ({
     useEffect(() => {
         if (claimedBy !== undefined) {
             setLocalClaimedBy(claimedBy);
-            setButtonState(!!claimedBy ? 'claimed' : 'unclaimed');
+            setButtonState(claimedBy ? 'claimed' : 'unclaimed');
         }
     }, [claimedBy]);
 

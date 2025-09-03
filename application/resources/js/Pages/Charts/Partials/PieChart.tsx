@@ -130,12 +130,12 @@ const PieChart: React.FC<PieChartProps> = ({
 
     let total = 0;
     if (isSubmittedSelected) {
-        total = selectedOption["Submitted Proposals"] ?? 0;
+        total = selectedOption['Submitted Proposals'] ?? 0;
     } else {
         total =
-            (selectedOption["Completed Proposals"] ?? 0) +
-            (selectedOption["Funded Proposals"] ?? 0) +
-            (selectedOption["Unfunded Proposals"] ?? 0);
+            (selectedOption['Completed Proposals'] ?? 0) +
+            (selectedOption['Funded Proposals'] ?? 0) +
+            (selectedOption['Unfunded Proposals'] ?? 0);
     }
 
     const pieDataWithPercentages = filteredPieData.map((item) => ({
@@ -161,9 +161,7 @@ const PieChart: React.FC<PieChartProps> = ({
     return (
         <div>
             <div className="mb-4">
-                <Paragraph
-                    className="mb-2 text-sm text-content/70"
-                >
+                <Paragraph className="text-content/70 mb-2 text-sm">
                     {viewBy === 'fund' ? t('charts.fund') : t('charts.year')}
                 </Paragraph>
                 <select
@@ -195,11 +193,9 @@ const PieChart: React.FC<PieChartProps> = ({
                 </select>
             </div>
 
-            <div className="my-4 mb-4 grid grid-cols-1 gap-3 md:grid-cols-2 sm:gap-4">
+            <div className="my-4 mb-4 grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2">
                 <div className="text-center">
-                    <Paragraph
-                        className="text-sm text-content/70"
-                    >
+                    <Paragraph className="text-content/70 text-sm">
                         {t('proposals.totalProposals')}
                     </Paragraph>
                     <Paragraph className="text-lg font-semibold">
@@ -214,14 +210,12 @@ const PieChart: React.FC<PieChartProps> = ({
 
                 {isApprovedSelected && (
                     <div className="text-center">
-                        <Paragraph
-                            className="text-sm text-content/70"
-                        >
+                        <Paragraph className="text-content/70 text-sm">
                             {t('funds.fundedProposals')}
                         </Paragraph>
                         <Paragraph className="text-lg font-semibold">
                             {shortNumber(
-                                selectedOption["Funded Proposals"] ?? 0,
+                                selectedOption['Funded Proposals'] ?? 0,
                                 2,
                             )}
                         </Paragraph>
@@ -274,7 +268,7 @@ const PieChart: React.FC<PieChartProps> = ({
                     }}
                     tooltip={({ datum }) => (
                         <div
-                            className="rounded-lg p-2 sm:p-3 w-40"
+                            className="w-40 rounded-lg p-2 sm:p-3"
                             style={{
                                 backgroundColor: 'var(--cx-tooltip-background)',
                                 color: 'var(--cx-content-light)',
@@ -360,9 +354,7 @@ const PieChart: React.FC<PieChartProps> = ({
                             <Paragraph className="font-semibold" size="sm">
                                 {shortNumber(item.value, 2)}
                             </Paragraph>
-                            <Paragraph
-                                className="text-sm text-content/70"
-                            >
+                            <Paragraph className="text-content/70 text-sm">
                                 {item.percentage}%
                             </Paragraph>
                         </div>

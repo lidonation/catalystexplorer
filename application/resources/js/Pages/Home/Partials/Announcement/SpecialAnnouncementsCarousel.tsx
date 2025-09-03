@@ -1,8 +1,4 @@
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-} from '@/Components/Carousel';
+import { Carousel, CarouselContent, CarouselItem } from '@/Components/Carousel';
 import { useEffect } from 'react';
 import SpecialAnnouncementCard from './SpecialAnnouncementsCard';
 import AnnouncementData = App.DataTransferObjects.AnnouncementData;
@@ -50,8 +46,15 @@ const SpecialAnnouncementCarousel = ({
     };
 
     return (
-        <div className="relative w-full overflow-hidden border-b border-t" data-testid="special-announcement-carousel">
-            <Carousel role="region" aria-label="Announcement Carousel" data-testid="special-announcement-carousel-inner">
+        <div
+            className="relative w-full overflow-hidden border-t border-b"
+            data-testid="special-announcement-carousel"
+        >
+            <Carousel
+                role="region"
+                aria-label="Announcement Carousel"
+                data-testid="special-announcement-carousel-inner"
+            >
                 <CarouselContent
                     key={activeIndex}
                     className={`flex transition-transform duration-500 ${isTransitioning ? 'ease-in-out' : ''}`}
@@ -79,7 +82,7 @@ const SpecialAnnouncementCarousel = ({
                         onClick={() => handleDotClick(index)}
                         className={`h-3 w-3 rounded-full transition-all duration-300 sm:h-3 sm:w-3 ${
                             activeIndex === index
-                                ? 'scale-100 bg-primary sm:scale-110'
+                                ? 'bg-primary scale-100 sm:scale-110'
                                 : 'bg-gray-300'
                         }`}
                         aria-label={`Go to announcement ${index + 1}`}

@@ -1,15 +1,12 @@
-import React from 'react';
-import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { Link } from '@inertiajs/react';
+import SecondaryLink from '@/Components/SecondaryLink.tsx';
 import Paragraph from '@/Components/atoms/Paragraph';
-import PrimaryButton from '@/Components/atoms/PrimaryButton';
-import Button from '@/Components/atoms/Button';
+import SecondaryButton from '@/Components/atoms/SecondaryButton.tsx';
 import ThumbsDownIcon from '@/Components/svgs/ThumbsDownIcon';
 import ThumbsUpIcon from '@/Components/svgs/ThumbsUpIcon';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import React from 'react';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
-import SecondaryLink from '@/Components/SecondaryLink.tsx';
-import SecondaryButton from '@/Components/atoms/SecondaryButton.tsx';
 
 interface SwipeCardProps {
     type: 'left' | 'right';
@@ -17,17 +14,17 @@ interface SwipeCardProps {
     swipeCount: number;
     onEditList: () => void;
     isDeleted: boolean;
-    'data-testid'? : string;
+    'data-testid'?: string;
 }
 
 const SwipeCard: React.FC<SwipeCardProps> = ({
-                                                 type,
-                                                 bookmarkCollection,
-                                                 swipeCount,
-                                                 onEditList,
-                                                 isDeleted,
-                                                 'data-testid': dataTestId
-                                             }) => {
+    type,
+    bookmarkCollection,
+    swipeCount,
+    onEditList,
+    isDeleted,
+    'data-testid': dataTestId,
+}) => {
     const { t } = useLaravelReactI18n();
 
     if (isDeleted) {
@@ -50,15 +47,17 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
         viewListStyles: isRightSwipe
             ? 'flex flex-1 flex-col items-center justify-center bg-success bg-success-light border border-success/[70%] hover:bg-success/[50%] font-semibold py-2 rounded transition'
             : 'flex flex-1 flex-col items-center justify-center bg-error-light/[70%] border border-error/[70%] hover:bg-error/[50%] py-2 rounded transition',
-        viewListTextStyles: isRightSwipe ? 'text-success' : 'text-error'
+        viewListTextStyles: isRightSwipe ? 'text-success' : 'text-error',
     };
 
     const IconComponent = cardConfig.icon;
 
     return (
         <div
-            className="rounded-lg p-6 bg-background border dark:border-2 border-border-dark-on-dark shadow-[0_4px_24px_0_rgba(0,0,0,0.10),0_0px_2px_0_rgba(0,0,0,0.08)]" data-testid={dataTestId}>
-            <div className="flex items-center justify-between mb-2">
+            className="bg-background border-border-dark-on-dark rounded-lg border p-6 shadow-[0_4px_24px_0_rgba(0,0,0,0.10),0_0px_2px_0_rgba(0,0,0,0.08)] dark:border-2"
+            data-testid={dataTestId}
+        >
+            <div className="mb-2 flex items-center justify-between">
                 <div>
                     <Paragraph size="md" className="font-semibold">
                         {cardConfig.title}
@@ -68,7 +67,7 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
                     </Paragraph>
                 </div>
                 <div className={`flex items-center ${cardConfig.badgeStyles}`}>
-                    <div className="w-6 h-6 flex items-center justify-center">
+                    <div className="flex h-6 w-6 items-center justify-center">
                         <IconComponent
                             width={12}
                             height={12}
@@ -78,38 +77,40 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
                     {swipeCount} {t('workflows.tinderProposal.step4.saves')}
                 </div>
             </div>
-            <div className="flex flex-row w-full gap-4 mt-4">
+            <div className="mt-4 flex w-full flex-row gap-4">
                 <SecondaryLink
-                    className='flex-1 text-center'
+                    className="flex-1 text-center"
                     href={generateLocalizedRoute('my.lists.manage', {
                         bookmarkCollection: bookmarkCollection.id,
-                        type: 'proposals'
+                        type: 'proposals',
                     })}
                     onClick={(e) => {
                         e.preventDefault();
-                        window.open(generateLocalizedRoute('my.lists.manage', {
-                            bookmarkCollection: bookmarkCollection.id,
-                            type: 'proposals'
-                        }), '_blank', 'noopener,noreferrer');
+                        window.open(
+                            generateLocalizedRoute('my.lists.manage', {
+                                bookmarkCollection: bookmarkCollection.id,
+                                type: 'proposals',
+                            }),
+                            '_blank',
+                            'noopener,noreferrer',
+                        );
                     }}
-                    data-testid='manage-button'
+                    data-testid="manage-button"
                 >
-                    <span className='block w-full'>
+                    <span className="block w-full">
                         {t('bookmarks.manage')}
                     </span>
                 </SecondaryLink>
 
                 <SecondaryButton
-                    className=' flex-1 text-center'
+                    className="flex-1 text-center"
                     onClick={onEditList}
-                    data-testid='edit-button'
-                    
+                    data-testid="edit-button"
                 >
-                    <span className='block w-full'>
+                    <span className="block w-full">
                         {t('bookmarks.listSetting')}
                     </span>
                 </SecondaryButton>
-
             </div>
         </div>
     );

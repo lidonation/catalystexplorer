@@ -2,12 +2,12 @@ import Card from '@/Components/Card';
 import SegmentedBar from '@/Components/SegmentedBar';
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
+import { Segments } from '@/types/segments';
 import { currency } from '@/utils/currency';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import { Segments } from '@/types/segments';
 import FundData = App.DataTransferObjects.FundData;
 import CampaignData = App.DataTransferObjects.CampaignData;
 

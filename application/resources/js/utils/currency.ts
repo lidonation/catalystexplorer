@@ -1,6 +1,11 @@
-import { shortNumber } from "./shortNumber";
+import { shortNumber } from './shortNumber';
 
-export function currency(value: number, maximumFractionDigits = 2, currency: string = 'USD', locale: string = 'en-US') {
+export function currency(
+    value: number,
+    maximumFractionDigits = 2,
+    currency: string = 'USD',
+    locale: string = 'en-US',
+) {
     switch (currency) {
         case 'ADA':
             return shortNumber(value, maximumFractionDigits) + ' ₳';
@@ -11,7 +16,7 @@ export function currency(value: number, maximumFractionDigits = 2, currency: str
                 style: 'currency',
                 notation: 'compact',
                 currency,
-                maximumFractionDigits
+                maximumFractionDigits,
             });
             return formatter.format(value);
     }

@@ -19,7 +19,7 @@ export default function ProposalFundingPercentages({ proposal }: Proposal) {
         currency(
             amount ? parseInt(amount.toString()) : 0,
             2,
-            currencyCode || 'USD'
+            currencyCode || 'USD',
         ) as string;
 
     const getProgressBarColor = (percentage: number): string => {
@@ -69,39 +69,52 @@ export default function ProposalFundingPercentages({ proposal }: Proposal) {
     // Component Renderingf
     return (
         <div data-testid="proposal-funding-percentages">
-            {!proposal?.funded_at && (<div className="flex items-baseline justify-between gap-2 pt-2" data-testid="proposal-funding-requested">
-                <span>Requested</span>
-                <div>
-                    <span className="text-md font-semibold">
-                        {formattedAmountRequested}
-                    </span>
-                    <span
-                        className="text-highlight text-sm">{` (${campaignPercentage}% of fund)`}</span>
-                </div>
-            </div>)}
-
-            {!!proposal?.funded_at && (<div className="flex items-baseline justify-between gap-2" data-testid="proposal-funding-received">
-                <span>Received</span>
-                <div>
-                    <span className="text-md font-semibold">
-                        {formattedAmountReceived}
-                    </span>
-                    <span
-                        className="text-highlight text-sm">{` / ${formattedAmountRequested} (${fundingPercentage}%)`}</span>
-                </div>
-            </div>)}
-
-            {!!proposal?.funded_at && (<div className="bg-content-light mt-2 h-3 w-full overflow-hidden rounded-full" data-testid="proposal-funding-progress-bar">
+            {!proposal?.funded_at && (
                 <div
-                    className={`h-full rounded-full ${progressBarColor}`}
-                    role="progressbar"
-                    aria-label="funds recieved"
-                    aria-valuenow={fundingPercentage}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                    style={{ width: `${fundingPercentage}%` }}
-                ></div>
-            </div>)}
+                    className="flex items-baseline justify-between gap-2 pt-2"
+                    data-testid="proposal-funding-requested"
+                >
+                    <span>Requested</span>
+                    <div>
+                        <span className="text-md font-semibold">
+                            {formattedAmountRequested}
+                        </span>
+                        <span className="text-highlight text-sm">{` (${campaignPercentage}% of fund)`}</span>
+                    </div>
+                </div>
+            )}
+
+            {!!proposal?.funded_at && (
+                <div
+                    className="flex items-baseline justify-between gap-2"
+                    data-testid="proposal-funding-received"
+                >
+                    <span>Received</span>
+                    <div>
+                        <span className="text-md font-semibold">
+                            {formattedAmountReceived}
+                        </span>
+                        <span className="text-highlight text-sm">{` / ${formattedAmountRequested} (${fundingPercentage}%)`}</span>
+                    </div>
+                </div>
+            )}
+
+            {!!proposal?.funded_at && (
+                <div
+                    className="bg-content-light mt-2 h-3 w-full overflow-hidden rounded-full"
+                    data-testid="proposal-funding-progress-bar"
+                >
+                    <div
+                        className={`h-full rounded-full ${progressBarColor}`}
+                        role="progressbar"
+                        aria-label="funds recieved"
+                        aria-valuenow={fundingPercentage}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        style={{ width: `${fundingPercentage}%` }}
+                    ></div>
+                </div>
+            )}
         </div>
     );
 }

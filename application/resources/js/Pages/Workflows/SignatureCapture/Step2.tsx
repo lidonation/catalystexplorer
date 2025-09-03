@@ -3,9 +3,9 @@ import {
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { router } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import React, { useState } from 'react';
 
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';

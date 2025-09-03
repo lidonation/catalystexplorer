@@ -12,7 +12,7 @@ import { SearchParams } from '@/types/search-params';
 import { currency } from '@/utils/currency';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Head, Link, WhenVisible } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import MintedNftsCardLoader from './Partials/MintedNftsCardLoader';
 import MintedNftsList from './Partials/MintedNftsList';
 import StatisticCard from './Partials/StatisticCard';

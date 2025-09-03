@@ -8,12 +8,12 @@ export type GroupsParamsEnum = {
     [GroupsParamsEnum.COHORT]: string[];
     [GroupsParamsEnum.COMMUNITIES]: string[];
     [GroupsParamsEnum.FUNDS]: string[];
-    [GroupsParamsEnum.FUNDED_PROPOSALS]: (string[] | string);
+    [GroupsParamsEnum.FUNDED_PROPOSALS]: string[] | string;
     [GroupsParamsEnum.LIMIT]: number;
     [GroupsParamsEnum.PAGE]: number;
     [GroupsParamsEnum.IDEASCALE_PROFILES]: string[];
     [GroupsParamsEnum.QUERY]: string;
     [GroupsParamsEnum.SORTS]: string[];
     [GroupsParamsEnum.TAGS]: string[];
-    [key: string]: any; 
+    [key: string]: any;
 };

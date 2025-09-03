@@ -7,7 +7,7 @@ import { formatTimeAgo } from './layout/TimeFormatter';
 import UserData = App.DataTransferObjects.UserData;
 import CommentData = App.DataTransferObjects.CommentData;
 
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 const CommentItem = ({
     comment,

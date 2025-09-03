@@ -1,8 +1,8 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import { currency } from '@/utils/currency';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ArrowUpRight } from 'lucide-react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import ProposalData = App.DataTransferObjects.ProposalData;
 import NftData = App.DataTransferObjects.NftData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
@@ -21,7 +21,7 @@ export default function CompletedProposalCard({
     return (
         <div
             key={proposal.id}
-            className={`flex w-full flex-col  items-center justify-between rounded-lg p-4 shadow-sm lg:relative`}
+            className={`flex w-full flex-col items-center justify-between rounded-lg p-4 shadow-sm lg:relative`}
         >
             <div
                 className={`w-full ${proposal.minted_nfts_fingerprint ? 'opacity-70' : 'opacity-100'}`}

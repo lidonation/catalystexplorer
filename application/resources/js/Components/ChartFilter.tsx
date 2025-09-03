@@ -6,8 +6,8 @@ import {
     ListboxOption,
     ListboxOptions,
 } from '@headlessui/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { Dispatch, forwardRef, SetStateAction, useEffect } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface Option {
     label: string;
@@ -97,4 +97,3 @@ const ChartFilter = forwardRef<
 });
 
 export default ChartFilter;
-

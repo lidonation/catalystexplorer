@@ -1,50 +1,58 @@
-import React, { useState, useEffect } from 'react';
-import { useForm, usePage, router } from '@inertiajs/react';
-import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { ChevronLeft } from 'lucide-react';
-import WorkflowLayout from '../WorkflowLayout';
-import Nav from '../Partials/WorkflowNav';
-import Content from '../Partials/WorkflowContent';
-import Footer from '../Partials/WorkflowFooter';
+import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
-import Paragraph from '@/Components/atoms/Paragraph';
+import Title from '@/Components/atoms/Title';
 import BookmarkCollectionManager from '@/Components/BookmarkCollectionManager';
-import { generateLocalizedRoute } from '@/utils/localizedRoute';
+import ArchiveIcon from '@/Components/svgs/ArchiveIcon';
 import { StepDetails } from '@/types';
 import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
+import { generateLocalizedRoute } from '@/utils/localizedRoute';
+import { router, useForm, usePage } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { ChevronLeft } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import Footer from '../Partials/WorkflowFooter';
+import Nav from '../Partials/WorkflowNav';
+import WorkflowLayout from '../WorkflowLayout';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import CommunityData = App.DataTransferObjects.CommunityData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import GroupData = App.DataTransferObjects.GroupData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ReviewData = App.DataTransferObjects.ReviewData;
-import Title from '@/Components/atoms/Title';
-import ArchiveIcon from '@/Components/svgs/ArchiveIcon';
 
 interface Step2Props {
     stepDetails: StepDetails[];
     activeStep: number;
     bookmarkHash?: string;
     bookmarkCollection?: App.DataTransferObjects.BookmarkCollectionData;
-    type?: 'proposals' | 'communities' | 'groups' | 'ideascaleProfiles' | 'reviews';
+    type?:
+        | 'proposals'
+        | 'communities'
+        | 'groups'
+        | 'ideascaleProfiles'
+        | 'reviews';
     proposals?: PaginatedData<App.DataTransferObjects.ProposalData[]>;
     communities?: PaginatedData<App.DataTransferObjects.CommunityData[]>;
     groups?: PaginatedData<App.DataTransferObjects.GroupData[]>;
-    ideascaleProfiles?: PaginatedData<App.DataTransferObjects.IdeascaleProfileData[]>;
+    ideascaleProfiles?: PaginatedData<
+        App.DataTransferObjects.IdeascaleProfileData[]
+    >;
     reviews?: PaginatedData<App.DataTransferObjects.ReviewData[]>;
     filters?: SearchParams;
 }
 
 interface PageProps {
     flash?: {
-        success?: string | {
-            message?: string;
-            ipfs_cid?: string;
-            gateway_url?: string;
-            filename?: string;
-        };
+        success?:
+            | string
+            | {
+                  message?: string;
+                  ipfs_cid?: string;
+                  gateway_url?: string;
+                  filename?: string;
+              };
     };
     errorBags?: {
         default?: {
@@ -54,8 +62,8 @@ interface PageProps {
     [key: string]: any;
 }
 
-const Step2: React.FC<Step2Props> = ({ 
-    stepDetails, 
+const Step2: React.FC<Step2Props> = ({
+    stepDetails,
     activeStep,
     bookmarkHash,
     bookmarkCollection,
@@ -94,34 +102,45 @@ const Step2: React.FC<Step2Props> = ({
     const validateForm = () => {
         const hasPublishSettings = !!form.data.publishSettings;
         const hasProposals = bookmarkCollection?.types_count?.proposals > 0;
-        
+
         setIsFormValid(hasPublishSettings && hasProposals);
     };
-    
+
     const submitForm = () => {
         form.post(
             generateLocalizedRoute('workflows.publishToIpfs.publishListToIpfs'),
             {
                 preserveScroll: true,
                 onSuccess: (page: any) => {
-                    
-                    console.log('Successfully published to IPFS:', page.props.flash?.success);
+                    console.log(
+                        'Successfully published to IPFS:',
+                        page.props.flash?.success,
+                    );
                 },
                 onError: (errors) => {
                     console.error('Failed to publish to IPFS:', errors);
-                }
-            }
+                },
+            },
         );
     };
 
-    const handleTabChange = (tab: 'proposals' | 'communities' | 'groups' | 'ideascaleProfiles' | 'reviews') => {
-       
-        const step2Route = generateLocalizedRoute('workflows.publishToIpfs.index', {
-            step: 2,
-            type: tab,
-            ...(bookmarkHash && { bookmarkHash }),
-        });
-        
+    const handleTabChange = (
+        tab:
+            | 'proposals'
+            | 'communities'
+            | 'groups'
+            | 'ideascaleProfiles'
+            | 'reviews',
+    ) => {
+        const step2Route = generateLocalizedRoute(
+            'workflows.publishToIpfs.index',
+            {
+                step: 2,
+                type: tab,
+                ...(bookmarkHash && { bookmarkHash }),
+            },
+        );
+
         router.visit(step2Route, {
             preserveState: false,
             replace: true,

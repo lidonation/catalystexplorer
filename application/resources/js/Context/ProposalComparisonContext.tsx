@@ -55,7 +55,7 @@ export function ProposalComparisonProvider({
 
         return () => subscription.unsubscribe();
     }, []);
-    
+
     const getFilter = (param: ParamsEnum) =>
         filters.find((item) => item.param === param);
 
@@ -167,13 +167,9 @@ export function ProposalComparisonProvider({
         await Promise.all(
             newOrder.map((item, index) =>
                 item.id
-                    ? IndexedDBService.update(
-                          'proposal_comparisons',
-                          item.id,
-                          {
-                              order: total - index,
-                          },
-                      )
+                    ? IndexedDBService.update('proposal_comparisons', item.id, {
+                          order: total - index,
+                      })
                     : Promise.resolve(),
             ),
         );

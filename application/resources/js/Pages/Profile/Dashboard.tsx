@@ -1,10 +1,10 @@
 // Dashboard.tsx
-import { useState, useEffect } from 'react';
-import { Head, usePage } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import UserTab from './Partials/UserTab';
-import UserSection from './Partials/UserSection';
 import { generateTabs, myProfileTabs } from '@/utils/routeTabs';
+import { Head, usePage } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { useEffect, useState } from 'react';
+import UserSection from './Partials/UserSection';
+import UserTab from './Partials/UserTab';
 import User = App.DataTransferObjects.UserData;
 
 interface UserProfileProps {
@@ -29,7 +29,7 @@ export default function UserProfile({}: UserProfileProps) {
         const pathSegments = currentPath.split('/');
         const lastPathSegment = pathSegments[pathSegments.length - 1];
 
-        const matchingTab = tabs.find(tab => {
+        const matchingTab = tabs.find((tab) => {
             const tabPath = tab.href.split('/').pop();
             return tabPath === lastPathSegment;
         });
@@ -40,22 +40,19 @@ export default function UserProfile({}: UserProfileProps) {
     }, [window.location.pathname, tabs]);
 
     return (
-        <div className="min-h-screen bg-background-lighter">
+        <div className="bg-background-lighter min-h-screen">
             <Head title={t('profile.title')} />
 
             <div className="bg-background-lighter">
-                <div className="w-full py-8 ">
+                <div className="w-full py-8">
                     <UserSection user={auth?.user as unknown as User} />
 
-                    <UserTab
-                        tabs={tabs}
-                        activeTab={activeTab}
-                    />
+                    <UserTab tabs={tabs} activeTab={activeTab} />
                 </div>
             </div>
 
             <div className="w-full py-8">
-                <div className="text-center text-content">
+                <div className="text-content text-center">
                     {t('comingSoon')}
                 </div>
             </div>

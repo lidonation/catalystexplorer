@@ -96,7 +96,7 @@ const TreeMap: React.FC<TreeMapProps> = ({ chartData, viewBy }) => {
                     })),
             })),
         };
-        
+
         setNormalizedData(transformed);
     }, [chartData, viewBy]);
 

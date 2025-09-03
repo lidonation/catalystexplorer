@@ -1,14 +1,13 @@
 import Title from '@/Components/atoms/Title';
 import ExpandableContent from '@/Components/ExpandableContent';
 import ExpandableContentAnimation from '@/Components/ExpandableContentAnimation';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useRef, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 export default function ColumnHeader({
     proposal,
 }: {
     proposal: App.DataTransferObjects.ProposalData;
-
 }) {
     const [isHovered, setIsHovered] = useState(false);
 
@@ -45,11 +44,13 @@ export default function ColumnHeader({
             onHoverChange={setIsHovered}
         >
             <header
-                className={`text-content-light w-full rounded-xl bg-linear-to-tr ${headerBGColor} flex shrink flex-col `}
+                className={`text-content-light w-full rounded-xl bg-linear-to-tr ${headerBGColor} flex shrink flex-col`}
             >
                 {/* Card Content */}
                 <div
-                    className={ 'flex h-full min-h-20 w-full items-center justify-center p-2 px-4 leading-tight'}
+                    className={
+                        'flex h-full min-h-20 w-full items-center justify-center p-2 px-4 leading-tight'
+                    }
                     style={{ overflow: 'visible' }}
                 >
                     <a

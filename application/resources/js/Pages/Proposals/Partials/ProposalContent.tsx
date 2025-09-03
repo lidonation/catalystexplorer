@@ -171,7 +171,7 @@ const ProposalContent = ({ content }: ProposalContentProps) => {
                                     ),
                                     strong: ({ node, ...props }) => (
                                         <strong
-                                            className=" font-bold"
+                                            className="font-bold"
                                             {...props}
                                         />
                                     ),

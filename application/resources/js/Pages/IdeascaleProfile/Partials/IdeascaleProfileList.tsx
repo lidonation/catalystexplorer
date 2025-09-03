@@ -1,27 +1,26 @@
-import React from 'react';
-import {motion, AnimatePresence} from 'framer-motion';
-import IdeascaleProfileCardMini from './IdeascaleProfileCardMini';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import { AnimatePresence, motion } from 'framer-motion';
+import React from 'react';
+import IdeascaleProfileCardMini from './IdeascaleProfileCardMini';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 
 interface IdeascaleProfilesListProps {
     ideascaleProfiles: IdeascaleProfileData[];
 }
 
-const IdeascaleProfilesList: React.FC<IdeascaleProfilesListProps> = ({ideascaleProfiles,}) => {
+const IdeascaleProfilesList: React.FC<IdeascaleProfilesListProps> = ({
+    ideascaleProfiles,
+}) => {
     if (!ideascaleProfiles?.length) {
         return (
             <AnimatePresence>
                 <motion.div
-                    initial={{opacity: 0}}
-                    animate={{opacity: 1}}
-                    exit={{opacity: 0}}
-                    transition={{duration: 0.4, ease: 'easeIn'}}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.4, ease: 'easeIn' }}
                 >
-                    <RecordsNotFound
-                        context="profiles"
-                        searchTerm=""
-                    />
+                    <RecordsNotFound context="profiles" searchTerm="" />
                 </motion.div>
             </AnimatePresence>
         );
@@ -33,11 +32,11 @@ const IdeascaleProfilesList: React.FC<IdeascaleProfilesListProps> = ({ideascaleP
                 {ideascaleProfiles.map((ideascaleProfile, index) => (
                     <motion.li
                         key={index}
-                        initial={{opacity: 0, scale: 0.9}}
-                        animate={{opacity: 1, scale: 1}}
-                        exit={{opacity: 0, scale: 0.9}}
-                        transition={{duration: 0.4, ease: 'easeIn'}}
-                        className='h-full'
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.4, ease: 'easeIn' }}
+                        className="h-full"
                     >
                         <IdeascaleProfileCardMini
                             ideascaleProfile={ideascaleProfile}

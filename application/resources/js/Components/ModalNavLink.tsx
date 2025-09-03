@@ -1,5 +1,5 @@
+import { ModalLink } from '@inertiaui/modal-react';
 import React, { ReactNode } from 'react';
-import { ModalLink, putConfig } from '@inertiaui/modal-react';
 
 interface ModalNavLinkProps {
     href: string;
@@ -22,7 +22,7 @@ interface ModalNavLinkProps {
     paddingClasses?: string;
     panelClasses?: string;
     position?: string;
-    dataTestid?:string
+    dataTestid?: string;
 }
 
 const ModalNavLink: React.FC<ModalNavLinkProps> = ({
@@ -41,11 +41,11 @@ const ModalNavLink: React.FC<ModalNavLinkProps> = ({
     replace = 'false',
     closeButton = false,
     closeExplicitly = false,
-    maxWidth = "2xl",
-    paddingClasses = "p-4 sm:p-6",
+    maxWidth = '2xl',
+    paddingClasses = 'p-4 sm:p-6',
     panelClasses,
-    position = "right",
-    dataTestid
+    position = 'right',
+    dataTestid,
 }) => {
     const commonProps = {
         href,

@@ -43,7 +43,7 @@ export default function FileTypeIcon({
                     width="46"
                     height="46"
                     filterUnits="userSpaceOnUse"
-                    colorInterpolationFilters='sRGB'
+                    colorInterpolationFilters="sRGB"
                 >
                     <feFlood floodOpacity={0} result="BackgroundImageFix" />
                     <feColorMatrix

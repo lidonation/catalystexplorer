@@ -59,7 +59,7 @@ export const BookmarkProvider: React.FC<{
                 modelType: model,
                 bookmarkCollection: bookmarkCollection.id,
             }),
-            { },
+            {},
             {
                 preserveScroll: true,
                 onSuccess: () => {

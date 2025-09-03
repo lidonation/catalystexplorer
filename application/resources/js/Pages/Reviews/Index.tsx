@@ -6,8 +6,8 @@ import ReviewsSortOptions from '@/lib/ReviewsSortOptions';
 import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 import { Head } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import ReviewsFilter from './Partials/ReviewsFilters';
 import ReviewData = App.DataTransferObjects.ReviewData;
 

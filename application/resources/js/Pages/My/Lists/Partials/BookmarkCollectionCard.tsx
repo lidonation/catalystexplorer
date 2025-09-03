@@ -1,7 +1,6 @@
 import Card from '@/Components/Card';
 import UserAvatar from '@/Components/UserAvatar';
 import Paragraph from '@/Components/atoms/Paragraph';
-import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import Title from '@/Components/atoms/Title';
 import capitalizeFirstLetter from '@/utils/caps';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
@@ -9,7 +8,9 @@ import { formatTimestamp } from '@/utils/timeStamp';
 import { Link, router, usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { Clock, MessageCircle } from 'lucide-react';
-import DropdownMenu, { DropdownMenuItem } from '../../../Bookmarks/Partials/DropdownMenu';
+import DropdownMenu, {
+    DropdownMenuItem,
+} from '../../../Bookmarks/Partials/DropdownMenu';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 
 const BookmarkCollectionCard = ({
@@ -25,7 +26,7 @@ const BookmarkCollectionCard = ({
     const isAuthor = auth?.user?.id == user?.id;
 
     const viewListRoute = useLocalizedRoute('lists.view', {
-        bookmarkCollection: collection?.id
+        bookmarkCollection: collection?.id,
     });
 
     const manageListRoute = useLocalizedRoute('my.lists.manage', {
@@ -39,15 +40,19 @@ const BookmarkCollectionCard = ({
             type: 'button',
             onClick: () => {
                 router.visit(viewListRoute);
-            }
+            },
         },
-        ...(isAuthor ? [{
-            label: t('my.manage'),
-            type: 'button' as const,
-            onClick: () => {
-                router.visit(manageListRoute);
-            }
-        }] : [])
+        ...(isAuthor
+            ? [
+                  {
+                      label: t('my.manage'),
+                      type: 'button' as const,
+                      onClick: () => {
+                          router.visit(manageListRoute);
+                      },
+                  },
+              ]
+            : []),
     ];
     return (
         <Card
@@ -65,7 +70,10 @@ const BookmarkCollectionCard = ({
                                 type: 'proposals',
                             })}
                         >
-                            <Title level="4" className="font-bold lg:text-2xl hover:text-primary cursor-pointer transition-colors">
+                            <Title
+                                level="4"
+                                className="hover:text-primary cursor-pointer font-bold transition-colors lg:text-2xl"
+                            >
                                 {collection.title}
                             </Title>
                         </Link>
@@ -75,7 +83,7 @@ const BookmarkCollectionCard = ({
                     </div>
                     <Paragraph
                         size="sm"
-                        className="text-muted-foreground w-1/2  lg:text-md lg:w-5/6 break-words whitespace-normal"
+                        className="text-muted-foreground lg:text-md w-1/2 break-words whitespace-normal lg:w-5/6"
                     >
                         {collection?.content || 'No description available.'}
                     </Paragraph>
@@ -132,7 +140,7 @@ const BookmarkCollectionCard = ({
             {/* <div className="py-6"> */}
             <div className="grid grid-cols-2 gap-4 md:grid-cols-6">
                 {Object.entries(collection?.types_count ?? {})?.map((item) => {
-                    let pluralizedModel = capitalizeFirstLetter(item[0]);
+                    const pluralizedModel = capitalizeFirstLetter(item[0]);
                     return (
                         <div className="space-y-1" key={`${pluralizedModel}`}>
                             <p className="text-4xl font-bold">{item[1]}</p>
@@ -143,7 +151,7 @@ const BookmarkCollectionCard = ({
                     );
                 })}
             </div>
-            <div className="top-4 right-4 absolute">
+            <div className="absolute top-4 right-4">
                 <DropdownMenu items={dropdownMenuItems} />
             </div>
 

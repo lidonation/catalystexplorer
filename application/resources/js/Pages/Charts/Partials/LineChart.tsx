@@ -3,13 +3,12 @@ import Title from '@/Components/atoms/Title';
 import ArrowTrendingDown from '@/Components/svgs/ArrowTrendingDown';
 import ArrowTrendingUp from '@/Components/svgs/ArrowTrendingUp';
 import { useFilterContext } from '@/Context/FiltersContext';
-import { ParamsEnum } from '@/enums/proposal-search-params';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/Hooks/useUserSettings';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveLine } from '@nivo/line';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useEffect, useRef, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface LineChartProps {
     chartData: any;
@@ -73,7 +72,7 @@ const LineChart: React.FC<LineChartProps> = ({
     ];
 
     const isSubmittedSelected = proposalTypes?.includes('submitted');
-    const isApprovedSelected = proposalTypes?.includes('approved')
+    const isApprovedSelected = proposalTypes?.includes('approved');
     const isCompletedSelected = proposalTypes?.includes('complete');
     const isInProgressSelected = proposalTypes?.includes('in_progress');
     const isUnfundedSelected = proposalTypes?.includes('unfunded');
@@ -188,9 +187,7 @@ const LineChart: React.FC<LineChartProps> = ({
 
     return (
         <div ref={badgeRef} className="relative">
-            <div
-                style={{ height: config.height, minHeight: config.minHeight }}
-            >
+            <div style={{ height: config.height, minHeight: config.minHeight }}>
                 <ResponsiveLine
                     data={lineData}
                     margin={config.margin}

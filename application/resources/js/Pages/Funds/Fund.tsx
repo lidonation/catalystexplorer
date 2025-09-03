@@ -3,7 +3,7 @@ import { MetricEnum } from '@/enums/metrics-enums';
 import { PageProps } from '@/types';
 import { SearchParams } from '@/types/search-params';
 import { Head, WhenVisible } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import CampaignCard from '../Campaign/Partials/CampaignCard';
 import CampaignList from '../Campaign/Partials/CampaignList';
 import CampaignLoader from '../Campaign/Partials/CampaignLoader';
@@ -34,11 +34,14 @@ export default function Fund({
         <>
             <Head title={fund?.title as string | undefined} />
 
-            <div className="relative flex w-full flex-col justify-center gap-8" data-testid="single-fund-page">
+            <div
+                className="relative flex w-full flex-col justify-center gap-8"
+                data-testid="single-fund-page"
+            >
                 {/* Hero Image */}
                 <HeroSection fund={fund} />
 
-                <section className="container py-8"data-testid="funds-header">
+                <section className="container py-8" data-testid="funds-header">
                     <h4 className="title-4">{fund.title}</h4>
                     <p className="text-content opacity-70">
                         {t('funds.singleFundSubtitle')}

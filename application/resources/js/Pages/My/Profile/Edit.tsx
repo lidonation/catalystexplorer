@@ -291,7 +291,7 @@ export default function ProfileSettings({
                         </Card>
 
                         <PrimaryLink
-                            className="lg:text-md mb-4 ml-auto px-4 py-2 text-sm text-nowrap w-full"
+                            className="lg:text-md mb-4 ml-auto w-full px-4 py-2 text-sm text-nowrap"
                             href={useLocalizedRoute(
                                 'workflows.signature.index',
                                 {

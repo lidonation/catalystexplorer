@@ -1,29 +1,29 @@
 import { DialogPanel } from '@headlessui/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { router, usePage } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { useEffect, useState } from 'react';
 import AppNavigation from './AppNavigation';
 import ThemeSwitcher from './ThemeSwitcher';
 import UserDetails from './UserDetails';
 import UserNavigation from './UserNavigation';
-import { router, usePage } from '@inertiajs/react';
 import User = App.DataTransferObjects.UserData;
-import { useEffect, useState } from 'react';
 
 function MobileNavigation() {
     const { t } = useLaravelReactI18n();
-    const {auth} = usePage().props;
+    const { auth } = usePage().props;
     const [isOpen, setIsOpen] = useState(true);
 
-   useEffect(() => {
-    const handleFinish = () => setIsOpen(false);
-    return router.on('finish', handleFinish);
-}, []);
+    useEffect(() => {
+        const handleFinish = () => setIsOpen(false);
+        return router.on('finish', handleFinish);
+    }, []);
 
     return (
         isOpen && (
             <div className="fixed inset-0 top-16 flex">
                 <DialogPanel
                     transition
-                    className="relative bg-background flex w-full flex-1 transform transition duration-300 ease-in-out data-closed:-translate-x-full overflow-y-auto"
+                    className="bg-background relative flex w-full flex-1 transform overflow-y-auto transition duration-300 ease-in-out data-closed:-translate-x-full"
                 >
                     <aside
                         className="flex grow flex-col justify-between px-4"

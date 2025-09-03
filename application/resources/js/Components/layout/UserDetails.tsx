@@ -3,15 +3,15 @@ import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 import LoginForm from '@/Pages/Auth/Partials/LoginForm';
 import RegisterForm from '@/Pages/Auth/Partials/RegisterForm';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
+import { truncateMiddle } from '@/utils/truncateMiddle.ts';
 import { Link, router } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import Paragraph from '../atoms/Paragraph';
 import LogOutIcon from '../svgs/LogOut';
 import RegisterUserIcon from '../svgs/Register';
 import UserAvatar from '../UserAvatar';
 import Modal from './Modal.tsx';
-import { truncateMiddle } from '@/utils/truncateMiddle.ts';
 
 interface UserDetailsProps {
     user: App.DataTransferObjects.UserData;
@@ -68,7 +68,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ user }) => {
                                 className="text-4 text-content font-semibold"
                                 data-testid="user-name"
                             >
-                                {truncateMiddle(user?.name??'')}
+                                {truncateMiddle(user?.name ?? '')}
                             </Link>
 
                             <Paragraph className="text-5 text-content text-xs">

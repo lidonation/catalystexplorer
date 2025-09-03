@@ -1,22 +1,22 @@
+import Paragraph from '@/Components/atoms/Paragraph';
+import Paginator from '@/Components/Paginator';
+import AbstainVoteIcon from '@/Components/svgs/AbstainVoteIcon';
+import YesVoteIcon from '@/Components/svgs/YesVoteIcon';
+import { useFilterContext } from '@/Context/FiltersContext';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
+import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import ManageProposalButton from '@/Pages/My/Proposals/partials/ManageProposalButton';
 import ProposalCardHeader from '@/Pages/Proposals/Partials/ProposalCardHeader';
 import ProposalFundingPercentages from '@/Pages/Proposals/Partials/ProposalFundingPercentages';
 import ProposalFundingStatus from '@/Pages/Proposals/Partials/ProposalFundingStatus';
-import CompareButton from './CompareButton';
-import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
-import React, { useCallback, useState } from 'react';
-import { useLaravelReactI18n } from 'laravel-react-i18n';
-import YesVoteIcon from '@/Components/svgs/YesVoteIcon';
-import AbstainVoteIcon from '@/Components/svgs/AbstainVoteIcon';
-import TableHeaderCell from './ProposalTableHeaderCell';
-import { useFilterContext } from '@/Context/FiltersContext';
-import { ParamsEnum } from '@/enums/proposal-search-params';
-import { router } from '@inertiajs/react';
-import { Link } from '@inertiajs/react';
-import { shortNumber } from '@/utils/shortNumber';
-import Paginator from '@/Components/Paginator';
 import { PaginatedData } from '@/types/paginated-data';
+import { shortNumber } from '@/utils/shortNumber';
+import { Link, router } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import React, { useCallback, useState } from 'react';
+import CompareButton from './CompareButton';
+import TableHeaderCell from './ProposalTableHeaderCell';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import Paragraph from '@/Components/atoms/Paragraph';
@@ -28,7 +28,7 @@ interface ColumnConfig {
     sortKey?: string;
     renderCell: (
         proposal: ProposalData,
-        helpers: TableHelpers
+        helpers: TableHelpers,
     ) => React.ReactNode;
 }
 
@@ -100,7 +100,9 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
     const activeColumns = columns || defaultColumns;
 
     const currentSort = getFilter(ParamsEnum.SORTS) || null;
-    const [sortField, sortDirection] = currentSort ? currentSort.split(':') : [null, null];
+    const [sortField, sortDirection] = currentSort
+        ? currentSort.split(':')
+        : [null, null];
 
     const handleSort = (key: string) => {
         let direction: 'asc' | 'desc' | null = 'asc';
@@ -119,22 +121,26 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
             const url = new URL(window.location.href);
             url.searchParams.delete(ParamsEnum.SORTS);
 
-            router.get(url.pathname + url.search, {}, {
-                preserveState: true,
-                preserveScroll: true,
-                replace: true
-            });
+            router.get(
+                url.pathname + url.search,
+                {},
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                    replace: true,
+                },
+            );
 
             setFilters({
                 param: ParamsEnum.SORTS,
                 value: null,
-                label: 'Sort'
+                label: 'Sort',
             });
         } else {
             setFilters({
                 param: ParamsEnum.SORTS,
                 value: `${key}:${direction}`,
-                label: 'Sort'
+                label: 'Sort',
             });
         }
     };
@@ -146,8 +152,14 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
             sortable: !disableSorting,
             sortKey: 'title',
             renderCell: (proposal: ProposalData) => (
-                <div className="w-80" data-testid={`proposal-title-${proposal.id}`}>
-                    <Paragraph className="text-md text-content" data-testid={`proposal-title-text-${proposal.id}`}>
+                <div
+                    className="w-80"
+                    data-testid={`proposal-title-${proposal.id}`}
+                >
+                    <Paragraph
+                        className="text-md text-content"
+                        data-testid={`proposal-title-text-${proposal.id}`}
+                    >
                         <Link
                             href={proposal.link}
                             target="_blank"
@@ -159,15 +171,21 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                         </Link>
                     </Paragraph>
                 </div>
-            )
+            ),
         },
         proposal: {
             key: 'proposal',
             label: t('proposal'),
             sortable: !disableSorting,
             sortKey: 'title',
-            renderCell: (proposal: ProposalData, { selectedUser, noSelectedUser }: TableHelpers) => (
-                <div className="w-80" data-testid={`proposal-card-header-${proposal.id}`}>
+            renderCell: (
+                proposal: ProposalData,
+                { selectedUser, noSelectedUser }: TableHelpers,
+            ) => (
+                <div
+                    className="w-80"
+                    data-testid={`proposal-card-header-${proposal.id}`}
+                >
                     <ProposalCardHeader
                         proposal={proposal}
                         userSelected={selectedUser}
@@ -189,13 +207,15 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                     data-testid={`proposal-fund-${proposal.id}`}
                 >
                     {proposal.fund?.label && (
-                        <span className="items-center py-1 rounded-full text-xs font-medium text-content text-nowrap"
-                              data-testid={`proposal-fund-label-${proposal.id}`}>
+                        <span
+                            className="text-content items-center rounded-full py-1 text-xs font-medium text-nowrap"
+                            data-testid={`proposal-fund-label-${proposal.id}`}
+                        >
                             {proposal.fund.label}
                         </span>
                     )}
                 </div>
-            )
+            ),
         },
         status: {
             key: 'status',
@@ -203,13 +223,16 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
             sortable: !disableSorting,
             sortKey: 'funding_status',
             renderCell: (proposal: ProposalData) => (
-                <div className="flex w-32 items-center justify-center" data-testid={`proposal-status-${proposal.id}`}>
+                <div
+                    className="flex w-32 items-center justify-center"
+                    data-testid={`proposal-status-${proposal.id}`}
+                >
                     <ProposalFundingStatus
                         funding_status={proposal.funding_status ?? ''}
                         data-testid={`proposal-funding-status-${proposal.id}`}
                     />
                 </div>
-            )
+            ),
         },
         funding: {
             key: 'funding',
@@ -217,21 +240,30 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
             sortable: !disableSorting,
             sortKey: 'amount_received',
             renderCell: (proposal: ProposalData) => (
-                <div className="flex w-60" data-testid={`proposal-funding-${proposal.id}`}>
+                <div
+                    className="flex w-60"
+                    data-testid={`proposal-funding-${proposal.id}`}
+                >
                     <ProposalFundingPercentages
                         proposal={proposal}
                         data-testid={`proposal-funding-percentages-${proposal.id}`}
                     />
                 </div>
-            )
+            ),
         },
         teams: {
             key: 'teams',
             label: t('teams'),
             sortable: false,
             sortKey: 'users.proposals_completed',
-            renderCell: (proposal: ProposalData, { handleUserClick }: TableHelpers) => (
-                <div className="w-40" data-testid={`proposal-teams-${proposal.id}`}>
+            renderCell: (
+                proposal: ProposalData,
+                { handleUserClick }: TableHelpers,
+            ) => (
+                <div
+                    className="w-40"
+                    data-testid={`proposal-teams-${proposal.id}`}
+                >
                     <IdeascaleProfileUsers
                         users={proposal.users}
                         onUserClick={handleUserClick}
@@ -240,19 +272,25 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                         data-testid={`proposal-ideascale-users-${proposal.id}`}
                     />
                 </div>
-            )
+            ),
         },
         yesVotes: {
             key: 'yesVotes',
             label: (
-                <div className="flex items-center gap-2" data-testid="yes-votes-header">
+                <div
+                    className="flex items-center gap-2"
+                    data-testid="yes-votes-header"
+                >
                     <YesVoteIcon
-                        className="size-5 font-medium text-success"
+                        className="text-success size-5 font-medium"
                         width={20}
                         height={20}
                         data-testid="yes-vote-icon"
                     />
-                    <span className="flex gap-2 text-content/60" data-testid="yes-votes-label">
+                    <span
+                        className="text-content/60 flex gap-2"
+                        data-testid="yes-votes-label"
+                    >
                         <Paragraph size="sm">{t('yesVotes')}</Paragraph>
                     </span>
                 </div>
@@ -269,19 +307,25 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                         </Paragraph>
                     </div>
                 </div>
-            )
+            ),
         },
         abstainVotes: {
             key: 'abstainVotes',
             label: (
-                <div className="flex items-center gap-2" data-testid="abstain-votes-header">
+                <div
+                    className="flex items-center gap-2"
+                    data-testid="abstain-votes-header"
+                >
                     <AbstainVoteIcon
                         className="size-4 font-medium"
                         width={16}
                         height={16}
                         data-testid="abstain-vote-icon"
                     />
-                    <div className="flex gap-2 text-content/60" data-testid="abstain-votes-label">
+                    <div
+                        className="text-content/60 flex gap-2"
+                        data-testid="abstain-votes-label"
+                    >
                         <Paragraph size="sm">{t('abstainVotes')}</Paragraph>
                     </div>
                 </div>
@@ -298,7 +342,7 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                         </Paragraph>
                     </div>
                 </div>
-            )
+            ),
         },
         action: {
             key: 'action',
@@ -390,22 +434,22 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                 handleUserClick: (user: IdeascaleProfileData) => {
                     setSelectedUserMap((prev) => ({
                         ...prev,
-                        [proposalHash]: user
+                        [proposalHash]: user,
                     }));
                 },
                 noSelectedUser: () => {
                     setSelectedUserMap((prev) => ({
                         ...prev,
-                        [proposalHash]: null
+                        [proposalHash]: null,
                     }));
-                }
+                },
             };
         },
-        [selectedUserMap]
+        [selectedUserMap],
     );
 
     return (
-        <div className="mb-8 rounded-lg border-2 border-gray-200 bg-background shadow-md">
+        <div className="bg-background mb-8 rounded-lg border-2 border-gray-200 shadow-md">
             <div className="overflow-x-auto">
                 <table className="w-max min-w-full">
                     <thead className="border-gray-200 whitespace-nowrap bg-background-lighter"
@@ -429,9 +473,10 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                     </tr>
                     </thead>
                     <tbody data-testid="proposal-table-body">
-                    {proposals.data && proposals.data.map((proposal, index) => {
-                        const proposalHash = proposal.id ?? '';
-                        const helpers = getRowHelpers(proposalHash);
+                        {proposals.data &&
+                            proposals.data.map((proposal, index) => {
+                                const proposalHash = proposal.id ?? '';
+                                const helpers = getRowHelpers(proposalHash);
 
                         return (
                             <tr
@@ -445,12 +490,21 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                                         className="border-gray-200 border-b border-r px-4 py-4 text-content last:border-r-0"
                                         data-testid={`proposal-table-cell-${proposalHash}-${column.key}`}
                                     >
-                                        {column.renderCell(proposal, helpers)}
-                                    </td>
-                                ))}
-                            </tr>
-                        );
-                    })}
+                                        {columns.map((column) => (
+                                            <td
+                                                key={`${proposalHash}-${column.key}`}
+                                                className="text-content border-r border-b border-gray-200 px-4 py-4 last:border-r-0"
+                                                data-testid={`proposal-table-cell-${proposalHash}-${column.key}`}
+                                            >
+                                                {column.renderCell(
+                                                    proposal,
+                                                    helpers,
+                                                )}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                );
+                            })}
                     </tbody>
                 </table>
             </div>

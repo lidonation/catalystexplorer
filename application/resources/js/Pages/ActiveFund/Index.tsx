@@ -1,23 +1,23 @@
 import ColorDot from '@/Components/atoms/ColorDot';
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
+import SecondaryLink from '@/Components/SecondaryLink.tsx';
 import SegmentedBar from '@/Components/SegmentedBar';
+import { CatalystFundsEnums } from '@/enums/catalyst-funds-enums.ts';
+import { ParamsEnum } from '@/enums/proposal-search-params.ts';
+import SupportCxBanner from '@/Pages/ActiveFund/Partials/SupportCxBanner.tsx';
+import ProposalList from '@/Pages/Proposals/Partials/ProposalList.tsx';
+import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading.tsx';
 import { Segments } from '@/types/segments';
 import { currency } from '@/utils/currency';
+import { useLocalizedRoute } from '@/utils/localizedRoute.ts';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useState } from 'react';
 import ActiveFundBanner from './Partials/ActiveFundBanner';
 import CampaignCard from './Partials/CampaignCard';
 import CreateListBanner from './Partials/CreateListBanner';
-import SupportCxBanner from '@/Pages/ActiveFund/Partials/SupportCxBanner.tsx';
-import SecondaryLink from '@/Components/SecondaryLink.tsx';
-import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading.tsx';
-import ProposalList from '@/Pages/Proposals/Partials/ProposalList.tsx';
 import ProposalData = App.DataTransferObjects.ProposalData;
-import { useLocalizedRoute } from '@/utils/localizedRoute.ts';
-import { ParamsEnum } from '@/enums/proposal-search-params.ts';
-import { CatalystFundsEnums } from '@/enums/catalyst-funds-enums.ts';
 
 interface ActiveFundsProp extends Record<string, unknown> {
     search?: string | null;
@@ -58,7 +58,7 @@ const Index: React.FC<ActiveFundsProp> = ({
     ] as Segments[];
 
     const proposalAttrs = {
-        quickPitchView: true
+        quickPitchView: true,
     };
 
     return (
@@ -144,7 +144,7 @@ const Index: React.FC<ActiveFundsProp> = ({
                         </div>
                     </div>
                 </section>
-                <section className='px-8 w-full my-4'>
+                <section className="my-4 w-full px-8">
                     <CreateListBanner />
                 </section>
 
@@ -154,7 +154,9 @@ const Index: React.FC<ActiveFundsProp> = ({
                 >
                     <div className="flex items-center justify-between py-8">
                         <div data-testid="proposals-header">
-                            <Title level="2">{t('proposals.proposalQuickPitches')}</Title>
+                            <Title level="2">
+                                {t('proposals.proposalQuickPitches')}
+                            </Title>
                             <Paragraph
                                 size="sm"
                                 className="text-4 text-content-dark opacity-70"
@@ -167,7 +169,8 @@ const Index: React.FC<ActiveFundsProp> = ({
                                 className="text-content-dark font-bold"
                                 href={useLocalizedRoute('proposals.index', {
                                     [ParamsEnum.QUICK_PITCHES]: 1,
-                                    [ParamsEnum.FUNDS]: CatalystFundsEnums.FOURTEEN
+                                    [ParamsEnum.FUNDS]:
+                                        CatalystFundsEnums.FOURTEEN,
                                 })}
                                 data-testid="see-more-proposals"
                             >
@@ -186,7 +189,7 @@ const Index: React.FC<ActiveFundsProp> = ({
                     </WhenVisible>
                 </section>
 
-                <section className='px-8 w-full my-4 mt-8'>
+                <section className="my-4 mt-8 w-full px-8">
                     <SupportCxBanner />
                 </section>
 

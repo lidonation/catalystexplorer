@@ -5,7 +5,7 @@ interface AnnouncementCardChipProps {
 const AnnouncementCardChip = ({ label }: AnnouncementCardChipProps) => {
     return (
         <div
-            className={`rounded-xl border border-border-chip px-2 text-center text-4 capitalize text-primary`}
+            className={`border-border-chip text-4 text-primary rounded-xl border px-2 text-center capitalize`}
         >
             {label}
         </div>

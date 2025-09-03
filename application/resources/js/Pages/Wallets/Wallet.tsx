@@ -7,9 +7,9 @@ import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import { copyToClipboard } from '@/utils/copyClipboard';
 import { truncateMiddle } from '@/utils/truncateMiddle';
 import { Head } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronLeft, CopyIcon } from 'lucide-react';
 import { useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import { PaginatedData } from '../../types/paginated-data';
 import { SearchParams } from '../../types/search-params';
 import CatalystVotesTable from '../Transactions/Partials/CatalystVotesTable';
@@ -38,7 +38,7 @@ export default function Wallet({
 }: WalletProps) {
     const { t } = useLaravelReactI18n();
     const [activeTab, setActiveTab] = useState('votes');
-console.log({ walletTransactions, walletStats });
+    console.log({ walletTransactions, walletStats });
 
     return (
         <>

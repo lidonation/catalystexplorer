@@ -8,27 +8,34 @@ import { BookmarkProvider } from '@/Context/BookmarkContext';
 import { FiltersProvider, useFilterContext } from '@/Context/FiltersContext';
 import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
-import { Head, router } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useState } from 'react';
-import { useLaravelReactI18n } from "laravel-react-i18n";
-import Paginator from '@/Components/Paginator';
+import BookmarkModelSearch from '../Pages/Bookmarks/Partials/BookmarkModelSearch';
+import DropdownMenu, {
+    DropdownMenuItem,
+} from '../Pages/Bookmarks/Partials/DropdownMenu';
+import EditListForm, {
+    ListForm,
+} from '../Pages/Bookmarks/Partials/EditListForm';
 import CommunitiesPaginatedList from '../Pages/Communities/Partials/CommunitiesPaginatedList';
 import GroupPaginatedList from '../Pages/Groups/Partials/GroupPaginatedList';
 import IdeascaleProfilePaginatedList from '../Pages/IdeascaleProfile/Partials/IdeascaleProfilePaginatedList';
 import ProposalPaginatedList from '../Pages/Proposals/Partials/ProposalPaginatedList';
 import ProposalTable from '../Pages/Proposals/Partials/ProposalTable';
-import BookmarkModelSearch from '../Pages/Bookmarks/Partials/BookmarkModelSearch';
-import EditListForm, { ListForm } from '../Pages/Bookmarks/Partials/EditListForm';
-import DropdownMenu, { DropdownMenuItem } from '../Pages/Bookmarks/Partials/DropdownMenu';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import CommunityData = App.DataTransferObjects.CommunityData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import GroupData = App.DataTransferObjects.GroupData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ReviewData = App.DataTransferObjects.ReviewData;
-import { replace } from 'lodash';
 
-type BookmarkCollectionType = 'proposals' | 'communities' | 'groups' | 'ideascaleProfiles' | 'reviews';
+type BookmarkCollectionType =
+    | 'proposals'
+    | 'communities'
+    | 'groups'
+    | 'ideascaleProfiles'
+    | 'reviews';
 
 interface BookmarkCollectionManagerProps {
     type: BookmarkCollectionType;
@@ -57,7 +64,7 @@ interface BookmarkCollectionManagerConfig {
 }
 
 const BookmarkCollectionManager = (
-    props: BookmarkCollectionManagerProps & BookmarkCollectionManagerConfig
+    props: BookmarkCollectionManagerProps & BookmarkCollectionManagerConfig,
 ) => {
     const {
         type,
@@ -73,7 +80,7 @@ const BookmarkCollectionManager = (
         activeTab,
         onTabChange,
         onUpdate,
-        onDelete
+        onDelete,
     } = props;
     const { t } = useLaravelReactI18n();
 
@@ -100,7 +107,7 @@ const BookmarkCollectionManager = (
                     <div>
                         {proposalDisplayMode === 'table' ? (
                             <ProposalTable
-                                actionType='view'
+                                actionType="view"
                                 disableSorting={true}
                                 proposals={props.proposals}
                                 columnVisibility={{
@@ -109,7 +116,7 @@ const BookmarkCollectionManager = (
                                     title: true,
                                     yesVotes: true,
                                     abstainVotes: true,
-                                    teams: false
+                                    teams: false,
                                 }}
                             />
                         ) : (
@@ -155,29 +162,41 @@ const BookmarkCollectionManager = (
     const preselected = () => {
         switch (props.type) {
             case 'proposals':
-                return props.proposals ? {
-                    proposals: props.proposals.data.map((item) => item.id),
-                } : {};
+                return props.proposals
+                    ? {
+                          proposals: props.proposals.data.map(
+                              (item) => item.id,
+                          ),
+                      }
+                    : {};
             case 'communities':
-                return props.communities ? {
-                    communities: props.communities.data.map(
-                        (item) => item.id,
-                    ),
-                } : {};
+                return props.communities
+                    ? {
+                          communities: props.communities.data.map(
+                              (item) => item.id,
+                          ),
+                      }
+                    : {};
             case 'groups':
-                return props.groups ? {
-                    groups: props.groups.data.map((item) => item.id)
-                } : {};
+                return props.groups
+                    ? {
+                          groups: props.groups.data.map((item) => item.id),
+                      }
+                    : {};
             case 'ideascaleProfiles':
-                return props.ideascaleProfiles ? {
-                    ideascaleProfiles: props.ideascaleProfiles.data.map(
-                        (item) => item.id,
-                    ),
-                } : {};
+                return props.ideascaleProfiles
+                    ? {
+                          ideascaleProfiles: props.ideascaleProfiles.data.map(
+                              (item) => item.id,
+                          ),
+                      }
+                    : {};
             case 'reviews':
-                return props.reviews ? {
-                    reviews: props.reviews.data.map((item) => item.id)
-                } : {};
+                return props.reviews
+                    ? {
+                          reviews: props.reviews.data.map((item) => item.id),
+                      }
+                    : {};
             default:
                 return {};
         }
@@ -217,7 +236,9 @@ const BookmarkCollectionManager = (
                                 {`${t('bookmarks.listSetting')}`}
                             </Button>
                         )}
-                        {showDropdownMenu && <DropdownMenu items={dropdownMenuItems} />}
+                        {showDropdownMenu && (
+                            <DropdownMenu items={dropdownMenuItems} />
+                        )}
                     </div>
                 </div>
 
@@ -294,9 +315,12 @@ const BookmarkCollectionManager = (
 };
 
 // Internal component that handles tab changes with access to FiltersContext
-const BookmarkCollectionContent = (props: BookmarkCollectionManagerProps & BookmarkCollectionManagerConfig & {
-    component: React.ReactNode;
-}) => {
+const BookmarkCollectionContent = (
+    props: BookmarkCollectionManagerProps &
+        BookmarkCollectionManagerConfig & {
+            component: React.ReactNode;
+        },
+) => {
     const { setFilters } = useFilterContext();
     const { activeTab, onTabChange, showSearchBar, type, component } = props;
 
@@ -313,10 +337,14 @@ const BookmarkCollectionContent = (props: BookmarkCollectionManagerProps & Bookm
                     search={showSearchBar}
                 />
             </div>
-            <div className="w-full my-2">{component}</div>
+            <div className="my-2 w-full">{component}</div>
         </>
     );
 };
 
 export default BookmarkCollectionManager;
-export type { BookmarkCollectionManagerProps, BookmarkCollectionManagerConfig, BookmarkCollectionType };
+export type {
+    BookmarkCollectionManagerConfig,
+    BookmarkCollectionManagerProps,
+    BookmarkCollectionType,
+};

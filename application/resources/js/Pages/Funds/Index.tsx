@@ -1,14 +1,14 @@
 import Title from '@/Components/atoms/Title';
+import { useUserSetting } from '@/Hooks/useUserSettings';
+import { userSettingEnums } from '@/enums/user-setting-enums';
 import { PageProps } from '@/types';
 import { Head, WhenVisible } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import FundCardLoader from './Partials/FundCardLoader';
 import FundsBarChart from './Partials/FundsBarChart';
 import FundsBarChartLoading from './Partials/FundsBarChartLoading';
 import FundsList from './Partials/FundsList';
 import FundData = App.DataTransferObjects.FundData;
-import { useUserSetting } from '@/Hooks/useUserSettings';
-import { userSettingEnums } from '@/enums/user-setting-enums';
 
 interface HomePageProps extends Record<string, unknown> {
     funds: FundData[];
@@ -40,9 +40,10 @@ export default function Index({
 
     const viewBy: 'fund' | 'year' =
         viewByPreference?.[0] === 'year' ? 'year' : 'fund';
-    const chartData = viewBy === 'fund' ? chartDataByFund : proposalsCountByYear;
+    const chartData =
+        viewBy === 'fund' ? chartDataByFund : proposalsCountByYear;
 
-     const handleViewByChange = (value: string | null) => {
+    const handleViewByChange = (value: string | null) => {
         const newValue = value as 'fund' | 'year';
         setViewByPreference([newValue]);
     };
@@ -61,7 +62,10 @@ export default function Index({
             </header>
 
             <div className="relative flex w-full flex-col justify-center gap-8">
-                <section className="container py-8" data-testid="funds-bar-chart-section">
+                <section
+                    className="container py-8"
+                    data-testid="funds-bar-chart-section"
+                >
                     <WhenVisible
                         fallback={<FundsBarChartLoading />}
                         data="funds"
@@ -82,7 +86,10 @@ export default function Index({
                         />
                     </WhenVisible>
                 </section>
-                <section className="container py-8" data-testid="funds-list-section">
+                <section
+                    className="container py-8"
+                    data-testid="funds-list-section"
+                >
                     <WhenVisible fallback={<FundCardLoader />} data="funds">
                         <FundsList funds={funds} />
                     </WhenVisible>

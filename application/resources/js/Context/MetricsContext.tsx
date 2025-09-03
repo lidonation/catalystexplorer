@@ -1,5 +1,5 @@
-import { ProposalMetrics } from "@/types/proposal-metrics";
-import { createContext, useContext, useMemo, useState } from "react";
+import { ProposalMetrics } from '@/types/proposal-metrics';
+import { createContext, useContext, useMemo, useState } from 'react';
 
 const MetricsContext = createContext<
     | {

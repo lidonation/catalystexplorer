@@ -1,15 +1,27 @@
 // svgs.tsx
 import React from 'react';
 
-export const VerificationBadge: React.FC<{ size?: number }> = ({ size = 20 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <g id="SVGRepo_bgCarrier" strokeWidth="0" />
-    <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" />
-    <g id="SVGRepo_iconCarrier">
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M9.5924 3.20027C9.34888 3.4078 9.22711 3.51158 9.09706 3.59874C8.79896 3.79854 8.46417 3.93721 
+export const VerificationBadge: React.FC<{ size?: number }> = ({
+    size = 20,
+}) => (
+    <svg
+        width={size}
+        height={size}
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <g id="SVGRepo_bgCarrier" strokeWidth="0" />
+        <g
+            id="SVGRepo_tracerCarrier"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        />
+        <g id="SVGRepo_iconCarrier">
+            <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M9.5924 3.20027C9.34888 3.4078 9.22711 3.51158 9.09706 3.59874C8.79896 3.79854 8.46417 3.93721 
         8.1121 4.00672C7.95851 4.03705 7.79903 4.04977 7.48008 4.07522C6.6787 4.13918 6.278 4.17115 5.94371 
         4.28923C5.17051 4.56233 4.56233 5.17051 4.28923 5.94371C4.17115 6.278 4.13918 6.6787 4.07522 
         7.48008C4.04977 7.79903 4.03705 7.95851 4.00672 8.1121C3.93721 8.46417 3.79854 8.79896 3.59874 
@@ -31,8 +43,8 @@ export const VerificationBadge: React.FC<{ size?: number }> = ({ size = 20 }) =>
         11.57 1.91159 10.8301 2.26522C10.5102 2.4181 10.2043 2.67883 9.5924 3.20027ZM16.3735 9.86314C16.6913 9.5453 16.6913 9.03 16.3735 8.71216C16.0557 
         8.39433 15.5403 8.39433 15.2225 8.71216L10.3723 13.5624L8.77746 11.9676C8.45963 11.6498 7.94432 11.6498 7.62649 11.9676C7.30866 12.2854 7.30866 
         12.8007 7.62649 13.1186L9.79678 15.2889C10.1146 15.6067 10.6299 15.6067 10.9478 15.2889L16.3735 9.86314Z"
-        fill="#16b364"
-      />
-    </g>
-  </svg>
+                fill="#16b364"
+            />
+        </g>
+    </svg>
 );

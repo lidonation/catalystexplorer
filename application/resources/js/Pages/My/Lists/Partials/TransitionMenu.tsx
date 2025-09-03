@@ -35,7 +35,7 @@ const TransitionDropdown = ({
 
             <DropdownMenu.Portal>
                 <DropdownMenu.Content
-                    className="z-50 overflow-hidden rounded-lg bg-background shadow-lg"
+                    className="bg-background z-50 overflow-hidden rounded-lg shadow-lg"
                     style={{ width }}
                     side={side}
                     align={align}
@@ -60,7 +60,7 @@ const TransitionDropdown = ({
                                             onNavigate: navigateToPage,
                                             currentPage,
                                             totalPages: pages.length,
-                                        })}
+                                        } as any)}
                                     </div>
                                 ))}
                             </div>

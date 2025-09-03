@@ -54,9 +54,7 @@ export default function CreateListPicker({
                         </div>
                     </div>
 
-                    <div
-                        className="border-border-secondary -mr-px border p-4 col-span-1"
-                    >
+                    <div className="border-border-secondary col-span-1 -mr-px border p-4">
                         <div className="flex h-full flex-col justify-between gap-3">
                             <Paragraph className="sm:p-2">
                                 {t('my.createTinderListBlurb')}

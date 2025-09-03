@@ -10,8 +10,8 @@ import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Head } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import MyTransactionTable from './Partials/MyTranscationsTable';
 import TransactionData = App.DataTransferObjects.TransactionData;
 

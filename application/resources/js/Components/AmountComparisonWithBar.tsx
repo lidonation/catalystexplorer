@@ -1,9 +1,9 @@
-import {currencySymbol} from '@/utils/currencySymbol';
-import {shortNumber} from '@/utils/shortNumber';
-import {useEffect, useState} from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import ValueLabel from '@/Components/atoms/ValueLabel';
+import { currencySymbol } from '@/utils/currencySymbol';
+import { shortNumber } from '@/utils/shortNumber';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { useEffect, useState } from 'react';
 import PercentageProgressBar from './PercentageProgressBar';
-import ValueLabel from "@/Components/atoms/ValueLabel";
 
 interface AmountComparisonWithBarPageProps extends Record<string, unknown> {
     title: string;
@@ -15,20 +15,20 @@ interface AmountComparisonWithBarPageProps extends Record<string, unknown> {
 }
 
 const AmountComparisonWithBar: React.FC<AmountComparisonWithBarPageProps> = ({
-     title,
-     numerator,
-     denominator,
-     currency = 'USD',
-     smallSize = false,
-     onWhiteBackground = false,
- }) => {
+    title,
+    numerator,
+    denominator,
+    currency = 'USD',
+    smallSize = false,
+    onWhiteBackground = false,
+}) => {
     const { t } = useLaravelReactI18n();
 
     const [percentage, setPercentage] = useState<number>(0);
 
     useEffect(() => {
         let percentageValue = 0;
-        if(numerator > 0) {
+        if (numerator > 0) {
             percentageValue = Math.trunc((numerator / denominator) * 100);
         }
         setPercentage(percentageValue);
@@ -57,7 +57,12 @@ const AmountComparisonWithBar: React.FC<AmountComparisonWithBarPageProps> = ({
                         className={`text-content ${smallSize ? 'text-lg' : 'text-xl'}`}
                     >
                         / {currencySymbol(currency)}
-                        {shortNumber(denominator, 2)} <ValueLabel className={`${smallSize ? 'text-lg' : 'text-xl'}`}>({percentage ? percentage : 0}%)</ValueLabel>
+                        {shortNumber(denominator, 2)}{' '}
+                        <ValueLabel
+                            className={`${smallSize ? 'text-lg' : 'text-xl'}`}
+                        >
+                            ({percentage ? percentage : 0}%)
+                        </ValueLabel>
                     </span>
                 </div>
                 <div

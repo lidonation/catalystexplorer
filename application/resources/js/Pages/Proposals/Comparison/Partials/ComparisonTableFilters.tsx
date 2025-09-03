@@ -6,8 +6,8 @@ import FilterLinesIcon from '@/Components/svgs/FilterLinesIcon';
 import { useProposalComparison } from '@/Context/ProposalComparisonContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import { Button } from '@headlessui/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useCallback, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 export default function ComparisonTableFilters() {
     const { t } = useLaravelReactI18n();
@@ -157,7 +157,6 @@ export default function ComparisonTableFilters() {
                                 valueField="label"
                                 labelField="title"
                             />
-
                         </div>
 
                         <div className="col-span-1 flex flex-col gap-2 pb-4">

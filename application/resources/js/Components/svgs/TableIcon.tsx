@@ -6,7 +6,11 @@ interface TableIconProps {
     height?: number;
 }
 
-const TableIcon: React.FC<TableIconProps> = ({ className = '', width = 20, height = 20 }) => {
+const TableIcon: React.FC<TableIconProps> = ({
+    className = '',
+    width = 20,
+    height = 20,
+}) => {
     return (
         <svg
             width={width}

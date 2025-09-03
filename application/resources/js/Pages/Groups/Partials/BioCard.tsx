@@ -5,8 +5,8 @@ import SegmentedBar from '@/Components/SegmentedBar';
 import { Segments } from '@/types/segments';
 import { currency } from '@/utils/currency';
 import { usePage } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import GroupData = App.DataTransferObjects.GroupData;
 
 interface BioCardProps {

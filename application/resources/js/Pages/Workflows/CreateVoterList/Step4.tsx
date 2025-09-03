@@ -1,3 +1,4 @@
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import Textarea from '@/Components/atoms/Textarea';
@@ -9,14 +10,13 @@ import {
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { useForm } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface Step4Props {
     stepDetails: StepDetails[];

@@ -1,8 +1,8 @@
 import TextInput from '@/Components/atoms/TextInput';
 import SearchLensIcon from '@/Components/svgs/SearchLensIcon';
 import useEscapeKey from '@/Hooks/useEscapeKey';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useRef, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 export interface SearchBarProps {
     autoFocus?: boolean;
@@ -50,8 +50,8 @@ const ProposalSearchBar = ({
 
     return (
         <div className={`w-full ${className}`}>
-            <label className="relative flex items-center w-full gap-2 pl-0">
-                <div className="absolute left-0 flex items-center justify-center w-10 h-full">
+            <label className="relative flex w-full items-center gap-2 pl-0">
+                <div className="absolute left-0 flex h-full w-10 items-center justify-center">
                     <SearchLensIcon width={16} className="text-dark" />
                 </div>
 
@@ -59,8 +59,8 @@ const ProposalSearchBar = ({
                     ref={inputRef}
                     placeholder={placeholder}
                     size={placeholder.length}
-                    className={`w-full rounded-lg  bg-background pl-10 text-content shadow-none focus:border-0 focus:border-primary ${showRingOnFocus ? 'focus:ring-2 focus:ring-primary' : 'focus:ring-0'}`}
-                    value={searchQuery ?? ""}
+                    className={`bg-background text-content focus:border-primary w-full rounded-lg pl-10 shadow-none focus:border-0 ${showRingOnFocus ? 'focus:ring-primary focus:ring-2' : 'focus:ring-0'}`}
+                    value={searchQuery ?? ''}
                     onChange={handleChange}
                     onFocus={() => {
                         focusState?.(true);

@@ -6,7 +6,6 @@ import {
     useRef,
 } from 'react';
 
-
 export default forwardRef(function TextInput(
     {
         type = 'text',

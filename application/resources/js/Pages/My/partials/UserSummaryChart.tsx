@@ -6,8 +6,8 @@ import ArrowTrendingDown from '@/Components/svgs/ArrowTrendingDown';
 import ArrowTrendingUp from '@/Components/svgs/ArrowTrendingUp';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveLine } from '@nivo/line';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useMemo, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface UserSummaryChartProps {
     graphData?: {

@@ -1,8 +1,7 @@
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { usePage } from '@inertiajs/react';
-import { LayoutDashboardIcon } from 'lucide-react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useRef, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import NavLinkItem from '../atoms/NavLinkItem';
 import BarLineIcon from '../svgs/BarLineIcon';
 import FolderIcon from '../svgs/FolderIcon';
@@ -123,7 +122,11 @@ function UserNavigation() {
 
     return (
         <nav className="" role="menu" data-testid="user-navigation">
-            <ul className={`flex flex-1 flex-col gap-1`} role="menu" data-testid="user-navigation-list">
+            <ul
+                className={`flex flex-1 flex-col gap-1`}
+                role="menu"
+                data-testid="user-navigation-list"
+            >
                 {navItems.map(({ href, title, icon }) => {
                     const isDashboard = title === t('my.dashboard');
                     if (isOnMyRoute && isDashboard) {
@@ -139,7 +142,7 @@ function UserNavigation() {
                                         <div className="flex items-center">
                                             <span className="mr-3">
                                                 <BarLineIcon
-                                                    className={`${isOnMyRoute ? 'text-content font-medium hover:text-gray-persist' : 'text-dark'} transition-colors duration-200`}
+                                                    className={`${isOnMyRoute ? 'text-content hover:text-gray-persist font-medium' : 'text-dark'} transition-colors duration-200`}
                                                 />
                                             </span>
                                             <span>{title}</span>
@@ -212,7 +215,9 @@ function UserNavigation() {
                                                                     isActive
                                                                 }
                                                                 className={`${isOnMyRoute ? 'text-content hover:bg-background' : ''} ${isActive ? 'bg-background font-semibold' : ''} flex w-full items-center gap-1 transition-colors duration-200`}
-                                                                showMyPrefix={true}
+                                                                showMyPrefix={
+                                                                    true
+                                                                }
                                                                 data-testid={`nav-link-${title}`}
                                                             >
                                                                 <span></span>

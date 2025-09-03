@@ -36,7 +36,7 @@ export default function ProposalFundingStatus({ funding_status = 'pending' }) {
 
     return (
         <span
-            className={`rounded-md border px-1 py-0 text-xs inline-flex items-center justify-center ${textColor} ${bgColor}`}
+            className={`inline-flex items-center justify-center rounded-md border px-1 py-0 text-xs ${textColor} ${bgColor}`}
             data-testid={`proposal-funding-status-${funding_status}`}
         >
             {status}

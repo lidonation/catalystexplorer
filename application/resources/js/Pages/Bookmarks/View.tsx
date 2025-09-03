@@ -1,16 +1,20 @@
+import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import Comments from '@/Components/Comments';
 import { ReviewList } from '@/Components/ReviewList';
+import SearchBar from '@/Components/SearchBar';
 import UserAvatar from '@/Components/UserAvatar';
 import { BookmarkProvider } from '@/Context/BookmarkContext';
 import { FiltersProvider, useFilterContext } from '@/Context/FiltersContext';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { formatTimestamp } from '@/utils/timeStamp';
 import { Head, Link, router, usePage } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { Clock, MessageCircle } from 'lucide-react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useState } from 'react';
 import CommunitiesPaginatedList from '../Communities/Partials/CommunitiesPaginatedList';
 import GroupPaginatedList from '../Groups/Partials/GroupPaginatedList';
 import IdeascaleProfilePaginatedList from '../IdeascaleProfile/Partials/IdeascaleProfilePaginatedList';
@@ -22,10 +26,6 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 import GroupData = App.DataTransferObjects.GroupData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ReviewData = App.DataTransferObjects.ReviewData;
-import SearchBar from '@/Components/SearchBar';
-import Paragraph from '@/Components/atoms/Paragraph';
-import { ParamsEnum } from '@/enums/proposal-search-params';
-import { useState } from 'react';
 
 type BookmarkCollectionListProps =
     | {
@@ -168,7 +168,7 @@ const BookmarkContent = (props: BookmarkCollectionListProps) => {
                                 bookmarkCollection: bookmarkCollection.id,
                                 type: 'proposals',
                             })}
-                            className="text-primary  text-sm text-nowrap"
+                            className="text-primary text-sm text-nowrap"
                         >
                             {t('bookmarks.manage')}
                         </Link>
@@ -189,7 +189,9 @@ const BookmarkContent = (props: BookmarkCollectionListProps) => {
                     initialSearch={searchQuery}
                     placeholder={t('workflows.bookmarks.placeholder')}
                 />
-                <Paragraph className='mt-4'>{t('workflows.bookmarks.text')}</Paragraph>
+                <Paragraph className="mt-4">
+                    {t('workflows.bookmarks.text')}
+                </Paragraph>
             </div>
             <div className="mx-auto">{component}</div>
         </>
@@ -208,9 +210,7 @@ const View = (props: BookmarkCollectionListProps) => {
                 };
             case 'communities':
                 return {
-                    communities: props.communities.data.map(
-                        (item) => item.id,
-                    ),
+                    communities: props.communities.data.map((item) => item.id),
                 };
             case 'groups':
                 return { groups: props.groups.data.map((item) => item.id) };

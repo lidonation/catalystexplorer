@@ -2,9 +2,9 @@ import { useBookmarkContext } from '@/Context/BookmarkContext';
 import useEscapeKey from '@/Hooks/useEscapeKey';
 import { useSearchOptions } from '@/Hooks/useSearchOptions';
 import { currency } from '@/utils/currency';
-import { useEffect, useRef, useState } from 'react';
 import { router } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { useEffect, useRef, useState } from 'react';
 import Button from './atoms/Button';
 import Checkbox from './atoms/Checkbox';
 import TextInput from './atoms/TextInput';
@@ -97,9 +97,12 @@ export default function ModelSearch({
     const [isRestoringScroll, setIsRestoringScroll] = useState(false);
     const [showResults, setShowResults] = useState(false);
     const { t } = useLaravelReactI18n();
-    const { selectedItemsByType, toggleSelection, bookmarkCollection } = useBookmarkContext();
-    const { searchTerm, setSearchTerm, options } =
-        useSearchOptions<any>(domain, bookmarkCollection.fund_id);
+    const { selectedItemsByType, toggleSelection, bookmarkCollection } =
+        useBookmarkContext();
+    const { searchTerm, setSearchTerm, options } = useSearchOptions<any>(
+        domain,
+        bookmarkCollection.fund_id,
+    );
     const model = modelTypes[domain];
     const selectedHashes = selectedItemsByType[domain] || [];
 
@@ -111,9 +114,8 @@ export default function ModelSearch({
         router.remember([], `options-${domain}`);
         router.remember(0, `scrollPosition-${domain}`);
     };
-    
-    useEscapeKey(clearSearch);
 
+    useEscapeKey(clearSearch);
 
     useEffect(() => {
         inputRef.current?.focus();
@@ -121,7 +123,10 @@ export default function ModelSearch({
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+            if (
+                containerRef.current &&
+                !containerRef.current.contains(event.target as Node)
+            ) {
                 setShowResults(false);
             }
         };
@@ -144,24 +149,34 @@ export default function ModelSearch({
 
     const handleToggleSelection = (domain: string, uuid: string) => {
         toggleSelection(domain, uuid);
-        
+
         const resultsContainer = resultsRef.current;
         if (resultsContainer) {
-            router.remember(resultsContainer.scrollTop, `scrollPosition-${domain}`);
+            router.remember(
+                resultsContainer.scrollTop,
+                `scrollPosition-${domain}`,
+            );
         }
     };
 
     // Restore scroll position when results are loaded
     useEffect(() => {
         const resultsContainer = resultsRef.current;
-        if (!resultsContainer || !searchTerm || options.length === 0 || !showResults) return;
+        if (
+            !resultsContainer ||
+            !searchTerm ||
+            options.length === 0 ||
+            !showResults
+        )
+            return;
 
         const savedScrollPosition = router.restore(`scrollPosition-${domain}`);
-        const scrollTop = typeof savedScrollPosition === 'number' ? savedScrollPosition : 0;
-        
+        const scrollTop =
+            typeof savedScrollPosition === 'number' ? savedScrollPosition : 0;
+
         if (scrollTop > 0) {
             setIsRestoringScroll(true);
-            
+
             requestAnimationFrame(() => {
                 if (resultsContainer) {
                     resultsContainer.scrollTop = scrollTop;
@@ -240,14 +255,13 @@ export default function ModelSearch({
 
             {/* Results (absolute and below search) */}
             {searchTerm && options.length > 0 && showResults && (
-                <div 
+                <div
                     ref={resultsRef}
                     className={`bg-background absolute right-0 left-0 z-30 mt-2 max-h-[30rem] overflow-y-auto rounded-xl bg-white px-2 py-4 shadow-xl transition-opacity duration-75 ${
                         isRestoringScroll ? 'opacity-0' : 'opacity-100'
                     }`}
                 >
                     {options.map((result) => {
-
                         const uuid = result.id;
                         const isSelected = selectedHashes.includes(uuid);
 
@@ -266,13 +280,16 @@ export default function ModelSearch({
                                             id={uuid}
                                             checked={isSelected}
                                             onChange={() =>
-                                                handleToggleSelection(domain, uuid)
+                                                handleToggleSelection(
+                                                    domain,
+                                                    uuid,
+                                                )
                                             }
                                             className="bg-background text-content-accent checked:bg-primary focus:border-primary focus:ring-primary h-4 w-4 shadow-xs"
                                         />
                                         <div className="space-y-1">
                                             {/* <a href={generateLink(result)} target='_blank'> */}
-                                            <h3 className="hover:cursor-pointer text-lg font-bold">
+                                            <h3 className="text-lg font-bold hover:cursor-pointer">
                                                 {formatStat(
                                                     result,
                                                     model.labelField,

@@ -1,5 +1,5 @@
 import { currency } from '@/utils/currency';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import PercentageProgressBar from './PercentageProgressBar';
 import Paragraph from './atoms/Paragraph';
 
@@ -36,7 +36,7 @@ export default function FundingPercentages({
                 />
             </div>
             <div className="mt-2 flex w-full justify-between">
-                <div className="flex flex-wrap gap-1 items-center">
+                <div className="flex flex-wrap items-center gap-1">
                     <Paragraph className="text-md font-semibold">
                         {currency(amount, 2, amount_currency)}
                     </Paragraph>

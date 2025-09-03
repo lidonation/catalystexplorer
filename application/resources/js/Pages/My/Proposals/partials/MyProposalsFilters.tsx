@@ -3,7 +3,7 @@ import { SearchSelect } from '@/Components/SearchSelect';
 import Selector from '@/Components/atoms/Selector';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 const MyProposalFilters = () => {
     const { setFilters, getFilter } = useFilterContext();

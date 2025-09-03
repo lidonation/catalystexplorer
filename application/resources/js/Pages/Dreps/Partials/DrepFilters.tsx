@@ -2,7 +2,7 @@ import { RangePicker } from '@/Components/RangePicker';
 import Selector from '@/Components/atoms/Selector';
 import { useFilterContext } from '@/Context/FiltersContext'; // Import the custom hook
 import { ParamsEnum } from '@/enums/proposal-search-params';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 export default function DrepFilters() {
     const { t } = useLaravelReactI18n();
@@ -41,7 +41,7 @@ export default function DrepFilters() {
                     />
                 </div>
 
-                <div className="mt-6 grid lg:grid-cols-2 grid-cols-1 gap-8">
+                <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-2">
                     <RangePicker
                         key={'votingPower'}
                         context={t('dreps.votingPowerAda')}
@@ -73,7 +73,7 @@ export default function DrepFilters() {
                             setFilters({
                                 label: t('dreps.filters.delegators'),
                                 value,
-                                param: ParamsEnum.DELEGATORS
+                                param: ParamsEnum.DELEGATORS,
                             })
                         }
                         max={delegatorsRange[1]}

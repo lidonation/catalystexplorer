@@ -1,8 +1,8 @@
 import api from '@/utils/axiosClient';
 import EventBus from '@/utils/eventBus';
 import { AxiosError } from 'axios';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { createContext, useContext, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import { List, ListContextState } from '../types/general';
 
 interface ListContextValue extends ListContextState {
@@ -118,7 +118,6 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
     };
 
     const addBookmarkToList = async (listId: string, bookmarkId: string) => {
-        
         try {
             const res = await api.post(route('api.collections.bookmarks.add'), {
                 bookmark_collection_id: listId,
@@ -177,7 +176,6 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
         listId: string,
         bookmarkId: string,
     ) => {
-
         try {
             const res = await api.post(
                 route('api.collections.bookmarks.remove'),
@@ -205,7 +203,6 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
 
                 EventBus.emit('listItem-removed');
                 return;
-
             }
         } catch (error) {
             console.error('Error removing bookmark from list:', error);

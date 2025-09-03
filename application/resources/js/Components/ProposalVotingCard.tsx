@@ -3,9 +3,9 @@ import Paragraph from '@/Components/atoms/Paragraph';
 import ValueLabel from '@/Components/atoms/ValueLabel';
 import { VoteEnum } from '@/enums/votes-enums';
 import { currency } from '@/utils/currency';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { Check } from 'lucide-react';
 import React from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface ProposalVotingCardProps {

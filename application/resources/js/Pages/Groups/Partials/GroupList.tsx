@@ -1,8 +1,8 @@
 import GroupCard from '@/Pages/Groups/Partials/GroupCard';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
-import GroupData = App.DataTransferObjects.GroupData;
 import GroupCardMini from './GroupCardMini';
+import GroupData = App.DataTransferObjects.GroupData;
 
 interface GroupListProps {
     groups: GroupData[];
@@ -10,10 +10,10 @@ interface GroupListProps {
     gridCols?: string;
 }
 
-const GroupList: React.FC<GroupListProps> = ({ 
-    groups, 
+const GroupList: React.FC<GroupListProps> = ({
+    groups,
     cardType = 'mini',
-    gridCols = 'grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 auto-rows-fr'
+    gridCols = 'grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 auto-rows-fr',
 }) => {
     return (
         <>
@@ -26,7 +26,7 @@ const GroupList: React.FC<GroupListProps> = ({
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.5, ease: 'easeIn' }}
-                            className="h-full flex"
+                            className="flex h-full"
                         >
                             {cardType === 'full' ? (
                                 <div className="w-full flex-1">

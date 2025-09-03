@@ -36,7 +36,7 @@ const IDFilters = React.memo(
         setFilters: (filter: FilteredItem) => void;
     }) => {
         console.log({ filter });
-        
+
         const domain =
             domainMap[filter.param] || labels[filter.param as LabelKeys];
         const { setUuids, options } = useSearchOptions<any>(domain);
@@ -67,8 +67,8 @@ const IDFilters = React.memo(
                 ).title;
 
                 setFilters({
-                    label:filter.label,
-                    param:filter.param,
+                    label: filter.label,
+                    param: filter.param,
                     value: filter.value.filter(
                         (val: string | undefined) => val !== fundLabel,
                     ),
@@ -83,7 +83,6 @@ const IDFilters = React.memo(
                 ),
             });
         };
-
 
         return (
             <div

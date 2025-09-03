@@ -1,7 +1,6 @@
-import Paragraph from '@/Components/atoms/Paragraph';
-import { Link, usePage } from '@inertiajs/react';
-import { ReactNode, useState } from 'react';
+import { Link } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { ReactNode, useState } from 'react';
 
 type NavLinkItemProps = {
     active?: boolean;
@@ -19,20 +18,20 @@ type NavLinkItemProps = {
 };
 
 export default function NavLinkItem({
-                                        children,
-                                        href,
-                                        title,
-                                        className,
-                                        active = false,
-                                        prefetch = false,
-                                        async = false,
-                                        ariaLabel,
-                                        showMyPrefix = false,
-                                        disable = false,
-                                        showDisableTag = true,
-                                        disabledTextColor,
-                                        ...rest
-                                    }: NavLinkItemProps) {
+    children,
+    href,
+    title,
+    className,
+    active = false,
+    prefetch = false,
+    async = false,
+    ariaLabel,
+    showMyPrefix = false,
+    disable = false,
+    showDisableTag = true,
+    disabledTextColor,
+    ...rest
+}: NavLinkItemProps) {
     const { t } = useLaravelReactI18n();
     const [isHovered, setIsHovered] = useState(false);
 
@@ -69,9 +68,13 @@ export default function NavLinkItem({
                             {t('my.my')}
                         </span>
                     )}
-                    <span className={`text-sm ${disable && disabledTextColor ? disabledTextColor : ''}`}>{title}</span>
+                    <span
+                        className={`text-sm ${disable && disabledTextColor ? disabledTextColor : ''}`}
+                    >
+                        {title}
+                    </span>
                     {disable && showDisableTag && (
-                        <span className="ml-3 text-nowrap text-sm">
+                        <span className="ml-3 text-sm text-nowrap">
                             {t('Coming Soon!')}
                         </span>
                     )}

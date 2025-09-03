@@ -10,7 +10,7 @@ export type SearchParams = {
     [ParamsEnum.COHORT]: string[];
     [ParamsEnum.COMMUNITIES]: string[];
     [ParamsEnum.FUNDS]: string | string[];
-    [ParamsEnum.FUNDING_STATUS]: (string[] | string);
+    [ParamsEnum.FUNDING_STATUS]: string[] | string;
     [ParamsEnum.GROUPS]: string[];
     [ParamsEnum.LIMIT]: number;
     [ParamsEnum.MAX_BUDGET]: number;
@@ -34,5 +34,5 @@ export type SearchParams = {
     [ParamsEnum.HELPFUL]: string;
     [ParamsEnum.RATINGS]: string[];
     [ParamsEnum.REPUTATION_SCORES]: number[];
-    [key: string]: any; 
+    [key: string]: any;
 };

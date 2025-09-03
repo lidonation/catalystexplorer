@@ -1,7 +1,7 @@
 import Title from '@/Components/atoms/Title';
 import Card from '@/Components/Card';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import Step1 from './Step1';
 import Step2 from './Step2';
 import Step3 from './Step3';
@@ -49,8 +49,6 @@ export default function SetChartMetrics({
     const handleLoadingChange = (loading: boolean): void => {
         onLoadingChange?.(loading);
     };
-
-   
 
     return (
         <div data-testid="set-chart-metrics">

@@ -1,8 +1,8 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import CopyableCell from '@/Components/CopyableCell';
 import RegisterTwo from '@/Components/svgs/RegisterTwo';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import TransactionRow from './TransactionRow';
 import TransactionData = App.DataTransferObjects.TransactionData;
 

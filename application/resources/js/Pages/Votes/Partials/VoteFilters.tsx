@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
 import { SearchSelect } from '@/Components/SearchSelect';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { VoteEnums } from '@/enums/vote-search-enums';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import { router } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { useEffect, useState } from 'react';
 
 const VoteFilters = () => {
     const { t } = useLaravelReactI18n();
@@ -51,12 +51,14 @@ const VoteFilters = () => {
             setFilters({
                 param: param,
                 value: null,
-                label: undefined
+                label: undefined,
             });
 
             setTimeout(() => {
                 const currentUrl = window.location.pathname;
-                const currentParams = new URLSearchParams(window.location.search);
+                const currentParams = new URLSearchParams(
+                    window.location.search,
+                );
                 currentParams.delete(param);
 
                 const params: Record<string, string> = {};
@@ -69,14 +71,14 @@ const VoteFilters = () => {
                 router.get(currentUrl, params, {
                     preserveState: true,
                     preserveScroll: true,
-                    only: ['voterHistories', 'filters']
+                    only: ['voterHistories', 'filters'],
                 });
             }, 10);
         } else {
             setFilters({
                 param: param,
                 value: selectedItems,
-                label: labelText
+                label: labelText,
             });
         }
     };
@@ -101,7 +103,7 @@ const VoteFilters = () => {
                         domain="fundTitles"
                         selected={selectedFund}
                         onChange={handleFundChange}
-                        placeholder={t('select', {'Select': 'Select'})}
+                        placeholder={t('select', { Select: 'Select' })}
                         multiple={true}
                         emptyText={t('vote.noEpochsAvailable')}
                         valueField={'id'}

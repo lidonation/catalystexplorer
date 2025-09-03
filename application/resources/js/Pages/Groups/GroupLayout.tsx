@@ -4,8 +4,8 @@ import BioCard from '@/Pages/Groups/Partials/BioCard';
 import GroupHeader from '@/assets/images/group-header.jpg';
 import { generateTabs, groupTabs } from '@/utils/routeTabs';
 import { PageProps as InertiaPageProps } from '@inertiajs/core';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import GroupSocials from './Partials/GroupSocials';
 import GroupTabs from './Partials/GroupTab';
 import GroupData = App.DataTransferObjects.GroupData;
@@ -34,7 +34,6 @@ export default function GroupLayout({ children, group }: GroupLayoutProps) {
     );
 
     const tabs = useMemo(() => generateTabs(t, tabConfig), [t, tabConfig]);
-
 
     useEffect(() => {
         const currentPath = window.location.pathname;

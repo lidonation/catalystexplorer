@@ -142,8 +142,8 @@ export default function LoginForm({ closeModal }: LoginFormProps) {
 
     return (
         <>
-            <ErrorDisplay/>
-            
+            <ErrorDisplay />
+
             <form
                 className="content-gap flex w-full flex-col p-4"
                 data-testid="login-form"

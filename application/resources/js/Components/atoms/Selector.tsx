@@ -1,8 +1,8 @@
 import { Popover, PopoverContent, PopoverTrigger } from '@/Components/Popover';
 import { cn } from '@/lib/utils';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import Checkbox from './Checkbox';
 
 type SelectProps = {
@@ -52,7 +52,7 @@ export default function Selector({
     let currentOption = null;
 
     // Use custom placeholder if provided, otherwise default logic
-    let defaultPlaceholder = isMultiselect
+    const defaultPlaceholder = isMultiselect
         ? `${t('select')} `
         : `${t('select')} ${context}`;
     placeholder = placeholder || defaultPlaceholder;
@@ -89,17 +89,26 @@ export default function Selector({
     };
 
     return (
-        <div className={cn('h-full rounded-lg', className + bgColor)} data-testid={dataTestId}>
+        <div
+            className={cn('h-full rounded-lg', className + bgColor)}
+            data-testid={dataTestId}
+        >
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <button
                         role="combobox"
                         aria-expanded={open}
                         aria-label={t('select') + ' ' + t('option')}
-                        className={cn("border-input placeholder:text-muted-foreground ring-offset-background flex h-full w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50", triggerClassName)}
+                        className={cn(
+                            'border-input placeholder:text-muted-foreground ring-offset-background flex h-full w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50',
+                            triggerClassName,
+                        )}
                         data-testid={dataTestIdButton}
                     >
-                        <span className="flex items-center gap-2 overflow-hidden" data-testid="selector-selected-items">
+                        <span
+                            className="flex items-center gap-2 overflow-hidden"
+                            data-testid="selector-selected-items"
+                        >
                             <span className="overflow-clip text-sm text-nowrap">
                                 {currentOption
                                     ? currentOption.label
@@ -115,7 +124,10 @@ export default function Selector({
                     </button>
                 </PopoverTrigger>
                 <PopoverContent
-                    className={cn("bg-background relative z-150 w-full min-w-[var(--radix-popover-trigger-width)] p-1", popoverClassName)}
+                    className={cn(
+                        'bg-background relative z-150 w-full min-w-[var(--radix-popover-trigger-width)] p-1',
+                        popoverClassName,
+                    )}
                     align="start"
                     data-testid="options-container"
                 >

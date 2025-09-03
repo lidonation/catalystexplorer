@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
 import { SearchSelect } from '@/Components/SearchSelect';
 import { useFilterContext } from '@/Context/FiltersContext';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import { router } from '@inertiajs/react';
 import { VoterEnums } from '@/enums/voter-search-enums';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { useEffect, useState } from 'react';
 
 const VoterFilters = () => {
     const { t } = useLaravelReactI18n();
@@ -44,29 +43,34 @@ const VoterFilters = () => {
         setIsInitialized(true);
     }, [filters]);
 
-    const handleFilterUpdate = (param: string, selectedItems: string[] | string) => {
+    const handleFilterUpdate = (
+        param: string,
+        selectedItems: string[] | string,
+    ) => {
         const items = selectedItems as string[];
 
-
-         if (param === VoterEnums.FUND) {
+        if (param === VoterEnums.FUND) {
             setSelectedFund(items);
         } else if (param === 'status') {
             setSelectedStatus(items);
         }
 
-        const labelText = param === VoterEnums.FUND ? t('funds.fund') : t('voter.table.status');
+        const labelText =
+            param === VoterEnums.FUND
+                ? t('funds.fund')
+                : t('voter.table.status');
 
         if (items.length === 0) {
             setFilters({
                 param: param,
                 value: null,
-                label: undefined
+                label: undefined,
             });
         } else {
             setFilters({
                 param: param,
                 value: items,
-                label: labelText
+                label: labelText,
             });
         }
     };
@@ -74,7 +78,7 @@ const VoterFilters = () => {
     return (
         <div className="bg-background border-dark-light rounded-md border p-4">
             <div className="flex flex-col gap-4 md:flex-row md:gap-8">
-                <div className="flex flex-col gap-2 flex-1">
+                <div className="flex flex-1 flex-col gap-2">
                     <span className="text-gray-persist font-medium">
                         {t('voter.table.latestFund')}
                     </span>
@@ -82,8 +86,10 @@ const VoterFilters = () => {
                         key={'fund-titles'}
                         domain="fundTitles"
                         selected={selectedFund}
-                        onChange={(items) => handleFilterUpdate(VoterEnums.FUND, items)}
-                        placeholder={t('select', {'Select': 'Select'})}
+                        onChange={(items) =>
+                            handleFilterUpdate(VoterEnums.FUND, items)
+                        }
+                        placeholder={t('select', { Select: 'Select' })}
                         multiple={true}
                         emptyText={t('voter.noFundsAvailable')}
                         valueField={'hash'}
@@ -91,7 +97,7 @@ const VoterFilters = () => {
                         side={'bottom'}
                     />
                 </div>
-                 <div className="flex flex-col gap-2 flex-1">
+                <div className="flex flex-1 flex-col gap-2">
                     <span className="text-gray-persist font-medium">
                         {t('voter.table.status')}
                     </span>
@@ -99,8 +105,10 @@ const VoterFilters = () => {
                         key={'voter-status'}
                         domain="static"
                         selected={selectedStatus}
-                        onChange={(items) => handleFilterUpdate('status', items)}
-                        placeholder={t('select', {'Select': 'Select'})}
+                        onChange={(items) =>
+                            handleFilterUpdate('status', items)
+                        }
+                        placeholder={t('select', { Select: 'Select' })}
                         multiple={true}
                         emptyText={t('voter.noStatusAvailable')}
                         valueField={'value'}

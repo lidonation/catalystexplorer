@@ -1,9 +1,6 @@
-import {useLaravelReactI18n} from "laravel-react-i18n";
-
 export default function ProposalResultsLoading() {
     return (
-        <div
-            className="container mx-auto grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:max-w-full">
+        <div className="container mx-auto grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:max-w-full">
             {[1, 2, 3].map((proposal, index) => (
                 <div
                     key={index}

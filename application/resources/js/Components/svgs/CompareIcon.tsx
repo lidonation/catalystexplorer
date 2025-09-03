@@ -4,7 +4,7 @@ type CompareIconProps = {
     height?: number;
     exists?: boolean;
     primary?: boolean;
-    strokeWidth?:string
+    strokeWidth?: string;
 };
 export default function CompareIcon({
     className,
@@ -12,7 +12,7 @@ export default function CompareIcon({
     height = 24,
     exists,
     primary,
-    strokeWidth='1.5'
+    strokeWidth = '1.5',
 }: CompareIconProps) {
     let stroke;
     if (exists) {

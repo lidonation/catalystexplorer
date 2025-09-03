@@ -3,16 +3,16 @@ import Title from '@/Components/atoms/Title';
 import Value from '@/Components/atoms/Value';
 import Card from '@/Components/Card';
 import Divider from '@/Components/Divider';
+import ExpandableContent from '@/Components/ExpandableContent';
+import ExpandableContentAnimation from '@/Components/ExpandableContentAnimation';
 import RichContent from '@/Components/RichContent';
 import CommunitiesIcon from '@/Components/svgs/CommunitiesSvg';
-import ExpandableContentAnimation from '@/Components/ExpandableContentAnimation';
-import ExpandableContent from '@/Components/ExpandableContent';
 import { ListProvider } from '@/Context/ListContext';
 import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
-import React,{ useRef, useState, useEffect } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import React, { useEffect, useRef, useState } from 'react';
 import CommunityIdeascaleProfiles from './CommunityIdeascaleProfiles';
 import CommunityData = App.DataTransferObjects.CommunityData;
 
@@ -32,13 +32,17 @@ const CommunityCard: React.FC<CommunityCardProps> = ({
 
     useEffect(() => {
         const timer = setTimeout(() => {
-        const element = containerRef.current;
-        if (element) {
-            const style = getComputedStyle(element);
+            const element = containerRef.current;
+            if (element) {
+                const style = getComputedStyle(element);
                 const lineHeight = parseFloat(style.lineHeight) || 24; // fallback to 24px
                 const height = element.scrollHeight; // Use scrollHeight instead of offsetHeight
                 const calculatedLines = Math.ceil(height / lineHeight);
-                console.log('Line calculation:', { height, lineHeight, calculatedLines }); // Debug log
+                console.log('Line calculation:', {
+                    height,
+                    lineHeight,
+                    calculatedLines,
+                }); // Debug log
                 setContentLineCount(calculatedLines);
             }
         }, 100);
@@ -77,7 +81,7 @@ const CommunityCard: React.FC<CommunityCardProps> = ({
                             {community.title}
                         </Title>
                     </Link>
-                   {contentLineCount > 4 ? (
+                    {contentLineCount > 4 ? (
                         <ExpandableContentAnimation
                             lineClamp={4}
                             contentRef={containerRef}
@@ -91,18 +95,28 @@ const CommunityCard: React.FC<CommunityCardProps> = ({
                                 >
                                     <div
                                         ref={containerRef}
-                                        className={`text-content text-4 pb-2 transition-all duration-200 cursor-pointer ${
-                                            isHoveredContent ? 'bg-background relative z-10 shadow-lg rounded-md px-2' : ''
+                                        className={`text-content text-4 cursor-pointer pb-2 transition-all duration-200 ${
+                                            isHoveredContent
+                                                ? 'bg-background relative z-10 rounded-md px-2 shadow-lg'
+                                                : ''
                                         }`}
                                         style={{
-                                            paddingBottom: isHoveredContent ? '20px' : '2px',
+                                            paddingBottom: isHoveredContent
+                                                ? '20px'
+                                                : '2px',
                                             display: '-webkit-box',
-                                            WebkitLineClamp: isHoveredContent ? 'none' : 4,
+                                            WebkitLineClamp: isHoveredContent
+                                                ? 'none'
+                                                : 4,
                                             WebkitBoxOrient: 'vertical',
-                                            overflow: isHoveredContent ? 'visible' : 'hidden',
+                                            overflow: isHoveredContent
+                                                ? 'visible'
+                                                : 'hidden',
                                         }}
                                     >
-                                        <RichContent content={community.content} />
+                                        <RichContent
+                                            content={community.content}
+                                        />
                                     </div>
                                 </ExpandableContent>
                             </div>

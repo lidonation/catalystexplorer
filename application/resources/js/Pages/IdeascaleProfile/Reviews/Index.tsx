@@ -4,7 +4,7 @@ import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import RelatedReviews from '@/Pages/Reviews/Partials/RelatedReviews';
 import { PaginatedData } from '@/types/paginated-data';
 import { Head, WhenVisible } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import IdeascaleProfileLayout from '../IdeascaleProfileLayout';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ReviewData = App.DataTransferObjects.ReviewData;
@@ -40,8 +40,8 @@ export default function Reviews({
                                 reviews={reviews}
                                 routeParam={{
                                     [ParamsEnum.IDEASCALE_PROFILES]:
-                                    ideascaleProfile.id
-                                        ? [ideascaleProfile.id]
+                                        ideascaleProfile.id
+                                            ? [ideascaleProfile.id]
                                             : null,
                                 }}
                             />

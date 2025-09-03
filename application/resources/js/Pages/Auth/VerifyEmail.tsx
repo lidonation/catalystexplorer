@@ -17,9 +17,9 @@ export default function VerifyEmail({ status }: { status?: string }) {
         <GuestLayout>
             <Head title="Email Verification" />
 
-            <ErrorDisplay/>
+            <ErrorDisplay />
 
-            <div className="mb-4 text-4 text-dark">
+            <div className="text-4 text-dark mb-4">
                 Thanks for signing up! Before getting started, could you verify
                 your email address by clicking on the link we just emailed to
                 you? If you didn't receive the email, we will gladly send you

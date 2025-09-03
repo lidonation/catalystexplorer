@@ -1,5 +1,5 @@
 import { Head } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import CommunityLayout from '../CommunityLayout';
 import CommunityFundingChart from '../Partials/CommunityFundingChart';
 import CommunityData = App.DataTransferObjects.CommunityData;
@@ -36,7 +36,7 @@ export default function Proposals({
                 value: 'USD',
                 label: t('communities.filters.totalUsdAwarded'),
             },
-        ]
+        ],
     ];
 
     const distributedFilterOptions = [

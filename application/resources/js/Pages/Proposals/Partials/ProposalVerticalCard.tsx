@@ -1,5 +1,7 @@
 import Title from '@/Components/atoms/Title';
 import UserQuickView from '@/Components/UserQuickView';
+import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
+import { useCallback, useRef, useState } from 'react';
 import ProposalCardFooter from './ProposalCardFooter';
 import ProposalCardHeader from './ProposalCardHeader';
 import ProposalCardNav from './ProposalCardNav';
@@ -7,23 +9,21 @@ import ProposalFundingPercentages from './ProposalFundingPercentages';
 import ProposalFundingStatus from './ProposalFundingStatus';
 import ProposalQuickpitch from './ProposalQuickpitch';
 import ProposalSolution from './ProposalSolution';
-import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
-import {useCallback, useState, useRef, useEffect} from 'react';
 
 export default function ProposalVerticalCard({
-     proposal,
-     userSelected,
-     noSelectedUser,
-     handleUserClick,
-     quickPitchView,
-     toggleLocalQuickPitchView,
-     isHorizontal,
-     t,
-     hasQuickPitch,
-     yesVotes,
-     abstainVotes,
-     hideFooter = false,
- }: any) {
+    proposal,
+    userSelected,
+    noSelectedUser,
+    handleUserClick,
+    quickPitchView,
+    toggleLocalQuickPitchView,
+    isHorizontal,
+    t,
+    hasQuickPitch,
+    yesVotes,
+    abstainVotes,
+    hideFooter = false,
+}: any) {
     const [cardHeight, setCardHeight] = useState<number | null>(null);
     const cardRef = useRef<HTMLElement>(null);
 
@@ -36,7 +36,7 @@ export default function ProposalVerticalCard({
                 handleUserClick(user);
             }
         },
-        [handleUserClick]
+        [handleUserClick],
     );
 
     const wrappedNoSelectedUser = useCallback(() => {
@@ -48,18 +48,19 @@ export default function ProposalVerticalCard({
     return (
         <article
             ref={cardRef as React.RefObject<HTMLElement>}
-            className="bg-background proposal-card proposal-card-vertical flex h-full flex-col justify-between rounded-xl p-2 shadow-lg gap-3 relative"
-            style={cardHeight && userSelected ? { height: `${cardHeight}px` } : {}}
+            className="bg-background proposal-card proposal-card-vertical relative flex h-full flex-col justify-between gap-3 rounded-xl p-2 shadow-lg"
+            style={
+                cardHeight && userSelected ? { height: `${cardHeight}px` } : {}
+            }
             data-testid={`vertical-proposal-card-${proposal?.id}`}
         >
             {userSelected && (
                 <button
                     onClick={wrappedNoSelectedUser}
-                    className="absolute right-4 top-4 z-10 rounded-full p-1 hover:bg-background hover:text-content focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="hover:bg-background hover:text-content focus:ring-primary absolute top-4 right-4 z-10 rounded-full p-1 focus:ring-2 focus:outline-none"
                     aria-label="Close profile"
                     data-testid="close-profile-button"
-                >
-                </button>
+                ></button>
             )}
 
             {/* Changed overflow-hidden to overflow-visible for proper hover expansion */}
@@ -72,10 +73,10 @@ export default function ProposalVerticalCard({
                 />
             </section>
 
-            <section className='flex-1 flex flex-col'>
-                <div className="flex-1  px-2">
+            <section className="flex flex-1 flex-col">
+                <div className="flex-1 px-2">
                     {userSelected ? (
-                        <UserQuickView user={userSelected}/>
+                        <UserQuickView user={userSelected} />
                     ) : (
                         <>
                             <ProposalCardNav
@@ -87,11 +88,14 @@ export default function ProposalVerticalCard({
                                 t={t}
                             />
                             <section
-                                className="mt-3 border-b border-gray-200 pb-2 mb-2"
+                                className="mt-3 mb-2 border-b border-gray-200 pb-2"
                                 aria-labelledby="funding-heading"
                             >
-                                <div className="flex items-center flex-row gap-2 my-1.5" data-testid="proposal-funding-status">
-                                    <Title level='4' className="font-semibold">
+                                <div
+                                    className="my-1.5 flex flex-row items-center gap-2"
+                                    data-testid="proposal-funding-status"
+                                >
+                                    <Title level="4" className="font-semibold">
                                         {t('funding')}
                                     </Title>
 
@@ -104,10 +108,10 @@ export default function ProposalVerticalCard({
                                     proposal={proposal}
                                 />
                             </section>
-                            <div className="relative mt-4 min-h-36 border-b border-gray-200 pb-2 mb-2">
+                            <div className="relative mt-4 mb-2 min-h-36 border-b border-gray-200 pb-2">
                                 {quickPitchView ? (
                                     <ProposalQuickpitch
-                                         quickpitch={proposal.quickpitch}
+                                        quickpitch={proposal.quickpitch}
                                     />
                                 ) : (
                                     <ProposalSolution
@@ -125,13 +129,18 @@ export default function ProposalVerticalCard({
                     aria-labelledby="team-heading"
                     data-testid="proposal-team-section"
                 >
-                    <Title level="4" id="team-heading" className="font-medium" deta-testid="proposal-team-title">
+                    <Title
+                        level="4"
+                        id="team-heading"
+                        className="font-medium"
+                        deta-testid="proposal-team-title"
+                    >
                         {t('teams')}
                     </Title>
                     <IdeascaleProfileUsers
                         users={proposal?.users}
                         onUserClick={wrappedHandleUserClick}
-                        className='bg-content-light'
+                        className="bg-content-light"
                         toolTipProps={t('proposals.viewTeam')}
                     />
                 </div>

@@ -1,3 +1,4 @@
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
@@ -28,7 +29,6 @@ import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 import ProposalSearchBar from './partials/ProposalSearchBar';
 import ProposalData = App.DataTransferObjects.ProposalData;
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface Campaign {
     id: number;
@@ -41,7 +41,7 @@ interface Step3Props {
     activeStep: number;
     proposals: PaginatedData<ProposalData[]>;
     campaigns: Campaign[];
-    selectedProposals: { id: string; vote: number|null }[];
+    selectedProposals: { id: string; vote: number | null }[];
     filters: SearchParams;
     bookmarkHash: string;
     fundSlug?: string;
@@ -65,12 +65,9 @@ const Step3: React.FC<Step3Props> = ({
     });
 
     const [selectedIds, setSelectedIds] =
-        useState<{ id: string; vote: number | null }[]>(
-            selectedProposals,
-        );
+        useState<{ id: string; vote: number | null }[]>(selectedProposals);
 
-        console.log({ bookmarkHash });
-        
+    console.log({ bookmarkHash });
 
     const form = useForm({
         proposals: selectedIds,
@@ -124,7 +121,6 @@ const Step3: React.FC<Step3Props> = ({
                 item.id === proposalId ? { ...item, vote } : item,
             );
         });
-
     };
 
     const handleSearch = (search: string) => {
@@ -284,7 +280,7 @@ const Step3: React.FC<Step3Props> = ({
                                     proposals.data
                                         .filter((p) => p.id)
                                         .map((proposal) => {
-                                            let selected = selectedIds.find(
+                                            const selected = selectedIds.find(
                                                 (item) =>
                                                     item.id == proposal.id,
                                             );

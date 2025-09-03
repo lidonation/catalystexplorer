@@ -2,13 +2,13 @@ type LogOutIconProps = {
     className?: string;
     width?: number;
     height?: number;
-    onClick? :React.MouseEventHandler<SVGSVGElement>;
+    onClick?: React.MouseEventHandler<SVGSVGElement>;
 };
 export default function LogOutIcon({
     className,
     width = 24,
     height = 24,
-    onClick
+    onClick,
 }: LogOutIconProps) {
     return (
         <svg

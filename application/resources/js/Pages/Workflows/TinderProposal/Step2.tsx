@@ -1,24 +1,27 @@
-import { generateLocalizedRoute, useLocalizedRoute } from '@/utils/localizedRoute';
-import React, { useEffect, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import { useForm } from '@inertiajs/react';
-import lodashPkg from 'lodash';
+import InputError from '@/Components/InputError';
+import RadioGroup from '@/Components/RadioGroup';
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
+import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
+import CustomSwitch from '@/Components/atoms/Switch';
 import TextInput from '@/Components/atoms/TextInput';
-import ValueLabel from '@/Components/atoms/ValueLabel';
 import Textarea from '@/Components/atoms/Textarea';
+import ValueLabel from '@/Components/atoms/ValueLabel';
+import { TinderWorkflowParams } from '@/enums/tinder-workflow-params';
+import { StatusEnum, VisibilityEnum } from '@/enums/votes-enums';
+import {
+    generateLocalizedRoute,
+    useLocalizedRoute,
+} from '@/utils/localizedRoute';
+import { useForm } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import lodashPkg from 'lodash';
+import React, { useEffect, useState } from 'react';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
-import InputError from '@/Components/InputError';
-import RadioGroup from '@/Components/RadioGroup';
-import CustomSwitch from '@/Components/atoms/Switch';
-import Paragraph from '@/Components/atoms/Paragraph';
-import { StatusEnum, VisibilityEnum } from '@/enums/votes-enums';
-import { TinderWorkflowParams } from '@/enums/tinder-workflow-params';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface Step2Props {
     stepDetails: any[];
@@ -28,7 +31,7 @@ interface Step2Props {
         proposalTypes: string[];
         proposalSizes: string[];
         impactTypes: string[];
-        ListData: BookmarkCollectionData
+        ListData: BookmarkCollectionData;
     };
     step2Data?: {
         title?: string;
@@ -56,19 +59,19 @@ const Step2: React.FC<Step2Props> = ({
         [TinderWorkflowParams.TITLE]: step2Data?.title || '',
         [TinderWorkflowParams.CONTENT]: step2Data?.content || '',
         [TinderWorkflowParams.SELECTED_FUND]: preferences?.selectedFund || '',
-        [TinderWorkflowParams.VISIBILITY]: step2Data?.visibility  || VisibilityEnum.UNLISTED,
-        [TinderWorkflowParams.COMMENTS_ENABLED]: step2Data?.comments_enabled  ?? false,
+        [TinderWorkflowParams.VISIBILITY]:
+            step2Data?.visibility || VisibilityEnum.UNLISTED,
+        [TinderWorkflowParams.COMMENTS_ENABLED]:
+            step2Data?.comments_enabled ?? false,
         [TinderWorkflowParams.COLOR]: step2Data?.color || '#2596BE',
-        [TinderWorkflowParams.STATUS]: step2Data?.status  || StatusEnum.DRAFT,
+        [TinderWorkflowParams.STATUS]: step2Data?.status || StatusEnum.DRAFT,
     });
-
 
     const { lowerCase } = lodashPkg;
     const [isFormValid, setIsFormValid] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
 
     const localizedRoute = useLocalizedRoute;
-
 
     const { t } = useLaravelReactI18n();
 
@@ -80,32 +83,36 @@ const Step2: React.FC<Step2Props> = ({
         const newErrors: Record<string, string> = {};
 
         if (!form.data[TinderWorkflowParams.TITLE].trim()) {
-            newErrors[TinderWorkflowParams.TITLE] = t('workflows.tinderProposal.step2.titleRequired');
+            newErrors[TinderWorkflowParams.TITLE] = t(
+                'workflows.tinderProposal.step2.titleRequired',
+            );
         }
 
         if (form.data[TinderWorkflowParams.CONTENT].length < 69) {
-            newErrors[TinderWorkflowParams.CONTENT] = t('workflows.tinderProposal.step2.descriptionMinLength69');
+            newErrors[TinderWorkflowParams.CONTENT] = t(
+                'workflows.tinderProposal.step2.descriptionMinLength69',
+            );
         }
 
         setErrors(newErrors);
 
         setIsFormValid(
             Object.keys(newErrors).length === 0 &&
-            !!form.data[TinderWorkflowParams.TITLE] &&
-            form.data[TinderWorkflowParams.CONTENT].length >= 69,
+                !!form.data[TinderWorkflowParams.TITLE] &&
+                form.data[TinderWorkflowParams.CONTENT].length >= 69,
         );
     };
 
     const submitForm = () => {
         form.post(
-            generateLocalizedRoute(
-                'workflows.tinderProposal.saveStep2',
-                {
-                    [TinderWorkflowParams.TINDER_COLLECTION_HASH]: tinderCollectionHash,
-                    [TinderWorkflowParams.LEFT_BOOKMARK_COLLECTION_HASH]: leftBookmarkCollectionHash,
-                    [TinderWorkflowParams.RIGHT_BOOKMARK_COLLECTION_HASH]: rightBookmarkCollectionHash,
-                },
-            ),
+            generateLocalizedRoute('workflows.tinderProposal.saveStep2', {
+                [TinderWorkflowParams.TINDER_COLLECTION_HASH]:
+                    tinderCollectionHash,
+                [TinderWorkflowParams.LEFT_BOOKMARK_COLLECTION_HASH]:
+                    leftBookmarkCollectionHash,
+                [TinderWorkflowParams.RIGHT_BOOKMARK_COLLECTION_HASH]:
+                    rightBookmarkCollectionHash,
+            }),
         );
     };
 

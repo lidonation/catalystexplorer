@@ -26,9 +26,5 @@ export default function PlayerSkipForward({
             <path d="M4 5v14l12 -7z" />
             <line x1="20" y1="5" x2="20" y2="19" />
         </svg>
-
     );
 }
-
-
-

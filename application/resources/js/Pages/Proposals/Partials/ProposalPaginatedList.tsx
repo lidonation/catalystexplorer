@@ -24,7 +24,6 @@ const ProposalPaginatedList: React.FC<ProposalProps> = ({
     setQuickPitchView,
     isMini,
 }) => {
-
     return (
         <>
             <section className="proposals-wrapper container mt-3 w-full pb-8">
@@ -39,7 +38,10 @@ const ProposalPaginatedList: React.FC<ProposalProps> = ({
                     data="proposals"
                 >
                     {proposals?.data.length ? (
-                        <div className="py-4" data-testid="proposal-results-container">
+                        <div
+                            className="py-4"
+                            data-testid="proposal-results-container"
+                        >
                             <ProposalResults
                                 proposals={proposals?.data}
                                 isHorizontal={isHorizontal}
@@ -49,7 +51,7 @@ const ProposalPaginatedList: React.FC<ProposalProps> = ({
                             />
                         </div>
                     ) : (
-                        <div className=" mb-8">
+                        <div className="mb-8">
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
@@ -62,7 +64,10 @@ const ProposalPaginatedList: React.FC<ProposalProps> = ({
                     )}
                 </WhenVisible>
             </section>
-            <section className="container" data-testid="proposal-paginator-container">
+            <section
+                className="container"
+                data-testid="proposal-paginator-container"
+            >
                 {proposals && <Paginator pagination={proposals} />}
             </section>
         </>

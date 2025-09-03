@@ -2,17 +2,20 @@ import axios, { AxiosRequestConfig, CancelTokenSource } from 'axios';
 import ApiPaginatedData from '../types/api-paginated-data';
 
 class ApiRequestManager {
-    currentRequest: { url: string; cancelToken: CancelTokenSource } | null = null;
+    currentRequest: { url: string; cancelToken: CancelTokenSource } | null =
+        null;
 
     async sendRequest<K>(
         method: 'get' | 'post' | 'patch' | 'delete',
         url: string,
         data = {},
-        options: AxiosRequestConfig = {}
+        options: AxiosRequestConfig = {},
     ): Promise<ApiPaginatedData<K>> {
         // Cancel only if the URL is the same
         if (this.currentRequest && this.currentRequest.url === url) {
-            this.currentRequest.cancelToken.cancel('Request canceled by a new request to the same URL.');
+            this.currentRequest.cancelToken.cancel(
+                'Request canceled by a new request to the same URL.',
+            );
         }
 
         // Create a new CancelToken and track the current request

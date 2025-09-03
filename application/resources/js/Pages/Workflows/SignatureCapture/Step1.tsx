@@ -1,16 +1,16 @@
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { router } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronRight } from 'lucide-react';
 import React from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
+import ConnectWalletList from '@/Components/ConnectWalletList';
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
-import ConnectWalletList from '@/Components/ConnectWalletList';
 
 interface Step1Props {
     stepDetails: any[];

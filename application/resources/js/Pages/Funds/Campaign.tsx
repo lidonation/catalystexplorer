@@ -6,7 +6,7 @@ import CampaignCardExtended from '@/Pages/Campaign/Partials/CampaignCardExtended
 import ProposalMiniCardLoader from '@/Pages/Proposals/Partials/ProposalMiniCardLoader';
 import { PageProps } from '@/types';
 import { Head, WhenVisible } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { PaginatedData } from '../../types/paginated-data';
 import { SearchParams } from '../../types/search-params';
 import CampaignAccordion from '../Campaign/Partials/CampaignAccordion';

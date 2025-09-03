@@ -1,4 +1,4 @@
-export type  ProposalMetrics = {
+export type ProposalMetrics = {
     submitted?: number;
     approved?: number;
     completed?: number;
@@ -8,4 +8,4 @@ export type  ProposalMetrics = {
     awardedADA?: number;
     distributedUSD?: number;
     distributedADA?: number;
-}
+};

@@ -2,8 +2,8 @@ import ToolTipHover from '@/Components/ToolTipHover';
 import UserAvatar from '@/Components/UserAvatar';
 import { PageProps } from '@/types';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface IdeascaleProfileUsers extends Record<string, unknown> {
     users: App.DataTransferObjects.IdeascaleProfileData[];
@@ -35,9 +35,13 @@ export default function IdeascaleProfileUsers({
 
     const [isHovered, setIsHovered] = useState(false);
 
-    const [hoveredUserIndex, setHoveredUserIndex] = useState<number | null>(null);
+    const [hoveredUserIndex, setHoveredUserIndex] = useState<number | null>(
+        null,
+    );
 
-    const handleUserClick = (user: App.DataTransferObjects.IdeascaleProfileData) => {
+    const handleUserClick = (
+        user: App.DataTransferObjects.IdeascaleProfileData,
+    ) => {
         if (onUserClick) {
             onUserClick(user);
         }
@@ -66,8 +70,11 @@ export default function IdeascaleProfileUsers({
                         />
 
                         {hoveredUserIndex === index && (
-                            <div className="absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 transform" data-testid={`ideascale-profile-user-tooltip-${index}`}>
-                                <div className="bg-background border-2 text-content text-xs rounded py-1 px-2 whitespace-nowrap">
+                            <div
+                                className="absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 transform"
+                                data-testid={`ideascale-profile-user-tooltip-${index}`}
+                            >
+                                <div className="bg-background text-content rounded border-2 px-2 py-1 text-xs whitespace-nowrap">
                                     {user.name || t('anonymous')}
                                 </div>
                             </div>
@@ -76,9 +83,12 @@ export default function IdeascaleProfileUsers({
                 ))}
 
                 {remainingCount > 0 && (
-                    <li className="relative" data-testid="ideascale-profile-user-generate-link">
+                    <li
+                        className="relative"
+                        data-testid="ideascale-profile-user-generate-link"
+                    >
                         <div
-                            className={`${className || ''} flex h-8 w-8 items-center justify-center rounded-full border-2 border-background text-sm text-dark`}
+                            className={`${className || ''} border-background text-dark flex h-8 w-8 items-center justify-center rounded-full border-2 text-sm`}
                             onClick={handleGenerateLink}
                             onMouseEnter={() => setIsHovered(true)}
                             onMouseLeave={() => setIsHovered(false)}

@@ -1,6 +1,6 @@
 import UserAvatar from '@/Components/UserAvatar';
 import { PageProps } from '@/types';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 interface CommunityIdeascaleProfilesProps extends Record<string, unknown> {
     ideascaleProfiles: App.DataTransferObjects.IdeascaleProfileData[];
@@ -24,7 +24,9 @@ export default function CommunityIdeascaleProfiles({
                         <UserAvatar
                             size="size-8"
                             imageUrl={user.hero_img_url}
-                            name={user.name || user.username || 'Anonymous User'}
+                            name={
+                                user.name || user.username || 'Anonymous User'
+                            }
                         />
                     </li>
                 ))}

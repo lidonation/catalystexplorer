@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 interface UseWorkflowSlideOverReturn {
     isOpen: boolean;
@@ -19,7 +19,7 @@ export default function useWorkflowSlideOver(): UseWorkflowSlideOverReturn {
     }, []);
 
     const toggleSlideOver = useCallback(() => {
-        setIsOpen(prev => !prev);
+        setIsOpen((prev) => !prev);
     }, []);
 
     return {

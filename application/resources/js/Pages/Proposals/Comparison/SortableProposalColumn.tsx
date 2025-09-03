@@ -1,17 +1,17 @@
+import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
 import { IndexedDBService } from '@/Services/IndexDbService';
 import { shortNumber } from '@/utils/shortNumber';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { Grab, MinusSquareIcon } from 'lucide-react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import ProposalFundingPercentages from '../Partials/ProposalFundingPercentages';
 import ProposalFundingStatus from '../Partials/ProposalFundingStatus';
+import ProposalSolution from '../Partials/ProposalSolution';
 import ColumnHeader from './Partials/ColumnHeader';
 import ProposalData = App.DataTransferObjects.ProposalData;
-import ProposalSolution from '../Partials/ProposalSolution';
-import Paragraph from '@/Components/atoms/Paragraph';
 
 export default function SortableProposalColumn({
     proposal,
@@ -104,7 +104,7 @@ export default function SortableProposalColumn({
     ];
 
     const getRowData = (rowId: string) => {
-        return rows.find(row => row.id === rowId);
+        return rows.find((row) => row.id === rowId);
     };
 
     const style = {
@@ -229,7 +229,7 @@ export default function SortableProposalColumn({
 
             {/* Yes Votes */}
             {isRowVisible('yes-votes') && (
-                   <div
+                <div
                     className={`${getRowData('yes-votes')?.height} border-gray-light flex items-center border-r border-b p-4`}
                     data-testid="sortable-proposal-yes-votes"
                 >
@@ -280,9 +280,13 @@ export default function SortableProposalColumn({
                             />
                         </svg>
                         <span className="flex gap-4">
-                            <span className="font-semibold">{t('abstain')}</span>
+                            <span className="font-semibold">
+                                {t('abstain')}
+                            </span>
                             <span className="text-highlight">
-                                ({shortNumber(proposal.abstain_votes_count ?? 0)})
+                                (
+                                {shortNumber(proposal.abstain_votes_count ?? 0)}
+                                )
                             </span>
                         </span>
                     </div>
@@ -303,7 +307,6 @@ export default function SortableProposalColumn({
                     />
                 </div>
             )}
-
 
             {/* Open Source */}
             {isRowVisible('opensource') && (
@@ -329,7 +332,6 @@ export default function SortableProposalColumn({
                     {t('proposalComparison.viewProposal')}
                 </PrimaryLink>
             </div>
-
         </div>
     );
 }
