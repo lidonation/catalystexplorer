@@ -15,7 +15,7 @@ import ProposalComparison from '@/Pages/Proposals/Comparison/ProposalComparison'
 import { Dialog } from '@headlessui/react';
 import { usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { ReactNode, useMemo, useState } from 'react';
+import { ReactNode, useMemo, useState, useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MainLayout from './RootLayout';
@@ -25,12 +25,23 @@ import { ModalRoot } from '@inertiaui/modal-react';
 
 export default function AppLayout({ children }: { children: ReactNode }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const { t } = useLaravelReactI18n();
+    const { t, currentLocale } = useLaravelReactI18n();
     const { url, props } = usePage();
     const breadcrumbItems = generateBreadcrumbs(url, props['locale'] as string);
     const memoizedChildren = useMemo(() => children, [children]);
     const savedTheme =
         typeof window === 'undefined' ? null : localStorage.getItem('theme');
+
+    // RTL languages
+    const RTL_LANGS = ['ar'];
+    const isRTL = RTL_LANGS.includes(currentLocale());
+
+    // Update document direction when locale changes
+    useEffect(() => {
+        const locale = currentLocale();
+        document.documentElement.dir = RTL_LANGS.includes(locale) ? 'rtl' : 'ltr';
+        document.documentElement.lang = locale;
+    }, [currentLocale()]);
 
     const isAuthPage = url.includes('login') || url.includes('register');
 
@@ -55,7 +66,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             )}
 
             <section
-                className={`bg-background-lighter lg:mt-4 ${isAuthPage ? '' : 'lg:ml-72'} ${isAuthPage ? '' : 'lg:rounded-tl-4xl'}`}
+                className={`bg-background-lighter lg:mt-4 ${isAuthPage ? '' : 'lg:ml-(--sidebar-width) rtl:ml-0 rtl:mr-(--sidebar-width)'} ${isAuthPage ? '' : 'lg:rounded-tl-4xl'}`}
             >
                 {/* Mobile header */}
                 <header
@@ -123,12 +134,12 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             </section>
 
             <ToastContainer
-                position="top-right"
+                position={isRTL ? "top-left" : "top-right"}
                 autoClose={5000}
                 hideProgressBar={false}
                 newestOnTop={false}
                 closeOnClick
-                rtl={false}
+                rtl={isRTL}
                 pauseOnFocusLoss
                 draggable
                 pauseOnHover

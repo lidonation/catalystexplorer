@@ -122,6 +122,7 @@
     "awarded": "获奖",
     "distributed": "已分配",
     "requested": "已请求",
+    "received": "已收到",
     "submitted": "已提交",
     "funded": "已资助",
     "approved": "已批准",
@@ -1271,5 +1272,15 @@
     "endDate": "结束日期",
     "startDate": "开始日期",
     "wallet.login": "钱包登录",
-    "wallet.login.confirm": "我们即将使用您连接的钱包为您登录，与此钱包关联的账户将被验证。如果未找到关联账户，将使用您的地址创建一个。您可以在仪表板的\"我的个人资料\"页面中更新此账户。<br><br> <strong>已有账户？</strong>使用邮箱登录并添加您的钱包，这样您就可以使用钱包或邮箱登录。"
+    "wallet.login.confirm": "我们即将使用您连接的钱包为您登录，与此钱包关联的账户将被验证。如果未找到关联账户，将使用您的地址创建一个。您可以在仪表板的\"我的个人资料\"页面中更新此账户。<br><br> <strong>已有账户？</strong>使用邮箱登录并添加您的钱包，这样您就可以使用钱包或邮箱登录。",
+    "funding.status.pending": "待处理",
+    "funding.status.withdrawn": "已撤回",
+    "funding.status.fullyPaid": "全额支付",
+    "funding.status.funded": "已获资金",
+    "funding.status.notFunded": "未资助",
+    "project.status.votePending": "待投票",
+    "project.status.withdrawn": "撤回",
+    "project.status.complete": "完成",
+    "project.status.inProgress": "进行中",
+    "project.status.unfunded": "未资助"
 }

@@ -1,10 +1,12 @@
 import { currency } from '@/utils/currency';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 interface Proposal extends Record<string, unknown> {
     proposal: App.DataTransferObjects.ProposalData;
 }
 
 export default function ProposalFundingPercentages({ proposal }: Proposal) {
+    const { t } = useLaravelReactI18n();
     // Helper functions
     const calculatePercentage = (
         numerator: number,
@@ -74,7 +76,7 @@ export default function ProposalFundingPercentages({ proposal }: Proposal) {
                     className="flex items-baseline justify-between gap-2 pt-2"
                     data-testid="proposal-funding-requested"
                 >
-                    <span>Requested</span>
+                    <span>{t('requested')}</span>
                     <div>
                         <span className="text-md font-semibold">
                             {formattedAmountRequested}
@@ -89,7 +91,7 @@ export default function ProposalFundingPercentages({ proposal }: Proposal) {
                     className="flex items-baseline justify-between gap-2"
                     data-testid="proposal-funding-received"
                 >
-                    <span>Received</span>
+                    <span>{ t('received')}</span>
                     <div>
                         <span className="text-md font-semibold">
                             {formattedAmountReceived}

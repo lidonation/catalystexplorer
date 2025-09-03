@@ -5,9 +5,16 @@ return [
     /**
      * The locales you wish to support.
      */
-    'supported_locales' => ['en', 'de', 'zh', 'ja', 'sw', 'es', 'fr'],
+    'supported_locales' => ['en', 'ar', 'de', 'zh', 'ja', 'sw', 'es', 'fr'],
 
     'supported_locale_details' => [
+        'ar' => [
+            'key' => 'ar',
+            'name' => 'Arabic',
+            'script' => 'Arab',
+            'native' => 'العربية',
+            'regional' => 'ar_SA',
+        ],
         'de' => [
             'key' => 'de',
             'name' => 'German',

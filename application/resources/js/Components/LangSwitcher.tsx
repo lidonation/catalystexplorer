@@ -5,12 +5,23 @@ import Selector from './atoms/Selector';
 
 const LANGS = [
     { value: 'en', label: 'English' },
+    { value: 'ar', label: 'العربية' },
     { value: 'es', label: 'Español' },
     { value: 'fr', label: 'Français' },
     { value: 'de', label: 'Deutsch' },
     { value: 'ja', label: '日本語' },
     { value: 'zh', label: '中文' },
 ];
+
+// RTL languages
+const RTL_LANGS = ['ar'];
+
+// Function to update document direction
+const updateDocumentDirection = (locale: string) => {
+    const isRTL = RTL_LANGS.includes(locale);
+    document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+    document.documentElement.lang = locale;
+};
 
 export default function LangSwitcher() {
     const { currentLocale, setLocale } = useLaravelReactI18n();
@@ -24,6 +35,7 @@ export default function LangSwitcher() {
         if (currentLocale() === selectedLang) return;
 
         setLocale(selectedLang);
+        updateDocumentDirection(selectedLang);
 
         const pathParts = window.location.pathname.split('/');
         pathParts[1] = selectedLang;
@@ -31,6 +43,13 @@ export default function LangSwitcher() {
 
         window.history.pushState({}, '', newPath + window.location.search);
     }, [selectedLang]);
+
+    // Initialize direction on component mount
+    useEffect(() => {
+        if (selectedLang) {
+            updateDocumentDirection(selectedLang);
+        }
+    }, []);
 
     const handleSelect = (lang: string) => {
         if (lang === selectedLang) return;

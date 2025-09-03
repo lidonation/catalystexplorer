@@ -122,6 +122,7 @@
     "awarded": "Otorgado",
     "distributed": "Distribuido",
     "requested": "Solicitado",
+    "received": "Recibido",
     "submitted": "Enviado",
     "funded": "Financiado",
     "approved": "Aprobado",
@@ -1279,5 +1280,15 @@
     "workflows.publishToIpfs.success.openInNewTabTitle": "Abrir en nueva pestaña",
     "workflows.publishToIpfs.reviewDetails": "Estás a punto de publicar tu lista en IPFS. Revisa los detalles abajo.",
     "wallet.login": "Iniciar sesión con Billetera",
-    "wallet.login.confirm": "Estamos a punto de iniciar tu sesión usando tu billetera conectada, la cuenta vinculada a esta billetera será autenticada. Si no se encuentra una cuenta vinculada, se creará una usando tu dirección. Puedes actualizar esta cuenta en tu panel bajo la página 'Mi perfil'.<br><br> <strong>¿Ya tienes una cuenta?</strong> Inicia sesión usando email y añade tu billetera para que puedas iniciar sesión con billetera o email."
+    "wallet.login.confirm": "Estamos a punto de iniciar tu sesión usando tu billetera conectada, la cuenta vinculada a esta billetera será autenticada. Si no se encuentra una cuenta vinculada, se creará una usando tu dirección. Puedes actualizar esta cuenta en tu panel bajo la página 'Mi perfil'.<br><br> <strong>¿Ya tienes una cuenta?</strong> Inicia sesión usando email y añade tu billetera para que puedas iniciar sesión con billetera o email.",
+    "funding.status.pending": "Pendiente",
+    "funding.status.withdrawn": "Retirado",
+    "funding.status.fullyPaid": "Pagado completamente",
+    "funding.status.funded": "Financiado",
+    "funding.status.notFunded": "No financiado",
+    "project.status.votePending": "Votación pendiente",
+    "project.status.withdrawn": "Retirado",
+    "project.status.complete": "Completo",
+    "project.status.inProgress": "En progreso",
+    "project.status.unfunded": "Sin financiación"
 }
