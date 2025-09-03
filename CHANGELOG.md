@@ -1,3 +1,15 @@
+# [1.21.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.20.0...v1.21.0) (2025-09-03)
+
+
+### Bug Fixes
+
+* resolve module resolution issues for useLanguageDetection hook ([9deb922](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/9deb922d402f6cd8810d1aa4f936996086950f7c))
+
+
+### Features
+
+* add pipeline debug script to diagnose module resolution issues ([0b8d1d0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/0b8d1d0aa0d7c91e2437d40f76fff2bb8e1dfa33))
+
 # [1.20.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.19.0...v1.20.0) (2025-09-02)
 
 
