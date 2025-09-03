@@ -3,9 +3,7 @@ import GitHubIcon from '@/Components/svgs/GithubIcon';
 import LinkedInIcon from '@/Components/svgs/LinkedInIcons';
 import WebIcon from '@/Components/svgs/WebIcon';
 import XIcon from '@/Components/svgs/XIcon';
-import UserAvatar from '@/Components/UserAvatar';
-import { useLocalizedRoute } from '@/utils/localizedRoute';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 interface GroupSocials {
     group: App.DataTransferObjects.GroupData;
@@ -23,9 +21,7 @@ export default function GroupSocials({ group }: GroupSocials) {
     };
 
     return (
-        <div
-            aria-labelledby="group-socials"
-        >
+        <div aria-labelledby="group-socials">
             <div className="text-content flex gap-2">
                 {group?.twitter && (
                     <a

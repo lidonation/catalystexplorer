@@ -1,8 +1,8 @@
+import Button from '@/Components/atoms/Button';
 import Title from '@/Components/atoms/Title';
 import AccordionButton from '@/Components/svgs/AccordionButton';
 import Markdown from 'marked-react';
 import { useState } from 'react';
-import Button from "@/Components/atoms/Button";
 
 interface CampaignAccordionProps {
     title?: string;
@@ -25,7 +25,7 @@ const CampaignAccordion: React.FC<CampaignAccordionProps> = ({
                 </div>
                 <Button
                     onClick={() => setIsOpen(!isOpen)}
-                    className='flex size-8 items-center justify-center text-lg transition-transform'
+                    className="flex size-8 items-center justify-center text-lg transition-transform"
                 >
                     <AccordionButton isOpen={isOpen} />
                 </Button>

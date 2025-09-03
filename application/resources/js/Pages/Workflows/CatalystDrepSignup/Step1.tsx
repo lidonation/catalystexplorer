@@ -35,7 +35,7 @@ const Step1: React.FC<Step1Props> = ({
     const [isFormValid, setIsFormValid] = useState(false);
     const formRef = useRef<DrepSignupFormHandles>(null);
 
-    const form = useForm<DrepSignupFormFields>({
+    const form = useForm({
         name: catalystDrep?.name ?? '',
         email: catalystDrep?.email ?? '',
         bio: catalystDrep?.bio ?? '',

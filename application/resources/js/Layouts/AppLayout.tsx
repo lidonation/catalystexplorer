@@ -1,6 +1,7 @@
 import Button from '@/Components/atoms/Button';
 import CatalystLogo from '@/Components/atoms/CatalystLogo';
 import Breadcrumbs, { generateBreadcrumbs } from '@/Components/Breadcrumbs';
+import GraphButton from '@/Components/GraphButton';
 import DesktopSidebar from '@/Components/layout/DesktopSidebar';
 import Footer from '@/Components/layout/Footer';
 import MobileNavigation from '@/Components/layout/MobileNavigation';
@@ -10,18 +11,17 @@ import MenuIcon from '@/Components/svgs/MenuIcon';
 import { MetricsProvider } from '@/Context/MetricsContext';
 import { PlayerProvider } from '@/Context/PlayerContext';
 import { UIProvider } from '@/Context/SharedUIContext';
+import ProposalComparison from '@/Pages/Proposals/Comparison/ProposalComparison';
 import { Dialog } from '@headlessui/react';
 import { usePage } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ReactNode, useMemo, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MainLayout from './RootLayout';
-import GraphButton from '@/Components/GraphButton';
-import ProposalComparison from '@/Pages/Proposals/Comparison/ProposalComparison';
 // @ts-ignore
-import { ModalRoot } from '@inertiaui/modal-react';
 import MetricsBar from '@/Pages/Proposals/Partials/MetricsBar';
+import { ModalRoot } from '@inertiaui/modal-react';
 
 export default function AppLayout({ children }: { children: ReactNode }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -29,7 +29,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     const { url, props } = usePage();
     const breadcrumbItems = generateBreadcrumbs(url, props['locale'] as string);
     const memoizedChildren = useMemo(() => children, [children]);
-    const savedTheme = typeof window === 'undefined' ? null : localStorage.getItem('theme');
+    const savedTheme =
+        typeof window === 'undefined' ? null : localStorage.getItem('theme');
 
     const isAuthPage = url.includes('login') || url.includes('register');
 

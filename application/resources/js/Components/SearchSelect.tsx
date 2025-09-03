@@ -2,9 +2,9 @@
 import Checkbox from '@/Components/atoms/Checkbox';
 import { useSearchOptions } from '@/Hooks/useSearchOptions';
 import { cn } from '@/lib/utils';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronDown } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import {
     Command,
     CommandEmpty,
@@ -105,7 +105,11 @@ export function SearchSelect({
     }, [open, setSearchTerm]);
 
     return (
-        <Popover open={open} onOpenChange={() => setOpen(!open)} data-testid={dataTestId}>
+        <Popover
+            open={open}
+            onOpenChange={() => setOpen(!open)}
+            data-testid={dataTestId}
+        >
             <PopoverTrigger asChild>
                 <button
                     role="combobox"

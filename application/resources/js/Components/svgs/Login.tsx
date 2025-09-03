@@ -2,14 +2,14 @@ type LoginIconProps = {
     className?: string;
     width?: number;
     height?: number;
-    onClick? :React.MouseEventHandler<SVGSVGElement>;
+    onClick?: React.MouseEventHandler<SVGSVGElement>;
 };
 
 export default function LoginIcon({
     className,
     width = 22,
     height = 22,
-    onClick
+    onClick,
 }: LoginIconProps) {
     return (
         <svg

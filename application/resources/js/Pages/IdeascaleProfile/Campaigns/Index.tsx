@@ -3,7 +3,7 @@ import CampaignCardMini from '@/Pages/Campaign/Partials/CampaignCardMini';
 import CampaignList from '@/Pages/Campaign/Partials/CampaignList';
 import CampaignLoader from '@/Pages/Campaign/Partials/CampaignLoader';
 import { Head, WhenVisible } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import IdeascaleProfileLayout from '../IdeascaleProfileLayout';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import CampaignData = App.DataTransferObjects.CampaignData;
@@ -33,7 +33,7 @@ export default function Campaigns({
                             >
                                 {(campaign) => (
                                     <CampaignCardMini
-                    key={campaign.id}
+                                        key={campaign.id}
                                         campaign={campaign}
                                         fund={campaign?.fund}
                                     />

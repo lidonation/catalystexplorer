@@ -1,16 +1,15 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
+import RichContent from '@/Components/RichContent';
 import { StepDetails } from '@/types';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
-import { ChevronLeft,ChevronRight } from 'lucide-react';
-import React, { useEffect } from 'react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React from 'react';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import RichContent from '@/Components/RichContent';
-
 
 interface Step1Props {
     stepDetails: StepDetails[];
@@ -22,11 +21,12 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep }) => {
         step: activeStep + 1,
     });
 
-    const prevStep = activeStep === 1
-    ? ''
-    : generateLocalizedRoute('workflows.createVoterList.index', {
-        step: activeStep - 1,
-    });
+    const prevStep =
+        activeStep === 1
+            ? ''
+            : generateLocalizedRoute('workflows.createVoterList.index', {
+                  step: activeStep - 1,
+              });
 
     const { t } = useLaravelReactI18n();
 

@@ -16,7 +16,7 @@ class VotingPowerQuerySeeder extends Seeder
 {
     /**
      * Run the database seeds to make the specific voting power query return results.
-     * 
+     *
      * This seeder creates the necessary data for this query:
      * SELECT reg.stake_pub,
      *     COUNT(DISTINCT cs.model_id) AS distinct_model_ids,
@@ -50,7 +50,7 @@ class VotingPowerQuerySeeder extends Seeder
             $delegations[] = Delegation::create([
                 'registration_id' => $registration->id,
                 'voting_pub' => 'ed25519_pk1' . substr(hash('sha256', 'voting_pub_' . $i), 0, 56),
-                'weight' => rand(100, 1000),
+                'weight' => fake()->numberBetween(100, 1000),
                 'cat_onchain_id' => 'ca1q5q' . substr(hash('sha256', 'delegation_' . $i), 0, 50),
             ]);
         }
@@ -84,10 +84,10 @@ class VotingPowerQuerySeeder extends Seeder
                 VotingPower::create([
                     'snapshot_id' => $snapshot->id,
                     'delegate' => 'Delegate ' . ($delegationIndex + 1) . '-' . ($snapshotIndex + 1),
-                    'voting_power' => rand(1000000, 50000000), // Random voting power in lovelace
+                    'voting_power' => fake()->numberBetween(1000000, 50000000),
                     'voter_id' => $delegation->cat_onchain_id,
                     'consumed' => true, // This is crucial for the query
-                    'votes_cast' => rand(1, 10),
+                    'votes_cast' => fake()->numberBetween(1, 10),
                 ]);
             }
         }

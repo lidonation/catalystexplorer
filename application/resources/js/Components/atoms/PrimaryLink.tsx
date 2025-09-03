@@ -14,7 +14,7 @@ export default function PrimaryLink({
     disabled,
     loading = false,
     children,
-    "data-testid": dataTestId,
+    'data-testid': dataTestId,
     ...props
 }: PrimaryLinkProps) {
     return (

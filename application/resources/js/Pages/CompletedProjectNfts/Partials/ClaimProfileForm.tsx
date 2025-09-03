@@ -3,8 +3,8 @@ import TextInput from '@/Components/atoms/TextInput';
 import Textarea from '@/Components/atoms/Textarea';
 import { FormDataConvertible } from '@inertiajs/core';
 import { InertiaFormProps } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { forwardRef, useEffect, useImperativeHandle } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 export interface FormFields extends Record<string, FormDataConvertible> {
     name: string;
@@ -37,8 +37,10 @@ const ClaimProfileForm = forwardRef<ClaimFormHandles, ClaimProfileFormProps>(
     ({ setIsValid, form }, ref) => {
         const typedForm = form as InertiaFormProps<FormFields>;
         const { data } = typedForm;
-        const setData = typedForm.setData as (field: keyof FormFields, value: any) => void;
-        const errors = typedForm.errors as Partial<Record<keyof FormFields, string>>;
+        const setData = typedForm.setData as any;
+        const errors = typedForm.errors as Partial<
+            Record<keyof FormFields, string>
+        >;
 
         const { t } = useLaravelReactI18n();
 

@@ -2,9 +2,9 @@ import { db } from '@/db/db';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { usePage } from '@inertiajs/react';
 import { useLiveQuery } from 'dexie-react-hooks';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { BookmarkCheckIcon } from 'lucide-react';
 import { useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import NavLinkItem from '../atoms/NavLinkItem';
 import ModalNavLink from '../ModalNavLink';
 import ArrowDownIcon from '../svgs/ArrowDownIcon';
@@ -19,9 +19,9 @@ import DrepIcon from '../svgs/DrepIcon';
 import HomeIcon from '../svgs/HomeIcon';
 import MoreIcon from '../svgs/MoreIcon';
 import NoteIcon from '../svgs/NoteIcon';
+import NotificationBoxIcon from '../svgs/NotificationBoxIcon';
 import NumbersIcon from '../svgs/NumbersIcon';
 import PeopleIcon from '../svgs/PeopleIcon';
-import NotificationBoxIcon from '../svgs/NotificationBoxIcon';
 
 function AppNavigation() {
     const { t } = useLaravelReactI18n();
@@ -106,7 +106,7 @@ function AppNavigation() {
             hasDropdown: true,
             hideOnMyRoute: true,
         },
-         {
+        {
             href: useLocalizedRoute('activeFund.index'),
             title: t('activeFund'),
             icon: (isActive: boolean) => (
@@ -575,10 +575,12 @@ function AppNavigation() {
                                         href="#proposal-comparison"
                                         className={`${comparisonCount > 0 ? 'border-success bg-success text-white' : 'border-primary-mid bg-primary-light text-primary'} absolute right-0 flex min-w-[2em] items-center justify-center gap-2 rounded-full border px-2 py-0 hover:cursor-pointer`}
                                         dataTestid="proposal-comparison-link"
-
                                     >
                                         <CompareIcon width={20} primary />
-                                        <span className="font-bold text-sm" data-testid="proposal-comparison-count">
+                                        <span
+                                            className="text-sm font-bold"
+                                            data-testid="proposal-comparison-count"
+                                        >
                                             {comparisonCount}
                                         </span>
                                     </ModalNavLink>

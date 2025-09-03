@@ -1,5 +1,4 @@
 // ProposalTableView.tsx
-import Paginator from '@/Components/Paginator';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import { PaginatedData } from '@/types/paginated-data';
 import { WhenVisible } from '@inertiajs/react';
@@ -33,10 +32,9 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
         title: true,
         yesVotes: true,
         abstainVotes: true,
-        teams: true
+        teams: true,
     },
 }) => {
-
     return (
         <>
             <div className="container mt-8">
@@ -52,7 +50,7 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
                             transition={{ duration: 0.4, ease: 'easeIn' }}
                         >
                             <ProposalTable
-                                actionType={actionType} 
+                                actionType={actionType}
                                 disableSorting={disableSorting}
                                 proposals={proposals}
                                 columnVisibility={columnVisibility}

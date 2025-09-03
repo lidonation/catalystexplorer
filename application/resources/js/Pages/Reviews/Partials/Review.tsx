@@ -1,8 +1,8 @@
+import Title from '@/Components/atoms/Title';
 import { Head, WhenVisible } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import ReviewData = App.DataTransferObjects.ReviewData;
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import ReviewHorizontalCardLoader from './ReviewHorizontalCardLoader';
-import Title from "@/Components/atoms/Title";
+import ReviewData = App.DataTransferObjects.ReviewData;
 
 interface ReviewPageProps extends Record<string, unknown> {
     review: ReviewData;

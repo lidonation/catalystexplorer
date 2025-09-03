@@ -1,11 +1,10 @@
-import Title from '@/Components/atoms/Title';
-import Value from '@/Components/atoms/Value';
 import Button from '@/Components/atoms/Button';
 import Paragraph from '@/Components/atoms/Paragraph';
+import Title from '@/Components/atoms/Title';
 import { copyToClipboard } from '@/utils/copyClipboard';
 import { truncateMiddle } from '@/utils/truncateMiddle';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { CopyIcon } from 'lucide-react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import { useState } from 'react';
 import TransactionData = App.DataTransferObjects.TransactionData;
 
@@ -37,7 +36,9 @@ export default function UTXOsCard({ transaction }: UTXOsCardProps) {
 
     const extractAmount = (amountArray: any[]) => {
         if (!Array.isArray(amountArray) || amountArray.length === 0) return 0;
-        const lovelaceAmount = amountArray.find(item => item.unit === 'lovelace');
+        const lovelaceAmount = amountArray.find(
+            (item) => item.unit === 'lovelace',
+        );
         return lovelaceAmount ? parseInt(lovelaceAmount.quantity) : 0;
     };
 
@@ -45,8 +46,14 @@ export default function UTXOsCard({ transaction }: UTXOsCardProps) {
         return lovelace / 1000000;
     };
 
-    const totalInputLovelace = inputs.reduce((sum, input) => sum + extractAmount(input.amount || []), 0);
-    const totalOutputLovelace = outputs.reduce((sum, output) => sum + extractAmount(output.amount || []), 0);
+    const totalInputLovelace = inputs.reduce(
+        (sum, input) => sum + extractAmount(input.amount || []),
+        0,
+    );
+    const totalOutputLovelace = outputs.reduce(
+        (sum, output) => sum + extractAmount(output.amount || []),
+        0,
+    );
 
     const totalInput = lovelaceToAda(totalInputLovelace);
     const totalOutput = lovelaceToAda(totalOutputLovelace);
@@ -55,200 +62,251 @@ export default function UTXOsCard({ transaction }: UTXOsCardProps) {
         if (isNaN(amount) || amount === 0) return '0';
         return new Intl.NumberFormat('en-US', {
             minimumFractionDigits: 0,
-            maximumFractionDigits: isMobile ? 2 : 6
+            maximumFractionDigits: isMobile ? 2 : 6,
         }).format(amount);
     };
     const hasMoreInputs = inputs.length > MAX_VISIBLE_ADDRESSES;
     const hasMoreOutputs = outputs.length > MAX_VISIBLE_ADDRESSES;
-    const visibleInputs = expandedInputs ? inputs : inputs.slice(0, MAX_VISIBLE_ADDRESSES);
-    const visibleOutputs = expandedOutputs ? outputs : outputs.slice(0, MAX_VISIBLE_ADDRESSES);
+    const visibleInputs = expandedInputs
+        ? inputs
+        : inputs.slice(0, MAX_VISIBLE_ADDRESSES);
+    const visibleOutputs = expandedOutputs
+        ? outputs
+        : outputs.slice(0, MAX_VISIBLE_ADDRESSES);
 
-    const AddressRow = ({ address, amount, onCopy, isMobile = false }: { address: string, amount: number, onCopy: () => void, isMobile?: boolean }) => (
-        <div className="flex items-center w-full border-background-lighter border-b pb-2">
-            <div className="flex items-center ">
-                <span className="text-content text-sm font-mono text-gray-900 mr-2">
+    const AddressRow = ({
+        address,
+        amount,
+        onCopy,
+        isMobile = false,
+    }: {
+        address: string;
+        amount: number;
+        onCopy: () => void;
+        isMobile?: boolean;
+    }) => (
+        <div className="border-background-lighter flex w-full items-center border-b pb-2">
+            <div className="flex items-center">
+                <span className="text-content mr-2 font-mono text-sm text-gray-900">
                     {truncateMiddle(address, isMobile ? 10 : 16)}
                 </span>
                 <button
                     onClick={onCopy}
-                    className="p-1 rounded hover:bg-gray-100"
+                    className="rounded p-1 hover:bg-gray-100"
                 >
                     <CopyIcon className="h-4 w-4 text-gray-400" />
                 </button>
             </div>
             <div
-                className="flex-grow mx-3"
+                className="mx-3 flex-grow"
                 style={{
                     borderTop: '1px dashed #9CA3AF',
-                    height: '1px'
+                    height: '1px',
                 }}
             />
-            <span className="font-semibold text-content whitespace-nowrap">
+            <span className="text-content font-semibold whitespace-nowrap">
                 {formatAmount(amount, isMobile)} ₳
             </span>
         </div>
     );
 
     return (
-        <div className="bg-background overflow-hidden shadow-xl rounded-lg p-6">
-            <Title level="3"
+        <div className="bg-background overflow-hidden rounded-lg p-6 shadow-xl">
+            <Title
+                level="3"
                 className="text-content border-background-lighter border-b pb-6 font-bold"
             >
                 {t('transactions.utxos')}
             </Title>
-            <div className="block lg:hidden pt-4">
+            <div className="block pt-4 lg:hidden">
                 <div className="space-y-6">
                     <div>
-                        <Paragraph className="text-3 text-content text-sm font-bold text-gray-700 mb-6">
+                        <Paragraph className="text-3 text-content mb-6 text-sm font-bold text-gray-700">
                             {t('transactions.fromAddresses')}
                         </Paragraph>
                         <div className="space-y-4">
                             {visibleInputs.map((input, index) => {
-                                const inputAmount = lovelaceToAda(extractAmount(input.amount || []));
+                                const inputAmount = lovelaceToAda(
+                                    extractAmount(input.amount || []),
+                                );
                                 return (
                                     <AddressRow
                                         key={index}
-                                        address={input.address }
+                                        address={input.address}
                                         amount={inputAmount}
-                                        onCopy={() => copyToClipboard(input.address)}
+                                        onCopy={() =>
+                                            copyToClipboard(input.address)
+                                        }
                                         isMobile={true}
                                     />
                                 );
                             })}
                             {hasMoreInputs && (
                                 <Button
-                                    onClick={() => setExpandedInputs(!expandedInputs)}
-                                    className="text-xs text-cyan-600 hover:text-cyan-700 font-medium"
+                                    onClick={() =>
+                                        setExpandedInputs(!expandedInputs)
+                                    }
+                                    className="text-xs font-medium text-cyan-600 hover:text-cyan-700"
                                 >
-                                    {expandedInputs ? 'Show Less' : `Show ${inputs.length - MAX_VISIBLE_ADDRESSES} More`}
+                                    {expandedInputs
+                                        ? 'Show Less'
+                                        : `Show ${inputs.length - MAX_VISIBLE_ADDRESSES} More`}
                                 </Button>
                             )}
                         </div>
-                        <div className="flex justify-between items-center mt-4 pt-3">
+                        <div className="mt-4 flex items-center justify-between pt-3">
                             <span className="text-sm font-normal text-gray-500">
                                 {t('transactions.totalInput')}
                             </span>
-                            <span className="font-bold text-content whitespace-nowrap">
+                            <span className="text-content font-bold whitespace-nowrap">
                                 {formatAmount(totalInput, true)} ₳
                             </span>
                         </div>
                     </div>
                     <div>
-                        <Paragraph className="text-3 text-content text-sm font-bold text-gray-700 mb-6">
+                        <Paragraph className="text-3 text-content mb-6 text-sm font-bold text-gray-700">
                             {t('transactions.toAddresses')}
                         </Paragraph>
                         <div className="space-y-4">
                             {visibleOutputs.map((output, index) => {
-                                const outputAmount = lovelaceToAda(extractAmount(output.amount || []));
+                                const outputAmount = lovelaceToAda(
+                                    extractAmount(output.amount || []),
+                                );
                                 return (
                                     <AddressRow
                                         key={index}
-                                        address={output.address || 'Unknown address'}
+                                        address={
+                                            output.address || 'Unknown address'
+                                        }
                                         amount={outputAmount}
-                                        onCopy={() => copyToClipboard(output.address)}
+                                        onCopy={() =>
+                                            copyToClipboard(output.address)
+                                        }
                                         isMobile={true}
                                     />
                                 );
                             })}
                             {hasMoreOutputs && (
                                 <Button
-                                    onClick={() => setExpandedOutputs(!expandedOutputs)}
-                                    className="text-xs text-cyan-600 hover:text-cyan-700 font-medium"
+                                    onClick={() =>
+                                        setExpandedOutputs(!expandedOutputs)
+                                    }
+                                    className="text-xs font-medium text-cyan-600 hover:text-cyan-700"
                                 >
-                                    {expandedOutputs ? 'Show Less' : `Show ${outputs.length - MAX_VISIBLE_ADDRESSES} More`}
+                                    {expandedOutputs
+                                        ? 'Show Less'
+                                        : `Show ${outputs.length - MAX_VISIBLE_ADDRESSES} More`}
                                 </Button>
                             )}
                         </div>
-                        <div className="flex justify-between items-center mt-4">
+                        <div className="mt-4 flex items-center justify-between">
                             <span className="text-sm font-normal text-gray-500">
                                 {t('transactions.totalOutput')}
                             </span>
-                            <span className="font-bold text-content whitespace-nowrap">
+                            <span className="text-content font-bold whitespace-nowrap">
                                 {formatAmount(totalOutput, true)} ₳
                             </span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div className="hidden lg:grid lg:grid-cols-2 gap-8 pt-4">
+            <div className="hidden gap-8 pt-4 lg:grid lg:grid-cols-2">
                 <div>
-                    <Paragraph className="text-3 text-content text-sm font-bold text-gray-700 mb-6">
+                    <Paragraph className="text-3 text-content mb-6 text-sm font-bold text-gray-700">
                         {t('transactions.fromAddresses')}
                     </Paragraph>
                     <div className="space-y-4">
                         {visibleInputs.map((input, index) => {
-                            const inputAmount = lovelaceToAda(extractAmount(input.amount || []));
+                            const inputAmount = lovelaceToAda(
+                                extractAmount(input.amount || []),
+                            );
                             return (
                                 <AddressRow
                                     key={index}
                                     address={input.address || 'Unknown address'}
                                     amount={inputAmount}
-                                    onCopy={() => copyToClipboard(input.address)}
+                                    onCopy={() =>
+                                        copyToClipboard(input.address)
+                                    }
                                     isMobile={false}
                                 />
                             );
                         })}
                         {hasMoreInputs && (
                             <Button
-                                onClick={() => setExpandedInputs(!expandedInputs)}
-                                className="text-xs text-cyan-600 hover:text-cyan-700 font-medium"
+                                onClick={() =>
+                                    setExpandedInputs(!expandedInputs)
+                                }
+                                className="text-xs font-medium text-cyan-600 hover:text-cyan-700"
                             >
-                                {expandedInputs ? 'Show Less' : `Show ${inputs.length - MAX_VISIBLE_ADDRESSES} More`}
+                                {expandedInputs
+                                    ? 'Show Less'
+                                    : `Show ${inputs.length - MAX_VISIBLE_ADDRESSES} More`}
                             </Button>
                         )}
                         {inputs.length === 0 && (
-                            <div className="text-gray-500 text-center py-8 text-sm">
+                            <div className="py-8 text-center text-sm text-gray-500">
                                 No input addresses found
                             </div>
                         )}
                     </div>
                 </div>
                 <div>
-                    <Paragraph className="text-3 text-content text-sm font-bold text-gray-700 mb-6">
+                    <Paragraph className="text-3 text-content mb-6 text-sm font-bold text-gray-700">
                         {t('transactions.toAddresses')}
                     </Paragraph>
                     <div className="space-y-4">
                         {visibleOutputs.map((output, index) => {
-                            const outputAmount = lovelaceToAda(extractAmount(output.amount || []));
+                            const outputAmount = lovelaceToAda(
+                                extractAmount(output.amount || []),
+                            );
                             return (
                                 <AddressRow
                                     key={index}
-                                    address={output.address || 'Unknown address'}
+                                    address={
+                                        output.address || 'Unknown address'
+                                    }
                                     amount={outputAmount}
-                                    onCopy={() => copyToClipboard(output.address)}
+                                    onCopy={() =>
+                                        copyToClipboard(output.address)
+                                    }
                                     isMobile={false}
                                 />
                             );
                         })}
                         {hasMoreOutputs && (
                             <Button
-                                onClick={() => setExpandedOutputs(!expandedOutputs)}
-                                className="text-xs text-cyan-600 hover:text-cyan-700 font-medium"
+                                onClick={() =>
+                                    setExpandedOutputs(!expandedOutputs)
+                                }
+                                className="text-xs font-medium text-cyan-600 hover:text-cyan-700"
                             >
-                                {expandedOutputs ? 'Show Less' : `Show ${outputs.length - MAX_VISIBLE_ADDRESSES} More`}
+                                {expandedOutputs
+                                    ? 'Show Less'
+                                    : `Show ${outputs.length - MAX_VISIBLE_ADDRESSES} More`}
                             </Button>
                         )}
                         {outputs.length === 0 && (
-                            <div className="text-gray-500 text-center py-8 text-sm">
+                            <div className="py-8 text-center text-sm text-gray-500">
                                 No output addresses found
                             </div>
                         )}
                     </div>
                 </div>
-                <div className="lg:col-span-2 grid grid-cols-2 gap-8 pt-4">
-                    <div className="flex justify-between items-center">
+                <div className="grid grid-cols-2 gap-8 pt-4 lg:col-span-2">
+                    <div className="flex items-center justify-between">
                         <span className="text-sm font-normal text-gray-500">
                             {t('transactions.totalInput')}
                         </span>
-                        <span className="font-bold text-content whitespace-nowrap">
+                        <span className="text-content font-bold whitespace-nowrap">
                             {formatAmount(totalInput)} ₳
                         </span>
                     </div>
-                    <div className="flex justify-between items-center">
+                    <div className="flex items-center justify-between">
                         <span className="text-sm font-normal text-gray-500">
                             {t('transactions.totalOutput')}
                         </span>
-                        <span className="font-bold text-content whitespace-nowrap">
+                        <span className="text-content font-bold whitespace-nowrap">
                             {formatAmount(totalOutput)} ₳
                         </span>
                     </div>

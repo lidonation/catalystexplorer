@@ -9,7 +9,6 @@ export default function LinkIcon({
     height = 24,
 }: LinkIconProps) {
     return (
-
         <svg
             width={width}
             height={height}

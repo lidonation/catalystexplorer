@@ -1,13 +1,16 @@
-import React from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import Paragraph from '@/Components/atoms/Paragraph';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import React from 'react';
 
 interface ToolTipHoverProps {
     props: any;
     className?: string;
 }
 
-const ToolTipHover: React.FC<ToolTipHoverProps> = ({ props, className = '' }) => {
+const ToolTipHover: React.FC<ToolTipHoverProps> = ({
+    props,
+    className = '',
+}) => {
     const { t } = useLaravelReactI18n();
 
     return (

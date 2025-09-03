@@ -2,7 +2,7 @@ import { FiltersProvider } from '@/Context/FiltersContext';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/Hooks/useUserSettings';
 import { SearchParams } from '@/types/search-params';
-import { Head, router, usePage } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import AllCharts from './Partials/AllCharts';
 import SetChartMetrics from './Partials/SetChartMetrics';
@@ -12,10 +12,7 @@ interface ChartsIndexProps {
     rules?: string[];
 }
 
-const Index = ({
-    filters,
-    rules
-}: ChartsIndexProps) => {
+const Index = ({ filters, rules }: ChartsIndexProps) => {
     const [showCharts, setShowCharts] = useState<boolean>(() => {
         return localStorage.getItem('metricsSet') === 'true';
     });
@@ -61,7 +58,6 @@ const Index = ({
         return () => {
             window.removeEventListener('beforeunload', handleUnload);
         };
-
     }, []);
 
     const handleChartDataFromMetrics = (chartData: any) => {
@@ -70,7 +66,7 @@ const Index = ({
 
     const handleLoadingChange = (loading: boolean) => {
         setLoading(loading);
-    }
+    };
 
     const filteredAllChartData = allChartData?.find(
         (group) => group?.[0]?.count_by === viewBy,
@@ -78,29 +74,29 @@ const Index = ({
 
     return (
         <FiltersProvider defaultFilters={filters}>
-                <Head title="Charts" />
+            <Head title="Charts" />
 
-                {!showCharts && (
-                    <div className="flex my-10 md:my-0 md:h-screen w-full flex-col items-center justify-center ">
-                        <SetChartMetrics
-                            onExploreCharts={handleExploreCharts}
-                            onChartDataReceived={handleChartDataFromMetrics}
-                            onLoadingChange={handleLoadingChange}
-                        />
-                    </div>
-                )}
+            {!showCharts && (
+                <div className="my-10 flex w-full flex-col items-center justify-center md:my-0 md:h-screen">
+                    <SetChartMetrics
+                        onExploreCharts={handleExploreCharts}
+                        onChartDataReceived={handleChartDataFromMetrics}
+                        onLoadingChange={handleLoadingChange}
+                    />
+                </div>
+            )}
 
-                {showCharts && (
-                    <div>
-                        <AllCharts
-                            chartData={filteredAllChartData}
-                            onEditMetrics={handleEditMetrics}
-                            viewBy={viewBy}
-                            onViewByChange={handleViewByChange}
-                            loading={loading}
-                        />
-                    </div>
-                )}
+            {showCharts && (
+                <div>
+                    <AllCharts
+                        chartData={filteredAllChartData}
+                        onEditMetrics={handleEditMetrics}
+                        viewBy={viewBy}
+                        onViewByChange={handleViewByChange}
+                        loading={loading}
+                    />
+                </div>
+            )}
         </FiltersProvider>
     );
 };

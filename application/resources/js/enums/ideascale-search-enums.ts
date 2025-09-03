@@ -5,5 +5,5 @@ export enum IdeaScaleSearchEnum {
     PRIMARY_PROPOSAL_COUNT = 'ppc',
     CO_PROPOSAL_COUNT = 'cpc',
     DEFAULT = 'default',
-    SORTS='st'
+    SORTS = 'st',
 }

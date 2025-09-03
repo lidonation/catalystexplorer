@@ -1,5 +1,5 @@
 import { useThemeContext } from '@/Context/ThemeContext';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import Button from '../atoms/Button';
 import DarkModeIcon from '../svgs/DarkModeIcon';
 import LightModeIcon from '../svgs/LightModeIcon';
@@ -9,7 +9,7 @@ export default function ThemeSwitcher() {
     const { theme, setTheme } = useThemeContext();
     const { t } = useLaravelReactI18n();
 
-    const icons: { [key in 'light' | 'dark' | 'voltaire']: JSX.Element } = {
+    const icons: { [key in 'light' | 'dark' | 'voltaire']: React.JSX.Element } = {
         light: <LightModeIcon />,
         dark: <DarkModeIcon />,
         voltaire: <VoltaireModeIcon />,

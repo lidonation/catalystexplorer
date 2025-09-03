@@ -1,11 +1,11 @@
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import TextInput from '@/Components/atoms/TextInput';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { useForm } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { FormEventHandler, useEffect } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface ProfileFieldFormProps {
     fieldName: string;
@@ -30,7 +30,9 @@ export default function ProfileFieldForm({
 }: ProfileFieldFormProps) {
     const { t } = useLaravelReactI18n();
 
-    const { data, setData, patch, processing, errors, reset } = useForm<Record<string, string>>({
+    const { data, setData, patch, processing, errors, reset } = useForm<
+        Record<string, string>
+    >({
         [fieldName]: currentValue || '',
     });
 
@@ -66,7 +68,6 @@ export default function ProfileFieldForm({
 
     return (
         <form onSubmit={submit} className="lg:p-4">
-            
             <ErrorDisplay />
 
             <div className="mb-4">

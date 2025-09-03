@@ -1,8 +1,8 @@
 import { RangePicker } from '@/Components/RangePicker';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import { SearchSelect } from '@/Components/SearchSelect';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 const ReviewsFilter = () => {
     const { t } = useLaravelReactI18n();

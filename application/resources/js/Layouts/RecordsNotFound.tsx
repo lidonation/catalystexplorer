@@ -1,5 +1,5 @@
 import RecordsNotFoundIcon from '@/Components/svgs/RecordsNotFoundIcon';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 type RecordsNotFoundProps = {
     context?:
@@ -28,7 +28,10 @@ export default function RecordsNotFound({
     };
 
     return (
-        <div className="bg-background flex w-full flex-col items-center justify-center rounded-lg px-4 py-8" data-testid={`records-not-found-${context}`}>
+        <div
+            className="bg-background flex w-full flex-col items-center justify-center rounded-lg px-4 py-8"
+            data-testid={`records-not-found-${context}`}
+        >
             {showIcon && <RecordsNotFoundIcon />}
             {/* <p className="mt-2 max-w-md text-center text-base text-gray-600">
                 {getMessage()}

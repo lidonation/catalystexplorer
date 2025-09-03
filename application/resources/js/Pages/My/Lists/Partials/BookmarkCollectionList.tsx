@@ -1,13 +1,15 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
-import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import BookmarkCollectionCard from './BookmarkCollectionCard';
+import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 
 interface BookmarkCollectionListProps {
     bookmarkCollections: BookmarkCollectionData[];
 }
 
-const BookmarkCollectionList: React.FC<BookmarkCollectionListProps> = ({ bookmarkCollections }) => {
+const BookmarkCollectionList: React.FC<BookmarkCollectionListProps> = ({
+    bookmarkCollections,
+}) => {
     return (
         <>
             <ul className="grid w-full grid-cols-1 gap-4">

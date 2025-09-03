@@ -1,4 +1,4 @@
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 const TransactionSortOptions = () => {
     const { t } = useLaravelReactI18n();
@@ -43,7 +43,7 @@ const TransactionSortOptions = () => {
         {
             label: t('transactions.options.weightLowToHigh'),
             value: 'json_metadata.voter_delegations.weight:asc',
-        }
+        },
     ];
 };
 

@@ -1,5 +1,5 @@
 import Image from '@/Components/Image';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import GroupData = App.DataTransferObjects.GroupData;
 
 interface HeroSectionProps extends Record<string, unknown> {

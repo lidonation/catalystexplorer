@@ -10,7 +10,7 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 export interface Playlist {
     title: string | null;
     quickpitch?: string;
-    provider?: {}, // Plyr.Provider;
+    provider?: {}; // Plyr.Provider;
     hash: string | null;
 }
 
@@ -63,7 +63,7 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         setIsClient(true);
-        import('plyr').then(module => {
+        import('plyr').then((module) => {
             setPlyrClass(() => module.default);
         });
     }, []);
@@ -87,18 +87,18 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
 
         plyrInstanceRef.current = new PlyrClass(playerContainerRef.current, {
             controls: [
-            'play',
-            'progress',
-            'current-time',
-            'mute',
-            'volume',
-            'settings',
-            'fullscreen',
+                'play',
+                'progress',
+                'current-time',
+                'mute',
+                'volume',
+                'settings',
+                'fullscreen',
             ],
             settings: ['speed'],
             speed: {
-            selected: playbackSpeed,
-            options: [0.5, 1, 1.5, 2],
+                selected: playbackSpeed,
+                options: [0.5, 1, 1.5, 2],
             },
         });
 
@@ -122,10 +122,15 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
     }, [plyrInstanceRef, playlist, isClient, PlyrClass]);
 
     useEffect(() => {
-        if (!isClient || !plyrInstanceRef.current || !playlist || playlist.length === 0) {
+        if (
+            !isClient ||
+            !plyrInstanceRef.current ||
+            !playlist ||
+            playlist.length === 0
+        ) {
             return;
         }
-        
+
         const firstTrack = playlist[0];
         if (firstTrack && firstTrack.quickpitch) {
             setLoading(true);
@@ -151,7 +156,7 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
         ) {
             return;
         }
-        
+
         setLoading(true);
         plyrInstanceRef.current.source = {
             type: 'video',
@@ -167,12 +172,12 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
     // Update current time and duration every second
     useEffect(() => {
         if (!isClient) return;
-        
+
         const interval = setInterval(() => {
             if (plyrInstanceRef.current) {
-                   setCurrentTime(formatTime(plyrInstanceRef.current.currentTime));
-                   setDuration(formatTime(plyrInstanceRef.current.duration));
-                   setPlaybackSpeed(plyrInstanceRef.current.speed);
+                setCurrentTime(formatTime(plyrInstanceRef.current.currentTime));
+                setDuration(formatTime(plyrInstanceRef.current.duration));
+                setPlaybackSpeed(plyrInstanceRef.current.speed);
             }
         }, 1000);
 
@@ -180,22 +185,22 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
     }, [isClient]);
 
     const playCurrentTrack = () => {
-         if (!loading) plyrInstanceRef.current?.play();
+        if (!loading) plyrInstanceRef.current?.play();
     };
 
-     const pauseCurrentTrack = () => plyrInstanceRef.current?.pause();
+    const pauseCurrentTrack = () => plyrInstanceRef.current?.pause();
 
     const stopCurrentTrack = () => {
-          if (plyrInstanceRef.current) {
-               plyrInstanceRef.current.stop();
-               plyrInstanceRef.current.source = { type: 'video', sources:[] };
-          }
-          setIsPlaying(false);
-          setPlaylist(undefined);
-          setCurrentTrackIndex(0);
-          setCurrentTime('0:00');
-          setDuration('0:00');
-          setProgress(0);
+        if (plyrInstanceRef.current) {
+            plyrInstanceRef.current.stop();
+            plyrInstanceRef.current.source = { type: 'video', sources: [] };
+        }
+        setIsPlaying(false);
+        setPlaylist(undefined);
+        setCurrentTrackIndex(0);
+        setCurrentTime('0:00');
+        setDuration('0:00');
+        setProgress(0);
     };
 
     const nextTrack = () => {
@@ -216,7 +221,7 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
     const prevTrack = () => {
         if (playlist && plyrInstanceRef.current) {
             setIsPlaying(false);
-             plyrInstanceRef.current.autoplay = true;
+            plyrInstanceRef.current.autoplay = true;
             const prevIndex =
                 currentTrackIndex > 0
                     ? currentTrackIndex - 1
@@ -262,7 +267,7 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         if (!isClient) return;
-        
+
         const interval = setInterval(() => {
             if (plyrInstanceRef.current) {
                 const current = plyrInstanceRef.current.currentTime;
@@ -281,31 +286,30 @@ export const PlayerProvider = ({ children }: { children: React.ReactNode }) => {
         return () => clearInterval(interval);
     }, [isClient]);
 
-
     return (
         <PlayerContext.Provider
             value={{
-            playlist,
-            setPlaylist,
-            currentTrackIndex,
-            setCurrentTrackIndex,
-            setIsPlaying,
-            isPlaying,
-            playCurrentTrack,
-            pauseCurrentTrack,
-            stopCurrentTrack,
-            nextTrack,
-            prevTrack,
-            seekForward,
-            seekBack,
-            changeSpeed,
-            playbackSpeed,
-            loading,
-            currentTime,
-            duration,
-            createProposalPlaylist,
-            progress,
-            setProgress,
+                playlist,
+                setPlaylist,
+                currentTrackIndex,
+                setCurrentTrackIndex,
+                setIsPlaying,
+                isPlaying,
+                playCurrentTrack,
+                pauseCurrentTrack,
+                stopCurrentTrack,
+                nextTrack,
+                prevTrack,
+                seekForward,
+                seekBack,
+                changeSpeed,
+                playbackSpeed,
+                loading,
+                currentTime,
+                duration,
+                createProposalPlaylist,
+                progress,
+                setProgress,
             }}
         >
             {children}

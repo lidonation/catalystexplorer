@@ -1,9 +1,9 @@
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React from 'react';
 import Button from './atoms/Button';
 import Paragraph from './atoms/Paragraph';
 import ThumbsDownIcon from './svgs/ThumbsDownIcon';
 import ThumbsUpIcon from './svgs/ThumbsUpIcon';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 type RankingButtonsProps = {
     isLoadingPositive: boolean;
@@ -27,7 +27,7 @@ const RankingButtons: React.FC<RankingButtonsProps> = ({
     return (
         <div className="flex gap-2">
             <Button
-                className={`bg-success/30 border-success text-success flex items-center gap-1 rounded-md border p-1  ${
+                className={`bg-success/30 border-success text-success flex items-center gap-1 rounded-md border p-1 ${
                     isLoadingPositive ? 'cursor-not-allowed' : 'cursor-pointer'
                 }`}
                 onClick={markPositive}

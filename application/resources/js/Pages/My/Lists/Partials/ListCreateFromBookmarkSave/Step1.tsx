@@ -1,11 +1,11 @@
-import { TransitionListPageProps } from '@/types/general';
 import Checkbox from '@/Components/atoms/Checkbox';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import { useList } from '@/Context/ListContext';
+import { TransitionListPageProps } from '@/types/general';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { List, Loader, PlusIcon, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import { toast } from 'react-toastify';
 
 interface BookmarkPage1Props extends TransitionListPageProps {
@@ -15,7 +15,6 @@ interface BookmarkPage1Props extends TransitionListPageProps {
     handleRemoveBookmark?: () => void;
     onNavigate?: (pageIndex: number) => void;
     onClose?: () => void;
-    
 }
 
 const BookmarkPage1 = ({
@@ -57,37 +56,37 @@ const BookmarkPage1 = ({
     };
 
     const handleCheckboxChange = async (listId: string) => {
-    setIsLoading(true);
-    setLoadingListId(listId);
+        setIsLoading(true);
+        setLoadingListId(listId);
 
-    try {
-        // If selecting the already selected list, deselect it
-        if (listId === selectedListId) {
-            await removeBookmarkFromList(listId, bookmarkId);
-            setSelectedListId(null);
-            // Toast for removing bookmark from list
-            toast.success(t('Bookmark Removed From List'), {
-                className: 'bg-gray-800 text-white',
-                toastId: 'bookmark-removed-from-list',
-            });
-        } else {            
-            // Otherwise, add bookmark to the newly selected list
-            await addBookmarkToList(listId, bookmarkId);
-            setSelectedListId(listId);
-            // Toast for adding bookmark to list
-            toast.success(t('Bookmark Added To List'), {
-                className: 'bg-gray-800 text-white',
-                toastId: 'bookmark-added-to-list',
-            });
+        try {
+            // If selecting the already selected list, deselect it
+            if (listId === selectedListId) {
+                await removeBookmarkFromList(listId, bookmarkId);
+                setSelectedListId(null);
+                // Toast for removing bookmark from list
+                toast.success(t('Bookmark Removed From List'), {
+                    className: 'bg-gray-800 text-white',
+                    toastId: 'bookmark-removed-from-list',
+                });
+            } else {
+                // Otherwise, add bookmark to the newly selected list
+                await addBookmarkToList(listId, bookmarkId);
+                setSelectedListId(listId);
+                // Toast for adding bookmark to list
+                toast.success(t('Bookmark Added To List'), {
+                    className: 'bg-gray-800 text-white',
+                    toastId: 'bookmark-added-to-list',
+                });
+            }
+        } catch (error) {
+            console.error('Error updating list selection', error);
+            toast.error(t('listQuickCreate.errorUpdating'));
+        } finally {
+            setLoadingListId(null);
+            setIsLoading(false);
         }
-    } catch (error) {
-        console.error('Error updating list selection', error);
-        toast.error(t('listQuickCreate.errorUpdating'));
-    } finally {
-        setLoadingListId(null);
-        setIsLoading(false);
-    }
-};
+    };
 
     const SkeletonLoader = () => (
         <div className="animate-pulse space-y-4">
@@ -137,13 +136,13 @@ const BookmarkPage1 = ({
             <div className="bg-primary-light relative">
                 <Paragraph
                     size="md"
-                    className="text-content px-3 py-2 font-bold pr-10"
+                    className="text-content px-3 py-2 pr-10 font-bold"
                 >
                     {t('listQuickCreate.addBookmark')}
                 </Paragraph>
-                  <button
+                <button
                     onClick={onClose}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 hover:bg-gray-200 transition-colors"
+                    className="absolute top-1/2 right-2 -translate-y-1/2 rounded-full p-1 transition-colors hover:bg-gray-200"
                     aria-label="Close popup"
                 >
                     <X size={16} className="text-gray-600" />

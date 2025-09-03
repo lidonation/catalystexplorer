@@ -1,6 +1,5 @@
-import { Link } from '@inertiajs/react';
-import type { Tab } from '@/utils/routeTabs';
 import TabNavigation from '@/Components/TabNavigation';
+import type { Tab } from '@/utils/routeTabs';
 
 interface CommunityTabsProps {
     tabs: Tab[];
@@ -9,10 +8,6 @@ interface CommunityTabsProps {
 
 export default function CommunityTabs({ tabs, activeTab }: CommunityTabsProps) {
     return (
-        <TabNavigation
-            tabs={tabs}
-            activeTab={activeTab}
-            centerTabs={true}
-        />
+        <TabNavigation tabs={tabs} activeTab={activeTab} centerTabs={true} />
     );
 }

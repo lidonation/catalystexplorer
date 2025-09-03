@@ -1,26 +1,26 @@
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
+import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import Textarea from '@/Components/atoms/Textarea';
 import InputError from '@/Components/InputError';
+import { LOCALE_MAPPING } from '@/constants/locales';
+import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
+import useLanguageDetection from '@/Hooks/useLanguageDetection.ts';
 import { StepDetails } from '@/types';
 import {
     generateLocalizedRoute,
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { InertiaFormProps, useForm, usePage } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Content from '../Partials/WorkflowContent';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
-import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
-import CatalysDrepData = App.DataTransferObjects.CatalystDrepData;
 import IpfsSuccessDisplay from './partials/IpfsSuccessDisplay';
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
-import useLanguageDetection from '@/hooks/useLanguageDetection';
-import { LOCALE_MAPPING } from '@/constants/locales';
-import Paragraph from '@/Components/atoms/Paragraph';
+import CatalysDrepData = App.DataTransferObjects.CatalystDrepData;
 
 interface Step5Props {
     catalystDrep: CatalysDrepData;
@@ -31,11 +31,13 @@ interface Step5Props {
 
 interface PageProps {
     flash?: {
-        success?: string | {
-            ipfs_cid: string;
-            gateway_url: string;
-            filename: string;
-        };
+        success?:
+            | string
+            | {
+                  ipfs_cid: string;
+                  gateway_url: string;
+                  filename: string;
+              };
     };
     errorBags?: {
         default?: {
@@ -82,7 +84,8 @@ const step5: React.FC<Step5Props> = ({
         filename: string;
     } | null>(null);
 
-    const { getSuggestedLanguage, validateLanguageConsistency } = useLanguageDetection();
+    const { getSuggestedLanguage, validateLanguageConsistency } =
+        useLanguageDetection();
 
     const form = useForm({
         ...catalystDrep,
@@ -96,7 +99,11 @@ const step5: React.FC<Step5Props> = ({
     // Check for flash success data on component mount
     useEffect(() => {
         const flashSuccess = page.props.flash?.success;
-        if (flashSuccess && typeof flashSuccess === 'object' && 'ipfs_cid' in flashSuccess) {
+        if (
+            flashSuccess &&
+            typeof flashSuccess === 'object' &&
+            'ipfs_cid' in flashSuccess
+        ) {
             setIpfsData({
                 cid: flashSuccess.ipfs_cid,
                 gatewayUrl: flashSuccess.gateway_url,
@@ -106,34 +113,49 @@ const step5: React.FC<Step5Props> = ({
     }, [page.props.flash]);
 
     const validateLanguages = useCallback(() => {
-        const validation = validateLanguageConsistency({
-            objective: data.objective || '',
-            motivation: data.motivation || '',
-            qualifications: data.qualifications || ''
-        }, savedLocale);
-        
+        const validation = validateLanguageConsistency(
+            {
+                objective: data.objective || '',
+                motivation: data.motivation || '',
+                qualifications: data.qualifications || '',
+            },
+            savedLocale,
+        );
+
         if (!validation.isValid) {
-            setLanguageWarning(validation.message || 'Language mismatch detected between fields');
+            setLanguageWarning(
+                validation.message ||
+                    'Language mismatch detected between fields',
+            );
             return false;
         }
-        
+
         setLanguageWarning('');
         return true;
-    }, [data.objective, data.motivation, data.qualifications, savedLocale, validateLanguageConsistency]);
+    }, [
+        data.objective,
+        data.motivation,
+        data.qualifications,
+        savedLocale,
+        validateLanguageConsistency,
+    ]);
 
     const submitForm = () => {
         // Validate languages before submission
         if (!validateLanguages()) {
             return;
         }
-        
+
         form.data.locale = savedLocale;
         form.data.paymentAddress = userAddress;
-        
+
         form.post(
-            generateLocalizedRoute('workflows.drepSignUp.publishPlatformStatement', {
-                catalystDrep: catalystDrep.id,
-            }),
+            generateLocalizedRoute(
+                'workflows.drepSignUp.publishPlatformStatement',
+                {
+                    catalystDrep: catalystDrep.id,
+                },
+            ),
             {
                 preserveScroll: true,
                 onSuccess: () => {
@@ -141,7 +163,10 @@ const step5: React.FC<Step5Props> = ({
                     console.log('Platform statement published successfully');
                 },
                 onError: (errors: any) => {
-                    console.error('Failed to publish platform statement to IPFS:', errors);
+                    console.error(
+                        'Failed to publish platform statement to IPFS:',
+                        errors,
+                    );
                     for (const key in errors) {
                         (form as any).setError(key, errors[key]);
                     }

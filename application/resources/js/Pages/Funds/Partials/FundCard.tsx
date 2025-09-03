@@ -3,9 +3,8 @@ import ArrowTrendingUp from '@/Components/svgs/ArrowTrendingUp';
 import { currency } from '@/utils/currency';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React from 'react';
-import { test } from '@playwright/test';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import FundData = App.DataTransferObjects.FundData;
 
 interface FundCardProps {
@@ -22,12 +21,17 @@ const FundCard: React.FC<FundCardProps> = ({
     const { t } = useLaravelReactI18n();
 
     return (
-        <div className="bg-background flex w-full transform flex-row items-stretch space-x-6 overflow-hidden rounded-lg p-3 shadow-md sm:p-4" data-testid={`fund-card-${fund.id}`}>
+        <div
+            className="bg-background flex w-full transform flex-row items-stretch space-x-6 overflow-hidden rounded-lg p-3 shadow-md sm:p-4"
+            data-testid={`fund-card-${fund.id}`}
+        >
             {/* Image Section */}
             <div className="flex flex-none flex-col items-center space-y-2 sm:items-start sm:space-y-4">
                 {/* Title */}
                 <Link
-                    href={useLocalizedRoute('funds.fund.show', { slug: fund.slug })}
+                    href={useLocalizedRoute('funds.fund.show', {
+                        slug: fund.slug,
+                    })}
                     className="hover:text-primary truncate text-center text-base font-bold sm:text-left sm:text-xl"
                     data-testid="fund-card-title"
                 >
@@ -47,13 +51,19 @@ const FundCard: React.FC<FundCardProps> = ({
             </div>
 
             {/* Details Section */}
-            <div className="flex grow flex-col space-y-1 sm:space-y-2" data-testid="fund-card-details">
+            <div
+                className="flex grow flex-col space-y-1 sm:space-y-2"
+                data-testid="fund-card-details"
+            >
                 <div data-testid="fund-card-amounts">
                     <p className="mt-8 truncate text-xs sm:text-sm">
                         {t('funds.totalAwarded')}
                     </p>
                     <div className="flex items-baseline space-x-1">
-                        <span className="truncate text-sm font-bold sm:text-base" data-testid="fund-amount-awarded">
+                        <span
+                            className="truncate text-sm font-bold sm:text-base"
+                            data-testid="fund-amount-awarded"
+                        >
                             {currency(
                                 fund?.amount_awarded ?? 0,
                                 2,
@@ -61,19 +71,25 @@ const FundCard: React.FC<FundCardProps> = ({
                             )}
                         </span>
                         <span className="text-xs sm:text-sm">/</span>
-                        <span className="truncate text-xs text-gray-500 sm:text-sm" data-testid="fund-amount-requested">
+                        <span
+                            className="truncate text-xs text-gray-500 sm:text-sm"
+                            data-testid="fund-amount-requested"
+                        >
                             {currency(
                                 fund?.amount_requested ?? 0,
                                 2,
-                                fund?.currency
+                                fund?.currency,
                             )}
                         </span>
                     </div>
-                    <div className="mt-1 flex items-center" data-testid="fund-amount-change">
+                    <div
+                        className="mt-1 flex items-center"
+                        data-testid="fund-amount-change"
+                    >
                         {percentageChange >= 0 ? (
-                            <ArrowTrendingUp className="h-3 w-3 text-success sm:h-4 sm:w-4" />
+                            <ArrowTrendingUp className="text-success h-3 w-3 sm:h-4 sm:w-4" />
                         ) : (
-                            <ArrowTrendingDown className="h-3 w-3 text-danger-strong sm:h-4 sm:w-4" />
+                            <ArrowTrendingDown className="text-danger-strong h-3 w-3 sm:h-4 sm:w-4" />
                         )}
                         <span className="ml-1 truncate text-xs sm:text-sm">
                             {`${Math.abs(percentageChange ?? 0)}%`}
@@ -89,19 +105,28 @@ const FundCard: React.FC<FundCardProps> = ({
                         {t('funds.fundedProjects')}
                     </p>
                     <div className="flex items-baseline space-x-1">
-                        <span className="truncate text-sm font-bold sm:text-base" data-testid="fund-funded-projects">
+                        <span
+                            className="truncate text-sm font-bold sm:text-base"
+                            data-testid="fund-funded-projects"
+                        >
                             {fund.funded_proposals_count ?? 0}
                         </span>
                         <span className="text-xs sm:text-sm">/</span>
-                        <span className="truncate text-xs text-gray-500 sm:text-sm" data-testid="fund-total-projects">
+                        <span
+                            className="truncate text-xs text-gray-500 sm:text-sm"
+                            data-testid="fund-total-projects"
+                        >
                             {fund.proposals_count ?? 0}
                         </span>
                     </div>
-                    <div className="mt-1 flex items-center" data-testid="fund-project-change">
+                    <div
+                        className="mt-1 flex items-center"
+                        data-testid="fund-project-change"
+                    >
                         {projectPercentageChange >= 0 ? (
-                            <ArrowTrendingUp className="h-3 w-3 text-success sm:h-4 sm:w-4" />
+                            <ArrowTrendingUp className="text-success h-3 w-3 sm:h-4 sm:w-4" />
                         ) : (
-                            <ArrowTrendingDown className="h-3 w-3 text-danger-strong sm:h-4 sm:w-4" />
+                            <ArrowTrendingDown className="text-danger-strong h-3 w-3 sm:h-4 sm:w-4" />
                         )}
                         <span className="ml-1 truncate text-xs sm:text-sm">
                             {`${Math.abs(projectPercentageChange ?? 0)}%`}

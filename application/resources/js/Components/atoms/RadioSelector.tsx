@@ -1,8 +1,8 @@
+import { Popover, PopoverContent, PopoverTrigger } from '@/Components/Popover';
 import { cn } from '@/lib/utils';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import { Popover, PopoverContent, PopoverTrigger } from '@/Components/Popover';
 
 type RadioSelectorProps = {
     selectedItem: string | null;
@@ -26,14 +26,16 @@ export default function RadioSelector({
     className,
     bgColor = 'bg-background',
     placeholder = '',
-    'data-testid': dataTestId
+    'data-testid': dataTestId,
 }: RadioSelectorProps) {
     const [open, setOpen] = useState(false);
     const { t } = useLaravelReactI18n();
 
-    const currentOption = options?.find((option) => selectedItem === option.value);
+    const currentOption = options?.find(
+        (option) => selectedItem === option.value,
+    );
 
-    let defaultPlaceholder = `${t('select')} ${context}`;
+    const defaultPlaceholder = `${t('select')} ${context}`;
     placeholder = placeholder || defaultPlaceholder;
 
     const handleSelect = (value: string) => {
@@ -48,7 +50,10 @@ export default function RadioSelector({
     };
 
     return (
-        <div className={cn('h-full rounded-lg', className, bgColor)} data-testid={dataTestId}>
+        <div
+            className={cn('h-full rounded-lg', className, bgColor)}
+            data-testid={dataTestId}
+        >
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <button
@@ -89,7 +94,7 @@ export default function RadioSelector({
                                     type="radio"
                                     checked={selectedItem === option.value}
                                     onChange={() => {}}
-                                    className="ml-2 h-4 w-4 checked:bg-primary"
+                                    className="checked:bg-primary ml-2 h-4 w-4"
                                 />
                             </div>
                         ))}

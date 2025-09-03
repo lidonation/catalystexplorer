@@ -1,19 +1,22 @@
-import { Head, Link, useForm } from "@inertiajs/react";
-import WorkflowLayout from "../WorkflowLayout";
-import Nav from "../Partials/WorkflowNav";
-import Content from "../Partials/WorkflowContent";
+import CatalystLogo from '@/Components/atoms/CatalystLogo';
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
+import Paragraph from '@/Components/atoms/Paragraph';
+import PrimaryButton from '@/Components/atoms/PrimaryButton';
+import TextInput from '@/Components/atoms/TextInput';
+import Title from '@/Components/atoms/Title';
+import InputError from '@/Components/InputError';
+import InputLabel from '@/Components/InputLabel';
 import { StepDetails } from '@/types';
-import Paragraph from "@/Components/atoms/Paragraph";
-import InputLabel from "@/Components/InputLabel";
-import TextInput from "@/Components/atoms/TextInput";
-import InputError from "@/Components/InputError";
-import PrimaryButton from "@/Components/atoms/PrimaryButton";
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import { FormEventHandler, useState } from "react";
-import CatalystLogo from "@/Components/atoms/CatalystLogo";
-import Title from "@/Components/atoms/Title";
-import { generateLocalizedRoute, useLocalizedRoute } from "@/utils/localizedRoute";
-import ErrorDisplay from "@/Components/atoms/ErrorDisplay";
+import {
+    generateLocalizedRoute,
+    useLocalizedRoute,
+} from '@/utils/localizedRoute';
+import { Head, Link, useForm } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { FormEventHandler } from 'react';
+import Content from '../Partials/WorkflowContent';
+import Nav from '../Partials/WorkflowNav';
+import WorkflowLayout from '../WorkflowLayout';
 
 interface Step2Props {
     stepDetails: StepDetails[];
@@ -22,13 +25,19 @@ interface Step2Props {
     email: string;
 }
 
-const Step2: React.FC<Step2Props> = ({ stepDetails, activeStep, token, email }) => {
+const Step2: React.FC<Step2Props> = ({
+    stepDetails,
+    activeStep,
+    token,
+    email,
+}) => {
     const { t } = useLaravelReactI18n();
     const resetPasswordRoute = useLocalizedRoute('password.store');
 
-    const asideInfo = stepDetails && stepDetails[activeStep - 1]
-        ? stepDetails[activeStep - 1].info ?? ''
-        : '';
+    const asideInfo =
+        stepDetails && stepDetails[activeStep - 1]
+            ? (stepDetails[activeStep - 1].info ?? '')
+            : '';
 
     const { data, setData, post, processing, errors, reset } = useForm({
         token: token,
@@ -152,6 +161,6 @@ const Step2: React.FC<Step2Props> = ({ stepDetails, activeStep, token, email }) 
             </Content>
         </WorkflowLayout>
     );
-}
+};
 
 export default Step2;

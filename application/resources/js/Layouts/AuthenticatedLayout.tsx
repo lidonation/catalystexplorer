@@ -4,8 +4,8 @@ import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link, usePage } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { PropsWithChildren, ReactNode, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 export default function Authenticated({
     header,

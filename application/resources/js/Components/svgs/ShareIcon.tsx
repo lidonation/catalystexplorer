@@ -4,7 +4,6 @@ type ShareIconProps = {
     height?: number;
 };
 
-
 export default function ShareIcon({
     className,
     width = 16,

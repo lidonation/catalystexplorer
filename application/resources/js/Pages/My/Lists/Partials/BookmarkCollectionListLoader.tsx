@@ -1,5 +1,5 @@
-import Card from "@/Components/Card"
-import { Skeleton } from "@/Components/Skeleton"
+import Card from '@/Components/Card';
+import { Skeleton } from '@/Components/Skeleton';
 
 export default function BookmarkCollectionListLoader() {
     const collections = Array.from({ length: 6 }, (_, index) => index + 1);

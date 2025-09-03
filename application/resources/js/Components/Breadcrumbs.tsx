@@ -1,9 +1,9 @@
+import { truncateMiddle } from '@/utils/truncateMiddle';
 import { Link } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronRight, MoreHorizontal } from 'lucide-react';
 import React from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import HomeIcon from './svgs/HomeIcon';
-import { truncateMiddle } from '@/utils/truncateMiddle';
 
 interface BreadcrumbItem {
     label: string;
@@ -38,10 +38,9 @@ const Breadcrumbs = ({
               ]
             : items;
 
-
     if (
-        displayItems.length === 1 &&
-        displayItems[0].label === t('breadcrumbs.home') ||
+        (displayItems.length === 1 &&
+            displayItems[0].label === t('breadcrumbs.home')) ||
         displayItems.some((item) => item.href.includes('workflows')) ||
         displayItems.some((item) => item.href.includes('dreps')) ||
         displayItems.some((item) => item.href.includes('votes')) ||
@@ -64,7 +63,7 @@ const Breadcrumbs = ({
     return (
         <nav
             aria-label="Breadcrumb"
-            className="container flex items-center space-x-2 pt-5 pl-8 text-sm whitespace-nowrap overflow-x-auto"
+            className="container flex items-center space-x-2 overflow-x-auto pt-5 pl-8 text-sm whitespace-nowrap"
             data-testid="breadcrumbs"
         >
             {displayItems.map((item, index) => {
@@ -87,7 +86,11 @@ const Breadcrumbs = ({
                                 {formatLabel(item.label, isHome)}
                             </span>
                         ) : (
-                            <Link href={item.href} className={itemClassName} data-testid={`breadcrumb-link-${item.label}`}>
+                            <Link
+                                href={item.href}
+                                className={itemClassName}
+                                data-testid={`breadcrumb-link-${item.label}`}
+                            >
                                 {formatLabel(item.label, isHome)}
                             </Link>
                         )}

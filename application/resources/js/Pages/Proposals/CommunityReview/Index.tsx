@@ -3,7 +3,7 @@ import { ParamsEnum } from '@/enums/proposal-search-params';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import RelatedReviews from '@/Pages/Reviews/Partials/RelatedReviews';
 import { Head, WhenVisible } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { PaginatedData } from '../../../types/paginated-data';
 import ProposalLayout from '../ProposalLayout';
 import ProposalData = App.DataTransferObjects.ProposalData;
@@ -47,8 +47,8 @@ const Index = ({
                             <RelatedReviews
                                 reviews={reviews}
                                 routeParam={{
-                                [ParamsEnum.PROPOSALS]: proposal.id
-                                    ? [proposal.id]
+                                    [ParamsEnum.PROPOSALS]: proposal.id
+                                        ? [proposal.id]
                                         : null,
                                 }}
                             />

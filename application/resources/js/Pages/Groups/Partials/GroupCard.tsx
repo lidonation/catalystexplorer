@@ -12,8 +12,8 @@ import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascalePr
 import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useCallback, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import GroupSocials from './GroupSocials';
 import GroupData = App.DataTransferObjects.GroupData;
 

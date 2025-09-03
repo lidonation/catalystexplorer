@@ -12,8 +12,8 @@ import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import { Segments } from '@/types/segments';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 
 interface IdeascaleProfileProps {

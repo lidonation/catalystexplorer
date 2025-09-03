@@ -1,12 +1,12 @@
 import { usePage } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import CatalystLogo from '../atoms/CatalystLogo';
+import LangSwitcher from '../LangSwitcher';
 import AppNavigation from './AppNavigation';
 import ThemeSwitcher from './ThemeSwitcher';
 import UserDetails from './UserDetails';
 import UserNavigation from './UserNavigation';
 import User = App.DataTransferObjects.UserData;
-import LangSwitcher from '../LangSwitcher';
 
 function DesktopSidebar(props: any) {
     const { t } = useLaravelReactI18n();
@@ -15,7 +15,8 @@ function DesktopSidebar(props: any) {
     const { ...rest } = props;
     const isOnMyRoute = url.includes('/my/');
 
-    const currentPath = typeof window === 'undefined' ? null : window.location.pathname;
+    const currentPath =
+        typeof window === 'undefined' ? null : window.location.pathname;
 
     if (currentPath?.includes('login') || currentPath?.includes('register')) {
         return null;
@@ -49,7 +50,7 @@ function DesktopSidebar(props: any) {
                     <div className="px-4">
                         <div className="flex flex-col gap-5 border-t-2 border-gray-200 pt-5">
                             <UserDetails user={auth?.user as unknown as User} />
-                            
+
                             <LangSwitcher />
 
                             <div className="bg-background-darker -mx-4 p-4">

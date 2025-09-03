@@ -33,20 +33,20 @@ export const UIProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [isPlayerBarExpanded, setIsPlayerBarExpanded] = useState(isPlaying);
     const [isMetricsBarExpanded, setIsMetricsBarExpanded] = useState(false);
 
-     useEffect(() => {
-         if (isMetricsBarExpanded) {
-             setIsPlayerBarExpanded(false);
-         }
-         if (isPlayerBarExpanded) {
-             setIsMetricsBarExpanded(false);
-         }
-     }, [isMetricsBarExpanded, isPlayerBarExpanded]);
+    useEffect(() => {
+        if (isMetricsBarExpanded) {
+            setIsPlayerBarExpanded(false);
+        }
+        if (isPlayerBarExpanded) {
+            setIsMetricsBarExpanded(false);
+        }
+    }, [isMetricsBarExpanded, isPlayerBarExpanded]);
 
-     useEffect(() => {
-         if (isPlaying) {
-             setIsPlayerBarExpanded(true);
-         }
-     }, [isPlaying]);
+    useEffect(() => {
+        if (isPlaying) {
+            setIsPlayerBarExpanded(true);
+        }
+    }, [isPlaying]);
 
     return (
         <UIContext.Provider

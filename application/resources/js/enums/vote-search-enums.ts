@@ -5,5 +5,5 @@ export enum VoteEnums {
     CHOICE = 'c',
     PAGE = 'p',
     LIMIT = 'l',
-    SORT = 'st'
+    SORT = 'st',
 }

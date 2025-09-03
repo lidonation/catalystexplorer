@@ -1,8 +1,15 @@
 import { CatalystConnectionsEnum } from '@/enums/catalyst-connections-enums';
-import React, { useCallback, useEffect, useMemo, useRef, useState, Suspense } from 'react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import ConnectionData = App.DataTransferObjects.ConnectionData;
+import React, {
+    Suspense,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 import Paragraph from './atoms/Paragraph';
+import ConnectionData = App.DataTransferObjects.ConnectionData;
 
 // Lazy load ForceGraph2D to avoid SSR issues
 const ForceGraph2D = React.lazy(() => import('react-force-graph-2d'));
@@ -87,7 +94,6 @@ const CatalystConnectionsGraph = ({
         loadImages();
     }, [loadImages]);
 
-    
     useEffect(() => {
         setEngineStarted(false);
     }, [data]);
@@ -262,8 +268,14 @@ const CatalystConnectionsGraph = ({
                 const positions = [
                     { x: node.x!, y: node.y! + radius + margin }, // bottom
                     { x: node.x!, y: node.y! - radius - boxHeight - margin }, // top
-                    { x: node.x! + radius + margin + boxWidth/2, y: node.y! - boxHeight / 2 }, // right
-                    { x: node.x! - radius - boxWidth/2 - margin/4, y: node.y! - boxHeight / 2 }, // left // left
+                    {
+                        x: node.x! + radius + margin + boxWidth / 2,
+                        y: node.y! - boxHeight / 2,
+                    }, // right
+                    {
+                        x: node.x! - radius - boxWidth / 2 - margin / 4,
+                        y: node.y! - boxHeight / 2,
+                    }, // left // left
                 ];
 
                 let bestPosition = positions[0];
@@ -280,10 +292,12 @@ const CatalystConnectionsGraph = ({
                     let totalOverlap = 0;
                     for (const otherNode of data.nodes) {
                         if (otherNode.id === node.id) continue;
-                        const otherRadius = nodeSizes.current.get(otherNode.id) || config.nodeSize.profile.min;
+                        const otherRadius =
+                            nodeSizes.current.get(otherNode.id) ||
+                            config.nodeSize.profile.min;
                         const distance = Math.sqrt(
                             Math.pow(pos.x - otherNode.x!, 2) +
-                            Math.pow(pos.y - otherNode.y!, 2)
+                                Math.pow(pos.y - otherNode.y!, 2),
                         );
                         if (distance < otherRadius + boxHeight) {
                             totalOverlap += 1;
@@ -306,9 +320,19 @@ const CatalystConnectionsGraph = ({
                 ctx.beginPath();
                 ctx.moveTo(x + borderRadius, y);
                 ctx.lineTo(x + boxWidth - borderRadius, y);
-                ctx.quadraticCurveTo(x + boxWidth, y, x + boxWidth, y + borderRadius);
+                ctx.quadraticCurveTo(
+                    x + boxWidth,
+                    y,
+                    x + boxWidth,
+                    y + borderRadius,
+                );
                 ctx.lineTo(x + boxWidth, y + boxHeight - borderRadius);
-                ctx.quadraticCurveTo(x + boxWidth, y + boxHeight, x + boxWidth - borderRadius, y + boxHeight);
+                ctx.quadraticCurveTo(
+                    x + boxWidth,
+                    y + boxHeight,
+                    x + boxWidth - borderRadius,
+                    y + boxHeight,
+                );
                 ctx.lineTo(x + borderRadius, y + boxHeight);
                 ctx.quadraticCurveTo(x, y + boxHeight, x, y + borderRadius);
                 ctx.lineTo(x, y + borderRadius);
@@ -364,16 +388,18 @@ const CatalystConnectionsGraph = ({
     );
 
     const LoadingSpinner = () => (
-        <div className="flex items-center justify-center w-full h-96 bg-background">
+        <div className="bg-background flex h-96 w-full items-center justify-center">
             <div className="text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
-                <Paragraph className="text-sm text-muted-foreground">{t('graph.loadingGraph')}</Paragraph>
+                <div className="border-primary mx-auto mb-2 h-8 w-8 animate-spin rounded-full border-b-2"></div>
+                <Paragraph className="text-muted-foreground text-sm">
+                    {t('graph.loadingGraph')}
+                </Paragraph>
             </div>
         </div>
     );
 
     return (
-        <div className="bg-background w-full h-full" ref={containerRef}>
+        <div className="bg-background h-full w-full" ref={containerRef}>
             {!isClient ? (
                 <LoadingSpinner />
             ) : (
@@ -390,28 +416,32 @@ const CatalystConnectionsGraph = ({
                         onEngineTick={() => {
                             if (!engineStarted && fgRef.current) {
                                 setEngineStarted(true);
-                                
+
                                 const linkForce = fgRef.current.d3Force('link');
-                                const chargeForce = fgRef.current.d3Force('charge');
-                                
+                                const chargeForce =
+                                    fgRef.current.d3Force('charge');
+
                                 if (linkForce) {
                                     linkForce.distance(forces.linkDistance);
                                 }
                                 if (chargeForce) {
-                                    chargeForce.strength(forces.chargeStrength).distanceMax(1000);
+                                    chargeForce
+                                        .strength(forces.chargeStrength)
+                                        .distanceMax(1000);
                                 }
-                                
+
                                 fgRef.current.d3ReheatSimulation();
-                                
-                                
+
                                 if (data.rootNodeId) {
                                     setTimeout(() => {
-                                        const rootNode = data.nodes.find(n => n.id === data.rootNodeId);
+                                        const rootNode = data.nodes.find(
+                                            (n) => n.id === data.rootNodeId,
+                                        );
                                         if (rootNode && fgRef.current) {
                                             fgRef.current.centerAt(
-                                                rootNode.x || 0, 
-                                                rootNode.y || 0, 
-                                                1000
+                                                rootNode.x || 0,
+                                                rootNode.y || 0,
+                                                1000,
                                             );
                                         }
                                     }, 100);
@@ -420,7 +450,7 @@ const CatalystConnectionsGraph = ({
                         }}
                         onEngineStop={() => {
                             // Apply forces immediately when engine stops
-                           /*  if (fgRef.current) {
+                            /*  if (fgRef.current) {
                                 const linkForce = fgRef.current.d3Force('link');
                                 const chargeForce = fgRef.current.d3Force('charge');
                                 
@@ -450,7 +480,7 @@ const CatalystConnectionsGraph = ({
                         }}
                         onNodeHover={(node) => {
                             setHoveredNodeId(node?.id?.toString() || null);
-                            onNodeHover?.(node as Node || null);
+                            onNodeHover?.((node as Node) || null);
                         }}
                         nodeCanvasObject={nodeCanvasObject}
                         linkCanvasObject={linkCanvasObject}

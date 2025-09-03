@@ -12,22 +12,18 @@ interface UserTabProps {
 
 const UserTab = ({ tabs, activeTab }: UserTabProps) => {
     return (
-        <div className="mt-4 md:mt-8 text-content-lighter [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] overflow-x-auto">
-            <nav className="min-w-max border-b border-b-light-gray-persist">
+        <div className="text-content-lighter mt-4 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] md:mt-8 [&::-webkit-scrollbar]:hidden">
+            <nav className="border-b-light-gray-persist min-w-max border-b">
                 <div className="flex flex-row gap-2 md:gap-6">
                     {tabs.map((tab) => (
                         <Link
                             key={tab.name}
                             href={tab.href}
-                            className={`
-                                whitespace-nowrap text-sm md:text-base px-2 md:px-3 py-2
-                                group flex items-center gap-2 outline-hidden transition-colors
-                                hover:text-content-dark 
-                                ${activeTab === tab.name 
-                                    ? '-mb-px border-b-2 border-b-primary text-primary'
+                            className={`group hover:text-content-dark flex items-center gap-2 px-2 py-2 text-sm whitespace-nowrap outline-hidden transition-colors md:px-3 md:text-base ${
+                                activeTab === tab.name
+                                    ? 'border-b-primary text-primary -mb-px border-b-2'
                                     : ''
-                                }
-                            `}
+                            } `}
                         >
                             {tab.name}
                         </Link>

@@ -25,7 +25,7 @@ export default function ConfirmPassword() {
             <Head title="Confirm Password" />
 
             <ErrorDisplay />
-            
+
             <div className="text-4 text-dark mb-4">
                 This is a secure area of the application. Please confirm your
                 password before continuing.

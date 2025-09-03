@@ -58,7 +58,9 @@ export const CardanoTransactionTable: React.FC<
             render: (tx) => (
                 <div className="bg-background-lighter flex items-start rounded px-4 py-3">
                     <Paragraph className="text-gray-persist text-xs font-bold whitespace-nowrap">
-                        {tx?.type === 'cip36' || tx?.type === 'cip15' ? 'Voter Registration' : "Proposal Payout"}
+                        {tx?.type === 'cip36' || tx?.type === 'cip15'
+                            ? 'Voter Registration'
+                            : 'Proposal Payout'}
                     </Paragraph>
                 </div>
             ),

@@ -1,15 +1,16 @@
-import React from 'react';
+import Button from '@/Components/atoms/Button';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { router } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import Button from '@/Components/atoms/Button';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import React from 'react';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface ManageProposalButtonProps {
     proposal: ProposalData;
 }
-const ManageProposalButton: React.FC<ManageProposalButtonProps> = ({ proposal }) => {
-
+const ManageProposalButton: React.FC<ManageProposalButtonProps> = ({
+    proposal,
+}) => {
     const { t } = useLaravelReactI18n();
 
     const localizedRoute = useLocalizedRoute('my.proposals.manage', {
@@ -22,7 +23,7 @@ const ManageProposalButton: React.FC<ManageProposalButtonProps> = ({ proposal })
 
     return (
         <Button onClick={handleClick} ariaLabel={t('proposals.manageProposal')}>
-            <div className="bg-success hover:bg-success-light text-white px-4 py-2 rounded-md transition-colors">
+            <div className="bg-success hover:bg-success-light rounded-md px-4 py-2 text-white transition-colors">
                 {t('proposals.manageProposal')}
             </div>
         </Button>

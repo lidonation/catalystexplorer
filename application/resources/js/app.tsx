@@ -1,5 +1,5 @@
 // import '../../node_modules/plyr/dist/plyr.css';
-import { createInertiaApp, usePage } from '@inertiajs/react';
+import { createInertiaApp } from '@inertiajs/react';
 import { ModalStackProvider, initFromPageProps } from '@inertiaui/modal-react';
 import { LaravelReactI18nProvider } from 'laravel-react-i18n';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
@@ -29,7 +29,7 @@ createInertiaApp({
     // @ts-ignore
     setup({ el, App, props }) {
         initFromPageProps(props);
-        const { locale } = props.initialPage.props as any; 
+        const { locale } = props.initialPage.props as any;
 
         return hydrateRoot(
             el,

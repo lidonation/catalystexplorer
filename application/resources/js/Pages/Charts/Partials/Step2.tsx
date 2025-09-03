@@ -30,7 +30,10 @@ export default function Step2({
     const chartOptions = useMemo(
         () => [
             { label: t('charts.trendChart'), value: 'trendChart' },
-            { label: t('charts.distributionChart'), value: 'distributionChart' },
+            {
+                label: t('charts.distributionChart'),
+                value: 'distributionChart',
+            },
         ],
         [t],
     );
@@ -95,9 +98,7 @@ export default function Step2({
                     <div className="group relative">
                         <InformationIcon className="mx-auto" />
                         <div className="bg-tooltip absolute bottom-full left-1/2 z-10 mb-2 hidden w-48 -translate-x-1/2 rounded p-2 text-white shadow-lg group-hover:block">
-                            <Paragraph>
-                                {t('charts.chooseChartType')}
-                            </Paragraph>
+                            <Paragraph>{t('charts.chooseChartType')}</Paragraph>
                         </div>
                     </div>
                 </div>
@@ -108,7 +109,7 @@ export default function Step2({
                     options={chartOptions}
                     selectedItems={selectedItems}
                     setSelectedItems={handleSelectorChange}
-                    data-testid='chart-type-selector'
+                    data-testid="chart-type-selector"
                 />
             </div>
         </div>

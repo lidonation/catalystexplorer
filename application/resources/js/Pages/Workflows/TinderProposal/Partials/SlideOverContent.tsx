@@ -1,19 +1,19 @@
-import React from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import lodashPkg from 'lodash';
+import Button from '@/Components/atoms/Button';
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import Paragraph from '@/Components/atoms/Paragraph';
+import PrimaryButton from '@/Components/atoms/PrimaryButton';
+import CustomSwitch from '@/Components/atoms/Switch';
+import Textarea from '@/Components/atoms/Textarea';
 import TextInput from '@/Components/atoms/TextInput';
 import ValueLabel from '@/Components/atoms/ValueLabel';
-import Textarea from '@/Components/atoms/Textarea';
 import InputError from '@/Components/InputError';
 import RadioGroup from '@/Components/RadioGroup';
-import CustomSwitch from '@/Components/atoms/Switch';
-import { StatusEnum, VisibilityEnum } from '@/enums/votes-enums';
-import { TinderWorkflowParams } from '@/enums/tinder-workflow-params';
-import Button from '@/Components/atoms/Button';
 import EditIcon2 from '@/Components/svgs/EditIcon2';
-import PrimaryButton from '@/Components/atoms/PrimaryButton';
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
+import { TinderWorkflowParams } from '@/enums/tinder-workflow-params';
+import { StatusEnum, VisibilityEnum } from '@/enums/votes-enums';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import lodashPkg from 'lodash';
+import React from 'react';
 
 interface SlideOverContentProps {
     editForm: any; // Using any for now since UseFormReturnType is not available
@@ -40,20 +40,27 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
     return (
         <div data-testid="edit-voter-list">
             <div>
-
                 <ErrorDisplay />
-                
+
                 {!isEditingFields && (
-                    <div className="flex items-center mb-2">
-                        <Paragraph size='lg' className="font-semibold">
+                    <div className="mb-2 flex items-center">
+                        <Paragraph size="lg" className="font-semibold">
                             {editForm.data[TinderWorkflowParams.TITLE]}
                         </Paragraph>
                         <Button
                             onClick={onToggleEditingFields}
-                            className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
-                            aria-label={isEditingFields ? t('workflows.tinderProposal.step4.viewMode') : t('workflows.tinderProposal.step4.editMode')}
+                            className="rounded-lg p-2 transition-colors duration-200 hover:bg-gray-100"
+                            aria-label={
+                                isEditingFields
+                                    ? t(
+                                          'workflows.tinderProposal.step4.viewMode',
+                                      )
+                                    : t(
+                                          'workflows.tinderProposal.step4.editMode',
+                                      )
+                            }
                         >
-                            <EditIcon2 className="w-5 h-5 text-gray-persist/[60%]" />
+                            <EditIcon2 className="text-gray-persist/[60%] h-5 w-5" />
                         </Button>
                     </div>
                 )}
@@ -63,15 +70,19 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
                     <div
                         className={`transition-all duration-300 ease-in-out ${
                             isEditingFields
-                                ? 'opacity-0 max-h-0 overflow-hidden'
-                                : 'opacity-100 max-h-96'
+                                ? 'max-h-0 overflow-hidden opacity-0'
+                                : 'max-h-96 opacity-100'
                         }`}
                     >
                         <div className="space-y-4">
                             <div>
                                 <div className="rounded-lg">
                                     <Paragraph className="text-gray-persist w-full break-words">
-                                        {editForm.data[TinderWorkflowParams.CONTENT]}
+                                        {
+                                            editForm.data[
+                                                TinderWorkflowParams.CONTENT
+                                            ]
+                                        }
                                     </Paragraph>
                                 </div>
                             </div>
@@ -82,8 +93,8 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
                     <div
                         className={`transition-all duration-300 ease-in-out ${
                             isEditingFields
-                                ? 'opacity-100 max-h-96'
-                                : 'opacity-0 max-h-0 overflow-hidden'
+                                ? 'max-h-96 opacity-100'
+                                : 'max-h-0 overflow-hidden opacity-0'
                         }`}
                     >
                         <div className="space-y-4">
@@ -96,14 +107,28 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
                                     id={TinderWorkflowParams.TITLE}
                                     className="w-full rounded-sm placeholder:text-sm"
                                     placeholder="Title"
-                                    value={editForm.data[TinderWorkflowParams.TITLE]}
+                                    value={
+                                        editForm.data[
+                                            TinderWorkflowParams.TITLE
+                                        ]
+                                    }
                                     onChange={(e) =>
-                                        editForm.setData(TinderWorkflowParams.TITLE, e.target.value)
+                                        editForm.setData(
+                                            TinderWorkflowParams.TITLE,
+                                            e.target.value,
+                                        )
                                     }
                                     required
-                                    data-testid='title-input'
+                                    data-testid="title-input"
                                 />
-                                <InputError message={editForm.errors[TinderWorkflowParams.TITLE] || formErrors[TinderWorkflowParams.TITLE]} />
+                                <InputError
+                                    message={
+                                        editForm.errors[
+                                            TinderWorkflowParams.TITLE
+                                        ] ||
+                                        formErrors[TinderWorkflowParams.TITLE]
+                                    }
+                                />
                             </div>
 
                             <div className="mt-3">
@@ -116,14 +141,28 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
                                     minLengthValue={50}
                                     minLengthEnforced
                                     required
-                                    value={editForm.data[TinderWorkflowParams.CONTENT]}
+                                    value={
+                                        editForm.data[
+                                            TinderWorkflowParams.CONTENT
+                                        ]
+                                    }
                                     onChange={(e) =>
-                                        editForm.setData(TinderWorkflowParams.CONTENT, e.target.value)
+                                        editForm.setData(
+                                            TinderWorkflowParams.CONTENT,
+                                            e.target.value,
+                                        )
                                     }
                                     className="h-30 w-full rounded-lg px-4 py-2"
                                     data-testid="content-textarea"
                                 />
-                                <InputError message={editForm.errors[TinderWorkflowParams.CONTENT] || formErrors[TinderWorkflowParams.CONTENT]} />
+                                <InputError
+                                    message={
+                                        editForm.errors[
+                                            TinderWorkflowParams.CONTENT
+                                        ] ||
+                                        formErrors[TinderWorkflowParams.CONTENT]
+                                    }
+                                />
                             </div>
                         </div>
                     </div>
@@ -138,26 +177,43 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
                         <div className="col-span-9">
                             <RadioGroup
                                 name={TinderWorkflowParams.VISIBILITY}
-                                selectedValue={editForm.data[TinderWorkflowParams.VISIBILITY]}
+                                selectedValue={
+                                    editForm.data[
+                                        TinderWorkflowParams.VISIBILITY
+                                    ]
+                                }
                                 onChange={(value) =>
-                                    editForm.setData(TinderWorkflowParams.VISIBILITY, value as VisibilityEnum)
+                                    editForm.setData(
+                                        TinderWorkflowParams.VISIBILITY,
+                                        value as VisibilityEnum,
+                                    )
                                 }
                                 options={[
                                     {
                                         value: lowerCase(VisibilityEnum.PUBLIC),
-                                        label: t('workflows.voterList.visibilityOptions.public'),
+                                        label: t(
+                                            'workflows.voterList.visibilityOptions.public',
+                                        ),
                                     },
                                     {
-                                        value: lowerCase(VisibilityEnum.PRIVATE),
-                                        label: t('workflows.voterList.visibilityOptions.private'),
+                                        value: lowerCase(
+                                            VisibilityEnum.PRIVATE,
+                                        ),
+                                        label: t(
+                                            'workflows.voterList.visibilityOptions.private',
+                                        ),
                                     },
                                     {
-                                        value: lowerCase(VisibilityEnum.DELEGATORS),
-                                        label: t('workflows.voterList.visibilityOptions.delegators'),
+                                        value: lowerCase(
+                                            VisibilityEnum.DELEGATORS,
+                                        ),
+                                        label: t(
+                                            'workflows.voterList.visibilityOptions.delegators',
+                                        ),
                                     },
                                 ]}
                                 labelClassName="text-gray-persist ml-2"
-                                data-testid='visibility-radio-group'
+                                data-testid="visibility-radio-group"
                             />
                         </div>
                     </div>
@@ -170,14 +226,21 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
                         </div>
                         <div className="col-span-9 flex items-center gap-2">
                             <CustomSwitch
-                                checked={editForm.data[TinderWorkflowParams.COMMENTS_ENABLED]}
+                                checked={
+                                    editForm.data[
+                                        TinderWorkflowParams.COMMENTS_ENABLED
+                                    ]
+                                }
                                 onCheckedChange={(checked: boolean) =>
-                                    editForm.setData(TinderWorkflowParams.COMMENTS_ENABLED, checked)
+                                    editForm.setData(
+                                        TinderWorkflowParams.COMMENTS_ENABLED,
+                                        checked,
+                                    )
                                 }
                                 color="bg-primary"
                                 size="md"
                                 className="!w-auto"
-                                data-testid='comments-switch'
+                                data-testid="comments-switch"
                             />
                             <Paragraph size="sm" className="text-gray-persist">
                                 {t('workflows.voterList.commentsEnabled')}
@@ -200,27 +263,44 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
                                     <div
                                         className="mr-2 h-4 w-4 rounded-sm"
                                         style={{
-                                            backgroundColor: editForm.data[TinderWorkflowParams.COLOR],
+                                            backgroundColor:
+                                                editForm.data[
+                                                    TinderWorkflowParams.COLOR
+                                                ],
                                         }}
                                     />
                                     <input
                                         type="text"
-                                        value={editForm.data[TinderWorkflowParams.COLOR]}
+                                        value={
+                                            editForm.data[
+                                                TinderWorkflowParams.COLOR
+                                            ]
+                                        }
                                         onChange={(e) =>
-                                            editForm.setData(TinderWorkflowParams.COLOR, e.target.value)
+                                            editForm.setData(
+                                                TinderWorkflowParams.COLOR,
+                                                e.target.value,
+                                            )
                                         }
                                         className="bg-background text-content border-none text-sm focus:outline-none"
-                                        data-testid='color-input'
+                                        data-testid="color-input"
                                     />
                                     <input
                                         type="color"
                                         id="color-picker"
-                                        value={editForm.data[TinderWorkflowParams.COLOR]}
+                                        value={
+                                            editForm.data[
+                                                TinderWorkflowParams.COLOR
+                                            ]
+                                        }
                                         onChange={(e) =>
-                                            editForm.setData(TinderWorkflowParams.COLOR, e.target.value)
+                                            editForm.setData(
+                                                TinderWorkflowParams.COLOR,
+                                                e.target.value,
+                                            )
                                         }
                                         className="absolute top-0 left-0 h-full w-full cursor-pointer opacity-0"
-                                        data-testid='color-picker-input'
+                                        data-testid="color-picker-input"
                                     />
                                 </div>
                             </div>
@@ -236,42 +316,55 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
                         <div className="col-span-9">
                             <RadioGroup
                                 name={TinderWorkflowParams.STATUS}
-                                selectedValue={editForm.data[TinderWorkflowParams.STATUS]}
+                                selectedValue={
+                                    editForm.data[TinderWorkflowParams.STATUS]
+                                }
                                 onChange={(value) =>
-                                    editForm.setData(TinderWorkflowParams.STATUS, value as StatusEnum)
+                                    editForm.setData(
+                                        TinderWorkflowParams.STATUS,
+                                        value as StatusEnum,
+                                    )
                                 }
                                 options={[
                                     {
                                         value: lowerCase(StatusEnum.PUBLISHED),
-                                        label: t('workflows.voterList.statusOptions.published'),
+                                        label: t(
+                                            'workflows.voterList.statusOptions.published',
+                                        ),
                                     },
                                     {
                                         value: lowerCase(StatusEnum.DRAFT),
-                                        label: t('workflows.voterList.statusOptions.draft'),
+                                        label: t(
+                                            'workflows.voterList.statusOptions.draft',
+                                        ),
                                     },
                                 ]}
-                                data-testid='status-radio-group'
+                                data-testid="status-radio-group"
                             />
                         </div>
                     </div>
                 </div>
 
-                <div className="w-full pt-6 mt-6">
-                    <div className="flex gap-2 w-full">
+                <div className="mt-6 w-full pt-6">
+                    <div className="flex w-full gap-2">
                         <PrimaryButton
-                            className="text-sm w-1/2 lg:py-3 rounded-lg bg-primary hover:bg-primary/[70%] transition"
+                            className="bg-primary hover:bg-primary/[70%] w-1/2 rounded-lg text-sm transition lg:py-3"
                             disabled={!isFormValid}
                             onClick={onSaveEditForm}
-                            data-testid='save-button'
+                            data-testid="save-button"
                         >
-                            <Paragraph size='sm' className='text-content-light'>{t('Save')}</Paragraph>
+                            <Paragraph size="sm" className="text-content-light">
+                                {t('Save')}
+                            </Paragraph>
                         </PrimaryButton>
                         <Button
                             onClick={onDeleteCollection}
-                            className="text-sm w-1/2 lg:py-3 bg-error hover:bg-error/[70%] rounded-lg transition"
-                            dataTestId='delete-button'
+                            className="bg-error hover:bg-error/[70%] w-1/2 rounded-lg text-sm transition lg:py-3"
+                            dataTestId="delete-button"
                         >
-                            <Paragraph size='sm' className='text-content-light'>{t('workflows.tinderProposal.step4.delete')}</Paragraph>
+                            <Paragraph size="sm" className="text-content-light">
+                                {t('workflows.tinderProposal.step4.delete')}
+                            </Paragraph>
                         </Button>
                     </div>
                 </div>

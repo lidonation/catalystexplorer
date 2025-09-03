@@ -273,7 +273,7 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
                                     <strong className="mb-1 block">
                                         {part.data.label}
                                     </strong>
-                                    <span className='font-bold'>
+                                    <span className="font-bold">
                                         {t('proposals.count')}:{' '}
                                         {shortNumber(part.data.value, 2)}
                                     </span>
@@ -284,7 +284,7 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
                 />
             </div>
 
-            <div className="flex md:flex-wrap flex-col justify-center items-center gap-4 sm:justify-start w-fit mx-auto">
+            <div className="mx-auto flex w-fit flex-col items-center justify-center gap-4 sm:justify-start md:flex-wrap">
                 {funnelData.map((step) => {
                     const keyItem = allKeys.find((k) => k.key === step.id);
                     if (!keyItem) return null;
@@ -295,7 +295,7 @@ const FunnelChart: React.FC<FunnelChartProps> = ({ chartData, viewBy }) => {
                             className="flex items-center gap-2"
                         >
                             <div
-                                className="h-3 md:w-8 w-3 rounded-lg"
+                                className="h-3 w-3 rounded-lg md:w-8"
                                 style={{ backgroundColor: keyItem.color }}
                             />
                             <span className="text-content text-base font-bold">

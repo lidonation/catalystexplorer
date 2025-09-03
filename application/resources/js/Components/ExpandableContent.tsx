@@ -20,7 +20,7 @@ const ExpandableContent: React.FC<ExpandableContentProps> = ({
 }) => {
     const contentRef = useRef<HTMLDivElement>(null);
     const [height, setHeight] = useState<number | undefined>(collapsedHeight);
-    
+
     useEffect(() => {
         if (contentRef.current) {
             if (expanded) {
@@ -30,11 +30,9 @@ const ExpandableContent: React.FC<ExpandableContentProps> = ({
             }
         }
     }, [expanded, children, collapsedHeight]);
-    
+
     return (
-        <div
-            className={clsx('overflow-visible', className)} 
-        >
+        <div className={clsx('overflow-visible', className)}>
             <div
                 ref={contentRef}
                 style={{
@@ -43,7 +41,11 @@ const ExpandableContent: React.FC<ExpandableContentProps> = ({
                     transition: `max-height ${transitionDuration} ease-in-out`,
                 }}
             >
-                <div className={clsx(!expanded && lineClamp ? `line-clamp-${lineClamp}` : '')}>
+                <div
+                    className={clsx(
+                        !expanded && lineClamp ? `line-clamp-${lineClamp}` : '',
+                    )}
+                >
                     {children}
                 </div>
             </div>

@@ -38,7 +38,7 @@ const GroupCardLoader = () => {
                         </div>
                         <div className="bg-dark/10 mt-2 h-6 w-32" />
                     </div>
-                    <div className="flex justify-between px-4 border-content-light mt-2 flex items-center justify-between border-t pt-3">
+                    <div className="border-content-light mt-2 flex items-center justify-between border-t px-4 pt-3">
                         <div className="flex -space-x-2">
                             <div className="bg-dark/10 h-8 w-8 rounded-full"></div>
                             <div className="bg-dark/10 h-8 w-8 rounded-full"></div>

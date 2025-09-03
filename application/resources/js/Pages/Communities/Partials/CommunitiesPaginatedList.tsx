@@ -15,14 +15,14 @@ interface CommunitiesProps {
 const CommunitiesPaginatedList: React.FC<CommunitiesProps> = ({
     communities,
     cardType = 'mini',
-    gridCols
+    gridCols,
 }) => {
     return (
         <>
             <section className="container mt-4 w-full flex-col items-center justify-center overflow-hidden duration-500 ease-in-out">
                 <WhenVisible fallback={<CommunityLoader />} data="campaigns">
-                    <CommunitiesList 
-                        communities={communities} 
+                    <CommunitiesList
+                        communities={communities}
                         cardType={cardType}
                         gridCols={gridCols}
                     />

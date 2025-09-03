@@ -1,7 +1,7 @@
 import CommunitiesIcon from '@/Components/svgs/CommunitiesSvg';
 import { router, usePage } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import CommunityData = App.DataTransferObjects.CommunityData;
 

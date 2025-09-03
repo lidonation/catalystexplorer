@@ -3,8 +3,8 @@ import { PaginatedData } from '@/types/paginated-data';
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
 import CommunityCard from './CommunityCard';
-import CommunityData = App.DataTransferObjects.CommunityData;
 import CommunityCardMini from './CommunityCardMini';
+import CommunityData = App.DataTransferObjects.CommunityData;
 
 interface CommunitiesListProps {
     communities: PaginatedData<CommunityData[]>;
@@ -15,7 +15,7 @@ interface CommunitiesListProps {
 const CommunitiesList: React.FC<CommunitiesListProps> = ({
     communities,
     cardType = 'mini',
-    gridCols = 'grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-4'
+    gridCols = 'grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-4',
 }) => {
     return (
         <AnimatePresence>
@@ -30,7 +30,7 @@ const CommunitiesList: React.FC<CommunitiesListProps> = ({
                 ) : (
                     <div className={`grid w-full ${gridCols}`}>
                         {communities?.data &&
-                            communities.data?.map((community) => (
+                            communities.data?.map((community) =>
                                 cardType === 'full' ? (
                                     <CommunityCard
                                         key={community.id}
@@ -41,8 +41,8 @@ const CommunitiesList: React.FC<CommunitiesListProps> = ({
                                         key={community.id}
                                         community={community}
                                     />
-                                )
-                            ))}
+                                ),
+                            )}
                     </div>
                 )}
             </motion.div>

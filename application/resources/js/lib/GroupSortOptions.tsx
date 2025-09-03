@@ -1,8 +1,6 @@
-import {useLaravelReactI18n} from "laravel-react-i18n";
-
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 const GroupSortingOptions = () => {
-
     const { t } = useLaravelReactI18n();
     return [
         {
@@ -24,8 +22,8 @@ const GroupSortingOptions = () => {
         {
             label: t('groups.options.amountAwardedUsdAsc'),
             value: 'amount_awarded_usd:asc',
-        }
-    ]
+        },
+    ];
 };
 
 export default GroupSortingOptions;

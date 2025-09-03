@@ -3,19 +3,19 @@ import {
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { router } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import Title from '@/Components/atoms/Title';
 import ConnectWalletButton from '@/Components/ConnectWalletButton';
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
+import { StepDetails } from '@/types';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
-import { StepDetails } from '@/types';
 
 interface Step7Props {
     stepDetails: StepDetails[];

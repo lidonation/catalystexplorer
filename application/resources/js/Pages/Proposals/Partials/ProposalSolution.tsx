@@ -1,10 +1,10 @@
 import Title from '@/Components/atoms/Title';
-import { PageProps } from '@/types';
-import Markdown from "marked-react";
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import ExpandableContentAnimation from '@/Components/ExpandableContentAnimation';
 import ExpandableContent from '@/Components/ExpandableContent';
-import { useRef, useState, useEffect } from 'react';
+import ExpandableContentAnimation from '@/Components/ExpandableContentAnimation';
+import { PageProps } from '@/types';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import Markdown from 'marked-react';
+import { useEffect, useRef, useState } from 'react';
 
 interface ProposalSolution extends Record<string, unknown> {
     solution?: string;
@@ -45,18 +45,17 @@ export default function ProposalSolution({
                 ref={containerRef}
                 data-testid="proposal-solution-section"
             >
-                {(solution || problem ) && (
+                {(solution || problem) && (
                     <div className="solution-container">
                         <header className="solution-header mb-2 flex justify-between">
                             <Title
                                 level="5"
                                 id="solution-heading"
-                                className="mt-2 text-content text-base font-medium"
+                                className="text-content mt-2 text-base font-medium"
                                 data-testid="proposal-solution-or-problem"
                             >
                                 {solution ? t('solution') : t('problem')}
                             </Title>
-                            
                         </header>
 
                         <div className="text-content">

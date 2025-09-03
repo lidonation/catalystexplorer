@@ -1,13 +1,10 @@
 import Title from '@/Components/atoms/Title';
 import Card from '@/Components/Card';
-import FundingPercentages from '@/Components/FundingPercentages';
 import Image from '@/Components/Image';
-import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
-import React, { useCallback, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import GroupSocials from './GroupSocials';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import React from 'react';
 import GroupData = App.DataTransferObjects.GroupData;
 
 interface GroupCardMiniProps {
@@ -19,7 +16,7 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
 
     return (
         group && (
-            <Card className=" flex flex-col">
+            <Card className="flex flex-col">
                 <div className="flex w-full flex-col items-center gap-4">
                     <div className="flex w-full flex-col items-center gap-4 pt-2">
                         <Image

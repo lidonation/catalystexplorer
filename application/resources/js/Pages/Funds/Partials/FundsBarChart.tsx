@@ -3,9 +3,8 @@ import RadioSelector from '@/Components/atoms/RadioSelector';
 import Selector from '@/Components/atoms/Selector';
 import { currency } from '@/utils/currency';
 import { ResponsiveBar } from '@nivo/bar';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useState } from 'react';
-import { test } from '@playwright/test';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface FundsBarChartProps {
     funds: any;
@@ -14,7 +13,7 @@ interface FundsBarChartProps {
     fundedProposals: number;
     totalFundsRequested: number;
     totalFundsAllocated: number;
-      viewBy: 'fund' | 'year';
+    viewBy: 'fund' | 'year';
     onViewByChange: (value: string | null) => void;
 }
 
@@ -66,10 +65,16 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
     };
 
     return (
-        <div className="bg-background rounded-md p-4 shadow-xs lg:p-16 overflow-x-auto" data-testid="funds-bar-chart-container">
+        <div
+            className="bg-background overflow-x-auto rounded-md p-4 shadow-xs lg:p-16"
+            data-testid="funds-bar-chart-container"
+        >
             <div className="grid w-full grid-cols-2 justify-between gap-4 lg:grid-cols-5">
                 <div>
-                    <h6 className="text-2 lg:title-5 font-bold" data-testid="charts-fund-rounds">
+                    <h6
+                        className="text-2 lg:title-5 font-bold"
+                        data-testid="charts-fund-rounds"
+                    >
                         {fundRounds}
                     </h6>
                     <Paragraph
@@ -80,7 +85,10 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     </Paragraph>
                 </div>
                 <div>
-                    <h6 className="text-2 lg:title-5 font-bold" data-testid="charts-total-proposals">
+                    <h6
+                        className="text-2 lg:title-5 font-bold"
+                        data-testid="charts-total-proposals"
+                    >
                         {totalProposals.toLocaleString()}
                     </h6>
                     <Paragraph
@@ -92,7 +100,10 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                 </div>
 
                 <div>
-                    <h6 className="text-2 lg:title-5 font-bold" data-testid="charts-funded-proposals">
+                    <h6
+                        className="text-2 lg:title-5 font-bold"
+                        data-testid="charts-funded-proposals"
+                    >
                         {fundedProposals.toLocaleString()}
                     </h6>
                     <Paragraph
@@ -103,7 +114,10 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     </Paragraph>
                 </div>
                 <div>
-                    <h6 className="text-2 lg:title-5 font-bold" data-testid="charts-total-funds-requested">
+                    <h6
+                        className="text-2 lg:title-5 font-bold"
+                        data-testid="charts-total-funds-requested"
+                    >
                         {currency(totalFundsRequested, 2, 'ADA')}
                     </h6>
                     <Paragraph
@@ -114,7 +128,10 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     </Paragraph>
                 </div>
                 <div>
-                    <h6 className="text-2 lg:title-5 font-bold" data-testid="charts-total-funds-awarded">
+                    <h6
+                        className="text-2 lg:title-5 font-bold"
+                        data-testid="charts-total-funds-awarded"
+                    >
                         {currency(totalFundsAllocated, 2, 'USD')}
                     </h6>
                     <Paragraph
@@ -126,7 +143,7 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                 </div>
             </div>
 
-            <div className="mt-6 flex md:justify-end gap-4 md:px-8">
+            <div className="mt-6 flex gap-4 md:justify-end md:px-8">
                 <div className="flex items-center gap-2">
                     <Paragraph className="text-gray-persist">
                         {t('charts.viewBy')}
@@ -153,12 +170,12 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
             </div>
             <div
                 style={{ height: '400px', minHeight: '640px' }}
-                 className="min-w-[600px] sm:min-w-full"
+                className="min-w-[600px] sm:min-w-full"
             >
                 <ResponsiveBar
                     data={funds}
                     keys={activeKeys}
-                    indexBy= {viewBy === 'fund' ? 'fund' : 'year'}
+                    indexBy={viewBy === 'fund' ? 'fund' : 'year'}
                     margin={{
                         top: 50,
                         right: 50,
@@ -172,7 +189,10 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                         tickSize: 5,
                         tickPadding: 5,
                         tickRotation: window.innerWidth < 600 ? 45 : 0,
-                        legend: viewBy === 'fund' ? t('funds.fund') : t('charts.year'),
+                        legend:
+                            viewBy === 'fund'
+                                ? t('funds.fund')
+                                : t('charts.year'),
                         legendPosition: 'middle',
                         legendOffset: window.innerWidth < 600 ? 60 : 40,
                     }}
@@ -191,7 +211,8 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                         {
                             dataFrom: 'keys',
                             anchor: 'bottom',
-                            direction: window.innerWidth < 600 ? 'column' : 'row',
+                            direction:
+                                window.innerWidth < 600 ? 'column' : 'row',
                             justify: false,
                             translateX: window.innerWidth < 600 ? -40 : 0,
                             translateY: window.innerWidth < 600 ? 180 : 80,
@@ -255,7 +276,10 @@ const FundsBarChart: React.FC<FundsBarChartProps> = ({
                     }}
                     tooltip={({ indexValue, data }) => (
                         <div className="bg-tooltip text-content-light rounded-xs p-4">
-                            <Paragraph size="sm" data-testid="funds-bar-chart-tooltip">
+                            <Paragraph
+                                size="sm"
+                                data-testid="funds-bar-chart-tooltip"
+                            >
                                 <strong className="mb-1 block">
                                     {indexValue}
                                 </strong>

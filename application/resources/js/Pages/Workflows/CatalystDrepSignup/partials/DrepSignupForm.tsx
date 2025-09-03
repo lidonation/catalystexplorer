@@ -3,7 +3,7 @@ import Checkbox from '@/Components/atoms/Checkbox';
 import LanguageSelector from '@/Components/atoms/LanguageSelector';
 import TextInput from '@/Components/atoms/TextInput';
 import Textarea from '@/Components/atoms/Textarea';
-import useLanguageDetection from '@/hooks/useLanguageDetection';
+import useLanguageDetection from '@/Hooks/useLanguageDetection.ts';
 import { FormDataConvertible } from '@inertiajs/core';
 import { InertiaFormProps, usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
@@ -48,10 +48,7 @@ const DrepSignupForm = forwardRef<DrepSignupFormHandles, DrepSignupFormProps>(
     ({ setIsValid, form, savedLocale }, ref) => {
         const typedForm = form as InertiaFormProps<DrepSignupFormFields>;
         const { data } = typedForm;
-        const setData = typedForm.setData as (
-            field: keyof DrepSignupFormFields,
-            value: any,
-        ) => void;
+        const setData = typedForm.setData as any;
         const errors = typedForm.errors as Partial<
             Record<keyof DrepSignupFormFields, string>
         >;

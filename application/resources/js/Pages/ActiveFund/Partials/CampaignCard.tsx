@@ -19,7 +19,7 @@ interface CampaignCardProps {
 const CampaignCard: React.FC<CampaignCardProps> = ({
     fund,
     campaign,
-    className
+    className,
 }) => {
     const { t } = useLaravelReactI18n();
 

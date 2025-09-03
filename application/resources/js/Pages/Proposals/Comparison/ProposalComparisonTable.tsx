@@ -1,6 +1,8 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import { useProposalComparison } from '@/Context/ProposalComparisonContext';
+import { useUserSetting } from '@/Hooks/useUserSettings';
+import { userSettingEnums } from '@/enums/user-setting-enums';
 import {
     closestCenter,
     DndContext,
@@ -15,15 +17,10 @@ import {
     SortableContext,
     sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import ComparisonTableFilters from './Partials/ComparisonTableFilters';
-import SortableProposalColumn from './SortableProposalColumn';
-import { useState } from 'react';
 import RowVisibilitySelector from './Partials/RowVisibilitySelector';
-import { useUserSetting } from '@/Hooks/useUserSettings';
-import { userSettingEnums } from '@/enums/user-setting-enums';
-
-
+import SortableProposalColumn from './SortableProposalColumn';
 
 export default function ProposalsTable() {
     const { t } = useLaravelReactI18n();
@@ -43,7 +40,7 @@ export default function ProposalsTable() {
             label: t('proposalComparison.tableHeaders.title'),
             height: 'h-32',
         },
-         {
+        {
             id: 'campaign',
             label: t('proposalComparison.tableHeaders.campaign'),
             height: 'h-16',
@@ -58,7 +55,8 @@ export default function ProposalsTable() {
             label: t('proposalComparison.tableHeaders.status'),
             height: 'h-16',
         },
-        {id: 'problem',
+        {
+            id: 'problem',
             label: t('proposalComparison.tableHeaders.problem'),
             height: 'h-42',
         },
@@ -87,7 +85,7 @@ export default function ProposalsTable() {
             label: t('proposalComparison.tableHeaders.team'),
             height: 'h-16',
         },
-         {
+        {
             id: 'opensource',
             label: t('proposalComparison.tableHeaders.openSource'),
             height: 'h-16',
@@ -99,15 +97,17 @@ export default function ProposalsTable() {
         },
     ];
 
-    const controllableRows = rows.filter(row => !EXCLUDED_FROM_VISIBILITY.includes(row.id));
+    const controllableRows = rows.filter(
+        (row) => !EXCLUDED_FROM_VISIBILITY.includes(row.id),
+    );
 
-     const {
+    const {
         value: visibleRows,
         setValue: setVisibleRows,
-        isLoading: isLoadingPreferences
+        isLoading: isLoadingPreferences,
     } = useUserSetting<string[]>(
         userSettingEnums.PROPOSAL_COMPARISON,
-        controllableRows.map(row => row.id)
+        controllableRows.map((row) => row.id),
     );
 
     const { filteredProposals, reorderProposals } = useProposalComparison();
@@ -130,36 +130,38 @@ export default function ProposalsTable() {
         }
     }
 
-   const visibleRowsData = rows.filter(row =>
-        EXCLUDED_FROM_VISIBILITY.includes(row.id) || (visibleRows && visibleRows.includes(row.id))
+    const visibleRowsData = rows.filter(
+        (row) =>
+            EXCLUDED_FROM_VISIBILITY.includes(row.id) ||
+            (visibleRows && visibleRows.includes(row.id)),
     );
 
     return (
         <div className="container" data-testid="proposal-comparison-table">
-             <div className="flex items-center justify-between mb-4">
-            <header data-testid="proposal-comparison-header">
-                <div className=" ">
-                    <Title level="1">{t('proposalComparison.title')}</Title>
-                </div>
+            <div className="mb-4 flex items-center justify-between">
+                <header data-testid="proposal-comparison-header">
+                    <div className=" ">
+                        <Title level="1">{t('proposalComparison.title')}</Title>
+                    </div>
 
-                <div className=" ">
-                    <Paragraph className="text-content">
-                        {t('proposalComparison.subtitle')}
-                    </Paragraph>
-                </div>
-            </header>
+                    <div className=" ">
+                        <Paragraph className="text-content">
+                            {t('proposalComparison.subtitle')}
+                        </Paragraph>
+                    </div>
+                </header>
 
-            <RowVisibilitySelector
-                rows={controllableRows}
-                visibleRows={visibleRows || []}
-                onRowVisibilityChange={setVisibleRows}
-            />
-        </div>
+                <RowVisibilitySelector
+                    rows={controllableRows}
+                    visibleRows={visibleRows || []}
+                    onRowVisibilityChange={setVisibleRows}
+                />
+            </div>
             <div>
                 <ComparisonTableFilters />
             </div>
             <div className="bg-background border-gray-light relative mb-4 flex w-full rounded-lg border shadow-lg">
-                 {/* Sticky Row Headers */}
+                {/* Sticky Row Headers */}
                 <div className="bg-background sticky left-0 z-10 flex flex-col rounded-l-lg">
                     {visibleRowsData.map((row) => (
                         <div
@@ -174,7 +176,7 @@ export default function ProposalsTable() {
 
                 {/* Scrollable Draggable Columns */}
                 <div
-                    className="border-gray-light overflow-x-auto border-l "
+                    className="border-gray-light overflow-x-auto border-l"
                     style={{ maxWidth: 'calc(100% - 120px)' }}
                     data-testid="proposal-comparison-scrollable-columns"
                 >
@@ -185,15 +187,13 @@ export default function ProposalsTable() {
                     >
                         <div className="flex min-w-max">
                             <SortableContext
-                                items={filteredProposals.map(
-                                (p) => p.id ?? '',
-                                )}
+                                items={filteredProposals.map((p) => p.id ?? '')}
                                 strategy={horizontalListSortingStrategy}
                                 data-testid="sortable-proposal-context"
                             >
-                                 {filteredProposals.map((proposal, index) => (
+                                {filteredProposals.map((proposal, index) => (
                                     <SortableProposalColumn
-                                    key={proposal.id}
+                                        key={proposal.id}
                                         proposal={proposal}
                                         isLast={
                                             index ===

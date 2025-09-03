@@ -14,6 +14,7 @@ import { SearchParams } from '@/types/search-params';
 import { currency } from '@/utils/currency';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link, router } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, {
     Dispatch,
     SetStateAction,
@@ -21,7 +22,6 @@ import React, {
     useRef,
     useState,
 } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import VoteFilters from './VoteFilters';
 import VoteHistoryTableLoader from './VoterHistoryTableLoader';
 import VoterHistoryData = App.DataTransferObjects.VoterHistoryData;
@@ -264,7 +264,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                 >
                     {customTitle || t('vote.votingHistory')}
                 </Title>
-                 <div className="pt-6"></div>
+                <div className="pt-6"></div>
                 <SecondarySearchControls
                     onFiltersToggle={toggleFilters}
                     sortOptions={sortOptionsList}
@@ -305,34 +305,34 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
             )}
 
             {(!shouldShowNoRecords() || isLoading) && (
-                <div className="container mb-4 pb-4 pt-6">
-                    <div className="bg-background border-gray-100 w-full overflow-hidden rounded-lg border shadow-sm ">
+                <div className="container mb-4 pt-6 pb-4">
+                    <div className="bg-background w-full overflow-hidden rounded-lg border border-gray-100 shadow-sm">
                         <div className="overflow-x-auto">
                             <table className="w-max min-w-full">
                                 <thead className="bg-background-lighter whitespace-nowrap">
                                     <tr>
-                                        <th className="border-gray-100 text-gray-persist bg-background-lighter border-r border-b px-4 py-3 text-left font-medium">
+                                        <th className="text-gray-persist bg-background-lighter border-r border-b border-gray-100 px-4 py-3 text-left font-medium">
                                             {t('vote.table.fund')}
                                         </th>
-                                        <th className="border-gray-100 text-gray-persist border-r border-b px-4 py-3 text-left font-medium">
+                                        <th className="text-gray-persist border-r border-b border-gray-100 px-4 py-3 text-left font-medium">
                                             {t('vote.table.stakeAddress')}
                                         </th>
-                                        <th className="border-gray-100 text-gray-persist border-r border-b px-4 py-3 text-left font-medium">
+                                        <th className="text-gray-persist border-r border-b border-gray-100 px-4 py-3 text-left font-medium">
                                             {t('vote.table.fragmentId')}
                                         </th>
-                                        <th className="border-gray-100 text-gray-persist border-r border-b px-4 py-3 text-left font-medium">
+                                        <th className="text-gray-persist border-r border-b border-gray-100 px-4 py-3 text-left font-medium">
                                             {t('vote.table.caster')}
                                         </th>
-                                        <th className="border-gray-100 text-gray-persist border-r border-b px-4 py-3 text-left font-medium">
+                                        <th className="text-gray-persist border-r border-b border-gray-100 px-4 py-3 text-left font-medium">
                                             {t('vote.table.timestamp')}
                                         </th>
-                                        <th className="border-gray-100 text-gray-persist border-r border-b px-4 py-3 text-left font-medium">
+                                        <th className="text-gray-persist border-r border-b border-gray-100 px-4 py-3 text-left font-medium">
                                             {t('vote.table.choice')}
                                         </th>
-                                        <th className="border-gray-100 text-gray-persist border-r border-b px-4 py-3 text-left font-medium">
+                                        <th className="text-gray-persist border-r border-b border-gray-100 px-4 py-3 text-left font-medium">
                                             {t('vote.table.votingPower')}
                                         </th>
-                                        <th className="border-gray-100 text-gray-persist border-b px-4 py-3 text-left font-medium">
+                                        <th className="text-gray-persist border-b border-gray-100 px-4 py-3 text-left font-medium">
                                             {t('vote.table.rawFragment')}
                                         </th>
                                     </tr>
@@ -350,7 +350,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                                                         index,
                                                     )}
                                                 >
-                                                    <td className="border-gray-100 text-darker font-medium bg-background border-r border-b px-4 py-4">
+                                                    <td className="text-darker bg-background border-r border-b border-gray-100 px-4 py-4 font-medium">
                                                         {history?.snapshot?.fund
                                                             ? history.snapshot
                                                                   .fund.title
@@ -358,7 +358,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                                                                   'vote.notAvailable',
                                                               )}
                                                     </td>
-                                                    <td className="border-gray-100 text-darker font-normal w-40 border-r border-b px-4 py-4">
+                                                    <td className="text-darker w-40 border-r border-b border-gray-100 px-4 py-4 font-normal">
                                                         <Link
                                                             href={useLocalizedRoute(
                                                                 'jormungandr.wallets.show',
@@ -385,7 +385,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                                                                   )}
                                                         </Link>
                                                     </td>
-                                                    <td className="border-gray-100 text-darker font-normal w-40 border-r border-b px-4 py-4">
+                                                    <td className="text-darker w-40 border-r border-b border-gray-100 px-4 py-4 font-normal">
                                                         {getValueWithTooltip(
                                                             index,
                                                             history,
@@ -396,7 +396,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                                                             ),
                                                         )}
                                                     </td>
-                                                    <td className="border-gray-100 text-darker font-normal w-40 border-r border-b px-4 py-4">
+                                                    <td className="text-darker w-40 border-r border-b border-gray-100 px-4 py-4 font-normal">
                                                         <Link
                                                             href={useLocalizedRoute(
                                                                 'jormungandr.wallets.show',
@@ -422,7 +422,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                                                             )}
                                                         </Link>
                                                     </td>
-                                                    <td className="border-gray-100 text-content  font-medium border-r border-b px-4 py-4">
+                                                    <td className="text-content border-r border-b border-gray-100 px-4 py-4 font-medium">
                                                         <div className="flex flex-col">
                                                             <span>
                                                                 {history.time}
@@ -433,7 +433,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                             </span> */}
                                                         </div>
                                                     </td>
-                                                    <td className="border-gray-100 text-darker font-medium border-r border-b px-4 py-4 text-left">
+                                                    <td className="text-darker border-r border-b border-gray-100 px-4 py-4 text-left font-medium">
                                                         {typeof safelyGetNestedValue(
                                                             history,
                                                             'choice',
@@ -447,7 +447,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                                                                   'choice',
                                                               )}
                                                     </td>
-                                                    <td className="border-gray-100 text-content border-r border-b px-4 py-4">
+                                                    <td className="text-content border-r border-b border-gray-100 px-4 py-4">
                                                         <div className="flex items-start">
                                                             <span>
                                                                 {formatVotingPower(
@@ -456,7 +456,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                                                             </span>
                                                         </div>
                                                     </td>
-                                                    <td className="border-gray-100 text-darker font-normal w-40 border-r border-b px-4 py-4">
+                                                    <td className="text-darker w-40 border-r border-b border-gray-100 px-4 py-4 font-normal">
                                                         {getValueWithTooltip(
                                                             index,
                                                             history,
@@ -478,7 +478,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                             voterHistories &&
                             voterHistories.data &&
                             voterHistories.data.length > 0 && (
-                                <div className="bg-background  rounded-b-lg  border-gray-200 border-t px-2">
+                                <div className="bg-background rounded-b-lg border-t border-gray-200 px-2">
                                     <Paginator
                                         pagination={voterHistories}
                                         linkProps={{
@@ -509,8 +509,7 @@ const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
                                                                 pageValue,
                                                             ),
                                                             label: 'Current Page',
-                                                            resetPageOnChange:
-                                                                false,
+                                                            resetPageOnChange: false,
                                                         });
                                                     }
                                                 }

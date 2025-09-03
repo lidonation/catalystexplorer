@@ -1,6 +1,6 @@
 import Title from '@/Components/atoms/Title';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface PageHeaderProps {
     sectionTitle: string;
@@ -12,13 +12,22 @@ const PageHeader: React.FC<PageHeaderProps> = ({ sectionTitle, userName }) => {
 
     return (
         <>
-            <Title level='2' className="max-w-xs mx-auto text-lg font-semibold text-center">
-                {t("profileWorkflow.nowMinting")}: <span className="font-bold">{t("profileWorkflow.fundsRange")}</span>
+            <Title
+                level="2"
+                className="mx-auto max-w-xs text-center text-lg font-semibold"
+            >
+                {t('profileWorkflow.nowMinting')}:{' '}
+                <span className="font-bold">
+                    {t('profileWorkflow.fundsRange')}
+                </span>
             </Title>
-            <p className="max-w-xs mx-auto mt-1 text-sm text-center">
-                {t("profileWorkflow.loggedInAs")} <span className="font-semibold text-primary">{userName}</span>
+            <p className="mx-auto mt-1 max-w-xs text-center text-sm">
+                {t('profileWorkflow.loggedInAs')}{' '}
+                <span className="text-primary font-semibold">{userName}</span>
             </p>
-            <p className="max-w-xs mx-auto my-2 text-sm text-center">{sectionTitle}</p>
+            <p className="mx-auto my-2 max-w-xs text-center text-sm">
+                {sectionTitle}
+            </p>
         </>
     );
 };

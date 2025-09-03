@@ -1,8 +1,8 @@
 import Button from '@/Components/atoms/Button';
 import GroupCardExtended from '@/Pages/Groups/Partials/GroupCardExtended';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import GroupData = App.DataTransferObjects.GroupData;
 
 interface GroupListProps {

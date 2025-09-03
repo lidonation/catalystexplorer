@@ -1,6 +1,6 @@
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import Button from './atoms/Button';
 import Paragraph from './atoms/Paragraph';
 import SecondaryButton from './atoms/SecondaryButton';

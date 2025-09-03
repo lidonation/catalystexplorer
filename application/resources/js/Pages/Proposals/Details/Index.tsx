@@ -1,6 +1,6 @@
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import ProposalLayout from "../ProposalLayout";
-import ProposalContent from "../Partials/ProposalContent";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import ProposalContent from '../Partials/ProposalContent';
+import ProposalLayout from '../ProposalLayout';
 
 interface IndexProps {
     proposal: App.DataTransferObjects.ProposalData;
@@ -17,7 +17,7 @@ const Index = ({
     setGlobalQuickPitchView,
     userCompleteProposalsCount = 0,
     userOutstandingProposalsCount = 0,
-    catalystConnectionsCount = 0
+    catalystConnectionsCount = 0,
 }: IndexProps) => {
     const { t } = useLaravelReactI18n();
 
@@ -27,19 +27,31 @@ const Index = ({
             globalQuickPitchView={globalQuickPitchView}
             setGlobalQuickPitchView={setGlobalQuickPitchView}
         >
-            <div className="self-stretch p-4 sm:p-6 bg-background rounded-xl shadow-cx-box-shadow flex flex-col sm:flex-row justify-between items-start gap-5 sm:gap-2">
-                <div className="w-120 flex justify-start items-center gap-4">
-                    <div className="flex-1 inline-flex flex-col justify-start items-start gap-1">
-                        <div className="text-gray-persist text-sm">{t('proposals.outstanding')}</div>
-                        <div className="text-content text-base">{userOutstandingProposalsCount}</div>
+            <div className="bg-background shadow-cx-box-shadow flex flex-col items-start justify-between gap-5 self-stretch rounded-xl p-4 sm:flex-row sm:gap-2 sm:p-6">
+                <div className="flex w-120 items-center justify-start gap-4">
+                    <div className="inline-flex flex-1 flex-col items-start justify-start gap-1">
+                        <div className="text-gray-persist text-sm">
+                            {t('proposals.outstanding')}
+                        </div>
+                        <div className="text-content text-base">
+                            {userOutstandingProposalsCount}
+                        </div>
                     </div>
-                    <div className="flex-1 inline-flex flex-col justify-start items-start gap-1">
-                        <div className="text-gray-persist text-sm">{t('proposals.completed')}</div>
-                        <div className="text-content text-base">{userCompleteProposalsCount}</div>
+                    <div className="inline-flex flex-1 flex-col items-start justify-start gap-1">
+                        <div className="text-gray-persist text-sm">
+                            {t('proposals.completed')}
+                        </div>
+                        <div className="text-content text-base">
+                            {userCompleteProposalsCount}
+                        </div>
                     </div>
-                    <div className="flex-1 inline-flex flex-col justify-start items-start gap-1">
-                        <div className="text-gray-persist text-sm">{t('proposals.catalystConnection')}</div>
-                        <div className="text-content text-base">{catalystConnectionsCount}</div>
+                    <div className="inline-flex flex-1 flex-col items-start justify-start gap-1">
+                        <div className="text-gray-persist text-sm">
+                            {t('proposals.catalystConnection')}
+                        </div>
+                        <div className="text-content text-base">
+                            {catalystConnectionsCount}
+                        </div>
                     </div>
                 </div>
             </div>

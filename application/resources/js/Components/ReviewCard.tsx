@@ -5,8 +5,8 @@ import {
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { Link, router } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useEffect, useRef, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import Card from './Card';
 import ExpandableContent from './ExpandableContent';
 import ExpandableContentAnimation from './ExpandableContentAnimation';
@@ -41,7 +41,6 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
         }
     }, [review?.content]);
 
-
     const markPositive = () => {
         if (!review?.id) return;
         setIsLoadingPositive(true);
@@ -52,7 +51,12 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                 preserveScroll: true,
                 onFinish: () => {
                     router.reload({
-                        only: ['reviews','proposals', 'groups', 'ideascaleProfiles'],
+                        only: [
+                            'reviews',
+                            'proposals',
+                            'groups',
+                            'ideascaleProfiles',
+                        ],
                         onFinish: () => setIsLoadingPositive(false),
                     });
                 },
@@ -78,7 +82,12 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                 preserveScroll: true,
                 onFinish: () => {
                     router.reload({
-                        only: ['reviews', 'proposals', 'groups', 'ideascaleProfiles'],
+                        only: [
+                            'reviews',
+                            'proposals',
+                            'groups',
+                            'ideascaleProfiles',
+                        ],
                         onFinish: () => setIsLoadingNegative(false),
                     });
                 },
@@ -98,8 +107,7 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                 onHoverChange={setIsHovered}
                 className={className}
             >
-                <Card
-                >
+                <Card>
                     <div className={`pb-6 ${className}`}>
                         <div className="flex items-start justify-between">
                             <div className="flex">

@@ -1,8 +1,6 @@
-import {useLaravelReactI18n} from "laravel-react-i18n";
-
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 const ProposalSortingOptions = () => {
-
     const { t } = useLaravelReactI18n();
     return [
         {
@@ -101,7 +99,7 @@ const ProposalSortingOptions = () => {
             label: t('proposals.options.fundingStatusZtoA'),
             value: 'funding_status:desc',
         },
-    ]
+    ];
 };
 
 export default ProposalSortingOptions;

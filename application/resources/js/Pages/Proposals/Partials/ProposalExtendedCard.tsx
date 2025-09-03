@@ -1,16 +1,16 @@
+import Button from '@/Components/atoms/Button';
 import Title from '@/Components/atoms/Title';
+import ValueLabel from '@/Components/atoms/ValueLabel';
+import Rating from '@/Components/Rating';
 import UserQuickView from '@/Components/UserQuickView';
+import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import ProposalCardFooter from './ProposalCardFooter';
 import ProposalCardHeader from './ProposalCardHeader';
 import ProposalCardNav from './ProposalCardNav';
 import ProposalFundingDetails from './ProposalFundingDetails';
 import ProposalFundingStatus from './ProposalFundingStatus';
 import ProposalSolution from './ProposalSolution';
-import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
-import { useCallback, useState, useRef, useEffect } from 'react';
-import Rating from '@/Components/Rating';
-import ValueLabel from '@/Components/atoms/ValueLabel';
-import Button from '@/Components/atoms/Button';
 
 export default function ProposalExtendedCard({
     proposal,
@@ -36,7 +36,7 @@ export default function ProposalExtendedCard({
             }
         }
     }, []);
-    
+
     const wrappedHandleUserClick = useCallback(
         (user: any) => {
             if (cardRef.current) {
@@ -46,9 +46,9 @@ export default function ProposalExtendedCard({
                 handleUserClick(user);
             }
         },
-        [handleUserClick]
+        [handleUserClick],
     );
-    
+
     const wrappedNoSelectedUser = useCallback(() => {
         if (noSelectedUser) {
             noSelectedUser();
@@ -56,20 +56,22 @@ export default function ProposalExtendedCard({
     }, [noSelectedUser]);
 
     return (
-        <article 
+        <article
             ref={cardRef as React.RefObject<HTMLElement>}
-            className="bg-background proposal-card proposal-card-vertical flex h-full flex-col justify-between rounded-xl p-2 shadow-lg gap-3 relative"
-            style={cardHeight && userSelected ? { height: `${cardHeight}px` } : {}}
+            className="bg-background proposal-card proposal-card-vertical relative flex h-full flex-col justify-between gap-3 rounded-xl p-2 shadow-lg"
+            style={
+                cardHeight && userSelected ? { height: `${cardHeight}px` } : {}
+            }
         >
             {userSelected && (
                 <Button
                     onClick={wrappedNoSelectedUser}
-                    className="absolute right-4 top-4 z-10 rounded-full p-1 hover:bg-background hover:text-content focus:outline-none focus:ring-2 focus:ring-primary"
-                    aria-label="Close profile" 
-                    children={undefined}                
+                    className="hover:bg-background hover:text-content focus:ring-primary absolute top-4 right-4 z-10 rounded-full p-1 focus:ring-2 focus:outline-none"
+                    aria-label="Close profile"
+                    children={undefined}
                 />
             )}
-            
+
             <section className="relative flex h-auto w-full flex-col items-start overflow-visible">
                 <ProposalCardHeader
                     proposal={proposal}
@@ -79,7 +81,7 @@ export default function ProposalExtendedCard({
                 />
             </section>
 
-            <section className='flex-1 flex flex-col'>
+            <section className="flex flex-1 flex-col">
                 <div className="flex-1 overflow-auto px-2">
                     {userSelected ? (
                         <UserQuickView user={userSelected} />
@@ -97,8 +99,11 @@ export default function ProposalExtendedCard({
                                 className="mt-3"
                                 aria-labelledby="funding-heading"
                             >
-                                <div className="flex items-center flex-row justify-between my-1.5">
-                                    <Title level='5' className="text-base font-medium leading-normal">
+                                <div className="my-1.5 flex flex-row items-center justify-between">
+                                    <Title
+                                        level="5"
+                                        className="text-base leading-normal font-medium"
+                                    >
                                         {t('ideascaleProfiles.fundingStatus')}
                                     </Title>
 
@@ -106,9 +111,7 @@ export default function ProposalExtendedCard({
                                         funding_status={proposal.funding_status}
                                     />
                                 </div>
-                                <ProposalFundingDetails
-                                    proposal={proposal}
-                                />
+                                <ProposalFundingDetails proposal={proposal} />
                             </section>
                             <div className="relative flex h-auto w-full flex-col items-start overflow-visible">
                                 <ProposalSolution
@@ -117,27 +120,33 @@ export default function ProposalExtendedCard({
                                     slug={proposal.slug}
                                 />
                             </div>
-                            <div className="relative mt-2 border-t border-b border-gray-persist pt-2 pb-2">
-                                <div className='flex items-center justify-between mb-2'>
-                                    <ValueLabel>{t('proposals.impactAlignment')}</ValueLabel>
-                                    <Rating 
+                            <div className="border-gray-persist relative mt-2 border-t border-b pt-2 pb-2">
+                                <div className="mb-2 flex items-center justify-between">
+                                    <ValueLabel>
+                                        {t('proposals.impactAlignment')}
+                                    </ValueLabel>
+                                    <Rating
                                         filledClassName="fill-primary text-primary"
                                         rating={proposal.alignment_score}
                                         showValue={false}
                                     />
                                 </div>
-                                <div className='flex items-center justify-between mb-2'>
-                                    <ValueLabel>{t('proposals.valueForMoney')}</ValueLabel>
-                                    <Rating 
-                                        filledClassName="fill-primary text-primary" 
+                                <div className="mb-2 flex items-center justify-between">
+                                    <ValueLabel>
+                                        {t('proposals.valueForMoney')}
+                                    </ValueLabel>
+                                    <Rating
+                                        filledClassName="fill-primary text-primary"
                                         rating={proposal.auditability_score}
                                         showValue={false}
                                     />
                                 </div>
-                                <div className='flex items-center justify-between mb-2'>
-                                    <ValueLabel>{t('proposals.feasibility')}</ValueLabel>
-                                    <Rating 
-                                        filledClassName="fill-primary text-primary" 
+                                <div className="mb-2 flex items-center justify-between">
+                                    <ValueLabel>
+                                        {t('proposals.feasibility')}
+                                    </ValueLabel>
+                                    <Rating
+                                        filledClassName="fill-primary text-primary"
                                         rating={proposal.feasibility_score}
                                         showValue={false}
                                     />
@@ -157,7 +166,7 @@ export default function ProposalExtendedCard({
                     <IdeascaleProfileUsers
                         users={proposal?.users}
                         onUserClick={wrappedHandleUserClick}
-                        className='bg-content-light'
+                        className="bg-content-light"
                         toolTipProps={t('proposals.viewTeam')}
                     />
                 </div>

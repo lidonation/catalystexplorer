@@ -1,6 +1,6 @@
 import { shortNumber } from '@/utils/shortNumber';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import ProposalHorizontalCard from './ProposalHorizontalCard';
 import ProposalVerticalCard from './ProposalVerticalCard';
 
@@ -15,11 +15,12 @@ type ProposalCardProps = {
 
 const ProposalCard = React.memo(
     ({
-         proposal,
-         proposalAttrs = {},
-         isHorizontal = false,
-         globalQuickPitchView,
-         hideFooter}: ProposalCardProps) => {
+        proposal,
+        proposalAttrs = {},
+        isHorizontal = false,
+        globalQuickPitchView,
+        hideFooter,
+    }: ProposalCardProps) => {
         const { t } = useLaravelReactI18n();
 
         const [userSelected, setUserSelected] =
@@ -79,7 +80,7 @@ const ProposalCard = React.memo(
                 hasQuickPitch,
                 yesVotes,
                 abstainVotes,
-                hideFooter
+                hideFooter,
             }),
             [
                 proposal,
@@ -92,18 +93,16 @@ const ProposalCard = React.memo(
                 hasQuickPitch,
                 yesVotes,
                 abstainVotes,
-                hideFooter
+                hideFooter,
             ],
         );
 
-        const props = {...layoutProps, ...proposalAttrs};
-
-        console.log({layoutProps});
+        const props = { ...layoutProps, ...proposalAttrs };
 
         return isHorizontal ? (
             <ProposalHorizontalCard {...props} />
         ) : (
-            <ProposalVerticalCard  {...props} />
+            <ProposalVerticalCard {...props} />
         );
     },
 );

@@ -1,14 +1,13 @@
-import { useForm, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import axios from 'axios';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import TopLevelCommentInput from './atoms/TopLevelComment';
 import Card from './Card';
 import CommentItem from './CommentItem';
 import LoadingSpinner from './svgs/LoadingSpinner';
 import UserData = App.DataTransferObjects.UserData;
 import CommentData = App.DataTransferObjects.CommentData;
-
 
 interface CommentsProps {
     commentableType: string;
