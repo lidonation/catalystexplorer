@@ -159,7 +159,9 @@ export default function Nav({ stepDetails, activeStep }: NavProps) {
                             <li
                                 key={index}
                                 className={stepItemClass}
-                                ref={(el) => (stepRefs.current[index] = el)}
+                                ref={(el) => {
+                                    stepRefs.current[index] = el;
+                                }}
                             >
                                 {commonContent}
                             </li>

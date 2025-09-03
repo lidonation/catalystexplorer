@@ -141,9 +141,9 @@ const Index: React.FC<IndexProps> = ({
 
                         <main className="mt-6 flex w-full flex-col justify-center px-8 py-4">
                             <div
-                                ref={(el) =>
-                                    (sectionsRef.current.proposals = el)
-                                }
+                                ref={(el) => {
+                                    sectionsRef.current.proposals = el;
+                                }}
                                 className="mb-12"
                             >
                                 <Title
@@ -167,7 +167,9 @@ const Index: React.FC<IndexProps> = ({
                             </div>
 
                             <div
-                                ref={(el) => (sectionsRef.current.people = el)}
+                                ref={(el) => {
+                                    sectionsRef.current.people = el;
+                                }}
                                 className="mb-12"
                             >
                                 <Title
@@ -191,7 +193,9 @@ const Index: React.FC<IndexProps> = ({
                             </div>
 
                             <div
-                                ref={(el) => (sectionsRef.current.groups = el)}
+                                ref={(el) => {
+                                    sectionsRef.current.groups = el;
+                                }}
                                 className="mb-12"
                             >
                                 <Title
@@ -210,7 +214,9 @@ const Index: React.FC<IndexProps> = ({
                             </div>
 
                             <div
-                                ref={(el) => (sectionsRef.current.reviews = el)}
+                                ref={(el) => {
+                                    sectionsRef.current.reviews = el;
+                                }}
                                 className="mb-12"
                             >
                                 <Title

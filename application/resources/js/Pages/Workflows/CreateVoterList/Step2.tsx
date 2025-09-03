@@ -125,7 +125,7 @@ const Step2: React.FC<Step2Props> = ({
                                         isMultiselect={false}
                                         selectedItems={form.data.fund_slug}
                                         setSelectedItems={(value) => {
-                                            form.setData('fund_slug', value);
+                                            (form.setData as any)('fund_slug', value);
                                         }}
                                         options={funds?.map((fund: any) => ({
                                             label: fund.title,
@@ -151,11 +151,11 @@ const Step2: React.FC<Step2Props> = ({
                                 placeholder={t('workflows.voterList.title')}
                                 value={form.data.title}
                                 onChange={(e) =>
-                                    form.setData('title', e.target.value)
+                                    (form.setData as any)('title', e.target.value)
                                 }
                                 required
                             />
-                            <InputError message={form.errors.title} />
+                            <InputError message={errors.title} />
                         </div>
 
                         <div className="mt-3">
@@ -170,11 +170,11 @@ const Step2: React.FC<Step2Props> = ({
                                 required
                                 value={form.data.content}
                                 onChange={(e) =>
-                                    form.setData('content', e.target.value)
+                                    (form.setData as any)('content', e.target.value)
                                 }
                                 className="h-30 w-full rounded-lg px-4 py-2"
                             />
-                            <InputError message={form.errors.content} />
+                            <InputError message={errors.content} />
                         </div>
 
                         <div className="grid grid-cols-12 items-center gap-4">
@@ -188,7 +188,7 @@ const Step2: React.FC<Step2Props> = ({
                                     name="visibility"
                                     selectedValue={form.data.visibility}
                                     onChange={(value) =>
-                                        form.setData('visibility', value)
+                                        (form.setData as any)('visibility', value)
                                     }
                                     options={[
                                         {
@@ -231,7 +231,7 @@ const Step2: React.FC<Step2Props> = ({
                                 <CustomSwitch
                                     checked={form.data.comments_enabled}
                                     onCheckedChange={(checked) =>
-                                        form.setData(
+                                        (form.setData as any)(
                                             'comments_enabled',
                                             checked,
                                         )
@@ -273,7 +273,7 @@ const Step2: React.FC<Step2Props> = ({
                                             type="text"
                                             value={form.data.color}
                                             onChange={(e) =>
-                                                form.setData(
+                                                (form.setData as any)(
                                                     'color',
                                                     e.target.value,
                                                 )
@@ -285,7 +285,7 @@ const Step2: React.FC<Step2Props> = ({
                                             id="color-picker"
                                             value={form.data.color}
                                             onChange={(e) =>
-                                                form.setData(
+                                                (form.setData as any)(
                                                     'color',
                                                     e.target.value,
                                                 )
@@ -308,7 +308,7 @@ const Step2: React.FC<Step2Props> = ({
                                     name="status"
                                     selectedValue={form.data.status}
                                     onChange={(value) =>
-                                        form.setData('status', value)
+                                        (form.setData as any)('status', value)
                                     }
                                     options={[
                                         {

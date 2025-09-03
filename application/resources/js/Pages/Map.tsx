@@ -1,7 +1,7 @@
 import GlobalMap from '@/Components/GlobalMap';
 import { MapProvider } from '@/Context/MapContext';
 import React from 'react';
-import { MapProps } from 'react-map-gl';
+import { MapRef, MapProps } from 'react-map-gl/mapbox';
 
 const MAPBOX_TOKEN = 'YOUR_MAPBOX_ACCESS_TOKEN';
 
