@@ -104,9 +104,10 @@ RUN apt-get update; \
     python3-launchpadlib \
     supervisor \
     vim \
-    wget \
-    # Install PHP extensions (included with dunglas/frankenphp)
-    && install-php-extensions \
+    wget
+
+ # Install PHP extensions (included with dunglas/frankenphp)
+RUN install-php-extensions \
     bz2 \
     pcntl \
     mbstring \
