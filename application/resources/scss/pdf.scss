@@ -1,0 +1,122 @@
+/* PDF-specific styles that can't be handled by Tailwind */
+
+/* Page setup for PDF generation */
+@page {
+    size: A4;
+    margin: 2cm 1.5cm;
+    
+    @top-center {
+        content: element(header);
+    }
+    
+    @bottom-center {
+        content: element(footer);
+    }
+}
+
+/* Running headers and footers */
+.pdf-header {
+    position: running(header);
+}
+
+.pdf-footer {
+    position: running(footer);
+}
+
+/* Print optimization */
+@media print {
+    * {
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+    
+    /* Ensure proper page breaks */
+    .page-break {
+        page-break-before: always;
+    }
+    
+    .page-break-inside-avoid {
+        page-break-inside: avoid;
+    }
+    
+    /* Optimize typography for print */
+    h1, h2, h3, h4, h5, h6 {
+        page-break-after: avoid;
+        orphans: 3;
+        widows: 3;
+    }
+    
+    p {
+        orphans: 3;
+        widows: 3;
+    }
+    
+    /* Table print optimization */
+    table {
+        page-break-inside: avoid;
+    }
+    
+    thead {
+        display: table-header-group;
+    }
+    
+    tfoot {
+        display: table-footer-group;
+    }
+    
+    tr {
+        page-break-inside: avoid;
+    }
+}
+
+/* Font fallbacks for PDF generation */
+body {
+    font-family: 'Figtree', 'DejaVu Sans', 'Helvetica', 'Arial', sans-serif;
+}
+
+/* Page numbering - requires CSS counter */
+.pagenum:before {
+    content: counter(page);
+}
+
+/* Custom PDF utilities that extend Tailwind */
+.pdf-table {
+    @apply w-full border-collapse border border-gray-300;
+}
+
+.pdf-table th {
+    @apply border border-gray-300 bg-gray-50 px-3 py-2 text-left font-semibold text-gray-900;
+}
+
+.pdf-table td {
+    @apply border border-gray-300 px-3 py-2 text-gray-700;
+}
+
+.pdf-table tbody tr:nth-child(even) {
+    @apply bg-gray-50;
+}
+
+/* Logo placeholder when no image is available */
+.logo-placeholder {
+    @apply flex h-10 w-20 items-center justify-center rounded border border-gray-300 bg-gray-100;
+}
+
+.logo-placeholder span {
+    @apply text-xs font-bold text-gray-600;
+}
+
+/* Document section spacing */
+.document-section {
+    @apply mb-6;
+}
+
+/* Header and footer dividers */
+.header-divider,
+.footer-divider {
+    @apply my-4 h-px border-0 bg-gray-300;
+}
+
+/* Confidential notice styling */
+.confidential-notice {
+    @apply font-bold uppercase text-red-600;
+}
