@@ -86,7 +86,7 @@ composer:
 
 yarn-install:
   stage: .pre
-  image: node:24.3.0-alpine
+  image: node:24.7.0-alpine
   services: []
   retry: 1
   rules:
@@ -106,7 +106,7 @@ yarn-install:
 
 yarn-build:
   stage: .pre
-  image: node:24.3.0-alpine
+  image: node:24.7.0-alpine
   services: []
   retry: 1
   rules:
@@ -124,7 +124,7 @@ yarn-build:
 
 yarn-build-ssr:
   stage: .pre
-  image: node:24.3.0-alpine
+  image: node:24.7.0-alpine
   services: []
   retry: 1
   rules:
