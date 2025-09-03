@@ -3,7 +3,7 @@ import Checkbox from '@/Components/atoms/Checkbox';
 import LanguageSelector from '@/Components/atoms/LanguageSelector';
 import TextInput from '@/Components/atoms/TextInput';
 import Textarea from '@/Components/atoms/Textarea';
-import useLanguageDetection from '@/Hooks/useLanguageDetection';
+import { useLanguageDetection } from '@/Hooks/useLanguageDetection';
 import { FormDataConvertible } from '@inertiajs/core';
 import { InertiaFormProps, usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
