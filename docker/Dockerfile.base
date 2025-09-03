@@ -1,5 +1,5 @@
 ARG PHP_VERSION=8.4
-ARG FRANKENPHP_VERSION=1.9
+ARG FRANKENPHP_VERSION=1.9.1
 
 FROM dunglas/frankenphp:${FRANKENPHP_VERSION}-php${PHP_VERSION}
 
@@ -53,7 +53,6 @@ RUN apt-get update; \
     apt-utils \
     ca-certificates \
     chromium \
-    curl \
     ffmpeg \
     gifsicle \
     git \
@@ -62,6 +61,35 @@ RUN apt-get update; \
     libavif-bin \
     libsodium-dev \
     libbrotli-dev \
+    libx11-xcb1 \
+    libxcomposite1 \
+    libasound2t64 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcairo2 \
+    libcups2 \
+    libdbus-1-3 \
+    libexpat1 \
+    libfontconfig1 \
+    libgbm1 \
+    libgcc1 \
+    libglib2.0-0 \
+    libgtk-3-0 \
+    libnspr4 \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    libstdc++6 \
+    libx11-6 \
+    libxcb1 \
+    libxcursor1 \
+    libxdamage1 \
+    libxext6 \
+    libxfixes3 \
+    libxi6 \
+    libxrandr2 \
+    libxrender1 \
+    libxss1 \
+    libxtst6 \
     imagemagick \
     libmagickwand-dev \
     ncdu \
@@ -76,9 +104,10 @@ RUN apt-get update; \
     python3-launchpadlib \
     supervisor \
     vim \
-    wget \
-    # Install PHP extensions (included with dunglas/frankenphp)
-    && install-php-extensions \
+    wget
+
+ # Install PHP extensions (included with dunglas/frankenphp)
+RUN install-php-extensions \
     bz2 \
     pcntl \
     mbstring \
@@ -103,12 +132,14 @@ RUN apt-get update; \
     && apt-get install -y nodejs \
     && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /etc/apt/keyrings/yarn.gpg >/dev/null \
     && apt-get update \
-    && npm install -g svgo yarn \
+    && npm install -g svgo yarn puppeteer \
     && apt-get -y autoremove \
     && apt-get clean \
     && docker-php-source delete \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && rm -f /var/log/lastlog /var/log/faillog
+
+ # Install chromium
+RUN npx puppeteer browsers install chrome
 
 ENV CHROME_BIN=/usr/bin/chromium-browser \
     CHROME_PATH=/usr/lib/chromium/ \

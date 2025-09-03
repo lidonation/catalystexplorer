@@ -108,12 +108,12 @@ export default function Index({
                 >
                     <div className="flex items-center justify-between py-8">
                         <div data-testid="proposals-header">
-                            <Title level="2">{t('proposals.proposalCelebrateCompletedProposals')}</Title>
+                            <Title level="2">{t('proposals.celebrateCompletedProposals')}</Title>
                             <Paragraph
                                 size="sm"
                                 className="text-4 text-content-dark opacity-70"
                             >
-                                {t('proposals.celebrateCompletedProposals')}
+                                {t('proposals.celebrateCompletedProposalsSubtitle')}
                             </Paragraph>
                         </div>
                         <div>
