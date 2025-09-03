@@ -6,7 +6,7 @@ import Textarea from '@/Components/atoms/Textarea';
 import InputError from '@/Components/InputError';
 import { LOCALE_MAPPING } from '@/constants/locales';
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
-import useLanguageDetection from '../../../Hooks/useLanguageDetection';
+import useLanguageDetection from '@/Hooks/useLanguageDetection';
 import { StepDetails } from '@/types';
 import {
     generateLocalizedRoute,
