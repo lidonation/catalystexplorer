@@ -117,7 +117,7 @@ class ProposalController extends Controller
         }
 
         $args = [];
-        if (!empty($filters)) {
+        if (! empty($filters)) {
             $args['filter'] = implode(' AND ', $filters);
         }
 
