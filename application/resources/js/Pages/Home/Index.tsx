@@ -113,7 +113,7 @@ export default function Index({
                                 size="sm"
                                 className="text-4 text-content-dark opacity-70"
                             >
-                                {t('proposals.celebrateCompletedProposalsSubtitle')}
+                                {t('proposals.celebrateCompletedProposals')}
                             </Paragraph>
                         </div>
                         <div>

@@ -817,7 +817,7 @@ class ProposalsController extends Controller
             'query_params' => $request->query->all(),
         ];
 
-        return 'proposal_metrics_'.md5(json_encode($keyData));
+        return 'proposal_metrics_'.hash('sha256', json_encode($keyData));
     }
 
     /**
@@ -835,7 +835,41 @@ class ProposalsController extends Controller
             return [];
         }
 
-        parse_str($parsedUrl['query'], $refererParams);
+        // Parse query string manually without using parse_str
+        $refererParams = [];
+        $pairs = explode('&', $parsedUrl['query']);
+
+        foreach ($pairs as $pair) {
+            if (empty($pair)) {
+                continue;
+            }
+
+            $parts = explode('=', $pair, 2);
+            $key = urldecode($parts[0]);
+            $value = isset($parts[1]) ? urldecode($parts[1]) : '';
+
+            // Handle array parameters (e.g., key[]=value or key[index]=value)
+            if (str_ends_with($key, '[]')) {
+                $arrayKey = substr($key, 0, -2);
+                if (! isset($refererParams[$arrayKey])) {
+                    $refererParams[$arrayKey] = [];
+                }
+                $refererParams[$arrayKey][] = $value;
+            } elseif (preg_match('/^(.+)\[(.*)\]$/', $key, $matches)) {
+                $arrayKey = $matches[1];
+                $index = $matches[2];
+                if (! isset($refererParams[$arrayKey])) {
+                    $refererParams[$arrayKey] = [];
+                }
+                if ($index === '') {
+                    $refererParams[$arrayKey][] = $value;
+                } else {
+                    $refererParams[$arrayKey][$index] = $value;
+                }
+            } else {
+                $refererParams[$key] = $value;
+            }
+        }
 
         return $refererParams;
     }
