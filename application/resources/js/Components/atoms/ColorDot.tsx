@@ -1,4 +1,4 @@
-import React, {HTMLAttributes} from "react";
+import { HTMLAttributes } from 'react';
 
 interface ColorDotProps extends HTMLAttributes<HTMLDivElement> {
     color: string;
@@ -6,10 +6,16 @@ interface ColorDotProps extends HTMLAttributes<HTMLDivElement> {
     className?: string;
 }
 
-export default function ColorDot({ color, size = 2, className = '', ...props }: ColorDotProps) {
+export default function ColorDot({
+    color,
+    size = 2,
+    className = '',
+    ...props
+}: ColorDotProps) {
     return (
         <div
             className={`size-${size} rounded-full ${color} ${className}`}
             {...props}
-        ></div>);
+        ></div>
+    );
 }

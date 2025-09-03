@@ -1,18 +1,21 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { ChevronLeft } from 'lucide-react';
+import React, { useState } from 'react';
 
-import Title from '@/Components/atoms/Title';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
+import Title from '@/Components/atoms/Title';
 
-import WorkflowLayout from '../WorkflowLayout';
-import Nav from '../Partials/WorkflowNav';
+import {
+    generateLocalizedRoute,
+    useLocalizedRoute,
+} from '@/utils/localizedRoute';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
-import { generateLocalizedRoute, useLocalizedRoute } from '@/utils/localizedRoute';
+import Nav from '../Partials/WorkflowNav';
+import WorkflowLayout from '../WorkflowLayout';
 
 interface Step3Props {
     stepDetails: any[];
@@ -28,27 +31,27 @@ const Step3: React.FC<Step3Props> = ({ stepDetails, activeStep }) => {
     });
 
     const saveWalletName = generateLocalizedRoute(
-            'workflows.signature.saveWalletName',
+        'workflows.signature.saveWalletName',
     );
 
     const [walletName, setWalletName] = useState('');
     const [error, setError] = useState('');
 
     const handleNext = () => {
-
         router.post(
             saveWalletName,
             {
-                wallet_name: walletName
+                wallet_name: walletName,
             },
             {
                 onSuccess: () => {
                     router.visit(localizedRoute('workflows.signature.success'));
-            },
+                },
                 onError: (errors) => {
                     setError(errors.wallet_name || 'An error occurred');
+                },
             },
-        });
+        );
     };
 
     return (

@@ -5,23 +5,27 @@ import Paragraph from '@/Components/atoms/Paragraph';
 import CopyIcon from '@/Components/svgs/CopyIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import { VoterEnums } from '@/enums/voter-search-enums';
 import { PaginatedData } from '@/types/paginated-data';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
-import { Link, router } from '@inertiajs/react';
-import React, { useEffect, useRef, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { Link } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import React, { useState } from 'react';
 
 import VoterData = App.DataTransferObjects.VoterData;
-import { VoterEnums } from '@/enums/voter-search-enums';
 
 interface VotersTableProps {
     voters?: PaginatedData<VoterData[]>;
     customTitle?: string;
 }
 
-const TableHeader: React.FC<{ label: string; isLastColumn?: boolean }> = ({ label, isLastColumn }) => (
-    <th className={`bg-background-lighter border-gray-200
-     text-content ${isLastColumn ? '' : 'border-r'} border-b px-4 py-3 text-left font-medium`}>
+const TableHeader: React.FC<{ label: string; isLastColumn?: boolean }> = ({
+    label,
+    isLastColumn,
+}) => (
+    <th
+        className={`bg-background-lighter text-content border-gray-200 ${isLastColumn ? '' : 'border-r'} border-b px-4 py-3 text-left font-medium`}
+    >
         {label}
     </th>
 );
@@ -31,15 +35,14 @@ const TableCell: React.FC<{
     className?: string;
     isLastColumn?: boolean;
 }> = ({ children, className = '', isLastColumn }) => (
-    <td className={`border-gray-200 text-content ${isLastColumn ? '' : 'border-r'} border-b px-4 py-4 ${className}`}>
+    <td
+        className={`text-content border-gray-200 ${isLastColumn ? '' : 'border-r'} border-b px-4 py-4 ${className}`}
+    >
         {children}
     </td>
 );
 
-const VotersTable: React.FC<VotersTableProps> = ({
-    voters,
-    customTitle,
-}) => {
+const VotersTable: React.FC<VotersTableProps> = ({ voters, customTitle }) => {
     const { t } = useLaravelReactI18n();
     const { setFilters } = useFilterContext();
     const [hoveredCell, setHoveredCell] = useState<{
@@ -97,27 +100,32 @@ const VotersTable: React.FC<VotersTableProps> = ({
     const getStatusBadge = (voter: VoterData) => {
         if (voter.votes_count && voter.votes_count > 0) {
             return (
-                <span className="bg-success-light text-success px-2 py-1 rounded-full text-xs font-medium">
+                <span className="bg-success-light text-success rounded-full px-2 py-1 text-xs font-medium">
                     {t('voter.active')}
                 </span>
             );
         }
         return (
-            <span className="bg-error-light text-error px-2 py-1 rounded-full text-xs font-medium">
+            <span className="bg-error-light text-error rounded-full px-2 py-1 text-xs font-medium">
                 {t('voter.inactive')}
             </span>
         );
     };
 
     const shouldShowNoRecords = () => {
-        return (
-            (!voters?.data || voters.data.length === 0)
-        );
+        return !voters?.data || voters.data.length === 0;
     };
 
-    const renderCellWithLink = (voter: VoterData, value: string | null, col: string, index: number) => {
+    const renderCellWithLink = (
+        voter: VoterData,
+        value: string | null,
+        col: string,
+        index: number,
+    ) => {
         if (!value) {
-            return <span className="text-content">{t('voter.notAvailable')}</span>;
+            return (
+                <span className="text-content">{t('voter.notAvailable')}</span>
+            );
         }
 
         const isHovered =
@@ -176,97 +184,119 @@ const VotersTable: React.FC<VotersTableProps> = ({
                 </div>
             )}
 
-            {(!shouldShowNoRecords()) && (
-            <div className="mb-8 rounded-lg border-2 border-gray-200 bg-background shadow-md">
-                  <div className="overflow-x-auto">
-                    <table className="w-max min-w-full">
-                        <thead className="border-gray-200 whitespace-nowrap">
-                            <tr>
-                                <TableHeader label={t('voter.table.voterId')} />
-                                <TableHeader label={t('voter.table.stakeAddress')} />
-                                <TableHeader label={t('voter.table.votingPower')} />
-                                <TableHeader label={t('voter.table.proposalsVotedOn')} />
-                                <TableHeader label={t('voter.table.latestFund')} />
-                                <TableHeader label={t('voter.table.status')} isLastColumn />
-                            </tr>
-                        </thead>
-                        <tbody className="whitespace-nowrap">
-                            {
-                                voters?.data &&
-                                voters.data.length > 0 &&
-                                voters.data.map((voter, index) => (
-                                    <tr key={voter.id}>
-                                        <TableCell className="w-40">
-                                            {renderCellWithLink(voter, voter.cat_id ?? null, 'cat_id', index)}
-                                        </TableCell>
-                                        <TableCell className="w-40">
-                                            {renderCellWithLink(voter, voter.stake_pub ?? null, 'stake_pub', index)}
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex items-start">
-                                                <span>{formatVotingPower(voter.voting_power)}</span>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            {voter.proposals_voted_on || 0}
-                                        </TableCell>
-                                        <TableCell>
-                                            {voter.latest_fund?.title || t('voter.notAvailable')}
-                                        </TableCell>
-                                        <TableCell isLastColumn>
-                                            {getStatusBadge(voter)}
-                                        </TableCell>
-                                    </tr>
-                                ))}
-                        </tbody>
-                    </table>
+            {!shouldShowNoRecords() && (
+                <div className="bg-background mb-8 rounded-lg border-2 border-gray-200 shadow-md">
+                    <div className="overflow-x-auto">
+                        <table className="w-max min-w-full">
+                            <thead className="border-gray-200 whitespace-nowrap">
+                                <tr>
+                                    <TableHeader
+                                        label={t('voter.table.voterId')}
+                                    />
+                                    <TableHeader
+                                        label={t('voter.table.stakeAddress')}
+                                    />
+                                    <TableHeader
+                                        label={t('voter.table.votingPower')}
+                                    />
+                                    <TableHeader
+                                        label={t(
+                                            'voter.table.proposalsVotedOn',
+                                        )}
+                                    />
+                                    <TableHeader
+                                        label={t('voter.table.latestFund')}
+                                    />
+                                    <TableHeader
+                                        label={t('voter.table.status')}
+                                        isLastColumn
+                                    />
+                                </tr>
+                            </thead>
+                            <tbody className="whitespace-nowrap">
+                                {voters?.data &&
+                                    voters.data.length > 0 &&
+                                    voters.data.map((voter, index) => (
+                                        <tr key={voter.id}>
+                                            <TableCell className="w-40">
+                                                {renderCellWithLink(
+                                                    voter,
+                                                    voter.cat_id ?? null,
+                                                    'cat_id',
+                                                    index,
+                                                )}
+                                            </TableCell>
+                                            <TableCell className="w-40">
+                                                {renderCellWithLink(
+                                                    voter,
+                                                    voter.stake_pub ?? null,
+                                                    'stake_pub',
+                                                    index,
+                                                )}
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex items-start">
+                                                    <span>
+                                                        {formatVotingPower(
+                                                            voter.voting_power,
+                                                        )}
+                                                    </span>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                {voter.proposals_voted_on || 0}
+                                            </TableCell>
+                                            <TableCell>
+                                                {voter.latest_fund?.title ||
+                                                    t('voter.notAvailable')}
+                                            </TableCell>
+                                            <TableCell isLastColumn>
+                                                {getStatusBadge(voter)}
+                                            </TableCell>
+                                        </tr>
+                                    ))}
+                            </tbody>
+                        </table>
                     </div>
 
-                    {voters &&
-                        voters.data &&
-                        voters.data.length > 0 && (
-                            <div className="border-t border-gray-200 px-4 py-4">
-                                <Paginator
-                                    pagination={voters}
-                                    linkProps={{
-                                        preserveScroll: false,
-                                        only: ['voters', 'filters'],
-                                        replace: true,
-                                        onClick: (e) => {
-                                            const target =
-                                                e.target as HTMLAnchorElement;
-                                            if (
-                                                target.href &&
-                                                target.href.includes(
+                    {voters && voters.data && voters.data.length > 0 && (
+                        <div className="border-t border-gray-200 px-4 py-4">
+                            <Paginator
+                                pagination={voters}
+                                linkProps={{
+                                    preserveScroll: false,
+                                    only: ['voters', 'filters'],
+                                    replace: true,
+                                    onClick: (e) => {
+                                        const target =
+                                            e.target as HTMLAnchorElement;
+                                        if (
+                                            target.href &&
+                                            target.href.includes(
+                                                VoterEnums.PAGE,
+                                            )
+                                        ) {
+                                            e.preventDefault();
+                                            const url = new URL(target.href);
+                                            const pageValue =
+                                                url.searchParams.get(
                                                     VoterEnums.PAGE,
-                                                )
-                                            ) {
-                                                e.preventDefault();
-                                                const url = new URL(
-                                                    target.href,
                                                 );
-                                                const pageValue =
-                                                    url.searchParams.get(
-                                                        VoterEnums.PAGE,
-                                                    );
-                                                if (pageValue) {
-                                                    setFilters({
-                                                        param: VoterEnums.PAGE,
-                                                        value: parseInt(
-                                                            pageValue,
-                                                        ),
-                                                        label: 'Current Page',
-                                                        resetPageOnChange:
-                                                            false,
-                                                    });
-                                                }
+                                            if (pageValue) {
+                                                setFilters({
+                                                    param: VoterEnums.PAGE,
+                                                    value: parseInt(pageValue),
+                                                    label: 'Current Page',
+                                                    resetPageOnChange: false,
+                                                });
                                             }
-                                        },
-                                    }}
-                                />
-                            </div>
-                       )}
-                 </div>
+                                        }
+                                    },
+                                }}
+                            />
+                        </div>
+                    )}
+                </div>
             )}
         </>
     );

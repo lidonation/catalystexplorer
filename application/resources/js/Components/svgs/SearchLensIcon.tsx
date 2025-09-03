@@ -1,4 +1,3 @@
-
 import { cn } from '@/lib/utils';
 
 type SearchLensIconProps = {
@@ -12,7 +11,6 @@ export default function SearchLensIcon({
     width = 24,
     height = 24,
 }: SearchLensIconProps) {
-
     return (
         <svg
             width={width}

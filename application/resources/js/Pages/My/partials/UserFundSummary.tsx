@@ -3,7 +3,7 @@ import Card from '@/Components/Card';
 import SegmentedBar from '@/Components/SegmentedBar';
 import { Segments } from '@/types/segments';
 import { currency } from '@/utils/currency';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 interface TotalsSummaryProp {
     totalsSummary: {
@@ -48,7 +48,7 @@ export default function UserFundSummary({ totalsSummary }: TotalsSummaryProp) {
 
             <div className="flex flex-col">
                 <span className="text-2xl font-bold">
-                    {!!totalsSummary?.amount_requested_ada
+                    {totalsSummary?.amount_requested_ada
                         ? currency(
                               totalsSummary?.amount_requested_ada ?? 0,
                               2,
@@ -61,7 +61,7 @@ export default function UserFundSummary({ totalsSummary }: TotalsSummaryProp) {
                         ? ' ' + ' '
                         : ''}
 
-                    {!!totalsSummary?.amount_requested_usd
+                    {totalsSummary?.amount_requested_usd
                         ? currency(
                               totalsSummary?.amount_requested_usd ?? 0,
                               2,

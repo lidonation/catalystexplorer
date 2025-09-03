@@ -1,25 +1,32 @@
-import React from 'react';
+import Graph from '@/Components/Graph';
 import { Head, WhenVisible } from '@inertiajs/react';
-import GroupLayout from "../GroupLayout";
+import GroupLayout from '../GroupLayout';
 import ConnectionData = App.DataTransferObjects.ConnectionData;
 import GroupData = App.DataTransferObjects.GroupData;
-import Graph from '@/Components/Graph';
 
 interface ConnectionPageProps {
     connections: ConnectionData;
     group: GroupData;
 }
 
-export default function Connections({ connections, group }: ConnectionPageProps) {
+export default function Connections({
+    connections,
+    group,
+}: ConnectionPageProps) {
     return (
         <GroupLayout group={group}>
             <Head title={`${group.name} - Connections`} />
 
-            <WhenVisible data='connections' fallback={<div className="text-center py-4">Loading Connections</div>}>
-                <div className='w-full'>
+            <WhenVisible
+                data="connections"
+                fallback={
+                    <div className="py-4 text-center">Loading Connections</div>
+                }
+            >
+                <div className="w-full">
                     {typeof connections !== 'undefined' && (
-                        <div className='w-full [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] overflow-x-auto'>
-                            <div className='min-w-[300px] w-full h-[500px] sm:h-[400px] md:h-[500px]'>
+                        <div className="w-full overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                            <div className="h-[500px] w-full min-w-[300px] sm:h-[400px] md:h-[500px]">
                                 <Graph graphData={connections} />
                             </div>
                         </div>

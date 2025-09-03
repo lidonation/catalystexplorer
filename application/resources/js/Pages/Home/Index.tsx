@@ -1,10 +1,14 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import SecondaryLink from '@/Components/SecondaryLink';
+import { MetricEnum } from '@/enums/metrics-enums';
 import CatalystIntro from '@/Pages/Home/Partials/CatalystIntro';
 import PostCard from '@/Pages/Posts/Partials/PostCard';
+import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import { PageProps } from '@/types';
+import { useLocalizedRoute } from '@/utils/localizedRoute.ts';
 import { Head, WhenVisible } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useState } from 'react';
 import MetricCardLoading from '../Metrics/Partials/MetricCardLoading';
 import MetricCardList from '../Metrics/Partials/MetricsCardList';
@@ -13,14 +17,10 @@ import ProposalList from '../Proposals/Partials/ProposalList';
 import AnnouncementCarousel from './Partials/Announcement/AnnouncementCarousel';
 import SpecialAnnouncementLoading from './Partials/Announcement/SpecialAnnouncementLoading';
 import SpecialAnnouncementCarousel from './Partials/Announcement/SpecialAnnouncementsCarousel';
-import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import { MetricEnum } from '@/enums/metrics-enums';
 import MetricData = App.DataTransferObjects.MetricData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import PostData = App.DataTransferObjects.PostData;
 import AnnouncementData = App.DataTransferObjects.AnnouncementData;
-import { useLocalizedRoute } from '@/utils/localizedRoute.ts';
 
 interface HomePageProps extends Record<string, unknown> {
     posts: PostData[];
@@ -108,12 +108,16 @@ export default function Index({
                 >
                     <div className="flex items-center justify-between py-8">
                         <div data-testid="proposals-header">
-                            <Title level="2">{t('proposals.celebrateCompletedProposals')}</Title>
+                            <Title level="2">
+                                {t('proposals.celebrateCompletedProposals')}
+                            </Title>
                             <Paragraph
                                 size="sm"
                                 className="text-4 text-content-dark opacity-70"
                             >
-                                {t('proposals.celebrateCompletedProposalsSubtitle')}
+                                {t(
+                                    'proposals.celebrateCompletedProposalsSubtitle',
+                                )}
                             </Paragraph>
                         </div>
                         <div>

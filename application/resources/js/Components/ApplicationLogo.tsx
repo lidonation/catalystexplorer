@@ -1,5 +1,5 @@
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { SVGAttributes } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 export default function ApplicationLogo(props: SVGAttributes<SVGElement>) {
     const { t } = useLaravelReactI18n();

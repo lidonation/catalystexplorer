@@ -1,8 +1,8 @@
 import catalystLogoDark from '@/assets/images/catalyst-logo-dark.png';
 import catalystLogoLight from '@/assets/images/catalyst-logo-light.png';
 import { useThemeContext } from '@/Context/ThemeContext';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import { CatalystDarkLogo } from '../svgs/CatalystDarkLogo';
 import { CatalystLightLogo } from '../svgs/CatalystLightLogo';
 import { CatalystWhiteLogo } from '../svgs/CatalystWhiteLogo';
@@ -36,6 +36,4 @@ export default function CatalystLogo({ className, white }: CatalystLogoProps) {
     } else {
         return <CatalystLightLogo />;
     }
-
-
 }

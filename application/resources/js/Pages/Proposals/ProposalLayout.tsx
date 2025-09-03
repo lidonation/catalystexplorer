@@ -1,13 +1,12 @@
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import { Head } from "@inertiajs/react";
-import { shortNumber } from "@/utils/shortNumber";
+import { ListProvider } from '@/Context/ListContext';
 import { generateTabs, proposalTabs } from '@/utils/routeTabs';
-import { ListProvider } from "@/Context/ListContext";
-import ProposalExtendedCard from "./Partials/ProposalExtendedCard";
-import ProposalTab from "./Partials/ProposalTab";
-import BookmarkButton from "../My/Bookmarks/Partials/BookmarkButton";
-import Paragraph from "@/Components/atoms/Paragraph";
+import { shortNumber } from '@/utils/shortNumber';
+import { Head } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import BookmarkButton from '../My/Bookmarks/Partials/BookmarkButton';
+import ProposalExtendedCard from './Partials/ProposalExtendedCard';
+import ProposalTab from './Partials/ProposalTab';
 
 interface ProposalLayoutProps {
     children: ReactNode;
@@ -77,7 +76,6 @@ const ProposalLayout = ({
         [proposal?.yes_votes_count],
     );
 
-
     useEffect(() => {
         if (hasQuickPitch) {
             setLocalQuickPitchView(globalQuickPitchView);
@@ -106,23 +104,33 @@ const ProposalLayout = ({
             yesVotes,
             abstainVotes,
         }),
-        [proposal, userSelected, noSelectedUser, handleUserClick, localQuickPitchView, t, hasQuickPitch, yesVotes, abstainVotes],
+        [
+            proposal,
+            userSelected,
+            noSelectedUser,
+            handleUserClick,
+            localQuickPitchView,
+            t,
+            hasQuickPitch,
+            yesVotes,
+            abstainVotes,
+        ],
     );
 
     return (
         <div className="mt-10 flex flex-col gap-4 px-8 sm:px-4 md:px-6 lg:flex-row lg:px-8">
             <Head title={`${proposal.title} - Proposal`} />
 
-            <div className="mt-7 w-full md:w-3/4 lg:sticky lg:top-4 lg:mx-0 lg:w-1/3 lg:self-start xl:w-1/4 mb-4">
+            <div className="mt-7 mb-4 w-full md:w-3/4 lg:sticky lg:top-4 lg:mx-0 lg:w-1/3 lg:self-start xl:w-1/4">
                 <ProposalExtendedCard {...layoutProps} />
             </div>
 
             <div className="relative z-0 flex w-full flex-col lg:w-2/3 xl:w-3/4">
-                <div className="flex flex-col-reverse sm:flex-row justify-between mb-4">
-                    <section className="text-content-lighter relative z-0 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden flex-grow w-full mt-4 sm:mt-0">
+                <div className="mb-4 flex flex-col-reverse justify-between sm:flex-row">
+                    <section className="text-content-lighter relative z-0 mt-4 w-full flex-grow overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] sm:mt-0 [&::-webkit-scrollbar]:hidden">
                         <ProposalTab tabs={tabs} activeTab={activeTab} />
                     </section>
-                    <div className="p-2 bg-background rounded-lg shadow-md flex-shrink-0 inline-flex items-center justify-center overflow-hidden self-end sm:ml-2">
+                    <div className="bg-background inline-flex flex-shrink-0 items-center justify-center self-end overflow-hidden rounded-lg p-2 shadow-md sm:ml-2">
                         <ListProvider>
                             {proposal.id && (
                                 <>

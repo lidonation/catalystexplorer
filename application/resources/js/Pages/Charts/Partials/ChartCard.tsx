@@ -1,8 +1,6 @@
-import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import Card from '@/Components/Card';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { Share2Icon } from 'lucide-react';
 import React from 'react';
 
 interface ChartCardProps {

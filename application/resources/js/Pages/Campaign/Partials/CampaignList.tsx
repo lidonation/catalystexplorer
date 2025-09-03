@@ -1,25 +1,26 @@
-import React from "react";
+import React from 'react';
 import CampaignData = App.DataTransferObjects.CampaignData;
 
 interface CampaignProps {
-    campaigns: CampaignData[],
+    campaigns: CampaignData[];
     children?: (campaign: CampaignData) => React.ReactNode;
-    className?: string
+    className?: string;
 }
 
 const CampaignList: React.FC<CampaignProps> = ({
     campaigns,
     children,
-    className
+    className,
 }) => {
     return (
-        <div className={`grid w-full grid-cols-1 md:grid-cols-2 xl:${className}`}>
-             {campaigns.map((campaign) =>
-                children ? children(campaign) : null
+        <div
+            className={`grid w-full grid-cols-1 md:grid-cols-2 xl:${className}`}
+        >
+            {campaigns.map((campaign) =>
+                children ? children(campaign) : null,
             )}
-
         </div>
-    )
-}
+    );
+};
 
 export default CampaignList;

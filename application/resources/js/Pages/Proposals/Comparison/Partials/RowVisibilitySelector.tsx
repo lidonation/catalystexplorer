@@ -1,5 +1,5 @@
 import Selector from '@/Components/atoms/Selector';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 interface TableRow {
     id: string;
@@ -18,13 +18,13 @@ export default function RowVisibilitySelector({
     rows,
     visibleRows,
     onRowVisibilityChange,
-    className = ''
+    className = '',
 }: RowVisibilitySelectorProps) {
     const { t } = useLaravelReactI18n();
 
-    const rowOptions = rows.map(row => ({
+    const rowOptions = rows.map((row) => ({
         label: row.label,
-        value: row.id
+        value: row.id,
     }));
 
     return (

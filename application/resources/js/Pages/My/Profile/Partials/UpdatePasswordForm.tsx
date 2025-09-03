@@ -1,11 +1,11 @@
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import TextInput from '@/Components/atoms/TextInput';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { useForm } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { FormEventHandler } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface PasswordFormProps {
     onClose: () => void;
@@ -40,9 +40,8 @@ export default function PasswordForm({ onClose }: PasswordFormProps) {
 
     return (
         <form onSubmit={submit} className="p-4">
+            <ErrorDisplay />
 
-            <ErrorDisplay/>
-            
             <div className="mb-4">
                 <InputLabel
                     htmlFor="current_password"
@@ -77,9 +76,7 @@ export default function PasswordForm({ onClose }: PasswordFormProps) {
                     type="password"
                     name="password"
                     value={data.password}
-                    onChange={(e) =>
-                        setData('password', e.target.value)
-                    }
+                    onChange={(e) => setData('password', e.target.value)}
                     className={`w-full px-3 py-2 ${errors.password ? 'border-error' : ''}`}
                     required
                 />

@@ -1,13 +1,13 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import Title from '@/Components/atoms/Title';
+import RichContent from '@/Components/RichContent';
 import { VerificationBadge } from '@/Components/svgs/VerificationBadge';
 import { StepDetails } from '@/types';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import Content from '../Partials/WorkflowContent';
 import WorkflowLayout from '../WorkflowLayout';
-import RichContent from '@/Components/RichContent';
 
 interface SuccessProps {
     stepDetails: StepDetails[];

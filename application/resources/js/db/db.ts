@@ -34,7 +34,7 @@ class Cx_db extends Dexie {
         const userSettings = await table.toArray();
 
         for (const setting of userSettings) {
-            let proposalTypes = setting.proposalType ?? [];
+            const proposalTypes = setting.proposalType ?? [];
             if (!Array.isArray(proposalTypes)) continue;
 
             let uniqueTypes = [...new Set(proposalTypes)];
@@ -55,8 +55,7 @@ class Cx_db extends Dexie {
                     uniqueTypes = uniqueTypes.filter(
                         (type) => type !== 'complete' && type !== 'in_progress',
                     );
-                }
-                else if ((hasComplete || hasInProgress) && hasApproved) {
+                } else if ((hasComplete || hasInProgress) && hasApproved) {
                     uniqueTypes = uniqueTypes.filter(
                         (type) => type !== 'approved',
                     );

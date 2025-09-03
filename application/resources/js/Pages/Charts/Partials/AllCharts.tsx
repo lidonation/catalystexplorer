@@ -207,7 +207,7 @@ export default function AllCharts({
                 </div>
             </div>
 
-         {isMounted && (selectedChartTypes?.length ?? 0) > 0 ? (
+            {isMounted && (selectedChartTypes?.length ?? 0) > 0 ? (
                 <div className="space-y-6">
                     {selectedChartTypes?.map((chartType: string) => {
                         const renderer =

@@ -1,5 +1,5 @@
-import React from "react";
-import ProposalCard from "@/Pages/Proposals/Partials/ProposalCard";
+import ProposalCard from '@/Pages/Proposals/Partials/ProposalCard';
+import React from 'react';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface ProposalProps {
@@ -14,7 +14,10 @@ const ProposalList: React.FC<ProposalProps> = ({
     proposalAttrs = {},
 }) => {
     return (
-        <div className="grid w-full grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3" data-testid="proposal-list">
+        <div
+            className="grid w-full grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3"
+            data-testid="proposal-list"
+        >
             {proposals &&
                 proposals?.map((proposal) => (
                     <ProposalCard
@@ -26,7 +29,7 @@ const ProposalList: React.FC<ProposalProps> = ({
                     />
                 ))}
         </div>
-    )
-}
+    );
+};
 
 export default ProposalList;

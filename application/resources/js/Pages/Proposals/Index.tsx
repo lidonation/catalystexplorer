@@ -10,18 +10,16 @@ import { PageProps } from '@/types';
 import { PaginatedData } from '@/types/paginated-data';
 import { ProposalMetrics } from '@/types/proposal-metrics';
 import { SearchParams } from '@/types/search-params';
-import { Head, WhenVisible } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import { motion, AnimatePresence } from 'framer-motion';
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import FundFiltersContainer from './Partials/FundFiltersContainer';
 import ProposalFilters from './Partials/ProposalFilters';
 import ProposalPaginatedList from './Partials/ProposalPaginatedList';
-import ProposalTable from './Partials/ProposalTable';
-import ProposalTableLoading from './Partials/ProposalTableLoading';
-import ProposalData = App.DataTransferObjects.ProposalData;
 import ProposalTableView from './Partials/ProposalTableView';
+import ProposalData = App.DataTransferObjects.ProposalData;
 // @ts-ignore
 
 interface HomePageProps extends Record<string, unknown> {
@@ -77,11 +75,16 @@ export default function Index({
 
                 <header>
                     <div className="container">
-                        <Title level="1" data-testid="proposal-page-title">{t('proposals.proposals')}</Title>
+                        <Title level="1" data-testid="proposal-page-title">
+                            {t('proposals.proposals')}
+                        </Title>
                     </div>
 
                     <div className="container">
-                        <Paragraph className="text-content" data-testid="proposal-page-subtitle">
+                        <Paragraph
+                            className="text-content"
+                            data-testid="proposal-page-subtitle"
+                        >
                             {t('proposals.pageSubtitle')}
                         </Paragraph>
                     </div>
@@ -121,7 +124,7 @@ export default function Index({
                     />
                 </section>
 
-                 <AnimatePresence mode="wait">
+                <AnimatePresence mode="wait">
                     <motion.div
                         key={isTableView ? 'table' : 'list'}
                         initial={{ opacity: 0, y: 20 }}
@@ -132,7 +135,7 @@ export default function Index({
                         {isTableView ? (
                             <ProposalTableView
                                 proposals={proposals}
-                                actionType='view'
+                                actionType="view"
                                 disableSorting={true}
                                 columnVisibility={{
                                     fund: true,
@@ -140,7 +143,7 @@ export default function Index({
                                     title: true,
                                     yesVotes: true,
                                     abstainVotes: true,
-                                    teams: true
+                                    teams: true,
                                 }}
                             />
                         ) : (

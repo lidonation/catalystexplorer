@@ -1,5 +1,5 @@
 import { Head, WhenVisible } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import CommunityData = App.DataTransferObjects.CommunityData;
 
@@ -24,31 +24,27 @@ export default function Communities({
         <IdeascaleProfileLayout ideascaleProfile={ideascaleProfile}>
             <Head title={`${ideascaleProfile.name} - Communities`} />
 
-                <section className="container mt-4 flex w-full flex-col items-center justify-center overflow-hidden duration-500 ease-in-out">
-                    <WhenVisible
-                        fallback={<CommunityLoader />}
-                        data="communities"
-                    >
-                        <>
-                            <div className="grid w-full grid-cols-1 grid-cols-2 gap-4">
-                                {communities?.data &&
-                                    communities?.data?.map((community) => (
-                                        <CommunityCard
-                                            key={community.id}
-                                            community={community}
-                                        />
-                                    ))}
+            <section className="container mt-4 flex w-full flex-col items-center justify-center overflow-hidden duration-500 ease-in-out">
+                <WhenVisible fallback={<CommunityLoader />} data="communities">
+                    <>
+                        <div className="grid w-full grid-cols-1 grid-cols-2 gap-4">
+                            {communities?.data &&
+                                communities?.data?.map((community) => (
+                                    <CommunityCard
+                                        key={community.id}
+                                        community={community}
+                                    />
+                                ))}
+                        </div>
+
+                        {!communities?.data.length && (
+                            <div className="flex flex-col items-center justify-center">
+                                <RecordsNotFound />
                             </div>
-
-                            {!communities?.data.length && (
-                                <div className="flex flex-col items-center justify-center">
-                                    <RecordsNotFound />
-                                </div>
-                            )}
-                        </>
-                    </WhenVisible>
-                </section>
-
+                        )}
+                    </>
+                </WhenVisible>
+            </section>
         </IdeascaleProfileLayout>
     );
 }

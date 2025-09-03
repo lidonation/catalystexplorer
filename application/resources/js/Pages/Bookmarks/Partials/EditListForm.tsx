@@ -1,4 +1,5 @@
 import Button from '@/Components/atoms/Button';
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import CustomSwitch from '@/Components/atoms/Switch';
@@ -9,11 +10,10 @@ import InputError from '@/Components/InputError';
 import RadioGroup from '@/Components/RadioGroup';
 import { StatusEnum, VisibilityEnum } from '@/enums/votes-enums';
 import { InertiaFormProps, useForm } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import lodashPkg from 'lodash';
 import { useRef } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 export type ListForm = InertiaFormProps<{
     title: string;
@@ -48,9 +48,8 @@ export default function EditListForm({
 
     return (
         <div className="space-y-6 pt-6">
+            <ErrorDisplay />
 
-            <ErrorDisplay/>
-            
             <div>
                 <ValueLabel className="text-content">
                     {t('workflows.voterList.title')}

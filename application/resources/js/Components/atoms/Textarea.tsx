@@ -1,3 +1,4 @@
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import {
     forwardRef,
     InputHTMLAttributes,
@@ -6,7 +7,6 @@ import {
     useRef,
     useState,
 } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import Paragraph from './Paragraph';
 
 interface TextareaProps extends InputHTMLAttributes<HTMLTextAreaElement> {

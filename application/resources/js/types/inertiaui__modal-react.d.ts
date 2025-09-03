@@ -1,1 +1,1 @@
-declare module '@inertiaui/modal-react'
+declare module '@inertiaui/modal-react';

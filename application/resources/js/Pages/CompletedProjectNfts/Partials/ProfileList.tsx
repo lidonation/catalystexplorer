@@ -1,8 +1,8 @@
 import Checkbox from '@/Components/atoms/Checkbox';
 import Paragraph from '@/Components/atoms/Paragraph';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import ProfileCard from './ProfileCard';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 
@@ -27,14 +27,14 @@ const ProfileList: React.FC<ProfileListProps> = ({
     }
 
     return (
-        <div className="divide-gray-200 mt-2 space-y-2 divide-y">
+        <div className="mt-2 space-y-2 divide-y divide-gray-200">
             {profiles.map((profile, index) => (
                 <div key={index} className="w-full">
                     <label
                         htmlFor={profile.id as string | undefined}
                         className="flex items-center hover:cursor-pointer"
                     >
-                        <ProfileCard profile={profile}/>
+                        <ProfileCard profile={profile} />
                         <Checkbox
                             name={profile.id as string | undefined}
                             id={profile.id as string | undefined}

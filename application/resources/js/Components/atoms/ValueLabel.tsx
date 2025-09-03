@@ -1,4 +1,4 @@
-import React, {HTMLAttributes, ReactNode} from "react";
+import { HTMLAttributes, ReactNode } from 'react';
 
 interface ValueLabelProps extends HTMLAttributes<HTMLDivElement> {
     children: ReactNode;
@@ -6,10 +6,14 @@ interface ValueLabelProps extends HTMLAttributes<HTMLDivElement> {
     className?: string;
 }
 
-export default function ValueLabel({children, className = '', ...props }: ValueLabelProps) {
+export default function ValueLabel({
+    children,
+    className = '',
+    ...props
+}: ValueLabelProps) {
     return (
-        <span
-            className={`text-highlight  ${className}`}
-            {...props}
-        >{children}</span>);
+        <span className={`text-highlight ${className}`} {...props}>
+            {children}
+        </span>
+    );
 }

@@ -1,7 +1,7 @@
 import axiosClient from '@/utils/axiosClient';
+import EventBus from '@/utils/eventBus';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import EventBus from '@/utils/eventBus';
 
 interface UseBookmarkProps {
     modelType: string;
@@ -11,7 +11,9 @@ interface UseBookmarkProps {
 export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
     const [isBookmarked, setIsBookmarked] = useState(false);
     const [bookmarkId, setBookmarkId] = useState<string | null>(null);
-    const [associatedCollection, setAssociatedCollection] = useState<string | null>(null);
+    const [associatedCollection, setAssociatedCollection] = useState<
+        string | null
+    >(null);
     const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
@@ -33,11 +35,11 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
     const createBookmark = async () => {
         try {
             console.log({ itemId });
-            
+
             const response = await axiosClient.post(
                 route('api.bookmarks.store', { modelType, uuid: itemId }),
             );
-             
+
             if (response.data.bookmarkItems) {
                 setIsBookmarked(response.data.isBookmarked);
                 setBookmarkId(response.data.bookmarkId);
@@ -47,7 +49,6 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
                     className: 'bg-gray-800 text-white',
                     toastId: 'bookmark-created',
                 });
-
             }
         } catch (error) {
             console.error('Error creating bookmark:', error);

@@ -4,5 +4,5 @@ export enum MetricEnum {
     ORDER = 'order',
     CREATED_AT = 'created_at',
     ASCENDING = 'asc',
-    DESCENDING = 'desc'
+    DESCENDING = 'desc',
 }

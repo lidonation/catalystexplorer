@@ -25,8 +25,8 @@ export default function Proposals({
                     proposals={proposals}
                     proposalWrapperClassName="rounded-xl border-2 border-border-dark-on-dark"
                     routeParam={{
-                    [ParamsEnum.IDEASCALE_PROFILES]: ideascaleProfile.id
-                        ? [ideascaleProfile.id]
+                        [ParamsEnum.IDEASCALE_PROFILES]: ideascaleProfile.id
+                            ? [ideascaleProfile.id]
                             : null,
                     }}
                     className="proposals-wrapper grid w-full grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3"

@@ -1,12 +1,12 @@
+import Paragraph from '@/Components/atoms/Paragraph';
+import Title from '@/Components/atoms/Title';
+import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
 import ProposalCardHeader from '@/Pages/Proposals/Partials/ProposalCardHeader';
 import ProposalFundingPercentages from '@/Pages/Proposals/Partials/ProposalFundingPercentages';
 import ProposalFundingStatus from '@/Pages/Proposals/Partials/ProposalFundingStatus';
-import { useCallback, useState, useRef, useEffect } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import Paragraph from '@/Components/atoms/Paragraph';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Proposal = App.DataTransferObjects.ProposalData;
-import Title from '@/Components/atoms/Title';
-import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
 
 interface ProposalCardMiniProps {
     proposal: Proposal;
@@ -15,7 +15,7 @@ interface ProposalCardMiniProps {
 
 export default function ProposalCardMini({
     proposal,
-    isHorizontal
+    isHorizontal,
 }: ProposalCardMiniProps) {
     const { t } = useLaravelReactI18n();
 
@@ -61,7 +61,7 @@ export default function ProposalCardMini({
         (user: App.DataTransferObjects.IdeascaleProfileData) => {
             setHoveredUserName(user.name || t('anonymous'));
         },
-        [t]
+        [t],
     );
 
     const handleUserMouseLeave = useCallback(() => {
@@ -71,23 +71,24 @@ export default function ProposalCardMini({
     return (
         <article
             ref={cardRef}
-            className="bg-background z-0 flex h-full flex-col justify-between rounded-xl p-2 shadow-lg relative"
-            style={cardHeight && userSelected ? { height: `${cardHeight}px` } : {}}
+            className="bg-background relative z-0 flex h-full flex-col justify-between rounded-xl p-2 shadow-lg"
+            style={
+                cardHeight && userSelected ? { height: `${cardHeight}px` } : {}
+            }
             data-testid={`proposal-card-mini-${proposal.id}`}
         >
             {userSelected && (
                 <button
                     onClick={noSelectedUser}
-                    className="absolute right-4 top-4 z-10 rounded-full p-1 hover:bg-background hover:text-content focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="hover:bg-background hover:text-content focus:ring-primary absolute top-4 right-4 z-10 rounded-full p-1 focus:ring-2 focus:outline-none"
                     aria-label="Close profile"
                     data-testid="proposal-card-mini-close-button"
-                >
-                </button>
+                ></button>
             )}
 
             {/* The key change is here - we need to ensure the header section has position relative
                 and a higher z-index so it can overlay content on hover */}
-            <section className="flex h-auto w-full flex-col items-start overflow-visible rounded-xl relative">
+            <section className="relative flex h-auto w-full flex-col items-start overflow-visible rounded-xl">
                 <ProposalCardHeader
                     proposal={proposal}
                     userSelected={userSelected}
@@ -96,56 +97,72 @@ export default function ProposalCardMini({
                 />
             </section>
 
-            <section ref={contentRef} className="flex-grow flex flex-col">
+            <section ref={contentRef} className="flex flex-grow flex-col">
                 {userSelected ? (
                     <>
                         <div className="invisible h-0" aria-hidden="true">
-                            <div className="mt-3" aria-labelledby="funding-heading" data-testid="proposal-card-mini-funding-heading">
+                            <div
+                                className="mt-3"
+                                aria-labelledby="funding-heading"
+                                data-testid="proposal-card-mini-funding-heading"
+                            >
                                 <div className="flex items-center gap-2">
-                                    <Title level='3' className="font-semibold">{t('funding')}</Title>
+                                    <Title level="3" className="font-semibold">
+                                        {t('funding')}
+                                    </Title>
 
                                     <ProposalFundingStatus
                                         funding_status={proposal.funding_status}
                                     />
                                 </div>
 
-                                <ProposalFundingPercentages proposal={proposal}/>
+                                <ProposalFundingPercentages
+                                    proposal={proposal}
+                                />
                             </div>
                         </div>
 
                         <div className="mt-3 flex-grow">
                             <div className="p-2">
-                                <Title level='4' className="font-medium">
+                                <Title level="4" className="font-medium">
                                     {userSelected.name || t('anonymous')}
                                 </Title>
                                 {userSelected.bio && (
-                                    <Paragraph className="mt-2 text-sm">{userSelected.bio}</Paragraph>
+                                    <Paragraph className="mt-2 text-sm">
+                                        {userSelected.bio}
+                                    </Paragraph>
                                 )}
                             </div>
                         </div>
                     </>
                 ) : (
-                    <div className="mt-3" aria-labelledby="funding-heading" data-testid="proposal-card-mini-funding-heading">
+                    <div
+                        className="mt-3"
+                        aria-labelledby="funding-heading"
+                        data-testid="proposal-card-mini-funding-heading"
+                    >
                         <div className="flex items-center gap-2">
-                            <Title level='3' className="font-semibold">{t('funding')}</Title>
+                            <Title level="3" className="font-semibold">
+                                {t('funding')}
+                            </Title>
 
                             <ProposalFundingStatus
                                 funding_status={proposal.funding_status}
                             />
                         </div>
 
-                        <ProposalFundingPercentages proposal={proposal}/>
+                        <ProposalFundingPercentages proposal={proposal} />
                     </div>
                 )}
 
-                <div className="border-t mt-auto border-t-dark/30">
-                    {userSelected && (
-                        <div className="mt-3">
-                        </div>
-                    )}
+                <div className="border-t-dark/30 mt-auto border-t">
+                    {userSelected && <div className="mt-3"></div>}
 
                     {hoveredUserName && (
-                        <div className="mt-2 text-sm text-gray-600" data-testid="proposal-card-mini-hovered-username">
+                        <div
+                            className="mt-2 text-sm text-gray-600"
+                            data-testid="proposal-card-mini-hovered-username"
+                        >
                             {hoveredUserName}
                         </div>
                     )}
@@ -155,7 +172,7 @@ export default function ProposalCardMini({
                         onUserClick={handleUserClick}
                         onUserMouseEnter={handleUserMouseEnter}
                         onUserMouseLeave={handleUserMouseLeave}
-                        className='bg-content-light'
+                        className="bg-content-light"
                         toolTipProps={t('proposals.viewTeam')}
                     />
                 </div>

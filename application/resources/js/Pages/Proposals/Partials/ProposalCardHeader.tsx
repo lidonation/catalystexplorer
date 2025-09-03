@@ -2,15 +2,14 @@ import Button from '@/Components/atoms/Button';
 import Title from '@/Components/atoms/Title';
 import ExpandableContent from '@/Components/ExpandableContent';
 import ExpandableContentAnimation from '@/Components/ExpandableContentAnimation';
+import UserAvatar from '@/Components/UserAvatar';
 import { ListProvider } from '@/Context/ListContext';
 import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import { Link } from '@inertiajs/react';
-import { useEffect, useRef, useState } from 'react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { getUuid } from '@/utils/getPreferredId';
+import { useEffect, useRef, useState } from 'react';
 import CompareButton from './CompareButton';
 import ProposalStatus from './ProposalStatus';
-import UserAvatar from '@/Components/UserAvatar';
 
 export default function ProposalCardHeader({
     proposal,
@@ -30,12 +29,16 @@ export default function ProposalCardHeader({
     const proposalId = proposal.id ?? '';
 
     const gradientColors: Record<string, unknown> = {
-        complete: 'from-[var(--success-gradient-color-1)] to-[var(--success-gradient-color-2)]',
-        default: 'from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)]',
+        complete:
+            'from-[var(--success-gradient-color-1)] to-[var(--success-gradient-color-2)]',
+        default:
+            'from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)]',
     };
 
     const headerBGColor =
-        proposal?.status === 'complete' ? gradientColors.complete : gradientColors.default;
+        proposal?.status === 'complete'
+            ? gradientColors.complete
+            : gradientColors.default;
 
     useEffect(() => {
         const element = contentRef.current;
@@ -53,7 +56,7 @@ export default function ProposalCardHeader({
             onHoverChange={setIsHovered}
         >
             <header
-                className={`min-h-[10rem] text-content-light w-full rounded-xl bg-linear-to-tr ${headerBGColor} flex flex-col justify-between ${isHorizontal ? 'h-full' : ''}`}
+                className={`text-content-light min-h-[10rem] w-full rounded-xl bg-linear-to-tr ${headerBGColor} flex flex-col justify-between ${isHorizontal ? 'h-full' : ''}`}
                 data-testid={`proposal-card-header-${proposalId}`}
             >
                 <div className="px-4 pt-3">
@@ -62,11 +65,16 @@ export default function ProposalCardHeader({
                             <div className="flex items-start justify-between">
                                 <div className="flex items-center space-x-4">
                                     <UserAvatar
-                                        name={userSelected?.name ?? userSelected?.username}
+                                        name={
+                                            userSelected?.name ??
+                                            userSelected?.username
+                                        }
                                         imageUrl={userSelected?.hero_img_url}
                                         size="size-10"
                                     />
-                                    <Title level="4">{userSelected?.name}</Title>
+                                    <Title level="4">
+                                        {userSelected?.name}
+                                    </Title>
                                 </div>
                                 <Button
                                     className="bg-background text-content hover:bg-background rounded-lg p-2 transition duration-200 ease-in-out focus:outline-hidden"
@@ -129,7 +137,7 @@ export default function ProposalCardHeader({
                     {!userSelected && (
                         <Link
                             href={proposal.link}
-                            className="hover:text-primary font-medium w-full"
+                            className="hover:text-primary w-full font-medium"
                             data-testid={`single-proposal-card-link-${proposalId}`}
                             style={{ overflow: 'visible' }}
                         >
@@ -139,21 +147,28 @@ export default function ProposalCardHeader({
                                     lineClamp={3}
                                     expanded={isHovered}
                                 >
-                                    <Title level="4" data-testid={`proposal-card-title-${proposalId}`}>
+                                    <Title
+                                        level="4"
+                                        data-testid={`proposal-card-title-${proposalId}`}
+                                    >
                                         {proposal.title}
                                     </Title>
                                 </ExpandableContent>
                             </div>
                         </Link>
                     )}
-                    <div className="flex justify-end italic py-0.5" data-testid="proposal-card-fund">
+                    <div
+                        className="flex justify-end py-0.5 italic"
+                        data-testid="proposal-card-fund"
+                    >
                         <span>~ {proposal.fund?.label}</span>
                     </div>
                 </div>
 
                 {/* Links to Ideascale / ProjectCatalyst */}
                 {!userSelected &&
-                    (proposal.ideascale_link || proposal.projectcatalyst_io_link) && (
+                    (proposal.ideascale_link ||
+                        proposal.projectcatalyst_io_link) && (
                         <nav
                             className="text-content-light flex items-center justify-evenly rounded-b-xl bg-white/25 p-2 font-semibold"
                             aria-label="Related Platforms"
@@ -170,9 +185,10 @@ export default function ProposalCardHeader({
                                     <span>{t('proposals.ideascale')}</span>
                                 </a>
                             )}
-                            {proposal.ideascale_link && proposal.projectcatalyst_io_link && (
-                                <div className="mx-2 h-3 border-r" />
-                            )}
+                            {proposal.ideascale_link &&
+                                proposal.projectcatalyst_io_link && (
+                                    <div className="mx-2 h-3 border-r" />
+                                )}
                             {proposal.projectcatalyst_io_link && (
                                 <a
                                     href={proposal.projectcatalyst_io_link}
@@ -181,7 +197,9 @@ export default function ProposalCardHeader({
                                     rel="noopener noreferrer"
                                     data-testid={`projectcatalyst-link-${proposalId}`}
                                 >
-                                    <span>{t('proposals.projectCatalyst')}</span>
+                                    <span>
+                                        {t('proposals.projectCatalyst')}
+                                    </span>
                                 </a>
                             )}
                         </nav>

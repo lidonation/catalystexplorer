@@ -8,7 +8,7 @@ interface ColumnDefinition<T> {
     render: (item: T, index: number) => React.ReactNode;
 }
 
-interface WorkflowTableProps <T>{
+interface WorkflowTableProps<T> {
     items: T[];
     columns: ColumnDefinition<T>[];
     emptyMessage?: string;
@@ -18,7 +18,6 @@ interface WorkflowTableProps <T>{
         showIcon?: boolean;
     };
 }
-
 
 const formatHeaderText = (text: string): string => {
     if (!text) return '';

@@ -1,11 +1,11 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
+import RichContent from '@/Components/RichContent';
 import { VerificationBadge } from '@/Components/svgs/VerificationBadge';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React from 'react';
 import Content from '../Partials/WorkflowContent';
 import WorkflowLayout from '../WorkflowLayout';
-import RichContent from '@/Components/RichContent';
 
 const Success: React.FC = () => {
     const { t } = useLaravelReactI18n();

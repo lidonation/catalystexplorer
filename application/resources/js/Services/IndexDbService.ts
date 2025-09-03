@@ -1,8 +1,6 @@
 import { db } from '@/db/db';
-import { IndexableType, liveQuery, PromiseExtended, UpdateSpec } from 'dexie';
 import { DbModels } from '@/db/generated-db-schema';
-
-import { useObservable } from 'dexie-react-hooks';
+import { IndexableType, liveQuery, PromiseExtended, UpdateSpec } from 'dexie';
 
 type TableName = keyof DbModels;
 type PrimaryKey = string;
@@ -11,13 +9,14 @@ export class IndexedDBService {
     /** Create a record with optional auto-incremented `order` */
     static async create<K extends TableName>(
         tableName: K,
-        data: DbModels[K]
+        data: DbModels[K],
     ): Promise<IndexableType> {
         const table = db[tableName];
 
         if ('order' in data) {
             const lastItem = await table.orderBy('order').last();
-            const nextOrder = lastItem?.order != null ? (lastItem.order as number) + 1 : 1;
+            const nextOrder =
+                lastItem?.order != null ? (lastItem.order as number) + 1 : 1;
             data = { ...data, order: nextOrder };
         }
 
@@ -25,16 +24,13 @@ export class IndexedDBService {
     }
 
     /** Get a single record by primary key */
-    static get<K extends TableName>(
-        tableName: K,
-        hash: PrimaryKey
-    ) {
+    static get<K extends TableName>(tableName: K, hash: PrimaryKey) {
         return db[tableName].get(hash);
     }
 
     /** Get all records, ordered by `order` if present */
     static async getAll<K extends TableName>(
-        tableName: K
+        tableName: K,
     ): Promise<DbModels[K][]> {
         const table = db[tableName];
 
@@ -49,7 +45,7 @@ export class IndexedDBService {
     static update<K extends TableName>(
         tableName: K,
         hash: PrimaryKey,
-        changes: UpdateSpec<DbModels[K]>
+        changes: UpdateSpec<DbModels[K]>,
     ): PromiseExtended<number> {
         return db[tableName].update(hash, changes);
     }
@@ -57,15 +53,13 @@ export class IndexedDBService {
     /** Delete a record */
     static remove<K extends TableName>(
         tableName: K,
-        hash: PrimaryKey
+        hash: PrimaryKey,
     ): PromiseExtended<void> {
         return db[tableName].delete(hash);
     }
 
     /** Get all records reactively, sorted by `order` if available */
-    static liveAll<K extends TableName>(
-        tableName: K
-    ) {
+    static liveAll<K extends TableName>(tableName: K) {
         const table = db[tableName];
 
         return liveQuery(() => {
@@ -78,10 +72,7 @@ export class IndexedDBService {
     }
 
     /** Get one record by primary key reactively */
-    static liveById<K extends TableName>(
-        tableName: K,
-        hash: PrimaryKey
-    ) {
+    static liveById<K extends TableName>(tableName: K, hash: PrimaryKey) {
         return liveQuery(() => db[tableName].get(hash));
     }
 
@@ -89,7 +80,7 @@ export class IndexedDBService {
     static where<K extends TableName, F extends keyof DbModels[K]>(
         tableName: K,
         field: F,
-        value: DbModels[K][F] extends IndexableType ? DbModels[K][F] : never
+        value: DbModels[K][F] extends IndexableType ? DbModels[K][F] : never,
     ) {
         return db[tableName]
             .where(field as string)
@@ -101,13 +92,13 @@ export class IndexedDBService {
     static liveWhere<K extends TableName, F extends keyof DbModels[K]>(
         tableName: K,
         field: F,
-        value: DbModels[K][F] extends IndexableType ? DbModels[K][F] : never
+        value: DbModels[K][F] extends IndexableType ? DbModels[K][F] : never,
     ) {
         return liveQuery(() =>
             db[tableName]
                 .where(field as string)
                 .equals(value)
-                .toArray()
+                .toArray(),
         );
     }
 
@@ -115,7 +106,7 @@ export class IndexedDBService {
     static liveWhereOrdered<K extends TableName, F extends keyof DbModels[K]>(
         tableName: K,
         field: F,
-        value: DbModels[K][F] extends IndexableType ? DbModels[K][F] : never
+        value: DbModels[K][F] extends IndexableType ? DbModels[K][F] : never,
     ) {
         const table = db[tableName];
         return liveQuery(() => {
@@ -125,4 +116,4 @@ export class IndexedDBService {
                 : query.toArray();
         });
     }
-} 
+}

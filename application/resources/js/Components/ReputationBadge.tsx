@@ -1,10 +1,10 @@
 import { ReputationTier } from '@/enums/reputation-tier-enums';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useEffect, useRef, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { createPortal } from 'react-dom';
 import Paragraph from './atoms/Paragraph';
 import ToolTipHover from './ToolTipHover';
 import ReviewData = App.DataTransferObjects.ReviewData;
-import { createPortal } from 'react-dom';
 
 export interface ReputationBadgeProps {
     review: ReviewData;
@@ -25,7 +25,7 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
             const rect = badgeRef.current.getBoundingClientRect();
             setTooltipPosition({
                 top: rect.top - 40,
-                left: rect.left + rect.width / 2
+                left: rect.left + rect.width / 2,
             });
         }
     }, [showTooltip]);
@@ -113,21 +113,23 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
                 </foreignObject>
             </svg>
 
-            {showTooltip && document.body && createPortal(
-                <div
-                    className="fixed transform -translate-x-1/2 z-[1000]"
-                    style={{
-                        top: `${tooltipPosition.top}px`,
-                        left: `${tooltipPosition.left}px`
-                    }}
-                >
-                    <ToolTipHover
-                        props={t('reviewerReputationScore')}
-                        className="w-auto px-3"
-                    />
-                </div>,
-                document.body
-            )}
+            {showTooltip &&
+                document.body &&
+                createPortal(
+                    <div
+                        className="fixed z-[1000] -translate-x-1/2 transform"
+                        style={{
+                            top: `${tooltipPosition.top}px`,
+                            left: `${tooltipPosition.left}px`,
+                        }}
+                    >
+                        <ToolTipHover
+                            props={t('reviewerReputationScore')}
+                            className="w-auto px-3"
+                        />
+                    </div>,
+                    document.body,
+                )}
         </div>
     );
 };

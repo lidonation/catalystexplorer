@@ -51,13 +51,13 @@ export default function ExpandableContentAnimation({
     }, [cardRef.current]);
 
     const renderCardContent = () => {
-        const lineHeightRem = 1.5; 
+        const lineHeightRem = 1.5;
         const minHeight = `${lineClamp * lineHeightRem}rem`;
 
         const isEmpty =
             !children ||
             (typeof children === 'string' && children.trim() === '') ||
-            (Array.isArray(children) && children.every(child => !child));
+            (Array.isArray(children) && children.every((child) => !child));
 
         const shouldClamp = !isEmpty && lineCount > lineClamp;
 
@@ -66,7 +66,7 @@ export default function ExpandableContentAnimation({
                 ref={contentRef as RefObject<HTMLDivElement>}
                 className={clsx(
                     'leading-snug',
-                    isEmpty && 'italic text-gray-400 opacity-70'
+                    isEmpty && 'text-gray-400 italic opacity-70',
                 )}
                 style={{
                     display: shouldClamp ? '-webkit-box' : 'block',
@@ -84,16 +84,13 @@ export default function ExpandableContentAnimation({
         <div
             className={clsx(
                 'relative w-full',
-                isHovered && isExpandable 
-                ? 'overflow-visible'
-                 : '',
+                isHovered && isExpandable ? 'overflow-visible' : '',
             )}
             style={{
                 height: baseHeight > 0 ? baseHeight : 'auto',
             }}
         >
             <div
-            
                 ref={cardRef}
                 onMouseEnter={() => handleHoverChange(true)}
                 onMouseLeave={() => handleHoverChange(false)}
@@ -109,4 +106,3 @@ export default function ExpandableContentAnimation({
         </div>
     );
 }
-

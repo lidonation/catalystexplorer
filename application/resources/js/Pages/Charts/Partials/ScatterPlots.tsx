@@ -30,7 +30,7 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
 }) => {
     const { t } = useLaravelReactI18n();
     const [normalizedData, setNormalizedData] = useState<any[]>([]);
-  
+
     const [screenWidth, setScreenWidth] = useState(
         typeof window !== 'undefined' ? window.innerWidth : 1200,
     );
@@ -53,7 +53,6 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
         }));
 
         setNormalizedData(transformed);
-
     }, [chartData]);
 
     useEffect(() => {
@@ -69,8 +68,8 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
     const transformedData = normalizedData?.map((group) => ({
         id: group.id,
         data: group?.data?.map((item: any) => ({
-            x: item.x, 
-            y: item.y, 
+            x: item.x,
+            y: item.y,
             countBy: item.count_by,
             tag: item.tag,
         })),
@@ -258,4 +257,3 @@ const ScatterPlot: React.FC<ScatterChartProps> = ({
 };
 
 export default ScatterPlot;
-

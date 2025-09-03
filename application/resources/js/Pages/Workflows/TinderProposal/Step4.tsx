@@ -1,13 +1,14 @@
-import useWorkflowSlideOver from '@/Hooks/useWorkflowSlideOver';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import Title from '@/Components/atoms/Title';
 import { ListProvider } from '@/Context/ListContext';
 import { TinderWorkflowParams } from '@/enums/tinder-workflow-params';
 import { StatusEnum, VisibilityEnum } from '@/enums/votes-enums';
+import useWorkflowSlideOver from '@/Hooks/useWorkflowSlideOver';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { router, useForm } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useEffect, useState } from 'react';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
@@ -15,7 +16,6 @@ import SlideOverContent from './Partials/SlideOverContent';
 import SwipeCard from './Partials/SwipeCard';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import ProposalData = App.DataTransferObjects.ProposalData;
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface Step4Props {
     stepDetails: any[];
@@ -65,12 +65,30 @@ const Step4Content: React.FC<Step4Props> = ({
     const [isEditingFields, setIsEditingFields] = useState(false);
 
     const editForm = useForm({
-        [TinderWorkflowParams.TITLE]: leftBookmarkCollection?.title || rightBookmarkCollection?.title || '',
-        [TinderWorkflowParams.CONTENT]: leftBookmarkCollection?.content || rightBookmarkCollection?.content || '',
-        [TinderWorkflowParams.VISIBILITY]: leftBookmarkCollection?.visibility || rightBookmarkCollection?.visibility || VisibilityEnum.PRIVATE,
-        [TinderWorkflowParams.COMMENTS_ENABLED]: leftBookmarkCollection?.allow_comments || rightBookmarkCollection?.allow_comments || false as boolean,
-        [TinderWorkflowParams.COLOR]: leftBookmarkCollection?.color || rightBookmarkCollection?.color || '#2596BE',
-        [TinderWorkflowParams.STATUS]: leftBookmarkCollection?.status || leftBookmarkCollection?.status || StatusEnum.DRAFT,
+        [TinderWorkflowParams.TITLE]:
+            leftBookmarkCollection?.title ||
+            rightBookmarkCollection?.title ||
+            '',
+        [TinderWorkflowParams.CONTENT]:
+            leftBookmarkCollection?.content ||
+            rightBookmarkCollection?.content ||
+            '',
+        [TinderWorkflowParams.VISIBILITY]:
+            leftBookmarkCollection?.visibility ||
+            rightBookmarkCollection?.visibility ||
+            VisibilityEnum.PRIVATE,
+        [TinderWorkflowParams.COMMENTS_ENABLED]:
+            leftBookmarkCollection?.allow_comments ||
+            rightBookmarkCollection?.allow_comments ||
+            (false as boolean),
+        [TinderWorkflowParams.COLOR]:
+            leftBookmarkCollection?.color ||
+            rightBookmarkCollection?.color ||
+            '#2596BE',
+        [TinderWorkflowParams.STATUS]:
+            leftBookmarkCollection?.status ||
+            leftBookmarkCollection?.status ||
+            StatusEnum.DRAFT,
     });
 
     const leftSwipeCount = leftProposals.length;
@@ -188,15 +206,16 @@ const Step4Content: React.FC<Step4Props> = ({
         try {
             router.post(
                 route('api.collections.delete', {
-                    bookmarkCollection: collection.id
+                    bookmarkCollection: collection.id,
                 }),
                 {
-                    no_redirect: true
+                    no_redirect: true,
                 },
                 {
                     onSuccess: () => {
                         // Mark this collection as deleted
-                        setDeletedCollections((prev) => new Set(prev).add(collectionToDelete)
+                        setDeletedCollections((prev) =>
+                            new Set(prev).add(collectionToDelete),
                         );
                         // Close the slide over
                         // closeSlideOver();
@@ -204,8 +223,8 @@ const Step4Content: React.FC<Step4Props> = ({
                     },
                     onError: (errors) => {
                         console.error('Failed to delete collection:', errors);
-                    }
-                }
+                    },
+                },
             );
         } catch (error) {
             console.error('Error deleting collection:', error);

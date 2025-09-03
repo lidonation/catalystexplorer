@@ -1,6 +1,4 @@
-import {useLaravelReactI18n} from "laravel-react-i18n";
-
-
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 const IdeascaleSortingOptions = () => {
     const { t } = useLaravelReactI18n();
@@ -46,7 +44,7 @@ const IdeascaleSortingOptions = () => {
             label: t('ideascaleProfiles.options.coProposalCountLowToHigh'), // Co-Proposal Count: Low to High
             value: 'co_proposals_count:asc',
         },
-    ]
+    ];
 };
 
 export default IdeascaleSortingOptions;

@@ -1,8 +1,8 @@
+import { cn } from '@/lib/utils';
+import { InertiaLinkProps, Link } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ArrowLeft, ChevronRight, MoreHorizontal } from 'lucide-react';
 import * as React from 'react';
-import { cn } from '@/lib/utils';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import { InertiaLinkProps, Link } from '@inertiajs/react';
 
 // const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => {
 //     <nav
@@ -20,7 +20,10 @@ const PaginationContent = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <ul
         ref={ref}
-        className={cn('flex w-full flex-row items-center justify-between', className)}
+        className={cn(
+            'flex w-full flex-row items-center justify-between',
+            className,
+        )}
         {...props}
     />
 ));
@@ -37,8 +40,9 @@ PaginationItem.displayName = 'PaginationItem';
 type PaginationLinkProps = {
     isActive?: boolean;
     handleclick?: (update: React.MouseEvent<Element>) => number;
-    linkProps: Partial<InertiaLinkProps>
-} & React.ComponentProps<'a'> & InertiaLinkProps;
+    linkProps: Partial<InertiaLinkProps>;
+} & React.ComponentProps<'a'> &
+    InertiaLinkProps;
 
 const PaginationLink = ({
     className,
@@ -67,7 +71,10 @@ const PaginationPrevious = ({
         <PaginationLink
             data-testid="pagination-previous"
             aria-label={t('pagination.goPreviousPage')}
-            className={cn('flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50', className)}
+            className={cn(
+                'flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50',
+                className,
+            )}
             linkProps={linkProps}
             {...props}
         >
@@ -88,7 +95,10 @@ const PaginationNext = ({
         <PaginationLink
             data-testid="pagination-next"
             aria-label={t('pagination.goNextPage')}
-            className={cn('flex items-center justify-between px-3 py-2 text-sm font-medium  hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50', className)}
+            className={cn(
+                'flex items-center justify-between px-3 py-2 text-sm font-medium hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50',
+                className,
+            )}
             linkProps={linkProps}
             {...props}
         >

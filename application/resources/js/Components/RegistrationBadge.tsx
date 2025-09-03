@@ -15,7 +15,9 @@ export const RegistrationBadge: React.FC<RegistrationBadgeProps> = ({
     }
 
     return (
-        <span className={`inline-block px-2 py-1 lg:px-3 lg:py-1.5 bg-sky-50 rounded text-cyan-600 text-xs lg:text-sm font-medium border border-sky-200 ${className}`}>
+        <span
+            className={`inline-block rounded border border-sky-200 bg-sky-50 px-2 py-1 text-xs font-medium text-cyan-600 lg:px-3 lg:py-1.5 lg:text-sm ${className}`}
+        >
             Registration
         </span>
     );

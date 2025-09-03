@@ -4,7 +4,7 @@ import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import RelatedReviews from '@/Pages/Reviews/Partials/RelatedReviews';
 import { PaginatedData } from '@/types/paginated-data';
 import { Head, WhenVisible } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import GroupLayout from '../GroupLayout';
 import ReviewData = App.DataTransferObjects.ReviewData;
 import GroupData = App.DataTransferObjects.GroupData;

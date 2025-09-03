@@ -1,19 +1,19 @@
+import PrimaryButton from '@/Components/atoms/PrimaryButton.tsx';
 import SearchControls from '@/Components/atoms/SearchControls';
 import Title from '@/Components/atoms/Title';
 import Paginator from '@/Components/Paginator';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import ListSortingOptions from '@/lib/ListSortOptions';
+import CreateListPicker from '@/Pages/Bookmarks/Partials/CreateListPicker.tsx';
 import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 import { Head, WhenVisible } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import BookmarkCollectionList from '../My/Lists/Partials/BookmarkCollectionList';
 import BookmarkCollectionListLoader from '../My/Lists/Partials/BookmarkCollectionListLoader';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
-import PrimaryButton from "@/Components/atoms/PrimaryButton.tsx";
-import CreateListPicker from "@/Pages/Bookmarks/Partials/CreateListPicker.tsx";
 
 interface BookmarkCollectionListProps {
     bookmarkCollections: PaginatedData<BookmarkCollectionData[]>;
@@ -35,7 +35,7 @@ const Index: React.FC<BookmarkCollectionListProps> = ({
             >
                 <Head title="Community Lists" />
 
-                <header className="container mt-4 w-full flex flex-col items-start lg:items-center lg:justify-between lg:flex-row lg:mt-6">
+                <header className="container mt-4 flex w-full flex-col items-start lg:mt-6 lg:flex-row lg:items-center lg:justify-between">
                     <div className="">
                         <Title className="" level="1">
                             {t('bookmarks.listTitle')}
@@ -46,7 +46,10 @@ const Index: React.FC<BookmarkCollectionListProps> = ({
                         </div>
                     </div>
 
-                    <PrimaryButton className="" onClick={() => setPickingList(true)}>
+                    <PrimaryButton
+                        className=""
+                        onClick={() => setPickingList(true)}
+                    >
                         {`+ ${t('my.createList')}`}
                     </PrimaryButton>
                 </header>
@@ -85,7 +88,10 @@ const Index: React.FC<BookmarkCollectionListProps> = ({
                     </div>
                 )}
 
-                <CreateListPicker showPickingList={showListPicker} setPickingList={setPickingList}></CreateListPicker>
+                <CreateListPicker
+                    showPickingList={showListPicker}
+                    setPickingList={setPickingList}
+                ></CreateListPicker>
             </FiltersProvider>
         </>
     );

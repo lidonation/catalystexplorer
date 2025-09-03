@@ -1,6 +1,6 @@
 import Title from '@/Components/atoms/Title';
 import { Head } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { PaginatedData } from '../../types/paginated-data';
 import { SearchParams } from '../../types/search-params';
 import ProjectScheduleData = App.DataTransferObjects.ProjectScheduleData;

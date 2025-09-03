@@ -1,4 +1,3 @@
-
 export type PaginatedData<T> = {
     current_page: number;
     data: T;
@@ -13,4 +12,4 @@ export type PaginatedData<T> = {
     prev_page_url: string;
     to: number;
     total: number;
-}
+};

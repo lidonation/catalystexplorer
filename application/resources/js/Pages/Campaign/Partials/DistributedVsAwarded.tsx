@@ -1,8 +1,8 @@
 import Title from '@/Components/atoms/Title';
 import PercentageProgressBar from '@/Components/PercentageProgressBar';
 import { shortNumber } from '@/utils/shortNumber';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface DistributedVsAwardedPageProps extends Record<string, unknown> {
     distributed: number;
@@ -28,7 +28,12 @@ const DistributedVsAwarded: React.FC<DistributedVsAwardedPageProps> = ({
 
     return (
         <div className="flex w-full flex-col gap-4">
-            <PercentageProgressBar value={distributed} total={awarded} primaryBackgroundColor={'bg-background'} secondaryBackgroudColor={'bg-primary'}/>
+            <PercentageProgressBar
+                value={distributed}
+                total={awarded}
+                primaryBackgroundColor={'bg-background'}
+                secondaryBackgroudColor={'bg-primary'}
+            />
             <div className="flex items-center gap-2">
                 <span className="text-content text-2xl font-bold">
                     {currSymbol}
@@ -39,9 +44,7 @@ const DistributedVsAwarded: React.FC<DistributedVsAwardedPageProps> = ({
                     {shortNumber(awarded)}({percentage ? percentage : 0}%)
                 </span>
             </div>
-            <Title level='6'>
-                {t('Distributed vs Awarded')}
-            </Title>
+            <Title level="6">{t('Distributed vs Awarded')}</Title>
         </div>
     );
 };

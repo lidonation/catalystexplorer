@@ -1,4 +1,4 @@
-import {MouseEventHandler, ReactNode, forwardRef} from 'react';
+import { MouseEventHandler, ReactNode, forwardRef } from 'react';
 
 type ButtonProps = {
     onClick?: MouseEventHandler<HTMLButtonElement>;
@@ -13,35 +13,40 @@ type ButtonProps = {
     dataTestId?: string;
 };
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
-    onClick,
-    children,
-    disabled = false,
-    className = '',
-    type = 'button',
-    ariaLabel,
-    ariaExpanded,
-    ariaControls,
-    ariaPressed,
-    dataTestId,
-}, ref) => {
-    return (
-        <button
-            ref={ref}
-            onClick={disabled ? undefined : onClick}
-            type={type}
-            disabled={disabled}
-            aria-label={ariaLabel}
-            aria-expanded={ariaExpanded}
-            aria-controls={ariaControls}
-            aria-pressed={ariaPressed}
-            className={`rounded-sm hover:cursor-pointer ${disabled ? 'cursor-not-allowed opacity-50' : ''} ${className}`}
-            data-testid={dataTestId}
-        >
-            {children}
-        </button>
-    );
-});
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+    (
+        {
+            onClick,
+            children,
+            disabled = false,
+            className = '',
+            type = 'button',
+            ariaLabel,
+            ariaExpanded,
+            ariaControls,
+            ariaPressed,
+            dataTestId,
+        },
+        ref,
+    ) => {
+        return (
+            <button
+                ref={ref}
+                onClick={disabled ? undefined : onClick}
+                type={type}
+                disabled={disabled}
+                aria-label={ariaLabel}
+                aria-expanded={ariaExpanded}
+                aria-controls={ariaControls}
+                aria-pressed={ariaPressed}
+                className={`rounded-sm hover:cursor-pointer ${disabled ? 'cursor-not-allowed opacity-50' : ''} ${className}`}
+                data-testid={dataTestId}
+            >
+                {children}
+            </button>
+        );
+    },
+);
 
 Button.displayName = 'Button';
 

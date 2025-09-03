@@ -1,5 +1,5 @@
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ReactNode } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 type Props = { children: ReactNode };
 

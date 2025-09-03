@@ -7,16 +7,16 @@ interface FundsListProps {
 }
 
 const FundsList: React.FC<FundsListProps> = ({ funds }) => {
-   const sortedFunds: FundData[] = [...funds].sort((a, b) => {
-       const numA = a.title ? parseInt(a.title.replace(/\D/g, ''), 10) : NaN;
-       const numB = b.title ? parseInt(b.title.replace(/\D/g, ''), 10) : NaN;
+    const sortedFunds: FundData[] = [...funds].sort((a, b) => {
+        const numA = a.title ? parseInt(a.title.replace(/\D/g, ''), 10) : NaN;
+        const numB = b.title ? parseInt(b.title.replace(/\D/g, ''), 10) : NaN;
 
-       if (isNaN(numA) && isNaN(numB)) return 0;
-       if (isNaN(numA)) return 1;
-       if (isNaN(numB)) return -1;
+        if (isNaN(numA) && isNaN(numB)) return 0;
+        if (isNaN(numA)) return 1;
+        if (isNaN(numB)) return -1;
 
-       return numB - numA;
-   });
+        return numB - numA;
+    });
 
     const calculatePercentageChanges = (funds: any) => {
         funds.sort((a: any, b: any) => {
@@ -78,9 +78,16 @@ const FundsList: React.FC<FundsListProps> = ({ funds }) => {
     const fundPercentages = calculatePercentageChanges(funds);
 
     return (
-        <ul className="grid w-full auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3" data-testid="funds-list">
+        <ul
+            className="grid w-full auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            data-testid="funds-list"
+        >
             {sortedFunds.map((fund, index) => (
-                <li key={index} className="h-full" data-testid={`fund-item-${fund.title}`}>
+                <li
+                    key={index}
+                    className="h-full"
+                    data-testid={`fund-item-${fund.title}`}
+                >
                     <FundCard
                         fund={fund}
                         percentageChange={

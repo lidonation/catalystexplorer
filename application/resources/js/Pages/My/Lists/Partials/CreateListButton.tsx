@@ -3,8 +3,8 @@ import { ListProvider } from '@/Context/ListContext';
 import BookmarkPage2 from '@/Pages/My/Lists/Partials/ListCreateFromBookmarkSave/Step2';
 import BookmarkPage3 from '@/Pages/My/Lists/Partials/ListCreateFromBookmarkSave/Step3';
 import TransitionMenu from '@/Pages/My/Lists/Partials/TransitionMenu';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 interface CreateListButtonProps {
     variant?: 'default' | 'large';

@@ -7,7 +7,7 @@ import ValueLabel from '@/Components/atoms/ValueLabel';
 import CommunityIdeascaleProfiles from '@/Pages/Communities/Partials/CommunityIdeascaleProfiles';
 import { Segments } from '@/types/segments';
 import { currency } from '@/utils/currency';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import CommunityData = App.DataTransferObjects.CommunityData;
 
 interface ProposalSummaryCardProps {

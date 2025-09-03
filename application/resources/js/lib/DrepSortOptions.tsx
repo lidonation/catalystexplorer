@@ -1,8 +1,6 @@
-import {useLaravelReactI18n} from "laravel-react-i18n";
-
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 const DrepSortingOptions = () => {
-
     const { t } = useLaravelReactI18n();
     return [
         {
@@ -24,8 +22,8 @@ const DrepSortingOptions = () => {
         {
             label: t('dreps.options.votersAsc'),
             value: 'voters:asc',
-        }
-    ]
+        },
+    ];
 };
 
 export default DrepSortingOptions;

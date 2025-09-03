@@ -13,10 +13,10 @@ interface GroupListProps {
     gridCols?: string;
 }
 
-const GroupPaginatedList: React.FC<GroupListProps> = ({ 
-    groups, 
+const GroupPaginatedList: React.FC<GroupListProps> = ({
+    groups,
     cardType = 'mini',
-    gridCols 
+    gridCols,
 }) => {
     return (
         <>
@@ -24,12 +24,12 @@ const GroupPaginatedList: React.FC<GroupListProps> = ({
                 <WhenVisible fallback={<GroupCardLoader />} data="groups">
                     {groups?.data?.length ? (
                         <>
-                            <GroupList 
-                                groups={groups?.data || []} 
+                            <GroupList
+                                groups={groups?.data || []}
                                 cardType={cardType}
                                 gridCols={gridCols}
                             />
-                            <section className="lg:mt-8 mt-4">
+                            <section className="mt-4 lg:mt-8">
                                 <Paginator pagination={groups} />
                             </section>
                         </>

@@ -3,8 +3,8 @@ import { ReviewCard } from '@/Components/ReviewCard';
 import { PaginatedData } from '@/types/paginated-data';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { HTMLAttributes } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import Masonry from 'react-masonry-css';
 
 import ReviewData = App.DataTransferObjects.ReviewData;

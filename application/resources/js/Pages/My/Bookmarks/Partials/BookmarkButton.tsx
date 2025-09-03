@@ -25,7 +25,7 @@ export default function BookmarkButton({
     height = 24,
     children,
     dataTestId = 'bookmark-button',
-    buttonTheme = 'text-white'
+    buttonTheme = 'text-white',
 }: BookmarkButtonProps) {
     const {
         isBookmarked,
@@ -73,7 +73,7 @@ export default function BookmarkButton({
         <TransitionMenu
             trigger={
                 <button
-                    className={`relative inline-flex cursor-pointer gap-1 rounded-full px-0 py-0.5 ${isBookmarked ? 'text-success' : buttonTheme }`}
+                    className={`relative inline-flex cursor-pointer gap-1 rounded-full px-0 py-0.5 ${isBookmarked ? 'text-success' : buttonTheme}`}
                     aria-label={`bookmark-${modelType}`}
                     onPointerDown={(e) => {
                         e.stopPropagation(); // optional

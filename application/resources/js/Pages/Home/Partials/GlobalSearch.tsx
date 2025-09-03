@@ -2,8 +2,8 @@ import SearchBar from '@/Components/SearchBar';
 import SearchVariants from '@/Components/SearchVariants';
 import useEnterKey from '@/Hooks/useEnterKey';
 import { router } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 function GlobalSearch() {
     const [searchTerm, setSearchTerm] = useState('');

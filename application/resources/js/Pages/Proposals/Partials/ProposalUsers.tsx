@@ -1,7 +1,7 @@
-import UserAvatar from '@/Components/UserAvatar';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import { PageProps } from '@/types';
 import Title from '@/Components/atoms/Title';
+import UserAvatar from '@/Components/UserAvatar';
+import { PageProps } from '@/types';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 interface ProposalUsers extends Record<string, unknown> {
     users: App.DataTransferObjects.IdeascaleProfileData[];
@@ -9,7 +9,11 @@ interface ProposalUsers extends Record<string, unknown> {
     className?: string;
 }
 
-export default function ProposalUsers({ users,onUserClick, className }: PageProps<ProposalUsers>) {
+export default function ProposalUsers({
+    users,
+    onUserClick,
+    className,
+}: PageProps<ProposalUsers>) {
     const { t } = useLaravelReactI18n();
 
     // Limit the users array to the first 5
@@ -18,11 +22,11 @@ export default function ProposalUsers({ users,onUserClick, className }: PageProp
 
     return (
         <section
-        className={`flex justify-between pt-3 items-center ${className}`}
-        aria-labelledby="team-heading"
+            className={`flex items-center justify-between pt-3 ${className}`}
+            aria-labelledby="team-heading"
         >
-            <Title level='5' id="team-heading">
-            {t('teams')}
+            <Title level="5" id="team-heading">
+                {t('teams')}
             </Title>
             <ul className="flex cursor-pointer -space-x-2 py-1.5">
                 {visibleUsers?.map((user) => (

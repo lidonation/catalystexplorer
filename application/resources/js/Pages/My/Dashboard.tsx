@@ -1,7 +1,6 @@
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
-import MyLayout from '@/Pages/My/MyLayout';
 import { Head } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import UserFundSummary from './partials/UserFundSummary';
 import UserSummaryChart from './partials/UserSummaryChart';
 
@@ -45,7 +44,7 @@ export default function MyDashboard({
                 </div>
             )}
 
-            <div className="grid grid-cols-1 gap-4 px-4 sm:px-6 lg:grid-cols-3 lg:px-8 mb-8 mt-6">
+            <div className="mt-6 mb-8 grid grid-cols-1 gap-4 px-4 sm:px-6 lg:grid-cols-3 lg:px-8">
                 {totalsSummary && (
                     <UserFundSummary totalsSummary={totalsSummary} />
                 )}

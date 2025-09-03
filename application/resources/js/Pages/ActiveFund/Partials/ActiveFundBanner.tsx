@@ -11,30 +11,32 @@ const ActiveFundBanner: React.FC<ActiveFundBannerProps> = ({ fund }) => {
     const { t } = useLaravelReactI18n();
     return (
         <section className="container py-8">
-            <div
-                className="relative flex md:h-120 h-60 w-full items-center justify-center overflow-hidden rounded-lg bg-linear-to-r from-gray-100 to-gray-900">
+            <div className="relative flex h-60 w-full items-center justify-center overflow-hidden rounded-lg bg-linear-to-r from-gray-100 to-gray-900 md:h-120">
                 <img
                     src={fund.banner_img_url}
                     alt={fund.title || 'Fund'}
                     className="h-full w-full object-cover"
                 />
-                <div className="absolute top-1/2 left-12 -translate-y-1/2 text-white hidden md:block">
+                <div className="absolute top-1/2 left-12 hidden -translate-y-1/2 text-white md:block">
                     <Title
                         level="1"
-                        className="font-bold "
+                        className="font-bold"
                     >{`${t('activeFund.title')} - ${fund?.title}`}</Title>
-                    <div className='p-5 bg-black/30 rounded-xl'>
-                        <Paragraph className="line-clamp-3 min-h-[4.5rem] leading-relaxed w-100" size="md">
+                    <div className="rounded-xl bg-black/30 p-5">
+                        <Paragraph
+                            className="line-clamp-3 min-h-[4.5rem] w-100 leading-relaxed"
+                            size="md"
+                        >
                             {t('activeFund.subtitle')}
                         </Paragraph>
                     </div>
                 </div>
-                <div className="absolute top-1/2 left-6 right-6 -translate-y-1/2 text-white block md:hidden">
+                <div className="absolute top-1/2 right-6 left-6 block -translate-y-1/2 text-white md:hidden">
                     <Title
                         level="3"
-                        className="font-bold "
+                        className="font-bold"
                     >{`${t('activeFund.title')} - ${fund?.title}`}</Title>
-                    <Paragraph className=" leading-relaxed" size="md">
+                    <Paragraph className="leading-relaxed" size="md">
                         {t('activeFund.subtitle')}
                     </Paragraph>
                 </div>

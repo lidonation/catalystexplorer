@@ -4,7 +4,7 @@ import Title from '@/Components/atoms/Title';
 import Check from '@/Components/svgs/Check';
 import { StepDetails } from '@/types';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React from 'react';
 import Content from '../Partials/WorkflowContent';
@@ -32,7 +32,7 @@ const Step2: React.FC<Step1Props> = ({
             ? ''
             : generateLocalizedRoute('workflows.claimIdeascaleProfile.index', {
                   step: activeStep - 1,
-                   profile: profile.id,
+                  profile: profile.id,
               });
 
     return (

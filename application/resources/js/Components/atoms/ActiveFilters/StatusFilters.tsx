@@ -53,5 +53,4 @@ const StatusFilters = ({
     );
 };
 
-
 export default StatusFilters;

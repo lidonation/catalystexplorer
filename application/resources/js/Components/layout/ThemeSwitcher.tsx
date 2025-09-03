@@ -1,5 +1,5 @@
 import { useThemeContext } from '@/Context/ThemeContext';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import Button from '../atoms/Button';
 import DarkModeIcon from '../svgs/DarkModeIcon';
 import LightModeIcon from '../svgs/LightModeIcon';

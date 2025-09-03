@@ -1,4 +1,5 @@
 import Checkbox from '@/Components/atoms/Checkbox';
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import Selector from '@/Components/atoms/Selector';
@@ -16,7 +17,6 @@ import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 import CampaignData = App.DataTransferObjects.CampaignData;
 import FundData = App.DataTransferObjects.FundData;
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface Step1Props {
     stepDetails: any[];

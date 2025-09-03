@@ -1,15 +1,15 @@
 import Title from '@/Components/atoms/Title';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Head, Link } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
-export default function ComingSoon({context = ''}:{context:string}) {
+export default function ComingSoon({ context = '' }: { context: string }) {
     const { t } = useLaravelReactI18n();
 
     return (
         <div className="bg-background-dark flex h-screen flex-col items-center justify-center gap-4">
             <Head title="Comming Soon" />
-            <Title level="1">{context+' '}Comming Soon...</Title>
+            <Title level="1">{context + ' '}Comming Soon...</Title>
             <div className="flex justify-center p-4">
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
                     <Link

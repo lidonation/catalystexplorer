@@ -80,15 +80,15 @@ export default function RecordsNotFoundIcon({
                     filterUnits="userSpaceOnUse"
                     colorInterpolationFilters="sRGB"
                 >
-                    <feFlood floodOpacity="0" result="BackgroundImageFix"/>
+                    <feFlood floodOpacity="0" result="BackgroundImageFix" />
                     <feColorMatrix
                         in="SourceAlpha"
                         type="matrix"
                         values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                         result="hardAlpha"
                     />
-                    <feOffset dy="-3"/>
-                    <feGaussianBlur stdDeviation="3"/>
+                    <feOffset dy="-3" />
+                    <feGaussianBlur stdDeviation="3" />
                     <feColorMatrix
                         type="matrix"
                         values="0 0 0 0 0.788235 0 0 0 0 0.803922 0 0 0 0 0.85098 0 0 0 0.349 0"

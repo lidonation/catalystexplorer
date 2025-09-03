@@ -1,8 +1,7 @@
 import UserAvatar from '@/Components/UserAvatar';
-import Checkbox from '@/Components/atoms/Checkbox';
 import Paragraph from '@/Components/atoms/Paragraph';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { ReactNode } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 
 interface ProfileCardProps {
@@ -12,7 +11,7 @@ interface ProfileCardProps {
 }
 
 const ProfileCard: React.FC<ProfileCardProps> = React.memo(
-    ({ profile, className,children }) => {
+    ({ profile, className, children }) => {
         const { t } = useLaravelReactI18n();
 
         return (

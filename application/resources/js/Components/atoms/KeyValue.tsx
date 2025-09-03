@@ -1,5 +1,5 @@
-import React, {HTMLAttributes} from "react";
-import ValueLabel from "@/Components/atoms/ValueLabel";
+import ValueLabel from '@/Components/atoms/ValueLabel';
+import { HTMLAttributes } from 'react';
 
 interface KeyValueProps extends HTMLAttributes<HTMLDivElement> {
     valueKey: string;
@@ -7,12 +7,18 @@ interface KeyValueProps extends HTMLAttributes<HTMLDivElement> {
     className?: string;
 }
 
-export default function KeyValue({valueKey, value, className = '', ...props}: KeyValueProps) {
+export default function KeyValue({
+    valueKey,
+    value,
+    className = '',
+    ...props
+}: KeyValueProps) {
     return (
-        <div className={`text-content text-lg font-semibold space-y-0 ${className}`} {...props}>
-            <div className='text-2xl'>
-                {value}
-            </div>
+        <div
+            className={`text-content space-y-0 text-lg font-semibold ${className}`}
+            {...props}
+        >
+            <div className="text-2xl">{value}</div>
             <ValueLabel>
                 <span>{valueKey}</span>
             </ValueLabel>

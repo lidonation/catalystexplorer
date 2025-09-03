@@ -4,8 +4,8 @@ import CustomSwitch from '@/Components/atoms/Switch';
 import TextInput from '@/Components/atoms/TextInput';
 import ArrowLeftIcon from '@/Components/svgs/ArrowLeft';
 import { useList } from '@/Context/ListContext';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import { z } from 'zod';
 import { TransitionListPageProps } from '../../../../../types/general';
 

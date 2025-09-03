@@ -1,6 +1,6 @@
-import React, { useRef, useEffect, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import Paragraph from '@/Components/atoms/Paragraph';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface MilestoneDateProgressBarProps {
     startDate: string; // Format: "2022-11-11 17:37:43"
@@ -18,7 +18,7 @@ const MilestoneDateProgressBar: React.FC<MilestoneDateProgressBarProps> = ({
     const [labelsOverlap, setLabelsOverlap] = useState({
         startEnd: false,
         startNow: false,
-        endNow: false
+        endNow: false,
     });
 
     const start = new Date(startDate.replace(' ', 'T'));
@@ -38,8 +38,8 @@ const MilestoneDateProgressBar: React.FC<MilestoneDateProgressBarProps> = ({
         ((end.getTime() - start.getTime()) / totalDuration) * 100;
     const isWithinRange = now <= end;
     const barColor = isWithinRange ? 'bg-success' : 'bg-error';
-    const nowLabelColor = isWithinRange 
-        ? 'bg-success-light text-success border-success' 
+    const nowLabelColor = isWithinRange
+        ? 'bg-success-light text-success border-success'
         : 'bg-error-light text-error border-error';
 
     const formatDate = (date: Date): string =>
@@ -51,27 +51,34 @@ const MilestoneDateProgressBar: React.FC<MilestoneDateProgressBarProps> = ({
 
     // Check for label overlap using getBoundingClientRect
     const checkLabelOverlap = () => {
-        if (startDateLabelRef.current && endDateLabelRef.current && nowDateLabelRef.current) {
-            
-            const containerRect = startDateLabelRef.current.parentElement?.getBoundingClientRect();
+        if (
+            startDateLabelRef.current &&
+            endDateLabelRef.current &&
+            nowDateLabelRef.current
+        ) {
+            const containerRect =
+                startDateLabelRef.current.parentElement?.getBoundingClientRect();
             if (!containerRect) return;
             const startRect = startDateLabelRef.current.getBoundingClientRect();
             const nowRect = nowDateLabelRef.current.getBoundingClientRect();
-        
+
             const endElement = endDateLabelRef.current;
             const endRect = endElement.getBoundingClientRect();
-        
+
             const endRectOriginal = {
                 left: endRect.left,
                 right: endRect.right,
                 top: containerRect.top,
                 bottom: containerRect.top + endRect.height,
                 width: endRect.width,
-                height: endRect.height
+                height: endRect.height,
             } as DOMRect;
-            
+
             // Helper function to check if two rectangles overlap
-            const doRectsOverlap = (rect1: DOMRect, rect2: DOMRect): boolean => {
+            const doRectsOverlap = (
+                rect1: DOMRect,
+                rect2: DOMRect,
+            ): boolean => {
                 return !(
                     rect1.right < rect2.left ||
                     rect2.right < rect1.left ||
@@ -79,26 +86,25 @@ const MilestoneDateProgressBar: React.FC<MilestoneDateProgressBarProps> = ({
                     rect2.bottom < rect1.top
                 );
             };
-            
+
             // Check all combinations using original position for end date
             const startEndOverlap = doRectsOverlap(startRect, endRectOriginal);
             const startNowOverlap = doRectsOverlap(startRect, nowRect);
             const endNowOverlap = doRectsOverlap(endRectOriginal, nowRect);
-            
+
             setLabelsOverlap({
                 startEnd: startEndOverlap,
                 startNow: startNowOverlap,
-                endNow: endNowOverlap
+                endNow: endNowOverlap,
             });
         }
     };
 
     useEffect(() => {
-        
         const timeoutId = setTimeout(checkLabelOverlap, 0);
-        
+
         window.addEventListener('resize', checkLabelOverlap);
-        
+
         return () => {
             clearTimeout(timeoutId);
             window.removeEventListener('resize', checkLabelOverlap);
@@ -115,16 +121,19 @@ const MilestoneDateProgressBar: React.FC<MilestoneDateProgressBarProps> = ({
     const verticalLines = [
         { left: '0%', testId: 'milestone-start-line' },
         { left: `${nowPosition}%`, testId: 'milestone-now-line' },
-        { 
-            left: `${endPosition}%`, 
-            testId: 'milestone-end-line'
-        }
+        {
+            left: `${endPosition}%`,
+            testId: 'milestone-end-line',
+        },
     ];
 
     return (
-        <div 
+        <div
             style={{
-                marginTop: labelsOverlap.startEnd || labelsOverlap.endNow ? '60px' : '0px'
+                marginTop:
+                    labelsOverlap.startEnd || labelsOverlap.endNow
+                        ? '60px'
+                        : '0px',
             }}
             data-testid="milestone-progress-bar-container"
             role="progressbar"
@@ -133,19 +142,28 @@ const MilestoneDateProgressBar: React.FC<MilestoneDateProgressBarProps> = ({
             aria-valuemax={100}
             aria-valuenow={Math.round(percentNow)}
         >
-            <div className="flex w-full flex-col gap-8 space-y-2 px-16" data-testid="milestone-progress-content">
+            <div
+                className="flex w-full flex-col gap-8 space-y-2 px-16"
+                data-testid="milestone-progress-content"
+            >
                 {/* Labels Section */}
-                <div className="relative h-6 w-full text-sm font-medium" data-testid="milestone-labels-section">
+                <div
+                    className="relative h-6 w-full text-sm font-medium"
+                    data-testid="milestone-labels-section"
+                >
                     {/* Vertical pointer lines */}
                     {verticalLines.map((line, index) => (
-                        <div 
+                        <div
                             key={index}
-                            className="absolute w-0.5 bg-gray-persist z-0"
+                            className="bg-gray-persist absolute z-0 w-0.5"
                             style={{
                                 left: line.left,
                                 top: '100%',
                                 height: '40px',
-                                transform: line.left !== '0%' ? 'translateX(-50%)' : undefined,
+                                transform:
+                                    line.left !== '0%'
+                                        ? 'translateX(-50%)'
+                                        : undefined,
                             }}
                             data-testid={line.testId}
                             aria-hidden="true"
@@ -154,8 +172,8 @@ const MilestoneDateProgressBar: React.FC<MilestoneDateProgressBarProps> = ({
 
                     {/* Additional line for end date when labels overlap */}
                     {(labelsOverlap.startEnd || labelsOverlap.endNow) && (
-                        <div 
-                            className="absolute w-0.5 bg-gray-persist z-0"
+                        <div
+                            className="bg-gray-persist absolute z-0 w-0.5"
                             style={{
                                 left: `${endPosition}%`,
                                 top: '-60px',
@@ -168,9 +186,9 @@ const MilestoneDateProgressBar: React.FC<MilestoneDateProgressBarProps> = ({
                     )}
 
                     {/* Start Date Label */}
-                    <div 
+                    <div
                         ref={startDateLabelRef}
-                        className="border-background-lighter absolute flex flex-col justify-items-center rounded-lg shadow-md border px-1 py-1 z-10 bg-background"
+                        className="border-background-lighter bg-background absolute z-10 flex flex-col justify-items-center rounded-lg border px-1 py-1 shadow-md"
                         style={{
                             left: '0%',
                             transform: 'translateX(-50%)',
@@ -178,7 +196,10 @@ const MilestoneDateProgressBar: React.FC<MilestoneDateProgressBarProps> = ({
                         data-testid="milestone-start-date-label"
                         aria-label={`Project start date: ${formatDate(start)}`}
                     >
-                        <Paragraph size="xs" className="text-gray-persist w-full text-center">
+                        <Paragraph
+                            size="xs"
+                            className="text-gray-persist w-full text-center"
+                        >
                             {t('startDate')}
                         </Paragraph>
                         <Paragraph size="xs" className="font-bold">
@@ -199,7 +220,10 @@ const MilestoneDateProgressBar: React.FC<MilestoneDateProgressBarProps> = ({
                         data-testid="milestone-current-date-label"
                         aria-label={`Current date: ${formatDate(now)}`}
                     >
-                        <Paragraph size="xs" className={`flex rounded-lg border border-1 px-1 py-1 text-xs whitespace-nowrap ${nowLabelColor}`}>
+                        <Paragraph
+                            size="xs"
+                            className={`flex rounded-lg border border-1 px-1 py-1 text-xs whitespace-nowrap ${nowLabelColor}`}
+                        >
                             {formatDate(now)}
                         </Paragraph>
                     </div>
@@ -207,17 +231,23 @@ const MilestoneDateProgressBar: React.FC<MilestoneDateProgressBarProps> = ({
                     {/* End Date Label */}
                     <div
                         ref={endDateLabelRef}
-                        className="border-background-lighter absolute flex flex-col justify-items-center shadow-md rounded-lg border px-1 py-1 z-10 bg-background"
+                        className="border-background-lighter bg-background absolute z-10 flex flex-col justify-items-center rounded-lg border px-1 py-1 shadow-md"
                         style={{
                             left: `${endPosition}%`,
                             transform: 'translateX(-50%)',
                             whiteSpace: 'nowrap',
-                            top: labelsOverlap.startEnd || labelsOverlap.endNow ? '-60px' : '0px',
+                            top:
+                                labelsOverlap.startEnd || labelsOverlap.endNow
+                                    ? '-60px'
+                                    : '0px',
                         }}
                         data-testid="milestone-end-date-label"
                         aria-label={`Project end date: ${formatDate(end)}`}
                     >
-                        <Paragraph size="xs" className="text-gray-persist w-full text-center">
+                        <Paragraph
+                            size="xs"
+                            className="text-gray-persist w-full text-center"
+                        >
                             {t('endDate')}
                         </Paragraph>
                         <Paragraph size="xs" className="font-bold">
@@ -227,7 +257,7 @@ const MilestoneDateProgressBar: React.FC<MilestoneDateProgressBarProps> = ({
                 </div>
 
                 {/* Progress Bar */}
-                <div 
+                <div
                     className={`${progressBarBg} relative h-3 w-full overflow-visible rounded-full`}
                     data-testid="milestone-progress-track"
                     aria-hidden="true"

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
 import { usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import Paragraph from './Paragraph';
+import React, { useEffect, useState } from 'react';
 import CloseIcon from '../svgs/CloseIcon';
 import Button from './Button';
+import Paragraph from './Paragraph';
 
 interface PageProps {
     errorBags?: {
@@ -29,7 +29,10 @@ const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
 
     // Reset visibility when errors change
     useEffect(() => {
-        if (page.props.errorBags?.default && Object.keys(page.props.errorBags.default).length > 0) {
+        if (
+            page.props.errorBags?.default &&
+            Object.keys(page.props.errorBags.default).length > 0
+        ) {
             setIsVisible(true);
         }
     }, [page.props.errorBags]);
@@ -63,30 +66,33 @@ const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
     }
 
     return (
-        <div className='flex w-full justify-center items-center'>
-        <div className={`${className} relative`}>
-            <Button
-                onClick={() => setIsVisible(false)}
-                className="absolute top-1 right-1 text-error hover:text-error-dark transition-colors duration-200 p-1 z-10"
-                aria-label="Close error display"
-            >
-                <CloseIcon className="w-4 h-4 text-error" />
-            </Button>
-            <div className="text-error">
-                {title && (
-                    <Paragraph className="text-md mb-2 font-bold">
-                        {title}
-                    </Paragraph>
-                )}
-                <div className="text-sm">
-                    {(() => {
-                        const allMessages = Object.entries(page.props.errorBags.default).flatMap(
-                            ([key, messages]) => Array.isArray(messages) ? messages : [messages]
-                        );
-                        const hasMultipleErrors = allMessages.length > 1;
+        <div className="flex w-full items-center justify-center">
+            <div className={`${className} relative`}>
+                <Button
+                    onClick={() => setIsVisible(false)}
+                    className="text-error hover:text-error-dark absolute top-1 right-1 z-10 p-1 transition-colors duration-200"
+                    aria-label="Close error display"
+                >
+                    <CloseIcon className="text-error h-4 w-4" />
+                </Button>
+                <div className="text-error">
+                    {title && (
+                        <Paragraph className="text-md mb-2 font-bold">
+                            {title}
+                        </Paragraph>
+                    )}
+                    <div className="text-sm">
+                        {(() => {
+                            const allMessages = Object.entries(
+                                page.props.errorBags.default,
+                            ).flatMap(([key, messages]) =>
+                                Array.isArray(messages) ? messages : [messages],
+                            );
+                            const hasMultipleErrors = allMessages.length > 1;
 
-                        return Object.entries(page.props.errorBags.default).map(
-                            ([key, messages]) => (
+                            return Object.entries(
+                                page.props.errorBags.default,
+                            ).map(([key, messages]) => (
                                 <div key={key} className="mb-1">
                                     {Array.isArray(messages) ? (
                                         messages.map((message, index) => (
@@ -94,21 +100,28 @@ const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
                                                 key={index}
                                                 className="text-sm"
                                             >
-                                                {hasMultipleErrors ? `- ${translateMessage(String(message))}` : translateMessage(String(message))}
+                                                {hasMultipleErrors
+                                                    ? `- ${translateMessage(String(message))}`
+                                                    : translateMessage(
+                                                          String(message),
+                                                      )}
                                             </Paragraph>
                                         ))
                                     ) : (
                                         <Paragraph className="text-sm">
-                                            {hasMultipleErrors ? `- ${translateMessage(String(messages))}` : translateMessage(String(messages))}
+                                            {hasMultipleErrors
+                                                ? `- ${translateMessage(String(messages))}`
+                                                : translateMessage(
+                                                      String(messages),
+                                                  )}
                                         </Paragraph>
                                     )}
                                 </div>
-                            ),
-                        );
-                    })()}
+                            ));
+                        })()}
+                    </div>
                 </div>
             </div>
-        </div>
         </div>
     );
 };

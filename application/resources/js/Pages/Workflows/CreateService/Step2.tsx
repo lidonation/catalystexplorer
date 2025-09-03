@@ -1,18 +1,18 @@
 import Paragraph from '@/Components/atoms/Paragraph';
-import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
+import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import TextInput from '@/Components/atoms/TextInput';
+import { ServiceWorkflowParams } from '@/enums/service-workflow-params';
 import { StepDetails } from '@/types';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
+import { useForm, usePage } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { ChevronLeft } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
-import { useLaravelReactI18n } from "laravel-react-i18n";
-import { useForm, usePage } from '@inertiajs/react';
-import { ServiceWorkflowParams } from '@/enums/service-workflow-params';
 
 interface Step2Props {
     stepDetails: StepDetails[];
@@ -52,9 +52,9 @@ interface PageProps {
     [key: string]: any;
 }
 
-const Step2: React.FC<Step2Props> = ({ 
-    stepDetails, 
-    activeStep, 
+const Step2: React.FC<Step2Props> = ({
+    stepDetails,
+    activeStep,
     serviceHash,
     serviceData,
     locations,
@@ -62,20 +62,27 @@ const Step2: React.FC<Step2Props> = ({
 }) => {
     const form = useForm({
         [ServiceWorkflowParams.SERVICE_HASH]: serviceHash || '',
-        [ServiceWorkflowParams.CATEGORIES]: serviceData?.categories?.map(String) || [],
-        [ServiceWorkflowParams.LOCATION]: serviceData?.location || defaults.location || '',
-        [ServiceWorkflowParams.NAME]: serviceData?.name || defaults.contact.name,
-        [ServiceWorkflowParams.EMAIL]: serviceData?.email || defaults.contact.email,
-        [ServiceWorkflowParams.WEBSITE]: serviceData?.website || defaults.contact.website || '',
-        [ServiceWorkflowParams.GITHUB]: serviceData?.github || defaults.contact.github || '',
-        [ServiceWorkflowParams.LINKEDIN]: serviceData?.linkedin || defaults.contact.linkedin || '',
+        [ServiceWorkflowParams.CATEGORIES]:
+            serviceData?.categories?.map(String) || [],
+        [ServiceWorkflowParams.LOCATION]:
+            serviceData?.location || defaults.location || '',
+        [ServiceWorkflowParams.NAME]:
+            serviceData?.name || defaults.contact.name,
+        [ServiceWorkflowParams.EMAIL]:
+            serviceData?.email || defaults.contact.email,
+        [ServiceWorkflowParams.WEBSITE]:
+            serviceData?.website || defaults.contact.website || '',
+        [ServiceWorkflowParams.GITHUB]:
+            serviceData?.github || defaults.contact.github || '',
+        [ServiceWorkflowParams.LINKEDIN]:
+            serviceData?.linkedin || defaults.contact.linkedin || '',
     });
 
     const page = usePage<PageProps>();
     const flashErrors = page.props.flash?.error || {};
 
     const [selectedCategories, setSelectedCategories] = useState<string[]>(
-        serviceData?.categories?.map(String) || []
+        serviceData?.categories?.map(String) || [],
     );
     const [isFormValid, setIsFormValid] = useState(false);
     const [validationErrors, setValidationErrors] = useState<{
@@ -86,11 +93,16 @@ const Step2: React.FC<Step2Props> = ({
     // Separate form for saving contact info
     const contactForm = useForm({
         [ServiceWorkflowParams.SERVICE_HASH]: serviceHash || '',
-        [ServiceWorkflowParams.NAME]: serviceData?.name || defaults.contact.name,
-        [ServiceWorkflowParams.EMAIL]: serviceData?.email || defaults.contact.email,
-        [ServiceWorkflowParams.WEBSITE]: serviceData?.website || defaults.contact.website || '',
-        [ServiceWorkflowParams.GITHUB]: serviceData?.github || defaults.contact.github || '',
-        [ServiceWorkflowParams.LINKEDIN]: serviceData?.linkedin || defaults.contact.linkedin || '',
+        [ServiceWorkflowParams.NAME]:
+            serviceData?.name || defaults.contact.name,
+        [ServiceWorkflowParams.EMAIL]:
+            serviceData?.email || defaults.contact.email,
+        [ServiceWorkflowParams.WEBSITE]:
+            serviceData?.website || defaults.contact.website || '',
+        [ServiceWorkflowParams.GITHUB]:
+            serviceData?.github || defaults.contact.github || '',
+        [ServiceWorkflowParams.LINKEDIN]:
+            serviceData?.linkedin || defaults.contact.linkedin || '',
     });
 
     const { t } = useLaravelReactI18n();
@@ -104,12 +116,17 @@ const Step2: React.FC<Step2Props> = ({
         validateForm();
         // Sync contact form data with main form data
         contactForm.setData({
-            [ServiceWorkflowParams.SERVICE_HASH]: form.data[ServiceWorkflowParams.SERVICE_HASH],
+            [ServiceWorkflowParams.SERVICE_HASH]:
+                form.data[ServiceWorkflowParams.SERVICE_HASH],
             [ServiceWorkflowParams.NAME]: form.data[ServiceWorkflowParams.NAME],
-            [ServiceWorkflowParams.EMAIL]: form.data[ServiceWorkflowParams.EMAIL],
-            [ServiceWorkflowParams.WEBSITE]: form.data[ServiceWorkflowParams.WEBSITE],
-            [ServiceWorkflowParams.GITHUB]: form.data[ServiceWorkflowParams.GITHUB],
-            [ServiceWorkflowParams.LINKEDIN]: form.data[ServiceWorkflowParams.LINKEDIN],
+            [ServiceWorkflowParams.EMAIL]:
+                form.data[ServiceWorkflowParams.EMAIL],
+            [ServiceWorkflowParams.WEBSITE]:
+                form.data[ServiceWorkflowParams.WEBSITE],
+            [ServiceWorkflowParams.GITHUB]:
+                form.data[ServiceWorkflowParams.GITHUB],
+            [ServiceWorkflowParams.LINKEDIN]:
+                form.data[ServiceWorkflowParams.LINKEDIN],
         });
     }, [form.data, selectedCategories]);
 
@@ -121,19 +138,21 @@ const Step2: React.FC<Step2Props> = ({
 
     const validateWebsiteUrl = (url: string): boolean => {
         if (!url) return true; // Empty URL is valid (not required)
-        
+
         // If URL doesn't start with protocol, add https://
         let urlToValidate = url;
         if (!url.startsWith('http://') && !url.startsWith('https://')) {
             urlToValidate = 'https://' + url;
         }
-        
+
         try {
             const urlObj = new URL(urlToValidate);
             // Check if it's a valid URL with http or https protocol and has a valid hostname
-            return (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') && 
-                   urlObj.hostname.length > 0 &&
-                   urlObj.hostname.includes('.');
+            return (
+                (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') &&
+                urlObj.hostname.length > 0 &&
+                urlObj.hostname.includes('.')
+            );
         } catch {
             return false;
         }
@@ -141,25 +160,38 @@ const Step2: React.FC<Step2Props> = ({
 
     const validateForm = () => {
         const errors: { email?: string; website?: string } = {};
-        
+
         // Validate email
-        if (form.data[ServiceWorkflowParams.EMAIL] && !validateEmail(form.data[ServiceWorkflowParams.EMAIL])) {
-            errors.email = t('workflows.createService.step2.validation.emailInvalid');
+        if (
+            form.data[ServiceWorkflowParams.EMAIL] &&
+            !validateEmail(form.data[ServiceWorkflowParams.EMAIL])
+        ) {
+            errors.email = t(
+                'workflows.createService.step2.validation.emailInvalid',
+            );
         }
-        
+
         // Validate website URL
-        if (form.data[ServiceWorkflowParams.WEBSITE] && !validateWebsiteUrl(form.data[ServiceWorkflowParams.WEBSITE])) {
-            errors.website = t('workflows.createService.step2.validation.websiteInvalid');
+        if (
+            form.data[ServiceWorkflowParams.WEBSITE] &&
+            !validateWebsiteUrl(form.data[ServiceWorkflowParams.WEBSITE])
+        ) {
+            errors.website = t(
+                'workflows.createService.step2.validation.websiteInvalid',
+            );
         }
-        
+
         setValidationErrors(errors);
-        
+
         setIsFormValid(
             !!form.data[ServiceWorkflowParams.NAME] &&
-            !!form.data[ServiceWorkflowParams.EMAIL] &&
-            validateEmail(form.data[ServiceWorkflowParams.EMAIL]) &&
-            (!form.data[ServiceWorkflowParams.WEBSITE] || validateWebsiteUrl(form.data[ServiceWorkflowParams.WEBSITE])) &&
-            !!form.data[ServiceWorkflowParams.SERVICE_HASH]
+                !!form.data[ServiceWorkflowParams.EMAIL] &&
+                validateEmail(form.data[ServiceWorkflowParams.EMAIL]) &&
+                (!form.data[ServiceWorkflowParams.WEBSITE] ||
+                    validateWebsiteUrl(
+                        form.data[ServiceWorkflowParams.WEBSITE],
+                    )) &&
+                !!form.data[ServiceWorkflowParams.SERVICE_HASH],
         );
     };
 
@@ -169,16 +201,14 @@ const Step2: React.FC<Step2Props> = ({
 
     const submitForm = () => {
         form.post(
-            generateLocalizedRoute('workflows.createService.saveContactAndLocation'),
+            generateLocalizedRoute(
+                'workflows.createService.saveContactAndLocation',
+            ),
             {
                 preserveScroll: true,
-                onSuccess: () => {
-                   
-                },
-                onError: () => {
-                   
-                }
-            }
+                onSuccess: () => {},
+                onError: () => {},
+            },
         );
     };
 
@@ -187,13 +217,9 @@ const Step2: React.FC<Step2Props> = ({
             generateLocalizedRoute('workflows.createService.saveContactInfo'),
             {
                 preserveScroll: true,
-                onSuccess: () => {
-                  
-                },
-                onError: () => {
-                    
-                }
-            }
+                onSuccess: () => {},
+                onError: () => {},
+            },
         );
     };
 

@@ -4,11 +4,24 @@ type CtaItem = Record<string, unknown>;
 
 const SpecialAnnouncementCard = ({ announcement }: any) => {
     return (
-        <div className="flex w-full flex-col items-center p-6 lg:flex-row" data-testid={`special-announcement-card-${announcement.id}`}>
+        <div
+            className="flex w-full flex-col items-center p-6 lg:flex-row"
+            data-testid={`special-announcement-card-${announcement.id}`}
+        >
             <div className="flex flex-1 flex-col text-center lg:mr-12 lg:text-left">
-                <Title className="mb-4 font-bold" data-testid="special-announcement-card-title">{announcement.title}</Title>
+                <Title
+                    className="mb-4 font-bold"
+                    data-testid="special-announcement-card-title"
+                >
+                    {announcement.title}
+                </Title>
 
-                <p className="mb-6 leading-relaxed" data-testid="special-announcement-card-content">{announcement.content}</p>
+                <p
+                    className="mb-6 leading-relaxed"
+                    data-testid="special-announcement-card-content"
+                >
+                    {announcement.content}
+                </p>
 
                 <div className="flex flex-col justify-center space-y-4 lg:mt-8 lg:flex-row lg:justify-start lg:space-y-0 lg:space-x-4">
                     {/* Handle multiple CTAs */}

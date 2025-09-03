@@ -11,8 +11,8 @@ import { Segments } from '@/types/segments';
 import { currency } from '@/utils/currency';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import ClaimedButton from './ClaimedButton';
 import ShareButton from './ShareButton';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
@@ -109,8 +109,10 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                                         className="line-clamp-2"
                                         href={useLocalizedRoute(
                                             'ideascaleProfiles.show',
-                                        {
-                                            id: ideascaleProfile?.id })}
+                                            {
+                                                id: ideascaleProfile?.id,
+                                            },
+                                        )}
                                     >
                                         {ideascaleProfile?.name ??
                                             ideascaleProfile?.username}
@@ -131,7 +133,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                                 <ClaimedButton
                                     modelType="ideascale-profiles"
                                     className="text-content-light"
-                                itemId={ideascaleProfile?.id ?? '0'}
+                                    itemId={ideascaleProfile?.id ?? '0'}
                                 />
 
                                 <div className="w-fit items-center rounded-md p-0">
@@ -146,9 +148,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
                                             modelType="ideascale-profiles"
                                             width={16}
                                             height={16}
-                                            itemId={
-                                            ideascaleProfile?.id ?? '0'
-                                            }
+                                            itemId={ideascaleProfile?.id ?? '0'}
                                         />
                                     </ListProvider>
                                 </div>

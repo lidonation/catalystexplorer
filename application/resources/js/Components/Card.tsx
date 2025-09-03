@@ -1,21 +1,18 @@
-import React, {HTMLAttributes, ReactNode} from "react";
+import { HTMLAttributes, ReactNode } from 'react';
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
     children: ReactNode;
 }
 
-export default function Card({
-    children,
-    ...props
-    }: CardProps) {
+export default function Card({ children, ...props }: CardProps) {
     const classNames = props?.className ?? '';
     delete props.className;
     return (
-       <div 
-  className={`flex flex-col bg-background rounded-lg shadow-md p-4 card ${classNames}`} 
-  data-testid="campaign-card"
-  {...props}
->
+        <div
+            className={`bg-background card flex flex-col rounded-lg p-4 shadow-md ${classNames}`}
+            data-testid="campaign-card"
+            {...props}
+        >
             {children}
         </div>
     );

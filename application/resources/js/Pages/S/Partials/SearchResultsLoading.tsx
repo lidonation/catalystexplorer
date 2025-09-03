@@ -1,7 +1,7 @@
 import IdeaScaleProfileLoader from '@/Pages/IdeascaleProfile/Partials/IdeaScaleProfileLoader';
 import ProposalVerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading';
 import { WhenVisible } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 interface SearchResultsLoadingProps {
     type: string;
@@ -38,23 +38,25 @@ const SearchResultsLoading = ({
             case 'reviews':
                 return (
                     <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
-                        {Array(count || 2).fill(0).map((_, index) => (
-                            <div
-                                key={index}
-                                className="w-full animate-pulse space-y-3 rounded-lg border p-4"
-                            >
-                                <div className="flex items-center space-x-3">
-                                    <div className="h-10 w-10 rounded-full bg-gray-persist" />
-                                    <div className="h-4 w-1/3 rounded-sm bg-gray-persist" />
+                        {Array(count || 2)
+                            .fill(0)
+                            .map((_, index) => (
+                                <div
+                                    key={index}
+                                    className="w-full animate-pulse space-y-3 rounded-lg border p-4"
+                                >
+                                    <div className="flex items-center space-x-3">
+                                        <div className="bg-gray-persist h-10 w-10 rounded-full" />
+                                        <div className="bg-gray-persist h-4 w-1/3 rounded-sm" />
+                                    </div>
+                                    <div className="mt-2 flex space-x-2">
+                                        <div className="bg-gray-persist h-3 w-16 rounded-sm" />
+                                        <div className="bg-gray-persist h-3 w-16 rounded-sm" />
+                                    </div>
+                                    <div className="bg-gray-persist mt-2 h-3 w-full rounded-sm" />
+                                    <div className="bg-gray-persist mt-1 h-3 w-4/5 rounded-sm" />
                                 </div>
-                                <div className="flex space-x-2 mt-2">
-                                    <div className="h-3 w-16 rounded-sm bg-gray-persist" />
-                                    <div className="h-3 w-16 rounded-sm bg-gray-persist" />
-                                </div>
-                                <div className="h-3 w-full rounded-sm bg-gray-persist mt-2" />
-                                <div className="h-3 w-4/5 rounded-sm bg-gray-persist mt-1" />
-                            </div>
-                        ))}
+                            ))}
                     </div>
                 );
             case 'articles':
@@ -66,13 +68,13 @@ const SearchResultsLoading = ({
                         aria-label={`${translatedType} ${t('loading')}`}
                     >
                         <div className="flex items-center space-x-3">
-                            <div className="h-10 w-10 rounded-sm bg-gray-persist" />
-                            <div className="h-4 w-1/3 rounded-sm bg-gray-persist" />
+                            <div className="bg-gray-persist h-10 w-10 rounded-sm" />
+                            <div className="bg-gray-persist h-4 w-1/3 rounded-sm" />
                         </div>
-                        <div className="h-3 w-2/3 rounded-sm bg-gray-persist" />
+                        <div className="bg-gray-persist h-3 w-2/3 rounded-sm" />
                         <div className="flex space-x-2">
-                            <div className="h-3 w-16 rounded-sm bg-gray-persist" />
-                            <div className="h-3 w-16 rounded-sm bg-gray-persist" />
+                            <div className="bg-gray-persist h-3 w-16 rounded-sm" />
+                            <div className="bg-gray-persist h-3 w-16 rounded-sm" />
                         </div>
                     </div>
                 );
@@ -81,12 +83,7 @@ const SearchResultsLoading = ({
         }
     };
 
-    return (
-        <div className="w-full space-y-4 py-3">
-
-            {renderSkeletonItem()}
-        </div>
-    );
+    return <div className="w-full space-y-4 py-3">{renderSkeletonItem()}</div>;
 };
 
 export default SearchResultsLoading;

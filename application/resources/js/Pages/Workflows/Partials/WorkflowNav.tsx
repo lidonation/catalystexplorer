@@ -1,8 +1,8 @@
 import Title from '@/Components/atoms/Title';
 import TickIcon from '@/Components/svgs/TickIcon';
 import { StepDetails } from '@/types';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useRef, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 
 type NavProps = {
     stepDetails: StepDetails[];
@@ -25,7 +25,7 @@ export default function Nav({ stepDetails, activeStep }: NavProps) {
         }
 
         const timer = setTimeout(() => {
-            setAnimatedSteps(prev => new Set([...prev, activeStep]));
+            setAnimatedSteps((prev) => new Set([...prev, activeStep]));
         }, 100);
 
         return () => clearTimeout(timer);
@@ -41,9 +41,12 @@ export default function Nav({ stepDetails, activeStep }: NavProps) {
 
     return (
         <div className="bg-background sticky top-0 z-30">
-            <nav className="bg-background w-full rounded-tl-lg shadow-md" data-testid="workflow-nav">
+            <nav
+                className="bg-background w-full rounded-tl-lg shadow-md"
+                data-testid="workflow-nav"
+            >
                 <ul
-                    className={` no-scrollbar flex w-full overflow-x-auto whitespace-nowrap`}
+                    className={`no-scrollbar flex w-full overflow-x-auto whitespace-nowrap`}
                 >
                     {stepDetails.map((step, index) => {
                         const isFirstItem = index === 0;
@@ -73,12 +76,17 @@ export default function Nav({ stepDetails, activeStep }: NavProps) {
                         const getProgressWidth = () => {
                             if (index + 1 < activeStep) {
                                 return '100%';
-                            } else if (index + 1 === activeStep && animatedSteps.has(activeStep)) {
+                            } else if (
+                                index + 1 === activeStep &&
+                                animatedSteps.has(activeStep)
+                            ) {
                                 return '100%';
-                            } else if (isLastItem && activeStep >= stepDetails.length) {
+                            } else if (
+                                isLastItem &&
+                                activeStep >= stepDetails.length
+                            ) {
                                 return '100%';
                             } else {
-
                                 return '0%';
                             }
                         };
@@ -92,7 +100,9 @@ export default function Nav({ stepDetails, activeStep }: NavProps) {
 
                         const commonContent = (
                             <div className="relative h-full">
-                                <div className={`flex items-center gap-3 py-4 ${hasFewSteps ? 'justify-center px-4' : 'px-8'}`}>
+                                <div
+                                    className={`flex items-center gap-3 py-4 ${hasFewSteps ? 'justify-center px-4' : 'px-8'}`}
+                                >
                                     <div
                                         className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full font-bold ${
                                             index + 1 < activeStep
@@ -104,9 +114,13 @@ export default function Nav({ stepDetails, activeStep }: NavProps) {
                                         data-testid={`step-number-${index + 1}`}
                                     >
                                         {index + 1 < activeStep ? (
-                                            <TickIcon className="w-4 h-4 lg:w-5 lg:h-5" />
+                                            <TickIcon className="h-4 w-4 lg:h-5 lg:w-5" />
                                         ) : (
-                                            <span>{formatStepNumber(index + 1).padStart(2, '0')}</span>
+                                            <span>
+                                                {formatStepNumber(
+                                                    index + 1,
+                                                ).padStart(2, '0')}
+                                            </span>
                                         )}
                                     </div>
                                     <div>
@@ -130,9 +144,9 @@ export default function Nav({ stepDetails, activeStep }: NavProps) {
                                     </div>
                                 </div>
 
-                                <div className="absolute bottom-0 left-0 w-full h-1 bg-gray-200 overflow-hidden">
+                                <div className="absolute bottom-0 left-0 h-1 w-full overflow-hidden bg-gray-200">
                                     <div
-                                        className={`h-full bg-primary transition-all duration-[1500ms] ease-out ${getProgressDelay()}`}
+                                        className={`bg-primary h-full transition-all duration-[1500ms] ease-out ${getProgressDelay()}`}
                                         style={{
                                             width: getProgressWidth(),
                                         }}

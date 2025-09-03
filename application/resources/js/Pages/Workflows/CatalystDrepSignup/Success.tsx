@@ -1,15 +1,14 @@
+import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
+import Title from '@/Components/atoms/Title';
+import { VerificationBadge } from '@/Components/svgs/VerificationBadge';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import SuccessComponent from '../Partials/Success';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
-import Title from '@/Components/atoms/Title';
-import { VerificationBadge } from '@/Components/svgs/VerificationBadge';
-import Paragraph from '@/Components/atoms/Paragraph';
 
 interface SuccessStepProps {
     stepDetails: any[];

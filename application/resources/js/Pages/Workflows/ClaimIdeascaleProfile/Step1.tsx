@@ -8,7 +8,7 @@ import {
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { router, usePage } from '@inertiajs/react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import lodashPkg from 'lodash';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useCallback, useState } from 'react';

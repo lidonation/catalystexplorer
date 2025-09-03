@@ -1,11 +1,11 @@
+import ValueLabel from '@/Components/atoms/ValueLabel';
 import { useMetrics } from '@/Context/MetricsContext';
 import { useUIContext } from '@/Context/SharedUIContext';
 import { ProposalMetrics } from '@/types/proposal-metrics';
 import { currency } from '@/utils/currency';
 import { usePage } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
-import ValueLabel from "@/Components/atoms/ValueLabel";
 
 // SectionOne displays the first set of data in the MetricsBar
 const SectionOne: React.FC<
@@ -185,9 +185,8 @@ const MetricsBar: React.FC<ProposalMetrics | undefined> = (props) => {
     return (
         metrics &&
         onProposals && (
-            
             <div
-                className={`bg-bg-dark divide-dark sticky inset-x-0 bottom-0 mx-auto mb-4 flex items-center justify-between divide-x overflow-hidden rounded-xl px-4 py-3 text-white shadow-lg transition-all duration-300 z-50 ${
+                className={`bg-bg-dark divide-dark sticky inset-x-0 bottom-0 z-50 mx-auto mb-4 flex items-center justify-between divide-x overflow-hidden rounded-xl px-4 py-3 text-white shadow-lg transition-all duration-300 ${
                     isExpanded && !isPlayerBarExpanded ? 'w-full' : 'w-auto'
                 }`}
                 data-testid="metrics-bar-container"

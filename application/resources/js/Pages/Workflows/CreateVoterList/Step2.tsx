@@ -1,3 +1,4 @@
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
@@ -15,16 +16,15 @@ import {
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
 import { useForm } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import lodashPkg from 'lodash';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 
 interface Step2Props {
     stepDetails: StepDetails[];

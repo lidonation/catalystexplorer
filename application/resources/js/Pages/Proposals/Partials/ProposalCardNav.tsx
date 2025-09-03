@@ -9,18 +9,24 @@ export default function ProposalCardNav({
     hasQuickPitch: boolean;
     t: (key: string) => string;
 }) {
-    
     return (
-        <nav className="border-b border-gray-200" aria-label="Project details navigation" data-testid="proposal-card-nav">
-            <ul className="flex justify-between" data-testid="proposal-card-nav-list">
+        <nav
+            className="border-b border-gray-200"
+            aria-label="Project details navigation"
+            data-testid="proposal-card-nav"
+        >
+            <ul
+                className="flex justify-between"
+                data-testid="proposal-card-nav-list"
+            >
                 <li className="w-1/2">
                     <button
                         type="button"
                         onClick={() => toggleLocalQuickPitchView(false)}
-                        className={`w-full border-b-2 pb-3 font-semibold relative ${
+                        className={`relative w-full border-b-2 pb-3 font-semibold ${
                             !quickPitchView
                                 ? 'border-primary text-primary mb-[-1px]'
-                                : 'text-content border-transparent '
+                                : 'text-content border-transparent'
                         }`}
                         data-testid="proposal-card-nav-details-button"
                     >
@@ -34,7 +40,7 @@ export default function ProposalCardNav({
                         disabled={!hasQuickPitch}
                         className={`flex items-center gap-1 pb-3 font-semibold relative${
                             quickPitchView
-                                ? 'border-primary text-primary border-b-[4px] mb-[-1px]'
+                                ? 'border-primary text-primary mb-[-1px] border-b-[4px]'
                                 : 'border-transparent'
                         } ${!hasQuickPitch ? 'cursor-not-allowed opacity-60' : 'text-content hover:text-primary'}`}
                         data-testid="proposal-card-nav-quick-pitch-button"

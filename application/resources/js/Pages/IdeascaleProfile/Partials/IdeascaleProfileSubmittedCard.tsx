@@ -1,41 +1,50 @@
-import React from 'react';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import Title from '@/Components/atoms/Title';
 import { BackArrow } from '@/Components/svgs/BackArrow';
 import { VerificationBadge } from '@/Components/svgs/VerificationBadge';
-import Title from '@/Components/atoms/Title';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+import React from 'react';
 
 const IdeascaleProfileSubmittedCard: React.FC = () => {
-  const { t } = useLaravelReactI18n();
+    const { t } = useLaravelReactI18n();
 
-  return (
-    <div className="max-w-md mx-auto p-8 text-center bg-background rounded-lg shadow-lg">
-      <div className="space-y-6">
-        <a href="#" className="text-primary 0 flex items-center mb-6">
-          <BackArrow />
-          {t('back')}
-        </a>
+    return (
+        <div className="bg-background mx-auto max-w-md rounded-lg p-8 text-center shadow-lg">
+            <div className="space-y-6">
+                <a href="#" className="text-primary 0 mb-6 flex items-center">
+                    <BackArrow />
+                    {t('back')}
+                </a>
 
-        <Title className="text-2xl font-black mb-8">{t('verificationTitle')}</Title>
+                <Title className="mb-8 text-2xl font-black">
+                    {t('verificationTitle')}
+                </Title>
 
-        <div className="flex justify-center mb-8">
-          <VerificationBadge />
+                <div className="mb-8 flex justify-center">
+                    <VerificationBadge />
+                </div>
+
+                <div className="space-y-0">
+                    <div className="text-gray-600">
+                        {t('verificationCodeLabel')}
+                    </div>
+                    <div className="text-primary text-2xl font-bold">
+                        {t('verificationCode')}8vklg
+                    </div>
+                </div>
+
+                <p className="my-6 text-sm text-gray-600">
+                    {t('verificationInstructions')}
+                </p>
+
+                <a
+                    href="#"
+                    className="bg-primary inline-block w-full rounded-md px-4 py-3 text-center text-white transition-colors"
+                >
+                    {t('goToIdeascale')}
+                </a>
+            </div>
         </div>
-
-        <div className="space-y-0">
-          <div className="text-gray-600">{t('verificationCodeLabel')}</div>
-          <div className="text-2xl text-primary font-bold">{t('verificationCode')}8vklg</div>
-        </div>
-
-        <p className="text-gray-600 text-sm my-6">
-          {t('verificationInstructions')}
-        </p>
-
-        <a href="#" className="w-full inline-block bg-primary text-white py-3 px-4 rounded-md transition-colors text-center">
-          {t('goToIdeascale')}
-        </a>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default IdeascaleProfileSubmittedCard;

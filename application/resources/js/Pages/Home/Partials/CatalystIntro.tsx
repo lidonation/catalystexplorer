@@ -1,7 +1,7 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import BlueEyeIcon from '@/Components/svgs/BlueEyeIcon';
 import ConcentricCircles from '@/assets/images/bg-concentric-circles.png';
-import {useLaravelReactI18n} from "laravel-react-i18n";
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import GlobalSearch from './GlobalSearch';
 
 const CatalystIntro = () => {

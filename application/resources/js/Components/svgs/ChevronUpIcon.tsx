@@ -12,7 +12,7 @@ export default function ChevronUpIcon({
         <svg
             width={width}
             height={height}
-           viewBox="0 0 14 8"
+            viewBox="0 0 14 8"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             className={className}
