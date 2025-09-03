@@ -196,4 +196,4 @@ export function useLanguageDetection()   {
         [detectLanguage, validateLanguageConsistency, getSuggestedLanguage],
     );
 };
-// export default useLanguageDetection;
+export default useLanguageDetection;

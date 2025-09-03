@@ -21,6 +21,7 @@ export default defineConfig({
             ziggy: path.resolve('vendor/tightenco/ziggy/dist'),
             '@': path.resolve(__dirname, 'resources/js'),
         },
+        extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json'],
     },
     // server: {
     //     hmr: {
