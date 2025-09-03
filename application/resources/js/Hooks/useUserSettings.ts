@@ -62,6 +62,38 @@ export function useUserSetting<T = any>(
         [key],
     );
 
+
+    const value = userSetting && userSetting[key] !== undefined && userSetting[key] !== null
+        ? (userSetting[key] as T)
+        : (defaultValue ?? null);
+
+    const setValue = useCallback(async (newValue: T) => {
+        try {
+            let currentSetting = await db.user_setting.limit(1).first();
+
+            if (!currentSetting) {
+                currentSetting = {
+                    language: 'en',
+                    theme: null,
+                    viewChartBy: null,
+                    proposalComparison: null,
+                    viewHorizontal: false,
+                    viewMini: false,
+                    viewTable: false,
+                };
+            }
+
+            const updatedSetting = {
+                ...currentSetting,
+                [key]: newValue,
+            };
+
+            await db.user_setting.put(updatedSetting);
+        } catch (error) {
+            console.error(`Failed to save user setting for ${key}:`, error);
+        }
+    }, [key]);
+
     return {
         value,
         setValue,

@@ -20,7 +20,10 @@ import Content from '../Partials/WorkflowContent';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 import IpfsSuccessDisplay from './partials/IpfsSuccessDisplay';
-import CatalystDrepData = App.DataTransferObjects.CatalystDrepData;
+import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
+import useLanguageDetection from '@/hooks/useLanguageDetection';
+import { LOCALE_MAPPING } from '@/constants/locales';
+import Paragraph from '@/Components/atoms/Paragraph';
 
 interface Step5Props {
     catalystDrep: CatalystDrepData;
