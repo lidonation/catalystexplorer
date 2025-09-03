@@ -6,7 +6,7 @@ import Textarea from '@/Components/atoms/Textarea';
 import InputError from '@/Components/InputError';
 import { LOCALE_MAPPING } from '@/constants/locales';
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
-import { useLanguageDetection } from '@/Hooks/useLanguageDetection.js';
+import { useLanguageDetection } from '@/Hooks/useLanguageDetection';
 import { StepDetails } from '@/types';
 import {
     generateLocalizedRoute,
@@ -20,10 +20,7 @@ import Content from '../Partials/WorkflowContent';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 import IpfsSuccessDisplay from './partials/IpfsSuccessDisplay';
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
-import useLanguageDetection from '@/hooks/useLanguageDetection';
-import { LOCALE_MAPPING } from '@/constants/locales';
-import Paragraph from '@/Components/atoms/Paragraph';
+import CatalystDrepData = App.DataTransferObjects.CatalystDrepData;
 
 interface Step5Props {
     catalystDrep: CatalystDrepData;
