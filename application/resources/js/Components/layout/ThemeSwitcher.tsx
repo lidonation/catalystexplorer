@@ -9,7 +9,7 @@ export default function ThemeSwitcher() {
     const { theme, setTheme } = useThemeContext();
     const { t } = useLaravelReactI18n();
 
-    const icons: { [key in 'light' | 'dark' | 'voltaire']: JSX.Element } = {
+    const icons: { [key in 'light' | 'dark' | 'voltaire']: React.JSX.Element } = {
         light: <LightModeIcon />,
         dark: <DarkModeIcon />,
         voltaire: <VoltaireModeIcon />,

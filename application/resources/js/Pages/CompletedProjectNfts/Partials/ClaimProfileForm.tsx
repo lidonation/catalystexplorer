@@ -37,10 +37,7 @@ const ClaimProfileForm = forwardRef<ClaimFormHandles, ClaimProfileFormProps>(
     ({ setIsValid, form }, ref) => {
         const typedForm = form as InertiaFormProps<FormFields>;
         const { data } = typedForm;
-        const setData = typedForm.setData as (
-            field: keyof FormFields,
-            value: any,
-        ) => void;
+        const setData = typedForm.setData as any;
         const errors = typedForm.errors as Partial<
             Record<keyof FormFields, string>
         >;

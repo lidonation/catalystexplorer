@@ -60,7 +60,7 @@ const TransitionDropdown = ({
                                             onNavigate: navigateToPage,
                                             currentPage,
                                             totalPages: pages.length,
-                                        })}
+                                        } as any)}
                                     </div>
                                 ))}
                             </div>

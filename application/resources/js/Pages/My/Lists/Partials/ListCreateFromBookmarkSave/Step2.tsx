@@ -64,7 +64,7 @@ const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
         } catch (error) {
             console.log(error);
             if (error instanceof z.ZodError) {
-                const firstError = error.errors[0];
+                const firstError = error.issues[0];
                 setError(new Error(firstError.message));
             } else if (error instanceof Error) {
                 setError(error);

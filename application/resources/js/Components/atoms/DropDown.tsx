@@ -8,7 +8,7 @@ interface GlobalPopupProps {
     children: ReactNode;
     className?: string;
     mode?: 'modal' | 'dropdown';
-    triggerRef?: React.RefObject<HTMLElement>;
+    triggerRef?: React.RefObject<HTMLElement | null>;
     position?: {
         top?: number | string;
         left?: number | string;

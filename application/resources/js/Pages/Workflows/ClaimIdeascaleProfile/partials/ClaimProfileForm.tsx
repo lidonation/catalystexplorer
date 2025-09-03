@@ -30,10 +30,7 @@ const ClaimProfileForm = forwardRef<ClaimFormHandles, ClaimProfileFormProps>(
     ({ setIsValid, form }, ref) => {
         const typedForm = form as InertiaFormProps<IdeascaleProfileFormFields>;
         const { data } = typedForm;
-        const setData = typedForm.setData as (
-            field: keyof IdeascaleProfileFormFields,
-            value: any,
-        ) => void;
+        const setData = typedForm.setData as any;
         const errors = typedForm.errors as Partial<
             Record<keyof IdeascaleProfileFormFields, string>
         >;

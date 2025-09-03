@@ -120,9 +120,9 @@ export default function TabNavigation({
                                 key={tab.routeName}
                                 href={tab.href}
                                 only={[...(tab.only ?? [])]}
-                                ref={(el: HTMLAnchorElement | null) =>
-                                    (tabRefs.current[index] = el)
-                                }
+                                ref={(el: HTMLAnchorElement | null) => {
+                                    tabRefs.current[index] = el;
+                                }}
                                 preserveScroll
                                 preserveState
                                 className={`${tabClassName} ${isActive ? activeTabClassName : ''}`}

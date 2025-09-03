@@ -99,8 +99,6 @@ const ProposalCard = React.memo(
 
         const props = { ...layoutProps, ...proposalAttrs };
 
-        console.log({ layoutProps });
-
         return isHorizontal ? (
             <ProposalHorizontalCard {...props} />
         ) : (
