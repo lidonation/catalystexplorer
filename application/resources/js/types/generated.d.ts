@@ -615,6 +615,9 @@ proposalComparison: Array<any>;
 proposalType: Array<any>;
 chartOptions: Array<any>;
 chartType: Array<any>;
+viewHorizontal: boolean;
+viewMini: boolean;
+viewTable: boolean;
 };
 export type VoterData = {
 id?: string;

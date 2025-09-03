@@ -47,6 +47,9 @@ export function useUserSetting<T = any>(
                     theme: null,
                     viewChartBy: null,
                     proposalComparison: null,
+                    viewHorizontal: false,
+                    viewMini: false,
+                    viewTable: false,
                 };
             }
 

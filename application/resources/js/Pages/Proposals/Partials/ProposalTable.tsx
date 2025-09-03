@@ -20,7 +20,6 @@ import { PaginatedData } from '@/types/paginated-data';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import Paragraph from '@/Components/atoms/Paragraph';
-import { Button } from '@headlessui/react';
 
 interface ColumnConfig {
     key: string;
@@ -41,53 +40,64 @@ interface TableHelpers {
 
 type ActionType = 'manage' | 'view';
 
-interface ColumnVisibility {
-    title?: boolean;
-    proposal?: boolean;
-    fund?: boolean;
-    status?: boolean;
-    funding?: boolean;
-    teams?: boolean;
-    yesVotes?: boolean;
-    abstainVotes?: boolean;
-    action?: boolean;
-    viewProposal?: boolean;
+type ColumnKey = 
+    | 'title' 
+    | 'proposal' 
+    | 'fund' 
+    | 'status' 
+    | 'funding' 
+    | 'teams' 
+    | 'yesVotes' 
+    | 'abstainVotes' 
+    | 'action' 
+    | 'viewProposal';
+
+interface CustomActionProps {
+    proposal: ProposalData;
+    'data-testid'?: string;
 }
 
 interface ProposalTableProps {
     proposals: PaginatedData<ProposalData[]>;
-    columnVisibility?: ColumnVisibility;
-    actionType?: ActionType; // Controls which action column to show
-    disableSorting?: boolean; // If true, all columns become unsortable
+    columns?: ColumnKey[];
+    actionType?: ActionType;
+    disableSorting?: boolean;
+    showPagination?: boolean;
+    columnVisibility?: Record<string, boolean>;
+    customActions?: {
+        manage?: React.ComponentType<CustomActionProps>;
+        view?: React.ComponentType<CustomActionProps>;
+    };
+    renderActions?: {
+        manage?: (proposal: ProposalData) => React.ReactNode;
+        view?: (proposal: ProposalData) => React.ReactNode;
+    };
 }
 
 const ProposalTable: React.FC<ProposalTableProps> = ({
-                                                         proposals,
-                                                         columnVisibility = {},
-                                                         actionType = 'manage', // Default to 'manage' for backward compatibility
-                                                         disableSorting = false // Default to false to maintain existing behavior
-                                                     }) => {
+    proposals,
+    columns,
+    actionType = 'manage',
+    disableSorting = false,
+    showPagination = true,
+    customActions,
+    renderActions
+}) => {
     const { t } = useLaravelReactI18n();
     const { setFilters, getFilter } = useFilterContext();
     const [selectedUserMap, setSelectedUserMap] = useState<
         Record<string, IdeascaleProfileData | null>
     >({});
 
-    // Merge with default visibility (all columns visible by default)
-    const defaultVisibility: ColumnVisibility = {
-        title: false, // Hidden by default
-        proposal: true,
-        fund: false, // Hidden by default
-        status: true,
-        funding: true,
-        teams: true,
-        yesVotes: false,
-        abstainVotes: false,
-        action: actionType === 'manage',
-        viewProposal: actionType === 'view'
-    };
+    const defaultColumns: ColumnKey[] = [
+        'proposal',
+        'status', 
+        'funding', 
+        'teams',
+        actionType === 'manage' ? 'action' : 'viewProposal'
+    ].filter(Boolean) as ColumnKey[];
 
-    const mergedVisibility = { ...defaultVisibility, ...columnVisibility };
+    const activeColumns = columns || defaultColumns;
 
     const currentSort = getFilter(ParamsEnum.SORTS) || null;
     const [sortField, sortDirection] = currentSort ? currentSort.split(':') : [null, null];
@@ -107,7 +117,6 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
 
         if (!direction) {
             const url = new URL(window.location.href);
-
             url.searchParams.delete(ParamsEnum.SORTS);
 
             router.get(url.pathname + url.search, {}, {
@@ -130,8 +139,8 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
         }
     };
 
-    const columns: ColumnConfig[] = [
-        {
+    const columnDefinitions: Record<ColumnKey, ColumnConfig> = {
+        title: {
             key: 'title',
             label: t('proposalComparison.tableHeaders.title'),
             sortable: !disableSorting,
@@ -152,7 +161,7 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                 </div>
             )
         },
-        {
+        proposal: {
             key: 'proposal',
             label: t('proposal'),
             sortable: !disableSorting,
@@ -169,49 +178,16 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                 </div>
             ),
         },
-        {
-            key: 'action',
-            label: t('proposals.action'),
-            renderCell: (proposal: ProposalData) => (
-                <div data-testid={`proposal-action-${proposal.id}`}>
-                    <ManageProposalButton
-                        proposal={proposal}
-                        data-testid={`manage-proposal-button-${proposal.id}`}
-                    />
-                </div>
-            ),
-        },
-        {
-            key: 'viewProposal',
-            label: t('proposals.action'),
-            renderCell: (proposal: ProposalData) => (
-                <div className='flex items-center gap-3 w-20' data-testid={`proposal-view-${proposal.id}`}>
-                    <CompareButton
-                        model="proposal"
-                        hash={proposal.id ?? ''}
-                        tooltipDescription="Compare Proposals"
-                        data={proposal}
-                        data-testid={`compare-button`}
-                        buttonTheme='text-content'
-                    />
-                    <BookmarkButton
-                        modelType="proposals"
-                        itemId={proposal.id ?? ''}
-                        data-testid="bookmark-button"
-                        buttonTheme='text-content'
-                    />
-                </div>
-            ),
-        },
-        {
+        fund: {
             key: 'fund',
             label: t('proposalComparison.tableHeaders.fund'),
             sortable: !disableSorting,
             sortKey: 'fund_id',
             renderCell: (proposal: ProposalData) => (
                 <div
-                    className="flex items-center justify-center border border-light-gray-persist bg-light-gray-persist/[10%] px-1  rounded-md"
-                    data-testid={`proposal-fund-${proposal.id}`}>
+                    className="flex items-center justify-center border border-light-gray-persist bg-light-gray-persist/[10%] px-1 rounded-md"
+                    data-testid={`proposal-fund-${proposal.id}`}
+                >
                     {proposal.fund?.label && (
                         <span className="items-center py-1 rounded-full text-xs font-medium text-content text-nowrap"
                               data-testid={`proposal-fund-label-${proposal.id}`}>
@@ -221,7 +197,7 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                 </div>
             )
         },
-        {
+        status: {
             key: 'status',
             label: t('proposalComparison.tableHeaders.status'),
             sortable: !disableSorting,
@@ -235,7 +211,7 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                 </div>
             )
         },
-        {
+        funding: {
             key: 'funding',
             label: t('funding'),
             sortable: !disableSorting,
@@ -249,10 +225,10 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                 </div>
             )
         },
-        {
+        teams: {
             key: 'teams',
             label: t('teams'),
-            sortable: false, // Keep this always false as it was originally
+            sortable: false,
             sortKey: 'users.proposals_completed',
             renderCell: (proposal: ProposalData, { handleUserClick }: TableHelpers) => (
                 <div className="w-40" data-testid={`proposal-teams-${proposal.id}`}>
@@ -266,7 +242,7 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                 </div>
             )
         },
-        {
+        yesVotes: {
             key: 'yesVotes',
             label: (
                 <div className="flex items-center gap-2" data-testid="yes-votes-header">
@@ -288,12 +264,14 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                     <div className="flex items-center justify-center gap-2"
                          data-testid={`proposal-yes-votes-content-${proposal.id}`}>
                         <Paragraph className="text-light-gray-persist"
-                                   data-testid={`proposal-yes-votes-count-${proposal.id}`}>({shortNumber(proposal.yes_votes_count) || '0'})</Paragraph>
+                                   data-testid={`proposal-yes-votes-count-${proposal.id}`}>
+                            ({shortNumber(proposal.yes_votes_count) || '0'})
+                        </Paragraph>
                     </div>
                 </div>
             )
         },
-        {
+        abstainVotes: {
             key: 'abstainVotes',
             label: (
                 <div className="flex items-center gap-2" data-testid="abstain-votes-header">
@@ -315,12 +293,95 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                     <div className="flex items-center justify-center gap-2"
                          data-testid={`proposal-abstain-votes-content-${proposal.id}`}>
                         <Paragraph className="text-light-gray-persist"
-                                   data-testid={`proposal-abstain-votes-count-${proposal.id}`}>({shortNumber(proposal.abstain_votes_count) || '0'})</Paragraph>
+                                   data-testid={`proposal-abstain-votes-count-${proposal.id}`}>
+                            ({shortNumber(proposal.abstain_votes_count) || '0'})
+                        </Paragraph>
                     </div>
                 </div>
             )
         },
-    ].filter(column => mergedVisibility[column.key as keyof ColumnVisibility] !== false);
+        action: {
+            key: 'action',
+            label: t('proposals.action'),
+            renderCell: (proposal: ProposalData) => {
+                const testId = `proposal-action-${proposal.id}`;
+                
+                if (renderActions?.manage) {
+                    return (
+                        <div data-testid={testId}>
+                            {renderActions.manage(proposal)}
+                        </div>
+                    );
+                }
+                
+                if (customActions?.manage) {
+                    const CustomManageAction = customActions.manage;
+                    return (
+                        <div data-testid={testId}>
+                            <CustomManageAction 
+                                proposal={proposal}
+                                data-testid={`manage-proposal-button-${proposal.id}`}
+                            />
+                        </div>
+                    );
+                }
+                
+                return (
+                    <div data-testid={testId}>
+                        <ManageProposalButton
+                            proposal={proposal}
+                            data-testid={`manage-proposal-button-${proposal.id}`}
+                        />
+                    </div>
+                );
+            },
+        },
+        viewProposal: {
+            key: 'viewProposal',
+            label: t('proposals.action'),
+            renderCell: (proposal: ProposalData) => {
+                const testId = `proposal-view-${proposal.id}`;
+                
+                if (renderActions?.view) {
+                    return (
+                        <div data-testid={testId}>
+                            {renderActions.view(proposal)}
+                        </div>
+                    );
+                }
+                
+                if (customActions?.view) {
+                    const CustomViewAction = customActions.view;
+                    return (
+                        <div data-testid={testId}>
+                            <CustomViewAction 
+                                proposal={proposal}
+                                data-testid={`view-proposal-actions-${proposal.id}`}
+                            />
+                        </div>
+                    );
+                }
+                
+                return (
+                    <div className='w-32' data-testid={testId}>
+                        <a
+                            href={proposal.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors duration-200 font-medium text-sm"
+                            data-testid={`view-proposal-button-${proposal.id}`}
+                        >
+                            {t('proposalComparison.viewProposal')}
+                        </a>
+                    </div>
+                );
+            },
+        }
+    };
+
+    const orderedColumns: ColumnConfig[] = activeColumns
+        .map(columnKey => columnDefinitions[columnKey])
+        .filter(Boolean);
 
     const getRowHelpers = useCallback(
         (proposalHash: string): TableHelpers => {
@@ -350,7 +411,7 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                     <thead className="border-gray-200 whitespace-nowrap bg-background-lighter"
                            data-testid="proposal-table-header">
                     <tr data-testid="proposal-table-header-row">
-                        {columns.map(column => (
+                        {orderedColumns.map(column => (
                             <th
                                 key={column.key}
                                 className="border-gray-200 border-b border-r px-4 py-3 text-left font-medium text-content last:border-r-0"
@@ -378,7 +439,7 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                                 className={index < proposals.data.length - 1 ? 'border-b border-gray-200' : ''}
                                 data-testid={`proposal-table-row-${proposalHash}`}
                             >
-                                {columns.map(column => (
+                                {orderedColumns.map(column => (
                                     <td
                                         key={`${proposalHash}-${column.key}`}
                                         className="border-gray-200 border-b border-r px-4 py-4 text-content last:border-r-0"
@@ -394,19 +455,17 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                 </table>
             </div>
 
-            {proposals &&
-                proposals.data &&
-                proposals.data.length > 0 && (
-                    <div className="border-t border-gray-200 px-4 py-4">
-                        <Paginator
-                            pagination={proposals}
-                            linkProps={{
-                                preserveState: true,
-                                preserveScroll: false
-                            }}
-                        />
-                    </div>
-                )}
+            {showPagination && proposals && proposals.data && proposals.data.length > 0 && (
+                <div className="border-t border-gray-200 px-4 py-4">
+                    <Paginator
+                        pagination={proposals}
+                        linkProps={{
+                            preserveState: true,
+                            preserveScroll: false
+                        }}
+                    />
+                </div>
+            )}
         </div>
     );
 };

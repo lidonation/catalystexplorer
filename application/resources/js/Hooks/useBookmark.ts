@@ -32,14 +32,12 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
 
     const createBookmark = async () => {
         try {
-            console.log({ itemId });
-            
             const response = await axiosClient.post(
                 route('api.bookmarks.store', { modelType, uuid: itemId }),
             );
              
-            if (response.data.bookmarkItems) {
-                setIsBookmarked(response.data.isBookmarked);
+            if (response.data.bookmarkId) {
+                setIsBookmarked(response.data.isBookmarked || true);
                 setBookmarkId(response.data.bookmarkId);
                 setIsOpen(true);
                 EventBus.emit('listItem-added');

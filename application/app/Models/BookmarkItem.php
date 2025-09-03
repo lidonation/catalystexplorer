@@ -8,6 +8,7 @@ use App\Enums\VoteEnum;
 use App\Observers\BookmarkItemObserver;
 use App\Traits\HasModel;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -15,7 +16,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 #[ObservedBy([BookmarkItemObserver::class])]
 class BookmarkItem extends Model
 {
-    use HasModel, SoftDeletes;
+    use HasModel, HasUuids, SoftDeletes;
+
+    protected $primaryKey = 'id';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
 
     protected $guarded = [];
 

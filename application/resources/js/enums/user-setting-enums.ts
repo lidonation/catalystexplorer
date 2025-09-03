@@ -6,4 +6,7 @@ export enum userSettingEnums {
     PROPOSAL_TYPE = 'proposalType',
     CHART_OPTIONS = 'chartOptions',
     CHART_TYPE = 'chartType',
+    VIEW_HORIZONTAL = 'viewHorizontal',
+    VIEW_MINI = 'viewMini', 
+    VIEW_TABLE = 'viewTable',
 }
