@@ -8,7 +8,7 @@ const CatalystIntro = () => {
     const { t } = useLaravelReactI18n();
     return (
         <div
-            className="splash-wrapper from-background-home-gradient-color-1 to-background-home-gradient-color-2 sticky -top-64 z-10 bg-linear-to-r md:rounded-tl-4xl"
+            className="splash-wrapper from-background-home-gradient-color-1 to-background-home-gradient-color-2 sticky -top-64 z-10 bg-linear-to-r md:rounded-tl-4xl rtl:rounded-tl-none rtl:rounded-tr-4xl"
             data-testid="catalyst-intro"
         >
             <div

@@ -109,6 +109,7 @@
     "selection": "sélection",
     "awarded": "Récompensé",
     "requested": "Demandée",
+    "received": "Reçue",
     "submitted": "Soumise",
     "funded": "Financé",
     "approved": "Approuvée",
@@ -1035,5 +1036,15 @@
     "workflows.publishToIpfs.success.openInNewTabTitle": "Ouvrir dans un nouvel onglet",
     "workflows.publishToIpfs.reviewDetails": "Vous êtes sur le point de publier votre liste sur IPFS. Consultez les détails ci-dessous.",
     "wallet.login": "Connexion portefeuille",
-    "wallet.login.confirm": "Nous allons vous connecter en utilisant votre portefeuille associé. Le compte lié à ce portefeuille sera authentifié. Si aucun compte lié n’est trouvé, un nouveau sera créé avec votre adresse. Vous pourrez ensuite mettre à jour ce compte dans votre tableau de bord, sous la page « Mon profil ». <br><br> <strong>Vous avez déjà un compte ?</strong> Connectez-vous avec votre e-mail et ajoutez votre portefeuille afin de pouvoir vous connecter soit avec votre portefeuille, soit avec votre e-mail."
+    "wallet.login.confirm": "Nous allons vous connecter en utilisant votre portefeuille associé. Le compte lié à ce portefeuille sera authentifié. Si aucun compte lié n'est trouvé, un nouveau sera créé avec votre adresse. Vous pourrez ensuite mettre à jour ce compte dans votre tableau de bord, sous la page « Mon profil ». <br><br> <strong>Vous avez déjà un compte ?</strong> Connectez-vous avec votre e-mail et ajoutez votre portefeuille afin de pouvoir vous connecter soit avec votre portefeuille, soit avec votre e-mail.",
+    "funding.status.pending": "En attente",
+    "funding.status.withdrawn": "Retiré",
+    "funding.status.fullyPaid": "Entièrement payé",
+    "funding.status.funded": "Financé",
+    "funding.status.notFunded": "Non financé",
+    "project.status.votePending": "Vote en attente",
+    "project.status.withdrawn": "Retiré",
+    "project.status.complete": "Terminé",
+    "project.status.inProgress": "En cours",
+    "project.status.unfunded": "Non financé"
 }

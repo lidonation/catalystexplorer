@@ -1,15 +1,16 @@
 <?php
 
 return [
-   
-    'supported' => ['en', 'es', 'fr', 'de', 'ja', 'ko', 'pt', 'ru', 'zh'],
 
- 
+    'supported' => ['ar', 'en', 'es', 'fr', 'de', 'ja', 'ko', 'pt', 'ru', 'zh'],
+
+
     'names' => [
         'en' => 'English',
         'es' => 'Español',
         'fr' => 'Français',
         'de' => 'Deutsch',
+        'ar' => 'العربية',
         'ja' => '日本語',
         'ko' => '한국어',
         'pt' => 'Português',

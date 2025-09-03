@@ -122,6 +122,7 @@
     "awarded": "Vergeben",
     "distributed": "Verteilt",
     "requested": "Beantragt",
+    "received": "Erhalten",
     "submitted": "Eingereicht",
     "funded": "Finanziert",
     "approved": "Genehmigt",
@@ -1275,5 +1276,15 @@
     "workflows.publishToIpfs.success.openInNewTabTitle": "In neuem Tab öffnen",
     "workflows.publishToIpfs.reviewDetails": "Sie sind dabei, Ihre Liste auf IPFS zu veröffentlichen. Überprüfen Sie die Details unten.",
     "wallet.login": "Mit Wallet anmelden",
-    "wallet.login.confirm": "Wir werden Sie mit Ihrer verbundenen Wallet anmelden, das mit dieser Wallet verknüpfte Konto wird authentifiziert. Wenn kein verknüpftes Konto gefunden wird, wird eines mit Ihrer Adresse erstellt. Sie können dieses Konto in Ihrem Dashboard unter der Seite 'Mein Profil' aktualisieren.<br><br> <strong>Haben Sie bereits ein Konto?</strong> Melden Sie sich mit E-Mail an und fügen Sie Ihre Wallet hinzu, damit Sie sich sowohl mit Wallet als auch mit E-Mail anmelden können."
+    "wallet.login.confirm": "Wir werden Sie mit Ihrer verbundenen Wallet anmelden, das mit dieser Wallet verknüpfte Konto wird authentifiziert. Wenn kein verknüpftes Konto gefunden wird, wird eines mit Ihrer Adresse erstellt. Sie können dieses Konto in Ihrem Dashboard unter der Seite 'Mein Profil' aktualisieren.<br><br> <strong>Haben Sie bereits ein Konto?</strong> Melden Sie sich mit E-Mail an und fügen Sie Ihre Wallet hinzu, damit Sie sich sowohl mit Wallet als auch mit E-Mail anmelden können.",
+    "funding.status.pending": "Ausstehend",
+    "funding.status.withdrawn": "Zurückgezogen",
+    "funding.status.fullyPaid": "Vollständig bezahlt",
+    "funding.status.funded": "Finanziert",
+    "funding.status.notFunded": "Nicht finanziert",
+    "project.status.votePending": "Abstimmung ausstehend",
+    "project.status.withdrawn": "Zurückgezogen",
+    "project.status.complete": "Abgeschlossen",
+    "project.status.inProgress": "In Bearbeitung",
+    "project.status.unfunded": "Nicht finanziert"
 }
