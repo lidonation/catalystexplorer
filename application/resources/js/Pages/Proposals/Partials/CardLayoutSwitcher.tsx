@@ -39,31 +39,40 @@ export default function CardLayoutSwitcher({
         });
     };
 
-    const setHorizontal = (value: boolean) => {
-        setIsHorizontal(value);
-        // setQuickpitch(false);
+    const handleTableClick = () => {
+        const newValue = !isTableView;
+        setIsTableView(newValue);
     };
 
-    const setMini = (value: boolean) => {
-        setIsMini(value);
-    };
-
-    const setTable = (value: boolean) => {
-        setIsTableView(value);
-        if (value) {
-            setIsMini(false);
+    const handleVerticalClick = () => {
+        setIsTableView(false);
+        
+        setIsHorizontal(false);
+        
+        if (!isHorizontal) {
+            setIsMini(!isMini);
             setQuickpitch(false);
+        }
+    };
+
+    const handleQuickPitchClick = () => {
+        const newValue = !quickPitchView;
+        
+        setQuickpitch(newValue);
+        
+        if (newValue) {
+            setIsMini(false);
+            setIsTableView(false);
         }
     };
 
     return (
         <div className="relative">
-            <div className="z- bg-background shadow-m flex overflow-hidden rounded-lg border-[2px] border-gray-300">
+            <div className="z- bg-background flex overflow-hidden rounded-lg border-[2px] border-gray-300 shadow-m">
+
                 <Button
-                    onClick={() => {
-                        setTable(!isTableView);
-                    }}
-                    className={`flex h-[50px] w-[60px] flex-1 items-center justify-center ${
+                    onClick={handleTableClick}
+                    className={`flex flex-1 items-center justify-center w-[60px] h-[50px] ${
                         isTableView
                             ? 'bg-background-lighter text-primary'
                             : 'hover:bg-background-lighter cursor-pointer text-gray-500'
@@ -74,15 +83,8 @@ export default function CardLayoutSwitcher({
                 </Button>
 
                 <Button
-                    onClick={() => {
-                        setHorizontal(false);
-                        if (isHorizontal === false) {
-                            setMini(!isMini);
-                            setQuickpitch(false);
-                        }
-                        setTable(false);
-                    }}
-                    className={`flex w-[60px] flex-1 items-center justify-center h-[50px]${
+                    onClick={handleVerticalClick}
+                    className={`flex flex-1 items-center justify-center w-[60px] h-[50px]${
                         !isHorizontal && !isTableView
                             ? 'bg-background-lighter text-primary cursor-pointer'
                             : 'cursor-pointer text-gray-500'
@@ -136,29 +138,9 @@ export default function CardLayoutSwitcher({
                     </div>
                 </Button>
 
-                {/*<Button*/}
-                {/*    onClick={() => {*/}
-                {/*        setHorizontal(true)*/}
-                {/*        setIsMini(false)*/}
-                {/*        setTable(false)*/}
-                {/*    }}*/}
-                {/*    className={`flex flex-1 items-center justify-center w-[60px] h-[50px] ${*/}
-                {/*        isHorizontal && !isTableView*/}
-                {/*            ? 'bg-background-lighter text-primary'*/}
-                {/*            : 'hover:bg-background-lighter text-gray-500 cursor-pointer'*/}
-                {/*    } border-r-[2px] border-gray-300`}*/}
-                {/*    data-testid="card-layout-switcher-horizontal-button"*/}
-                {/*>*/}
-                {/*    <ListBulletIcon />*/}
-                {/*</Button>*/}
-
                 <Button
-                    onClick={() => {
-                        setQuickpitch(!quickPitchView);
-                        setIsMini(false);
-                        setIsTableView(false);
-                    }}
-                    className={`flex h-[50px] w-[60px] flex-1 items-center justify-center ${
+                    onClick={handleQuickPitchClick}
+                    className={`flex flex-1 items-center justify-center w-[60px] h-[50px] ${
                         quickPitchView && !isTableView
                             ? 'bg-background-lighter text-primary'
                             : 'hover:bg-background-lighter cursor-pointer text-gray-500'

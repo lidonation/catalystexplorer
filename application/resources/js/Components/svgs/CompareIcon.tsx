@@ -16,11 +16,11 @@ export default function CompareIcon({
 }: CompareIconProps) {
     let stroke;
     if (exists) {
-        stroke = '#EE8434';
+        stroke = 'var(--bg-warning-primary-color)';
     } else if (primary) {
-        stroke = '#2596be';
+        stroke = 'var(--cx-primary)';
     } else {
-        stroke = 'white';
+        stroke = 'var(--cx-content)';
     }
 
     return (

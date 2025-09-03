@@ -22,7 +22,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
@@ -139,7 +138,7 @@ class MyBookmarksController extends Controller
         try {
 
             if ($bookmarkItem->user_id !== Auth::id()) {
-                return response::json([
+                return response()->json([
                     'errors' => 'Unauthorized action',
                 ], 401);
             }
@@ -149,10 +148,10 @@ class MyBookmarksController extends Controller
             $bookmarkItem->delete();
 
             if ($collection) {
-                $collection->seachable();
+                $collection->searchable();
             }
 
-            return response::json([
+            return response()->json([
                 'message' => 'Bookmark deleted successfully',
             ]);
         } catch (\Exception $e) {
@@ -350,7 +349,9 @@ class MyBookmarksController extends Controller
             DB::rollBack();
 
             return response()->json([
-                'errors' => ['Failed to add bookmarks to collection'],
+                'type' => 'error',
+                'message' => 'Failed to add bookmarks to collection',
+                'debug' => config('app.debug') ? $e->getMessage() : null,
             ], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -389,7 +390,7 @@ class MyBookmarksController extends Controller
 
             BookmarkItem::whereIn('id', $decoded_bookmark_ids)
                 ->where('user_id', Auth::id())
-                ->each(fn ($b) => $b->delete());
+                ->update(['bookmark_collection_id' => null]);
 
             DB::commit();
 
@@ -402,7 +403,9 @@ class MyBookmarksController extends Controller
             DB::rollBack();
 
             return response()->json([
-                'errors' => ['Failed to remove bookmarks from collection'],
+                'type' => 'error',
+                'message' => 'Failed to remove bookmarks from collection',
+                'debug' => config('app.debug') ? $e->getMessage() : null,
             ], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -438,6 +441,7 @@ class MyBookmarksController extends Controller
                 'title' => ['required', 'string', 'min:5'],
                 'content' => ['nullable', 'string', 'min:10'],
                 'visibility' => ['nullable', 'string', 'in:public,unlisted,private'],
+                'color' => ['nullable', 'string'],
             ]);
 
             $collection = BookmarkCollection::create([

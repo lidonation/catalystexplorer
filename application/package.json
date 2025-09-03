@@ -4,8 +4,8 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "tsc &&  NODE_OPTIONS='--max-old-space-size=10240' vite build",
-    "build:ssr": "tsc && NODE_OPTIONS='--max-old-space-size=8192' vite build --ssr",
+    "build": "NODE_OPTIONS='--max-old-space-size=10240' vite build",
+    "build:ssr": "NODE_OPTIONS='--max-old-space-size=8192' vite build --ssr",
     "lint": "eslint resources/js --fix",
     "prepare": "husky",
     "commitlint": "commitlint --edit"
