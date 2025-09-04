@@ -55,6 +55,7 @@ const renderIconOnlyViewActions = (proposal: ProposalData) => {
                     tooltipDescription="Compare Proposals"
                     data={proposal}
                     data-testid="compare-button"
+                    buttonTheme='text-content'
                 />
             </div>
             <div className="flex items-center justify-center w-8 h-8 rounded-md transition-colors">
@@ -62,6 +63,7 @@ const renderIconOnlyViewActions = (proposal: ProposalData) => {
                     modelType="proposals"
                     itemId={proposal.id ?? ''}
                     data-testid="bookmark-button"
+                    buttonTheme='text-content'
                 />
             </div>
         </div>

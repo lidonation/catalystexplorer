@@ -16,7 +16,7 @@ const CompareButton: React.FC<CompareButtonProps> = ({
     data,
     tooltipDescription = 'Compare proposal',
     'data-testid': dataTestId,
-    buttonTheme = 'text-content'
+    buttonTheme = 'text-white'
 }: CompareButtonProps) => {
     const [isHovered, setIsHovered] = useState(false);
     const proposalId = data.id ?? '';
