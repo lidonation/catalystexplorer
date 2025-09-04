@@ -1,3 +1,10 @@
+# [1.22.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.21.0...v1.22.0) (2025-09-03)
+
+
+### Features
+
+* experimenting with arabic support ([da9f493](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/da9f493c2d46be79d1bccbb2b8a7ea410c4e4382))
+
 # [1.21.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.20.0...v1.21.0) (2025-09-03)
 
 
