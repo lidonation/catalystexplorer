@@ -58,10 +58,18 @@ export default function Index({
     } = useUserSetting<boolean>(userSettingEnums.VIEW_TABLE, false);
 
     const [showFilters, setShowFilters] = useState(false);
+    const [settingsInitialized, setSettingsInitialized] = useState(false);
 
     const [quickPitchView, setQuickPitchView] = useState(
         !!parseInt(filters[ParamsEnum.QUICK_PITCHES]),
     );
+
+    // Track when all settings are fully loaded
+    useEffect(() => {
+        if (!isHorizontalLoading && !isMiniLoading && !isTableViewLoading) {
+            setSettingsInitialized(true);
+        }
+    }, [isHorizontalLoading, isMiniLoading, isTableViewLoading]);
 
     const isViewSettingsLoading = isHorizontalLoading || isMiniLoading || isTableViewLoading;
     
@@ -209,33 +217,35 @@ export default function Index({
                     )}
                 </section>
 
-                <AnimatePresence mode="wait">
-                    <motion.div
-                        key={currentIsTableView ? 'table' : 'list'}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.4, ease: 'easeInOut' }}
-                    >
-                        {currentIsTableView ? (
-                            <ProposalTableView
-                                proposals={proposals}
-                                actionType="view"
-                                disableSorting={true}
-                                columns={['title', 'viewProposal', 'fund', 'status', 'funding', 'teams', 'yesVotes', 'abstainVotes']}
-                                iconOnlyActions={true}
-                            />
-                        ) : (
-                            <ProposalPaginatedList
-                                proposals={proposals}
-                                isHorizontal={currentIsHorizontal}
-                                isMini={currentIsMini}
-                                quickPitchView={quickPitchView}
-                                setQuickPitchView={setQuickPitchView}
-                            />
-                        )}
-                    </motion.div>
-                </AnimatePresence>
+                {settingsInitialized ? (
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={currentIsTableView ? 'table' : 'list'}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.4, ease: 'easeInOut' }}
+                        >
+                            {currentIsTableView ? (
+                                <ProposalTableView
+                                    proposals={proposals}
+                                    actionType="view"
+                                    disableSorting={true}
+                                    columns={['title', 'viewProposal', 'fund', 'status', 'funding', 'teams', 'yesVotes', 'abstainVotes']}
+                                    iconOnlyActions={true}
+                                />
+                            ) : (
+                                <ProposalPaginatedList
+                                    proposals={proposals}
+                                    isHorizontal={currentIsHorizontal}
+                                    isMini={currentIsMini}
+                                    quickPitchView={quickPitchView}
+                                    setQuickPitchView={setQuickPitchView}
+                                />
+                            )}
+                        </motion.div>
+                    </AnimatePresence>
+                ) : null}
             </FiltersProvider>
         </ListProvider>
     );
