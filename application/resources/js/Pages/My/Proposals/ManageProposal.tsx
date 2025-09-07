@@ -13,9 +13,9 @@ export default function ManageProposal({}: ManageProposalProps) {
         <div>
             <Head title={t('proposals.manageProposal')} />
 
-            <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+            <div className="container py-8 ">
                 <div className="text-content text-center">
-                    <RecordsNotFound />
+                    <RecordsNotFound context='proposals' />
                 </div>
             </div>
         </div>

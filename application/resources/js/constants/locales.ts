@@ -8,6 +8,7 @@ export const SUPPORTED_LOCALES = [
     'ja',
     'ko',
     'pt',
+    'sw',
     'zh'
 ] as const;
 
@@ -21,6 +22,7 @@ export const LOCALE_MAPPING = {
     pt: { label: 'Portuguese', native: 'Português' },
     ko: { label: 'Korean', native: '한국어' },
     ja: { label: 'Japanese', native: '日本語' },
+    sw: { label: 'Swahili', native: 'Kiswahili' },
     zh: { label: 'Chinese', native: '中文' },
 } as const;
 

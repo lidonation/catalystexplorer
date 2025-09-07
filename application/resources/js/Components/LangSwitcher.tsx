@@ -12,9 +12,10 @@ const LANGS = [
 
     { value: 'am', label: 'አማርኛ' },
     { value: 'ar', label: 'العربية' },
-    
+
     { value: 'ja', label: '日本語' },
     { value: 'ko', label: '한국어' },
+    { value: 'sw', label: 'Kiswahili' },
     { value: 'zh', label: '中文' },
 ];
 

@@ -1,5 +1,6 @@
 import RecordsNotFoundIcon from '@/Components/svgs/RecordsNotFoundIcon';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
+import Paragraph from '@/Components/atoms/Paragraph.tsx';
 
 type RecordsNotFoundProps = {
     context?:
@@ -33,9 +34,9 @@ export default function RecordsNotFound({
             data-testid={`records-not-found-${context}`}
         >
             {showIcon && <RecordsNotFoundIcon />}
-            {/* <p className="mt-2 max-w-md text-center text-base text-gray-600">
+            <Paragraph className="mt-2 max-w-md text-center text-base text-gray-600">
                 {getMessage()}
-            </p> */}
+            </Paragraph>
         </div>
     );
 }
