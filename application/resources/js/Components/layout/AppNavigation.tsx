@@ -37,7 +37,7 @@ function AppNavigation() {
         const isAbsoluteUrl =
             path.startsWith('http://') || path.startsWith('https://');
         const parsedPath = isAbsoluteUrl ? new URL(path).pathname : path;
-        const normalizedPath = parsedPath.replace(/^\/(en|fr|sw)(\/|$)/, '/');
+        const normalizedPath = parsedPath.replace(/^\/(am|ar|de|en|es|fr|ja|ko|pt|ru|sw|zh)(\/|$)/, '/');
         const basePath = normalizedPath.split('?')[0];
         return basePath.endsWith('/') && basePath !== '/'
             ? basePath.slice(0, -1)

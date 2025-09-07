@@ -5,11 +5,16 @@ import Selector from './atoms/Selector';
 
 const LANGS = [
     { value: 'en', label: 'English' },
-    { value: 'ar', label: 'العربية' },
     { value: 'es', label: 'Español' },
-    { value: 'fr', label: 'Français' },
     { value: 'de', label: 'Deutsch' },
+    { value: 'fr', label: 'Français' },
+    { value: 'pt', label: 'Português' },
+
+    { value: 'am', label: 'አማርኛ' },
+    { value: 'ar', label: 'العربية' },
+    
     { value: 'ja', label: '日本語' },
+    { value: 'ko', label: '한국어' },
     { value: 'zh', label: '中文' },
 ];
 
