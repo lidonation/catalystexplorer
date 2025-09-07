@@ -1,3 +1,10 @@
+# [1.23.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.22.1...v1.23.0) (2025-09-07)
+
+
+### Features
+
+* add support for kiswahili ([b7419fc](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/b7419fc9f8ce51b7b1ec926ae196fb78fd187d4b))
+
 ## [1.22.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.22.0...v1.22.1) (2025-09-04)
 
 
