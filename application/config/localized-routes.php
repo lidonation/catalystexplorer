@@ -51,7 +51,7 @@ return [
             'regional' => 'fr_FR',
         ],
         'pt' => [
-            'key' => 'fr',
+            'key' => 'pt',
             'name' => 'Portuguese',
             'script' => 'Latn',
             'native' => 'Português',

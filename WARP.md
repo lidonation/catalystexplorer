@@ -180,6 +180,13 @@ make db-schema
 - Component composition over inheritance
 - Consistent error handling and loading states
 
+**Internationalization (i18n)**:
+- Full multilingual support with Laravel localization
+- Supported languages: English, Spanish, German, French, Portuguese, Amharic, Arabic, Japanese, Korean, Chinese, and Swahili
+- Frontend language switching via React components with URL routing
+- Translation files stored in `application/lang/` directory
+- Frontend language configuration in `resources/js/constants/locales.ts`
+
 ## Key Configuration
 
 ### Environment Variables
@@ -230,3 +237,13 @@ Examples: `feat(proposals): ln-1343 added search filtering`, `fix(api): ln-1545 
 - Redis caching for frequently accessed data
 - Meilisearch for fast full-text search
 - PostgreSQL query optimization with proper indexing
+
+### Translation Management
+- **Adding new languages**: 
+  1. Create translation file in `application/lang/{locale}.json`
+  2. Add locale to `config/localized-routes.php` supported_locales and locale_details
+  3. Update `resources/js/constants/locales.ts` SUPPORTED_LOCALES and LOCALE_MAPPING
+  4. Add language option to `resources/js/Components/LangSwitcher.tsx`
+- **Translation keys**: Use dot notation for nested translations (e.g., 'workflows.voterList.title')
+- **Testing translations**: Use the provided test script to verify integration
+- **URL structure**: Localized routes follow pattern `/{locale}/path` (e.g., `/sw/proposals`)
