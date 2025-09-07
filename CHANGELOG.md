@@ -1,3 +1,10 @@
+## [1.22.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.22.0...v1.22.1) (2025-09-04)
+
+
+### Bug Fixes
+
+* **proposals table:** ln-1998 fixed loading state for proposal table view ([619e61a](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/619e61ad6cdc1a2f4041c7ea48ea4dc74f2eb7e9))
+
 # [1.22.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.21.0...v1.22.0) (2025-09-03)
 
 
