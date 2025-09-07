@@ -13,7 +13,13 @@ function Paragraph({
 }: ParagraphProps) {
     let content;
 
-    if (size === 'sm') {
+    if (size === 'xs') {
+        content = (
+            <p {...props} className={`text-xs ${className}`}>
+                {children}
+            </p>
+        );
+    }else if (size === 'sm') {
         content = (
             <p {...props} className={`text-sm ${className}`}>
                 {children}
