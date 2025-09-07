@@ -1,10 +1,25 @@
-export const SUPPORTED_LOCALES = ['en', 'es', 'fr', 'de', 'ja', 'zh'] as const;
+export const SUPPORTED_LOCALES = [
+    'am',
+    'ar',
+    'de',
+    'en',
+    'es',
+    'fr',
+    'ja',
+    'ko',
+    'pt',
+    'zh'
+] as const;
 
 export const LOCALE_MAPPING = {
     en: { label: 'English', native: 'English' },
+    am: { label: 'Amharic', native: 'አማርኛ' },
+    ar: { label: 'Arabic', native: 'العربية' },
     es: { label: 'Spanish', native: 'Español' },
     fr: { label: 'French', native: 'Français' },
     de: { label: 'German', native: 'Deutsch' },
+    pt: { label: 'Portuguese', native: 'Português' },
+    ko: { label: 'Korean', native: '한국어' },
     ja: { label: 'Japanese', native: '日本語' },
     zh: { label: 'Chinese', native: '中文' },
 } as const;

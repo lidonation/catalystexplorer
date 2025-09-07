@@ -2,15 +2,16 @@
 
 return [
 
-    'supported' => ['ar', 'en', 'es', 'fr', 'de', 'ja', 'ko', 'pt', 'ru', 'zh'],
+    'supported' => ['am', 'ar', 'en', 'es', 'fr', 'de', 'ja', 'ko', 'pt', 'ru', 'zh'],
 
 
     'names' => [
+        'am' => 'አማርኛ',
+        'ar' => 'العربية',
         'en' => 'English',
         'es' => 'Español',
         'fr' => 'Français',
         'de' => 'Deutsch',
-        'ar' => 'العربية',
         'ja' => '日本語',
         'ko' => '한국어',
         'pt' => 'Português',

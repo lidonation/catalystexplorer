@@ -30,7 +30,7 @@ class ProposalsController extends Controller
 {
     protected int $currentPage = 1;
 
-    protected int $limit = 24;
+    protected int $limit = 32;
 
     protected array $queryParams = [];
 
@@ -380,7 +380,7 @@ class ProposalsController extends Controller
 
         $limit = isset($this->queryParams[ProposalSearchParams::LIMIT()->value])
             ? (int) $this->queryParams[ProposalSearchParams::LIMIT()->value]
-            : 24;
+            : 32;
 
         $args['offset'] = ($page - 1) * $limit;
         $args['limit'] = $limit;

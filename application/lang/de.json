@@ -151,7 +151,10 @@
     "activeFund.createBookmarkList": "Lesezeichenliste erstellen",
     "activeFund.bannerTitle": "Erstellen Sie Ihre Abstimmungsliste!",
     "activeFund.bannerSubtitle": "Erstellen Sie Ihre Stimmauswahl für Referenz und Austausch! Sie wissen, was Sie suchen? Nutzen Sie den Standard-Workflow. Sie wissen nicht, was Sie suchen? Nutzen Sie den Kartenstapel-Workflow, um nach rechts bei Vorschlägen zu wischen, die Sie genauer betrachten möchten, nach links bei denen, bei denen Sie sich enthalten oder diese Runde überspringen.",
-
+    "activeFund.supportUsTitle": "Unterstützen Sie uns bei der Abstimmung!",
+    "activeFund.supportUsSubtitle": "Bei Finanzierung werden wir: catalystexplorer.com erweitern, um Ihr Engagement mit Catalyst durch intelligente Benachrichtigungen für Ereignisse, die Sie interessieren, KI-gesteuerte Vorschlagsentdeckung und professionellen Portfolio-Aufbau zu transformieren.",
+    "activeFund.supportUsSeeProposal": "Vorschlag lesen",
+    "activeFund.supportUsProposalTitle": "All-in-One Catalyst: Benachrichtigungen, KI-Listen & Portfolios.",
     "activeFund.campaignsTitle": "Kampagnenkategorien",
     "activeFund.campaigns.proposals": "Vorschläge",
     "activeFund.campaigns.viewProposals": "Vorschläge anzeigen",
@@ -1286,5 +1289,10 @@
     "project.status.withdrawn": "Zurückgezogen",
     "project.status.complete": "Abgeschlossen",
     "project.status.inProgress": "In Bearbeitung",
-    "project.status.unfunded": "Nicht finanziert"
+    "project.status.unfunded": "Nicht finanziert",
+    "proposals.celebrateCompletedProposals": "Abgeschlossene Vorschläge feiern",
+    "my.createVotingListWithStandardUi": "Standard-Arbeitsablauf verwenden",
+    "my.createVotingListWithCardedUi": "Kartenstapel-Arbeitsablauf verwenden",
+    "transactions.table.id": "Id",
+    "transactions.table.proposalPayout": "Vorschlagsauszahlung"
 }
