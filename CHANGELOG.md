@@ -1,3 +1,21 @@
+# [1.24.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.23.0...v1.24.0) (2025-09-08)
+
+
+### Bug Fixes
+
+* cannot register ([f801b66](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/f801b6642b25375d2c5905fc38e2584167b776b4))
+* ssr support for react-map-gl ([83c8377](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/83c8377bdc5f9e203f7dcbaae050e163fc4d887f))
+* ssr support for react-map-gl ([bc088ea](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/bc088eaa6cce2b710be3ba6873dfb6d30da66ddd))
+* ssr support for react-map-gl ([7170c50](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/7170c507a3214386a80b56311809df63b486021e))
+* ssr support for react-map-gl ([a15b102](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/a15b102ee3beea5697943e33fd52f0fbffdb069b))
+* update copyright year ([648b841](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/648b84115caf70d9cd7b4d2c4258ebbeb52339ad))
+* update copyright year ([7122dcf](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/7122dcfddbdc03bd27902ddcb8cb7ff1f7d368ea))
+
+
+### Features
+
+* creates single service page ([61a49a5](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/61a49a508875278ef85dd9591183dc72ff9ca2ea))
+
 # [1.23.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.22.1...v1.23.0) (2025-09-07)
 
 
