@@ -31,6 +31,12 @@ export default defineConfig({
     // },
     ssr: {
         noExternal: ['@inertiajs/server'],
+        external: [
+            'react-map-gl',
+            'mapbox-gl',
+            '@mapbox/mapbox-gl-geocoder',
+            'mapbox-gl/dist/mapbox-gl.css'
+        ],
     },
     build: {
         target: 'esnext',
