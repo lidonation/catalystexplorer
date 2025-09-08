@@ -1,3 +1,4 @@
+import ClientOnly from '@/Components/ClientOnly';
 import { MapProvider } from '@/Context/MapContext';
 import React, { Suspense, lazy } from 'react';
 import { MapProps } from 'react-map-gl';
@@ -50,18 +51,29 @@ const MapPage: React.FC = () => {
     return (
         <MapProvider customConfig={customConfig} show3DBuildings={true}>
             <div className="min-h-screen bg-gray-100 p-4 dark:bg-gray-800">
-                <Suspense
+                <ClientOnly
                     fallback={
-                        <div 
-                            className="flex items-center justify-center bg-gray-100 text-gray-500" 
+                        <div
+                            className="flex items-center justify-center bg-gray-100 text-gray-500"
                             style={{ height: '500px', width: '100%' }}
                         >
-                            Loading map...
+                            Map loading on client...
                         </div>
                     }
                 >
-                    <GlobalMap points={points} height="500px" width="100%" />
-                </Suspense>
+                    <Suspense
+                        fallback={
+                            <div
+                                className="flex items-center justify-center bg-gray-100 text-gray-500"
+                                style={{ height: '500px', width: '100%' }}
+                            >
+                                Loading map...
+                            </div>
+                        }
+                    >
+                        <GlobalMap points={points} height="500px" width="100%" />
+                    </Suspense>
+                </ClientOnly>
             </div>
         </MapProvider>
     );
