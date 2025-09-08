@@ -1,7 +1,7 @@
 import { jsx, jsxs, Fragment } from 'react/jsx-runtime';
-import { Link as Link$8, usePage, router, Head, WhenVisible, useForm, createInertiaApp } from '@inertiajs/react';
+import { Link as Link$b, usePage, router, Head, WhenVisible, useForm, createInertiaApp } from '@inertiajs/react';
 import * as React from 'react';
-import React__default, { useState, useMemo, useEffect, forwardRef, useRef, createContext, useContext, useImperativeHandle, Suspense, useCallback, Fragment as Fragment$1, useReducer, StrictMode } from 'react';
+import React__default, { useState, useMemo, useEffect, forwardRef, useRef, createContext, useContext, useImperativeHandle, Suspense, useCallback, Fragment as Fragment$1, lazy, useReducer, StrictMode } from 'react';
 import { useRoute } from 'ziggy-js';
 import { useLaravelReactI18n, LaravelReactI18nProvider } from 'laravel-react-i18n';
 import multiavatar from '@multiavatar/multiavatar/esm';
@@ -39,8 +39,6 @@ import { Command as Command$1 } from 'cmdk';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area';
 import useEmblaCarousel from 'embla-carousel-react';
-import mapboxgl from 'mapbox-gl';
-import { Marker, Map as Map$1, Source, Layer } from 'react-map-gl/mapbox';
 import { putConfig, HeadlessModal, ModalLink, ModalRoot, initFromPageProps, ModalStackProvider } from '@inertiaui/modal-react';
 import { arrayMove, useSortable, sortableKeyboardCoordinates, SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 import { useSensors, useSensor, PointerSensor, KeyboardSensor, DndContext, closestCenter } from '@dnd-kit/core';
@@ -72,7 +70,9 @@ function Paragraph({
   ...props
 }) {
   let content;
-  if (size === "sm") {
+  if (size === "xs") {
+    content = /* @__PURE__ */ jsx("p", { ...props, className: `text-xs ${className}`, children });
+  } else if (size === "sm") {
     content = /* @__PURE__ */ jsx("p", { ...props, className: `text-sm ${className}`, children });
   } else if (size === "lg") {
     content = /* @__PURE__ */ jsx("p", { ...props, className: `text-lg ${className}`, children });
@@ -112,7 +112,7 @@ function SecondaryLink({
   ...props
 }) {
   return /* @__PURE__ */ jsx(
-    Link$8,
+    Link$b,
     {
       ...props,
       className: `border-border border-opacity-50 bg-background text-5 text-content-secondary hover:bg-background-tertiary hover:text-content-secondary focus:border-border-secondary inline-flex items-center rounded-md border px-4 py-2 font-semibold tracking-widest uppercase shadow-xs transition duration-150 ease-in-out focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:opacity-25 ${className}`,
@@ -299,7 +299,7 @@ function PrimaryLink({
   ...props
 }) {
   return /* @__PURE__ */ jsxs(
-    Link$8,
+    Link$b,
     {
       ...props,
       href,
@@ -323,7 +323,13 @@ function PrimaryLink({
 function useLocalizedRoute(name, params) {
   const { locale, ziggy } = usePage().props;
   const route2 = useRoute(ziggy);
-  return route2(`${locale || "en"}.${name}`, params);
+  const routeName = `${locale || "en"}.${name}`;
+  try {
+    return route2(routeName, params);
+  } catch (error) {
+    console.warn(`Route '${routeName}' not found, falling back to 'en.${name}'`);
+    return route2(`en.${name}`, params);
+  }
 }
 function generateLocalizedRoute(name, params, locale = "en") {
   return route(`${locale}.${name}`, params);
@@ -498,7 +504,7 @@ const UserQuickView = ({ user }) => {
               t("users.profile")
             ] }),
             /* @__PURE__ */ jsx(
-              Link$8,
+              Link$b,
               {
                 href: `/users/${user.username}`,
                 className: "text-primary block text-sm font-bold",
@@ -687,7 +693,7 @@ function IdeascaleProfileUsers({
   );
 }
 
-const __vite_glob_0_147 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_148 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: IdeascaleProfileUsers
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -781,7 +787,7 @@ const ProposalCardFooter = ({
   );
 };
 
-const __vite_glob_0_236 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_237 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalCardFooter
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -1265,12 +1271,11 @@ function useBookmark({ modelType, itemId }) {
   };
   const createBookmark = async () => {
     try {
-      console.log({ itemId });
       const response = await api.post(
         route("api.bookmarks.store", { modelType, uuid: itemId })
       );
-      if (response.data.bookmarkItems) {
-        setIsBookmarked(response.data.isBookmarked);
+      if (response.data.bookmarkId) {
+        setIsBookmarked(response.data.isBookmarked || true);
         setBookmarkId(response.data.bookmarkId);
         setIsOpen(true);
         EventBus$1.emit("listItem-added");
@@ -1540,7 +1545,7 @@ const BookmarkPage1 = ({
   ] });
 };
 
-const __vite_glob_0_184 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_185 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: BookmarkPage1
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -1836,7 +1841,7 @@ const BookmarkPage2 = ({ onNavigate }) => {
   ] });
 };
 
-const __vite_glob_0_185 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_186 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: BookmarkPage2
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -1870,7 +1875,7 @@ const BookmarkPage3 = ({ onNavigate }) => {
   ] });
 };
 
-const __vite_glob_0_186 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_187 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: BookmarkPage3
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -1928,7 +1933,7 @@ const TransitionDropdown = ({
   ] });
 };
 
-const __vite_glob_0_188 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_189 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: TransitionDropdown
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -2007,7 +2012,7 @@ function BookmarkButton({
           children: [
             children,
             isHovered && /* @__PURE__ */ jsx("div", { className: "absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 transform", children: /* @__PURE__ */ jsx(ToolTipHover, { props: "Bookmark Item" }) }),
-            isBookmarked ? /* @__PURE__ */ jsx(BookmarkOnIcon, { width, height }) : /* @__PURE__ */ jsx(BookmarkOffIcon, { width, height })
+            isBookmarked ? /* @__PURE__ */ jsx(BookmarkOnIcon, { width, height }) : /* @__PURE__ */ jsx(BookmarkOffIcon, { className: buttonTheme, width, height })
           ]
         }
       ),
@@ -2022,7 +2027,7 @@ function BookmarkButton({
   );
 }
 
-const __vite_glob_0_165 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_166 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: BookmarkButton
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -2284,7 +2289,7 @@ const CompareButton = ({
   );
 };
 
-const __vite_glob_0_231 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_232 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CompareButton
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -2293,23 +2298,24 @@ function ProposalStatus({
   status = "pending",
   funding_status = "funded"
 }) {
+  const { t } = useLaravelReactI18n();
   let statusColor = "";
   let projectStatus = "";
   if (status === "pending") {
     statusColor = "bg-primary";
-    projectStatus = "Vote Pending";
+    projectStatus = t("project.status.votePending");
   } else if (funding_status === "withdrawn") {
     statusColor = "bg-light";
-    projectStatus = "Withdrawn";
+    projectStatus = t("project.status.withdrawn");
   } else if (status === "complete") {
     statusColor = "bg-success";
-    projectStatus = "Complete";
+    projectStatus = t("project.status.complete");
   } else if (status === "in_progress") {
     statusColor = "bg-primary";
-    projectStatus = "In progress";
+    projectStatus = t("project.status.inProgress");
   } else if (status === "unfunded") {
     statusColor = "bg-accent-secondary";
-    projectStatus = "Unfunded";
+    projectStatus = t("project.status.unfunded");
   }
   return /* @__PURE__ */ jsxs("span", { className: "bg-background text-content inline-flex items-center gap-2 rounded-full px-2 py-1 text-sm", children: [
     /* @__PURE__ */ jsx("span", { className: `size-2 rounded-full ${statusColor}` }),
@@ -2317,7 +2323,7 @@ function ProposalStatus({
   ] });
 }
 
-const __vite_glob_0_255 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_256 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalStatus
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -2434,7 +2440,7 @@ function ProposalCardHeader({
                 style: { overflow: "visible" },
                 children: [
                   !userSelected && /* @__PURE__ */ jsx(
-                    Link$8,
+                    Link$b,
                     {
                       href: proposal.link,
                       className: "hover:text-primary w-full font-medium",
@@ -2512,7 +2518,7 @@ function ProposalCardHeader({
   );
 }
 
-const __vite_glob_0_237 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_238 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalCardHeader
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -2566,7 +2572,7 @@ function ProposalCardNav({
   );
 }
 
-const __vite_glob_0_239 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_240 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalCardNav
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -2589,6 +2595,7 @@ function currency(value, maximumFractionDigits = 2, currency2 = "USD", locale = 
 }
 
 function ProposalFundingPercentages({ proposal }) {
+  const { t } = useLaravelReactI18n();
   const calculatePercentage = (numerator, denominator) => denominator > 0 ? Math.ceil(numerator / denominator * 100) : 0;
   const formatCurrency = (amount, currencyCode2) => currency(
     amount ? parseInt(amount.toString()) : 0,
@@ -2633,7 +2640,7 @@ function ProposalFundingPercentages({ proposal }) {
         className: "flex items-baseline justify-between gap-2 pt-2",
         "data-testid": "proposal-funding-requested",
         children: [
-          /* @__PURE__ */ jsx("span", { children: "Requested" }),
+          /* @__PURE__ */ jsx("span", { children: t("requested") }),
           /* @__PURE__ */ jsxs("div", { children: [
             /* @__PURE__ */ jsx("span", { className: "text-md font-semibold", children: formattedAmountRequested }),
             /* @__PURE__ */ jsx("span", { className: "text-highlight text-sm", children: ` (${campaignPercentage}% of fund)` })
@@ -2647,7 +2654,7 @@ function ProposalFundingPercentages({ proposal }) {
         className: "flex items-baseline justify-between gap-2",
         "data-testid": "proposal-funding-received",
         children: [
-          /* @__PURE__ */ jsx("span", { children: "Received" }),
+          /* @__PURE__ */ jsx("span", { children: t("received") }),
           /* @__PURE__ */ jsxs("div", { children: [
             /* @__PURE__ */ jsx("span", { className: "text-md font-semibold", children: formattedAmountReceived }),
             /* @__PURE__ */ jsx("span", { className: "text-highlight text-sm", children: ` / ${formattedAmountRequested} (${fundingPercentage}%)` })
@@ -2677,40 +2684,41 @@ function ProposalFundingPercentages({ proposal }) {
   ] });
 }
 
-const __vite_glob_0_244 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_245 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalFundingPercentages
 }, Symbol.toStringTag, { value: 'Module' }));
 
 function ProposalFundingStatus({ funding_status = "pending" }) {
+  const { t } = useLaravelReactI18n();
   let bgColor = "";
   let textColor = "";
   let status = "";
   if (funding_status === "pending") {
     bgColor = "";
     textColor = "";
-    status = "Pending";
+    status = t("funding.status.pending");
   } else if (funding_status === "withdrawn") {
     bgColor = "";
     textColor = "";
-    status = "Withdrawn";
+    status = t("funding.status.withdrawn");
   } else if (funding_status === "complete") {
     bgColor = "bg-success-light";
     textColor = "text-success";
-    status = "Fully Paid";
+    status = t("funding.status.fullyPaid");
   } else if (funding_status === "funded") {
     bgColor = "bg-eye-logo";
     textColor = "text-primary";
-    status = "Funded";
+    status = t("funding.status.funded");
   } else if (funding_status === "leftover") {
     bgColor = "bg-eye-logo";
     textColor = "text-primary";
-    status = "Funded";
+    status = t("funding.status.funded");
   }
   if (funding_status === "not_approved" || funding_status === "over_budget" || !funding_status) {
     bgColor = "";
     textColor = "";
-    status = "Not Funded";
+    status = t("funding.status.notFunded");
   }
   return /* @__PURE__ */ jsx(
     "span",
@@ -2722,7 +2730,7 @@ function ProposalFundingStatus({ funding_status = "pending" }) {
   );
 }
 
-const __vite_glob_0_245 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_246 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalFundingStatus
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -2814,7 +2822,7 @@ function ProposalQuickpitch({
   );
 }
 
-const __vite_glob_0_251 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_252 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalQuickpitch
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -2887,7 +2895,7 @@ function ProposalSolution({
   );
 }
 
-const __vite_glob_0_254 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_255 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalSolution
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -3064,7 +3072,7 @@ function ProposalHorizontalCard({
   );
 }
 
-const __vite_glob_0_246 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_247 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalHorizontalCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -3229,7 +3237,7 @@ function ProposalVerticalCard({
   );
 }
 
-const __vite_glob_0_262 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_263 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalVerticalCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -3309,7 +3317,7 @@ const ProposalCard = React__default.memo(
   }
 );
 
-const __vite_glob_0_235 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_236 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -3338,7 +3346,7 @@ const ProposalList$1 = ({
   );
 };
 
-const __vite_glob_0_248 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_249 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalList$1
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -3394,7 +3402,7 @@ function ProposalVerticalCardLoading() {
   )) });
 }
 
-const __vite_glob_0_263 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_264 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalVerticalCardLoading
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -3492,7 +3500,7 @@ const CampaignCard$2 = ({
               level: "3",
               className: "flex items-center justify-between text-lg font-semibold",
               children: /* @__PURE__ */ jsx(
-                Link$8,
+                Link$b,
                 {
                   href: useLocalizedRoute(
                     "funds.fund.campaigns.campaign.show",
@@ -3773,6 +3781,94 @@ const __vite_glob_0_0 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePro
     default: Index$o
 }, Symbol.toStringTag, { value: 'Module' }));
 
+function ArabicTest() {
+  const { t, currentLocale } = useLaravelReactI18n();
+  return /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(Head, { title: `${t("Test Arabic")} - ${currentLocale()}` }),
+    /* @__PURE__ */ jsx("div", { className: "min-h-screen bg-background-lighter p-8", children: /* @__PURE__ */ jsxs("div", { className: "max-w-4xl mx-auto", children: [
+      /* @__PURE__ */ jsx("h1", { className: "text-4xl font-bold mb-8 text-primary", children: "اختبار اللغة العربية - Arabic Language Test" }),
+      /* @__PURE__ */ jsxs("div", { className: "grid gap-6", children: [
+        /* @__PURE__ */ jsxs("div", { className: "bg-white p-6 rounded-lg shadow", children: [
+          /* @__PURE__ */ jsx("h2", { className: "text-2xl font-semibold mb-4 text-primary", children: t("activeFund") }),
+          /* @__PURE__ */ jsx("p", { className: "text-gray-700 leading-relaxed", children: t("authMessage") })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "bg-white p-6 rounded-lg shadow", children: [
+          /* @__PURE__ */ jsx("h2", { className: "text-2xl font-semibold mb-4 text-primary", children: "معلومات الاتجاه - Direction Info" }),
+          /* @__PURE__ */ jsxs("ul", { className: "space-y-2 text-gray-700", children: [
+            /* @__PURE__ */ jsxs("li", { children: [
+              /* @__PURE__ */ jsx("strong", { children: "Current Locale:" }),
+              " ",
+              currentLocale()
+            ] }),
+            /* @__PURE__ */ jsxs("li", { children: [
+              /* @__PURE__ */ jsx("strong", { children: "HTML Dir:" }),
+              " ",
+              typeof document !== "undefined" ? document.documentElement.dir : "server-side"
+            ] }),
+            /* @__PURE__ */ jsxs("li", { children: [
+              /* @__PURE__ */ jsx("strong", { children: "HTML Lang:" }),
+              " ",
+              typeof document !== "undefined" ? document.documentElement.lang : "server-side"
+            ] })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "bg-white p-6 rounded-lg shadow", children: [
+          /* @__PURE__ */ jsx("h2", { className: "text-2xl font-semibold mb-4 text-primary", children: "أمثلة التنسيق - Layout Examples" }),
+          /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
+            /* @__PURE__ */ jsxs("div", { className: "flex justify-between items-center p-4 bg-gray-50 rounded", children: [
+              /* @__PURE__ */ jsx("span", { children: "بداية" }),
+              /* @__PURE__ */ jsx("span", { children: "وسط" }),
+              /* @__PURE__ */ jsx("span", { children: "نهاية" })
+            ] }),
+            /* @__PURE__ */ jsx("div", { className: "text-right bg-blue-50 p-4 rounded", children: "هذا النص يجب أن يظهر من اليمين إلى اليسار" }),
+            /* @__PURE__ */ jsx("div", { className: "text-left bg-green-50 p-4 rounded", children: "This English text should appear left-to-right even in RTL mode" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "bg-white p-6 rounded-lg shadow", children: [
+          /* @__PURE__ */ jsx("h2", { className: "text-2xl font-semibold mb-4 text-primary", children: "نموذج اختبار - Form Test" }),
+          /* @__PURE__ */ jsxs("form", { className: "space-y-4", children: [
+            /* @__PURE__ */ jsxs("div", { children: [
+              /* @__PURE__ */ jsx("label", { className: "block text-sm font-medium text-gray-700 mb-2", children: t("name") }),
+              /* @__PURE__ */ jsx(
+                "input",
+                {
+                  type: "text",
+                  className: "w-full p-3 border border-gray-300 rounded-md focus:ring-primary focus:border-primary",
+                  placeholder: t("name")
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxs("div", { children: [
+              /* @__PURE__ */ jsx("label", { className: "block text-sm font-medium text-gray-700 mb-2", children: t("email") }),
+              /* @__PURE__ */ jsx(
+                "input",
+                {
+                  type: "email",
+                  className: "w-full p-3 border border-gray-300 rounded-md focus:ring-primary focus:border-primary",
+                  placeholder: t("emailAddress")
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsx(
+              "button",
+              {
+                type: "submit",
+                className: "bg-primary text-white px-6 py-3 rounded-md hover:bg-primary-dark transition-colors",
+                children: "إرسال - Submit"
+              }
+            )
+          ] })
+        ] })
+      ] })
+    ] }) })
+  ] });
+}
+
+const __vite_glob_0_5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+    __proto__: null,
+    default: ArabicTest
+}, Symbol.toStringTag, { value: 'Module' }));
+
 function InputError({
   message,
   className = "",
@@ -3909,7 +4005,7 @@ function ApplicationLogo(props) {
 
 function Guest({ children }) {
   return /* @__PURE__ */ jsxs("div", { className: "bg-background-lighter flex min-h-screen flex-col items-center pt-6 sm:justify-center sm:pt-0", children: [
-    /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(Link$8, { href: "/", children: /* @__PURE__ */ jsx(ApplicationLogo, { className: "text-content h-20 w-20 fill-current" }) }) }),
+    /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(Link$b, { href: "/", children: /* @__PURE__ */ jsx(ApplicationLogo, { className: "text-content h-20 w-20 fill-current" }) }) }),
     /* @__PURE__ */ jsx("div", { className: "bg-background mt-6 w-full overflow-hidden px-6 py-4 shadow-md sm:max-w-md sm:rounded-lg", children })
   ] });
 }
@@ -3950,7 +4046,7 @@ function ConfirmPassword() {
   ] });
 }
 
-const __vite_glob_0_5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_6 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ConfirmPassword
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -3987,7 +4083,7 @@ function ForgotPassword({ status }) {
   ] });
 }
 
-const __vite_glob_0_6 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_7 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ForgotPassword
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -4787,70 +4883,82 @@ function CatalystEyeIcon({
 
 function AuthLayout({ children }) {
   const { t } = useLaravelReactI18n();
-  return /* @__PURE__ */ jsxs("div", { className: "flex min-h-screen w-full flex-col items-center justify-center lg:flex-row", children: [
-    /* @__PURE__ */ jsxs("div", { className: "bg-background mt-30 mr-54 mb-30 ml-54 inline-flex w-[300px] flex-col items-center justify-start gap-7 rounded-xl p-4 shadow-md sm:w-[400px] lg:w-[700px]", children: [
-      /* @__PURE__ */ jsx("div", { className: "flex justify-center p-3", children: /* @__PURE__ */ jsx(CatalystLogo, {}) }),
-      children
-    ] }),
-    /* @__PURE__ */ jsx("div", { className: "splash-wrapper from-background-home-gradient-color-1 to-background-home-gradient-color-2 z-10 hidden w-full justify-center bg-gradient-to-r lg:sticky lg:-top-64 lg:order-2 lg:flex lg:h-screen lg:rounded-tl-4xl", children: /* @__PURE__ */ jsxs(
+  return /* @__PURE__ */ jsxs("div", { className: " flex min-h-screen w-full flex-col items-center justify-center lg:flex-row", children: [
+    /* @__PURE__ */ jsx(
       "div",
       {
-        className: "relative flex h-full w-full flex-col justify-center overflow-visible lg:gap-8 lg:pt-8",
-        style: {
-          backgroundImage: `url(${ConcentricCircles})`,
-          backgroundPosition: "top",
-          backgroundRepeat: "no-repeat"
-        },
-        children: [
-          /* @__PURE__ */ jsxs("div", { className: "absolute top-0 left-0 p-4 md:p-6 lg:p-10", children: [
-            /* @__PURE__ */ jsx(CatalystEyeIcon, {}),
-            /* @__PURE__ */ jsx(Title, { level: "1", className: "text-light-persist", children: t("app.name") }),
-            /* @__PURE__ */ jsx(Paragraph, { className: "text-light-persist max-w-md text-base font-normal", children: t("authMessage") })
-          ] }),
-          /* @__PURE__ */ jsxs("div", { className: "relative mt-45 overflow-hidden", children: [
-            /* @__PURE__ */ jsxs("div", { className: "flex items-end gap-6", children: [
-              /* @__PURE__ */ jsx(
-                Image$1,
-                {
-                  imageUrl: LoginImageOne,
-                  className: "h-[295.3px] w-[292.67px]"
-                }
-              ),
-              /* @__PURE__ */ jsx(
-                Image$1,
-                {
-                  imageUrl: LoginImageTwo,
-                  className: "h-[232px] w-[320.67px]"
-                }
-              ),
-              /* @__PURE__ */ jsx(
-                Image$1,
-                {
-                  imageUrl: LoginImageThree,
-                  className: "h-[464px] w-[461.3px]"
-                }
-              )
-            ] }),
-            /* @__PURE__ */ jsxs("div", { className: "mt-6 flex gap-6", children: [
-              /* @__PURE__ */ jsx(
-                Image$1,
-                {
-                  imageUrl: LoginImageFour,
-                  className: "h-[481.3px] w-[292.67px]"
-                }
-              ),
-              /* @__PURE__ */ jsx(
-                Image$1,
-                {
-                  imageUrl: LoginImageFive,
-                  className: "h-[361px] w-[543.5px]"
-                }
-              )
-            ] })
-          ] })
-        ]
+        className: "container inline-flex flex-col items-center justify-start gap-7 ",
+        children: /* @__PURE__ */ jsxs("div", { className: "bg-background w-full shadow-md rounded-xl my-28 max-w-lg", children: [
+          /* @__PURE__ */ jsx("div", { className: "flex justify-center py-8 px-8", children: /* @__PURE__ */ jsx(CatalystLogo, {}) }),
+          children
+        ] })
       }
-    ) })
+    ),
+    /* @__PURE__ */ jsx(
+      "div",
+      {
+        className: "splash-wrapper from-background-home-gradient-color-1 to-background-home-gradient-color-2 z-10 hidden ml-10 w-full justify-center bg-gradient-to-r lg:sticky lg:-top-64 lg:order-2 lg:flex lg:h-screen lg:rounded-tl-4xl",
+        children: /* @__PURE__ */ jsxs(
+          "div",
+          {
+            className: "relative flex h-full w-full flex-col justify-center overflow-visible lg:gap-8 lg:pt-8",
+            style: {
+              backgroundImage: `url(${ConcentricCircles})`,
+              backgroundPosition: "top",
+              backgroundRepeat: "no-repeat"
+            },
+            children: [
+              /* @__PURE__ */ jsxs("div", { className: "absolute top-0 left-0 p-4 md:p-6 lg:p-10", children: [
+                /* @__PURE__ */ jsx(CatalystEyeIcon, {}),
+                /* @__PURE__ */ jsx(Title, { level: "1", className: "text-light-persist", children: t("app.name") }),
+                /* @__PURE__ */ jsx(Paragraph, { className: "text-light-persist max-w-md text-base font-normal", children: t("authMessage") })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "relative mt-45 overflow-hidden", children: [
+                /* @__PURE__ */ jsxs("div", { className: "flex items-end gap-6", children: [
+                  /* @__PURE__ */ jsx(
+                    Image$1,
+                    {
+                      imageUrl: LoginImageOne,
+                      className: "h-[295.3px] w-[292.67px]"
+                    }
+                  ),
+                  /* @__PURE__ */ jsx(
+                    Image$1,
+                    {
+                      imageUrl: LoginImageTwo,
+                      className: "h-[232px] w-[320.67px]"
+                    }
+                  ),
+                  /* @__PURE__ */ jsx(
+                    Image$1,
+                    {
+                      imageUrl: LoginImageThree,
+                      className: "h-[464px] w-[461.3px]"
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "mt-6 flex gap-6", children: [
+                  /* @__PURE__ */ jsx(
+                    Image$1,
+                    {
+                      imageUrl: LoginImageFour,
+                      className: "h-[481.3px] w-[292.67px]"
+                    }
+                  ),
+                  /* @__PURE__ */ jsx(
+                    Image$1,
+                    {
+                      imageUrl: LoginImageFive,
+                      className: "h-[361px] w-[543.5px]"
+                    }
+                  )
+                ] })
+              ] })
+            ]
+          }
+        )
+      }
+    )
   ] });
 }
 
@@ -5859,7 +5967,7 @@ function LoginForm$1({ closeModal }) {
   ] });
 }
 
-const __vite_glob_0_8 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_9 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: LoginForm$1
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -5871,7 +5979,7 @@ function Login({}) {
   ] });
 }
 
-const __vite_glob_0_7 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_8 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Login
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -6109,7 +6217,7 @@ function RegisterForm({ closeModal }) {
   );
 }
 
-const __vite_glob_0_9 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_10 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: RegisterForm
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -6121,7 +6229,7 @@ function Register({}) {
   ] });
 }
 
-const __vite_glob_0_10 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_11 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Register
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -6211,7 +6319,7 @@ function ResetPassword({
   ] });
 }
 
-const __vite_glob_0_11 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_12 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ResetPassword
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -6230,7 +6338,7 @@ function VerifyEmail({ status }) {
     /* @__PURE__ */ jsx("form", { onSubmit: submit, children: /* @__PURE__ */ jsxs("div", { className: "mt-4 flex items-center justify-between", children: [
       /* @__PURE__ */ jsx(PrimaryButton, { disabled: processing, children: "Resend Verification Email" }),
       /* @__PURE__ */ jsx(
-        Link$8,
+        Link$b,
         {
           href: route("logout"),
           method: "post",
@@ -6243,7 +6351,7 @@ function VerifyEmail({ status }) {
   ] });
 }
 
-const __vite_glob_0_12 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_13 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: VerifyEmail
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -7357,7 +7465,7 @@ const PaginationLink = ({
   linkProps,
   ...props
 }) => /* @__PURE__ */ jsx(
-  Link$8,
+  Link$b,
   {
     onClick: handleclick,
     "aria-current": isActive ? "page" : void 0,
@@ -7486,7 +7594,7 @@ const PaginationComponent = ({
   };
   const mobilePageLinks = getMobilePageLinks();
   const renderPageLink = (link, index, size = "md") => /* @__PURE__ */ jsx(PaginationItem, { children: link.label === "..." ? /* @__PURE__ */ jsx(PaginationEllipsis, {}) : /* @__PURE__ */ jsx(
-    Link$8,
+    Link$b,
     {
       href: buildUrl(ParamsEnum.PAGE, link.label, "Current Page"),
       onClick: (e) => {
@@ -7750,12 +7858,18 @@ function RecordsNotFound({
   showIcon = true
 }) {
   const { t } = useLaravelReactI18n();
-  return /* @__PURE__ */ jsx(
+  const getMessage = () => {
+    return t(`recordsNotFound.message`);
+  };
+  return /* @__PURE__ */ jsxs(
     "div",
     {
       className: "bg-background flex w-full flex-col items-center justify-center rounded-lg px-4 py-8",
       "data-testid": `records-not-found-${context}`,
-      children: showIcon && /* @__PURE__ */ jsx(RecordsNotFoundIcon, {})
+      children: [
+        showIcon && /* @__PURE__ */ jsx(RecordsNotFoundIcon, {}),
+        /* @__PURE__ */ jsx(Paragraph, { className: "mt-2 max-w-md text-center text-base text-gray-600", children: getMessage() })
+      ]
     }
   );
 }
@@ -7891,7 +8005,7 @@ function CreateListPicker({
   );
 }
 
-const __vite_glob_0_16 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_17 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CreateListPicker
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -8076,7 +8190,7 @@ const DropdownMenu = ({
   );
 };
 
-const __vite_glob_0_17 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_18 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: DropdownMenu
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -8123,7 +8237,7 @@ const BookmarkCollectionCard = ({
         /* @__PURE__ */ jsx("div", { className: "flex flex-row items-center justify-between pb-2", children: /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
           /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3", children: [
             /* @__PURE__ */ jsx(
-              Link$8,
+              Link$b,
               {
                 href: useLocalizedRoute("lists.view", {
                   bookmarkCollection: collection?.id,
@@ -8217,7 +8331,7 @@ const BookmarkCollectionCard = ({
   );
 };
 
-const __vite_glob_0_180 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_181 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: BookmarkCollectionCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -8245,7 +8359,7 @@ const BookmarkCollectionList = ({
   )) }) }) });
 };
 
-const __vite_glob_0_181 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_182 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: BookmarkCollectionList
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -8298,7 +8412,7 @@ function BookmarkCollectionListLoader() {
   ] }, index)) });
 }
 
-const __vite_glob_0_182 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_183 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: BookmarkCollectionListLoader
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -8371,7 +8485,7 @@ const Index$n = ({
   ) });
 };
 
-const __vite_glob_0_13 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_14 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index$n
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -9129,7 +9243,7 @@ const ReviewCard = ({
           review?.proposal?.link && /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
             /* @__PURE__ */ jsx(ValueLabel, { children: t("proposal") }),
             /* @__PURE__ */ jsx(
-              Link$8,
+              Link$b,
               {
                 href: review?.proposal?.link,
                 className: "link-primary text-sm",
@@ -9140,7 +9254,7 @@ const ReviewCard = ({
           review?.proposal?.fund?.title && /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
             /* @__PURE__ */ jsx(ValueLabel, { children: t("funds.fund") }),
             /* @__PURE__ */ jsx(
-              Link$8,
+              Link$b,
               {
                 href: useLocalizedRoute(
                   "funds.fund.show",
@@ -9310,7 +9424,7 @@ function CommunityIdeascaleProfiles({
   ] }) });
 }
 
-const __vite_glob_0_57 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_58 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CommunityIdeascaleProfiles
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -9354,7 +9468,7 @@ const CommunityCard = ({
     /* @__PURE__ */ jsx("div", { className: "flex h-auto w-full items-center justify-center overflow-hidden pt-8 pb-4", children: /* @__PURE__ */ jsx("div", { className: "bg-background-darker border-background-lighter flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border-4", children: /* @__PURE__ */ jsx(CommunitiesIcon, { className: "text-dark h-8 w-8" }) }) }),
     /* @__PURE__ */ jsx("div", { className: "px-8", children: /* @__PURE__ */ jsxs("div", { className: "flex w-full flex-col items-center justify-center text-center", children: [
       /* @__PURE__ */ jsx(
-        Link$8,
+        Link$b,
         {
           href: useLocalizedRoute("communities.dashboard", {
             slug: community.slug
@@ -9445,7 +9559,7 @@ const CommunityCard = ({
   ] });
 };
 
-const __vite_glob_0_53 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_54 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CommunityCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -9520,7 +9634,7 @@ const CommunityCardMini = ({
     ] }),
     /* @__PURE__ */ jsx("div", { className: "px-8", children: /* @__PURE__ */ jsxs("div", { className: "flex w-full flex-col items-center justify-center text-center", children: [
       /* @__PURE__ */ jsx(
-        Link$8,
+        Link$b,
         {
           href: useLocalizedRoute("communities.dashboard", {
             slug: community.slug
@@ -9561,7 +9675,7 @@ const CommunityCardMini = ({
   ] });
 };
 
-const __vite_glob_0_54 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_55 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CommunityCardMini
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -9597,7 +9711,7 @@ const CommunitiesList = ({
   ) });
 };
 
-const __vite_glob_0_51 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_52 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CommunitiesList
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -9613,7 +9727,7 @@ function CommunityLoader() {
   ) }, index)) });
 }
 
-const __vite_glob_0_58 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_59 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CommunityLoader
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -9636,7 +9750,7 @@ const CommunitiesPaginatedList = ({
   ] });
 };
 
-const __vite_glob_0_52 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_53 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CommunitiesPaginatedList
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -9687,7 +9801,7 @@ const GroupCardLoader = () => {
   )) });
 };
 
-const __vite_glob_0_112 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_113 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: GroupCardLoader
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -9834,6 +9948,41 @@ function LinkedInIcon({
     }
   );
 }
+
+const LocationIcon = (props) => {
+  return /* @__PURE__ */ jsxs(
+    "svg",
+    {
+      width: "23",
+      height: "24",
+      viewBox: "0 0 23 24",
+      fill: "none",
+      xmlns: "http://www.w3.org/2000/svg",
+      ...props,
+      children: [
+        /* @__PURE__ */ jsx("rect", { y: "0.545288", width: "23", height: "23", rx: "4", fill: "black" }),
+        /* @__PURE__ */ jsx(
+          "path",
+          {
+            d: "M16.0007 10.9453C16.0007 13.6915 12.885 16.5516 11.8388 17.4349C11.7413 17.5065 11.6227 17.5453 11.5007 17.5453C11.3788 17.5453 11.2601 17.5065 11.1627 17.4349C10.1164 16.5516 7.00073 13.6915 7.00073 10.9453C7.00073 9.77838 7.47484 8.6592 8.31875 7.83403C9.16267 7.00886 10.3073 6.54529 11.5007 6.54529C12.6942 6.54529 13.8388 7.00886 14.6827 7.83403C15.5266 8.6592 16.0007 9.77838 16.0007 10.9453Z",
+            stroke: "white",
+            strokeLinecap: "round",
+            strokeLinejoin: "round"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          "path",
+          {
+            d: "M11.5007 12.5453C12.3292 12.5453 13.0007 11.8737 13.0007 11.0453C13.0007 10.2169 12.3292 9.54529 11.5007 9.54529C10.6723 9.54529 10.0007 10.2169 10.0007 11.0453C10.0007 11.8737 10.6723 12.5453 11.5007 12.5453Z",
+            stroke: "white",
+            strokeLinecap: "round",
+            strokeLinejoin: "round"
+          }
+        )
+      ]
+    }
+  );
+};
 
 function WebIcon({
   className,
@@ -9998,65 +10147,149 @@ function XIcon({ className, width = 48, height = 48 }) {
   );
 }
 
-function GroupSocials({ group }) {
-  const { t } = useLaravelReactI18n();
+const ensureHttps = (s) => s ? s.startsWith("http://") || s.startsWith("https://") ? s : `https://${s}` : "";
+const stripAt = (s) => s.replace(/^@/, "").trim();
+const githubLink = (v) => v ? /github\.com/i.test(v) ? ensureHttps(v) : `https://github.com/${stripAt(v)}` : "";
+const linkedinLink = (v) => v ? /linkedin\.com/i.test(v) ? ensureHttps(v) : `https://www.linkedin.com/in/${stripAt(v)}` : "";
+const xLink = (v) => v ? /x\.com|twitter\.com/i.test(v) ? ensureHttps(v) : `https://x.com/${stripAt(v)}` : "";
+const discordLink = (v) => v ? /discord\.com|discord\.gg/i.test(v) ? ensureHttps(v) : `https://discord.com/users/${stripAt(v)}` : "";
+const webLink = (v) => ensureHttps(v || "");
+const getGithubUsername = (url) => {
+  try {
+    const u = new URL(ensureHttps(url));
+    const parts = u.pathname.split("/").filter(Boolean);
+    return parts[0] || "";
+  } catch {
+    return stripAt(url);
+  }
+};
+const formatWebsiteHost = (url) => {
+  try {
+    const u = new URL(ensureHttps(url));
+    let host = u.hostname.toLowerCase();
+    if (!host.startsWith("www.")) host = `www.${host}`;
+    return host;
+  } catch {
+    let host = url.replace(/^https?:\/\//i, "").split("/")[0];
+    if (!host.startsWith("www.")) host = `www.${host}`;
+    return host;
+  }
+};
+const displayNameFromUrl = (url) => {
+  try {
+    const u = new URL(ensureHttps(url));
+    const host = u.hostname.replace(/^www\./, "");
+    const parts = u.pathname.split("/").filter(Boolean);
+    if (/linkedin\.com$/i.test(host)) {
+      if (parts[0] === "in" || parts[0] === "company") {
+        return parts[1] || host;
+      }
+      return parts[0] || host;
+    }
+    if (/x\.com$|twitter\.com$/i.test(host)) {
+      return `@${parts[0] || ""}`;
+    }
+    if (/discord\.com$/i.test(host)) {
+      return parts[1] || parts[0] || host;
+    }
+    return host;
+  } catch {
+    return url;
+  }
+};
+function GroupSocials({
+  group,
+  iconContainerClass,
+  showLink = false,
+  showLocation = false
+}) {
   const socialLinks = {
-    twitter: `https://x.com/${group?.twitter}`,
-    github: `https://github.com/${group?.github}`,
-    linkedin: `https://www.linkedin.com/in/${group?.linkedin}`,
-    discord: `https://discord.com/users/${group?.discord}`,
-    web: group?.website || ""
+    twitter: xLink(group?.twitter),
+    github: githubLink(group?.github),
+    linkedin: linkedinLink(group?.linkedin),
+    discord: discordLink(group?.discord),
+    web: webLink(group?.website)
   };
-  return /* @__PURE__ */ jsx("div", { "aria-labelledby": "group-socials", children: /* @__PURE__ */ jsxs("div", { className: "text-content flex gap-2", children: [
-    group?.twitter && /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsx("div", { "aria-labelledby": "group-socials", children: /* @__PURE__ */ jsxs("div", { className: iconContainerClass || "text-content flex gap-2", children: [
+    group?.twitter && /* @__PURE__ */ jsxs(
       "a",
       {
         href: socialLinks.twitter,
         target: "_blank",
         rel: "noopener noreferrer",
-        children: /* @__PURE__ */ jsx(XIcon, { className: "text-content" })
+        className: "flex items-center gap-2",
+        children: [
+          /* @__PURE__ */ jsx(XIcon, { className: "text-content" }),
+          showLink && /* @__PURE__ */ jsxs("span", { children: [
+            "@",
+            stripAt(group.twitter)
+          ] })
+        ]
       }
     ),
-    group?.linkedin && /* @__PURE__ */ jsx(
+    group?.linkedin && /* @__PURE__ */ jsxs(
       "a",
       {
         href: socialLinks.linkedin,
         target: "_blank",
         rel: "noopener noreferrer",
-        children: /* @__PURE__ */ jsx(LinkedInIcon, { className: "text-content" })
+        className: "flex items-center gap-2",
+        children: [
+          /* @__PURE__ */ jsx(LinkedInIcon, { className: "text-content" }),
+          showLink && /* @__PURE__ */ jsx("span", { children: displayNameFromUrl(socialLinks.linkedin) })
+        ]
       }
     ),
-    group?.discord && /* @__PURE__ */ jsx(
+    group?.discord && /* @__PURE__ */ jsxs(
       "a",
       {
         href: socialLinks.discord,
         target: "_blank",
         rel: "noopener noreferrer",
-        children: /* @__PURE__ */ jsx(DiscordIcon, { className: "text-content" })
+        className: "flex items-center gap-2",
+        children: [
+          /* @__PURE__ */ jsx(DiscordIcon, { className: "text-content" }),
+          showLink && /* @__PURE__ */ jsx("span", { children: displayNameFromUrl(socialLinks.discord) })
+        ]
       }
     ),
-    group?.github && /* @__PURE__ */ jsx(
+    group?.github && /* @__PURE__ */ jsxs(
       "a",
       {
         href: socialLinks.github,
         target: "_blank",
         rel: "noopener noreferrer",
-        children: /* @__PURE__ */ jsx(GitHubIcon, { className: "text-content" })
+        className: "flex items-center gap-2",
+        children: [
+          /* @__PURE__ */ jsx(GitHubIcon, { className: "text-content" }),
+          showLink && /* @__PURE__ */ jsxs("span", { children: [
+            "@",
+            getGithubUsername(socialLinks.github)
+          ] })
+        ]
       }
     ),
-    group?.website && /* @__PURE__ */ jsx(
+    group?.website && /* @__PURE__ */ jsxs(
       "a",
       {
         href: socialLinks.web,
         target: "_blank",
         rel: "noopener noreferrer",
-        children: /* @__PURE__ */ jsx(WebIcon, { className: "text-content" })
+        className: "flex items-center gap-2",
+        children: [
+          /* @__PURE__ */ jsx(WebIcon, { className: "text-content" }),
+          showLink && /* @__PURE__ */ jsx("span", { children: formatWebsiteHost(socialLinks.web) })
+        ]
       }
-    )
+    ),
+    showLocation && group?.location && /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+      /* @__PURE__ */ jsx(LocationIcon, { className: "text-content" }),
+      showLink && /* @__PURE__ */ jsx("span", { children: group.location })
+    ] })
   ] }) });
 }
 
-const __vite_glob_0_117 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_118 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: GroupSocials
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -10090,7 +10323,7 @@ const GroupCard = ({ group }) => {
         }
       ) }),
       /* @__PURE__ */ jsx("div", { className: "flex w-full flex-col items-center gap-4", children: /* @__PURE__ */ jsx(
-        Link$8,
+        Link$b,
         {
           href: useLocalizedRoute("groups.group.proposals", {
             group: group?.slug
@@ -10171,7 +10404,7 @@ const GroupCard = ({ group }) => {
   ] });
 };
 
-const __vite_glob_0_108 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_109 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: GroupCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -10189,7 +10422,7 @@ const GroupCardMini = ({ group }) => {
         }
       ) }),
       /* @__PURE__ */ jsx(
-        Link$8,
+        Link$b,
         {
           href: useLocalizedRoute("groups.group.proposals", {
             group: group?.slug
@@ -10216,7 +10449,7 @@ const GroupCardMini = ({ group }) => {
   ] });
 };
 
-const __vite_glob_0_111 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_112 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: GroupCardMini
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -10240,7 +10473,7 @@ const GroupList = ({
   )) }) }) });
 };
 
-const __vite_glob_0_115 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_116 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: GroupList
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -10263,7 +10496,7 @@ const GroupPaginatedList = ({
   ] }) : /* @__PURE__ */ jsx("section", { className: "", children: /* @__PURE__ */ jsx(RecordsNotFound, {}) }) }) }) });
 };
 
-const __vite_glob_0_116 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_117 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: GroupPaginatedList
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -10290,7 +10523,7 @@ const IdeaScaleProfileLoader = ({ count = 1 }) => {
   )) });
 };
 
-const __vite_glob_0_140 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_141 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: IdeaScaleProfileLoader
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -10385,7 +10618,7 @@ const IdeascaleProfileCardMini = ({
         ) }),
         /* @__PURE__ */ jsx("div", { className: "min-w-0 flex-1", children: /* @__PURE__ */ jsx("div", { className: "text-2 font-bold break-words", children: /* @__PURE__ */ jsx(TooltipProvider, { children: /* @__PURE__ */ jsxs(Tooltip, { children: [
           /* @__PURE__ */ jsx(
-            Link$8,
+            Link$b,
             {
               className: "line-clamp-2",
               href: useLocalizedRoute(
@@ -10441,7 +10674,7 @@ const IdeascaleProfileCardMini = ({
   ] });
 };
 
-const __vite_glob_0_142 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_143 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: IdeascaleProfileCardMini
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -10480,7 +10713,7 @@ const IdeascaleProfilesList = ({
   )) }) });
 };
 
-const __vite_glob_0_143 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_144 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: IdeascaleProfilesList
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -10513,7 +10746,7 @@ const IdeascaleProfilePaginatedList = ({
   ] });
 };
 
-const __vite_glob_0_144 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_145 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: IdeascaleProfilePaginatedList
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -10550,7 +10783,7 @@ function ProposalHorizontalCardLoading() {
   )) });
 }
 
-const __vite_glob_0_247 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_248 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalHorizontalCardLoading
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -10704,7 +10937,7 @@ function ProposalCardMini({
   );
 }
 
-const __vite_glob_0_238 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_239 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalCardMini
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -10751,7 +10984,7 @@ const ProposalResults = ({
   );
 };
 
-const __vite_glob_0_252 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_253 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalResults
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -10808,7 +11041,7 @@ const ProposalPaginatedList = ({
   ] });
 };
 
-const __vite_glob_0_250 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_251 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalPaginatedList
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -11193,7 +11426,7 @@ const BookmarkModelSearch = ({
   );
 };
 
-const __vite_glob_0_15 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_16 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: BookmarkModelSearch
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -11434,7 +11667,7 @@ function EditListForm({
   ] });
 }
 
-const __vite_glob_0_18 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_19 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: EditListForm
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -11693,7 +11926,7 @@ const Manage = (props) => {
   ] });
 };
 
-const __vite_glob_0_14 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_15 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Manage
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -11787,7 +12020,7 @@ const BookmarkContent = (props) => {
   return /* @__PURE__ */ jsxs(Fragment, { children: [
     /* @__PURE__ */ jsxs("div", { className: "container w-full py-4 lg:relative", children: [
       isAuthor && /* @__PURE__ */ jsx("div", { className: "top-6 right-8 z-50 ml-auto flex justify-end gap-4 lg:absolute", children: /* @__PURE__ */ jsx(
-        Link$8,
+        Link$b,
         {
           href: generateLocalizedRoute("my.lists.manage", {
             bookmarkCollection: bookmarkCollection.id,
@@ -11924,7 +12157,7 @@ const View = (props) => {
   ] });
 };
 
-const __vite_glob_0_19 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_20 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: View
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -12062,7 +12295,7 @@ const CampaignCard$1 = ({
           className: "mb-2 flex items-center justify-between text-lg font-semibold",
           children: [
             /* @__PURE__ */ jsxs(
-              Link$8,
+              Link$b,
               {
                 href: useLocalizedRoute(
                   "funds.fund.campaigns.campaign.show",
@@ -12113,7 +12346,7 @@ const CampaignCard$1 = ({
   ] });
 };
 
-const __vite_glob_0_22 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_23 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CampaignCard$1
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -12137,7 +12370,7 @@ const Index$m = ({ fund, campaigns }) => {
   ] });
 };
 
-const __vite_glob_0_20 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_21 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index$m
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -12210,7 +12443,7 @@ const CampaignAccordion = ({
   ] });
 };
 
-const __vite_glob_0_21 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_22 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CampaignAccordion
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -12307,7 +12540,7 @@ const CampaignCard = ({
           className: "card-title mb-2 flex items-center justify-between text-lg font-semibold",
           children: [
             /* @__PURE__ */ jsxs(
-              Link$8,
+              Link$b,
               {
                 href: useLocalizedRoute(
                   "funds.fund.campaigns.campaign.show",
@@ -12357,7 +12590,7 @@ const CampaignCard = ({
   ] }) });
 };
 
-const __vite_glob_0_23 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_24 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CampaignCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -12410,7 +12643,7 @@ const CampaignCardMini = ({
           className: "mb-2 flex items-center justify-between text-lg font-semibold",
           children: [
             /* @__PURE__ */ jsxs(
-              Link$8,
+              Link$b,
               {
                 href: useLocalizedRoute(
                   "funds.fund.campaigns.campaign.show",
@@ -12452,7 +12685,7 @@ const CampaignCardMini = ({
   ] });
 };
 
-const __vite_glob_0_24 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_25 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CampaignCardMini
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -12473,7 +12706,7 @@ const CampaignList = ({
   );
 };
 
-const __vite_glob_0_25 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_26 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CampaignList
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -12494,7 +12727,7 @@ function CampaignLoader() {
   ] }, index)) });
 }
 
-const __vite_glob_0_26 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_27 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CampaignLoader
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -12540,7 +12773,7 @@ const DistributedVsAwarded = ({
   ] });
 };
 
-const __vite_glob_0_27 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_28 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: DistributedVsAwarded
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -12553,6 +12786,9 @@ var userSettingEnums = /* @__PURE__ */ ((userSettingEnums2) => {
   userSettingEnums2["PROPOSAL_TYPE"] = "proposalType";
   userSettingEnums2["CHART_OPTIONS"] = "chartOptions";
   userSettingEnums2["CHART_TYPE"] = "chartType";
+  userSettingEnums2["VIEW_HORIZONTAL"] = "viewHorizontal";
+  userSettingEnums2["VIEW_MINI"] = "viewMini";
+  userSettingEnums2["VIEW_TABLE"] = "viewTable";
   return userSettingEnums2;
 })(userSettingEnums || {});
 
@@ -12570,29 +12806,29 @@ function useUserSetting(key, defaultValue) {
     }
   }, []);
   const value = userSetting && userSetting[key] !== void 0 && userSetting[key] !== null ? userSetting[key] : defaultValue ?? null;
-  const setValue = useCallback(
-    async (newValue) => {
-      try {
-        let currentSetting = await db.user_setting.limit(1).first();
-        if (!currentSetting) {
-          currentSetting = {
-            language: "en",
-            theme: null,
-            viewChartBy: null,
-            proposalComparison: null
-          };
-        }
-        const updatedSetting = {
-          ...currentSetting,
-          [key]: newValue
+  const setValue = useCallback(async (newValue) => {
+    try {
+      let currentSetting = await db.user_setting.limit(1).first();
+      if (!currentSetting) {
+        currentSetting = {
+          language: "en",
+          theme: null,
+          viewChartBy: null,
+          proposalComparison: null,
+          viewHorizontal: false,
+          viewMini: false,
+          viewTable: false
         };
-        await db.user_setting.put(updatedSetting);
-      } catch (error) {
-        console.error(`Failed to save user setting for ${key}:`, error);
       }
-    },
-    [key]
-  );
+      const updatedSetting = {
+        ...currentSetting,
+        [key]: newValue
+      };
+      await db.user_setting.put(updatedSetting);
+    } catch (error) {
+      console.error(`Failed to save user setting for ${key}:`, error);
+    }
+  }, [key]);
   return {
     value,
     setValue,
@@ -12959,7 +13195,7 @@ const BarChart = ({ chartData, viewBy }) => {
   ) });
 };
 
-const __vite_glob_0_30 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_31 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: BarChart
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -12972,7 +13208,7 @@ function ChartCard({ children, title }) {
   ] });
 }
 
-const __vite_glob_0_31 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_32 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ChartCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -13183,7 +13419,7 @@ function ChartLoading({
   ] }) }) });
 }
 
-const __vite_glob_0_32 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_33 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     ChartLoading
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -13444,7 +13680,7 @@ const FunnelChart = ({ chartData, viewBy }) => {
   ] });
 };
 
-const __vite_glob_0_33 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_34 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: FunnelChart
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -13802,7 +14038,7 @@ const LineChart = ({
   ) }) });
 };
 
-const __vite_glob_0_35 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_36 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: LineChart
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -14102,7 +14338,7 @@ const PieChart = ({
   ] });
 };
 
-const __vite_glob_0_36 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_37 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: PieChart
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -14379,7 +14615,7 @@ const StackedBarChart = ({
   ) });
 };
 
-const __vite_glob_0_39 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_40 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: StackedBarChart
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -14579,7 +14815,7 @@ const TreeMap = ({ chartData, viewBy }) => {
   ] });
 };
 
-const __vite_glob_0_43 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_44 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: TreeMap
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -14709,7 +14945,7 @@ function AllCharts({
   );
 }
 
-const __vite_glob_0_29 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_30 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: AllCharts
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -14957,7 +15193,7 @@ function Step1$a({
   ] });
 }
 
-const __vite_glob_0_40 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_41 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step1$a
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -15044,7 +15280,7 @@ function Step2$b({
   ] });
 }
 
-const __vite_glob_0_41 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_42 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step2$b
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -15206,7 +15442,7 @@ function Step3$5({
   ] });
 }
 
-const __vite_glob_0_42 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_43 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step3$5
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -15280,7 +15516,7 @@ function SetChartMetrics({
   ] });
 }
 
-const __vite_glob_0_38 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_39 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: SetChartMetrics
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -15352,7 +15588,7 @@ const Index$l = ({ filters, rules }) => {
   ] });
 };
 
-const __vite_glob_0_28 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_29 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index$l
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -15571,7 +15807,7 @@ const HeatMap = ({ chartData, viewBy }) => {
   ) });
 };
 
-const __vite_glob_0_34 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_35 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: HeatMap
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -15791,7 +16027,7 @@ const ScatterPlot = ({
   ) });
 };
 
-const __vite_glob_0_37 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_38 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ScatterPlot
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -15806,7 +16042,7 @@ function ComingSoon({ context = "" }) {
     ] }),
     /* @__PURE__ */ jsx("div", { className: "flex justify-center p-4", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4 md:grid-cols-3", children: [
       /* @__PURE__ */ jsx(
-        Link$8,
+        Link$b,
         {
           href: useLocalizedRoute("home"),
           className: "bg-primary text-content mt-6 rounded px-8 py-4 text-center hover:opacity-75",
@@ -15814,7 +16050,7 @@ function ComingSoon({ context = "" }) {
         }
       ),
       /* @__PURE__ */ jsx(
-        Link$8,
+        Link$b,
         {
           href: useLocalizedRoute("proposals.index"),
           className: "bg-primary text-content mt-6 rounded px-8 py-4 text-center hover:opacity-75",
@@ -15822,7 +16058,7 @@ function ComingSoon({ context = "" }) {
         }
       ),
       /* @__PURE__ */ jsx(
-        Link$8,
+        Link$b,
         {
           href: useLocalizedRoute("funds.index"),
           className: "bg-primary text-content mt-6 rounded px-8 py-4 text-center hover:opacity-75",
@@ -15833,7 +16069,7 @@ function ComingSoon({ context = "" }) {
   ] });
 }
 
-const __vite_glob_0_44 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_45 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ComingSoon
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -15979,7 +16215,7 @@ function TabNavigation({
   return /* @__PURE__ */ jsx("div", { className: wrapperClassName, children: /* @__PURE__ */ jsx("nav", { className, ref: navRef, children: /* @__PURE__ */ jsx("div", { className: "flex flex-row gap-2 md:gap-4", children: tabs.map((tab, index) => {
     const isActive = activeTab === tab.name;
     return /* @__PURE__ */ jsx(
-      Link$8,
+      Link$b,
       {
         href: tab.href,
         only: [...tab.only ?? []],
@@ -16000,7 +16236,7 @@ function CommunityTabs({ tabs, activeTab }) {
   return /* @__PURE__ */ jsx(TabNavigation, { tabs, activeTab, centerTabs: true });
 }
 
-const __vite_glob_0_59 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_60 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CommunityTabs
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -16095,7 +16331,7 @@ function ProposalSummaryCard({
   ] });
 }
 
-const __vite_glob_0_61 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_62 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalSummaryCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -16151,7 +16387,7 @@ function CommunityLayout({
   ] }) }) });
 }
 
-const __vite_glob_0_45 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_46 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CommunityLayout
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -16357,7 +16593,7 @@ const CommunityFundingChart = ({
   ] });
 };
 
-const __vite_glob_0_56 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_57 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CommunityFundingChart
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -16467,7 +16703,7 @@ function Proposals$5({
   );
 }
 
-const __vite_glob_0_46 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_47 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Proposals$5
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -16491,7 +16727,7 @@ function Proposals$4({
   );
 }
 
-const __vite_glob_0_47 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_48 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Proposals$4
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -16511,7 +16747,7 @@ const GroupHeroSection = ({ group, children }) => {
   ] });
 };
 
-const __vite_glob_0_114 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_115 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: GroupHeroSection
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -16549,7 +16785,7 @@ const GroupCardExtended = ({
     /* @__PURE__ */ jsx(GroupHeroSection, { group, children }),
     /* @__PURE__ */ jsxs("div", { className: "mt-4 p-3", children: [
       /* @__PURE__ */ jsx("div", { className: "flex w-full flex-col items-center gap-4", children: /* @__PURE__ */ jsx(
-        Link$8,
+        Link$b,
         {
           href: useLocalizedRoute("groups.group.index", {
             group: group?.slug
@@ -16677,7 +16913,7 @@ const GroupCardExtended = ({
   ] });
 };
 
-const __vite_glob_0_109 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_110 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: GroupCardExtended
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -16708,7 +16944,7 @@ function Groups$1({
   );
 }
 
-const __vite_glob_0_48 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_49 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Groups$1
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -16754,7 +16990,7 @@ const RelatedIdeascaleProfilesList = ({
           index
         )),
         !!ideascaleProfiles?.data && ideascaleProfiles?.total > ideascaleProfiles?.per_page && /* @__PURE__ */ jsx("div", { className: "", children: /* @__PURE__ */ jsx(
-          Link$8,
+          Link$b,
           {
             href: "#",
             className: "bg-background flex h-full flex-col items-center justify-center rounded-xl p-4 shadow-lg transition-transform hover:scale-95",
@@ -16772,7 +17008,7 @@ const RelatedIdeascaleProfilesList = ({
   ) });
 };
 
-const __vite_glob_0_153 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_154 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: RelatedIdeascaleProfilesList
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -16809,7 +17045,7 @@ function Proposals$3({
   );
 }
 
-const __vite_glob_0_49 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_50 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Proposals$3
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -17444,7 +17680,7 @@ const CommunityFilters = ({
   ] }) });
 };
 
-const __vite_glob_0_55 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_56 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CommunityFilters
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -17506,7 +17742,7 @@ const Index$k = ({
   ] }) }) });
 };
 
-const __vite_glob_0_50 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_51 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index$k
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -17547,7 +17783,7 @@ const JoinCommunityButton = ({
   ) });
 };
 
-const __vite_glob_0_60 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_61 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: JoinCommunityButton
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -17587,7 +17823,7 @@ function ProposalMiniCardLoader() {
   )) });
 }
 
-const __vite_glob_0_249 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_250 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalMiniCardLoader
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -17616,7 +17852,7 @@ const RelatedProposals = ({
       proposal.id
     )),
     showViewMore && /* @__PURE__ */ jsx("div", { className: proposalWrapperClassName, children: /* @__PURE__ */ jsx(
-      Link$8,
+      Link$b,
       {
         href: useLocalizedRoute(
           "proposals.index",
@@ -17633,7 +17869,7 @@ const RelatedProposals = ({
   ] }) });
 };
 
-const __vite_glob_0_264 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_265 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: RelatedProposals
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -17668,7 +17904,7 @@ function Proposals$2({
   );
 }
 
-const __vite_glob_0_62 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_63 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Proposals$2
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -17796,7 +18032,7 @@ const MintedNftsCardLoader = () => {
   ] });
 };
 
-const __vite_glob_0_72 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_73 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MintedNftsCardLoader
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -17859,7 +18095,7 @@ const MintedNftsCard = ({
   ] });
 };
 
-const __vite_glob_0_71 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_72 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MintedNftsCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -17881,7 +18117,7 @@ const MintedNftsList = ({ nfts }) => {
   )) });
 };
 
-const __vite_glob_0_73 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_74 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MintedNftsList
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -17898,7 +18134,7 @@ const StatisticCard = ({
   ] })
 ] });
 
-const __vite_glob_0_81 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_82 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: StatisticCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -17964,7 +18200,7 @@ function Index$j({
         /* @__PURE__ */ jsxs(Paragraph, { className: "md:text-lg", children: [
           t("completedProjectNfts.description"),
           " ",
-          /* @__PURE__ */ jsx(Link$8, { href: "/hello-its-nashon", className: "underline", children: t("completedProjectNfts.artistStatement") })
+          /* @__PURE__ */ jsx(Link$b, { href: "/hello-its-nashon", className: "underline", children: t("completedProjectNfts.artistStatement") })
         ] })
       ] })
     ] }),
@@ -17990,7 +18226,7 @@ function Index$j({
         )
       ] }),
       /* @__PURE__ */ jsx("div", { className: "w-full md:w-auto", children: /* @__PURE__ */ jsx(
-        Link$8,
+        Link$b,
         {
           href: useLocalizedRoute(
             "workflows.completedProjectsNft.index",
@@ -18007,7 +18243,7 @@ function Index$j({
   ] });
 }
 
-const __vite_glob_0_63 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_64 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index$j
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -18078,7 +18314,7 @@ const BlockchainData = ({ nft, metadata }) => {
   ] });
 };
 
-const __vite_glob_0_64 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_65 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: BlockchainData
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -18231,7 +18467,7 @@ const ClaimProfileForm$1 = forwardRef(
   }
 );
 
-const __vite_glob_0_65 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_66 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ClaimProfileForm$1
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -18314,7 +18550,7 @@ function CompletedProposalCard({
   );
 }
 
-const __vite_glob_0_66 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_67 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CompletedProposalCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -18422,7 +18658,7 @@ const ContributorProfile = ({
   ] });
 };
 
-const __vite_glob_0_67 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_68 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ContributorProfile
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -18792,7 +19028,7 @@ const MetaData = ({ nft, isOwner }) => {
   ] });
 };
 
-const __vite_glob_0_68 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_69 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MetaData
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -18914,7 +19150,7 @@ const MintButton = ({
         );
       case "unauthenticated":
         return /* @__PURE__ */ jsx(
-          Link$8,
+          Link$b,
           {
             href: "/login",
             className: "bg-primary hover:bg-primary-dark text-content-light inline-block w-full rounded-md px-4 py-3 text-center font-medium transition duration-150",
@@ -19016,7 +19252,7 @@ const MintButton = ({
   ] });
 };
 
-const __vite_glob_0_70 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_71 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MintButton
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -19087,7 +19323,7 @@ const MetaDataPreview = ({
   ] });
 };
 
-const __vite_glob_0_69 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_70 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MetaDataPreview
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -19117,7 +19353,7 @@ const PageHeader = ({ sectionTitle, userName }) => {
   ] });
 };
 
-const __vite_glob_0_74 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_75 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: PageHeader
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -19150,7 +19386,7 @@ const ProfileCard = React__default.memo(
   }
 );
 
-const __vite_glob_0_75 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_76 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProfileCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -19187,7 +19423,7 @@ const ProfileList = ({
   ) }, index)) });
 };
 
-const __vite_glob_0_76 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_77 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProfileList
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -19241,7 +19477,7 @@ const ProfileSearchBar = ({
   ] }) });
 };
 
-const __vite_glob_0_77 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_78 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProfileSearchBar
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -19286,7 +19522,7 @@ const ProposalList = ({
   ] }, index)) });
 };
 
-const __vite_glob_0_78 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_79 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalList
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -19342,12 +19578,12 @@ const ProposalSearchBar$1 = ({
   ] }) });
 };
 
-const __vite_glob_0_79 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_80 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalSearchBar$1
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const Show$1 = ({
+const Show$2 = ({
   proposal,
   ideascaleProfiles,
   nft,
@@ -19393,9 +19629,9 @@ const Show$1 = ({
   ] });
 };
 
-const __vite_glob_0_80 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_81 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
-    default: Show$1
+    default: Show$2
 }, Symbol.toStringTag, { value: 'Module' }));
 
 function TickIcon({
@@ -19473,7 +19709,7 @@ const StepTracker = ({
   ] }, stepNumber)) }) });
 };
 
-const __vite_glob_0_82 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_83 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: StepTracker
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -19540,7 +19776,7 @@ const VerificationCard = ({
   ] });
 };
 
-const __vite_glob_0_83 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_84 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: VerificationCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -19554,7 +19790,7 @@ const Index$i = () => {
   ] });
 };
 
-const __vite_glob_0_84 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_85 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index$i
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -19653,7 +19889,7 @@ function DrepFilters() {
   ] }) });
 }
 
-const __vite_glob_0_87 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_88 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: DrepFilters
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -19902,7 +20138,7 @@ function DrepTable({
   ] }) });
 }
 
-const __vite_glob_0_88 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_89 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: DrepTable
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -19965,7 +20201,7 @@ const Index$h = ({
   ] }) });
 };
 
-const __vite_glob_0_85 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_86 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index$h
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -20178,7 +20414,7 @@ const FaqSection = () => {
   ] }) });
 };
 
-const __vite_glob_0_89 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_90 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: FaqSection
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -20240,7 +20476,7 @@ const Index$g = () => {
               }
             ),
             /* @__PURE__ */ jsx(
-              Link$8,
+              Link$b,
               {
                 href: useLocalizedRoute("dreps.list"),
                 className: "border-secondary text-secondary rounded-md border-2 bg-transparent px-6 py-3 text-center transition",
@@ -20329,7 +20565,7 @@ const Index$g = () => {
   ] });
 };
 
-const __vite_glob_0_86 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_87 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index$g
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -20688,7 +20924,7 @@ function Error404() {
     ] }),
     /* @__PURE__ */ jsx("div", { className: "flex justify-center p-4", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4 md:grid-cols-3", children: [
       /* @__PURE__ */ jsx(
-        Link$8,
+        Link$b,
         {
           href: useLocalizedRoute("home"),
           className: "bg-primary text-content mt-6 rounded px-8 py-4 text-center hover:opacity-75",
@@ -20696,7 +20932,7 @@ function Error404() {
         }
       ),
       /* @__PURE__ */ jsx(
-        Link$8,
+        Link$b,
         {
           href: useLocalizedRoute("proposals.index"),
           className: "bg-primary text-content mt-6 rounded px-8 py-4 text-center hover:opacity-75",
@@ -20704,7 +20940,7 @@ function Error404() {
         }
       ),
       /* @__PURE__ */ jsx(
-        Link$8,
+        Link$b,
         {
           href: useLocalizedRoute("funds.index"),
           className: "bg-primary text-content mt-6 rounded px-8 py-4 text-center hover:opacity-75",
@@ -20715,7 +20951,7 @@ function Error404() {
   ] });
 }
 
-const __vite_glob_0_90 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_91 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Error404
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -20804,7 +21040,7 @@ function Campaign({
   ] });
 }
 
-const __vite_glob_0_91 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_92 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Campaign
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -20837,7 +21073,7 @@ function MetricCardLoading() {
   )) }) }) });
 }
 
-const __vite_glob_0_161 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_162 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MetricCardLoading
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -21071,7 +21307,7 @@ const MetricCard = ({ metric }) => {
   );
 };
 
-const __vite_glob_0_160 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_161 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MetricCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -21109,7 +21345,7 @@ const MetricCardList = ({
   );
 };
 
-const __vite_glob_0_162 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_163 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MetricCardList
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -21147,7 +21383,7 @@ function FundSortBy() {
   ) });
 }
 
-const __vite_glob_0_99 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_100 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: FundSortBy
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -21173,7 +21409,7 @@ const HeroSection = ({ fund }) => {
   ] });
 };
 
-const __vite_glob_0_100 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_101 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: HeroSection
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -21258,7 +21494,7 @@ function Fund({
   ] });
 }
 
-const __vite_glob_0_92 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_93 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Fund
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -21306,7 +21542,7 @@ const FundCardLoader = () => {
   )) });
 };
 
-const __vite_glob_0_95 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_96 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: FundCardLoader
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -21606,7 +21842,7 @@ const FundsBarChart = ({
   );
 };
 
-const __vite_glob_0_96 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_97 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: FundsBarChart
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -21714,7 +21950,7 @@ function FundsBarChartLoading() {
   ] });
 }
 
-const __vite_glob_0_97 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_98 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: FundsBarChartLoading
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -21733,7 +21969,7 @@ const FundCard = ({
       children: [
         /* @__PURE__ */ jsxs("div", { className: "flex flex-none flex-col items-center space-y-2 sm:items-start sm:space-y-4", children: [
           /* @__PURE__ */ jsx(
-            Link$8,
+            Link$b,
             {
               href: useLocalizedRoute("funds.fund.show", {
                 slug: fund.slug
@@ -21855,7 +22091,7 @@ const FundCard = ({
   );
 };
 
-const __vite_glob_0_94 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_95 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: FundCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -21930,7 +22166,7 @@ const FundsList = ({ funds }) => {
   );
 };
 
-const __vite_glob_0_98 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_99 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: FundsList
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -22000,7 +22236,7 @@ function Index$f({
   ] });
 }
 
-const __vite_glob_0_93 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_94 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index$f
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -22631,7 +22867,7 @@ const BioCard = ({ group }) => {
   ] }) });
 };
 
-const __vite_glob_0_107 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_108 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: BioCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -22642,7 +22878,7 @@ function GroupTabs({ tabs, activeTab }) {
   return /* @__PURE__ */ jsx(TabNavigation, { tabs, activeTab, centerTabs: true });
 }
 
-const __vite_glob_0_118 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_119 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: GroupTabs
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -22702,7 +22938,7 @@ function GroupLayout({ children, group }) {
   ] });
 }
 
-const __vite_glob_0_103 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_104 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: GroupLayout
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -22724,7 +22960,7 @@ function Connections$2({
   ] });
 }
 
-const __vite_glob_0_101 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_102 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Connections$2
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -22733,7 +22969,7 @@ function Group({ group }) {
   return /* @__PURE__ */ jsx(GroupLayout, { group, children: /* @__PURE__ */ jsx(Head, { title: `${group.name} - Group` }) });
 }
 
-const __vite_glob_0_102 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_103 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Group
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -22761,7 +22997,7 @@ function IdeascaleProfiles({
   ] });
 }
 
-const __vite_glob_0_104 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_105 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: IdeascaleProfiles
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -22886,7 +23122,7 @@ const FundsFilter = ({
   ) }) });
 };
 
-const __vite_glob_0_233 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_234 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: FundsFilter
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -22910,7 +23146,7 @@ function FundFiltersContainer({ funds }) {
   );
 }
 
-const __vite_glob_0_232 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_233 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: FundFiltersContainer
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -23169,7 +23405,7 @@ const GroupFilters = ({
   ] }) });
 };
 
-const __vite_glob_0_113 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_114 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: GroupFilters
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -23229,7 +23465,7 @@ const Index$e = ({
   ) }) });
 };
 
-const __vite_glob_0_105 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_106 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index$e
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -23248,7 +23484,7 @@ function Locations({ locations, group }) {
   ] });
 }
 
-const __vite_glob_0_106 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_107 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Locations
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -23307,7 +23543,7 @@ const GroupCardExtendedLoader = () => {
   )) });
 };
 
-const __vite_glob_0_110 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_111 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: GroupCardExtendedLoader
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -23329,7 +23565,7 @@ function Proposals$1({ group, proposals }) {
   ] });
 }
 
-const __vite_glob_0_119 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_120 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Proposals$1
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -23445,7 +23681,7 @@ const RelatedReviews = ({
           review?.id
         )),
         !!reviews?.data && reviews?.total > reviews?.per_page && /* @__PURE__ */ jsx("div", { className: "", children: /* @__PURE__ */ jsx(
-          Link$8,
+          Link$b,
           {
             href: useLocalizedRoute(
               "reviews.index",
@@ -23464,7 +23700,7 @@ const RelatedReviews = ({
   ) });
 };
 
-const __vite_glob_0_270 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_271 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: RelatedReviews
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -23499,7 +23735,7 @@ function Reviews$1({
   ] });
 }
 
-const __vite_glob_0_120 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_121 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Reviews$1
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -23736,7 +23972,7 @@ function GlobalSearch() {
   );
 }
 
-const __vite_glob_0_130 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_131 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: GlobalSearch
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -23746,7 +23982,7 @@ const CatalystIntro = () => {
   return /* @__PURE__ */ jsx(
     "div",
     {
-      className: "splash-wrapper from-background-home-gradient-color-1 to-background-home-gradient-color-2 sticky -top-64 z-10 bg-linear-to-r md:rounded-tl-4xl",
+      className: "splash-wrapper from-background-home-gradient-color-1 to-background-home-gradient-color-2 sticky -top-64 z-10 bg-linear-to-r md:rounded-tl-4xl rtl:rounded-tl-none rtl:rounded-tr-4xl",
       "data-testid": "catalyst-intro",
       children: /* @__PURE__ */ jsxs(
         "div",
@@ -23783,7 +24019,7 @@ const CatalystIntro = () => {
   );
 };
 
-const __vite_glob_0_129 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_130 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CatalystIntro
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -23912,7 +24148,7 @@ function PostCard({ post }) {
   );
 }
 
-const __vite_glob_0_215 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_216 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: PostCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -23935,7 +24171,7 @@ function PostListLoader() {
   ] }) }, index)) });
 }
 
-const __vite_glob_0_216 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_217 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: PostListLoader
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -23947,7 +24183,7 @@ function NavLink({
   ...props
 }) {
   return /* @__PURE__ */ jsx(
-    Link$8,
+    Link$b,
     {
       ...props,
       className: "text-4 text-content inline-flex items-center border-b-2 px-1 pt-1 leading-5 font-medium transition duration-150 ease-in-out focus:outline-hidden " + (active ? "border-border focus:border-border-secondary" : "hover:border-border-secondary hover:text-content focus:border-border-secondary focus:text-content-secondary border-transparent") + className,
@@ -23966,7 +24202,7 @@ const AnnouncementCardChip = ({ label }) => {
   );
 };
 
-const __vite_glob_0_124 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_125 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: AnnouncementCardChip
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -24070,7 +24306,7 @@ const AnnouncementCountdownChip = ({
   return /* @__PURE__ */ jsx("div", { className: "text-4 border-border-secondary text-content inline-flex items-center rounded-md border px-2 text-nowrap shadow-2xs", children: formatTimeRemaining(timeRemaining) + ` ${t("announcements.remaining")}` });
 };
 
-const __vite_glob_0_125 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_126 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: AnnouncementCountdownChip
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -24158,7 +24394,7 @@ const AnnouncementCard = ({ announcement }) => {
   );
 };
 
-const __vite_glob_0_122 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_123 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: AnnouncementCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -24176,7 +24412,7 @@ const AnnouncementCarousel = ({ announcements }) => {
   );
 };
 
-const __vite_glob_0_123 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_124 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: AnnouncementCarousel
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -24197,7 +24433,7 @@ const SpecialAnnouncementLoading = () => {
   ] });
 };
 
-const __vite_glob_0_126 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_127 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: SpecialAnnouncementLoading
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -24400,7 +24636,7 @@ const SpecialAnnouncementCard = ({ announcement }) => {
   );
 };
 
-const __vite_glob_0_127 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_128 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: SpecialAnnouncementCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -24487,7 +24723,7 @@ const SpecialAnnouncementCarousel = ({
   );
 };
 
-const __vite_glob_0_128 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_129 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: SpecialAnnouncementCarousel
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -24673,7 +24909,7 @@ function Index$d({
   ] });
 }
 
-const __vite_glob_0_121 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_122 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index$d
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -24794,7 +25030,7 @@ const ClaimedButton = ({
   ] });
 };
 
-const __vite_glob_0_138 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_139 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ClaimedButton
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -25065,7 +25301,7 @@ const ShareButton = (props) => {
   ] });
 };
 
-const __vite_glob_0_154 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_155 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ShareButton
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -25136,7 +25372,7 @@ const IdeascaleProfileCard = ({
       /* @__PURE__ */ jsx("div", { className: "min-w-0 flex-1", children: /* @__PURE__ */ jsxs("div", { className: "text-2 break-words", children: [
         /* @__PURE__ */ jsxs("div", { className: "flex w-full items-center", children: [
           /* @__PURE__ */ jsx(Title, { level: "5", className: "mr-1 font-bold", children: /* @__PURE__ */ jsx(
-            Link$8,
+            Link$b,
             {
               className: "line-clamp-2",
               href: useLocalizedRoute(
@@ -25295,7 +25531,7 @@ const IdeascaleProfileCard = ({
   ] });
 };
 
-const __vite_glob_0_141 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_142 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: IdeascaleProfileCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -25307,7 +25543,7 @@ function IdeascaleProfileTabs({
   return /* @__PURE__ */ jsx(TabNavigation, { tabs, activeTab, centerTabs: true });
 }
 
-const __vite_glob_0_146 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_147 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: IdeascaleProfileTabs
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -25356,7 +25592,7 @@ function IdeascaleProfileLayout({
   ] }) });
 }
 
-const __vite_glob_0_135 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_136 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: IdeascaleProfileLayout
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -25386,7 +25622,7 @@ function Campaigns({
   ] });
 }
 
-const __vite_glob_0_131 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_132 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Campaigns
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -25411,7 +25647,7 @@ function Communities({
   ] });
 }
 
-const __vite_glob_0_132 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_133 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Communities
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -25433,7 +25669,7 @@ function Connections$1({
   ] });
 }
 
-const __vite_glob_0_133 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_134 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Connections$1
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -25452,7 +25688,7 @@ function Groups({ ideascaleProfile, groups }) {
   ] });
 }
 
-const __vite_glob_0_134 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_135 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Groups
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -25542,7 +25778,7 @@ const FundingStatusToggle = ({
   ] });
 };
 
-const __vite_glob_0_139 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_140 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: FundingStatusToggle
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -25662,7 +25898,7 @@ function IdeascaleProfilesFilters() {
   ] }) });
 }
 
-const __vite_glob_0_148 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_149 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: IdeascaleProfilesFilters
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -25709,7 +25945,7 @@ const Index$c = ({
   ] }) });
 };
 
-const __vite_glob_0_136 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_137 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index$c
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -25750,7 +25986,7 @@ const MilestoneApprovalButtons = ({
   ] });
 };
 
-const __vite_glob_0_150 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_151 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MilestoneApprovalButtons
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -25829,14 +26065,6 @@ const MilestoneDateProgressBar = ({
   const endPosition = isWithinRange ? 100 : endOffsetPercent;
   const progressBarBg = isWithinRange ? "bg-success-light" : "bg-gray-200";
   const progressWidth = isWithinRange ? percentNow : 100;
-  const verticalLines = [
-    { left: "0%", testId: "milestone-start-line" },
-    { left: `${nowPosition}%`, testId: "milestone-now-line" },
-    {
-      left: `${endPosition}%`,
-      testId: "milestone-end-line"
-    }
-  ];
   return /* @__PURE__ */ jsx(
     "div",
     {
@@ -25852,7 +26080,7 @@ const MilestoneDateProgressBar = ({
       children: /* @__PURE__ */ jsxs(
         "div",
         {
-          className: "flex w-full flex-col gap-8 space-y-2 px-16",
+          className: "flex w-full flex-col gap-2 space-y-2",
           "data-testid": "milestone-progress-content",
           children: [
             /* @__PURE__ */ jsxs(
@@ -25861,57 +26089,27 @@ const MilestoneDateProgressBar = ({
                 className: "relative h-6 w-full text-sm font-medium",
                 "data-testid": "milestone-labels-section",
                 children: [
-                  verticalLines.map((line, index) => /* @__PURE__ */ jsx(
-                    "div",
-                    {
-                      className: "bg-gray-persist absolute z-0 w-0.5",
-                      style: {
-                        left: line.left,
-                        top: "100%",
-                        height: "40px",
-                        transform: line.left !== "0%" ? "translateX(-50%)" : void 0
-                      },
-                      "data-testid": line.testId,
-                      "aria-hidden": "true"
-                    },
-                    index
-                  )),
-                  (labelsOverlap.startEnd || labelsOverlap.endNow) && /* @__PURE__ */ jsx(
-                    "div",
-                    {
-                      className: "bg-gray-persist absolute z-0 w-0.5",
-                      style: {
-                        left: `${endPosition}%`,
-                        top: "-60px",
-                        height: "calc(100% + 60px + 40px)",
-                        transform: "translateX(-50%)"
-                      },
-                      "data-testid": "milestone-end-line-extended",
-                      "aria-hidden": "true"
-                    }
-                  ),
-                  /* @__PURE__ */ jsxs(
+                  /* @__PURE__ */ jsx(
                     "div",
                     {
                       ref: startDateLabelRef,
-                      className: "border-background-lighter bg-background absolute z-10 flex flex-col justify-items-center rounded-lg border px-1 py-1 shadow-md",
+                      className: "absolute z-10 flex flex-col justify-items-center",
                       style: {
-                        left: "0%",
+                        left: "8%",
                         transform: "translateX(-50%)"
                       },
                       "data-testid": "milestone-start-date-label",
                       "aria-label": `Project start date: ${formatDate(start)}`,
-                      children: [
-                        /* @__PURE__ */ jsx(
-                          Paragraph,
-                          {
-                            size: "xs",
-                            className: "text-gray-persist w-full text-center",
-                            children: t("startDate")
-                          }
-                        ),
-                        /* @__PURE__ */ jsx(Paragraph, { size: "xs", className: "font-bold", children: formatDate(start) })
-                      ]
+                      children: /* @__PURE__ */ jsxs("div", { className: "relative", children: [
+                        /* @__PURE__ */ jsx("div", { className: "bg-purple-light rounded-sm px-3 py-2 relative", children: /* @__PURE__ */ jsxs(Paragraph, { size: "xs", className: "flex gap-1 z-0", children: [
+                          /* @__PURE__ */ jsx("span", { className: "text-highlight", children: t("startDate") }),
+                          /* @__PURE__ */ jsx("span", { className: "text-dark font-bold", children: formatDate(start) })
+                        ] }) }),
+                        /* @__PURE__ */ jsxs("div", { className: "absolute top-full left-0.5 z-2 -mt-0.5", children: [
+                          /* @__PURE__ */ jsx("div", { className: "absolute w-0 h-0 border-l-[10px] border-r-[10px] border-t-[12px] border-l-transparent border-r-transparent border-t-purple-light transform translate-y-px" }),
+                          /* @__PURE__ */ jsx("div", { className: "w-0 h-0 border-l-[10px] border-r-[10px] border-t-[12px] border-l-transparent border-r-transparent border-t-purple-light" })
+                        ] })
+                      ] })
                     }
                   ),
                   /* @__PURE__ */ jsx(
@@ -25922,7 +26120,7 @@ const MilestoneDateProgressBar = ({
                       style: {
                         left: `${nowPosition}%`,
                         top: "100%",
-                        transform: "translateX(-50%)",
+                        transform: "translateX(-95%)",
                         whiteSpace: "nowrap"
                       },
                       "data-testid": "milestone-current-date-label",
@@ -25937,30 +26135,29 @@ const MilestoneDateProgressBar = ({
                       )
                     }
                   ),
-                  /* @__PURE__ */ jsxs(
+                  /* @__PURE__ */ jsx(
                     "div",
                     {
                       ref: endDateLabelRef,
-                      className: "border-background-lighter bg-background absolute z-10 flex flex-col justify-items-center rounded-lg border px-1 py-1 shadow-md",
+                      className: "absolute z-10 flex flex-col justify-items-center",
                       style: {
                         left: `${endPosition}%`,
-                        transform: "translateX(-50%)",
+                        transform: "translateX(-95%)",
                         whiteSpace: "nowrap",
-                        top: labelsOverlap.startEnd || labelsOverlap.endNow ? "-60px" : "0px"
+                        top: labelsOverlap.startEnd || labelsOverlap.endNow ? "-20px" : "0px"
                       },
                       "data-testid": "milestone-end-date-label",
                       "aria-label": `Project end date: ${formatDate(end)}`,
-                      children: [
-                        /* @__PURE__ */ jsx(
-                          Paragraph,
-                          {
-                            size: "xs",
-                            className: "text-gray-persist w-full text-center",
-                            children: t("endDate")
-                          }
-                        ),
-                        /* @__PURE__ */ jsx(Paragraph, { size: "xs", className: "font-bold", children: formatDate(end) })
-                      ]
+                      children: /* @__PURE__ */ jsxs("div", { className: "relative", children: [
+                        /* @__PURE__ */ jsx("div", { className: "bg-purple-light rounded-sm px-3 py-2 relative", children: /* @__PURE__ */ jsxs(Paragraph, { size: "xs", className: "flex gap-1 z-0", children: [
+                          /* @__PURE__ */ jsx("span", { className: "text-highlight", children: t("endDate") }),
+                          /* @__PURE__ */ jsx("span", { className: "text-dark font-bold", children: formatDate(end) })
+                        ] }) }),
+                        /* @__PURE__ */ jsxs("div", { className: "absolute top-full right-0.5 z-2 -mt-0.5", children: [
+                          /* @__PURE__ */ jsx("div", { className: "absolute w-0 h-0 border-l-[10px] border-r-[10px] border-t-[12px] border-l-transparent border-r-transparent border-t-purple-light transform translate-y-px" }),
+                          /* @__PURE__ */ jsx("div", { className: "w-0 h-0 border-l-[10px] border-r-[10px] border-t-[12px] border-l-transparent border-r-transparent border-t-purple-light" })
+                        ] })
+                      ] })
                     }
                   )
                 ]
@@ -26004,7 +26201,7 @@ const MilestoneDateProgressBar = ({
   );
 };
 
-const __vite_glob_0_151 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_152 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MilestoneDateProgressBar
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -26016,7 +26213,7 @@ const MilestoneTrackButton = ({
   return /* @__PURE__ */ jsx("div", { className: "flex flex-col items-center space-y-2", children: onTrack ? /* @__PURE__ */ jsx(Fragment, { children: /* @__PURE__ */ jsx("button", { className: "bg-success-light text-success border-success rounded-lg border px-1 py-1 text-xs", children: t("On Track") }) }) : /* @__PURE__ */ jsx(Fragment, { children: /* @__PURE__ */ jsx("button", { className: "text-error rounded-lg border border-gray-400 bg-gray-300 px-2 py-1 text-xs", children: t("Off Track") }) }) });
 };
 
-const __vite_glob_0_152 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_153 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MilestoneTrackButton
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -26064,7 +26261,7 @@ const MilestoneAccordion = ({
     {
       className: "border-background-lighter w-full border-t px-4 pt-4",
       children: [
-        /* @__PURE__ */ jsxs("div", { className: "flex w-full items-center justify-between", children: [
+        /* @__PURE__ */ jsxs("div", { className: "relative w-full", children: [
           /* @__PURE__ */ jsxs("div", { className: "flex w-full flex-col gap-4", children: [
             /* @__PURE__ */ jsx(Title, { level: "4", className: "font-medium", children: `${t("Milestone")} ${milestone.milestone} : ${currencySymbol}${milestone.cost.toLocaleString()}` }),
             /* @__PURE__ */ jsx(
@@ -26079,7 +26276,7 @@ const MilestoneAccordion = ({
             Button,
             {
               onClick: () => toggleAccordion(index),
-              className: `flex size-8 items-center justify-center text-lg transition-transform`,
+              className: `flex size-8 items-center justify-center text-lg transition-transform absolute right-1 top-0`,
               children: openIndex === index ? /* @__PURE__ */ jsx(ChevronUp, {}) : /* @__PURE__ */ jsx(ChevronDown, {})
             }
           )
@@ -26103,7 +26300,7 @@ const MilestoneAccordion = ({
             /* @__PURE__ */ jsx("td", { className: "px-4 py-2" })
           ] }),
           /* @__PURE__ */ jsxs("tr", { className: "border-background-lighter border-t", children: [
-            /* @__PURE__ */ jsx("th", { className: "border-background-lighter border-r px-4 py-2 text-left", children: t("Milestone Details") }),
+            /* @__PURE__ */ jsx("th", { className: "border-background-lighter border-r px-4 py-2 text-left flex flex-col justify-start", children: t("Milestone Details") }),
             /* @__PURE__ */ jsx("td", { className: "border-background-lighter border-r px-4 py-2 text-left", children: /* @__PURE__ */ jsx(
               "div",
               {
@@ -26116,7 +26313,7 @@ const MilestoneAccordion = ({
             /* @__PURE__ */ jsx("td", { className: "px-4 py-2" })
           ] }),
           /* @__PURE__ */ jsxs("tr", { className: "border-background-lighter border-t", children: [
-            /* @__PURE__ */ jsx("th", { className: "border-background-lighter border-r px-4 py-2 text-left", children: t("Acceptance Criteria") }),
+            /* @__PURE__ */ jsx("th", { className: "border-background-lighter border-r px-4 py-2 text-left flex flex-col justify-start", children: t("Acceptance Criteria") }),
             /* @__PURE__ */ jsx("td", { className: "border-background-lighter border-r px-4 py-2 text-left", children: /* @__PURE__ */ jsx(
               "div",
               {
@@ -26194,7 +26391,7 @@ const MilestoneAccordion = ({
   )) });
 };
 
-const __vite_glob_0_149 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_150 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MilestoneAccordion
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -26225,7 +26422,7 @@ function Milestones({
   ] });
 }
 
-const __vite_glob_0_137 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_138 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Milestones
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -26266,7 +26463,7 @@ const IdeascaleProfileSubmittedCard = () => {
   ] }) });
 };
 
-const __vite_glob_0_145 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_146 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: IdeascaleProfileSubmittedCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -26291,7 +26488,7 @@ function Proposals({
   ] });
 }
 
-const __vite_glob_0_155 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_156 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Proposals
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -26304,7 +26501,7 @@ function Reports({ ideascaleProfile }) {
   ] });
 }
 
-const __vite_glob_0_156 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_157 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Reports
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -26339,7 +26536,7 @@ function Reviews({
   ] });
 }
 
-const __vite_glob_0_157 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_158 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Reviews
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -26356,10 +26553,21 @@ const Index$b = () => {
   ] });
 };
 
-const __vite_glob_0_158 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_159 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index$b
 }, Symbol.toStringTag, { value: 'Module' }));
+
+const ClientOnly = ({ children, fallback = null }) => {
+  const [hasMounted, setHasMounted] = useState(false);
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+  if (!hasMounted) {
+    return /* @__PURE__ */ jsx(Fragment, { children: fallback });
+  }
+  return /* @__PURE__ */ jsx(Fragment, { children });
+};
 
 const defaultConfig = {
   config: {
@@ -26392,144 +26600,75 @@ function MapProvider({
     }
   );
 }
-const useMapContext = () => {
-  const context = useContext(MapContext);
-  if (!context) {
-    throw new Error("useMapContext must be used within a MapProvider");
-  }
-  return context;
-};
 
-const GlobalMap = ({ points }) => {
-  const { config, show3DBuildings } = useMapContext();
-  const { theme } = useThemeContext();
-  const mapRef = useRef(null);
-  const [isLoaded, setIsLoaded] = useState(false);
-  useEffect(() => {
-    if (mapRef.current && points.length > 0) {
-      const bounds = new mapboxgl.LngLatBounds();
-      points.forEach((point) => bounds.extend([point.lng, point.lat]));
-      mapRef.current.fitBounds(bounds, { padding: 50, maxZoom: 15 });
-    }
-  }, [points]);
-  const markers = useMemo(
-    () => points.map((point, index) => /* @__PURE__ */ jsx(Marker, { longitude: point.lng, latitude: point.lat, children: /* @__PURE__ */ jsx(
-      "img",
-      {
-        src: point.icon,
-        alt: point.label,
-        className: "h-8 w-8"
-      }
-    ) }, index)),
-    [points]
-  );
-  return /* @__PURE__ */ jsx("div", { className: `h-[700px] w-full`, children: /* @__PURE__ */ jsxs(
-    Map$1,
-    {
-      ref: (ref) => mapRef.current = ref?.getMap() ?? null,
-      mapboxAccessToken: config.mapboxAccessToken,
-      mapStyle: theme == "dark" ? "mapbox://styles/mapbox/dark-v9" : "mapbox://styles/mapbox/light-v9",
-      style: { width: "100%", height: "100%" },
-      initialViewState: config.initialViewState,
-      latitude: config?.latitude ?? 0.4194,
-      longitude: config?.longitude ?? 0.7749,
-      zoom: config?.zoom ?? 2,
-      minZoom: config?.minZoom ?? 0,
-      maxZoom: config?.maxZoom ?? 20,
-      bearing: config?.bearing ?? 0,
-      pitch: config?.pitch ?? 0,
-      interactive: config?.interactive ?? true,
-      dragPan: config?.dragPan ?? true,
-      dragRotate: config?.dragRotate ?? true,
-      scrollZoom: config?.scrollZoom ?? true,
-      touchZoomRotate: config?.touchZoomRotate ?? true,
-      doubleClickZoom: config?.doubleClickZoom ?? true,
-      keyboard: config?.keyboard ?? true,
-      projection: { name: "mercator" },
-      preserveDrawingBuffer: config?.preserveDrawingBuffer ?? false,
-      antialias: true,
-      terrain: config?.terrain ?? {
-        source: "mapbox-dem",
-        exaggeration: 1.5
-      },
-      renderWorldCopies: config?.renderWorldCopies ?? true,
-      maxBounds: config?.maxBounds ?? [
-        [-180, -85],
-        [180, 85]
-      ],
-      locale: config?.locale ?? {
-        "AttributionControl.ToggleAttribution": "Show credits"
-      },
-      onLoad: () => setIsLoaded(true),
-      trackResize: config?.trackResize ?? true,
-      children: [
-        isLoaded && show3DBuildings && /* @__PURE__ */ jsx(
-          Source,
-          {
-            id: "mapbox-buildings",
-            type: "vector",
-            url: "mapbox://mapbox.3d-buildings",
-            children: /* @__PURE__ */ jsx(
-              Layer,
-              {
-                id: "3d-buildings",
-                source: "mapbox-buildings",
-                "source-layer": "building",
-                type: "fill-extrusion",
-                paint: {
-                  "fill-extrusion-color": "#aaa" ,
-                  "fill-extrusion-height": ["get", "height"],
-                  "fill-extrusion-opacity": 0.6
-                }
-              }
-            )
-          }
-        ),
-        markers
-      ]
-    }
-  ) });
-};
-
+const GlobalMap$1 = lazy(() => import('./assets/GlobalMap-CjdmTPbF.js'));
 const points = [
   {
-    lat: -1.286389,
+    id: 1,
+    latitude: -1.286389,
     // Nairobi, Kenya
-    lng: 36.817223,
-    label: "Nairobi",
-    icon: "https://cdn-icons-png.flaticon.com/128/684/684908.png"
+    longitude: 36.817223,
+    title: "Nairobi",
+    description: "Marker for Nairobi"
   },
   {
-    lat: 51.5074,
+    id: 2,
+    latitude: 51.5074,
     // London, UK
-    lng: -0.1278,
-    label: "London",
-    icon: "https://cdn-icons-png.flaticon.com/128/684/684908.png"
+    longitude: -0.1278,
+    title: "London",
+    description: "Marker for London"
   },
   {
-    lat: 40.7128,
+    id: 3,
+    latitude: 40.7128,
     // New York, USA
-    lng: -74.006,
-    label: "New York",
-    icon: "https://cdn-icons-png.flaticon.com/128/684/684908.png"
+    longitude: -74.006,
+    title: "New York",
+    description: "Marker for New York"
   }
 ];
 const customConfig = {
   initialViewState: {
-    longitude: 88.7749,
-    latitude: 88.4194,
-    zoom: 10
+    longitude: 36.817223,
+    latitude: -1.286389,
+    zoom: 2
   },
-  pitch: 4,
-  zoom: 2
+  pitch: 0
 };
-const App = () => {
-  return /* @__PURE__ */ jsx(MapProvider, { customConfig, show3DBuildings: true, children: /* @__PURE__ */ jsx("div", { className: "min-h-screen bg-gray-100 p-4 dark:bg-gray-800", children: /* @__PURE__ */ jsx(GlobalMap, { points }) }) });
+const MapPage = () => {
+  return /* @__PURE__ */ jsx(MapProvider, { customConfig, show3DBuildings: true, children: /* @__PURE__ */ jsx("div", { className: "min-h-screen bg-gray-100 p-4 dark:bg-gray-800", children: /* @__PURE__ */ jsx(
+    ClientOnly,
+    {
+      fallback: /* @__PURE__ */ jsx(
+        "div",
+        {
+          className: "flex items-center justify-center bg-gray-100 text-gray-500",
+          style: { height: "500px", width: "100%" },
+          children: "Map loading on client..."
+        }
+      ),
+      children: /* @__PURE__ */ jsx(
+        Suspense,
+        {
+          fallback: /* @__PURE__ */ jsx(
+            "div",
+            {
+              className: "flex items-center justify-center bg-gray-100 text-gray-500",
+              style: { height: "500px", width: "100%" },
+              children: "Loading map..."
+            }
+          ),
+          children: /* @__PURE__ */ jsx(GlobalMap$1, { points, height: "500px", width: "100%" })
+        }
+      )
+    }
+  ) }) });
 };
 
-const __vite_glob_0_159 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_160 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
-    default: App
+    default: MapPage
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const Index$a = ({ projectSchedules, filters }) => {
@@ -26544,7 +26683,7 @@ const Index$a = ({ projectSchedules, filters }) => {
   ] });
 };
 
-const __vite_glob_0_163 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_164 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index$a
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -26599,7 +26738,7 @@ const BookmarkNavigation = ({
     {
       className: `border-b border-gray-200 ${isSticky ? "bg-background fixed top-0 right-0 left-0 z-10" : ""}`,
       children: /* @__PURE__ */ jsx("div", { className: "flex space-x-8", children: modelTypes.map(({ name, type, count }) => /* @__PURE__ */ jsxs(
-        Link$8,
+        Link$b,
         {
           href: `#${type}`,
           onClick: () => handleTabClick(type),
@@ -26623,7 +26762,7 @@ const BookmarkNavigation = ({
   );
 };
 
-const __vite_glob_0_166 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_167 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: BookmarkNavigation
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -26718,7 +26857,7 @@ const BookmarksList = ({
   );
 };
 
-const __vite_glob_0_169 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_170 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: BookmarksList
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -26775,7 +26914,7 @@ function BookmarkSearchControls() {
   ) }) });
 }
 
-const __vite_glob_0_167 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_168 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: BookmarkSearchControls
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -26785,7 +26924,7 @@ const BookmarkToolbar = () => {
   return /* @__PURE__ */ jsx("div", { className: "flex w-full flex-col gap-4", children: /* @__PURE__ */ jsx("div", { className: "flex flex-row items-center justify-between gap-2", children: /* @__PURE__ */ jsx("div", { className: "w-full", children: /* @__PURE__ */ jsx(BookmarkSearchControls, {}) }) }) });
 };
 
-const __vite_glob_0_168 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_169 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: BookmarkToolbar
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -27013,16 +27152,16 @@ const Index$9 = ({
   ] }) });
 };
 
-const __vite_glob_0_164 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_165 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index$9
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const __vite_glob_0_170 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_171 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const __vite_glob_0_171 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_172 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null
 }, Symbol.toStringTag, { value: 'Module' }));
 
@@ -27034,7 +27173,7 @@ function MyCommunities({}) {
   ] });
 }
 
-const __vite_glob_0_172 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_173 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MyCommunities
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -27095,7 +27234,7 @@ const UserSection$1 = ({ user }) => {
                 /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center gap-1.5", children: [
                   /* @__PURE__ */ jsx(MapPin, { className: "h-3.5 w-3.5 md:h-4 md:w-4" }),
                   user?.locations ? /* @__PURE__ */ jsx("span", { className: "max-w-[200px] break-words md:max-w-none", children: user.locations }) : /* @__PURE__ */ jsx(
-                    Link$8,
+                    Link$b,
                     {
                       href: "#",
                       className: "text-primary underline",
@@ -27106,7 +27245,7 @@ const UserSection$1 = ({ user }) => {
                 /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center gap-1.5", children: [
                   /* @__PURE__ */ jsx(Mail, { className: "h-3.5 w-3.5 md:h-4 md:w-4" }),
                   user?.email ? /* @__PURE__ */ jsx("span", { className: "max-w-[200px] break-words md:max-w-none", children: user.email }) : /* @__PURE__ */ jsx(
-                    Link$8,
+                    Link$b,
                     {
                       href: "#",
                       className: "text-primary underline",
@@ -27123,14 +27262,14 @@ const UserSection$1 = ({ user }) => {
   ) });
 };
 
-const __vite_glob_0_173 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_174 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: UserSection$1
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const UserTab$1 = ({ tabs, activeTab }) => {
   return /* @__PURE__ */ jsx("div", { className: "text-content-lighter mt-4 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] md:mt-8 [&::-webkit-scrollbar]:hidden", children: /* @__PURE__ */ jsx("nav", { className: "border-b-light-gray-persist min-w-max border-b", children: /* @__PURE__ */ jsx("div", { className: "flex flex-row gap-2 md:gap-6", children: tabs.map((tab) => /* @__PURE__ */ jsx(
-    Link$8,
+    Link$b,
     {
       href: tab.href,
       className: `group hover:text-content-dark flex items-center gap-2 px-2 py-2 text-sm whitespace-nowrap outline-hidden transition-colors md:px-3 md:text-base ${activeTab === tab.name ? "border-b-primary text-primary -mb-px border-b-2" : ""} `,
@@ -27140,7 +27279,7 @@ const UserTab$1 = ({ tabs, activeTab }) => {
   )) }) }) });
 };
 
-const __vite_glob_0_174 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_175 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: UserTab$1
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -27203,7 +27342,7 @@ function UserFundSummary({ totalsSummary }) {
   ] });
 }
 
-const __vite_glob_0_211 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_212 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: UserFundSummary
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -27487,7 +27626,7 @@ function UserSummaryChart({
   ] });
 }
 
-const __vite_glob_0_212 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_213 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: UserSummaryChart
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -27552,7 +27691,7 @@ function MyDashboard({
   ] });
 }
 
-const __vite_glob_0_175 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_176 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MyDashboard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -27572,7 +27711,7 @@ const GroupsList = ({ groups }) => {
   )) }) }) });
 };
 
-const __vite_glob_0_177 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_178 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: GroupsList
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -27599,7 +27738,7 @@ function MyGroups({ groups, filters }) {
   );
 }
 
-const __vite_glob_0_176 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_177 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MyGroups
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -27615,7 +27754,7 @@ const BookmarkCollection = ({
   ] });
 };
 
-const __vite_glob_0_178 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_179 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: BookmarkCollection
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -27664,7 +27803,7 @@ function MyList({ bookmarkCollections }) {
   ] });
 }
 
-const __vite_glob_0_179 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_180 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MyList
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -27704,12 +27843,12 @@ function CreateListButton({
   );
 }
 
-const __vite_glob_0_183 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_184 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CreateListButton
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const __vite_glob_0_187 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_188 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null
 }, Symbol.toStringTag, { value: 'Module' }));
 
@@ -27717,7 +27856,7 @@ function UserTab({ tabs, activeTab }) {
   return /* @__PURE__ */ jsx(TabNavigation, { tabs, activeTab, centerTabs: true });
 }
 
-const __vite_glob_0_220 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_221 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: UserTab
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -27747,7 +27886,7 @@ function MyLayout({ children, filters }) {
   ] }) });
 }
 
-const __vite_glob_0_189 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_190 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MyLayout
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -27877,7 +28016,7 @@ function SocialProfilesForm({
   ] });
 }
 
-const __vite_glob_0_193 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_194 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: SocialProfilesForm
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -27951,7 +28090,7 @@ function ProfileField({
   ] }) });
 }
 
-const __vite_glob_0_194 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_195 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProfileField
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -28083,7 +28222,7 @@ function ProfilePhotoUploader({
   ] });
 }
 
-const __vite_glob_0_195 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_196 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProfilePhotoUploader
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -28103,7 +28242,7 @@ function ProfileSection({
   ] });
 }
 
-const __vite_glob_0_196 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_197 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProfileSection
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -28226,7 +28365,7 @@ function PasswordForm({ onClose }) {
   ] });
 }
 
-const __vite_glob_0_197 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_198 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: PasswordForm
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -28311,7 +28450,7 @@ function ProfileFieldForm({
   ] });
 }
 
-const __vite_glob_0_198 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_199 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProfileFieldForm
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -28340,7 +28479,7 @@ function BaseModal({
   ] }) });
 }
 
-const __vite_glob_0_199 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_200 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: BaseModal
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -28796,7 +28935,7 @@ function ProfileSettings({
   ] });
 }
 
-const __vite_glob_0_190 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_191 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProfileSettings
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -28817,7 +28956,7 @@ const MyProfile = () => {
   ] });
 };
 
-const __vite_glob_0_191 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_192 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MyProfile
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -28991,7 +29130,7 @@ function DeleteUserForm({
   ] });
 }
 
-const __vite_glob_0_192 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_193 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: DeleteUserForm
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -29098,33 +29237,23 @@ const ProposalSortingOptions = () => {
   ];
 };
 
-function AbstainVoteIcon({
-  className,
-  width = 24,
-  height = 24
-}) {
-  return /* @__PURE__ */ jsx(
-    "svg",
-    {
-      xmlns: "http://www.w3.org/2000/svg",
-      fill: "none",
-      viewBox: "0 0 24 24",
-      strokeWidth: 1.5,
-      stroke: "currentColor",
-      width,
-      height,
-      className: cn(className),
-      children: /* @__PURE__ */ jsx(
-        "path",
-        {
-          strokeLinecap: "round",
-          strokeLinejoin: "round",
-          d: "M10.05 4.575a1.575 1.575 0 1 0-3.15 0v3m3.15-3v-1.5a1.575 1.575 0 0 1 3.15 0v1.5m-3.15 0 .075 5.925m3.075.75V4.575m0 0a1.575 1.575 0 0 1 3.15 0V15M6.9 7.575a1.575 1.575 0 1 0-3.15 0v8.175a6.75 6.75 0 0 0 6.75 6.75h2.018a5.25 5.25 0 0 0 3.712-1.538l1.732-1.732a5.25 5.25 0 0 0 1.538-3.712l.003-2.024a.668.668 0 0 1 .198-.471 1.575 1.575 0 1 0-2.228-2.228 3.818 3.818 0 0 0-1.12 2.687M6.9 7.575V12m6.27 4.318A4.49 4.49 0 0 1 16.35 15m.002 0h-.002"
-        }
-      )
-    }
-  );
-}
+const ManageProposalButton = ({
+  proposal
+}) => {
+  const { t } = useLaravelReactI18n();
+  const localizedRoute = useLocalizedRoute("my.proposals.manage", {
+    proposal: proposal?.id
+  });
+  const handleClick = () => {
+    router.visit(localizedRoute);
+  };
+  return /* @__PURE__ */ jsx(Button, { onClick: handleClick, ariaLabel: t("proposals.manageProposal"), children: /* @__PURE__ */ jsx("div", { className: "bg-success hover:bg-success-light rounded-md px-4 py-2 text-white transition-colors", children: t("proposals.manageProposal") }) });
+};
+
+const __vite_glob_0_203 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+    __proto__: null,
+    default: ManageProposalButton
+}, Symbol.toStringTag, { value: 'Module' }));
 
 function YesVoteIcon({
   className,
@@ -29154,23 +29283,33 @@ function YesVoteIcon({
   );
 }
 
-const ManageProposalButton = ({
-  proposal
-}) => {
-  const { t } = useLaravelReactI18n();
-  const localizedRoute = useLocalizedRoute("my.proposals.manage", {
-    proposal: proposal?.id
-  });
-  const handleClick = () => {
-    router.visit(localizedRoute);
-  };
-  return /* @__PURE__ */ jsx(Button, { onClick: handleClick, ariaLabel: t("proposals.manageProposal"), children: /* @__PURE__ */ jsx("div", { className: "bg-success hover:bg-success-light rounded-md px-4 py-2 text-white transition-colors", children: t("proposals.manageProposal") }) });
-};
-
-const __vite_glob_0_202 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
-    __proto__: null,
-    default: ManageProposalButton
-}, Symbol.toStringTag, { value: 'Module' }));
+function AbstainVoteIcon({
+  className,
+  width = 24,
+  height = 24
+}) {
+  return /* @__PURE__ */ jsx(
+    "svg",
+    {
+      xmlns: "http://www.w3.org/2000/svg",
+      fill: "none",
+      viewBox: "0 0 24 24",
+      strokeWidth: 1.5,
+      stroke: "currentColor",
+      width,
+      height,
+      className: cn(className),
+      children: /* @__PURE__ */ jsx(
+        "path",
+        {
+          strokeLinecap: "round",
+          strokeLinejoin: "round",
+          d: "M10.05 4.575a1.575 1.575 0 1 0-3.15 0v3m3.15-3v-1.5a1.575 1.575 0 0 1 3.15 0v1.5m-3.15 0 .075 5.925m3.075.75V4.575m0 0a1.575 1.575 0 0 1 3.15 0V15M6.9 7.575a1.575 1.575 0 1 0-3.15 0v8.175a6.75 6.75 0 0 0 6.75 6.75h2.018a5.25 5.25 0 0 0 3.712-1.538l1.732-1.732a5.25 5.25 0 0 0 1.538-3.712l.003-2.024a.668.668 0 0 1 .198-.471 1.575 1.575 0 1 0-2.228-2.228 3.818 3.818 0 0 0-1.12 2.687M6.9 7.575V12m6.27 4.318A4.49 4.49 0 0 1 16.35 15m.002 0h-.002"
+        }
+      )
+    }
+  );
+}
 
 function ArrowDownIcon({
   className,
@@ -29282,37 +29421,31 @@ const TableHeaderCell = ({
   }
 );
 
-const __vite_glob_0_258 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_259 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: TableHeaderCell
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const ProposalTable = ({
   proposals,
-  columnVisibility = {},
+  columns,
   actionType = "manage",
-  // Default to 'manage' for backward compatibility
-  disableSorting = false
-  // Default to false to maintain existing behavior
+  disableSorting = false,
+  showPagination = true,
+  customActions,
+  renderActions
 }) => {
   const { t } = useLaravelReactI18n();
   const { setFilters, getFilter } = useFilterContext();
   const [selectedUserMap, setSelectedUserMap] = useState({});
-  const defaultVisibility = {
-    title: false,
-    // Hidden by default
-    proposal: true,
-    fund: false,
-    // Hidden by default
-    status: true,
-    funding: true,
-    teams: true,
-    yesVotes: false,
-    abstainVotes: false,
-    action: actionType === "manage",
-    viewProposal: actionType === "view"
-  };
-  const mergedVisibility = { ...defaultVisibility, ...columnVisibility };
+  const defaultColumns = [
+    "proposal",
+    "status",
+    "funding",
+    "teams",
+    actionType === "manage" ? "action" : "viewProposal"
+  ].filter(Boolean);
+  const activeColumns = columns || defaultColumns;
   const currentSort = getFilter(ParamsEnum.SORTS) || null;
   const [sortField, sortDirection] = currentSort ? currentSort.split(":") : [null, null];
   const handleSort = (key) => {
@@ -29329,15 +29462,11 @@ const ProposalTable = ({
     if (!direction) {
       const url = new URL(window.location.href);
       url.searchParams.delete(ParamsEnum.SORTS);
-      router.get(
-        url.pathname + url.search,
-        {},
-        {
-          preserveState: true,
-          preserveScroll: true,
-          replace: true
-        }
-      );
+      router.get(url.pathname + url.search, {}, {
+        preserveState: true,
+        preserveScroll: true,
+        replace: true
+      });
       setFilters({
         param: ParamsEnum.SORTS,
         value: null,
@@ -29351,106 +29480,41 @@ const ProposalTable = ({
       });
     }
   };
-  const columns = [
-    {
+  const columnDefinitions = {
+    title: {
       key: "title",
       label: t("proposalComparison.tableHeaders.title"),
       sortable: !disableSorting,
       sortKey: "title",
-      renderCell: (proposal) => /* @__PURE__ */ jsx(
-        "div",
+      renderCell: (proposal) => /* @__PURE__ */ jsx("div", { className: "w-80", "data-testid": `proposal-title-${proposal.id}`, children: /* @__PURE__ */ jsx(Paragraph, { className: "text-md text-content", "data-testid": `proposal-title-text-${proposal.id}`, children: /* @__PURE__ */ jsx(
+        Link$b,
         {
-          className: "w-80",
-          "data-testid": `proposal-title-${proposal.id}`,
-          children: /* @__PURE__ */ jsx(
-            Paragraph,
-            {
-              className: "text-md text-content",
-              "data-testid": `proposal-title-text-${proposal.id}`,
-              children: /* @__PURE__ */ jsx(
-                Link$8,
-                {
-                  href: proposal.link,
-                  target: "_blank",
-                  rel: "noopener noreferrer",
-                  className: "inline-flex items-center",
-                  "data-testid": `view-proposal-button-${proposal.id}`,
-                  children: proposal.title
-                }
-              )
-            }
-          )
+          href: proposal.link,
+          target: "_blank",
+          rel: "noopener noreferrer",
+          className: "inline-flex items-center",
+          "data-testid": `view-proposal-button-${proposal.id}`,
+          children: proposal.title
         }
-      )
+      ) }) })
     },
-    {
+    proposal: {
       key: "proposal",
       label: t("proposal"),
       sortable: !disableSorting,
       sortKey: "title",
-      renderCell: (proposal, { selectedUser, noSelectedUser }) => /* @__PURE__ */ jsx(
-        "div",
-        {
-          className: "w-80",
-          "data-testid": `proposal-card-header-${proposal.id}`,
-          children: /* @__PURE__ */ jsx(
-            ProposalCardHeader,
-            {
-              proposal,
-              userSelected: selectedUser,
-              noSelectedUser,
-              isHorizontal: false,
-              "data-testid": `proposal-card-${proposal.id}`
-            }
-          )
-        }
-      )
-    },
-    {
-      key: "action",
-      label: t("proposals.action"),
-      renderCell: (proposal) => /* @__PURE__ */ jsx("div", { "data-testid": `proposal-action-${proposal.id}`, children: /* @__PURE__ */ jsx(
-        ManageProposalButton,
+      renderCell: (proposal, { selectedUser, noSelectedUser }) => /* @__PURE__ */ jsx("div", { className: "w-80", "data-testid": `proposal-card-header-${proposal.id}`, children: /* @__PURE__ */ jsx(
+        ProposalCardHeader,
         {
           proposal,
-          "data-testid": `manage-proposal-button-${proposal.id}`
+          userSelected: selectedUser,
+          noSelectedUser,
+          isHorizontal: false,
+          "data-testid": `proposal-card-${proposal.id}`
         }
       ) })
     },
-    {
-      key: "viewProposal",
-      label: t("proposals.action"),
-      renderCell: (proposal) => /* @__PURE__ */ jsxs(
-        "div",
-        {
-          className: "flex w-20 items-center gap-3",
-          "data-testid": `proposal-view-${proposal.id}`,
-          children: [
-            /* @__PURE__ */ jsx(
-              CompareButton,
-              {
-                model: "proposal",
-                hash: proposal.id ?? "",
-                tooltipDescription: "Compare Proposals",
-                data: proposal,
-                "data-testid": `compare-button`,
-                buttonTheme: "text-content"
-              }
-            ),
-            /* @__PURE__ */ jsx(
-              BookmarkButton,
-              {
-                modelType: "proposals",
-                itemId: proposal.id ?? "",
-                "data-testid": "bookmark-button",
-                buttonTheme: "text-content"
-              }
-            )
-          ]
-        }
-      )
-    },
-    {
+    fund: {
       key: "fund",
       label: t("proposalComparison.tableHeaders.fund"),
       sortable: !disableSorting,
@@ -29458,12 +29522,12 @@ const ProposalTable = ({
       renderCell: (proposal) => /* @__PURE__ */ jsx(
         "div",
         {
-          className: "border-light-gray-persist bg-light-gray-persist/[10%] flex items-center justify-center rounded-md border px-1",
+          className: "flex items-center justify-center border border-light-gray-persist bg-light-gray-persist/[10%] px-1 rounded-md",
           "data-testid": `proposal-fund-${proposal.id}`,
           children: proposal.fund?.label && /* @__PURE__ */ jsx(
             "span",
             {
-              className: "text-content items-center rounded-full py-1 text-xs font-medium text-nowrap",
+              className: "items-center py-1 rounded-full text-xs font-medium text-content text-nowrap",
               "data-testid": `proposal-fund-label-${proposal.id}`,
               children: proposal.fund.label
             }
@@ -29471,187 +29535,180 @@ const ProposalTable = ({
         }
       )
     },
-    {
+    status: {
       key: "status",
       label: t("proposalComparison.tableHeaders.status"),
       sortable: !disableSorting,
       sortKey: "funding_status",
-      renderCell: (proposal) => /* @__PURE__ */ jsx(
-        "div",
+      renderCell: (proposal) => /* @__PURE__ */ jsx("div", { className: "flex w-32 items-center justify-center", "data-testid": `proposal-status-${proposal.id}`, children: /* @__PURE__ */ jsx(
+        ProposalFundingStatus,
         {
-          className: "flex w-32 items-center justify-center",
-          "data-testid": `proposal-status-${proposal.id}`,
-          children: /* @__PURE__ */ jsx(
-            ProposalFundingStatus,
-            {
-              funding_status: proposal.funding_status ?? "",
-              "data-testid": `proposal-funding-status-${proposal.id}`
-            }
-          )
+          funding_status: proposal.funding_status ?? "",
+          "data-testid": `proposal-funding-status-${proposal.id}`
         }
-      )
+      ) })
     },
-    {
+    funding: {
       key: "funding",
       label: t("funding"),
       sortable: !disableSorting,
       sortKey: "amount_received",
-      renderCell: (proposal) => /* @__PURE__ */ jsx(
-        "div",
+      renderCell: (proposal) => /* @__PURE__ */ jsx("div", { className: "flex w-60", "data-testid": `proposal-funding-${proposal.id}`, children: /* @__PURE__ */ jsx(
+        ProposalFundingPercentages,
         {
-          className: "flex w-60",
-          "data-testid": `proposal-funding-${proposal.id}`,
-          children: /* @__PURE__ */ jsx(
-            ProposalFundingPercentages,
-            {
-              proposal,
-              "data-testid": `proposal-funding-percentages-${proposal.id}`
-            }
-          )
+          proposal,
+          "data-testid": `proposal-funding-percentages-${proposal.id}`
         }
-      )
+      ) })
     },
-    {
+    teams: {
       key: "teams",
       label: t("teams"),
       sortable: false,
-      // Keep this always false as it was originally
       sortKey: "users.proposals_completed",
-      renderCell: (proposal, { handleUserClick }) => /* @__PURE__ */ jsx(
-        "div",
+      renderCell: (proposal, { handleUserClick }) => /* @__PURE__ */ jsx("div", { className: "w-40", "data-testid": `proposal-teams-${proposal.id}`, children: /* @__PURE__ */ jsx(
+        IdeascaleProfileUsers,
         {
-          className: "w-40",
-          "data-testid": `proposal-teams-${proposal.id}`,
-          children: /* @__PURE__ */ jsx(
-            IdeascaleProfileUsers,
-            {
-              users: proposal.users,
-              onUserClick: handleUserClick,
-              className: "bg-content-light",
-              toolTipProps: t("proposals.viewTeam"),
-              "data-testid": `proposal-ideascale-users-${proposal.id}`
-            }
-          )
+          users: proposal.users,
+          onUserClick: handleUserClick,
+          className: "bg-content-light",
+          toolTipProps: t("proposals.viewTeam"),
+          "data-testid": `proposal-ideascale-users-${proposal.id}`
         }
-      )
+      ) })
     },
-    {
+    yesVotes: {
       key: "yesVotes",
-      label: /* @__PURE__ */ jsxs(
-        "div",
-        {
-          className: "flex items-center gap-2",
-          "data-testid": "yes-votes-header",
-          children: [
-            /* @__PURE__ */ jsx(
-              YesVoteIcon,
-              {
-                className: "text-success size-5 font-medium",
-                width: 20,
-                height: 20,
-                "data-testid": "yes-vote-icon"
-              }
-            ),
-            /* @__PURE__ */ jsx(
-              "span",
-              {
-                className: "text-content/60 flex gap-2",
-                "data-testid": "yes-votes-label",
-                children: /* @__PURE__ */ jsx(Paragraph, { size: "sm", children: t("yesVotes") })
-              }
-            )
-          ]
-        }
-      ),
+      label: /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", "data-testid": "yes-votes-header", children: [
+        /* @__PURE__ */ jsx(
+          YesVoteIcon,
+          {
+            className: "size-5 font-medium text-success",
+            width: 20,
+            height: 20,
+            "data-testid": "yes-vote-icon"
+          }
+        ),
+        /* @__PURE__ */ jsx("span", { className: "flex gap-2 text-content/60", "data-testid": "yes-votes-label", children: /* @__PURE__ */ jsx(Paragraph, { size: "sm", children: t("yesVotes") }) })
+      ] }),
       sortable: !disableSorting,
       sortKey: "yes_votes_count",
-      renderCell: (proposal) => /* @__PURE__ */ jsx(
+      renderCell: (proposal) => /* @__PURE__ */ jsx("div", { className: "text-center", "data-testid": `proposal-yes-votes-${proposal.id}`, children: /* @__PURE__ */ jsx(
         "div",
         {
-          className: "text-center",
-          "data-testid": `proposal-yes-votes-${proposal.id}`,
-          children: /* @__PURE__ */ jsx(
-            "div",
+          className: "flex items-center justify-center gap-2",
+          "data-testid": `proposal-yes-votes-content-${proposal.id}`,
+          children: /* @__PURE__ */ jsxs(
+            Paragraph,
             {
-              className: "flex items-center justify-center gap-2",
-              "data-testid": `proposal-yes-votes-content-${proposal.id}`,
-              children: /* @__PURE__ */ jsxs(
-                Paragraph,
-                {
-                  className: "text-light-gray-persist",
-                  "data-testid": `proposal-yes-votes-count-${proposal.id}`,
-                  children: [
-                    "(",
-                    shortNumber(proposal.yes_votes_count) || "0",
-                    ")"
-                  ]
-                }
-              )
+              className: "text-light-gray-persist",
+              "data-testid": `proposal-yes-votes-count-${proposal.id}`,
+              children: [
+                "(",
+                shortNumber(proposal.yes_votes_count) || "0",
+                ")"
+              ]
             }
           )
         }
-      )
+      ) })
     },
-    {
+    abstainVotes: {
       key: "abstainVotes",
-      label: /* @__PURE__ */ jsxs(
-        "div",
-        {
-          className: "flex items-center gap-2",
-          "data-testid": "abstain-votes-header",
-          children: [
-            /* @__PURE__ */ jsx(
-              AbstainVoteIcon,
-              {
-                className: "size-4 font-medium",
-                width: 16,
-                height: 16,
-                "data-testid": "abstain-vote-icon"
-              }
-            ),
-            /* @__PURE__ */ jsx(
-              "div",
-              {
-                className: "text-content/60 flex gap-2",
-                "data-testid": "abstain-votes-label",
-                children: /* @__PURE__ */ jsx(Paragraph, { size: "sm", children: t("abstainVotes") })
-              }
-            )
-          ]
-        }
-      ),
+      label: /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", "data-testid": "abstain-votes-header", children: [
+        /* @__PURE__ */ jsx(
+          AbstainVoteIcon,
+          {
+            className: "size-4 font-medium",
+            width: 16,
+            height: 16,
+            "data-testid": "abstain-vote-icon"
+          }
+        ),
+        /* @__PURE__ */ jsx("div", { className: "flex gap-2 text-content/60", "data-testid": "abstain-votes-label", children: /* @__PURE__ */ jsx(Paragraph, { size: "sm", children: t("abstainVotes") }) })
+      ] }),
       sortable: !disableSorting,
       sortKey: "abstain_votes_count",
-      renderCell: (proposal) => /* @__PURE__ */ jsx(
+      renderCell: (proposal) => /* @__PURE__ */ jsx("div", { className: "text-center", "data-testid": `proposal-abstain-votes-${proposal.id}`, children: /* @__PURE__ */ jsx(
         "div",
         {
-          className: "text-center",
-          "data-testid": `proposal-abstain-votes-${proposal.id}`,
-          children: /* @__PURE__ */ jsx(
-            "div",
+          className: "flex items-center justify-center gap-2",
+          "data-testid": `proposal-abstain-votes-content-${proposal.id}`,
+          children: /* @__PURE__ */ jsxs(
+            Paragraph,
             {
-              className: "flex items-center justify-center gap-2",
-              "data-testid": `proposal-abstain-votes-content-${proposal.id}`,
-              children: /* @__PURE__ */ jsxs(
-                Paragraph,
-                {
-                  className: "text-light-gray-persist",
-                  "data-testid": `proposal-abstain-votes-count-${proposal.id}`,
-                  children: [
-                    "(",
-                    shortNumber(proposal.abstain_votes_count) || "0",
-                    ")"
-                  ]
-                }
-              )
+              className: "text-light-gray-persist",
+              "data-testid": `proposal-abstain-votes-count-${proposal.id}`,
+              children: [
+                "(",
+                shortNumber(proposal.abstain_votes_count) || "0",
+                ")"
+              ]
             }
           )
         }
-      )
+      ) })
+    },
+    action: {
+      key: "action",
+      label: t("proposals.action"),
+      renderCell: (proposal) => {
+        const testId = `proposal-action-${proposal.id}`;
+        if (renderActions?.manage) {
+          return /* @__PURE__ */ jsx("div", { "data-testid": testId, children: renderActions.manage(proposal) });
+        }
+        if (customActions?.manage) {
+          const CustomManageAction = customActions.manage;
+          return /* @__PURE__ */ jsx("div", { "data-testid": testId, children: /* @__PURE__ */ jsx(
+            CustomManageAction,
+            {
+              proposal,
+              "data-testid": `manage-proposal-button-${proposal.id}`
+            }
+          ) });
+        }
+        return /* @__PURE__ */ jsx("div", { "data-testid": testId, children: /* @__PURE__ */ jsx(
+          ManageProposalButton,
+          {
+            proposal,
+            "data-testid": `manage-proposal-button-${proposal.id}`
+          }
+        ) });
+      }
+    },
+    viewProposal: {
+      key: "viewProposal",
+      label: t("proposals.action"),
+      renderCell: (proposal) => {
+        const testId = `proposal-view-${proposal.id}`;
+        if (renderActions?.view) {
+          return /* @__PURE__ */ jsx("div", { "data-testid": testId, children: renderActions.view(proposal) });
+        }
+        if (customActions?.view) {
+          const CustomViewAction = customActions.view;
+          return /* @__PURE__ */ jsx("div", { "data-testid": testId, children: /* @__PURE__ */ jsx(
+            CustomViewAction,
+            {
+              proposal,
+              "data-testid": `view-proposal-actions-${proposal.id}`
+            }
+          ) });
+        }
+        return /* @__PURE__ */ jsx("div", { className: "w-32", "data-testid": testId, children: /* @__PURE__ */ jsx(
+          "a",
+          {
+            href: proposal.link,
+            target: "_blank",
+            rel: "noopener noreferrer",
+            className: "inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors duration-200 font-medium text-sm",
+            "data-testid": `view-proposal-button-${proposal.id}`,
+            children: t("proposalComparison.viewProposal")
+          }
+        ) });
+      }
     }
-  ].filter(
-    (column) => mergedVisibility[column.key] !== false
-  );
+  };
+  const orderedColumns = activeColumns.map((columnKey) => columnDefinitions[columnKey]).filter(Boolean);
   const getRowHelpers = useCallback(
     (proposalHash) => {
       return {
@@ -29672,17 +29729,17 @@ const ProposalTable = ({
     },
     [selectedUserMap]
   );
-  return /* @__PURE__ */ jsxs("div", { className: "bg-background mb-8 rounded-lg border-2 border-gray-200 shadow-md", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "mb-8 rounded-lg border-2 border-gray-200 bg-background shadow-md", children: [
     /* @__PURE__ */ jsx("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxs("table", { className: "w-max min-w-full", children: [
       /* @__PURE__ */ jsx(
         "thead",
         {
-          className: "bg-background-lighter border-gray-200 whitespace-nowrap",
+          className: "border-gray-200 whitespace-nowrap bg-background-lighter",
           "data-testid": "proposal-table-header",
-          children: /* @__PURE__ */ jsx("tr", { "data-testid": "proposal-table-header-row", children: columns.map((column) => /* @__PURE__ */ jsx(
+          children: /* @__PURE__ */ jsx("tr", { "data-testid": "proposal-table-header-row", children: orderedColumns.map((column) => /* @__PURE__ */ jsx(
             "th",
             {
-              className: "text-content border-r border-b border-gray-200 px-4 py-3 text-left font-medium last:border-r-0",
+              className: "border-gray-200 border-b border-r px-4 py-3 text-left font-medium text-content last:border-r-0",
               "data-testid": `proposal-table-header-${column.key}`,
               children: /* @__PURE__ */ jsx(
                 TableHeaderCell,
@@ -29690,9 +29747,7 @@ const ProposalTable = ({
                   label: column.label,
                   sortable: column.sortable,
                   sortDirection: column.sortKey === sortField ? sortDirection : null,
-                  onSort: column.sortable ? () => handleSort(
-                    column.sortKey || column.key
-                  ) : void 0,
+                  onSort: column.sortable ? () => handleSort(column.sortKey || column.key) : void 0,
                   "data-testid": `proposal-table-header-cell-${column.key}`
                 }
               )
@@ -29709,15 +29764,12 @@ const ProposalTable = ({
           {
             className: index < proposals.data.length - 1 ? "border-b border-gray-200" : "",
             "data-testid": `proposal-table-row-${proposalHash}`,
-            children: columns.map((column) => /* @__PURE__ */ jsx(
+            children: orderedColumns.map((column) => /* @__PURE__ */ jsx(
               "td",
               {
-                className: "text-content border-r border-b border-gray-200 px-4 py-4 last:border-r-0",
+                className: "border-gray-200 border-b border-r px-4 py-4 text-content last:border-r-0",
                 "data-testid": `proposal-table-cell-${proposalHash}-${column.key}`,
-                children: column.renderCell(
-                  proposal,
-                  helpers
-                )
+                children: column.renderCell(proposal, helpers)
               },
               `${proposalHash}-${column.key}`
             ))
@@ -29726,7 +29778,7 @@ const ProposalTable = ({
         );
       }) })
     ] }) }),
-    proposals && proposals.data && proposals.data.length > 0 && /* @__PURE__ */ jsx("div", { className: "border-t border-gray-200 px-4 py-4", children: /* @__PURE__ */ jsx(
+    showPagination && proposals && proposals.data && proposals.data.length > 0 && /* @__PURE__ */ jsx("div", { className: "border-t border-gray-200 px-4 py-4", children: /* @__PURE__ */ jsx(
       PaginationComponent,
       {
         pagination: proposals,
@@ -29739,7 +29791,7 @@ const ProposalTable = ({
   ] });
 };
 
-const __vite_glob_0_257 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_258 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalTable
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -29872,7 +29924,7 @@ const MyProposalFilters = () => {
   ] }) });
 };
 
-const __vite_glob_0_203 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_204 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MyProposalFilters
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -29912,7 +29964,7 @@ function MyProposals({ proposals, filters }) {
   );
 }
 
-const __vite_glob_0_200 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_201 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MyProposals
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -29921,11 +29973,11 @@ function ManageProposal({}) {
   const { t } = useLaravelReactI18n();
   return /* @__PURE__ */ jsxs("div", { children: [
     /* @__PURE__ */ jsx(Head, { title: t("proposals.manageProposal") }),
-    /* @__PURE__ */ jsx("div", { className: "mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsx("div", { className: "text-content text-center", children: /* @__PURE__ */ jsx(RecordsNotFound, {}) }) })
+    /* @__PURE__ */ jsx("div", { className: "container py-8 ", children: /* @__PURE__ */ jsx("div", { className: "text-content text-center", children: /* @__PURE__ */ jsx(RecordsNotFound, { context: "proposals" }) }) })
   ] });
 }
 
-const __vite_glob_0_201 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_202 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ManageProposal
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -29960,7 +30012,7 @@ function MyReviews({
   ] });
 }
 
-const __vite_glob_0_204 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_205 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MyReviews
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -30029,7 +30081,14 @@ function ServiceCard({ service }) {
                   {
                     className: "text-content justify-start self-stretch text-xl leading-normal font-medium",
                     "data-testid": "service-card-title",
-                    children: service.title
+                    children: /* @__PURE__ */ jsx(
+                      "a",
+                      {
+                        href: service.link,
+                        className: "no-underline hover:text-primary",
+                        children: service.title
+                      }
+                    )
                   }
                 ),
                 /* @__PURE__ */ jsx("div", { className: "justify-start text-sm leading-none font-normal text-slate-500", children: service.name || service.user?.name || "Unknown Provider" })
@@ -30071,7 +30130,7 @@ const ServiceSearchBar = forwardRef(({ value, handleSearch, className, ...props 
   ) });
 });
 
-const __vite_glob_0_280 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_281 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     ServiceSearchBar
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -30130,7 +30189,7 @@ function SearchControls({
   ] }) });
 }
 
-const __vite_glob_0_279 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_280 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: SearchControls
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -30230,7 +30289,7 @@ const MyServices = (props) => {
   return /* @__PURE__ */ jsx(FiltersProvider, { defaultFilters: props.filters || {}, children: /* @__PURE__ */ jsx(MyServicesComponent, { ...props }) });
 };
 
-const __vite_glob_0_205 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_206 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MyServices
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -30281,7 +30340,7 @@ const TransactionSortOptions = () => {
   ];
 };
 
-const copyToClipboard$a = (text) => {
+const copyToClipboard$d = (text) => {
   navigator.clipboard.writeText(text).then(() => {
     console.log("Copied to clipboard:", text);
   }).catch((err) => {
@@ -30299,7 +30358,7 @@ const CopyableCell$1 = ({
     fullText && /* @__PURE__ */ jsx(
       Button,
       {
-        onClick: () => copyToClipboard$a(fullText),
+        onClick: () => copyToClipboard$d(fullText),
         className: "ml-2 rounded-full p-1 hover:bg-gray-100",
         ariaLabel: t("copyToClipboard"),
         children: /* @__PURE__ */ jsx(
@@ -30392,7 +30451,7 @@ const MyTransactionRow = ({
   ] });
 };
 
-const __vite_glob_0_207 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_208 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MyTransactionRow
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -30531,7 +30590,7 @@ const MyTransactionTable = ({
   ] }) }) });
 };
 
-const __vite_glob_0_208 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_209 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     MyTransactionTable,
     default: MyTransactionTable
@@ -30590,7 +30649,7 @@ const MyTransaction = ({
   ] });
 };
 
-const __vite_glob_0_206 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_207 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MyTransaction
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -30876,7 +30935,7 @@ const VoteFilters = () => {
   ] }) }) });
 };
 
-const __vite_glob_0_301 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_303 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: VoteFilters
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -30942,7 +31001,7 @@ const VoteHistoryTableLoader = ({
   ] });
 };
 
-const __vite_glob_0_303 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_305 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: VoteHistoryTableLoader
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -31135,7 +31194,7 @@ const VoterHistoryTable = ({
                   "vote.notAvailable"
                 ) }),
                 /* @__PURE__ */ jsx("td", { className: "text-darker w-40 border-r border-b border-gray-100 px-4 py-4 font-normal", children: /* @__PURE__ */ jsx(
-                  Link$8,
+                  Link$b,
                   {
                     href: useLocalizedRoute(
                       "jormungandr.wallets.show",
@@ -31165,7 +31224,7 @@ const VoterHistoryTable = ({
                   )
                 ) }),
                 /* @__PURE__ */ jsx("td", { className: "text-darker w-40 border-r border-b border-gray-100 px-4 py-4 font-normal", children: /* @__PURE__ */ jsx(
-                  Link$8,
+                  Link$b,
                   {
                     href: useLocalizedRoute(
                       "jormungandr.wallets.show",
@@ -31259,7 +31318,7 @@ const VoterHistoryTable = ({
   ] });
 };
 
-const __vite_glob_0_302 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_304 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: VoterHistoryTable
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -31340,7 +31399,7 @@ const Votes = (props) => {
   return /* @__PURE__ */ jsx(FiltersProvider, { defaultFilters: {}, children: /* @__PURE__ */ jsx(VotesComponent, { ...props }) });
 };
 
-const __vite_glob_0_209 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_210 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Votes
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -31604,7 +31663,7 @@ const Wallets = (props) => {
   return /* @__PURE__ */ jsx(FiltersProvider, { defaultFilters: {}, children: /* @__PURE__ */ jsx(WalletsComponent, { ...props }) });
 };
 
-const __vite_glob_0_210 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_211 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Wallets
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -31618,7 +31677,7 @@ const Index$8 = () => {
   ] });
 };
 
-const __vite_glob_0_213 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_214 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index$8
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -31634,7 +31693,7 @@ const Index$7 = () => {
   ] });
 };
 
-const __vite_glob_0_214 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_215 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index$7
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -31667,7 +31726,7 @@ const UserSection = ({ user }) => {
         /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center gap-1.5", children: [
           /* @__PURE__ */ jsx(MapPin, { className: "h-3.5 w-3.5 md:h-4 md:w-4" }),
           user.locations?.length > 0 ? /* @__PURE__ */ jsx("span", { className: "max-w-[200px] break-words md:max-w-none", children: JSON.stringify(user.locations) }) : /* @__PURE__ */ jsx(
-            Link$8,
+            Link$b,
             {
               href: "#",
               className: "text-primary underline",
@@ -31678,7 +31737,7 @@ const UserSection = ({ user }) => {
         /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center gap-1.5", children: [
           /* @__PURE__ */ jsx(Mail, { className: "h-3.5 w-3.5 md:h-4 md:w-4" }),
           user.email ? /* @__PURE__ */ jsx("span", { className: "max-w-[200px] break-words md:max-w-none", children: user.email }) : /* @__PURE__ */ jsx(
-            Link$8,
+            Link$b,
             {
               href: "#",
               className: "text-primary underline",
@@ -31691,7 +31750,7 @@ const UserSection = ({ user }) => {
   ] }) });
 };
 
-const __vite_glob_0_219 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_220 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: UserSection
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -31723,12 +31782,12 @@ function UserProfile({}) {
   ] });
 }
 
-const __vite_glob_0_217 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_218 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: UserProfile
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const __vite_glob_0_218 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_219 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null
 }, Symbol.toStringTag, { value: 'Module' }));
 
@@ -31832,7 +31891,7 @@ function ProposalFundingDetails({ proposal }) {
   ] }) });
 }
 
-const __vite_glob_0_243 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_244 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalFundingDetails
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -32016,7 +32075,7 @@ function ProposalExtendedCard({
   );
 }
 
-const __vite_glob_0_241 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_242 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalExtendedCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -32025,7 +32084,7 @@ function ProposalTab({ tabs, activeTab }) {
   return /* @__PURE__ */ jsx(TabNavigation, { tabs, activeTab, centerTabs: true });
 }
 
-const __vite_glob_0_256 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_257 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalTab
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -32133,7 +32192,7 @@ const ProposalLayout = ({
   ] });
 };
 
-const __vite_glob_0_266 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_267 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalLayout
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -32178,7 +32237,7 @@ const Index$6 = ({
   );
 };
 
-const __vite_glob_0_221 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_222 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index$6
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -32245,7 +32304,7 @@ function ColumnHeader({
   );
 }
 
-const __vite_glob_0_222 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_223 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ColumnHeader
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -32565,7 +32624,7 @@ function ComparisonTableFilters() {
   ] });
 }
 
-const __vite_glob_0_223 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_224 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ComparisonTableFilters
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -32594,7 +32653,7 @@ function RowVisibilitySelector({
   ) });
 }
 
-const __vite_glob_0_224 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_225 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: RowVisibilitySelector
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -33000,7 +33059,7 @@ function SortableProposalColumn({
   );
 }
 
-const __vite_glob_0_227 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_228 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: SortableProposalColumn
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -33169,7 +33228,7 @@ function ProposalsTable() {
   ] });
 }
 
-const __vite_glob_0_226 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_227 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalsTable
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -33186,7 +33245,7 @@ function ProposalComparison() {
   );
 }
 
-const __vite_glob_0_225 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_226 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalComparison
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -33365,7 +33424,7 @@ const ProposalContent = ({ content }) => {
   ] });
 };
 
-const __vite_glob_0_240 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_241 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalContent
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -33406,7 +33465,7 @@ const Index$5 = ({
   );
 };
 
-const __vite_glob_0_228 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_229 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index$5
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -33597,27 +33656,32 @@ function CardLayoutSwitcher({
       label: void 0
     });
   };
-  const setHorizontal = (value) => {
-    setIsHorizontal(value);
+  const handleTableClick = () => {
+    const newValue = !isTableView;
+    setIsTableView(newValue);
   };
-  const setMini = (value) => {
-    setIsMini(value);
-  };
-  const setTable = (value) => {
-    setIsTableView(value);
-    if (value) {
-      setIsMini(false);
+  const handleVerticalClick = () => {
+    setIsTableView(false);
+    setIsHorizontal(false);
+    if (!isHorizontal) {
+      setIsMini(!isMini);
       setQuickpitch(false);
     }
   };
-  return /* @__PURE__ */ jsx("div", { className: "relative", children: /* @__PURE__ */ jsxs("div", { className: "z- bg-background shadow-m flex overflow-hidden rounded-lg border-[2px] border-gray-300", children: [
+  const handleQuickPitchClick = () => {
+    const newValue = !quickPitchView;
+    setQuickpitch(newValue);
+    if (newValue) {
+      setIsMini(false);
+      setIsTableView(false);
+    }
+  };
+  return /* @__PURE__ */ jsx("div", { className: "relative", children: /* @__PURE__ */ jsxs("div", { className: "z- bg-background flex overflow-hidden rounded-lg border-[2px] border-gray-300 shadow-m", children: [
     /* @__PURE__ */ jsx(
       Button,
       {
-        onClick: () => {
-          setTable(!isTableView);
-        },
-        className: `flex h-[50px] w-[60px] flex-1 items-center justify-center ${isTableView ? "bg-background-lighter text-primary" : "hover:bg-background-lighter cursor-pointer text-gray-500"} border-r-[2px] border-gray-300`,
+        onClick: handleTableClick,
+        className: `flex flex-1 items-center justify-center w-[60px] h-[50px] ${isTableView ? "bg-background-lighter text-primary" : "hover:bg-background-lighter cursor-pointer text-gray-500"} border-r-[2px] border-gray-300`,
         "data-testid": "card-layout-switcher-table-button",
         children: /* @__PURE__ */ jsx(TableIcon, {})
       }
@@ -33625,15 +33689,8 @@ function CardLayoutSwitcher({
     /* @__PURE__ */ jsx(
       Button,
       {
-        onClick: () => {
-          setHorizontal(false);
-          if (isHorizontal === false) {
-            setMini(!isMini);
-            setQuickpitch(false);
-          }
-          setTable(false);
-        },
-        className: `flex w-[60px] flex-1 items-center justify-center h-[50px]${!isHorizontal && !isTableView ? "bg-background-lighter text-primary cursor-pointer" : "cursor-pointer text-gray-500"} hover:bg-background-lighter border-r-[2px] border-gray-300`,
+        onClick: handleVerticalClick,
+        className: `flex flex-1 items-center justify-center w-[60px] h-[50px]${!isHorizontal && !isTableView ? "bg-background-lighter text-primary cursor-pointer" : "cursor-pointer text-gray-500"} hover:bg-background-lighter border-r-[2px] border-gray-300`,
         "data-testid": "card-layout-switcher-vertical-button",
         children: /* @__PURE__ */ jsxs("div", { className: "relative flex items-center", children: [
           /* @__PURE__ */ jsxs(
@@ -33689,12 +33746,8 @@ function CardLayoutSwitcher({
     /* @__PURE__ */ jsx(
       Button,
       {
-        onClick: () => {
-          setQuickpitch(!quickPitchView);
-          setIsMini(false);
-          setIsTableView(false);
-        },
-        className: `flex h-[50px] w-[60px] flex-1 items-center justify-center ${quickPitchView && !isTableView ? "bg-background-lighter text-primary" : "hover:bg-background-lighter cursor-pointer text-gray-500"} border-r-[2px] border-gray-300`,
+        onClick: handleQuickPitchClick,
+        className: `flex flex-1 items-center justify-center w-[60px] h-[50px] ${quickPitchView && !isTableView ? "bg-background-lighter text-primary" : "hover:bg-background-lighter cursor-pointer text-gray-500"} border-r-[2px] border-gray-300`,
         "data-testid": "card-layout-switcher-quick-pitch-button",
         children: /* @__PURE__ */ jsx(VideoCameraIcon, {})
       }
@@ -33702,7 +33755,7 @@ function CardLayoutSwitcher({
   ] }) });
 }
 
-const __vite_glob_0_230 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_231 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CardLayoutSwitcher
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -34134,7 +34187,7 @@ const ProposalFilters = () => {
   ) });
 };
 
-const __vite_glob_0_242 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_243 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalFilters
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -34196,24 +34249,79 @@ const ProposalTableLoading = () => {
   );
 };
 
-const __vite_glob_0_259 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_260 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalTableLoading
 }, Symbol.toStringTag, { value: 'Module' }));
 
+const renderIconOnlyViewActions = (proposal) => {
+  return /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-1", children: [
+    /* @__PURE__ */ jsx("div", { className: "flex items-center justify-center w-8 h-8 rounded-md transition-colors", children: /* @__PURE__ */ jsx(
+      CompareButton,
+      {
+        model: "proposal",
+        hash: proposal.id ?? "",
+        tooltipDescription: "Compare Proposals",
+        data: proposal,
+        "data-testid": "compare-button",
+        buttonTheme: "text-content"
+      }
+    ) }),
+    /* @__PURE__ */ jsx("div", { className: "flex items-center justify-center w-8 h-8 rounded-md transition-colors", children: /* @__PURE__ */ jsx(
+      BookmarkButton,
+      {
+        modelType: "proposals",
+        itemId: proposal.id ?? "",
+        "data-testid": "bookmark-button",
+        buttonTheme: "text-content"
+      }
+    ) })
+  ] });
+};
+const renderDefaultViewAction = (proposal, t) => {
+  return /* @__PURE__ */ jsx("div", { className: "w-32", "data-testid": `proposal-view-${proposal.id}`, children: /* @__PURE__ */ jsx(
+    "a",
+    {
+      href: proposal.link,
+      target: "_blank",
+      rel: "noopener noreferrer",
+      className: "inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors duration-200 font-medium text-sm",
+      "data-testid": `view-proposal-button-${proposal.id}`,
+      children: t("proposalComparison.viewProposal")
+    }
+  ) });
+};
 const ProposalTableView = ({
   proposals,
   actionType = "view",
   disableSorting = true,
-  columnVisibility = {
-    fund: true,
-    proposal: false,
-    title: true,
-    yesVotes: true,
-    abstainVotes: true,
-    teams: true
-  }
+  columns = ["fund", "title", "yesVotes", "abstainVotes", "teams", "viewProposal"],
+  showPagination = true,
+  iconOnlyActions = false,
+  customActions,
+  renderActions
 }) => {
+  const { t } = useLaravelReactI18n();
+  const getActionsConfig = () => {
+    if (customActions || renderActions) {
+      return { customActions, renderActions };
+    }
+    if (iconOnlyActions) {
+      return {
+        renderActions: {
+          view: renderIconOnlyViewActions,
+          manage: void 0
+        }
+      };
+    }
+    return {
+      renderActions: {
+        view: (proposal) => renderDefaultViewAction(proposal, t),
+        manage: void 0
+      }
+    };
+  };
+  const actionsConfig = getActionsConfig();
   return /* @__PURE__ */ jsx(Fragment, { children: /* @__PURE__ */ jsx("div", { className: "container mt-8", children: /* @__PURE__ */ jsx(
     WhenVisible,
     {
@@ -34232,7 +34340,10 @@ const ProposalTableView = ({
               actionType,
               disableSorting,
               proposals,
-              columnVisibility
+              columns,
+              showPagination,
+              customActions: actionsConfig.customActions,
+              renderActions: actionsConfig.renderActions
             }
           )
         }
@@ -34250,7 +34361,7 @@ const ProposalTableView = ({
   ) }) });
 };
 
-const __vite_glob_0_260 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_261 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalTableView
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -34263,13 +34374,80 @@ function Index$4({
 }) {
   const { t } = useLaravelReactI18n();
   const { setMetrics } = useMetrics();
-  const [isHorizontal, setIsHorizontal] = useState(false);
-  const [isMini, setIsMini] = useState(false);
-  const [isTableView, setIsTableView] = useState(false);
+  const {
+    value: isHorizontal,
+    setValue: setIsHorizontalPersistent,
+    isLoading: isHorizontalLoading
+  } = useUserSetting(userSettingEnums.VIEW_HORIZONTAL, false);
+  const {
+    value: isMini,
+    setValue: setIsMiniPersistent,
+    isLoading: isMiniLoading
+  } = useUserSetting(userSettingEnums.VIEW_MINI, false);
+  const {
+    value: isTableView,
+    setValue: setIsTableViewPersistent,
+    isLoading: isTableViewLoading
+  } = useUserSetting(userSettingEnums.VIEW_TABLE, false);
   const [showFilters, setShowFilters] = useState(false);
+  const [settingsInitialized, setSettingsInitialized] = useState(false);
   const [quickPitchView, setQuickPitchView] = useState(
     !!parseInt(filters[ParamsEnum.QUICK_PITCHES])
   );
+  useEffect(() => {
+    if (!isHorizontalLoading && !isMiniLoading && !isTableViewLoading) {
+      setSettingsInitialized(true);
+    }
+  }, [isHorizontalLoading, isMiniLoading, isTableViewLoading]);
+  const isViewSettingsLoading = isHorizontalLoading || isMiniLoading || isTableViewLoading;
+  const createDebugHandler = (name, handler) => {
+    return async (...args) => {
+      try {
+        const result = await handler(...args);
+        return result;
+      } catch (error) {
+        throw error;
+      }
+    };
+  };
+  const handleSetIsHorizontal = useCallback(createDebugHandler(
+    "handleSetIsHorizontal",
+    async (value) => {
+      await setIsHorizontalPersistent(value);
+      if (value) {
+        await setIsTableViewPersistent(false);
+        await setIsMiniPersistent(false);
+      }
+    }
+  ), [setIsHorizontalPersistent, setIsTableViewPersistent, setIsMiniPersistent]);
+  const handleSetIsMini = useCallback(createDebugHandler(
+    "handleSetIsMini",
+    async (value) => {
+      await setIsMiniPersistent(value);
+      if (value) {
+        await setIsTableViewPersistent(false);
+        await setIsHorizontalPersistent(false);
+      }
+    }
+  ), [setIsMiniPersistent, setIsTableViewPersistent, setIsHorizontalPersistent]);
+  const handleSetIsTableView = useCallback(createDebugHandler(
+    "handleSetIsTableView",
+    async (value) => {
+      await setIsTableViewPersistent(value);
+      if (value) {
+        await setIsMiniPersistent(false);
+        await setIsHorizontalPersistent(false);
+      }
+    }
+  ), [setIsTableViewPersistent, setIsMiniPersistent, setIsHorizontalPersistent]);
+  const handleSetQuickPitchView = useCallback((value) => {
+    setQuickPitchView(value);
+    if (value) {
+      setIsMiniPersistent(false).catch((e) => console.error("Failed to disable mini:", e));
+      setIsTableViewPersistent(false).catch((e) => console.error("Failed to disable table:", e));
+      setIsHorizontalPersistent(false).catch((e) => console.error("Failed to disable horizontal:", e));
+    }
+  }, [setIsMiniPersistent, setIsTableViewPersistent, setIsHorizontalPersistent]);
   useEffect(() => {
     if (metrics) {
       setMetrics(metrics);
@@ -34277,7 +34455,10 @@ function Index$4({
     return () => {
       setMetrics(void 0);
     };
-  }, [metrics]);
+  }, [metrics, setMetrics]);
+  const currentIsHorizontal = isHorizontal ?? false;
+  const currentIsMini = isMini ?? false;
+  const currentIsTableView = isTableView ?? false;
   return /* @__PURE__ */ jsx(ListProvider, { children: /* @__PURE__ */ jsxs(
     FiltersProvider,
     {
@@ -34313,60 +34494,62 @@ function Index$4({
             children: /* @__PURE__ */ jsx(ProposalFilters, {})
           }
         ),
-        /* @__PURE__ */ jsx("section", { className: "container flex flex-col items-end pt-2 pb-1", children: /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsx("section", { className: "container flex flex-col items-end pt-2 pb-1", children: isViewSettingsLoading ? /* @__PURE__ */ jsx("div", { className: "flex items-center justify-center w-[240px] h-[50px] bg-background rounded-lg border-[2px] border-gray-300", children: /* @__PURE__ */ jsx(Paragraph, { size: "sm", className: "text-gray-500", children: "Loading view settings..." }) }) : /* @__PURE__ */ jsx(
           CardLayoutSwitcher,
           {
-            isHorizontal,
+            isHorizontal: currentIsHorizontal,
             quickPitchView,
-            isMini,
-            isTableView,
-            setIsMini,
-            setIsHorizontal,
-            setGlobalQuickPitchView: setQuickPitchView,
-            setIsTableView
+            isMini: currentIsMini,
+            isTableView: currentIsTableView,
+            setIsMini: (value) => {
+              handleSetIsMini(value);
+            },
+            setIsHorizontal: (value) => {
+              handleSetIsHorizontal(value);
+            },
+            setGlobalQuickPitchView: (value) => {
+              handleSetQuickPitchView(value);
+            },
+            setIsTableView: (value) => {
+              handleSetIsTableView(value);
+            }
           }
         ) }),
-        /* @__PURE__ */ jsx(AnimatePresence, { mode: "wait", children: /* @__PURE__ */ jsx(
+        settingsInitialized ? /* @__PURE__ */ jsx(AnimatePresence, { mode: "wait", children: /* @__PURE__ */ jsx(
           motion.div,
           {
             initial: { opacity: 0, y: 20 },
             animate: { opacity: 1, y: 0 },
             exit: { opacity: 0, y: -20 },
             transition: { duration: 0.4, ease: "easeInOut" },
-            children: isTableView ? /* @__PURE__ */ jsx(
+            children: currentIsTableView ? /* @__PURE__ */ jsx(
               ProposalTableView,
               {
                 proposals,
                 actionType: "view",
                 disableSorting: true,
-                columnVisibility: {
-                  fund: true,
-                  proposal: false,
-                  title: true,
-                  yesVotes: true,
-                  abstainVotes: true,
-                  teams: true
-                }
+                columns: ["title", "viewProposal", "fund", "status", "funding", "teams", "yesVotes", "abstainVotes"],
+                iconOnlyActions: true
               }
             ) : /* @__PURE__ */ jsx(
               ProposalPaginatedList,
               {
                 proposals,
-                isHorizontal,
-                isMini,
+                isHorizontal: currentIsHorizontal,
+                isMini: currentIsMini,
                 quickPitchView,
                 setQuickPitchView
               }
             )
           },
-          isTableView ? "table" : "list"
-        ) })
+          currentIsTableView ? "table" : "list"
+        ) }) : null
       ]
     }
   ) });
 }
 
-const __vite_glob_0_229 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_230 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index$4
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -34844,7 +35027,7 @@ const MetricsBar = (props) => {
   );
 };
 
-const __vite_glob_0_234 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_235 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MetricsBar
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -34875,7 +35058,7 @@ function ProposalResultsLoading() {
   )) });
 }
 
-const __vite_glob_0_253 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_254 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalResultsLoading
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -34910,12 +35093,12 @@ function ProposalUsers({
   );
 }
 
-const __vite_glob_0_261 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_262 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalUsers
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const Show = ({
+const Show$1 = ({
   children,
   proposal,
   globalQuickPitchView,
@@ -35085,9 +35268,9 @@ const Show = ({
   ] });
 };
 
-const __vite_glob_0_265 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_266 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
-    default: Show
+    default: Show$1
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const Index$3 = ({
@@ -35122,7 +35305,7 @@ const Index$3 = ({
   );
 };
 
-const __vite_glob_0_267 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_268 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index$3
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -35154,7 +35337,7 @@ function Connections({
   );
 }
 
-const __vite_glob_0_268 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_269 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Connections
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -35336,7 +35519,7 @@ const ReviewsFilter = () => {
   ] }) });
 };
 
-const __vite_glob_0_273 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_274 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ReviewsFilter
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -35379,7 +35562,7 @@ const Index$2 = ({
   );
 };
 
-const __vite_glob_0_269 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_270 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index$2
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -35401,7 +35584,7 @@ const ReviewHorizontalCardLoader = () => {
   ] }) });
 };
 
-const __vite_glob_0_272 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_273 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ReviewHorizontalCardLoader
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -35428,7 +35611,7 @@ const Review = ({ review }) => {
   ] });
 };
 
-const __vite_glob_0_271 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_272 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Review
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -35539,7 +35722,7 @@ const DynamicSearchResults = ({
   return /* @__PURE__ */ jsx("div", { className: "flex w-full flex-col items-center justify-center px-2 py-4", children: renderResults(t) });
 };
 
-const __vite_glob_0_275 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_276 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: DynamicSearchResults
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -35577,7 +35760,7 @@ const ResultTabs = ({
   )) });
 };
 
-const __vite_glob_0_276 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_277 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ResultTabs
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -35650,7 +35833,7 @@ const SearchResultsLoading = ({
   return /* @__PURE__ */ jsx("div", { className: "w-full space-y-4 py-3", children: renderSkeletonItem() });
 };
 
-const __vite_glob_0_277 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_278 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: SearchResultsLoading
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -35790,7 +35973,7 @@ const SearchResults = ({ counts, ...results }) => {
   ] });
 };
 
-const __vite_glob_0_274 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_275 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     TAB_CONFIG,
     default: SearchResults
@@ -35887,7 +36070,7 @@ function ServiceTypeFilter({
   );
 }
 
-const __vite_glob_0_281 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_282 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ServiceTypeFilter
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -36073,9 +36256,201 @@ const ServicesIndex = ({ filters, ...props }) => {
   ) });
 };
 
-const __vite_glob_0_278 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_279 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ServicesIndex
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const VerifyBadge = ({ size = 18, ...props }) => /* @__PURE__ */ jsx(
+  "svg",
+  {
+    width: size,
+    height: size,
+    viewBox: "0 0 18 18",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg",
+    ...props,
+    children: /* @__PURE__ */ jsx(
+      "path",
+      {
+        d: "M16.0425 7.8975L15 6.84C14.9274 6.76878 14.8699 6.68351 14.8312 6.58939C14.7926 6.49526 14.7734 6.39425 14.775 6.2925V4.7925C14.7741 4.587 14.7325 4.38372 14.6527 4.19434C14.5729 4.00495 14.4565 3.8332 14.3102 3.68894C14.1638 3.54467 13.9904 3.43075 13.7999 3.35371C13.6094 3.27667 13.4055 3.23802 13.2 3.24H11.7C11.5983 3.2416 11.4973 3.22248 11.4032 3.1838C11.309 3.14512 11.2238 3.08769 11.1525 3.015L10.1025 1.9575C9.81004 1.6653 9.4135 1.50117 9.00005 1.50117C8.5866 1.50117 8.19006 1.6653 7.89755 1.9575L6.84005 3C6.76883 3.07269 6.68356 3.13012 6.58943 3.1688C6.49531 3.20748 6.3943 3.2266 6.29255 3.225H4.79255C4.58705 3.22598 4.38377 3.26755 4.19438 3.34733C4.005 3.4271 3.83324 3.54351 3.68898 3.68986C3.54472 3.83621 3.4308 4.00963 3.35375 4.20014C3.27671 4.39065 3.23807 4.59451 3.24005 4.8V6.3C3.24165 6.40175 3.22253 6.50276 3.18385 6.59689C3.14516 6.69101 3.08773 6.77628 3.01505 6.8475L1.95755 7.8975C1.66535 8.19001 1.50122 8.58655 1.50122 9C1.50122 9.41345 1.66535 9.80999 1.95755 10.1025L3.00005 11.16C3.07273 11.2312 3.13016 11.3165 3.16885 11.4106C3.20753 11.5047 3.22665 11.6058 3.22505 11.7075V13.2075C3.22603 13.413 3.2676 13.6163 3.34737 13.8057C3.42715 13.995 3.54356 14.1668 3.68991 14.3111C3.83626 14.4553 4.00967 14.5693 4.20019 14.6463C4.3907 14.7233 4.59456 14.762 4.80005 14.76H6.30005C6.4018 14.7584 6.50281 14.7775 6.59693 14.8162C6.69106 14.8549 6.77633 14.9123 6.84755 14.985L7.90505 16.0425C8.19756 16.3347 8.5941 16.4988 9.00755 16.4988C9.421 16.4988 9.81754 16.3347 10.11 16.0425L11.16 15C11.2313 14.9273 11.3165 14.8699 11.4107 14.8312C11.5048 14.7925 11.6058 14.7734 11.7075 14.775H13.2075C13.6213 14.775 14.0181 14.6106 14.3106 14.3181C14.6032 14.0255 14.7675 13.6287 14.7675 13.215V11.715C14.7659 11.6133 14.7851 11.5122 14.8237 11.4181C14.8624 11.324 14.9199 11.2387 14.9925 11.1675L16.05 10.11C16.1954 9.96453 16.3105 9.79177 16.3888 9.60165C16.4671 9.41153 16.5071 9.20781 16.5064 9.00219C16.5057 8.79658 16.4643 8.59313 16.3847 8.40354C16.3051 8.21396 16.1888 8.04198 16.0425 7.8975ZM12.135 7.65L8.45255 11.25C8.40061 11.3026 8.3387 11.3443 8.27044 11.3726C8.20218 11.4009 8.12895 11.4154 8.05505 11.415C7.98068 11.414 7.90725 11.3982 7.83902 11.3686C7.77079 11.339 7.70911 11.2961 7.65755 11.2425L5.88005 9.4425C5.82538 9.39046 5.78175 9.32794 5.75175 9.25869C5.72175 9.18943 5.70599 9.11484 5.70542 9.03936C5.70485 8.96388 5.71947 8.88907 5.74842 8.81936C5.77737 8.74965 5.82006 8.68649 5.87393 8.63362C5.9278 8.58076 5.99176 8.53927 6.062 8.51165C6.13224 8.48402 6.20732 8.47081 6.28277 8.4728C6.35822 8.4748 6.4325 8.49196 6.50118 8.52326C6.56986 8.55456 6.63154 8.59936 6.68255 8.655L8.06255 10.0575L11.3475 6.8475C11.453 6.74216 11.596 6.683 11.745 6.683C11.8941 6.683 12.0371 6.74216 12.1425 6.8475C12.1954 6.90035 12.2371 6.9632 12.2653 7.03236C12.2936 7.10152 12.3078 7.17562 12.3071 7.25032C12.3064 7.32503 12.2908 7.39885 12.2613 7.46747C12.2317 7.5361 12.1888 7.59815 12.135 7.65Z",
+        fill: "#16B364"
+      }
+    )
+  }
+);
+
+const GlobalMap = lazy(() => import('./assets/GlobalMap-CjdmTPbF.js'));
+function Show({ service }) {
+  const [points, setPoints] = useState([]);
+  const socialGroup = {
+    id: service.id ?? "service-" + Math.random().toString(36).substr(2, 9),
+    github: service.effective_details?.github ?? "",
+    linkedin: service.effective_details?.linkedin ?? "",
+    website: service.effective_details?.website ?? "",
+    twitter: "",
+    discord: "",
+    location: service.locations?.length ? [service.locations[0].city, service.locations[0].country].filter(Boolean).join(", ") : ""
+  };
+  useEffect(() => {
+    async function fetchCoordinates() {
+      if (!service.locations?.length) return;
+      const resolvedPoints = await Promise.all(
+        service.locations.map(async (loc, index) => {
+          const query = encodeURIComponent(
+            `${loc.city}, ${loc.country}`
+          );
+          const res = await fetch(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${""}`
+          );
+          const data = await res.json();
+          if (data?.features?.length > 0) {
+            const coords = data.features[0].geometry.coordinates;
+            return {
+              id: index + 1,
+              latitude: coords[1],
+              longitude: coords[0],
+              title: `${loc.city}, ${loc.country}`,
+              description: `Service location in ${loc.city}`
+            };
+          }
+          return null;
+        })
+      );
+      setPoints(resolvedPoints.filter(Boolean));
+    }
+    fetchCoordinates();
+  }, [service.locations]);
+  return /* @__PURE__ */ jsxs("div", { className: "text-content flex flex-col gap-8 border-b border-gray-300 px-4 py-5 text-slate-500 sm:flex-row sm:gap-12 sm:px-8 sm:pt-12 sm:pb-10", children: [
+    /* @__PURE__ */ jsx(Head, { title: "Services page" }),
+    /* @__PURE__ */ jsxs("div", { className: "flex flex-col sm:sticky sm:top-4 sm:max-w-80 sm:self-start", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex flex-row items-center gap-4 pb-4", children: [
+        /* @__PURE__ */ jsx(
+          "img",
+          {
+            src: service.user?.hero_img_url ?? "",
+            className: "h-15 w-15 rounded-full border border-white opacity-100",
+            alt: service.user?.name ?? "User Image"
+          }
+        ),
+        /* @__PURE__ */ jsxs("div", { className: "flex max-w-44 items-center justify-between gap-2", children: [
+          /* @__PURE__ */ jsx(
+            Title,
+            {
+              className: "text-content text-xl leading-6 font-semibold tracking-tight",
+              "data-testid": "services-page-title",
+              children: service.user?.name ?? "Unknown User"
+            }
+          ),
+          /* @__PURE__ */ jsx(VerifyBadge, {})
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx(Paragraph, { size: "md", className: "pb-6 font-normal", children: service.user?.bio ?? "No bio available." }),
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx(
+          Title,
+          {
+            level: "2",
+            className: "text-content pb-4 text-base leading-none font-semibold",
+            children: "Services"
+          }
+        ),
+        /* @__PURE__ */ jsx("div", { className: "flex min-h-[28px] flex-wrap items-start justify-start gap-1.5 self-stretch pb-6", children: service.categories?.map((category) => /* @__PURE__ */ jsx(
+          "div",
+          {
+            className: "bg-background-lighter border-border-secondary inline-flex max-w-full flex-shrink-0 items-center rounded border p-2",
+            title: category.name,
+            children: /* @__PURE__ */ jsx("div", { className: "text-foreground-secondary text-xs leading-3 font-medium", children: category.name })
+          },
+          category.id
+        )) }),
+        /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
+          /* @__PURE__ */ jsx(
+            Title,
+            {
+              level: "2",
+              className: "text-content pb-4 text-base leading-none font-semibold",
+              children: "Networks"
+            }
+          ),
+          /* @__PURE__ */ jsx(
+            GroupSocials,
+            {
+              iconContainerClass: "flex flex-col gap-2.5 ",
+              group: socialGroup,
+              showLink: true
+            }
+          )
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs(Card, { className: "flex min-w-0 flex-1 flex-col", children: [
+      service.header_image_url && /* @__PURE__ */ jsx(
+        "img",
+        {
+          src: service.header_image_url,
+          alt: service.title,
+          className: "mb-6 h-48 w-full max-w-full rounded-lg object-cover sm:mb-7 sm:h-104"
+        }
+      ),
+      /* @__PURE__ */ jsx(
+        Title,
+        {
+          className: "text-content pb-4 text-xl leading-4 font-semibold",
+          "data-testid": "services-show-title",
+          children: service.title
+        }
+      ),
+      service.description && /* @__PURE__ */ jsx(
+        Paragraph,
+        {
+          size: "md",
+          className: "mb-6 text-base leading-6 font-normal tracking-normal break-words sm:mb-7",
+          children: service.description
+        }
+      ),
+      /* @__PURE__ */ jsxs("div", { className: "gap-5", children: [
+        /* @__PURE__ */ jsx(Title, { className: "text-content mb-5 text-xl leading-4 font-semibold", children: "Get in touch" }),
+        /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-5 sm:flex-row", children: [
+          /* @__PURE__ */ jsx("div", { className: "h-52 w-full sm:w-84", children: points.length > 0 ? /* @__PURE__ */ jsx(
+            ClientOnly,
+            {
+              fallback: /* @__PURE__ */ jsx("div", { className: "flex h-52 w-full items-center justify-center rounded-lg bg-gray-100 text-gray-500", children: "Map loading on client..." }),
+              children: /* @__PURE__ */ jsx(
+                Suspense,
+                {
+                  fallback: /* @__PURE__ */ jsx("div", { className: "flex h-52 w-full items-center justify-center rounded-lg bg-gray-100 text-gray-500", children: "Loading map..." }),
+                  children: /* @__PURE__ */ jsx(
+                    GlobalMap,
+                    {
+                      points,
+                      initialZoom: 10,
+                      height: "208px",
+                      width: "100%"
+                    }
+                  )
+                }
+              )
+            }
+          ) : /* @__PURE__ */ jsx("div", { className: "flex h-52 w-full items-center justify-center rounded-lg bg-gray-100 text-gray-500", children: "No locations available" }) }),
+          /* @__PURE__ */ jsx("div", { className: "mb-5 w-full sm:flex-1 sm:pt-11", children: /* @__PURE__ */ jsx(
+            GroupSocials,
+            {
+              group: socialGroup,
+              iconContainerClass: "flex flex-col gap-2.5",
+              showLink: true,
+              showLocation: true
+            }
+          ) })
+        ] })
+      ] })
+    ] })
+  ] });
+}
+
+const __vite_glob_0_283 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+    __proto__: null,
+    default: Show
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const TransactionRow = ({
@@ -36112,7 +36487,7 @@ const TransactionRow = ({
   ] });
 };
 
-const __vite_glob_0_289 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_291 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: TransactionRow
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -36227,7 +36602,7 @@ const CardanoTransactionTable = ({ transactions = [] }) => {
   ] }) }) });
 };
 
-const __vite_glob_0_290 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_292 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     CardanoTransactionTable,
     default: CardanoTransactionTable
@@ -36324,7 +36699,7 @@ const TransactionsFilters = () => {
   ] });
 };
 
-const __vite_glob_0_291 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_293 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: TransactionsFilters
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -36358,7 +36733,7 @@ function Transactions({
   ] });
 }
 
-const __vite_glob_0_282 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_284 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Transactions
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -36378,7 +36753,7 @@ const CatalystVoteRow = ({
   )) });
 };
 
-const __vite_glob_0_283 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_285 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CatalystVoteRow
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -36478,13 +36853,13 @@ const CatalystVotesTable = ({
   ] }) }) });
 };
 
-const __vite_glob_0_284 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_286 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     CatalystVotesTable,
     default: CatalystVotesTable
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const copyToClipboard$9 = (text) => {
+const copyToClipboard$c = (text) => {
   navigator.clipboard.writeText(text).then(() => {
     console.log("Copied to clipboard:", text);
   }).catch((err) => {
@@ -36502,7 +36877,7 @@ const CopyableCell = ({
     fullText && /* @__PURE__ */ jsx(
       Button,
       {
-        onClick: () => copyToClipboard$9(fullText),
+        onClick: () => copyToClipboard$c(fullText),
         className: "ml-2 rounded-full p-1 hover:bg-gray-100",
         ariaLabel: t("transactions.table.copyToClipboard"),
         children: /* @__PURE__ */ jsx(
@@ -36518,12 +36893,12 @@ const CopyableCell = ({
   ] });
 };
 
-const __vite_glob_0_285 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_287 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CopyableCell
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const copyToClipboard$8 = (text) => {
+const copyToClipboard$b = (text) => {
   navigator.clipboard.writeText(text);
 };
 
@@ -36554,7 +36929,7 @@ function DetailRow({
             CopyIcon$1,
             {
               className: "h-4 w-4 cursor-pointer text-gray-400",
-              onClick: () => copyToClipboard$8(displayValue)
+              onClick: () => copyToClipboard$b(displayValue)
             }
           )
         ] })
@@ -36563,7 +36938,7 @@ function DetailRow({
   );
 }
 
-const __vite_glob_0_286 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_288 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: DetailRow
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -36694,7 +37069,7 @@ function MetadataCard({ transaction }) {
   ] });
 }
 
-const __vite_glob_0_287 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_289 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: MetadataCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -36761,7 +37136,7 @@ function TransactionDetailsCard({
             CopyIcon$1,
             {
               className: "h-4 w-4 cursor-pointer text-gray-400",
-              onClick: () => copyToClipboard$8(transaction.block)
+              onClick: () => copyToClipboard$b(transaction.block)
             }
           )
         ] }) }),
@@ -36795,7 +37170,7 @@ function TransactionDetailsCard({
                     CopyIcon$1,
                     {
                       className: "text-gray-persist ml-2 h-4 w-4 cursor-pointer",
-                      onClick: () => copyToClipboard$8(
+                      onClick: () => copyToClipboard$b(
                         delegation.voting_key
                       )
                     }
@@ -36825,7 +37200,7 @@ function TransactionDetailsCard({
   ] });
 }
 
-const __vite_glob_0_288 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_290 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: TransactionDetailsCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -36922,7 +37297,7 @@ function UTXOsCard({ transaction }) {
               {
                 address: input.address,
                 amount: inputAmount,
-                onCopy: () => copyToClipboard$8(input.address),
+                onCopy: () => copyToClipboard$b(input.address),
                 isMobile: true
               },
               index
@@ -36957,7 +37332,7 @@ function UTXOsCard({ transaction }) {
               {
                 address: output.address || "Unknown address",
                 amount: outputAmount,
-                onCopy: () => copyToClipboard$8(output.address),
+                onCopy: () => copyToClipboard$b(output.address),
                 isMobile: true
               },
               index
@@ -36994,7 +37369,7 @@ function UTXOsCard({ transaction }) {
               {
                 address: input.address || "Unknown address",
                 amount: inputAmount,
-                onCopy: () => copyToClipboard$8(input.address),
+                onCopy: () => copyToClipboard$b(input.address),
                 isMobile: false
               },
               index
@@ -37023,7 +37398,7 @@ function UTXOsCard({ transaction }) {
               {
                 address: output.address || "Unknown address",
                 amount: outputAmount,
-                onCopy: () => copyToClipboard$8(output.address),
+                onCopy: () => copyToClipboard$b(output.address),
                 isMobile: false
               },
               index
@@ -37060,7 +37435,7 @@ function UTXOsCard({ transaction }) {
   ] });
 }
 
-const __vite_glob_0_292 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_294 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: UTXOsCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -37133,7 +37508,7 @@ function WalletDetailsCard({
   ] });
 }
 
-const __vite_glob_0_293 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_295 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: WalletDetailsCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -37236,7 +37611,7 @@ const WalletTransactionsTable = ({ transactions = [] }) => {
   ] }) }) });
 };
 
-const __vite_glob_0_294 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_296 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     WalletTransactionsTable,
     default: WalletTransactionsTable
@@ -37283,7 +37658,7 @@ function TransactionDetail$1({
       ) })
     ] }) }) }),
     /* @__PURE__ */ jsx("div", { className: "container mx-auto py-4", children: /* @__PURE__ */ jsxs(
-      Link$8,
+      Link$b,
       {
         href: useLocalizedRoute("jormungandr.transactions.index"),
         className: "text-primary inline-flex items-center text-sm",
@@ -37310,7 +37685,7 @@ function TransactionDetail$1({
                 CopyIcon$1,
                 {
                   className: "text-gray-persist h-4 w-4 cursor-pointer font-bold",
-                  onClick: () => copyToClipboard$8(
+                  onClick: () => copyToClipboard$b(
                     transaction.stake_pub ?? ""
                   )
                 }
@@ -37329,7 +37704,7 @@ function TransactionDetail$1({
                     CopyIcon$1,
                     {
                       className: "text-gray-persist h-4 w-4 cursor-pointer",
-                      onClick: () => copyToClipboard$8(
+                      onClick: () => copyToClipboard$b(
                         transaction.json_metadata.payment_address ?? ""
                       )
                     }
@@ -37338,7 +37713,7 @@ function TransactionDetail$1({
               }
             ),
             /* @__PURE__ */ jsx(
-              Link$8,
+              Link$b,
               {
                 className: "text-primary",
                 href: useLocalizedRoute(
@@ -37359,7 +37734,7 @@ function TransactionDetail$1({
   ] });
 }
 
-const __vite_glob_0_295 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_297 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: TransactionDetail$1
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -37380,7 +37755,7 @@ function TransactionDetail({
   ] });
 }
 
-const __vite_glob_0_296 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_298 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: TransactionDetail
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -37530,7 +37905,7 @@ const VoterFilters = () => {
   ] }) });
 };
 
-const __vite_glob_0_298 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_300 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: VoterFilters
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -37607,7 +37982,7 @@ const VotersTable = ({ voters, customTitle }) => {
     const isHovered = hoveredCell && hoveredCell.rowIndex === index && hoveredCell.col === col;
     return /* @__PURE__ */ jsxs("div", { className: "relative flex w-full items-start justify-between", children: [
       /* @__PURE__ */ jsx(
-        Link$8,
+        Link$b,
         {
           href: useLocalizedRoute("jormungandr.wallets.show", {
             stakeKey: voter?.stake_pub ?? "",
@@ -37739,7 +38114,7 @@ const VotersTable = ({ voters, customTitle }) => {
   ] });
 };
 
-const __vite_glob_0_299 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_301 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: VotersTable
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -37792,7 +38167,7 @@ const Index$1 = (props) => {
   return /* @__PURE__ */ jsx(FiltersProvider, { defaultFilters: props.filters || {}, children: /* @__PURE__ */ jsx(IndexComponent$1, { ...props }) });
 };
 
-const __vite_glob_0_297 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_299 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index$1
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -38030,7 +38405,7 @@ const Index = (props) => {
   );
 };
 
-const __vite_glob_0_300 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_302 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Index
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -38075,7 +38450,7 @@ function Wallet({
             CopyIcon$1,
             {
               className: "text-gray-persist h-4 w-4 cursor-pointer font-bold",
-              onClick: () => copyToClipboard$8(
+              onClick: () => copyToClipboard$b(
                 transaction?.json_metadata?.stake_key ?? "-"
               )
             }
@@ -38133,7 +38508,7 @@ function Wallet({
   ] }) });
 }
 
-const __vite_glob_0_304 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_306 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Wallet
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -38143,7 +38518,7 @@ function Content({ children }) {
   return /* @__PURE__ */ jsx("div", { className: "mt-12 mb-12 h-full min-h-[600px] md:min-h-fit lg:mt-4", children });
 }
 
-const __vite_glob_0_340 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_342 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Content
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -38157,7 +38532,7 @@ function Footer$1({ children }) {
   return /* @__PURE__ */ jsx("footer", { className: "bg-background sticky bottom-0 z-50 w-full p-4", children: /* @__PURE__ */ jsx("div", { className: "flex w-full justify-between px-4 lg:px-10", children }) });
 }
 
-const __vite_glob_0_341 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_343 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Footer$1
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -38282,7 +38657,7 @@ function Nav({ stepDetails, activeStep }) {
   ) });
 }
 
-const __vite_glob_0_342 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_344 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Nav
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -38492,18 +38867,35 @@ function WorkflowLayout({
   ] });
 }
 
-const __vite_glob_0_358 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_360 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: WorkflowLayout
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const SUPPORTED_LOCALES = ["en", "es", "fr", "de", "ja", "zh"];
+const SUPPORTED_LOCALES = [
+  "am",
+  "ar",
+  "de",
+  "en",
+  "es",
+  "fr",
+  "ja",
+  "ko",
+  "pt",
+  "sw",
+  "zh"
+];
 const LOCALE_MAPPING = {
   en: { label: "English", native: "English" },
+  am: { label: "Amharic", native: "አማርኛ" },
+  ar: { label: "Arabic", native: "العربية" },
   es: { label: "Spanish", native: "Español" },
   fr: { label: "French", native: "Français" },
   de: { label: "German", native: "Deutsch" },
+  pt: { label: "Portuguese", native: "Português" },
+  ko: { label: "Korean", native: "한국어" },
   ja: { label: "Japanese", native: "日本語" },
+  sw: { label: "Swahili", native: "Kiswahili" },
   zh: { label: "Chinese", native: "中文" }
 };
 const FRANC_TO_LOCALE_MAP = {
@@ -38829,7 +39221,7 @@ const DrepSignupForm = forwardRef(
   }
 );
 
-const __vite_glob_0_310 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_312 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: DrepSignupForm
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -38910,7 +39302,7 @@ const Step1$9 = ({
   );
 };
 
-const __vite_glob_0_305 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_307 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step1$9
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -39087,7 +39479,7 @@ const Step2$a = ({
   );
 };
 
-const __vite_glob_0_306 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_308 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step2$a
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -39238,7 +39630,7 @@ const Step3$4 = ({
   );
 };
 
-const __vite_glob_0_307 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_309 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step3$4
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -39366,7 +39758,7 @@ const IpfsSuccessDisplay = ({
   ] });
 };
 
-const __vite_glob_0_311 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_313 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: IpfsSuccessDisplay
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -39627,7 +40019,7 @@ const step5$1 = ({
   );
 };
 
-const __vite_glob_0_308 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_310 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: step5$1
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -39696,7 +40088,7 @@ function Success$4({
   );
 }
 
-const __vite_glob_0_309 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_311 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Success$4
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -39827,7 +40219,7 @@ const Step1$8 = ({ profiles, stepDetails, activeStep }) => {
   );
 };
 
-const __vite_glob_0_312 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_314 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step1$8
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -39980,7 +40372,7 @@ const ClaimProfileForm = forwardRef(
   }
 );
 
-const __vite_glob_0_315 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_317 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ClaimProfileForm
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -40069,7 +40461,7 @@ const Step2$9 = ({ profile, stepDetails, activeStep }) => {
   );
 };
 
-const __vite_glob_0_313 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_315 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step2$9
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -40143,7 +40535,7 @@ const Step2$8 = ({
   );
 };
 
-const __vite_glob_0_314 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_316 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step2$8
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -40189,7 +40581,7 @@ const Step1$7 = ({ profiles, stepDetails, activeStep }) => {
           ),
           /* @__PURE__ */ jsx("div", { className: "my-2 border-t border-gray-300" }),
           /* @__PURE__ */ jsx("div", { className: "mt-5 text-center", children: /* @__PURE__ */ jsx(
-            Link$8,
+            Link$b,
             {
               className: "text-primary cursor-pointer border-b border-dotted border-current text-sm font-medium",
               href: useLocalizedRoute(
@@ -40236,7 +40628,7 @@ const Step1$7 = ({ profiles, stepDetails, activeStep }) => {
   );
 };
 
-const __vite_glob_0_316 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_318 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step1$7
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -40363,7 +40755,7 @@ const Step2$7 = ({
   );
 };
 
-const __vite_glob_0_317 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_319 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step2$7
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -40407,7 +40799,7 @@ const Step1$6 = ({
   );
 };
 
-const __vite_glob_0_318 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_320 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step1$6
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -40654,7 +41046,7 @@ const Step2$6 = ({
   );
 };
 
-const __vite_glob_0_319 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_321 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step2$6
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -40720,7 +41112,7 @@ const Step3$3 = ({
   );
 };
 
-const __vite_glob_0_320 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_322 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step3$3
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -40822,7 +41214,7 @@ const Step4$2 = ({
   );
 };
 
-const __vite_glob_0_321 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_323 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step4$2
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -40864,7 +41256,7 @@ function Success$3({
   );
 }
 
-const __vite_glob_0_322 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_324 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Success$3
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -41040,7 +41432,7 @@ const CategoriesSelector = ({
   );
 };
 
-const __vite_glob_0_323 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_325 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: CategoriesSelector
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -41562,7 +41954,7 @@ const Step1$5 = ({
   );
 };
 
-const __vite_glob_0_324 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_326 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step1$5
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -42044,7 +42436,7 @@ const Step2$5 = ({
   );
 };
 
-const __vite_glob_0_325 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_327 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step2$5
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -42107,7 +42499,7 @@ const Step1$4 = ({ stepDetails, activeStep }) => {
   );
 };
 
-const __vite_glob_0_326 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_328 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step1$4
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -42395,7 +42787,7 @@ const Step2$4 = ({
   );
 };
 
-const __vite_glob_0_327 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_329 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step2$4
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -42542,7 +42934,7 @@ const ProposalSearchBar = ({
   ] }) });
 };
 
-const __vite_glob_0_337 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_339 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: ProposalSearchBar
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -42793,7 +43185,7 @@ const Step3$2 = ({
   );
 };
 
-const __vite_glob_0_328 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_330 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step3$2
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -42898,7 +43290,7 @@ const Step4$1 = ({
   );
 };
 
-const __vite_glob_0_329 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_331 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step4$1
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -42968,7 +43360,7 @@ function step5({
   );
 }
 
-const __vite_glob_0_330 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_332 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: step5
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -43009,7 +43401,7 @@ function WorkflowTable({
   ] }) }) });
 }
 
-const __vite_glob_0_336 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_338 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: WorkflowTable
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -43192,7 +43584,7 @@ const Step6 = ({
   );
 };
 
-const __vite_glob_0_331 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_333 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step6
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -43324,7 +43716,7 @@ const Step7 = ({
   );
 };
 
-const __vite_glob_0_332 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_334 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step7
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -43445,7 +43837,7 @@ const Step8 = ({
   );
 };
 
-const __vite_glob_0_333 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_335 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step8
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -43617,7 +44009,7 @@ const Step9 = ({
   );
 };
 
-const __vite_glob_0_334 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_336 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step9
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -43646,7 +44038,7 @@ const Success$2 = () => {
   ] }) }) }) });
 };
 
-const __vite_glob_0_335 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_337 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Success$2
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -43747,9 +44139,9 @@ function LoginForm({ title, postRoute }) {
           /* @__PURE__ */ jsx("label", { htmlFor: "remember-me", className: "text-sm", children: t("rememberMe") })
         ] }),
         /* @__PURE__ */ jsx(
-          Link$8,
+          Link$b,
           {
-            href: "#",
+            href: useLocalizedRoute("password.request"),
             className: "text-primary text-xs hover:underline sm:text-sm",
             "data-testid": "login-forgot-password-link",
             children: t("forgotPassword")
@@ -43771,9 +44163,9 @@ function LoginForm({ title, postRoute }) {
       t("registration.noAccount"),
       " ",
       /* @__PURE__ */ jsx(
-        Link$8,
+        Link$b,
         {
-          href: "#",
+          href: useLocalizedRoute("register"),
           className: "text-primary font-medium hover:underline",
           "data-testid": "login-signup-link",
           children: t("signup")
@@ -43796,7 +44188,7 @@ const WorkflowLogin = ({
   ) });
 };
 
-const __vite_glob_0_338 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_340 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: WorkflowLogin
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -43834,7 +44226,7 @@ function SuccessComponent({
   ) });
 }
 
-const __vite_glob_0_339 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_341 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: SuccessComponent
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -43983,7 +44375,7 @@ const Step1$3 = ({ stepDetails, activeStep, status }) => {
   );
 };
 
-const __vite_glob_0_343 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_345 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step1$3
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -44112,7 +44504,7 @@ const Step2$3 = ({
               "workflows.resetPassword.alreadyHaveAccount"
             ) }),
             /* @__PURE__ */ jsx(
-              Link$8,
+              Link$b,
               {
                 href: generateLocalizedRoute("register"),
                 className: "text-primary ml-1 font-medium hover:underline",
@@ -44126,7 +44518,7 @@ const Step2$3 = ({
   ] });
 };
 
-const __vite_glob_0_344 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_346 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step2$3
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -44334,7 +44726,7 @@ const Step1$2 = ({
   );
 };
 
-const __vite_glob_0_345 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_347 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step1$2
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -45012,7 +45404,7 @@ const Step2$2 = ({
   );
 };
 
-const __vite_glob_0_346 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_348 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step2$2
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -45181,7 +45573,7 @@ const Success$1 = ({ ipfs_cid, gateway_url }) => {
   );
 };
 
-const __vite_glob_0_347 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_349 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Success$1
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -45258,7 +45650,7 @@ const Step1$1 = ({ stepDetails, activeStep }) => {
   );
 };
 
-const __vite_glob_0_348 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_350 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step1$1
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -45431,7 +45823,7 @@ const Step2$1 = ({
   );
 };
 
-const __vite_glob_0_349 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_351 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step2$1
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -45517,7 +45909,7 @@ const Step3$1 = ({ stepDetails, activeStep }) => {
   );
 };
 
-const __vite_glob_0_350 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_352 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step3$1
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -45565,7 +45957,7 @@ const Success = () => {
   ] });
 };
 
-const __vite_glob_0_351 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_353 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Success
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -45878,7 +46270,7 @@ const SlideOverContent = ({
   ] }) });
 };
 
-const __vite_glob_0_352 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_354 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: SlideOverContent
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -45967,7 +46359,7 @@ const SwipeCard = ({
   );
 };
 
-const __vite_glob_0_353 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_355 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: SwipeCard
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -46323,7 +46715,7 @@ const Step1 = ({
   );
 };
 
-const __vite_glob_0_354 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_356 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step1
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -46597,7 +46989,7 @@ const Step2 = ({
   );
 };
 
-const __vite_glob_0_355 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_357 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step2
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -47236,7 +47628,7 @@ const Step3 = ({
   );
 };
 
-const __vite_glob_0_356 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_358 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step3
 }, Symbol.toStringTag, { value: 'Module' }));
@@ -47540,307 +47932,2427 @@ const Step4Content = ({
   );
 };
 
-const __vite_glob_0_357 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_0_359 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     default: Step4
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const activeFund$7 = "Aktiver Fonds";
-const addEmail$7 = "E-Mail hinzufügen";
-const addYourCity$7 = "Ihre Stadt hinzufügen";
-const appMessage$7 = "Alle Stimmen müssen in der offiziellen Catalyst Voting App abgegeben werden. Dies ist nur ein Recherche- und Planungstool!";
-const articles$7 = "Artikel";
-const assetName$7 = "Asset-Name";
-const API$7 = "API";
-const from$7 = "Von";
-const to$7 = "Bis";
-const authMessage$7 = "Sie können Vorschläge, monatliche Berichte, Personen und Gruppen erkunden. Filtern Sie Vorschläge nach Finanzierungsstatus oder Budgetgröße, Fonds, Kampagne, Schlüsselwörtern und mehr.";
-const bio$7 = "Biografie";
-const myWallet$6 = "Meine Wallet";
-const allCurrencies$7 = "Alle Währungen";
-const totalAda$7 = "Gesamtbetrag in ADA";
-const totalUsd$7 = "Gesamtbetrag in USD";
-const amount$7 = "Betrag ";
-const minCharTextarea$6 = "Mindestens 200 Zeichen erforderlich";
-const blockchainData$7 = "Blockchain-Daten";
-const bookmark$7 = "Ihr persönlicher Bereich zum Organisieren und Verwalten von Vorschlagsinformationen. Greifen Sie einfach auf Ihre gespeicherten Vorschläge zu, überprüfen Sie Notizen und teilen Sie kuratierte Listen, um über wichtige Ideen und Möglichkeiten auf dem Laufenden zu bleiben.";
-const catalystAPI$7 = "Catalyst API";
-const ccv4Votes$7 = "CCV4 Stimmen";
-const chooseMetaData$7 = "Wählen Sie Ihre eigenen Metadaten";
-const confirmPassword$7 = "Passwort bestätigen";
-const connect$6 = "Verbinden";
-const updatePassword$6 = "Passwort aktualisieren";
-const currentPassword$6 = "Aktuelles Passwort";
-const connectWallet$6 = "Wallet verbinden";
-const comingSoon$7 = "Demnächst";
-const cookies$7 = "Cookies";
-const copyright$7 = "© 2024 Catalyst Explorer. Alle Rechte vorbehalten.";
-const connections$7 = "Verbindungen";
-const minting$7 = "Sie prägen";
-const loginToMint$7 = "Zum Prägen anmelden";
-const unavailableForMint$6 = "Nicht verfügbar";
-const mustBeProposer$7 = "Muss Antragsteller sein";
-const copied$7 = "Kopiert";
-const data$7 = "Daten";
-const dReps$7 = "DReps";
-const email$7 = "E-Mail";
-const emailAddress$7 = "E-Mail-Adresse";
-const general$7 = "Allgemein";
-const facebook$7 = "Facebook";
-const forgotPassword$7 = "Passwort vergessen";
-const funding$6 = "Finanzierung";
-const getStarted$7 = "Loslegen";
-const github$7 = "Github";
-const Home$7 = "Startseite";
-const jormungandr$7 = "Jormungandr";
-const knowledgeBase$7 = "Wissensdatenbank";
-const explore$7 = "Erkunden";
-const impact$7 = "Auswirkung";
-const legal$7 = "Rechtliches";
-const licenses$7 = "Lizenzen";
-const login$7 = "Anmelden";
-const linkedIn$7 = "LinkedIn";
-const listsAndBookmarks$7 = "Listen und Lesezeichen";
-const monthlyReports$7 = "Monatliche Berichte";
-const metaTitle$7 = "Metadaten-Vorschau";
-const myCharts$6 = "Meine Diagramme";
-const mintNFT$7 = "NFT prägen";
-const name$7 = "Name";
-const viewNFT$7 = "NFT anzeigen";
-const nftPending$7 = "NFT ausstehend";
-const cantFindNFT$7 = "NFT zum Prägen nicht gefunden";
-const paymentGateway$7 = "NFT-MAKER PRO Zahlungsgateway";
-const fundProject$7 = "Finanzierte Projektnummer";
-const projectTitle$7 = "Projekttitel";
-const yesVotes$7 = "Ja-Stimmen";
-const noVotes$7 = "Nein-Stimmen";
-const role$7 = "Rolle";
-const otherContributors$7 = "Andere Mitwirkende";
-const metaDataInstruction$7 = "Sie können Metadaten durchstreichen, indem Sie auf das X-Symbol klicken. Durchgestrichene Informationen werden von der endgültigen Prägung ausgeschlossen.";
-const nobookmarks$7 = "Noch keine Lesezeichen";
-const noBookmarksYet$7 = "Sie haben noch keine Vorschläge, Personen, Gruppen oder Bewertungen mit Lesezeichen versehen. Beginnen Sie zu erkunden und setzen Sie Lesezeichen für Ihre Favoriten!";
-const noImage$7 = "Kein Bild";
-const developers$7 = "Entwickler";
-const noProposalBookmarks$7 = "Keine Vorschlagslesezeichen gefunden";
-const noGroupBookmarks$7 = "Keine Gruppenlesezeichen gefunden";
-const noPeopleBookmarks$7 = "Keine Personenlesezeichen gefunden";
-const noReviewBookmarks$7 = "Keine Bewertungslesezeichen gefunden";
-const numbers$7 = "Zahlen";
-const password$7 = "Passwort";
-const policyID$7 = "Richtlinien-ID";
-const filters$7 = "Filter";
-const rememberMe$7 = "Angemeldet bleiben";
-const privacy$7 = "Datenschutz";
-const problem$7 = "Problem";
-const profileBackground$7 = "Profilhintergrund";
-const projectCatalyst$7 = "Project Catalyst Kampagnenname";
-const reviewers$7 = "Gutachter";
-const register$7 = "Registrieren";
-const reviewerReputationScore$7 = "Gutachter-Reputationsbewertung";
-const searchQuery$7 = "Keine Ergebnisse entsprechen Ihrer Suchanfrage";
-const signin$7 = "Anmelden";
-const signup$7 = "Registrieren";
-const social$7 = "Sozial";
-const spending$7 = "Ausgaben";
-const support$7 = "Support";
-const seeAll$7 = "Alle anzeigen";
-const seeLess$7 = "Weniger anzeigen";
-const seeMore$7 = "Mehr anzeigen";
-const solution$7 = "Lösung";
-const terms$7 = "Bedingungen";
-const twitter$7 = "Twitter";
-const transaction$6 = "Transaktion";
-const votes$7 = "Meine Stimmen";
-const voters$7 = "Wähler";
-const wallets$7 = "Wallets";
-const details$7 = "Details";
-const teams$7 = "Team";
-const yes$7 = "Ja";
-const filterChart$6 = "Diagramm filtern";
-const abstain$7 = "Stimmenthaltung";
-const notSet$7 = "Nicht festgelegt";
-const loading$7 = "Lädt";
-const Link$7 = "Link";
-const select$7 = "Auswählen";
-const selected$7 = "Ausgewählt";
-const clear$7 = "löschen";
-const selection$7 = "auswahl";
-const awarded$7 = "Vergeben";
-const distributed$6 = "Verteilt";
-const requested$7 = "Beantragt";
-const submitted$7 = "Eingereicht";
-const funded$7 = "Finanziert";
-const approved$7 = "Genehmigt";
-const completed$7 = "Abgeschlossen";
-const loginPrompt$7 = "Anmelden um zu beginnen";
-const back$7 = "Zurück";
-const verificationTitle$7 = "Lassen Sie uns Sie verifizieren!";
-const verificationCodeLabel$7 = "Verifizierungscode";
-const verificationCode$7 = "CODE:";
-const verificationInstructions$7 = "Um Ihr Eigentum an diesem Profil zu verifizieren, senden Sie bitte eine persönliche Nachricht an Lido Nation auf Ideascale und fügen Sie den obigen Code bei.";
-const goToIdeascale$7 = "Zu Ideascale gehen";
-const proposal$6 = "Vorschlag";
-const noNFTDataAvailable$7 = "Keine NFT-Daten verfügbar";
-const noPreviewAvailable$7 = "Keine Vorschau verfügbar";
-const chooseMetaDataDescription$7 = "Wählen Sie Ihre eigenen Metadaten";
-const metadataStrikeInstruction$7 = "Sie können Metadaten durchstreichen, indem Sie auf das X-Symbol klicken. Durchgestrichene Informationen werden von der endgültigen Prägung ausgeschlossen.";
-const nftPaymentGatewayTitle$7 = "NFT-MAKER PRO Zahlungsgateway";
-const artistRole$7 = "Künstler";
-const cantFindNFTForMint$7 = "NFT zum Prägen nicht gefunden";
-const copyToClipboard$7 = "In Zwischenablage kopieren";
-const previous$7 = "Vorherige";
-const next$7 = "Nächste";
-const selectLanguage$7 = "Sprache auswählen";
-const selectLanguageForContent$7 = "Wählen Sie eine Sprache für Ihren Inhalt";
-const rightSwipes$7 = " - Rechte Swipes";
-const leftSwipes$7 = " - Linke Swipes";
-const loadingGraph$6 = "Diagramm wird geladen";
-const endDate$7 = "Enddatum";
-const startDate$7 = "Startdatum";
+const activeFund$a = "ንቁ ገንዘብ";
+const addEmail$a = "ኢሜይል ጨምር";
+const addYourCity$a = "ከተማህን ጨምር";
+const appMessage$a = "ሁሉም ድምጽ በይፋዊ Catalyst የድምጽ መስጫ መተግበሪያ መቅረብ አለበት። ይህ ለምርምር እና ለማቀድ ብቻ የሚረዳ መሳሪያ ነው!";
+const articles$a = "መጣጥፎች";
+const assetName$a = "የንብረት ስም";
+const API$a = "API";
+const from$a = "ከ";
+const to$a = "ወደ";
+const authMessage$a = "ሀሳቦችን፣ ወርሃዊ ሪፖርቶችን፣ ሰዎችን እና ቡድኖችን መመልከት ይችላሉ። ሀሳቦችን በገንዘብ መደገፍ ወይም በገንዘብ መጠን፣ ፈንድ፣ ዘመቻ፣ ቁልፍ ቃላት እና በሌሎችም ማጣራት ይችላሉ።";
+const bio$a = "የህይወት ታሪክ";
+const myWallet$a = "የእኔ ዋሌት";
+const allCurrencies$a = "ሁሉም ምንዛሬዎች";
+const totalAda$a = "አጠቃላይ መጠን በ ADA";
+const totalUsd$a = "አጠቃላይ መጠን በ USD";
+const amount$a = "መጠን";
+const minCharTextarea$a = "አነስተኛ 200 ቁምፊዎች ያስፈልጋሉ";
+const blockchainData$a = "የብሎክቼይን መረጃ";
+const bookmark$a = "የግላዊ ቦታዎ የሀሳብ ግንዛቤዎችን ለማደራጀት እና ለማስተዳደር። የተቀመጡ ሀሳቦችዎን በቀላሉ ይድረሱ፣ ማስታወሻዎችን ይመልከቱ እና የተዘጋጁ ዝርዝሮችን ያጋሩ ስለ ቁልፍ ሀሳቦች እና እድሎች ተዘምነው እንዲቆዩ።";
+const catalystAPI$a = "የCatalyst API";
+const ccv4Votes$a = "CCV4 ድምጾች";
+const chooseMetaData$a = "የእራሶ ሜታዳታ ይምረጡ";
+const confirmPassword$a = "ሚስጢራዊ ቃል አረጋግጥ";
+const connect$a = "ተገናኝ";
+const updatePassword$a = "ሚስጢራዊ ቃል አዘምን";
+const currentPassword$a = "አሁኑ ሚስጢራዊ ቃል";
+const connectWallet$a = "ዋሌት ተገናኝ";
+const comingSoon$a = "በቅርብ ይመጣል";
+const cookies$a = "ኩኪዎች";
+const copyright$a = "© 2024 Catalyst Explorer። ሁሉም መብቶች የተጠበቁ ናቸው።";
+const connections$a = "ግንኙነቶች";
+const minting$a = "እያመረተህ ነህ";
+const loginToMint$a = "ለማምረት ግባ";
+const unavailableForMint$a = "አይገኝም";
+const mustBeProposer$a = "አቅራቢ መሆን አለበት";
+const copied$a = "ተቀድቷል";
+const data$a = "መረጃ";
+const dReps$a = "DReps";
+const email$a = "ኢሜይል";
+const emailAddress$a = "የኢሜይል አድራሻ";
+const general$a = "አጠቃላይ";
+const facebook$a = "Facebook";
+const forgotPassword$a = "ሚስጢራዊ ቃል ረሳሁ";
+const funding$a = "ገንዘብ";
+const getStarted$a = "ጀምር";
+const github$a = "Github";
+const Home$a = "መነሻ";
+const jormungandr$a = "Jormungandr";
+const knowledgeBase$a = "የእውቀት ምንጭ";
+const explore$a = "ያስሱ";
+const impact$a = "ተጽዕኖ";
+const legal$a = "ህጋዊ";
+const licenses$a = "ፈቃዶች";
+const login$a = "ግባ";
+const linkedIn$a = "LinkedIn";
+const listsAndBookmarks$a = "ዝርዝሮች እና ዕልባቶች";
+const monthlyReports$a = "ወርሃዊ ሪፖርቶች";
+const metaTitle$a = "ሜታ መረጃ ቅድመ እይታ";
+const myCharts$a = "የኔ ቻርቶች";
+const mintNFT$a = "NFT አምርት";
+const name$a = "ስም";
+const viewNFT$a = "NFT መልከት";
+const nftPending$a = "Nft በጥበብ ላይ";
+const cantFindNFT$a = "ለማምረት NFT ሊገኝ አይችልም";
+const paymentGateway$a = "NFT-MAKER PRO የክፍያ መግቢያ";
+const fundProject$a = "የተደገፈ የፕሮጀክት ቁጥር";
+const projectTitle$a = "የፕሮጀክት ርዕስ";
+const yesVotes$a = "አዎ ድምጾች";
+const noVotes$a = "አይ ድምጾች";
+const role$a = "ሚና";
+const otherContributors$a = "ሌሎች አስተዋፅዖ አበርካቾች";
+const metaDataInstruction$a = "X አዶን በመንካት ሜታዳታ ማስወገድ ይችላሉ። የተሰረዙ መረጃዎች ከመጨረሻው ምርት ውጪ ይሆናሉ።";
+const nobookmarks$a = "እስካሁን ምንም ዕልባቶች የሉም";
+const noBookmarksYet$a = "ምንም ሀሳቦችን፣ ሰዎችን፣ ቡድኖችን ወይም ግምገማዎችን አልዕልባት አላደረጉም። ማሰስ ጀምረው ተወዳጆችዎን ዕልባት ያድርጉ!";
+const noImage$a = "ምንም ምስል የለም";
+const developers$a = "ገንቢዎች";
+const noProposalBookmarks$a = "የሀሳብ ዕልባቶች አልተገኙም";
+const noGroupBookmarks$a = "የቡድን ዕልባቶች አልተገኙም";
+const noPeopleBookmarks$a = "የሰዎች ዕልባቶች አልተገኙም";
+const noReviewBookmarks$a = "የግምገማ ዕልባቶች አልተገኙም";
+const numbers$a = "ቁጥሮች";
+const password$a = "ሚስጢራዊ ቃል";
+const policyID$a = "የፖሊሲ መለያ";
+const filters$a = "ማጣሪያዎች";
+const rememberMe$a = "አስታውስኝ";
+const privacy$a = "ግላዊነት";
+const problem$a = "ችግር";
+const profileBackground$a = "የመገለጫ ዳራ";
+const projectCatalyst$a = "Project catalyst ዘመቻ ስም";
+const reviewers$a = "ግምገማዎች";
+const register$a = "ይመዝገቡ";
+const reviewerReputationScore$a = "የግምገማ አድሎአ ደረጃ";
+const searchQuery$a = "ምንም ውጤቶች ፍለጋዎን አይመጣጠሉም";
+const signin$a = "ግባ";
+const signup$a = "ተመዝገብ";
+const social$a = "ማኅበራዊ";
+const spending$a = "ማጠፍ";
+const support$a = "ድጋፍ";
+const seeAll$a = "ሁሉንም ተመልከት";
+const seeLess$a = "አነስተኛ ተመልከት";
+const seeMore$a = "ተጨማሪ ተመልከት";
+const solution$a = "መፍትሔ";
+const terms$a = "ውሎች";
+const twitter$a = "Twitter";
+const transaction$a = "ግብይት";
+const votes$a = "የእኔ ድምጾች";
+const voters$a = "ድምጽ ሰጪዎች";
+const wallets$a = "ዋሌቶች";
+const details$a = "ዝርዝሮች";
+const teams$a = "ቡድን";
+const yes$a = "አዎ";
+const filterChart$a = "ቻርት ማጣሪያ";
+const abstain$a = "መዋዜ";
+const notSet$a = "አልተዘጋጀም";
+const loading$a = "እየተጫነ";
+const Link$a = "ሊንክ";
+const select$a = "ይምረጡ";
+const selected$a = "ተመርጧል";
+const clear$a = "ሰርዝ";
+const selection$a = "ምርጫ";
+const awarded$a = "የተሰጠ";
+const distributed$a = "ተከፋፍሏል";
+const requested$a = "ተጠየቀ";
+const received$a = "ተቀብሏል";
+const submitted$a = "ቀረበ";
+const funded$a = "የተደገፈ";
+const approved$a = "ጸድቋል";
+const completed$a = "ተጠናቅቋል";
+const loginPrompt$a = "ለመጀመር ግባ";
+const back$a = "ተመለስ";
+const verificationTitle$a = "እናረጋግጥህ!";
+const verificationCodeLabel$a = "የማረጋገጫ ኮድ";
+const verificationCode$a = "ኮድ:";
+const verificationInstructions$a = "የዚህ መገለጫ ባለቤትነትዎን ለማረጋገጥ፣ እባክዎ ወደ Lido Nation በIdeascale ግላዊ መልዕክት ይላኩ እና ከላይ ያለውን ኮድ ያካትቱ።";
+const goToIdeascale$a = "ወደ Ideascale ሂድ";
+const proposal$a = "ሀሳብ";
+const noNFTDataAvailable$a = "ምንም NFT መረጃ አይገኝም";
+const noPreviewAvailable$a = "ምንም ቅድመ እይታ አይገኝም";
+const chooseMetaDataDescription$a = "የእራሶ ሜታዳታ ይምረጡ";
+const metadataStrikeInstruction$a = "X አዶን በመንካት ሜታዳታ ማስወገድ ይችላሉ። የተሰረዙ መረጃዎች ከመጨረሻው ምርት ውጪ ይሆናሉ።";
+const nftPaymentGatewayTitle$a = "NFT-MAKER PRO የክፍያ መግቢያ";
+const artistRole$a = "አርቲስት";
+const cantFindNFTForMint$a = "ለማምረት NFT ሊገኝ አይችልም";
+const copyToClipboard$a = "ወደ ክሊፕቦርድ ቅዳ";
+const selectLanguage$9 = "ቋንቋ ምረጥ";
+const selectLanguageForContent$9 = "ለይዘትዎ ቋንቋ ይምረጡ";
+const previous$9 = "ቀዳሚ";
+const next$9 = "ቀጣይ";
+const rightSwipes$9 = " - ቀኝ Swypes";
+const leftSwipes$9 = " - ግራ Swypes";
+const loadingGraph$9 = "ግራፍ በመጫን ላይ";
+const endDate$9 = "የማጨረሻ ቀን";
+const startDate$9 = "የመጀመሪያ ቀን";
+const am = {
+  activeFund: activeFund$a,
+  addEmail: addEmail$a,
+  addYourCity: addYourCity$a,
+  appMessage: appMessage$a,
+  articles: articles$a,
+  assetName: assetName$a,
+  API: API$a,
+  from: from$a,
+  to: to$a,
+  authMessage: authMessage$a,
+  bio: bio$a,
+  myWallet: myWallet$a,
+  allCurrencies: allCurrencies$a,
+  totalAda: totalAda$a,
+  totalUsd: totalUsd$a,
+  amount: amount$a,
+  minCharTextarea: minCharTextarea$a,
+  blockchainData: blockchainData$a,
+  bookmark: bookmark$a,
+  catalystAPI: catalystAPI$a,
+  ccv4Votes: ccv4Votes$a,
+  chooseMetaData: chooseMetaData$a,
+  confirmPassword: confirmPassword$a,
+  connect: connect$a,
+  updatePassword: updatePassword$a,
+  currentPassword: currentPassword$a,
+  connectWallet: connectWallet$a,
+  comingSoon: comingSoon$a,
+  cookies: cookies$a,
+  copyright: copyright$a,
+  connections: connections$a,
+  minting: minting$a,
+  loginToMint: loginToMint$a,
+  unavailableForMint: unavailableForMint$a,
+  mustBeProposer: mustBeProposer$a,
+  copied: copied$a,
+  data: data$a,
+  dReps: dReps$a,
+  email: email$a,
+  emailAddress: emailAddress$a,
+  general: general$a,
+  facebook: facebook$a,
+  forgotPassword: forgotPassword$a,
+  funding: funding$a,
+  getStarted: getStarted$a,
+  github: github$a,
+  Home: Home$a,
+  jormungandr: jormungandr$a,
+  knowledgeBase: knowledgeBase$a,
+  explore: explore$a,
+  impact: impact$a,
+  legal: legal$a,
+  licenses: licenses$a,
+  login: login$a,
+  linkedIn: linkedIn$a,
+  listsAndBookmarks: listsAndBookmarks$a,
+  monthlyReports: monthlyReports$a,
+  metaTitle: metaTitle$a,
+  myCharts: myCharts$a,
+  mintNFT: mintNFT$a,
+  name: name$a,
+  viewNFT: viewNFT$a,
+  nftPending: nftPending$a,
+  cantFindNFT: cantFindNFT$a,
+  paymentGateway: paymentGateway$a,
+  fundProject: fundProject$a,
+  projectTitle: projectTitle$a,
+  yesVotes: yesVotes$a,
+  noVotes: noVotes$a,
+  role: role$a,
+  otherContributors: otherContributors$a,
+  metaDataInstruction: metaDataInstruction$a,
+  nobookmarks: nobookmarks$a,
+  noBookmarksYet: noBookmarksYet$a,
+  noImage: noImage$a,
+  developers: developers$a,
+  noProposalBookmarks: noProposalBookmarks$a,
+  noGroupBookmarks: noGroupBookmarks$a,
+  noPeopleBookmarks: noPeopleBookmarks$a,
+  noReviewBookmarks: noReviewBookmarks$a,
+  numbers: numbers$a,
+  password: password$a,
+  policyID: policyID$a,
+  filters: filters$a,
+  rememberMe: rememberMe$a,
+  privacy: privacy$a,
+  problem: problem$a,
+  profileBackground: profileBackground$a,
+  projectCatalyst: projectCatalyst$a,
+  reviewers: reviewers$a,
+  register: register$a,
+  reviewerReputationScore: reviewerReputationScore$a,
+  searchQuery: searchQuery$a,
+  signin: signin$a,
+  signup: signup$a,
+  social: social$a,
+  spending: spending$a,
+  support: support$a,
+  seeAll: seeAll$a,
+  seeLess: seeLess$a,
+  seeMore: seeMore$a,
+  solution: solution$a,
+  terms: terms$a,
+  twitter: twitter$a,
+  transaction: transaction$a,
+  votes: votes$a,
+  voters: voters$a,
+  wallets: wallets$a,
+  details: details$a,
+  teams: teams$a,
+  yes: yes$a,
+  filterChart: filterChart$a,
+  abstain: abstain$a,
+  notSet: notSet$a,
+  loading: loading$a,
+  Link: Link$a,
+  select: select$a,
+  selected: selected$a,
+  clear: clear$a,
+  selection: selection$a,
+  awarded: awarded$a,
+  distributed: distributed$a,
+  requested: requested$a,
+  received: received$a,
+  submitted: submitted$a,
+  funded: funded$a,
+  approved: approved$a,
+  completed: completed$a,
+  loginPrompt: loginPrompt$a,
+  back: back$a,
+  verificationTitle: verificationTitle$a,
+  verificationCodeLabel: verificationCodeLabel$a,
+  verificationCode: verificationCode$a,
+  verificationInstructions: verificationInstructions$a,
+  goToIdeascale: goToIdeascale$a,
+  proposal: proposal$a,
+  noNFTDataAvailable: noNFTDataAvailable$a,
+  noPreviewAvailable: noPreviewAvailable$a,
+  chooseMetaDataDescription: chooseMetaDataDescription$a,
+  metadataStrikeInstruction: metadataStrikeInstruction$a,
+  nftPaymentGatewayTitle: nftPaymentGatewayTitle$a,
+  artistRole: artistRole$a,
+  cantFindNFTForMint: cantFindNFTForMint$a,
+  copyToClipboard: copyToClipboard$a,
+  "activeFund.title": "Catalyst ንቁ ገንዘብ",
+  "activeFund.subtitle": "ከዘርፈ ብዙ ንቁ የገንዘብ ድጋፍ ዙር ጋር ተዘምነው ይቆዩ። ዘመቻዎችን ይገምግሙ፣ ሀሳቦችን ይከታተሉ እና በጣም ጠቃሚ የሆኑትን ዕልባት ያድርጉ።",
+  "activeFund.budget": "ሊወጣ የሚችል ጠቅላላ በጀት",
+  "activeFund.distributed": "ተከፋፍሏል",
+  "activeFund.remaining": "ቀሪ",
+  "activeFund.createBookmarkList": "የዕልባት ዝርዝር ፍጠር",
+  "activeFund.bannerTitle": "የድምጽ መስጫ ዝርዝርዎን ያዘጋጁ!",
+  "activeFund.supportUsTitle": "በድምጽ መስጫ ላይ ይደግፉን!",
+  "activeFund.bannerSubtitle": "ለማጣቀሻ እና ለማካፈል የድምጽ ምርጫዎችዎን ይፍጠሩ! ምን እንደሚፈልጉ ያውቃሉ? መደበኛውን የስራ ሂደት ይጠቀሙ። ምን እንደሚፈልጉ አያውቁም? ሁለተኛ እይታ ልትሰጧቸው የምትፈልጓቸውን ሀሳቦች ወደ ቀኝ፣ በዚህ ዙር ትተዋቸዋለህ ወይም ትለቃቸዋለህ ወደ ግራ ለመንሸራተት የካርድ ቴክ የስራ ሂደትን ይጠቀሙ።",
+  "activeFund.supportUsSubtitle": "በዚህ መሳሪያ ላይ ዋጋ እያገኙ ከሆነ እባክዎን በድምጽ መስጫ ላይ መደገፍን ያስቡ።",
+  "activeFund.supportUsProposalTitle": "ሁሉንም በአንድ ቦታ Catalyst: ማሳወቂያዎች፣ AI ዝርዝሮች እና ፖርትፎሊዮዎች።",
+  "activeFund.supportUsSeeProposal": "ሀሳቡን አንብብ",
+  "activeFund.supportUsProposalSubtitle": "ገንዘብ ካገኘን: catalystexplorer.com እንዘጋጃለን በምትናገራቸው ክስተቶች ላይ የማሳወቅ ስርዓት፣ በAI የሚደገፍ የሀሳብ ማግኛ እና ሙያዊ ፖርትፎሊዮ ግንባታ በማቅረብ Catalyst ጋር እንዴት እንደሚገናኙ እንለውጣለን።",
+  "activeFund.campaignsTitle": "የዘመቻ ምድቦች",
+  "activeFund.campaigns.proposals": "ሀሳቦች",
+  "activeFund.campaigns.viewProposals": "ሀሳቦችን ይመልከቱ",
+  "activeFund.campaigns.createList": "ዝርዝር ፍጠር",
+  selectLanguage: selectLanguage$9,
+  selectLanguageForContent: selectLanguageForContent$9,
+  "View All Lists": "ሁሉንም ዝርዝሮች ተመልከት",
+  "View This List": "ይህንን ዝርዝር ተመልከት",
+  "error404.mainText": "ይቅርታ፣ የሚፈልጉትን ማግኘት አልቻልንም",
+  "error404.subText": "መንገዶን እንደገና እናግኝ!",
+  "recordsNotFound.message": "ይህ የምናውቀው ነው",
+  "app.name": "Catalyst Explorer",
+  "app.contactEmail": "support@lidonation.com",
+  "app.appLogoAlt": "Catalyst Explorer አርማ",
+  "proposalComparison.title": "የCatalyst ሀሳቦችን ያነፃፅሩ",
+  "proposalComparison.subtitle": "ስለ ገንዘብ፣ ተጽዕኖ እና ስትራቴጂካዊ ተዛማጅነት ወሳኝ ውሳኔ ለማድረግ ሀሳቦችን በቀላሉ ይተንትኑ እና ይገምግሙ።",
+  "proposalComparison.searchPlaceholder": "ሀሳብ ፈልግ",
+  "proposalComparison.viewProposal": "ሀሳቡን ተመልከት",
+  "proposalComparison.selectMetric": "መለኪያ ምረጥ",
+  "proposalComparison.tableHeaders.metric": "መለኪያ",
+  "proposalComparison.tableHeaders.reorder": "እንደገና ደርድር",
+  "proposalComparison.tableHeaders.title": "ርዕስ",
+  "proposalComparison.tableHeaders.fund": "ፈንድ",
+  "proposalComparison.tableHeaders.status": "ሁኔታ",
+  "proposalComparison.tableHeaders.solution": "መፍትሔ",
+  "proposalComparison.tableHeaders.funding": "የተቀበለ ገንዘብ",
+  "proposalComparison.tableHeaders.yesVotes": "የአዎ ድምጾች",
+  "proposalComparison.tableHeaders.noVotes": "የአይ ድምጾች",
+  "proposalComparison.tableHeaders.team": "ቡድን",
+  "proposalComparison.tableHeaders.action": "እርምጃ",
+  "proposalComparison.tableHeaders.campaign": "ዘመቻ",
+  "proposalComparison.tableHeaders.problem": "ችግር",
+  "proposalComparison.tableHeaders.openSource": "ክፍት ምንጭ",
+  "workflows.claimIdeascale.selectProfile": "መገለጫ ምረጥ",
+  "workflows.claimIdeascale.submitDetails": "ዝርዝሮች አስገባ",
+  "workflows.claimIdeascale.verification": "የማረጋገጫ ኮድ",
+  "workflows.claimIdeascale.chooseProfile": "ለመጠየቅ የሚፈልጉትን መገለጫ(ዎች) ይምረጡ። 🚀",
+  "workflows.claimIdeascale.submitDetailsForm": "በመለያው ላይ ማዘመን የምትፈልጉትን ዝርዝሮች ያስገቡ።",
+  "workflows.claimIdeascale.verifyOnIdeascale": "ይህን መገለጫ ባለቤትነትዎን ለማረጋገጥ እባኮትን በIdeascale ላይ ለLido Nation የግል መልዕክት ላኩ እና ከላይ ያለውን ኮድ ያካትቱ። ",
+  "workflows.completedProjectNfts.selectProfile": "መገለጫ ምረጥ",
+  "workflows.completedProjectNfts.selectProposal": "ሀሳብ ምረጥ",
+  "workflows.completedProjectNfts.selectProfileInfo": "ከየት መገለጫ ማምነት ይፈልጋሉ ይምረጡ። የተመረጠው መገለጫ ከማምናቱ የተጠናቀቀው ፕሮጀክት ጋር መያዝ አለበት። ማንን እንደሚመርጡ አያውቁም? ምንም እንኳን—ሁሉንም የሚገኙትን መገለጫዎች ይምረጡ፣ የቀረውን እኛ እናደርጋለን! 🚀",
+  "workflows.completedProjectNfts.selectProposalInfo": "ለመጀመር እባክዎ የማምናት ሀሳብ ይምረጡ",
+  "workflows.completedProjectNfts.viewNft": "NFT ተመልከት",
+  "workflows.completedProjectNfts.alreadyMinted": "ቀድሞ ተሰርቷል",
+  "workflows.catalystDrepSignup.motivations": "2. መነሻ ምክንያቶች",
+  "workflows.catalystDrepSignup.objectives": "1. ዓላማዎችዎ",
+  "workflows.catalystDrepSignup.qualifications": "3. ብቃቶች",
+  "workflows.catalystDrepSignup.motivationsPlaceholder": "ኃይሎችዎን፣ ቁርጠኝነቶችዎን እና ለማህበረሰቡ ያላችሁን ራዕይ ያብራሩ",
+  "workflows.catalystDrepSignup.objectivesPlaceholder": "እሴቶችዎን እና በአስተዳደር ላይ ያላችሁን አቀራረብ ይጻፉ...",
+  "workflows.catalystDrepSignup.qualificationsPlaceholder": "በCatalyst ውስጥ ለዚህ ሚና የሚያበቃዎት ምንድነው?",
+  "workflows.catalystDrepSignup.2roundsRule": "ለመቀጠል ቢያንስ በ2 የCatalyst ድምጽ ሙከራዎች መሳተፍ አለብዎት።",
+  "workflows.catalystDrepSignup.hasCatalystProfile": "ለመቀጠል ከዚህ ዋሌት ጋር የተገናኘ የCatalyst መገለጫ መኖሩ አለበት።",
+  "funding.status.pending": "በመጠበቅ ላይ",
+  "funding.status.withdrawn": "ተወስዷል",
+  "funding.status.fullyPaid": "በሙልኡ ተክፍሏል",
+  "funding.status.funded": "ተደግፍል",
+  "funding.status.notFunded": "አልተደግፍም",
+  "project.status.votePending": "ድምጽ በመጠበቅ ላይ",
+  "project.status.withdrawn": "ተወስዷል",
+  "project.status.complete": "ተጠናቀቀ",
+  "project.status.inProgress": "በሂደት ላይ",
+  "project.status.unfunded": "አልተደግፍም",
+  "workflows.catalystDrepSignup.signMessageInfo": "የዋሌት ባለቤትነትን ያረጋግጡ።",
+  "workflows.catalystDrepSignup.signMessage": "የዋሌት ባለቤትነትዎን እንድናረጋግጥ ፊርም አድርጉ።",
+  "workflows.catalystDrepSignup.willMaintain": "ይህን መረጃ በትክክል ማከማቸትና መጠበቅ እስማማለሁ",
+  "workflows.catalystDrepSignup.createAccount": "መለያ ፍጠር",
+  "workflows.catalystDrepSignup.createAccountInfo": "\n1. መለያ ካለዎት በመለያዎ ይግቡ።\n2. አዲስ ከሆኑ በኢሜልዎ ይመዝገቡ እና ጠንካራ የይለፍ ቃል ይፍጠሩ።\n3. መለያዎን ለማግበር ኢሜልዎን ያረጋግጡ።",
+  "workflows.catalystDrepSignup.connectWallet": "ዋሌት አገናኝ",
+  "workflows.catalystDrepSignup.connectWalletInfo": "\n1. የሚደገፉ የCardano ዋሌቶች ከሆኑት ይምረጡ (ለምሳሌ Yoroi, Daedalus, Eternl).\n2. ዋሌትዎን በደህና ለማገናኘት መመሪያዎችን ይከተሉ።\n3. ቢያንስ በ2 የCatalyst ድምጽ ሙከራዎች እንደሳተፉ ለማረጋገጥ ዋሌትዎን እንጠቀማለን፤ ከዚያ በኋላ ምዝገባዎን መቀጠል ትችላሉ።\n4. መልዕክቱን በዋሌትዎ ለመፊርም 'ቀጥል' ይጫኑ።",
+  "workflows.catalystDrepSignup.signWallet": "ግብይት ፊርም አድርግ",
+  "workflows.catalystDrepSignup.signWalletInfo": "\n1. የዋሌት ባለቤትነትን ለማረጋገጥ አንድ ጊዜ የፊርም መልዕክት እርምጃን ያጽዱ።\n2. ይህ እርምጃ ገንዘብ አያተላለፍም ነገር ግን ዋሌትዎን ከDRep መለያዎ ጋር ያገናኛል።\n3. መፊርሙን ለመጠናቀቅ የዋሌት መመሪያዎችን ይከተሉ።",
+  "workflows.catalystDrepSignup.success": "ስኬት",
+  "workflows.catalystDrepSignup.successStepMsg": "ዋሌትዎ ወደዚህ የDRep መለያ ታክሏል።",
+  "workflows.catalystDrepSignup.successInfo": "\n1. ሲሳካ የማረጋገጫ መልዕክት ታያላችሁ እና የDRep መለያዎ ይንቀሳቀሳል።\n2. ስህተት ካለ ይፈትሹ፡-\n* የተሳሳተ የዋሌት ግንኙነት\n* የኔትወርክ ዘግይታ ወይም ስህተቶች\n3. እንደገና ይሞክሩ ወይም ድጋፍ ያነጋግሩ።",
+  "workflows.catalystDrepSignup.platformStatement": "የመድረክ መግለጫ",
+  "workflows.catalystDrepSignup.platformStatementMsg": "የመድረክ መግለጫ። ለማህበረሰቡ ማን እንደሆናችሁ እና ምንን እንደምትወክሉ ያሳውቁ።",
+  "workflows.catalystDrepSignup.platformStatementInfo": "\n1. እንደ DRep እራስዎን ያስተዋውቁ እና የአስተዳደር መርሆችዎን ያብራሩ።\n2. የADA ባለቤቶች ለምን ድምጻቸውን እንዲያወክሉ እንዳለባቸው ያብራሩ።\n3. ዓለም አቀፍ ተሳትፎ ለማስቻል በብዙ ቋንቋ ይደግፉ።",
+  "workflows.catalystDrepSignup.submitStatement": "መግለጫ አስገባ",
+  "workflows.catalystDrepSignup.submitStatementToIpfs": "መግለጫን ወደ IPFS አስገባ",
+  "workflows.catalystDrepSignup.publishing": "ወደ IPFS በማታተም ላይ...",
+  "workflows.catalystDrepSignup.publishedSuccessfully": "የመድረክ መግለጫ በስኬት ታትሟል!",
+  "workflows.catalystDrepSignup.ipfsCid": "IPFS ይዘት መታወቂያ",
+  "workflows.catalystDrepSignup.copyCid": "CID ወደ ክሊፕቦርድ ቅዳ",
+  "workflows.catalystDrepSignup.copied": "ተቀድሷል!",
+  "workflows.catalystDrepSignup.openInNewTab": "በአዲስ ትር ክፈት",
+  "workflows.resetPassword.alreadyHaveAccount": "መለያ አለዎት?",
+  "workflows.resetPassword.checkInbox": "የመልዕክት ሳጥንዎን ይመልከቱ",
+  "workflows.resetPassword.confirmPassword": "የይለፍ ቃል ያረጋግጡ",
+  "workflows.resetPassword.continue": "ቀጥል",
+  "workflows.resetPassword.email": "ኢሜል",
+  "workflows.resetPassword.enterEmail": "የይለፍ ቃልዎን ለመቀየር ኢሜልዎን ያስገቡ።",
+  "workflows.resetPassword.enterNewPassword": "አዲሱን የይለፍ ቃል ያስገቡ",
+  "workflows.resetPassword.forgot": "የይለፍ ቃል ረሳችሁ?",
+  "workflows.resetPassword.forgotInfo": "የይለፍ ቃልዎን ለመቀየር በCatalyst Explorer መለያ የተመዘገበውን ኢሜል ያስገቡ።",
+  "workflows.resetPassword.newPassword": "አዲስ የይለፍ ቃል",
+  "workflows.resetPassword.reset": "የይለፍ ቃል ዳግም አስጀምር",
+  "workflows.resetPassword.resetInfo": "ለመለያዎ አዲስ የይለፍ ቃል ይፍጠሩ። ጠንካራ እና ደህንነቱ ያረጋግጡ።",
+  "workflows.resetPassword.sent": "የይለፍ ቃል ዳግም ማስጀመሪያ አገናኝ ወደ ኢሜልዎ ተልኳል። እባክዎ የመልዕክት ሳጥንዎን (እና የትርፍ ሳጥን) ይመልከቱ እና መመሪያውን ይከተሉ።",
+  "workflows.resetPassword.submit": "አስገባ",
+  "workflows.resetPassword.resend": "ኢሜል እንደገና ላክ",
+  "workflows.voterList.welcome": "መጀመሪያ ከጀምሩ በፊት የድምጽ ዝርዝርዎን እንዘጋጅ። የድምጽ ዝርዝር ማደግ የምትደግፉትን ሀሳቦች ለማሰባሰብ እና ሌሎች እንዲያስቡባቸው ለማበረታታት የሚረዳ መንገድ ነው። ዝርዝርዎን በሚቀጥለው ይሰሙ፣ ሀሳቦችን ያክሉ እና ለምርጫዎችዎ ምክንያታዊ ማብራሪያ ይስጡ።",
+  "workflows.voterList.proposalsOnly": "ከሌሎች ዝርዝር አይነቶች በተለየ መልኩ፣ ወደ የድምጽ ዝርዝሮች ማከል የሚችሉት ሀሳቦች ብቻ ናቸው።",
+  "workflows.voterList.prototype": "<strong>ማስታወሻ፡ ይህ እስካሁን ረቂቅ ነው፣ ምንም ነገር ገና በቼን ላይ አልተላከም!</strong>",
+  "workflows.voterList.title": "ርዕስ",
+  "workflows.voterList.description": "መግለጫ",
+  "workflows.voterList.descriptionPlaceholder": "የዚህን ዝርዝር ዓላማ በጥቂት ቃላት ይግለጹ።",
+  "workflows.voterList.descriptionHint": "ቢያንስ 100 ቁምፊዎች ይሁን።",
+  "workflows.voterList.selectFund": "ፈንድ ምረጥ",
+  "workflows.voterList.visibility": "ታይነት",
+  "workflows.voterList.browseProposal": "ሀሳብ ተመልከት",
+  "workflows.voterList.submitVote": "ድምጾች አስገባ",
+  "workflows.voterList.visibilityOptions.public": "ይፋዊ",
+  "workflows.voterList.visibilityOptions.private": "ግላዊ",
+  "workflows.voterList.visibilityOptions.delegators": "ዳሌጌተሮች",
+  "workflows.voterList.comments": "አስተያየቶች",
+  "workflows.voterList.commentsEnabled": "አስተያየቶች ነቅቷል",
+  "workflows.voterList.chooseColor": "ቀለም ምረጥ",
+  "workflows.voterList.pickTheme": "የዝርዝር ገጽታ ምረጥ",
+  "workflows.voterList.status": "ሁኔታ",
+  "workflows.voterList.statusOptions.published": "አውጣ",
+  "workflows.voterList.statusOptions.draft": "ረቂቅ",
+  "workflows.voterList.selectCampaign": "ዘመቻ ምረጥ:",
+  "workflows.voterList.allCampaigns": "ሁሉም",
+  "workflows.voterList.selectedProposals": "የተመረጡ ሀሳቦች:",
+  "workflows.voterList.proposalCard.budget": "በጀት:",
+  "workflows.voterList.proposalCard.fund": "ፈንድ:",
+  "workflows.voterList.proposalCard.campaign": "ዘመቻ:",
+  "workflows.voterList.proposalCard.voteYes": "አዎ",
+  "workflows.voterList.proposalCard.voteAbstain": "መዋዜ",
+  "workflows.voterList.searchProposals": "ሀሳብ ፈልግ",
+  "workflows.voterList.errors.titleRequired": "ርዕስ ያስፈልጋል",
+  "workflows.voterList.errors.fundRequired": "የፈንድ ምርጫ ያስፈልጋል",
+  "workflows.voterList.errors.descriptionLength": "መግለጫ 200 ቁምፊዎች መሆን አለበት",
+  "workflows.voterList.errors.rationaleLength": "ምክንያት ቢያንስ 200 ቁምፊዎች መሆን አለበት",
+  "workflows.voterList.rationale.label": "ምክንያት",
+  "workflows.voterList.rationale.placeholder": "ምርጫዎችዎን ካስነሱ ምክንያቶችን አጭር ያብራሩ።",
+  "workflows.voterList.rationale.hint": "ቢያንስ 200 ቁምፊዎች ያስፈልጋሉ",
+  "workflows.voterList.success.title": "ስኬት!!",
+  "workflows.voterList.success.message": "እባክዎ ያስታውሱ፤ በአሁኑ ጊዜ እነዚህ ድምጾች ወደ ቼን አይገቡም።",
+  "workflows.voterList.steps.details": "ዝርዝሮች",
+  "workflows.voterList.steps.listDetail": "ዝርዝር ዝርዝር",
+  "workflows.voterList.steps.listDetailInfo": "የድምጽ ዝርዝርዎን ስም እና አጭር መግለጫ ይስጡ። ይህ ሌሎች ሰዎች ዝርዝሩ ስለ ምን እንደሆነ እንዲረዱ ይረዳል።",
+  "workflows.voterList.steps.proposals": "ሀሳቦች",
+  "workflows.voterList.steps.proposalsInfo": "አሁን ወደ የድምጽ ዝርዝርዎ ሀሳቦችን እናክል። ነባር ሀሳቦችን ፈልጌ ከሚዛመዱት መምረጥ ይችላሉ።",
+  "workflows.voterList.steps.rationale": "ምክንያት",
+  "workflows.voterList.steps.rationaleInfo": "እነዚህን ሀሳቦች ለምን መረጡ? ምክንያት መስጠት ሌሎች ምርጫዎትን እንዲረዱ እና ዝርዝሩ እንዲዘመን ይረዳል።",
+  "workflows.voterList.steps.readyToVote": "ለመስጠት ዝግጁ ናችሁ!!",
+  "workflows.voterList.steps.submitVotes": "ድምጾችን አስገባ",
+  "workflows.voterList.steps.listCreated": "ዝርዝር ተፈጠረ",
+  "workflows.voterList.steps.votesSubmitted": "ድምጾች ተሰጥተዋል",
+  "workflows.voterList.steps.submitVotesInfo": "ከተመረጡ ሀሳቦች ዝርዝር ውስጥ ድምጾችዎን ይሰጡ",
+  "workflows.voterList.steps.submitReviewedVotes": "ምርጫዎችዎን አጥናቀቃችሁ። ሂደቱን ለመጨረስ ከታች 'ድምጾች አስገባ' ይጫኑ።",
+  "workflows.voterList.steps.submitReviewedVotesInfo": "በስኬት ተረጋግጧል። ይቀጥሉ እና ድምጽዎን ያስገቡ",
+  "workflows.voterList.steps.votesSummary": "የድምጽ ማጠቃለያ",
+  "workflows.voterList.steps.votesSummaryInfo": "ከዚህ በታች የድምጾችዎ ማጠቃለያ ነው። ለለውጥ ወደ ቀዳሚ ገጽ ይመለሱ እና ያስተካክሉ።",
+  "workflows.voterList.steps.connectWallet": "ዋሌት አገናኝ",
+  "workflows.voterList.steps.connectWalletInfo": "ድምጾችዎን ለማስገባት ዋሌትዎን ያገናኙ።",
+  "workflows.voterList.steps.submission": "ማስገባት",
+  "workflows.voterList.steps.submissionInfo": "ድምጾችዎን በማስገባት ላይ",
+  "workflows.signature.steps.connectWallet": "ዋሌት አገናኝ",
+  "workflows.signature.steps.signHotWallet": "ሆት ዋሌት ፊርም",
+  "workflows.signature.steps.nameWallet": "ዋሌት ስም ስጥ",
+  "workflows.signature.signWallet": "ዋሌት ፊርም አድርግ",
+  "workflows.signature.nameWallet": "ዋሌት ስም ስጥ",
+  "workflows.signature.inputWalletNamePlaceHolder": "የዋሌት ስም",
+  "workflows.signature.walletNameCondition": "ቢያንስ 6 ቁምፊዎች ይሁኑ።",
+  "workflows.signature.walletNameDescription": "በዋሌት ዳሽቦርዱ ላይ የሚታይ ዋሌትዎን ስም ይስጡ።",
+  "workflows.signature.signAuth": "በፊርም ማድረግ ይህን ድርጊት በዋሌትዎ በደህና ታስተላለፋሉ። የግል ቁልፎትዎ ደህና ይቆያል። ዝርዝሮቹ ካስረጉ ብቻ ይቀጥሉ።",
+  "workflows.signature.signMessage": "ፊርም",
+  "workflows.signature.signing": "በመፊርም ላይ...",
+  "workflows.signature.success.title": "ስኬት!!",
+  "workflows.signature.success.message": "ፊርምዎ በስኬት ተመዝግቧል። ግብይቱ አሁን ተፈቅዷል እና ለመቀጠል ዝግጁ ነው።",
+  "workflows.signature.success.successfullySigned": "ዋሌትዎ በስኬት ተፊርሟል።",
+  "workflows.signature.errors.failedToGetSignature": "ፊርም ከዋሌት ማግኘት አልተሳካም",
+  "workflows.signature.errors.failedToSaveSignature": "ፊርም ማስቀመጥ አልተሳካም: {{details}}",
+  "workflows.signature.errors.processingError": "በፊርም ሂደት ውስጥ ስህተት: {{details}}",
+  "workflows.signature.errors.unknownError": "ያልታወቀ ስህተት ተፈጥሯል",
+  "workflows.signature.duplicateSignature": "የተደጋገመ ፊርም ተገኝቷል። ይህ ፊርም አስቀድሞ ተቀምጧል።",
+  "workflows.signature.signatureDetails": "የፊርም ዝርዝሮች",
+  "workflows.signature.stakingKey": "የስቴክ ቁልፍ",
+  "workflows.signature.walletInfo": "የዋሌት መረጃ",
+  "workflows.signature.messageToSign": "ለመፊርም መልዕክት",
+  "workflows.signature.signatureResult": "የፊርም ውጤት",
+  "workflows.signature.duplicatesFound": "የተደጋገሙ ፊርሞች ተገኙ",
+  "workflows.signature.duplicatesMessage": "በተመሳሰሉ የስቴክ ቁልፎች ፊርሞችን በስርዓታችን አግኝተናል።",
+  "workflows.signature.verification.title": "Catalyst Explorer የዋሌት ማረጋገጫ",
+  "workflows.bookmarks.success.title": "ስኬት!!",
+  "workflows.bookmarks.success.message": "የዕልባት ዝርዝርዎ ተፈጥሯል!",
+  "workflows.bookmarks.intro": "ከመጀመርዎ በፊት የዕልባት ዝርዝርዎን እንዘጋጅ። የዕልባት ዝርዝር ለእርስዎ አስፈላጊ ይዘቶችን ለማደራጀት እና ለማስተዳደር የሚረዳ የተቀመጠ ስብስብ ነው። ጀምሩ፤ በሚቀጥሉት እርምጃዎች ዝርዝሩን ስሙ፣ ንጥሎች ያክሉ እና ምክንያታዊ ማብራሪያ ይስጡ።\n\n*በሚቀጥለው ደረጃ ዝርዝርዎን ታዩ፣ ንጥሎችን ያክሉ እና ምክንያት ይገልጹ።*",
+  "workflows.bookmarks.details": "ዝርዝሮች",
+  "workflows.bookmarks.listDetail": "ዝርዝር ዝርዝር",
+  "workflows.bookmarks.listDetailInfo": "የምርጫ ዝርዝርዎን ስም እና አጭር መግለጫ ይስጡ። ይህ ሌሎች ሰዎች ዝርዝሩ ስለ ምን እንደሆነ እንዲረዱ ይረዳል።",
+  "workflows.bookmarks.listItems": "የዝርዝር ንጥሎች",
+  "workflows.bookmarks.listItemsInfo": "አሁን ከሚመሩ ንጥሎች ወደ ዕልባት ዝርዝርዎ ያክሉ። ነባር ሀሳቦችን መፈለግ እና ከሚዛመዱት መምረጥ ይችላሉ።",
+  "workflows.bookmarks.rationale": "ምክንያት",
+  "workflows.bookmarks.rationaleInfo": "እነዚህን ንጥሎች ለምን መረጡ? ምክንያት መስጠት ሌሎች ምርጫዎትን እንዲረዱ እና ዝርዝሩ እንዲዘመን ይረዳል።",
+  "workflows.bookmarks.bookmarkCreated": "የዕልባት ዝርዝርዎ ተፈጥሯል!",
+  "workflows.bookmarks.viewList": "ዝርዝር ተመልከት",
+  "workflows.bookmarks.placeholder": "ሀሳቦችን በአርእስት፣ ቁልፍ ቃል ወይም በአቅራቢ ፈልግ...",
+  "workflows.bookmarks.text": "የሚፈልጉዋቸውን ሀሳቦች ያግኙ እና ለቀላል መከታተል እና ለንጽብ ማነፃፀር ወደ ብጁ ዝርዝሮች ያስቀምጡ።",
+  "workflows.publishToIpfs.description": "ወደ IPFS ማታተም ዝርዝርዎን በዲሴንትራላይዝድ አውታር ላይ ይፋ ያደርገዋል። ከታተመ በኋላ ማስተካከያ አይቻልም፣ ነገር ግን ዘመናዊ ስሪቶችን በኋላ እንደገና ማታተም ትችላለህ።",
+  "workflows.publishToIpfs.whatWillBePublished": "እንዲታተመው የሚሆነው:",
+  "workflows.publishToIpfs.listTitleDescription": "የዝርዝር ርዕስ እና መግለጫ",
+  "workflows.publishToIpfs.itemsInList": "በዝርዝሩ ውስጥ ያሉ ንጥሎች",
+  "workflows.publishToIpfs.metadata": "ሜታዳታ (ቀን፣ ፈጣሪ)",
+  "bookmarks.listMustHaveItemsAndVoter": "ዝርዝሩ ንጥሎች እና የምርጫ ዝርዝር መሆን አለበት ወደ IPFS ለማታተም",
+  "bookmarks.listMustHaveItems": "ዝርዝሩ ንጥሎች መሆን አለበት ወደ IPFS ለማታተም",
+  "bookmarks.onlyVoterLists": "ወደ IPFS ሊታተሙ የሚችሉት የምርጫ ዝርዝሮች ብቻ ናቸው",
+  "bookmarks.viewAsPublic": "እንደ ይፋዊ ተመልከት",
+  "bookmarks.editListItem": "የዝርዝር ንጥልን አርትዕ",
+  "bookmarks.publishToIpfs": "ወደ IPFS አትም",
+  previous: previous$9,
+  next: next$9,
+  "workflows.tinderProposal.step1.selectFund": "ፈንድ ምረጥ",
+  "workflows.tinderProposal.step1.selectFundPlaceholder": "ፈንድ ምረጥ",
+  "workflows.tinderProposal.step1.selectAllThatApply": "(ሁሉንም የሚመለከቱትን ይምረጡ)",
+  "workflows.tinderProposal.step1.proposalTypesQuestion": "የሚፈልጉትን ምድቦች ሁሉ ምረጡ።",
+  "workflows.tinderProposal.step1.proposalSizeQuestion": "የሚመርጡት የሀሳብ መጠን ወይም ድርሻ ምንድነው?",
+  "workflows.tinderProposal.step1.impactTypeQuestion": "ምን ዓይነት ተፅዕኖ ማየት ትፈልጋሉ?",
+  "workflows.tinderProposal.step1.proposalSizes.smallScale": "ትንሽ መለኪያ / ዝቅተኛ በጀት",
+  "workflows.tinderProposal.step1.proposalSizes.midSize": "መካከለኛ / ሙከራዊ",
+  "workflows.tinderProposal.step1.proposalSizes.largeScale": "ትልቅ መለኪያ / ከፍተኛ ተፅዕኖ",
+  "workflows.tinderProposal.step1.impactTypes.localRegional": "የአካባቢ / ክልላዊ ተፅዕኖ",
+  "workflows.tinderProposal.step1.impactTypes.globalChange": "ዓለማቀፍ ለውጥ",
+  "workflows.tinderProposal.step1.impactTypes.ecosystemDevelopment": "ኢኮስስተም ልማት",
+  "workflows.tinderProposal.step1.processing": "በማስኬድ ላይ...",
+  "workflows.tinderProposal.step1.continue": "ቀጥል",
+  "workflows.tinderProposal.step1.begin": "ጀምር",
+  "workflows.tinderProposal.step1.untitledCampaign": "ርዕስ የሌለው ዘመቻ",
+  "workflows.tinderProposal.step1.untitledFund": "ርዕስ የሌለው ፈንድ",
+  "workflows.tinderProposal.step2.title": "ርዕስ",
+  "workflows.tinderProposal.step2.titlePlaceholder": "ርዕስ",
+  "workflows.tinderProposal.step2.titleRequired": "ርዕስ አስፈላጊ ነው",
+  "workflows.tinderProposal.step2.descriptionMinLength69": "መግለጫ ቢያንስ 69 ቁምፊዎች ይሁን",
+  "workflows.tinderProposal.step2.descriptionMinLength50": "መግለጫ ቢያንስ 50 ቁምፊዎች ይሁን",
+  "workflows.tinderProposal.step2.save": "አስቀምጥ",
+  "workflows.tinderProposal.step3.editSettings": "ቅንብሮች አርትዕ",
+  "workflows.tinderProposal.step3.noButtonText": "አይ",
+  "workflows.tinderProposal.step3.yesButtonText": "አዎ",
+  "workflows.tinderProposal.step3.allDone": "ሁሉም ጨርሷል!",
+  "workflows.tinderProposal.step3.viewedAllProposals": "ሁሉንም :count ሀሳቦች ተመልክተዋል",
+  "workflows.tinderProposal.step3.loadingProposals": "ሀሳቦችን በመጫን ላይ...",
+  "workflows.tinderProposal.step3.noProposalsFound": "ከመርጫዎ ጋር የሚዛመዱ ሀሳቦች አልተገኙም።",
+  "workflows.tinderProposal.step3.failedToLoadProposals": "ሀሳቦችን መጫን አልተሳካም። እባክዎ እንደገና ይሞክሩ።",
+  "workflows.tinderProposal.step3.saveProgress": "ሂደት አስቀምጥ",
+  "workflows.tinderProposal.step4.swipeList": "ስዋይፕ ዝርዝሮች",
+  "workflows.tinderProposal.step4.organizeSwipesDescription": "ስዋይፕዎትን ለመደራጀት ለማግዛት ጥቂት ዝርዝሮች ፈጥተናል።",
+  "workflows.tinderProposal.step4.rightSwipes": "ወደ ቀኝ ስዋይፕ",
+  "workflows.tinderProposal.step4.leftSwipes": "ወደ ግራ ስዋይፕ",
+  "workflows.tinderProposal.step4.proposalsYouLiked": "የወደዳችሁ ሀሳቦች",
+  "workflows.tinderProposal.step4.proposalsYouPassed": "የመለፋችሁባቸው ሀሳቦች",
+  "workflows.tinderProposal.step4.saves": "ማስቀመጦች",
+  "workflows.tinderProposal.step4.viewList": "ዝርዝር ተመልከት",
+  "workflows.tinderProposal.step4.editList": "ዝርዝር አርትዕ",
+  "workflows.tinderProposal.step4.editListTitle": "ዝርዝር አርትዕ",
+  "workflows.tinderProposal.step4.delete": "ሰርዝ",
+  "workflows.tinderProposal.step4.viewMode": "የመመልከቻ ሁነታ",
+  "workflows.tinderProposal.step4.editMode": "የማርትዕ ሁነታ",
+  "workflows.tinderProposal.step4.keepSwiping": "ማስዋየት ቀጥል",
+  "workflows.tinderProposal.step4.refineMyInterests": "ፍላጎቶቼን አንጻፍ",
+  "workflows.tinderProposal.step4.allCollectionsDeleted": "ሁሉም ስብስቦች ተሰርዘዋል።",
+  "workflows.tinderProposal.step4.noCollectionsAvailable": "ምንም ስብስብ የለም።",
+  "workflows.tinderProposal.step4.continueSwipingMessage": "አዲስ ስብስቦች ለመፍጠር ማስዋየት ይቀጥሉ።",
+  "workflows.tinderProposal.step4.startSwipingMessage": "የመጀመሪያ ስብስብዎን ለመፍጠር ማስዋየት ጀምሩ።",
+  "workflows.tinderProposal.step4.defaultTitles.passedProposals": "የተለፉ ሀሳቦች",
+  "workflows.tinderProposal.step4.defaultTitles.likedProposals": "የተወደዱ ሀሳቦች",
+  "workflows.tinderProposal.step4.defaultDescriptions.passedProposals": "ለመለፍ የወሰንኋቸው ሀሳቦች ስብስብ።",
+  "workflows.tinderProposal.step4.defaultDescriptions.likedProposals": "የወደድኋቸው እና ለመደገፍ የምፈልጋቸው ሀሳቦች ስብስብ።",
+  "workflows.tinderProposal.stepDetails.getStarted": "ጀምር",
+  "workflows.tinderProposal.stepDetails.createList": "ዝርዝር ፍጠር",
+  "workflows.tinderProposal.stepDetails.exploreIdeas": "ሀሳቦችን ተመልከት",
+  "workflows.tinderProposal.stepDetails.mySwipeList": "የእኔ ስዋይፕ ዝርዝር",
+  "workflows.createService.step1.howToContribute": "እንዴት መሳተፍ ትፈልጋሉ?",
+  "workflows.createService.step1.offerService": "ለማህበረሰቡ አገልግሎት ማቅረብ እፈልጋለሁ",
+  "workflows.createService.step1.needService": "ከማህበረሰቡ አገልግሎት እፈልጋለሁ",
+  "workflows.createService.step1.offeringServiceBadge": "አገልግሎት መስጠት",
+  "workflows.createService.step1.requestingServiceBadge": "አገልግሎት መጠየቅ",
+  "workflows.createService.step1.serviceTitle": "የአገልግሎት ርዕስ",
+  "workflows.createService.step1.imageHeader": "የምስል ራስጌ",
+  "workflows.createService.step1.description": "መግለጫ",
+  "workflows.createService.step1.category": "ምድብ",
+  "workflows.createService.step1.selectCategories": "ምድቦችን ይምረጡ...",
+  "workflows.createService.step1.selectedCategories": "ተመርጧል: :count ምድቦች",
+  "workflows.createService.step1.selectedImageText": "ተመርጧል: :fileName",
+  "workflows.createService.step1.existingImageText": "አሁን ያለው ምስል - ለመቀየር ጠቅ ያድርጉ",
+  "workflows.createService.step2.serviceCreatedSuccess": "አገልግሎት በስኬት ተፈጠረ!",
+  "workflows.createService.step2.name": "ስም",
+  "workflows.createService.step2.emailAddress": "የኢሜል አድራሻ",
+  "workflows.createService.step2.websiteUrl": "ድህረገጽ URL",
+  "workflows.createService.step2.github": "Github",
+  "workflows.createService.step2.linkedin": "LinkedIn",
+  "workflows.createService.step2.location": "አካባቢ",
+  "workflows.createService.step2.enterCity": "ከተማ ያስገቡ",
+  "workflows.createService.step2.addNetwork": "ኔትወርክ አክል",
+  "workflows.createService.step2.saving": "በማስቀመጥ ላይ...",
+  "workflows.createService.step2.contactInfoSavedSuccess": "የእውቂያ መረጃ በስኬት ተቀምጧል!",
+  "workflows.createService.step2.submitService": "አገልግሎት አስገባ",
+  "workflows.createService.step2.validation.emailInvalid": "እባክዎ ትክክለኛ የኢሜል አድራሻ ያስገቡ",
+  "workflows.createService.step2.validation.websiteInvalid": "እባክዎ ትክክለኛ የድህረገጽ URL ያስገቡ",
+  "workflows.createService.stepDetails.serviceDetails": "የአገልግሎት ዝርዝሮች",
+  "workflows.createService.stepDetails.contactDetails": "የእውቂያ ዝርዝሮች",
+  "workflows.publishToIpfs.stepDetails.introduction": "መግቢያ",
+  "workflows.publishToIpfs.stepDetails.reviewList": "ዝርዝር እይታ",
+  "workflows.publishToIpfs.success.title": "በስኬት ታትሟል!",
+  "workflows.publishToIpfs.success.message": "የመርጫ ረቂቅዎ ወደ IPFS በስኬት ታትሟል እና አሁን በዲሴንትራላይዝድ ዌብ ላይ ይገኛል።",
+  "workflows.publishToIpfs.noListSelected.title": "ምንም የምርጫ ዝርዝር አልተመረጠም",
+  "workflows.publishToIpfs.noListSelected.message": "ረቂቅ የሆነ የምርጫ ወረቀት ወደ IPFS ለማታተም መጀመሪያ የምርጫ ዝርዝር መምረጥ ያስፈልጋል።",
+  "workflows.publishToIpfs.noListSelected.instructions": "ወደ የምርጫ ዝርዝርዎ ሂዱ፣ በሶስቱ ቀጭን ነጥቦች (⋮) ላይ ጠቅ ያድርጉ እና \"ወደ IPFS አትም\" ይምረጡ።",
+  "workflows.publishToIpfs.noListSelected.goToLists": "ወደ ዝርዝሮቼ ሂድ",
+  "workflows.publishToIpfs.error": "ስህተት:",
+  "workflows.publishToIpfs.items": "ንጥሎች:",
+  "workflows.publishToIpfs.created": "ተፈጠረ:",
+  "workflows.publishToIpfs.previous": "ቀዳሚ",
+  "workflows.publishToIpfs.publishingToIpfs": "ወደ IPFS በማታተም ላይ...",
+  "workflows.publishToIpfs.publishToIpfs": "ወደ IPFS አትም",
+  "workflows.publishToIpfs.howToGetStarted": "እንዴት መጀመር እንደሚቻል:",
+  "workflows.publishToIpfs.noDescriptionAvailable": "መግለጫ የለም",
+  "workflows.publishToIpfs.unknown": "ያልታወቀ",
+  "workflows.publishToIpfs.separator": "|",
+  "languageDetection.multipleLanguagesError": "አንዳንድ መስቆች በተለያዩ ቋንቋዎች የተጣፉ የምይተባለው አይነታል። ሁሉም ይዝቶች በተመሳሳይ ቋንቋ መሆኑን ያረጋግጡ።",
+  "languageDetection.languageMismatchError": "ይዝቱ በ:detectedLanguage የተፃፍ የምይታረት ነገር ግን :selectedLanguage መርጫናችሁ። የቋንቋ ምርጫዎን ያዘምኑ።",
+  "languageDetection.defaultMismatchError": "የቋንቋ አለመሳመት ተገኘቢ",
+  "buttons.titles.claim": "የጠየቅ በትን",
+  "buttons.titles.claimed": "የተጠየቀ በትን",
+  "buttons.titles.share": "የማካፈል በትን",
+  "buttons.titles.createWallet": "ዋሌት ፍጠር",
+  "buttons.bookmark": "እልባት",
+  "searchResults.noResults.title": "ምንም ውጤት አልተገኘም",
+  "searchResults.noResults.description": "ፍለጋዎ \" :query \" ምንም ውጤት አላመጣም። እባክዎን እንደገና ይሞክሩ።",
+  "searchResults.tabs.proposals": "ሀሳቦች",
+  "searchResults.tabs.articles": "ጽሑፎች",
+  "searchResults.tabs.ideascaleProfiles": "Ideascale መገለጫዎች",
+  "searchResults.tabs.groups": "ቡድኖች",
+  "searchResults.tabs.communities": "ማህበረሰቦች",
+  "searchResults.tabs.connections": "ግንኙነቶች",
+  "searchResults.tabs.locations": "ቦታዎች",
+  "searchResults.tabs.reviews": "ግምገማዎች",
+  "searchResults.results.title": "የፍለጋ ውጤቶች ለ \" :query \"",
+  "searchResults.results.viewMore": "ተጨማሪ ተመልከት",
+  "my.dashboard": "የእኔ ዳሽቦርድ",
+  "my.userDashboard": "ዳሽቦርድ",
+  "my.profile": "መገለጫ",
+  "my.proposals": "ሀሳቦች",
+  "my.reviews": "ግምግማዎች",
+  "my.groups": "ቡድኖች",
+  "my.communities": "ማህበረሰቦች",
+  "my.transactions": "ግብይቶች",
+  "my.noTransactions": "ግብይት አልተገኘም።",
+  "my.lists": "ዝርዝሮች",
+  "my.items": "ንጥሎች",
+  "my.manage": "አስተዳድር",
+  "my.createVotingListBlurb": "የድምጽ ዝርዝር መፍጠር ለጉቅት ሙከራ የአዎ ድምጾችዎን እና የመዋዜ ድምጾችዎን የመመጠን መንገድ ነው። ከአንድ ፈንድ ህሳቦችን ብቻ መከል ይችላሉ።",
+  "my.createTinderListBlurb": "የትንደር ዝርዝር መፍጠር የድምጽ ዝርዝር ለመፍጠር የበቀን ስዋይፕ እና የበግራ ስዋይፕ ይንተርፌስ ነው። ከአንድ ፈንድ ሀሳቦችን ብቻ መከል ይችላሉ።",
+  "my.createList": "አዲስ ዝርዝር ፍጠር",
+  "my.createBookmarkList": "የእልባት ዝርዝር ፍጠር",
+  "my.createListBlurb": "የእልባት ዝርዝር መፍጠር ሀሳቦችን፣ የIdeascale መገለጫዎችን፣ ቡድኖችን፣ ግምግማዎችን እና ማህበረሰቦችን በብዙ ፈንዶች ላይ ለመአክል ባዶ ፋዎልደር ነው።",
+  "my.createListTitle": "መፍጠር የዝርዝር አይነት ይምረጡ። (በዦና ማካፈል ወይም ግላዊ ማደርግ ይችላሉ።)",
+  "my.createVotingList": "የድምጽ ዝርዝር ፍጠር",
+  "my.createTinderList": "የትንደር ዝርዝር ፍጠር",
+  "my.createVotingListWithStandardUi": "መዋጨን የስራ ሂደት ይጠቀሙ",
+  "my.createVotingListWithCardedUi": "የካርድ ዱክ የስራ ሂደት ይጠቀሙ",
+  "my.votes": "ድምጾች",
+  "my.services": "አገልግሎቶች",
+  "my.balance": "ሲዛን",
+  "my.wallets": "ዋሌቶች",
+  "my.deletingWallet": "በመሰርዝ ላይ",
+  "my.paymentAddresses": "የክፍላ አድራሻዎች",
+  "my.myWallets": "የእኔ ዋሌቶች",
+  "my.loadWallets": "ዋሌቶችን በመጫን ላይ...",
+  "my.deleteWallet": "ዋሌት ሰርዝ",
+  "my.manageWallets": "ከCatalyst Explorer መለያዎ ጋር የተገናኙ ሁሉንም ዋሌቶች ተመልከት እና አስተዳድሩ",
+  "my.moreWalletsDetails": "የዋሌት ዝርዝሮች ተመልከት...",
+  "my.connectWallet": "ዋሌት አክል",
+  "my.my": "የእኔ",
+  "navigation.mobile.sidebar": "የሞባይል የጎን መቃኛ ክፍል",
+  "navigation.mobile.content": "የሞባይል መቃኛ ሊንኮች",
+  "navigation.desktop.sidebar": "የዴስክቶፕ የጎን መቃኛ ክፍል",
+  "navigation.sidebar.open": "የጎን መቃኛን ክፈት",
+  "navigation.sidebar.close": "የጎን መቃኛን ዝጋ",
+  "navigation.links.home": "መነሻ",
+  "breadcrumbs.home": "መነሻ",
+  "breadcrumbs.workflow": "የስራ ሂደት",
+  "charts.setMetrics": "የቻርት መለኪያዎች ምረጥ",
+  "charts.viewCharts": "ቻርቶችን ተመልከት",
+  "charts.selectProposals": "ከሀሳቦች ውስጥ ምን ዓይነቶች በጣም ያስደስቱዎታል?",
+  "charts.selectChartType": "የቻርት አይነት ምረጥ (ሁሉንም የሚመለከቱትን ይምረጡ)",
+  "charts.selectAllThatApply": "(ሁሉንም የሚመለከቱትን ይምረጡ)",
+  "charts.submittedProposals": "የቀረቡ ሀሳቦች",
+  "charts.approvedProposals": "የተፈቀዱ ሀሳቦች",
+  "charts.completedProposals": "ተጠናቀቁ",
+  "charts.next": "ቀጣይ",
+  "charts.trendChart": "ትራንድ ቻርት",
+  "charts.distributionChart": "የስርጭት ቻርት",
+  "charts.lineChart": "መስመር ቻርት",
+  "charts.pieChart": "ፓይ ቻርት",
+  "charts.barChart": "ባር ቻርት",
+  "charts.heatMap": "ሂት ማፕ",
+  "charts.treeMap": "ትሪ ማፕ",
+  "charts.scatterPlot": "ስካተር ፕሎት",
+  "charts.stackedBarChart": "ስታክድ ባር ቻርት",
+  "charts.funnelChart": "ፈነል ቻርት",
+  "charts.chartOptions": "የቻርት አማራጮች",
+  "charts.edit": "አርትዕ",
+  "charts.noOptions": "ምንም የቻርት አማራጮች አልተመረጡም። እባክዎን ወደ ኋላ ተመልሰው የቻርት አይነቶችን ይምረጡ",
+  "charts.viewBy": "ተመልከት በ",
+  "charts.fundingRate": "የመደገፍ መጠን",
+  "charts.fund": "ፈንድ",
+  "charts.year": "አመት",
+  "charts.selectFund": "ፈንድ ምረጥ",
+  "charts.value": "እሴት",
+  "charts.percentage": "መቶኛ",
+  "charts.share": "አካፍል",
+  "charts.noFundDataAvailable": "ምንም የፈንድ ውሂብ የለም",
+  "charts.noYearDataAvailable": "ምንም የአመት ውሂብ የለም",
+  "charts.unfundedProposals": "ያልተደገፉ ሀሳቦች",
+  "charts.fundedProposals": "የተደገፉ ሀሳቦች",
+  "charts.inProgressProposals": "በሂደት ላይ",
+  "charts.vsYear": "ከቀድሞው አመት ጋር",
+  "charts.filterProposal": "ለእርስዎ በጣም የሚመጡትን ለማየት ሀሳቦችን በሁኔታ ያጣሩ።",
+  "charts.chooseChartType": "ውሂቡን እንዴት እንደሚያዩ ይምረጡ",
+  "pagination.next": "ቀጣይ",
+  "pagination.previous": "ቀዳሚ",
+  "pagination.morePages": "ተጨማሪ ገጾች",
+  "pagination.goPreviousPage": "ወደ ቀዳሚ ገጽ ሂድ",
+  "pagination.goNextPage": "ወደ ቀጣይ ገጽ ሂድ",
+  "registration.alreadyRegistered": "ቀድሞ ተመዝገብዋሇ?",
+  "registration.passwordCharacters": "8 ቁምፊዎች መሆን አለበት",
+  "registration.noAccount": "መለያ ያላችሁም?",
+  "searchBar.placeholder": "ሀሳቦች፣ ፈንዶች፣ ሰዎች፣ ጽሑፎች እና መረጃ ፈልግ",
+  "searchBar.all_filters": "ሁሉም ማጣሪያዎች",
+  "searchBar.variants.all": "ሁሉም ቡድኖች",
+  "catalystIntro.title.normalText": "Project Catalyst",
+  "catalystIntro.title.highlightedText": "የመሳሰራዊ አዲስ መናን ያዘጋጀላል",
+  "catalystIntro.subtitle": "Catalyst አዲስ ሃስቦችን ከገንዘብ ጋር በመአክል የCardano ኢኮሲስተም ዕድግት ይረዳል፣ ይህም በማህበረሰቡ ድምጽ እና የCardano አዘጓር ይደግፋል።",
+  "metric.numbers": "ቁጥሮች",
+  "metric.subtitle": "የፕሮጀክቶች ቻርቶችን ተመልከት እና ውጤቶችን በፈንድ አጣራ",
+  "metric.seeMore": "ተጨማሪ ተመልከት",
+  "metric.vs": "ከቀድሞው ፈንድ ጋር",
+  "announcements.none": "ምንም ማስታወቂያ የለም",
+  "announcements.timeRemaining": "የቀረው ጊዜ",
+  "announcements.remaining": "ቀሪ",
+  "funds.funds": "ፈንዶች",
+  "funds.fund": "ፈንድ",
+  "funds.pageSubtitle": "ፈንዶችን በርዕስ፣ በይዘት ወይም በደራሲ እና ተባባሪዎች ፈልግ",
+  "funds.singleFundSubtitle": "በሙሉ የገንዘብ ሥርዓቱን ውስጥ ተጠናቀቁ፣ በሂደት ላይ ያሉ እና ሊጠናቀቁ ያሉ ምዕራፎችን በማነፃፀር አጠቃላይ ምዕራፎችን ይመልከቱ።",
+  "funds.browseByCampaign": "በዘመቻ መቃኘት",
+  "funds.browseByCampaignSubtitle": "ማህበረሰቡ ለእነዚህ ዘመቻዎች መፍትሔዎችን ለማቅረብ ተጠይቋል",
+  "funds.totalAwarded": "ጠቅላላ የተሰጠ",
+  "funds.lastFund": "የመጨረሻው ፈንድ",
+  "funds.fundedProjects": "የተደገፉ ፕሮጀክቶች",
+  "funds.subtitle": "ሀሳቦችን እና ችሎታዎችን በርዕስ፣ በይዘት ወይም በደራሲ እና ተባባሪዎች ፈልግ",
+  "funds.fundRounds": "የፈንድ ዙሮች",
+  "funds.fundedProposals": "የተደገፉ ሀሳቦች",
+  "funds.totalFundsAwardedAda": "ጠቅላላ የተሰጠ ፈንድ (ADA)",
+  "funds.totalFundsAwardedUsd": "ጠቅላላ የተሰጠ ፈንድ (USD)",
+  "funds.completedProposals": "የተጠናቀቁ ሀሳቦች",
+  "funds.inProgressProposals": "በሂደት ላይ ያሉ ሀሳቦች",
+  "funds.sortBy": "ተደርድር በ",
+  "funds.filter": "ማጣሪያ",
+  "funds.options.lowToHigh": "በጀት፡ ከታች ወደ ላይ",
+  "funds.options.highToLow": "በጀት፡ ከላይ ወደ ታች",
+  "funds.options.proposalCountsLowToHigh": "የሀሳብ ብዛት፡ ከታች ወደ ላይ",
+  "funds.options.proposalCountsHighToLow": "የሀሳብ ብዛት፡ ከላይ ወደ ታች",
+  "listQuickCreate.createListLong": "አዲስ ዝርዝር ለመጀመር ፍጠር",
+  "listQuickCreate.createListShort": "ዝርዝር ፍጠር",
+  "listQuickCreate.addAll": "ወደ ዝርዝር አክል",
+  "listQuickCreate.addList": "አዲስ ዝርዝር",
+  "listQuickCreate.public": "ይፋዊ አድርግ?",
+  "listQuickCreate.createListPlaceholder": "አዲስ ዝርዝር ፍጠር",
+  "listQuickCreate.addDescPlaceholder": "መግለጫ አክል",
+  "listQuickCreate.noLists": "ምንም ዝርዝሮች አልተገኙም",
+  "listQuickCreate.addBookmark": "ዕልባት አክል",
+  "listQuickCreate.successfulBookmarked": "ወደ ዕልባቶችዎ በስኬት ታክሏል!",
+  "listQuickCreate.success.title": "ስኬት",
+  "listQuickCreate.success.message": "ዝርዝር በስኬት ተፈጠረ",
+  "listQuickCreate.removeBookmark": "አስወግድ",
+  "listQuickCreate.listName": "የዝርዝር ስም",
+  "listQuickCreate.listDescription": "የዝርዝር መግለጫ",
+  "listQuickCreate.create": "ፍጠር",
+  "listQuickCreate.cancel": "ሰርዝ",
+  "listQuickCreate.listFetchError": "ዝርዝሮችን ማምጣት ላይ ስህተት",
+  "listQuickCreate.listCreateError": "ዝርዝር ስራ ላይ ስህተት",
+  "listQuickCreate.errorUpdating": "ምርጫ ማዘመን ላይ ስህተት",
+  "listQuickCreate.validationErrors.general": "ስህተት ተፈጥሯል",
+  "listQuickCreate.validationErrors.inputCheck": "እባክዎን ግብዓቶን ያረጋግጡ",
+  "listQuickCreate.validationErrors.emptyFields": "ስም እና መግለጫ ያስፈልጋሉ",
+  "listQuickCreate.validationErrors.name": "ስም ያስፈልጋል",
+  "listQuickCreate.validationErrors.shortName": "ስም ቢያንስ 5 ቁምፊዎች መሆን አለበት",
+  "listQuickCreate.validationErrors.shortDescription": "መግለጫ ቢያንስ 10 ቁምፊዎች መሆን አለበት",
+  "listQuickCreate.validationErrors.description": "መግለጫ ያስፈልጋል",
+  "proposals.allProposals": "ሁሉም ሀሳቦች",
+  "proposals.proposals": "ሀሳቦች",
+  "proposals.proposalSummary": "የሀሳቦች ማጠቃለያ",
+  "proposals.projectVideo": "የፕሮጀክት ቪዲዮ",
+  "proposals.providedUrl": "ቀርቦ ያለ URL",
+  "proposals.listSubtitle": "የሀሳብ ድምጾች በይፋዊ የCatalyst ድምጽ መተግበሪያ መቀርብ አለባቸው",
+  "proposals.quickPitchesListSubtitle": "በ300 ሰከንድ ወይም ከዚያ በታች ፈጣን ማቅረቦች።",
+  "proposals.celebrateCompletedProposalsSubtitle": "ሊከበሩ የሚገቡ አንዳንድ ሀሳቦች... በሚቀጥለው ፕሮጀክትህ ሊጠቀሙ ይችላሉ።",
+  "proposals.pageSubtitle": "ሀሳቦችን እና ችሎታዎችን በርዕስ፣ በይዘት ወይም በደራሲ እና ተባባሪዎች ፈልግ",
+  "proposals.seeMoreProposals": "ተጨማሪ ሀሳቦች ተመልከት",
+  "proposals.seeMoreQuickPitches": "ተጨማሪ ፈጣን ማቅረቦች ተመልከት",
+  "proposals.quickPitch": "ፈጣን ማቅረብ",
+  "proposals.proposalReviews": "የሀሳብ ግምገማዎች",
+  "proposals.proposalQuickPitches": "የሀሳብ ፈጣን ማቅረቦች",
+  "proposals.celebrateCompletedProposals": "የተጠናቀቀ ሀሳብ እንከብር",
+  "proposals.CSVs": "የሀሳብ CSV",
+  "proposals.impactAlignment": "የተጽዕኖ ቅንብር",
+  "proposals.feasibility": "ተፈጻሚነት",
+  "proposals.valueForMoney": "ዋጋ ለገንዘብ",
+  "proposals.totalProposals": "ጠቅላላ ሀሳቦች",
+  "proposals.viewTeam": "ቡድን ተመልከት",
+  "proposals.action": "እርምጃዎች",
+  "proposals.status": "ሁኔታ",
+  "proposals.owner": "ባለቤት",
+  "proposals.outstanding": "የተቀሩ ሀሳቦች",
+  "proposals.completed": "የተጠናቀቁ ሀሳቦች",
+  "proposals.catalystConnection": "የCatalyst ግንኙነቶች",
+  "proposals.fundingReceived": "የተቀበለ ገንዘብ",
+  "proposals.manageProposal": "ሀሳብ አስተዳድር",
+  "proposals.totalRequested": "፡ሉ የተጠየቀ",
+  "proposals.ideascale": "Ideascale",
+  "proposals.projectCatalyst": "Projectcatalyst.io",
+  "proposals.errors.noUrl": "የምስል URL አልተሰጠም",
+  "proposals.errors.invalidYoutubeFormat": "የYouTube አገናኝ ቅርጵ የተሳሳተ ነው",
+  "proposals.errors.invalidVimeoFormat": "የVimeo አገናኝ ቅርጵ የተሳሳተ ነው",
+  "proposals.errors.invalidUrlFormat": "የተሳሳተ URL ቅርጵ",
+  "proposals.errors.invalidUrl": "የተሳሳተ URL ቅርጵ",
+  "proposals.filters.fundingStatus": "የገንዘብ ሁኔታ",
+  "proposals.filters.approvedProposals": "የተፈቀዱ ሀሳቦች",
+  "proposals.filters.epoch": "ኤፖክ",
+  "proposals.filters.opensource": "ክፍት ምንጭ",
+  "proposals.filters.projectStatus": "የፕሮጀክት ሁኔታ",
+  "proposals.filters.tags": "መለያዎች",
+  "proposals.filters.campaigns": "ዘመቻዎች",
+  "proposals.filters.communities": "ማህበረሰቦች",
+  "proposals.filters.communityCohort": "የማህበረሰብ ቡድን",
+  "proposals.filters.proposers": "አቅራቢዎች",
+  "proposals.filters.groups": "ቡድኖች",
+  "proposals.filters.budgets": "በጀቶች",
+  "proposals.filters.budget": "በጀት",
+  "proposals.filters.projectLength": "የፕሮጀክት ርዝመት (ወራት)",
+  "proposals.filters.filters": "ማጣሪያዎች",
+  "proposals.filters.ideascaleProfiles": "Ideascale መገለጫዎች",
+  "proposals.filters.numberOfProposals": "የሀሳብ ብዛት",
+  "proposals.filters.awardedAda": "የተሰጠ (ADA)",
+  "proposals.filters.awardedUsd": "የተሰጠ (USD)",
+  "proposals.filters.fund": "ፈንድ",
+  "proposals.options.sort": "ተደርድር በ",
+  "proposals.options.oldToNew": "ከቆነው ወደ አዲሱ",
+  "proposals.options.newToOld": "ከአዲሱ ወደ ቆነው",
+  "proposals.options.lowToHigh": "በጀት፡ ከታች ወደ ላይ",
+  "proposals.options.highToLow": "በጀት፡ ከላይ ወደ ታች",
+  "proposals.options.opensourceProposals": "ክፍት ምንጭ ሀሳቦች",
+  "proposals.options.nonOpensourceProposals": "ያልሆኑ ክፍት ምንጭ ሀሳቦች",
+  "proposals.options.complete": "ተጠናቀቀ",
+  "proposals.options.inProgress": "በሂደት ላይ",
+  "proposals.options.unfunded": "ያልተደገፈ",
+  "proposals.options.overBudget": "ከበጀት በላይ",
+  "proposals.options.notApproved": "አልተፈቀደም",
+  "proposals.options.funded": "ተደግፏል",
+  "proposals.options.fullyPaid": "ሙሉ ተከፍሏል",
+  "proposals.options.selectStatus": "ሁኔታ ምረጥ",
+  "proposals.options.budget": "በጀት",
+  "proposals.options.filterValues": "የማጣሪያ እሴቶች",
+  "proposals.options.impactProposal": "የተጽዕኖ ሀሳቦች",
+  "proposals.options.womenProposals": "የሴቶች ሀሳቦች",
+  "proposals.options.ideafestProposals": "Ideafest ሀሳቦች",
+  "proposals.options.quickPitches": "ፈጣን ማቅረቦች",
+  "proposals.options.noResults": "ምንም ውጤት አልተገኘም።",
+  "proposals.options.typeMore": "እባክዎን ተጨማሪ ቁምፊዎች ይተይቡ",
+  "proposals.options.votesCastLowToHigh": "የተሰጡ ድምጾች፡ ከታች ወደ ላይ",
+  "proposals.options.votesCastHighToLow": "የተሰጡ ድምጾች፡ ከላይ ወደ ታች",
+  "proposals.options.budgetHighToLow": "በጀት፡ ከላይ ወደ ታች",
+  "proposals.options.budgetLowToHigh": "በጀት፡ ከታች ወደ ላይ",
+  "proposals.options.communityRankingHighToLow": "የማህበረሰብ ደረጃ፡ ከላይ ወደ ታች",
+  "proposals.options.communityRankingLowToHigh": "የማህበረሰብ ደረጃ፡ ከታች ወደ ላይ",
+  "proposals.options.paymentsReceivedHighToLow": "የተቀበሉ ክፍያዎች፡ ከላይ ወደ ታች",
+  "proposals.options.projectLengthHighToLow": "የፕሮጀክት ርዝመት፡ ከላይ ወደ ታች",
+  "proposals.options.projectLengthLowToHigh": "የፕሮጀክት ርዝመት፡ ከታች ወደ ላይ",
+  "proposals.options.paymentsReceivedLowToHigh": "የተቀበሉ ክፍያዎች፡ ከታች ወደ ላይ",
+  "proposals.options.yesVotesHighToLow": "የአዎ ድምጾች፡ ከላይ ወደ ታች",
+  "proposals.options.yesVotesLowToHigh": "የአዎ ድምጾች፡ ከታች ወደ ላይ",
+  "proposals.options.noVotesLowToHigh": "የአይ ድምጾች፡ ከታች ወደ ላይ",
+  "proposals.options.noVotesHighToLow": "የአይ ድምጾች፡ ከላይ ወደ ታች",
+  "proposals.options.ratingHighToLow": "ደረጃ፡ ከላይ ወደ ታች",
+  "proposals.options.ratingLowToHigh": "ደረጃ፡ ከታች ወደ ላይ",
+  "proposals.options.impactAlignmentHighToLow": "የተጽዕኖ ቅንብር፡ ከላይ ወደ ታች",
+  "proposals.options.impactAlignmentLowToHigh": "የተጽዕኖ ቅንብር፡ ከታች ወደ ላይ",
+  "proposals.options.feasibilityHighToLow": "ተፈጻሚነት፡ ከላይ ወደ ታች",
+  "proposals.options.feasibilityLowToHigh": "ተፈጻሚነት፡ ከታች ወደ ላይ",
+  "proposals.options.valueForMoneyHighToLow": "ዋጋ ለገንዘብ፡ ከላይ ወደ ታች",
+  "proposals.options.valueForMoneyLowToHigh": "ዋጋ ለገንዘብ፡ ከታች ወደ ላይ",
+  "proposals.options.fundingStatusAtoZ": "የገንዘብ ሁኔታ፡ A-Z",
+  "proposals.options.fundingStatusZtoA": "የገንዘብ ሁኔታ፡ Z-A",
+  "proposals.options.titleAtoZ": "በአቢሴዲ ቅደም ተከተል፡ A-Z",
+  "proposals.options.titleZtoA": "በአቢሴዲ ቅደም ተከተል፡ Z-A",
+  "proposals.tabs.details": "ዝርዝሮች",
+  "proposals.tabs.schedule": "ጊዜ ሰሌዳ",
+  "proposals.tabs.community": "የማህበረሰብ ግምገማ",
+  "proposals.tabs.team": "የቡድን መረጃ",
+  "ideascaleProfiles.people": "ሰዎች",
+  "ideascaleProfiles.ideascaleProfiles": "Ideascale መገለጫዎች",
+  "ideascaleProfiles.ownProposals": "የራሳቸው ሀሳቦች",
+  "ideascaleProfiles.coProposals": "የተባበሩ ሀሳቦች",
+  "ideascaleProfiles.pageSubtitle": "ሀሳቦችን እና ችሎታዎችን በርዕስ፣ በይዘት ወይም በደራሲ እና ተባባሪዎች ፈልግ",
+  "ideascaleProfiles.limitFunds": "በፈንድ ገደብ",
+  "ideascaleProfiles.projectStatus": "የፕሮጀክት ሁኔታ",
+  "ideascaleProfiles.limitTags": "በመለያ ገደብ",
+  "ideascaleProfiles.fundingStatus": "የገንዘብ ሁኔታ",
+  "ideascaleProfiles.proposer": "አቅራቢ",
+  "ideascaleProfiles.collaborator": "ተባባሪ",
+  "ideascaleProfiles.noIdeascaleProfiles": "ምንም Ideascale መገለጫዎች አልተገኙም",
+  "ideascaleProfiles.bio": "የህይወት ታሪክ",
+  "ideascaleProfiles.claimed": "ተይዟል",
+  "ideascaleProfiles.claim": "መገለጫ ይጠይቁ",
+  "ideascaleProfiles.totalRequested": "ጠቅላላ የተጠየቀ",
+  "ideascaleProfiles.totalProposals": "ጠቅላላ ሀሳቦች",
+  "ideascaleProfiles.awardedVsRequested": "የተሰጠ ከ የተጠየቀ ጋር",
+  "ideascaleProfiles.receivedVsAwarded": "የተቀበለ ከ የተሰጠ ጋር",
+  "ideascaleProfiles.options.alphabeticallyAsc": "በአቢሴዲ፡ ከA ወደ Z",
+  "ideascaleProfiles.options.alphabeticallyDesc": "በአቢሴዲ፡ ከZ ወደ A",
+  "ideascaleProfiles.options.awardedAdaLowToHigh": "የተሰጠ መጠን (ADA)፡ ከታች ወደ ላይ",
+  "ideascaleProfiles.options.awardedAdaHighToLow": "የተሰጠ መጠን (ADA)፡ ከላይ ወደ ታች",
+  "ideascaleProfiles.options.awardedUsdLowToHigh": "የተሰጠ መጠን (USD)፡ ከታች ወደ ላይ",
+  "ideascaleProfiles.options.awardedUsdHighToLow": "የተሰጠ መጠን (USD)፡ ከላይ ወደ ታች",
+  "ideascaleProfiles.options.primaryProposalCountLowToHigh": "ዋና የሀሳብ ብዛት፡ ከታች ወደ ላይ",
+  "ideascaleProfiles.options.primaryProposalCountHighToLow": "ዋና የሀሳብ ብዛት፡ ከላይ ወደ ታች",
+  "ideascaleProfiles.options.coProposalCountLowToHigh": "የተባበሩ ሀሳብ ብዛት፡ ከታች ወደ ላይ",
+  "ideascaleProfiles.options.coProposalCountHighToLow": "የተባበሩ ሀሳብ ብዛት፡ ከላይ ወደ ታች",
+  "ideascaleProfiles.tabs.proposals": "ሀሳቦች",
+  "ideascaleProfiles.tabs.connections": "ግንኙነቶች",
+  "ideascaleProfiles.tabs.groups": "ቡድኖች",
+  "ideascaleProfiles.tabs.communities": "ማህበረሰቦች",
+  "ideascaleProfiles.tabs.reviews": "ግምገማዎች",
+  "ideascaleProfiles.tabs.schedule": "ጊዜ ሰሌዳ",
+  "ideascaleProfiles.tabs.reports": "ሪፖርቶች",
+  "ideascaleProfiles.tabs.campaigns": "ዘመቻዎች",
+  "ideascaleProfiles.tabs.milestones": "ምዕራፎች",
+  "milestones.milestones": "ምዕራፎች",
+  "groups.groups": "ቡድኖች",
+  "communities.communities": "ማህበረሰቦች",
+  "groups.subtitle": "ተለያዩ፣ ነጻና በአንድነት የሰው ተባባሪነትን ወደ ከፍ የሚያደርጉ",
+  "groups.fundedProposals": "የተደገፉ ሀሳቦች",
+  "groups.received": "የተቀበለ",
+  "groups.requested": "የተጠየቀ",
+  "groups.totalRequested": "ጠቅላላ የተጠየቀ",
+  "groups.completed": "ተጠናቀቀ",
+  "groups.funded": "ተደግፏል",
+  "groups.unfunded": "ያልተደገፈ",
+  "groups.manageGroup": "ቡድን አስተዳድር",
+  "groups.awardedVsRequested": "የተሰጠ ከ የተጠየቀ ጋር",
+  "groups.receivedVsAwarded": "የተቀበለ ከ የተሰጠ ጋር",
+  "groups.reviews": "ግምገማዎች",
+  "groups.noMembers": "ይህ ቡድን አባላት የሉትም",
+  "groups.viewMembers": "አባላትን ተመልከት",
+  "groups.options.alphabetically": "በአቢሴዲ፡ ከA ወደ Z",
+  "groups.options.amountAwardedAdaDesc": "የተሰጠ መጠን (ADA)፡ ከላይ ወደ ታች",
+  "groups.options.amountAwardedAdaAsc": "የተሰጠ መጠን (ADA)፡ ከታች ወደ ላይ",
+  "groups.options.amountAwardedUsdDesc": "የተሰጠ መጠን (USD)፡ ከላይ ወደ ታች",
+  "groups.options.amountAwardedUsdAsc": "የተሰጠ መጠን (USD)፡ ከታች ወደ ላይ",
+  "communities.dashboard": "የማህበረሰብ ዳሽቦርድ",
+  "communities.groups": "የተደገፉ ቡድኖች",
+  "communities.events": "የማህበረሰብ ክስተቶች",
+  "communities.title": "Catalyst ማህበረሰቦች",
+  "communities.subtitle": "ተለያዩ፣ ነጻና በአንድነት የሰው ተባባሪነትን ወደ ከፍ የሚያደርጉ",
+  "communities.proposalSummary": "የሀሳቦች ማጠቃለያ",
+  "communities.totalRequested": "ጠቅላላ የተጠየቀ",
+  "communities.proposals": "የተደገፉ ሀሳቦች",
+  "communities.proposers": "የተደገፉ ሰዎች",
+  "communities.ideascale-profiles": "የተደገፉ ሰዎች",
+  "communities.collaborators": "ተባባሪዎች",
+  "communities.totalAmountAwarded": "ጠቅላላ የተሰጠ መጠን",
+  "communities.totalAmountDistributed": "ጠቅላላ የተከፋፈለ መጠን",
+  "communities.totalAmountRemaining": "ጠቅላላ የቀረ መጠን",
+  "communities.totalAwarded": "ጠቅላላ የተሰጠ መጠን (ADA & USD)",
+  "communities.totalDistributed": "ጠቅላላ የተከፋፈለ መጠን (ADA & USD)",
+  "communities.totalRemained": "ጠቅላላ የቀረ መጠን (ADA & USD)",
+  "communities.amountAwardedUsd": "የተሰጠ መጠን USD",
+  "communities.amountAwardedAda": "የተሰጠ መጠን ADA",
+  "communities.amountAwarded": "የተሰጠ መጠን",
+  "communities.amountDistributed": "የተከፋፈለ መጠን",
+  "communities.amountRemaining": "የቀረ መጠን",
+  "communities.options.alphabetically": "በአቢሴዲ፡ ከA ወደ Z",
+  "communities.options.amountAwardedAdaDesc": "የተሰጠ መጠን (ADA)፡ ከላይ ወደ ታች",
+  "communities.options.amountAwardedAdaAsc": "የተሰጠ መጠን (ADA)፡ ከታች ወደ ላይ",
+  "communities.options.amountAwardedUsdDesc": "የተሰጠ መጠን (USD)፡ ከላይ ወደ ታች",
+  "communities.options.amountAwardedUsdAsc": "የተሰጠ መጠን (USD)፡ ከታች ወደ ላይ",
+  "communities.tabs.dashboard": "ዳሽቦርድ",
+  "communities.tabs.proposals": "ሀሳቦች",
+  "communities.tabs.members": "አባላት",
+  "communities.tabs.groups": "ቡድኖች",
+  "communities.tabs.events": "ክስተቶች",
+  "communities.filters.totalAdaAwarded": "ጠቅላላ የተሰጠ መጠን (ADA)",
+  "communities.filters.totalUsdAwarded": "ጠቅላላ የተሰጠ መጠን (USD)",
+  "communities.filters.totalAdaDistributed": "ጠቅላላ የተከፋፈለ መጠን (ADA)",
+  "communities.filters.totalUsdDistributed": "ጠቅላላ የተከፋፈለ መጠን (USD)",
+  "communities.filters.totalAdaRemaining": "ጠቅላላ የቀረ መጠን (ADA)",
+  "communities.filters.totalUsdRemaining": "ጠቅላላ የቀረ መጠን (USD)",
+  "posts.title": "የCatalyst ልጥፎች",
+  "posts.subtitle": "ከማህበረሰባችን የመጡ አዳዲስ ዜናዎች እና ልጥፎች",
+  "theme.theme": "ገጽታ",
+  "theme.options": "የገጽታ አማራጮች",
+  "theme.light": "ብርሃን",
+  "theme.dark": "ቅትም",
+  "theme.voltaire": "Voltaire",
+  "theme.changeMode": "ገጽታ ወደ {{mode}} ሙዴት ለዋል",
+  "icons.titles.arrowCurved": "Arrow Curved አዶ",
+  "icons.titles.arrow_left": "Arrow Left አዶ",
+  "icons.titles.barLine": "Bar Line Chart አዶ",
+  "icons.titles.blue_eye": "Blue Eye አዶ",
+  "icons.titles.bookmark": "Bookmark Check አዶ",
+  "icons.titles.bookmark_on": "Bookmark On አዶ",
+  "icons.titles.bookmark_off": "Bookmark Off አዶ",
+  "icons.titles.bucket": "Bucket አዶ",
+  "icons.titles.cardSwitch": "Card Switch አዶ",
+  "icons.titles.chart": "Chart አዶ",
+  "icons.titles.check": "Check አዶ",
+  "icons.titles.chevron_up": "Chevron Up አዶ",
+  "icons.titles.chevron_down": "Chevron Down አዶ",
+  "icons.titles.close": "close አዶ",
+  "icons.titles.connect_wallet": "Connect wallet አዶ",
+  "icons.titles.connections": "Connections አዶ",
+  "icons.titles.darkMode": "Dark Mode አዶ",
+  "icons.titles.discord": "Discord",
+  "icons.titles.folder": "Folder አዶ",
+  "icons.titles.filter": "Filter አዶ",
+  "icons.titles.github": "Github",
+  "icons.titles.home": "Home አዶ",
+  "icons.titles.lightMode": "Light Mode አዶ",
+  "icons.titles.login": "Login አዶ",
+  "icons.titles.logOut": "Logout አዶ",
+  "icons.titles.mail": "Mail አዶ",
+  "icons.titles.menu": "Menu አዶ",
+  "icons.titles.miniCardSwitch": "Mini Card Switch አዶ",
+  "icons.titles.more": "More አዶ",
+  "icons.titles.note": "Note አዶ",
+  "icons.titles.notificationBox": "Notification Box አዶ",
+  "icons.titles.numbers": "Numbers አዶ",
+  "icons.titles.people": "People አዶ",
+  "icons.titles.ideascaleProfile": "Ideascale Profile አዶ",
+  "icons.titles.search": "Search አዶ",
+  "icons.titles.voltaireMode": "Voltaire Mode አዶ",
+  "icons.titles.register": "Register አዶ",
+  "icons.titles.link": "Link አዶ",
+  "icons.titles.linkedIn": "LinkedIn",
+  "icons.titles.listBullet": "List Bullet አዶ",
+  "icons.titles.verticalColumn": "Vertical Column አዶ",
+  "icons.titles.videoCamera": "Video Camera አዶ",
+  "icons.titles.playerPause": "Pause አዶ",
+  "icons.titles.playerPlay": "Play አዶ",
+  "icons.titles.playerRewindLeft": "Rewind Left አዶ",
+  "icons.titles.playerRewindRight": "Rewind Right አዶ",
+  "icons.titles.playerSkipBack": "Skip Back አዶ",
+  "icons.titles.playerSkipForward": "Skip Forward አዶ",
+  "icons.titles.playerStop": "Stop አዶ",
+  "icons.titles.arrowTrendingUp": "Trending Up አዶ",
+  "icons.titles.arrowTrendingDown": "Trending Down አዶ",
+  "icons.titles.file": "ፋይል አዶ",
+  "icons.titles.ada": "Ada አዶ",
+  "icons.titles.usd": "USD አዶ",
+  "icons.titles.tick": "Tick አዶ",
+  "icons.titles.x": "X",
+  "icons.titles.web": "Web",
+  "icons.titles.arrowDown": "Arrow Down አዶ",
+  "icons.titles.arrowUp": "Arrow Up አዶ",
+  "segments.completed": "ተጠናቀቀ",
+  "segments.unfunded": "አልተደግፍም",
+  "segments.funded": "ተደግፍል",
+  "segments.ownProposals": "የያት ሀሳቦች",
+  "segments.collaboratingProposals": "የመሳሰራ ሀሳቦች",
+  "users.editProfile": "መገለጫ አርትዕ",
+  "users.viewProfile": "ሙል መገለጫ ተመልከት",
+  "users.viewIdeascale": "ተጠቃሚን በIdeascale ተመልከት እና ያነጋግሩ",
+  "users.profile": "መገለጫ",
+  "users.about": "ስልእንዌ",
+  "users.city": "ከተማ",
+  "users.website": "ድህረገጽ",
+  "users.network": "ኔትወርክ",
+  "users.personalInfo": "የካት መረጃ",
+  "users.photo": "ፎቶ",
+  "users.photoSizeInstructions": "150×150px JPEG, PNG ምስል",
+  "users.photoErrors.invalidType": "ፋይል JPEG, PNG, ወይም GIF መሆን አለበት",
+  "users.photoErrors.tooLarge": "የፋይል መጠን ከ 5MB በታች መሆን አለበት",
+  "users.photoErrors.uploadFailed": "ፎቶ መጫን አልተሳካም",
+  "users.basicSettings": "መበባዊ ቅንብሮች",
+  "users.publicProfile": "ይፋዊ መገለጫ",
+  "users.profileLink": "ይፋዊ መገለጫ",
+  "users.socialProfiles": "ማህበራዊ መገለጫዎች",
+  "users.copied": "ተቀድሷል!",
+  "users.noBiography": "ምንም የህይወት ታሪክ የለም",
+  "users.updateSocialProfiles": "ማህበራዊ መገለጫዎችን አዘምን",
+  "users.updateProfileName": "የመገለጫ ስም አዘምን",
+  "users.updateEmailAddress": "የኢሜል አድራሻ አዘምን",
+  "users.updateCity": "ከተማ አዘምን",
+  "users.addCity": "ከተማ አክል",
+  "users.noAddress": "እስካሁን አድራሻ የሎትም",
+  "users.add": "አክል",
+  "users.recreate": "እንደገና ፍጠር",
+  "users.notProvided": "አልተሰጠም",
+  "completedProjectNfts.title": "የተጠናቀቁ ፕሮጀክቶች NFTs",
+  "completedProjectNfts.subtitle": "የProject Catalyst ተቋማት የእርስዎን ስኬት ለማስታወስ እና ከዓለም ጋር ለማካፈል የክብር ዓመት NFT ለማምነት ተጋብዘዋል!",
+  "completedProjectNfts.nowMinting": "አሁን በማምነት ላይ",
+  "completedProjectNfts.celebrateYourWork": "ትልቅ ሥራዎን ይከበሩ",
+  "completedProjectNfts.onCardanoMainnet": "በCardano mainnet ላይ።",
+  "completedProjectNfts.communityFunded": "በማህበረሰብ የተደገፉ",
+  "completedProjectNfts.projectsCompleted": "የተጠናቀቁ ፕሮጀክቶች",
+  "completedProjectNfts.usdDistributed": "በUSD የተተከለ",
+  "completedProjectNfts.adaDistributed": "በAda የተተከለ",
+  "completedProjectNfts.description": "እያንዳንዱ NFT ልዩ ነው፣ ከፕሮጀክትዎ ርዕስ እና ጭብጥ የተነሳ የንድፍ ክፍሎችን ይዟል! የአርቲስቱን መግለጫ እዚህ ያንብቡ: ",
+  "completedProjectNfts.artistStatement": "ለProject Catalyst የፕሮጀክት መጨረሻ NFTs",
+  "completedProjectNfts.proposalsSearchBar.placeHolder": "ሀሳብ ፈልግ",
+  "completedProjectNfts.step": "ደረጃ",
+  "completedProjectNfts.claimAnotherProfile": "ሌላ መገለጫ ይጠይቁ",
+  "completedProjectNfts.claimProfile": "የIdeascale መገለጫ ይጠይቁ",
+  "completedProjectNfts.unavailable": "አይገኝም!",
+  "completedProjectNfts.reservedUntil": "እስከ ድረስ የተያዘ",
+  "completedProjectNfts.paymentPending": "ክፍያ በመጠባበቅ ላይ",
+  "completedProjectNfts.mintCompletionNft": "የመጨረሻ NFT ያምኑ",
+  "completedProjectNfts.projectComplete": "ፕሮጀክቱ ተጠናቀቀ?",
+  "completedProjectNfts.timeForLaunchParty": "የጀርባ ፓርቲ ጊዜ ነው!",
+  "profileWorkflow.sectionTitle.start": "ለመጀመር ከታች የጠየቁዋቸውን መገለጫዎች ከእርስዎ ይምረጡ",
+  "profileWorkflow.sectionTitle.selectProposal": "ለማምነት የተጠናቀቀ ሀሳብዎን ይምረጡ",
+  "profileWorkflow.sectionTitle.claimProfile": "ሌላ መገለጫ ይጠይቁ",
+  "profileWorkflow.myProfiles": "የእኔ መገለጫዎች",
+  "profileWorkflow.back": "ተመለስ",
+  "profileWorkflow.selectProposal": "የተጠናቀቀ ሀሳብዎን ይምረጡ",
+  "profileWorkflow.name": "ስም",
+  "profileWorkflow.email": "ኢሜል",
+  "profileWorkflow.bio": "ስለ እኔ",
+  "profileWorkflow.ideascaleProfile": "Ideascale መገለጫ",
+  "profileWorkflow.twitter": "ትዊተር",
+  "profileWorkflow.discord": "ዲስኮርድ",
+  "profileWorkflow.linkedIn": "LinkedIn",
+  "profileWorkflow.profileLink": "(የመገለጫ ሊንክ)",
+  "profileWorkflow.twitterHandle": "(@handle)",
+  "profileWorkflow.discordUsername": "(የተጠቃሚ ስም)",
+  "profileWorkflow.claimProfile": "መገለጫ ይጠይቁ",
+  "profileWorkflow.processing": "በማስኬድ ላይ...",
+  "profileWorkflow.nowMinting": "አሁን በማምነት ላይ",
+  "profileWorkflow.fundsRange": "ፈንዶች 2 - 12",
+  "profileWorkflow.loggedInAs": "በ... ተግባር ገብተዋል",
+  "profileWorkflow.proposalsCount": "{{count}} ሀሳቦች",
+  "profileWorkflow.unavailable": "አይገኝም",
+  "profileWorkflow.noProfilesFound": "ምንም መገለጫ አልተገኘም።",
+  "profileWorkflow.findCatalystUser": "የCatalyst ተጠቃሚ ፈልግ",
+  "profileWorkflow.available": "ይገኛል",
+  "profileWorkflow.noProposalsAvailable": "ለዚህ መገለጫ ምንም ሀሳብ አልተገኘም።",
+  "profileWorkflow.budget": "በጀት",
+  "profileWorkflow.previous": "ቀዳሚ",
+  "profileWorkflow.next": "ቀጣይ",
+  "profileWorkflow.fund": "ፈንድ",
+  "profileWorkflow.campaign": "ዘመቻ",
+  "profileWorkflow.verificationTitle": "እንዲረጋገጥ እንረዳዎታለን!",
+  "profileWorkflow.verificationCode": "የማረጋገጫ ኮድ",
+  "profileWorkflow.verificationInstructions": "ይህን መገለጫ ባቴነት መሆንዎን ለማረጋገጥ እባኮትን በIdeascale ላይ ለLido Nation የግል መልዕክት ላክ እና ከላይ ያለውን ኮድ አካትት።",
+  "profileWorkflow.goToIdeascale": "ወደ Ideascale ሂዱ",
+  "dreps.dreps": "DReps",
+  "dreps.drepSearch": "DRep ፈልግ",
+  "dreps.drepStatus": "DRep ሁኔታ",
+  "dreps.votingPowerAda": "የድምጽ ሎይል (₳)",
+  "dreps.drepList.title": "የDReps ድርኬተሪ",
+  "dreps.drepList.subtitle": "በProject Catalyst ውስጥ የውካላዊ መዎክልዎች።",
+  "dreps.drepList.signUp": "DRep ለመሆን መዝገብ",
+  "dreps.drepList.drep": "DRep",
+  "dreps.drepList.registeredOn": "የተመዘገበበት",
+  "dreps.drepList.lastActive": "የተየረሰሳነው ንቅሳኔ",
+  "dreps.drepList.votingPower": "የድምጽ ሎይል",
+  "dreps.drepList.delegators": "ዳሌጌተሮች",
+  "dreps.drepList.status": "ሁኔታ",
+  "dreps.drepList.delegate": "ውካይል",
+  "dreps.drepList.undelegate": "ውካላነት አወግድ",
+  "dreps.drepList.anHourAgo": "ከአንድ ሰዓት በፊት",
+  "dreps.drepList.copied": "ተቀድሷል!",
+  "dreps.drepList.unavailable": "አይገኘም",
+  "dreps.faq.faq": "በተደናጣነት የሚጠዩ ጥያቄዎች",
+  "dreps.faq.question1": "DRep ምንድነው?",
+  "dreps.faq.answer1": "DRep (የውካላዊ ምዎክል) መቹ የማህበረሰቡ አባል ከADA ባለቤቶች ቅርብ በአስተዳደር ሀሳቦች ላይ የሚድምጽ ነው።",
+  "dreps.faq.question2": "የድምጽ ሎይለዤ ለምን አወካል?",
+  "dreps.faq.answer2": "ውካላነት ሁሉንም ሀሳቦች ያት ግምግማ እና ድምጽ ማስጠት ሀ኉ንአያልቤ በCardano አስተዳደር ውስጥ ራይ እንዲኖሩቱ ይቀላል።",
+  "dreps.faq.question3": "DRep እንዴት መምረጥ እችላለሁ?",
+  "dreps.faq.answer3": "በኤሴቶች፣ ኣመናት እና የድምጽ ታሪክ መሰርት DRep መምረጥ ይችላሉ። መገለጫዎችን ተመልከቱ ከCardano ሓልምዎ ጋር የሚዛመድን ይምረጡ።",
+  "dreps.faq.question4": "DRepዤ መቀየር እችላለሁ?",
+  "dreps.faq.answer4": "አዎ፣ የድምጽ ሎይልዎን በማንናው ጊዜ ወደ ተለያ የDRep እንደገና ውካይል ይችላሉ።",
+  "dreps.faq.question5": "ውካላነት ሰላማ ነው?",
+  "dreps.faq.answer5": "አዎ፣ ውካላነት ሰላማ ነው። ADAዎ ገንሤ ከዋሌትዎ አይወጡም፣ እና በጥምዎ ላይ ሙል ኔብሬት ያለዎ፡።",
+  "dreps.faq.question6": "ውካላነት ከደረግን ዝሃጅ እገላለሁ?",
+  "dreps.faq.answer6": "በአሁኑ ጊዜ ውካላነት በአስተዳደር ተሳትፎ ላይ የምይተክክል ነው፣ በገንዘብ ዝሃጅ አይደል።",
+  "dreps.faq.question7": "DReps እንዴት ውሳኔ ያደርጋሉ?",
+  "dreps.faq.answer7": "DReps ሀሳቦችን በጥሂን ይተንትኑ፣ ለCardano ኢኮሲስተም የሚዓዉ የተያወቁ እና በጥሶት ድምጾች እንዲስጡ ያጨጋቹ።",
+  "dreps.filters.status": "ሁኔታ",
+  "dreps.filters.votingPower": "የድምጽ ኃይል",
+  "dreps.filters.delegators": "ዳሌጌተሮች",
+  "dreps.landing.title": "የCardano ወደፊት ይቅርቡ፣ ዛሬ ለDRep ይውክሉ!",
+  "dreps.landing.subtitle": "የውካላ ተወካዮች (DReps) በProject Catalyst ውስጥ የማህበረሰቡ ፍላጎት የሚወክሉ የማህበረሰብ አባላት ናቸው። በማህበረሰቡ ተመርጠው በCatalyst ኢኮሲስተም አስተዳደር ውስጥ ይሳተፋሉ።",
+  "dreps.landing.findDrep": "DRep ፈልግ",
+  "dreps.landing.signUp": "DRep ለመሆን መዝገብ",
+  "dreps.landing.aDrep": "DReps ምንድ ናቸው?",
+  "dreps.landing.drepDescription": "DReps (የውካላ ተወካዮች)፣ ከADA ባለቤቶች ምትክ በCardano ላይ የአስተዳደር ሀሳቦች ላይ ድምጽ ይሰጣሉ። በግል ፈንታ ድምጽ ከመስጠት ይልቅ የድምጽ ኃይልዎን ለDRep ለመስጠት ይችላሉ ይህም ፍላጎትዎን ወክሎ የCardano ወደፊት በብቃት እና በግልጽነት እንዲቀረጽ ይረዳል።",
+  "dreps.landing.projectCatalyst": "የProject Catalyst ቀጣይ ዕድገት እና የመውከል አስፈላጊነት",
+  "dreps.landing.projectCatalystDescription": "የCardano ማህበረሰብ Project Catalyst በፍጥነት አድጓል፣ Fund8 ወደ 1,000 የሚጠጉ ሀሳቦችን ተቀብሏል። ይህን እያደገ ያለ የስራ ጭነት ለማስተዳደር፣ ለቀጣይ አስተዳደር አዲስ የመውከል ስርዓት እየተጀመረ ነው።",
+  "dreps.landing.empower": "በመውከል አማካኝነት የተስፋ ተቆራጭ ምርጫ ላኪዎችን ማብቃት",
+  "dreps.landing.empowerDescription": "መውከል የADA ባለቤቶች የድምጽ ኃይላቸውን ለDReps እንዲመድቡ ያስችላል፣ ድምጻቸው በብዙ ሀሳቦች ላይ እንዲሰማ ያረጋግጣል። DReps በብዙ ሀሳቦች ላይ በመምረጥ በProject Catalyst ውስጥ የውሳኔ አሰጣጥን ያሻሽላሉ።",
+  "dreps.landing.excite": "በCatalyst ውስጥ ላሉ DReps ተደስተዋል?",
+  "dreps.landing.answerExcite": "ዝለሉ እና አቅኚ ይሁኑ!",
+  "dreps.options.alphabetically": "በአስዞ መፃብ: ለ እስከ የ",
+  "dreps.options.delegatorsDesc": "ዳሌጌተሮች: ከላይ ወደ ታችት",
+  "dreps.options.delegatorsAsc": "ዳሌጌተሮች: ከታችት ወደ ላይ",
+  "dreps.options.votersDesc": "ምርጫ ላኪዎች: ከላይ ወደ ታችት",
+  "dreps.options.votersAsc": "ምርጫ ላኪዎች: ከታችት ወደ ላይ",
+  "dreps.options.active": "እንቅስቃሴ",
+  "dreps.options.inactive": "አይደመበሕን",
+  "reviews.reviews": "ሥይታዎች",
+  "reviews.reviewer": "ሥይታዊ",
+  "reviews.helpfulReview": "ይህ አመማሪ ሥይታ ንበር?",
+  "reviews.yes": "አዎ",
+  "reviews.no": "አይ",
+  "reviews.select": "ምረጥ",
+  "reviews.processing": "በማስኬድ ላይ...",
+  "reviews.options.ratingAsc": "ዅይት: ከታችት ወደ ላይ",
+  "reviews.options.ratingDesc": "ዅይት: ከላይ ወደ ታችት",
+  "reviews.options.avgReputationScoreAsc": "ሥም: ከታችት ወደ ላይ",
+  "reviews.options.avgReputationScoreDesc": "ሥም: ከላይ ወደ ታችት",
+  "reviews.options.helpful": "አመማሪ",
+  "reviews.options.notHelpful": "አከምማሪ",
+  "reviews.filters.funds": "ፎንድ",
+  "reviews.filters.proposals": "ሀሳብ",
+  "reviews.filters.reviewerIds": "የሥይታዊ ምንልክት",
+  "reviews.filters.helpful": "አመማሪ",
+  "reviews.filters.ratings": "ዅይት",
+  "reviews.filters.reputationScores": "የሥም የሊድይ",
+  "transactions.allTimeVotes": "ሁሉ ጊዜ ድምጾች",
+  "transactions.balance": "ሚዛን",
+  "transactions.utxos": "UTXOዎች",
+  "transactions.fromAddresses": "ከ አድራሻዎች (ግቤቶች)",
+  "transactions.toAddresses": "ወደ አድራሻዎች (ውጤቶች)",
+  "transactions.totalInput": "ጠቅላላ ግቤት",
+  "transactions.totalOutput": "ጠቅላላ ውጤት",
+  "transactions.block": "ብሎክ",
+  "transactions.fundsParticipated": "ተሳትፎ ያደረጉ ፈንዶች",
+  "transactions.title": "ግብይቶች",
+  "transactions.type": "የግብይት አይነት",
+  "transactions.delegations": "መዋከል",
+  "transactions.details": "የግብይት ዝርዝሮች",
+  "transactions.drepStatus": "የDRep መዋከል ሁኔታ",
+  "transactions.message": "የCardano ግብይት ዝርዝር",
+  "transactions.metadata": "ሜታዳታ",
+  "transactions.nonce": "ኖንስ",
+  "transactions.pageTitle": "የCatalyst በቅንብር ላይ ግብይቶች",
+  "transactions.pageDescription": "በCardano ኔትወርክ ላይ በስቴኪንግ፣ በአስተዳደር እና በደህንነት የተጠበቁ ግብይቶች ለመሳተፍ የስቴክ ቁልፍዎን መመዝገብ ይችላሉ።",
+  "transactions.paymentAddress": "የክፍያ አድራሻ",
+  "transactions.rawData": "Raw ውሂብ",
+  "transactions.stakePub": "Stake Pub",
+  "transactions.view": "የዋሌት ዝርዝሮች ተመልከት...",
+  "transactions.votingPurpose": "የድምጽ መስጠት ዓላማ",
+  "transactions.witness": "ማረጋገጫ",
+  "transactions.walletDetails": "የዋሌት ዝርዝሮች",
+  "transactions.table.viewDetails": "የግብይት ዝርዝሮችን ተመልከት",
+  "transactions.table.copyTxHash": "የግብይት ሃሽ ቅዳ",
+  "transactions.table.copyStakeAddress": "የስቴክ አድራሻ ቅዳ",
+  "transactions.table.copyBlockHash": "የብሎክ ሃሽ ቅዳ",
+  "transactions.table.hash": "ሃሽ",
+  "transactions.table.stakeAddress": "የስቴክ አድራሻ",
+  "transactions.table.epoch": "ኤፖክ",
+  "transactions.table.id": "መታወቂያ",
+  "transactions.table.block": "ብሎክ",
+  "transactions.table.actions": "እርምጃዎች",
+  "transactions.table.view": "ተመልከት",
+  "transactions.table.voterRegistration": "የምርጫ መመዝገብ",
+  "transactions.table.proposalPayout": "የሀሳብ ክፍያ",
+  "transactions.table.type": "አይነት",
+  "transactions.table.fund": "ፈንድ",
+  "transactions.table.fragmentId": "ፍራግመንት ID",
+  "transactions.table.caster": "ላኪ",
+  "transactions.table.timestamp": "ጊዜ",
+  "transactions.table.choice": "ምርጫ",
+  "transactions.table.votingPower": "የድምጽ ኃይል",
+  "transactions.table.rawFragment": "Raw ፍራግመንት",
+  "transactions.table.totalOutputs": "የውጤት መጠን (Lovelace)",
+  "transactions.table.totalInputs": "ጠቅላላ ግቤቶች",
+  "transactions.table.weights": "ክብደቶች",
+  "transactions.options.newestToOldest": "ከአዲሱ ወደ ቆነው",
+  "transactions.options.oldestToNewest": "ከቆነው ወደ አዲሱ",
+  "transactions.options.blockAsc": "ብሎክ፡ ከታች ወደ ላይ",
+  "transactions.options.blockDesc": "ብሎክ፡ ከላይ ወደ ታች",
+  "transactions.options.epochAsc": "ኤፖክ፡ ከታች ወደ ላይ",
+  "transactions.options.epochDesc": "ኤፖክ፡ ከላይ ወደ ታች",
+  "transactions.options.amountHighToLow": "የውጤት መጠን፡ ከላይ ወደ ታች",
+  "transactions.options.amountLowToHigh": "የውጤት መጠን፡ ከታች ወደ ላይ",
+  "transactions.options.weightHighToLow": "ክብደት፡ ከላይ ወደ ታች",
+  "transactions.options.weightLowToHigh": "ክብደት፡ ከታች ወደ ላይ",
+  "transactions.searchBar.placeholder": "የግብይት ሃሽ፣ ኤፖክ፣ ብሎክ ፈልግ",
+  "transactions.wallet.title": "የዋሌት ዝርዝሮች",
+  "transactions.wallet.wallet": "ዋሌት",
+  "transactions.wallet.stakeKey": "የስቴክ ቁልፍ",
+  "transactions.wallet.catalystVotes": "የCatalyst ድምጾች",
+  "transactions.wallet.transactions": "ግብይቶች",
+  "validation.required": "{{field}} ያስፈልጋል",
+  "validation.emailFormat": "እባክዎ ትክክለኛ የኢሜል አድራሻ ያስገቡ",
+  "validation.passwordLength": "የይለፍ ቃል ቢያንስ 8 ቁምፊዎች መሆን አለበት",
+  "validation.passwordMatch": "የይለፍ ቃሎች አይመሳሰሉም",
+  "vote.catalystVotes": "የCatalyst ድምጾች",
+  "vote.viewOnchainTransactions": "በቅንብር ላይ (jormungandr) የተደረጉ የድምጽ ግብይቶችን ተመልከት",
+  "vote.noStakeAddressFound": "ምንም የስቴክ አድራሻ አልተገኘም",
+  "vote.stakeAddress": "የስቴክ አድራሻ",
+  "vote.choice": "ምርጫ",
+  "vote.noChoicesAvailable": "ምንም ምርጫ የለም",
+  "vote.noEpochsAvailable": "ምንም ኤፖኮች የሉም",
+  "vote.votingHistory": "የመስጠት ታሪክ",
+  "vote.votingPowerHighToLow": "የድምጽ ኃይል፡ ከላይ ወደ ታች",
+  "vote.votingPowerLowToHigh": "የድምጽ ኃይል፡ ከታች ወደ ላይ",
+  "vote.timeOlderToNewer": "ጊዜ፡ ከቆነው ወደ አዲሱ",
+  "vote.timeNewerToOlder": "ጊዜ፡ ከአዲሱ ወደ ቆነው",
+  "vote.search": "ፈልግ",
+  "vote.searchBar": "የስቴክ አድራሻን እዚህ ለጥፉ...",
+  "vote.searchPlaceholder": "በፍራግመንት ID፣ ላኪ ወይም Raw ፍራግመንት ፈልግ",
+  "vote.secondarySearch": "ሁለተኛ ፍለጋ",
+  "vote.sort": "ተደርድር በ",
+  "vote.searchStakeFragmentCaster": "በስቴክ አድራሻ፣ ፍራግመንት ID፣ ላኪ ፈልግ",
+  "vote.notAvailable": "N/A",
+  "vote.timeAgo.justNow": "አሁን ነው",
+  "vote.timeAgo.anHourAgo": "ከአንድ ሰዓት በፊት",
+  "vote.timeAgo.hoursAgo": "{{hours}} ሰዓታት በፊት",
+  "vote.timeAgo.aDayAgo": "ከአንድ ቀን በፊት",
+  "vote.timeAgo.daysAgo": "{{days}} ቀናት በፊት",
+  "vote.table.fund": "ፈንድ",
+  "vote.table.stakeAddress": "የስቴክ አድራሻ",
+  "vote.table.fragmentId": "ፍራግመንት ID",
+  "vote.table.caster": "ላኪ",
+  "vote.table.timestamp": "ጊዜ",
+  "vote.table.choice": "ምርጫ",
+  "vote.table.votingPower": "የድምጽ ኃይል",
+  "vote.table.rawFragment": "Raw ፍራግመንት",
+  "wallet.connectedWallet": "ዋሌት አገናኝ",
+  "wallet.connect.title": "ዋሌት አገናኝ",
+  "wallet.connect.subtitle": "ለመገናኘት የሚፈልጉትን ዋሌት ይምረጡ:",
+  "wallet.connect.initializing": "የዋሌት ግንኙነት በመጀመር ላይ...",
+  "wallet.connect.connectedTo": "ተገናኝቷል ወደ:",
+  "wallet.connect.disconnect": "ዋሌት አቋርጥ",
+  "wallet.connect.selectWallet": "ዋሌት ምረጥ",
+  "wallet.connect.addAnotherWallet": "ሌላ ዋሌት ጨምር",
+  "wallet.connect.noWallets.title": "የሚደገፉ ዋሌቶች አልተገኙም",
+  "wallet.connect.noWallets.subtitle": "እባክዎ ሌይስ (Lace), Eternl, Flint ወይም ሌላ የCardano ዋሌት ይጫኑ",
+  "wallet.connect.errors.notInitialized": "የCardano ቤተ-መፅሀፍት ገና አልተጀመረም። እባክዎ ጥቂት ጊዜ በኋላ ይሞክሩ።",
+  "wallet.connect.errors.walletNotFound": "{{walletName}} ዋሌት አልተገኘም። እባክዎ መጀመሪያ ይጫኑት።",
+  "wallet.connect.errors.wrongNetwork": "የተሳሳተ ኔትወርክ ተገኝቷል። እባክዎ ወደ {{expected}} ይለውጡ",
+  "wallet.connect.errors.noAddresses": "በዋሌት ውስጥ ምንም አድራሻ አልተገኘም",
+  "wallet.connect.errors.connectionFailed": "ግንኙነት አልተሳካም",
+  "wallet.connect.errors.disconnectError": "ዋሌትን ለማቋረጥ ስህተት ተከስቷል",
+  "wallet.connect.errors.contextError": "useWallet መጠቀም የሚገባው በWalletProvider ውስጥ ነው",
+  "wallet.connect.errors.wasmInitError": "የCardano WASM ሞጁል መጀመር አልተሳካም",
+  "wallet.connect.errors.wasmLibError": "የዋሌት ግንኙነት ቤተ-መፅሀፍት መጀመር አልተሳካም",
+  "wallet.status.connected": "ተገናኝቷል",
+  "wallet.status.connecting": "በመገናኘት ላይ",
+  "wallet.status.disconnect": "አቋርጥ",
+  "groups.title": "የCatalyst ቡድኖች",
+  "bookmarks.permanentDelete": "ይህ እርምጃ አይመለስም፣ በዚህ ዝርዝር ውስጥ ያሉ ሁሉም ዕልባቶች በቋሚነት ይወገዳሉ።",
+  "bookmarks.confirmDelete": "ይህን የዕልባት ዝርዝር ሙሉ በሙሉ መሰረዝ እንደሚፈልጉ እርግጠኛ ነዎት?",
+  "bookmarks.editList": "ዝርዝር አርትዕ",
+  "bookmarks.deletesList": "ዝርዝሮችን ሰርዝ",
+  "bookmarks.manage": "ዝርዝር አስተዳድር",
+  "bookmarks.viewPublic": "እንደ ይፋዊ ተመልከት",
+  "bookmarks.listSetting": "የዝርዝር ቅንብሮች",
+  "bookmarks.listTitle": "የማህበረሰብ ዝርዝሮችን ያግኙ",
+  "bookmarks.listSubtitle": "በሌሎች የተካፈሉ የተመረጡ የዕልባት ዝርዝሮችን ያስሱና ፈልጉ።",
+  "bookmarks.myBookmarks": "የእኔ ዕልባቶች",
+  "bookmarks.searchPlaceholder": "ዝርዝር ፈልግ",
+  "bookmarks.sort.paymentsReceivedHighToLowADA": " የተቀበሉ ክፍያዎች(ADA): ከላይ ወደ ታች",
+  "bookmarks.sort.paymentsReceivedLowToHighADA": " የተቀበሉ ክፍያዎች(ADA): ከታች ወደ ላይ",
+  "bookmarks.sort.paymentsReceivedHighToLowUSD": " የተቀበሉ ክፍያዎች(USD): ከላይ ወደ ታች",
+  "bookmarks.sort.paymentsReceivedLowToHighUSD": " የተቀበሉ ክፍያዎች(USD): ከታች ወደ ላይ",
+  "bookmarks.sort.budgetHighToLowADA": "በጀት(ADA): ከላይ ወደ ታች",
+  "bookmarks.sort.budgetLowToHighADA": "በጀት(ADA): ከታች ወደ ላይ",
+  "bookmarks.sort.budgetHighToLowUSD": "በጀት(USD): ከላይ ወደ ታች",
+  "bookmarks.sort.budgetLowToHighUSD": "በጀት(USD): ከታች ወደ ላይ",
+  "bookmarks.sort.alphabeticallyAZ": "በአቢሴዲ: A ወደ Z",
+  "bookmarks.sort.updatedAtASC": "የመጨረሻ ማሻሻል",
+  "bookmarks.sort.itemsCountASC": "የታከሉ ንጥሎች: ከታች ወደ ላይ",
+  "bookmarks.sort.itemsCountDESC": "የታከሉ ንጥሎች: ከላይ ወደ ታች",
+  "bookmarks.comments": "አስተያየቶች",
+  "bookmarks.lastModified": "የመጨረሻ ማሻሻያ",
+  "bookmarks.createList": "ዝርዝርህን ፍጠር",
+  "comments.comments": "አስተያየቶች",
+  "comments.reply": "መልስ ስጥ",
+  "voter.catalystVoters": "የCatalyst ምርጫ ሰጪዎች",
+  "voter.viewVoterInformation": "የCardano ወደፊትን የሚያቀና ንቁ ማህበረሰብን ግልጽ እና በውሂብ ተመራ እይታ ያግኙ",
+  "voter.searchPlaceholder": "የስቴክ አድራሻ ወይም የምርጫ መታወቂያ ፈልግ",
+  "voter.votersTable": "የምርጫ ሰጪዎች ሰንጠረዥ",
+  "voter.noVotersFound": "ከፍለጋዎ ጋር የሚዛመዱ ምርጫ ሰጪዎች አልተገኙም",
+  "voter.notAvailable": "N/A",
+  "voter.active": "ንቁ",
+  "voter.inactive": "ንቁ ያልሆነ",
+  "voter.search": "ፈልግ",
+  "voter.votingPower": "የድምጽ ኃይል",
+  "voter.minimumVotingPower": "አነስተኛ የድምጽ ኃይል",
+  "voter.noFundsAvailable": "ፈንድ የለም",
+  "voter.table.voterId": "የምርጫ ሰጪ መታወቂያ",
+  "voter.table.stakeAddress": "የስቴክ አድራሻ",
+  "voter.table.votingPower": "የድምጽ ኃይል",
+  "voter.table.proposalsVotedOn": "የተደረጉ ድምጾች በሀሳቦች",
+  "voter.table.latestFund": "የቅርብ ፈንድ",
+  "voter.table.status": "ሁኔታ",
+  "voter.filter.oneAda": "1+ ADA",
+  "voter.filter.tenAda": "10+ ADA",
+  "voter.filter.hundredAda": "100+ ADA",
+  "voter.filter.thousandAda": "1,000+ ADA",
+  "voter.filter.tenThousandAda": "10,000+ ADA",
+  "voter.filter.allVotingPowers": "ሁሉም የድምጽ ኃይሎች",
+  "voter.sort.newestFirst": "አዲሱ መጀመሪያ",
+  "voter.sort.oldestFirst": "የቆየው መጀመሪያ",
+  "voter.sort.votingPowerDesc": "የድምጽ ኃይል፡ ከላይ ወደ ታች",
+  "voter.sort.votingPowerAsc": "የድምጽ ኃይል፡ ከታች ወደ ላይ",
+  "voter.sort.votesCountDesc": "የድምጾች ብዛት፡ ከላይ ወደ ታች",
+  "voter.sort.votesCountAsc": "የድምጾች ብዛት፡ ከታች ወደ ላይ",
+  "voter.sort.proposalsVotedOnDesc": "በሀሳቦች የተደረጉ ድምጾች፡ ከላይ ወደ ታች",
+  rightSwipes: rightSwipes$9,
+  leftSwipes: leftSwipes$9,
+  "workflows.createService.step1.clickToReplaceImage": "ምስል ለመቀየር እዚህ ጠቅ ያድርጉ",
+  "workflows.createService.step1.clickToUploadImage": "ምስል ለመጫን እዚህ ጠቅ ያድርጉ",
+  "graph.loadingConnections": "ለ:nodeName ግንኙነቶችን በመጫን ላይ ...",
+  "graph.noAdditionalConnections": ":nodeName ተጨማሪ ግንኙነቶች የለቡም",
+  "graph.unknownNode": "ያልታወቀ",
+  loadingGraph: loadingGraph$9,
+  "voter.sort.proposalsVotedOnAsc": "በሀሳቦች የተደረጉ ድምጾች፡ ከታች ወደ ላይ",
+  "services.service": "አገልግሎት",
+  "services.AddService": "አገልግሎት አክል",
+  "services.catalystServices": "የCatalyst አገልግሎቶች",
+  "services.hideCategories": "ምድቦችን ከባ",
+  "services.showCategories": "ምድቦችን አስታይ",
+  "services.catalystServicesDesc": "የCatalyst ገንዘብ የተደግፉ ቁድኖች እንዲመሳሰሩ፣ እርዳታ እንዲጠዩ እና ለኢኮሲስተም አገልግሎቶች እንዲስጡ ኦታ።",
+  "services.myServices": "የእኔ አገልግሎቶች",
+  "services.myServicesDesc": "አገልግሎቶችዎን አስተዳድሩ እና ከCatalyst ኢኮሲስተም ጋር ይመሳሰሩ።",
+  endDate: endDate$9,
+  startDate: startDate$9,
+  "workflows.publishToIpfs.success.contentIdLabel": "የይዘት መታወቂያዎ:",
+  "workflows.publishToIpfs.success.copied": "ተቀድሷል!",
+  "workflows.publishToIpfs.success.copyCidTitle": "CID ቅዳ",
+  "workflows.publishToIpfs.success.openInNewTabTitle": "በአዲስ ትር ክፈት",
+  "workflows.publishToIpfs.reviewDetails": "ዝርዝርዎን ወደ IPFS ለማታተም ነው። ከታች ያሉትን ዝርዝሮች ይመርምሩ።",
+  "wallet.login": "በዋሌት ግባ",
+  "wallet.login.confirm": "ከተገናኘው ዋሌትዎ ጋር በመጠቀም ለመግባት ነው፤ ከዚህ ዋሌት ጋር የተገናኘው መለያ ይፈተሻል። የተገናኘ መለያ ካልተገኘ፣ በአድራሻዎ መሠረት አዲስ መለያ ይፈጠራል። ይህን መለያ በዳሽቦርዱ ውስጥ ባለው 'የኔ መገለጫ' ገጽ ላይ ማዘመን ይችላሉ።<br><br> <strong>መለያ አለዎት?</strong> በኢሜል ይግቡ እና ዋሌትዎን ያክሉ እንዲሁም በዋሌት ወይም በኢሜል መግባት ትችላላችሁ።",
+};
+
+const __vite_glob_1_0 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+    __proto__: null,
+    API: API$a,
+    Home: Home$a,
+    Link: Link$a,
+    abstain: abstain$a,
+    activeFund: activeFund$a,
+    addEmail: addEmail$a,
+    addYourCity: addYourCity$a,
+    allCurrencies: allCurrencies$a,
+    amount: amount$a,
+    appMessage: appMessage$a,
+    approved: approved$a,
+    articles: articles$a,
+    artistRole: artistRole$a,
+    assetName: assetName$a,
+    authMessage: authMessage$a,
+    awarded: awarded$a,
+    back: back$a,
+    bio: bio$a,
+    blockchainData: blockchainData$a,
+    bookmark: bookmark$a,
+    cantFindNFT: cantFindNFT$a,
+    cantFindNFTForMint: cantFindNFTForMint$a,
+    catalystAPI: catalystAPI$a,
+    ccv4Votes: ccv4Votes$a,
+    chooseMetaData: chooseMetaData$a,
+    chooseMetaDataDescription: chooseMetaDataDescription$a,
+    clear: clear$a,
+    comingSoon: comingSoon$a,
+    completed: completed$a,
+    confirmPassword: confirmPassword$a,
+    connect: connect$a,
+    connectWallet: connectWallet$a,
+    connections: connections$a,
+    cookies: cookies$a,
+    copied: copied$a,
+    copyToClipboard: copyToClipboard$a,
+    copyright: copyright$a,
+    currentPassword: currentPassword$a,
+    dReps: dReps$a,
+    data: data$a,
+    default: am,
+    details: details$a,
+    developers: developers$a,
+    distributed: distributed$a,
+    email: email$a,
+    emailAddress: emailAddress$a,
+    endDate: endDate$9,
+    explore: explore$a,
+    facebook: facebook$a,
+    filterChart: filterChart$a,
+    filters: filters$a,
+    forgotPassword: forgotPassword$a,
+    from: from$a,
+    fundProject: fundProject$a,
+    funded: funded$a,
+    funding: funding$a,
+    general: general$a,
+    getStarted: getStarted$a,
+    github: github$a,
+    goToIdeascale: goToIdeascale$a,
+    impact: impact$a,
+    jormungandr: jormungandr$a,
+    knowledgeBase: knowledgeBase$a,
+    leftSwipes: leftSwipes$9,
+    legal: legal$a,
+    licenses: licenses$a,
+    linkedIn: linkedIn$a,
+    listsAndBookmarks: listsAndBookmarks$a,
+    loading: loading$a,
+    loadingGraph: loadingGraph$9,
+    login: login$a,
+    loginPrompt: loginPrompt$a,
+    loginToMint: loginToMint$a,
+    metaDataInstruction: metaDataInstruction$a,
+    metaTitle: metaTitle$a,
+    metadataStrikeInstruction: metadataStrikeInstruction$a,
+    minCharTextarea: minCharTextarea$a,
+    mintNFT: mintNFT$a,
+    minting: minting$a,
+    monthlyReports: monthlyReports$a,
+    mustBeProposer: mustBeProposer$a,
+    myCharts: myCharts$a,
+    myWallet: myWallet$a,
+    name: name$a,
+    next: next$9,
+    nftPaymentGatewayTitle: nftPaymentGatewayTitle$a,
+    nftPending: nftPending$a,
+    noBookmarksYet: noBookmarksYet$a,
+    noGroupBookmarks: noGroupBookmarks$a,
+    noImage: noImage$a,
+    noNFTDataAvailable: noNFTDataAvailable$a,
+    noPeopleBookmarks: noPeopleBookmarks$a,
+    noPreviewAvailable: noPreviewAvailable$a,
+    noProposalBookmarks: noProposalBookmarks$a,
+    noReviewBookmarks: noReviewBookmarks$a,
+    noVotes: noVotes$a,
+    nobookmarks: nobookmarks$a,
+    notSet: notSet$a,
+    numbers: numbers$a,
+    otherContributors: otherContributors$a,
+    password: password$a,
+    paymentGateway: paymentGateway$a,
+    policyID: policyID$a,
+    previous: previous$9,
+    privacy: privacy$a,
+    problem: problem$a,
+    profileBackground: profileBackground$a,
+    projectCatalyst: projectCatalyst$a,
+    projectTitle: projectTitle$a,
+    proposal: proposal$a,
+    received: received$a,
+    register: register$a,
+    rememberMe: rememberMe$a,
+    requested: requested$a,
+    reviewerReputationScore: reviewerReputationScore$a,
+    reviewers: reviewers$a,
+    rightSwipes: rightSwipes$9,
+    role: role$a,
+    searchQuery: searchQuery$a,
+    seeAll: seeAll$a,
+    seeLess: seeLess$a,
+    seeMore: seeMore$a,
+    select: select$a,
+    selectLanguage: selectLanguage$9,
+    selectLanguageForContent: selectLanguageForContent$9,
+    selected: selected$a,
+    selection: selection$a,
+    signin: signin$a,
+    signup: signup$a,
+    social: social$a,
+    solution: solution$a,
+    spending: spending$a,
+    startDate: startDate$9,
+    submitted: submitted$a,
+    support: support$a,
+    teams: teams$a,
+    terms: terms$a,
+    to: to$a,
+    totalAda: totalAda$a,
+    totalUsd: totalUsd$a,
+    transaction: transaction$a,
+    twitter: twitter$a,
+    unavailableForMint: unavailableForMint$a,
+    updatePassword: updatePassword$a,
+    verificationCode: verificationCode$a,
+    verificationCodeLabel: verificationCodeLabel$a,
+    verificationInstructions: verificationInstructions$a,
+    verificationTitle: verificationTitle$a,
+    viewNFT: viewNFT$a,
+    voters: voters$a,
+    votes: votes$a,
+    wallets: wallets$a,
+    yes: yes$a,
+    yesVotes: yesVotes$a
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const activeFund$9 = "الصندوق النشط";
+const addEmail$9 = "إضافة بريد إلكتروني";
+const addYourCity$9 = "أضف مدينتك";
+const appMessage$9 = "يجب تقديم جميع الأصوات في تطبيق التصويت الرسمي لـ Catalyst. هذه أداة للبحث والتخطيط فقط!";
+const articles$9 = "المقالات";
+const assetName$9 = "اسم الأصل";
+const API$9 = "واجهة برمجة التطبيقات";
+const from$9 = "من";
+const to$9 = "إلى";
+const authMessage$9 = "يمكنك استكشاف المقترحات والتقارير الشهرية والأشخاص والمجموعات. قم بتصفية المقترحات حسب حالة التمويل أو حجم الميزانية أو الصندوق أو الحملة أو الكلمات المفتاحية والمزيد.";
+const bio$9 = "السيرة الذاتية";
+const myWallet$9 = "محفظتي";
+const allCurrencies$9 = "جميع العملات";
+const totalAda$9 = "إجمالي المبلغ بعملة ADA";
+const totalUsd$9 = "إجمالي المبلغ بالدولار الأمريكي";
+const amount$9 = "المبلغ";
+const minCharTextarea$9 = "مطلوب 200 حرف كحد أدنى";
+const blockchainData$9 = "بيانات البلوك تشين";
+const bookmark$9 = "مساحتك الشخصية لتنظيم وإدارة رؤى المقترحات. الوصول بسهولة إلى مقترحاتك المحفوظة، ومراجعة الملاحظات، ومشاركة القوائم المنسقة للبقاء على اطلاع على الأفكار والفرص الرئيسية.";
+const catalystAPI$9 = "Catalyst API";
+const ccv4Votes$9 = "أصوات CCV4";
+const chooseMetaData$9 = "اختر بيانات التعريف الخاصة بك";
+const confirmPassword$9 = "تأكيد كلمة المرور";
+const connect$9 = "اتصال";
+const updatePassword$9 = "تحديث كلمة المرور";
+const currentPassword$9 = "كلمة المرور الحالية";
+const connectWallet$9 = "ربط المحفظة";
+const comingSoon$9 = "قريباً";
+const cookies$9 = "ملفات تعريف الارتباط";
+const copyright$9 = "© 2024 Catalyst Explorer. جميع الحقوق محفوظة.";
+const connections$9 = "الاتصالات";
+const minting$9 = "أنت تقوم بالسك";
+const loginToMint$9 = "تسجيل الدخول للسك";
+const unavailableForMint$9 = "غير متاح";
+const mustBeProposer$9 = "يجب أن تكون صاحب مقترح";
+const copied$9 = "تم النسخ";
+const data$9 = "البيانات";
+const dReps$9 = "ممثلو التفويض";
+const email$9 = "البريد الإلكتروني";
+const emailAddress$9 = "عنوان البريد الإلكتروني";
+const general$9 = "عام";
+const facebook$9 = "فيسبوك";
+const forgotPassword$9 = "نسيت كلمة المرور";
+const funding$9 = "التمويل";
+const getStarted$9 = "ابدأ الآن";
+const github$9 = "جيت هب";
+const Home$9 = "الرئيسية";
+const jormungandr$9 = "يورمونغاندر";
+const knowledgeBase$9 = "قاعدة المعرفة";
+const explore$9 = "استكشف";
+const impact$9 = "التأثير";
+const legal$9 = "قانوني";
+const licenses$9 = "التراخيص";
+const login$9 = "تسجيل الدخول";
+const linkedIn$9 = "لينكد إن";
+const listsAndBookmarks$9 = "القوائم والمرجعيات";
+const monthlyReports$9 = "التقارير الشهرية";
+const metaTitle$9 = "معاينة البيانات الوصفية";
+const myCharts$9 = "الرسوم البيانية الخاصة بي";
+const mintNFT$9 = "سك NFT";
+const name$9 = "الاسم";
+const viewNFT$9 = "عرض NFT";
+const nftPending$9 = "NFT في الانتظار";
+const cantFindNFT$9 = "لا يمكن العثور على NFT للسك";
+const paymentGateway$9 = "بوابة الدفع NFT-MAKER PRO";
+const fundProject$9 = "رقم المشروع الممول";
+const projectTitle$9 = "عنوان المشروع";
+const yesVotes$9 = "أصوات نعم";
+const noVotes$9 = "أصوات لا";
+const role$9 = "الدور";
+const otherContributors$9 = "المساهمون الآخرون";
+const metaDataInstruction$9 = "يمكنك شطب البيانات الوصفية بالنقر على أيقونة X. ستُستبعد المعلومات المشطوبة من السك النهائي.";
+const nobookmarks$9 = "لا توجد مرجعيات بعد";
+const noBookmarksYet$9 = "لم تقم بحفظ أي مقترحات أو أشخاص أو مجموعات أو مراجعات بعد. ابدأ في الاستكشاف واحفظ المفضلة لديك!";
+const noImage$9 = "لا توجد صورة";
+const developers$9 = "المطورون";
+const noProposalBookmarks$9 = "لم يتم العثور على مرجعيات مقترحات";
+const noGroupBookmarks$9 = "لم يتم العثور على مرجعيات مجموعات";
+const noPeopleBookmarks$9 = "لم يتم العثور على مرجعيات أشخاص";
+const noReviewBookmarks$9 = "لم يتم العثور على مرجعيات مراجعات";
+const numbers$9 = "الأرقام";
+const password$9 = "كلمة المرور";
+const policyID$9 = "معرف السياسة";
+const filters$9 = "المرشحات";
+const rememberMe$9 = "تذكرني";
+const privacy$9 = "الخصوصية";
+const problem$9 = "المشكلة";
+const profileBackground$9 = "خلفية الملف الشخصي";
+const projectCatalyst$9 = "اسم حملة Project Catalyst";
+const reviewers$9 = "المراجعون";
+const register$9 = "تسجيل";
+const reviewerReputationScore$9 = "نقاط سمعة المراجع";
+const searchQuery$9 = "لا توجد نتائج تطابق بحثك";
+const signin$9 = "تسجيل الدخول";
+const signup$9 = "التسجيل";
+const social$9 = "اجتماعي";
+const spending$9 = "الإنفاق";
+const support$9 = "الدعم";
+const seeAll$9 = "عرض الكل";
+const seeLess$9 = "عرض أقل";
+const seeMore$9 = "عرض المزيد";
+const solution$9 = "الحل";
+const terms$9 = "الشروط";
+const twitter$9 = "تويتر";
+const transaction$9 = "المعاملة";
+const votes$9 = "أصواتي";
+const voters$9 = "المصوتون";
+const wallets$9 = "المحافظ";
+const details$9 = "التفاصيل";
+const teams$9 = "الفريق";
+const yes$9 = "نعم";
+const filterChart$9 = "تصفية الرسم البياني";
+const abstain$9 = "امتناع";
+const notSet$9 = "غير محدد";
+const loading$9 = "جار التحميل";
+const Link$9 = "رابط";
+const select$9 = "اختيار";
+const selected$9 = "مختار";
+const clear$9 = "مسح";
+const selection$9 = "التحديد";
+const awarded$9 = "ممنوح";
+const distributed$9 = "موزع";
+const requested$9 = "مطلوب";
+const received$9 = "مستلم";
+const submitted$9 = "مقدم";
+const funded$9 = "ممول";
+const approved$9 = "موافق عليه";
+const completed$9 = "مكتمل";
+const loginPrompt$9 = "تسجيل الدخول للبدء";
+const back$9 = "العودة";
+const verificationTitle$9 = "دعنا نتحقق منك!";
+const verificationCodeLabel$9 = "رمز التحقق";
+const verificationCode$9 = "رمز:";
+const verificationInstructions$9 = "للتحقق من ملكيتك لهذا الملف الشخصي، يرجى إرسال رسالة شخصية إلى Lido Nation على Ideascale وتضمين الرمز أعلاه.";
+const goToIdeascale$9 = "انتقل إلى Ideascale";
+const proposal$9 = "المقترح";
+const noNFTDataAvailable$9 = "لا توجد بيانات NFT متاحة";
+const noPreviewAvailable$9 = "لا توجد معاينة متاحة";
+const chooseMetaDataDescription$9 = "اختر بيانات التعريف الخاصة بك";
+const metadataStrikeInstruction$9 = "يمكنك شطب البيانات الوصفية بالنقر على أيقونة X. ستُستبعد المعلومات المشطوبة من السك النهائي.";
+const nftPaymentGatewayTitle$9 = "بوابة الدفع NFT-MAKER PRO";
+const artistRole$9 = "فنان";
+const cantFindNFTForMint$9 = "لا يمكن العثور على NFT للسك";
+const copyToClipboard$9 = "نسخ إلى الحافظة";
+const ar = {
+  activeFund: activeFund$9,
+  addEmail: addEmail$9,
+  addYourCity: addYourCity$9,
+  appMessage: appMessage$9,
+  articles: articles$9,
+  assetName: assetName$9,
+  API: API$9,
+  from: from$9,
+  to: to$9,
+  authMessage: authMessage$9,
+  bio: bio$9,
+  myWallet: myWallet$9,
+  allCurrencies: allCurrencies$9,
+  totalAda: totalAda$9,
+  totalUsd: totalUsd$9,
+  amount: amount$9,
+  minCharTextarea: minCharTextarea$9,
+  blockchainData: blockchainData$9,
+  bookmark: bookmark$9,
+  catalystAPI: catalystAPI$9,
+  ccv4Votes: ccv4Votes$9,
+  chooseMetaData: chooseMetaData$9,
+  confirmPassword: confirmPassword$9,
+  connect: connect$9,
+  updatePassword: updatePassword$9,
+  currentPassword: currentPassword$9,
+  connectWallet: connectWallet$9,
+  comingSoon: comingSoon$9,
+  cookies: cookies$9,
+  copyright: copyright$9,
+  connections: connections$9,
+  minting: minting$9,
+  loginToMint: loginToMint$9,
+  unavailableForMint: unavailableForMint$9,
+  mustBeProposer: mustBeProposer$9,
+  copied: copied$9,
+  data: data$9,
+  dReps: dReps$9,
+  email: email$9,
+  emailAddress: emailAddress$9,
+  general: general$9,
+  facebook: facebook$9,
+  forgotPassword: forgotPassword$9,
+  funding: funding$9,
+  getStarted: getStarted$9,
+  github: github$9,
+  Home: Home$9,
+  jormungandr: jormungandr$9,
+  knowledgeBase: knowledgeBase$9,
+  explore: explore$9,
+  impact: impact$9,
+  legal: legal$9,
+  licenses: licenses$9,
+  login: login$9,
+  linkedIn: linkedIn$9,
+  listsAndBookmarks: listsAndBookmarks$9,
+  monthlyReports: monthlyReports$9,
+  metaTitle: metaTitle$9,
+  myCharts: myCharts$9,
+  mintNFT: mintNFT$9,
+  name: name$9,
+  viewNFT: viewNFT$9,
+  nftPending: nftPending$9,
+  cantFindNFT: cantFindNFT$9,
+  paymentGateway: paymentGateway$9,
+  fundProject: fundProject$9,
+  projectTitle: projectTitle$9,
+  yesVotes: yesVotes$9,
+  noVotes: noVotes$9,
+  role: role$9,
+  otherContributors: otherContributors$9,
+  metaDataInstruction: metaDataInstruction$9,
+  nobookmarks: nobookmarks$9,
+  noBookmarksYet: noBookmarksYet$9,
+  noImage: noImage$9,
+  developers: developers$9,
+  noProposalBookmarks: noProposalBookmarks$9,
+  noGroupBookmarks: noGroupBookmarks$9,
+  noPeopleBookmarks: noPeopleBookmarks$9,
+  noReviewBookmarks: noReviewBookmarks$9,
+  numbers: numbers$9,
+  password: password$9,
+  policyID: policyID$9,
+  filters: filters$9,
+  rememberMe: rememberMe$9,
+  privacy: privacy$9,
+  problem: problem$9,
+  profileBackground: profileBackground$9,
+  projectCatalyst: projectCatalyst$9,
+  reviewers: reviewers$9,
+  register: register$9,
+  reviewerReputationScore: reviewerReputationScore$9,
+  searchQuery: searchQuery$9,
+  signin: signin$9,
+  signup: signup$9,
+  social: social$9,
+  spending: spending$9,
+  support: support$9,
+  seeAll: seeAll$9,
+  seeLess: seeLess$9,
+  seeMore: seeMore$9,
+  solution: solution$9,
+  terms: terms$9,
+  twitter: twitter$9,
+  transaction: transaction$9,
+  votes: votes$9,
+  voters: voters$9,
+  wallets: wallets$9,
+  details: details$9,
+  teams: teams$9,
+  yes: yes$9,
+  filterChart: filterChart$9,
+  abstain: abstain$9,
+  notSet: notSet$9,
+  loading: loading$9,
+  Link: Link$9,
+  select: select$9,
+  selected: selected$9,
+  clear: clear$9,
+  selection: selection$9,
+  awarded: awarded$9,
+  distributed: distributed$9,
+  requested: requested$9,
+  received: received$9,
+  submitted: submitted$9,
+  funded: funded$9,
+  approved: approved$9,
+  completed: completed$9,
+  loginPrompt: loginPrompt$9,
+  back: back$9,
+  verificationTitle: verificationTitle$9,
+  verificationCodeLabel: verificationCodeLabel$9,
+  verificationCode: verificationCode$9,
+  verificationInstructions: verificationInstructions$9,
+  goToIdeascale: goToIdeascale$9,
+  proposal: proposal$9,
+  noNFTDataAvailable: noNFTDataAvailable$9,
+  noPreviewAvailable: noPreviewAvailable$9,
+  chooseMetaDataDescription: chooseMetaDataDescription$9,
+  metadataStrikeInstruction: metadataStrikeInstruction$9,
+  nftPaymentGatewayTitle: nftPaymentGatewayTitle$9,
+  artistRole: artistRole$9,
+  cantFindNFTForMint: cantFindNFTForMint$9,
+  copyToClipboard: copyToClipboard$9,
+  "activeFund.title": "صندوق Catalyst النشط",
+  "activeFund.subtitle": "ابق محدثاً مع أحدث جولة تمويل نشطة. راجع الحملات، وتتبع المقترحات، واحفظ الأهم بالنسبة لك.",
+  "activeFund.budget": "إجمالي الميزانية المراد توزيعها",
+  "activeFund.distributed": "موزع",
+  "activeFund.remaining": "المتبقي",
+  "activeFund.createBookmarkList": "إنشاء قائمة مرجعية",
+  "activeFund.bannerTitle": "اصنع قائمة التصويت الخاصة بك!",
+  "activeFund.supportUsTitle": "ادعمنا في الاقتراع!",
+  "activeFund.bannerSubtitle": "أنشئ اختياراتك للتصويت للمرجع والمشاركة! هل تعرف ما تبحث عنه؟ استخدم سير العمل القياسي. هل لا تعرف ما تبحث عنه؟ استخدم سير عمل مجموعة البطاقات لتمرير يميناً على المقترحات التي تريد إلقاء نظرة ثانية عليها، ويساراً على التي ستمتنع عنها أو تمررها هذه الجولة.",
+  "activeFund.supportUsSubtitle": "إذا كنت تجد قيمة في هذه الأداة، يرجى النظر في الدعم في الاقتراع.",
+  "activeFund.supportUsProposalTitle": "الكل في واحد Catalyst: الإشعارات، قوائم الذكاء الاصطناعي والمحافظ.",
+  "activeFund.supportUsSeeProposal": "اقرأ المقترح",
+  "activeFund.supportUsProposalSubtitle": "إذا تم تمويلنا سنقوم بـ: توسيع catalystexplorer.com لتحويل كيفية تفاعلك مع Catalyst من خلال الإشعارات الذكية للأحداث التي تهتم بها، واكتشاف المقترحات المدعوم بالذكاء الاصطناعي، وبناء المحافظ المهنية.",
+  "activeFund.campaignsTitle": "فئات الحملة",
+  "activeFund.campaigns.proposals": "المقترحات",
+  "activeFund.campaigns.viewProposals": "عرض المقترحات",
+  "activeFund.campaigns.createList": "إنشاء قائمة",
+  "proposalComparison.title": "مقارنة مقترحات Catalyst",
+  "proposalComparison.subtitle": "تحليل وتقييم المقترحات بسهولة لاتخاذ قرارات مستنيرة حول التمويل والتأثير والمواءمة الاستراتيجية.",
+  "proposalComparison.searchPlaceholder": "البحث عن مقترح",
+  "proposalComparison.viewProposal": "عرض المقترح",
+  "proposalComparison.selectMetric": "اختر مقياس",
+  "proposalComparison.tableHeaders.metric": "المقياس",
+  "proposalComparison.tableHeaders.reorder": "إعادة ترتيب",
+  "proposalComparison.tableHeaders.title": "العنوان",
+  "proposalComparison.tableHeaders.fund": "الصندوق",
+  "proposalComparison.tableHeaders.status": "الحالة",
+  "proposalComparison.tableHeaders.solution": "الحل",
+  "proposalComparison.tableHeaders.funding": "التمويل المستلم",
+  "proposalComparison.tableHeaders.yesVotes": "أصوات نعم",
+  "proposalComparison.tableHeaders.noVotes": "أصوات لا",
+  "proposalComparison.tableHeaders.team": "الفريق",
+  "proposalComparison.tableHeaders.action": "الإجراء",
+  "proposalComparison.tableHeaders.campaign": "الحملة",
+  "proposalComparison.tableHeaders.problem": "المشكلة",
+  "proposalComparison.tableHeaders.openSource": "مفتوح المصدر",
+  "workflows.claimIdeascale.selectProfile": "اختر الملف الشخصي",
+  "workflows.claimIdeascale.submitDetails": "إرسال التفاصيل",
+  "workflows.claimIdeascale.verification": "رمز التحقق",
+  "workflows.claimIdeascale.chooseProfile": "اختر الملف الشخصي (الملفات الشخصية) التي تريد المطالبة بها. 🚀",
+  "workflows.claimIdeascale.submitDetailsForm": "إرسال التفاصيل التي تريد تحديثها للحساب.",
+  "workflows.claimIdeascale.verifyOnIdeascale": "للتحقق من ملكيتك لهذا الملف الشخصي، يرجى إرسال رسالة شخصية إلى Lido Nation على Ideascale وتضمين الرمز أعلاه.",
+  "workflows.completedProjectNfts.selectProfile": "اختر الملف الشخصي",
+  "workflows.completedProjectNfts.selectProposal": "اختر المقترح",
+  "workflows.completedProjectNfts.selectProfileInfo": "اختر الملف الشخصي (الملفات الشخصية) التي تريد السك منها. يجب أن يكون الملف الشخصي المختار مرتبطاً بالمشروع المكتمل الذي تقوم بسك NFT له. لست متأكداً من أيهما تختار؟ لا تقلق—فقط اختر جميع الملفات الشخصية المتاحة وسنتولى الباقي! 🚀",
+  "workflows.completedProjectNfts.selectProposalInfo": "للبدء، يرجى اختيار المقترح للسك منه",
+  "workflows.completedProjectNfts.viewNft": "عرض NFT",
+  "workflows.completedProjectNfts.alreadyMinted": "تم سكه بالفعل",
+  "workflows.catalystDrepSignup.motivations": "2. الدوافع",
+  "workflows.catalystDrepSignup.objectives": "1. أهدافك",
+  "workflows.catalystDrepSignup.qualifications": "3. المؤهلات",
+  "workflows.catalystDrepSignup.motivationsPlaceholder": "سلط الضوء على نقاط قوتك والتزاماتك ورؤيتك للمجتمع",
+  "workflows.catalystDrepSignup.objectivesPlaceholder": "اكتب عن قيمك ونهجك في الحوكمة...",
+  "workflows.catalystDrepSignup.qualificationsPlaceholder": "ما الذي يجعلك مؤهلاً لهذا الدور في catalyst",
+  "workflows.catalystDrepSignup.2roundsRule": "للمتابعة، تحتاج إلى المشاركة في جولتين تصويت على الأقل في catalyst.",
+  "workflows.catalystDrepSignup.hasCatalystProfile": "للمتابعة، تحتاج إلى ملف شخصي catalyst مرتبط بهذه المحفظة المتصلة.",
+  "funding.status.pending": "قيد الانتظار",
+  "funding.status.withdrawn": "مسحوب",
+  "funding.status.fullyPaid": "مدفوع بالكامل",
+  "funding.status.funded": "ممول",
+  "funding.status.notFunded": "غير ممول",
+  "project.status.votePending": "تصويت قيد الانتظار",
+  "project.status.withdrawn": "مسحوب",
+  "project.status.complete": "مكتمل",
+  "project.status.inProgress": "قيد التنفيذ",
+  "project.status.unfunded": "غير ممول",
+};
+
+const __vite_glob_1_1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+    __proto__: null,
+    API: API$9,
+    Home: Home$9,
+    Link: Link$9,
+    abstain: abstain$9,
+    activeFund: activeFund$9,
+    addEmail: addEmail$9,
+    addYourCity: addYourCity$9,
+    allCurrencies: allCurrencies$9,
+    amount: amount$9,
+    appMessage: appMessage$9,
+    approved: approved$9,
+    articles: articles$9,
+    artistRole: artistRole$9,
+    assetName: assetName$9,
+    authMessage: authMessage$9,
+    awarded: awarded$9,
+    back: back$9,
+    bio: bio$9,
+    blockchainData: blockchainData$9,
+    bookmark: bookmark$9,
+    cantFindNFT: cantFindNFT$9,
+    cantFindNFTForMint: cantFindNFTForMint$9,
+    catalystAPI: catalystAPI$9,
+    ccv4Votes: ccv4Votes$9,
+    chooseMetaData: chooseMetaData$9,
+    chooseMetaDataDescription: chooseMetaDataDescription$9,
+    clear: clear$9,
+    comingSoon: comingSoon$9,
+    completed: completed$9,
+    confirmPassword: confirmPassword$9,
+    connect: connect$9,
+    connectWallet: connectWallet$9,
+    connections: connections$9,
+    cookies: cookies$9,
+    copied: copied$9,
+    copyToClipboard: copyToClipboard$9,
+    copyright: copyright$9,
+    currentPassword: currentPassword$9,
+    dReps: dReps$9,
+    data: data$9,
+    default: ar,
+    details: details$9,
+    developers: developers$9,
+    distributed: distributed$9,
+    email: email$9,
+    emailAddress: emailAddress$9,
+    explore: explore$9,
+    facebook: facebook$9,
+    filterChart: filterChart$9,
+    filters: filters$9,
+    forgotPassword: forgotPassword$9,
+    from: from$9,
+    fundProject: fundProject$9,
+    funded: funded$9,
+    funding: funding$9,
+    general: general$9,
+    getStarted: getStarted$9,
+    github: github$9,
+    goToIdeascale: goToIdeascale$9,
+    impact: impact$9,
+    jormungandr: jormungandr$9,
+    knowledgeBase: knowledgeBase$9,
+    legal: legal$9,
+    licenses: licenses$9,
+    linkedIn: linkedIn$9,
+    listsAndBookmarks: listsAndBookmarks$9,
+    loading: loading$9,
+    login: login$9,
+    loginPrompt: loginPrompt$9,
+    loginToMint: loginToMint$9,
+    metaDataInstruction: metaDataInstruction$9,
+    metaTitle: metaTitle$9,
+    metadataStrikeInstruction: metadataStrikeInstruction$9,
+    minCharTextarea: minCharTextarea$9,
+    mintNFT: mintNFT$9,
+    minting: minting$9,
+    monthlyReports: monthlyReports$9,
+    mustBeProposer: mustBeProposer$9,
+    myCharts: myCharts$9,
+    myWallet: myWallet$9,
+    name: name$9,
+    nftPaymentGatewayTitle: nftPaymentGatewayTitle$9,
+    nftPending: nftPending$9,
+    noBookmarksYet: noBookmarksYet$9,
+    noGroupBookmarks: noGroupBookmarks$9,
+    noImage: noImage$9,
+    noNFTDataAvailable: noNFTDataAvailable$9,
+    noPeopleBookmarks: noPeopleBookmarks$9,
+    noPreviewAvailable: noPreviewAvailable$9,
+    noProposalBookmarks: noProposalBookmarks$9,
+    noReviewBookmarks: noReviewBookmarks$9,
+    noVotes: noVotes$9,
+    nobookmarks: nobookmarks$9,
+    notSet: notSet$9,
+    numbers: numbers$9,
+    otherContributors: otherContributors$9,
+    password: password$9,
+    paymentGateway: paymentGateway$9,
+    policyID: policyID$9,
+    privacy: privacy$9,
+    problem: problem$9,
+    profileBackground: profileBackground$9,
+    projectCatalyst: projectCatalyst$9,
+    projectTitle: projectTitle$9,
+    proposal: proposal$9,
+    received: received$9,
+    register: register$9,
+    rememberMe: rememberMe$9,
+    requested: requested$9,
+    reviewerReputationScore: reviewerReputationScore$9,
+    reviewers: reviewers$9,
+    role: role$9,
+    searchQuery: searchQuery$9,
+    seeAll: seeAll$9,
+    seeLess: seeLess$9,
+    seeMore: seeMore$9,
+    select: select$9,
+    selected: selected$9,
+    selection: selection$9,
+    signin: signin$9,
+    signup: signup$9,
+    social: social$9,
+    solution: solution$9,
+    spending: spending$9,
+    submitted: submitted$9,
+    support: support$9,
+    teams: teams$9,
+    terms: terms$9,
+    to: to$9,
+    totalAda: totalAda$9,
+    totalUsd: totalUsd$9,
+    transaction: transaction$9,
+    twitter: twitter$9,
+    unavailableForMint: unavailableForMint$9,
+    updatePassword: updatePassword$9,
+    verificationCode: verificationCode$9,
+    verificationCodeLabel: verificationCodeLabel$9,
+    verificationInstructions: verificationInstructions$9,
+    verificationTitle: verificationTitle$9,
+    viewNFT: viewNFT$9,
+    voters: voters$9,
+    votes: votes$9,
+    wallets: wallets$9,
+    yes: yes$9,
+    yesVotes: yesVotes$9
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const activeFund$8 = "Aktiver Fonds";
+const addEmail$8 = "E-Mail hinzufügen";
+const addYourCity$8 = "Ihre Stadt hinzufügen";
+const appMessage$8 = "Alle Stimmen müssen in der offiziellen Catalyst Voting App abgegeben werden. Dies ist nur ein Recherche- und Planungstool!";
+const articles$8 = "Artikel";
+const assetName$8 = "Asset-Name";
+const API$8 = "API";
+const from$8 = "Von";
+const to$8 = "Bis";
+const authMessage$8 = "Sie können Vorschläge, monatliche Berichte, Personen und Gruppen erkunden. Filtern Sie Vorschläge nach Finanzierungsstatus oder Budgetgröße, Fonds, Kampagne, Schlüsselwörtern und mehr.";
+const bio$8 = "Biografie";
+const myWallet$8 = "Meine Wallet";
+const allCurrencies$8 = "Alle Währungen";
+const totalAda$8 = "Gesamtbetrag in ADA";
+const totalUsd$8 = "Gesamtbetrag in USD";
+const amount$8 = "Betrag ";
+const minCharTextarea$8 = "Mindestens 200 Zeichen erforderlich";
+const blockchainData$8 = "Blockchain-Daten";
+const bookmark$8 = "Ihr persönlicher Bereich zum Organisieren und Verwalten von Vorschlagsinformationen. Greifen Sie einfach auf Ihre gespeicherten Vorschläge zu, überprüfen Sie Notizen und teilen Sie kuratierte Listen, um über wichtige Ideen und Möglichkeiten auf dem Laufenden zu bleiben.";
+const catalystAPI$8 = "Catalyst API";
+const ccv4Votes$8 = "CCV4 Stimmen";
+const chooseMetaData$8 = "Wählen Sie Ihre eigenen Metadaten";
+const confirmPassword$8 = "Passwort bestätigen";
+const connect$8 = "Verbinden";
+const updatePassword$8 = "Passwort aktualisieren";
+const currentPassword$8 = "Aktuelles Passwort";
+const connectWallet$8 = "Wallet verbinden";
+const comingSoon$8 = "Demnächst";
+const cookies$8 = "Cookies";
+const copyright$8 = " Alle Rechte vorbehalten.";
+const connections$8 = "Verbindungen";
+const minting$8 = "Sie prägen";
+const loginToMint$8 = "Zum Prägen anmelden";
+const unavailableForMint$8 = "Nicht verfügbar";
+const mustBeProposer$8 = "Muss Antragsteller sein";
+const copied$8 = "Kopiert";
+const data$8 = "Daten";
+const dReps$8 = "DReps";
+const email$8 = "E-Mail";
+const emailAddress$8 = "E-Mail-Adresse";
+const general$8 = "Allgemein";
+const facebook$8 = "Facebook";
+const forgotPassword$8 = "Passwort vergessen";
+const funding$8 = "Finanzierung";
+const getStarted$8 = "Loslegen";
+const github$8 = "Github";
+const Home$8 = "Startseite";
+const jormungandr$8 = "Jormungandr";
+const knowledgeBase$8 = "Wissensdatenbank";
+const explore$8 = "Erkunden";
+const impact$8 = "Auswirkung";
+const legal$8 = "Rechtliches";
+const licenses$8 = "Lizenzen";
+const login$8 = "Anmelden";
+const linkedIn$8 = "LinkedIn";
+const listsAndBookmarks$8 = "Listen und Lesezeichen";
+const monthlyReports$8 = "Monatliche Berichte";
+const metaTitle$8 = "Metadaten-Vorschau";
+const myCharts$8 = "Meine Diagramme";
+const mintNFT$8 = "NFT prägen";
+const name$8 = "Name";
+const viewNFT$8 = "NFT anzeigen";
+const nftPending$8 = "NFT ausstehend";
+const cantFindNFT$8 = "NFT zum Prägen nicht gefunden";
+const paymentGateway$8 = "NFT-MAKER PRO Zahlungsgateway";
+const fundProject$8 = "Finanzierte Projektnummer";
+const projectTitle$8 = "Projekttitel";
+const yesVotes$8 = "Ja-Stimmen";
+const noVotes$8 = "Nein-Stimmen";
+const role$8 = "Rolle";
+const otherContributors$8 = "Andere Mitwirkende";
+const metaDataInstruction$8 = "Sie können Metadaten durchstreichen, indem Sie auf das X-Symbol klicken. Durchgestrichene Informationen werden von der endgültigen Prägung ausgeschlossen.";
+const nobookmarks$8 = "Noch keine Lesezeichen";
+const noBookmarksYet$8 = "Sie haben noch keine Vorschläge, Personen, Gruppen oder Bewertungen mit Lesezeichen versehen. Beginnen Sie zu erkunden und setzen Sie Lesezeichen für Ihre Favoriten!";
+const noImage$8 = "Kein Bild";
+const developers$8 = "Entwickler";
+const noProposalBookmarks$8 = "Keine Vorschlagslesezeichen gefunden";
+const noGroupBookmarks$8 = "Keine Gruppenlesezeichen gefunden";
+const noPeopleBookmarks$8 = "Keine Personenlesezeichen gefunden";
+const noReviewBookmarks$8 = "Keine Bewertungslesezeichen gefunden";
+const numbers$8 = "Zahlen";
+const password$8 = "Passwort";
+const policyID$8 = "Richtlinien-ID";
+const filters$8 = "Filter";
+const rememberMe$8 = "Angemeldet bleiben";
+const privacy$8 = "Datenschutz";
+const problem$8 = "Problem";
+const profileBackground$8 = "Profilhintergrund";
+const projectCatalyst$8 = "Project Catalyst Kampagnenname";
+const reviewers$8 = "Gutachter";
+const register$8 = "Registrieren";
+const reviewerReputationScore$8 = "Gutachter-Reputationsbewertung";
+const searchQuery$8 = "Keine Ergebnisse entsprechen Ihrer Suchanfrage";
+const signin$8 = "Anmelden";
+const signup$8 = "Registrieren";
+const social$8 = "Sozial";
+const spending$8 = "Ausgaben";
+const support$8 = "Support";
+const seeAll$8 = "Alle anzeigen";
+const seeLess$8 = "Weniger anzeigen";
+const seeMore$8 = "Mehr anzeigen";
+const solution$8 = "Lösung";
+const terms$8 = "Bedingungen";
+const twitter$8 = "Twitter";
+const transaction$8 = "Transaktion";
+const votes$8 = "Meine Stimmen";
+const voters$8 = "Wähler";
+const wallets$8 = "Wallets";
+const details$8 = "Details";
+const teams$8 = "Team";
+const yes$8 = "Ja";
+const filterChart$8 = "Diagramm filtern";
+const abstain$8 = "Stimmenthaltung";
+const notSet$8 = "Nicht festgelegt";
+const loading$8 = "Lädt";
+const Link$8 = "Link";
+const select$8 = "Auswählen";
+const selected$8 = "Ausgewählt";
+const clear$8 = "löschen";
+const selection$8 = "auswahl";
+const awarded$8 = "Vergeben";
+const distributed$8 = "Verteilt";
+const requested$8 = "Beantragt";
+const received$8 = "Erhalten";
+const submitted$8 = "Eingereicht";
+const funded$8 = "Finanziert";
+const approved$8 = "Genehmigt";
+const completed$8 = "Abgeschlossen";
+const loginPrompt$8 = "Anmelden um zu beginnen";
+const back$8 = "Zurück";
+const verificationTitle$8 = "Lassen Sie uns Sie verifizieren!";
+const verificationCodeLabel$8 = "Verifizierungscode";
+const verificationCode$8 = "CODE:";
+const verificationInstructions$8 = "Um Ihr Eigentum an diesem Profil zu verifizieren, senden Sie bitte eine persönliche Nachricht an Lido Nation auf Ideascale und fügen Sie den obigen Code bei.";
+const goToIdeascale$8 = "Zu Ideascale gehen";
+const proposal$8 = "Vorschlag";
+const noNFTDataAvailable$8 = "Keine NFT-Daten verfügbar";
+const noPreviewAvailable$8 = "Keine Vorschau verfügbar";
+const chooseMetaDataDescription$8 = "Wählen Sie Ihre eigenen Metadaten";
+const metadataStrikeInstruction$8 = "Sie können Metadaten durchstreichen, indem Sie auf das X-Symbol klicken. Durchgestrichene Informationen werden von der endgültigen Prägung ausgeschlossen.";
+const nftPaymentGatewayTitle$8 = "NFT-MAKER PRO Zahlungsgateway";
+const artistRole$8 = "Künstler";
+const cantFindNFTForMint$8 = "NFT zum Prägen nicht gefunden";
+const copyToClipboard$8 = "In Zwischenablage kopieren";
+const previous$8 = "Vorherige";
+const next$8 = "Nächste";
+const selectLanguage$8 = "Sprache auswählen";
+const selectLanguageForContent$8 = "Wählen Sie eine Sprache für Ihren Inhalt";
+const rightSwipes$8 = " - Rechte Swipes";
+const leftSwipes$8 = " - Linke Swipes";
+const loadingGraph$8 = "Diagramm wird geladen";
+const endDate$8 = "Enddatum";
+const startDate$8 = "Startdatum";
 const de = {
-  activeFund: activeFund$7,
-  addEmail: addEmail$7,
-  addYourCity: addYourCity$7,
-  appMessage: appMessage$7,
-  articles: articles$7,
-  assetName: assetName$7,
-  API: API$7,
-  from: from$7,
-  to: to$7,
-  authMessage: authMessage$7,
-  bio: bio$7,
-  myWallet: myWallet$6,
-  allCurrencies: allCurrencies$7,
-  totalAda: totalAda$7,
-  totalUsd: totalUsd$7,
-  amount: amount$7,
-  minCharTextarea: minCharTextarea$6,
-  blockchainData: blockchainData$7,
-  bookmark: bookmark$7,
-  catalystAPI: catalystAPI$7,
-  ccv4Votes: ccv4Votes$7,
-  chooseMetaData: chooseMetaData$7,
-  confirmPassword: confirmPassword$7,
-  connect: connect$6,
-  updatePassword: updatePassword$6,
-  currentPassword: currentPassword$6,
-  connectWallet: connectWallet$6,
-  comingSoon: comingSoon$7,
-  cookies: cookies$7,
-  copyright: copyright$7,
-  connections: connections$7,
-  minting: minting$7,
-  loginToMint: loginToMint$7,
-  unavailableForMint: unavailableForMint$6,
-  mustBeProposer: mustBeProposer$7,
-  copied: copied$7,
-  data: data$7,
-  dReps: dReps$7,
-  email: email$7,
-  emailAddress: emailAddress$7,
-  general: general$7,
-  facebook: facebook$7,
-  forgotPassword: forgotPassword$7,
-  funding: funding$6,
-  getStarted: getStarted$7,
-  github: github$7,
-  Home: Home$7,
-  jormungandr: jormungandr$7,
-  knowledgeBase: knowledgeBase$7,
-  explore: explore$7,
-  impact: impact$7,
-  legal: legal$7,
-  licenses: licenses$7,
-  login: login$7,
-  linkedIn: linkedIn$7,
-  listsAndBookmarks: listsAndBookmarks$7,
-  monthlyReports: monthlyReports$7,
-  metaTitle: metaTitle$7,
-  myCharts: myCharts$6,
-  mintNFT: mintNFT$7,
-  name: name$7,
-  viewNFT: viewNFT$7,
-  nftPending: nftPending$7,
-  cantFindNFT: cantFindNFT$7,
-  paymentGateway: paymentGateway$7,
-  fundProject: fundProject$7,
-  projectTitle: projectTitle$7,
-  yesVotes: yesVotes$7,
-  noVotes: noVotes$7,
-  role: role$7,
-  otherContributors: otherContributors$7,
-  metaDataInstruction: metaDataInstruction$7,
-  nobookmarks: nobookmarks$7,
-  noBookmarksYet: noBookmarksYet$7,
-  noImage: noImage$7,
-  developers: developers$7,
-  noProposalBookmarks: noProposalBookmarks$7,
-  noGroupBookmarks: noGroupBookmarks$7,
-  noPeopleBookmarks: noPeopleBookmarks$7,
-  noReviewBookmarks: noReviewBookmarks$7,
-  numbers: numbers$7,
-  password: password$7,
-  policyID: policyID$7,
-  filters: filters$7,
-  rememberMe: rememberMe$7,
-  privacy: privacy$7,
-  problem: problem$7,
-  profileBackground: profileBackground$7,
-  projectCatalyst: projectCatalyst$7,
-  reviewers: reviewers$7,
-  register: register$7,
-  reviewerReputationScore: reviewerReputationScore$7,
-  searchQuery: searchQuery$7,
-  signin: signin$7,
-  signup: signup$7,
-  social: social$7,
-  spending: spending$7,
-  support: support$7,
-  seeAll: seeAll$7,
-  seeLess: seeLess$7,
-  seeMore: seeMore$7,
-  solution: solution$7,
-  terms: terms$7,
-  twitter: twitter$7,
-  transaction: transaction$6,
-  votes: votes$7,
-  voters: voters$7,
-  wallets: wallets$7,
-  details: details$7,
-  teams: teams$7,
-  yes: yes$7,
-  filterChart: filterChart$6,
-  abstain: abstain$7,
-  notSet: notSet$7,
-  loading: loading$7,
-  Link: Link$7,
-  select: select$7,
-  selected: selected$7,
-  clear: clear$7,
-  selection: selection$7,
-  awarded: awarded$7,
-  distributed: distributed$6,
-  requested: requested$7,
-  submitted: submitted$7,
-  funded: funded$7,
-  approved: approved$7,
-  completed: completed$7,
-  loginPrompt: loginPrompt$7,
-  back: back$7,
-  verificationTitle: verificationTitle$7,
-  verificationCodeLabel: verificationCodeLabel$7,
-  verificationCode: verificationCode$7,
-  verificationInstructions: verificationInstructions$7,
-  goToIdeascale: goToIdeascale$7,
-  proposal: proposal$6,
-  noNFTDataAvailable: noNFTDataAvailable$7,
-  noPreviewAvailable: noPreviewAvailable$7,
-  chooseMetaDataDescription: chooseMetaDataDescription$7,
-  metadataStrikeInstruction: metadataStrikeInstruction$7,
-  nftPaymentGatewayTitle: nftPaymentGatewayTitle$7,
-  artistRole: artistRole$7,
-  cantFindNFTForMint: cantFindNFTForMint$7,
-  copyToClipboard: copyToClipboard$7,
+  activeFund: activeFund$8,
+  addEmail: addEmail$8,
+  addYourCity: addYourCity$8,
+  appMessage: appMessage$8,
+  articles: articles$8,
+  assetName: assetName$8,
+  API: API$8,
+  from: from$8,
+  to: to$8,
+  authMessage: authMessage$8,
+  bio: bio$8,
+  myWallet: myWallet$8,
+  allCurrencies: allCurrencies$8,
+  totalAda: totalAda$8,
+  totalUsd: totalUsd$8,
+  amount: amount$8,
+  minCharTextarea: minCharTextarea$8,
+  blockchainData: blockchainData$8,
+  bookmark: bookmark$8,
+  catalystAPI: catalystAPI$8,
+  ccv4Votes: ccv4Votes$8,
+  chooseMetaData: chooseMetaData$8,
+  confirmPassword: confirmPassword$8,
+  connect: connect$8,
+  updatePassword: updatePassword$8,
+  currentPassword: currentPassword$8,
+  connectWallet: connectWallet$8,
+  comingSoon: comingSoon$8,
+  cookies: cookies$8,
+  copyright: copyright$8,
+  connections: connections$8,
+  minting: minting$8,
+  loginToMint: loginToMint$8,
+  unavailableForMint: unavailableForMint$8,
+  mustBeProposer: mustBeProposer$8,
+  copied: copied$8,
+  data: data$8,
+  dReps: dReps$8,
+  email: email$8,
+  emailAddress: emailAddress$8,
+  general: general$8,
+  facebook: facebook$8,
+  forgotPassword: forgotPassword$8,
+  funding: funding$8,
+  getStarted: getStarted$8,
+  github: github$8,
+  Home: Home$8,
+  jormungandr: jormungandr$8,
+  knowledgeBase: knowledgeBase$8,
+  explore: explore$8,
+  impact: impact$8,
+  legal: legal$8,
+  licenses: licenses$8,
+  login: login$8,
+  linkedIn: linkedIn$8,
+  listsAndBookmarks: listsAndBookmarks$8,
+  monthlyReports: monthlyReports$8,
+  metaTitle: metaTitle$8,
+  myCharts: myCharts$8,
+  mintNFT: mintNFT$8,
+  name: name$8,
+  viewNFT: viewNFT$8,
+  nftPending: nftPending$8,
+  cantFindNFT: cantFindNFT$8,
+  paymentGateway: paymentGateway$8,
+  fundProject: fundProject$8,
+  projectTitle: projectTitle$8,
+  yesVotes: yesVotes$8,
+  noVotes: noVotes$8,
+  role: role$8,
+  otherContributors: otherContributors$8,
+  metaDataInstruction: metaDataInstruction$8,
+  nobookmarks: nobookmarks$8,
+  noBookmarksYet: noBookmarksYet$8,
+  noImage: noImage$8,
+  developers: developers$8,
+  noProposalBookmarks: noProposalBookmarks$8,
+  noGroupBookmarks: noGroupBookmarks$8,
+  noPeopleBookmarks: noPeopleBookmarks$8,
+  noReviewBookmarks: noReviewBookmarks$8,
+  numbers: numbers$8,
+  password: password$8,
+  policyID: policyID$8,
+  filters: filters$8,
+  rememberMe: rememberMe$8,
+  privacy: privacy$8,
+  problem: problem$8,
+  profileBackground: profileBackground$8,
+  projectCatalyst: projectCatalyst$8,
+  reviewers: reviewers$8,
+  register: register$8,
+  reviewerReputationScore: reviewerReputationScore$8,
+  searchQuery: searchQuery$8,
+  signin: signin$8,
+  signup: signup$8,
+  social: social$8,
+  spending: spending$8,
+  support: support$8,
+  seeAll: seeAll$8,
+  seeLess: seeLess$8,
+  seeMore: seeMore$8,
+  solution: solution$8,
+  terms: terms$8,
+  twitter: twitter$8,
+  transaction: transaction$8,
+  votes: votes$8,
+  voters: voters$8,
+  wallets: wallets$8,
+  details: details$8,
+  teams: teams$8,
+  yes: yes$8,
+  filterChart: filterChart$8,
+  abstain: abstain$8,
+  notSet: notSet$8,
+  loading: loading$8,
+  Link: Link$8,
+  select: select$8,
+  selected: selected$8,
+  clear: clear$8,
+  selection: selection$8,
+  awarded: awarded$8,
+  distributed: distributed$8,
+  requested: requested$8,
+  received: received$8,
+  submitted: submitted$8,
+  funded: funded$8,
+  approved: approved$8,
+  completed: completed$8,
+  loginPrompt: loginPrompt$8,
+  back: back$8,
+  verificationTitle: verificationTitle$8,
+  verificationCodeLabel: verificationCodeLabel$8,
+  verificationCode: verificationCode$8,
+  verificationInstructions: verificationInstructions$8,
+  goToIdeascale: goToIdeascale$8,
+  proposal: proposal$8,
+  noNFTDataAvailable: noNFTDataAvailable$8,
+  noPreviewAvailable: noPreviewAvailable$8,
+  chooseMetaDataDescription: chooseMetaDataDescription$8,
+  metadataStrikeInstruction: metadataStrikeInstruction$8,
+  nftPaymentGatewayTitle: nftPaymentGatewayTitle$8,
+  artistRole: artistRole$8,
+  cantFindNFTForMint: cantFindNFTForMint$8,
+  copyToClipboard: copyToClipboard$8,
   "activeFund.title": "Aktiver Catalyst-Fonds",
   "activeFund.subtitle": "Bleiben Sie über die aktuelle Finanzierungsrunde informiert. Sehen Sie sich Kampagnen an, verfolgen Sie Vorschläge und merken Sie sich die, die Ihnen am wichtigsten sind.",
   "activeFund.budget": "Gesamtbudget zur Verteilung",
@@ -47849,6 +50361,10 @@ const de = {
   "activeFund.createBookmarkList": "Lesezeichenliste erstellen",
   "activeFund.bannerTitle": "Erstellen Sie Ihre Abstimmungsliste!",
   "activeFund.bannerSubtitle": "Erstellen Sie Ihre Stimmauswahl für Referenz und Austausch! Sie wissen, was Sie suchen? Nutzen Sie den Standard-Workflow. Sie wissen nicht, was Sie suchen? Nutzen Sie den Kartenstapel-Workflow, um nach rechts bei Vorschlägen zu wischen, die Sie genauer betrachten möchten, nach links bei denen, bei denen Sie sich enthalten oder diese Runde überspringen.",
+  "activeFund.supportUsTitle": "Unterstützen Sie uns bei der Abstimmung!",
+  "activeFund.supportUsSubtitle": "Bei Finanzierung werden wir: catalystexplorer.com erweitern, um Ihr Engagement mit Catalyst durch intelligente Benachrichtigungen für Ereignisse, die Sie interessieren, KI-gesteuerte Vorschlagsentdeckung und professionellen Portfolio-Aufbau zu transformieren.",
+  "activeFund.supportUsSeeProposal": "Vorschlag lesen",
+  "activeFund.supportUsProposalTitle": "All-in-One Catalyst: Benachrichtigungen, KI-Listen & Portfolios.",
   "activeFund.campaignsTitle": "Kampagnenkategorien",
   "activeFund.campaigns.proposals": "Vorschläge",
   "activeFund.campaigns.viewProposals": "Vorschläge anzeigen",
@@ -48041,8 +50557,8 @@ const de = {
   "bookmarks.viewAsPublic": "Als öffentlich anzeigen",
   "bookmarks.editListItem": "Listenelement bearbeiten",
   "bookmarks.publishToIpfs": "Auf IPFS veröffentlichen",
-  previous: previous$7,
-  next: next$7,
+  previous: previous$8,
+  next: next$8,
   "workflows.tinderProposal.step1.selectFund": "Fonds auswählen",
   "workflows.tinderProposal.step1.selectFundPlaceholder": "Fonds auswählen",
   "workflows.tinderProposal.step1.selectAllThatApply": "(Alle auswählen, die zutreffen)",
@@ -48149,8 +50665,8 @@ const de = {
   "workflows.publishToIpfs.noDescriptionAvailable": "Keine Beschreibung verfügbar",
   "workflows.publishToIpfs.unknown": "Unbekannt",
   "workflows.publishToIpfs.separator": "|",
-  selectLanguage: selectLanguage$7,
-  selectLanguageForContent: selectLanguageForContent$7,
+  selectLanguage: selectLanguage$8,
+  selectLanguageForContent: selectLanguageForContent$8,
   "languageDetection.multipleLanguagesError": "Einige Felder scheinen in verschiedenen Sprachen geschrieben zu sein. Bitte stellen Sie sicher, dass alle Inhalte in derselben Sprache sind.",
   "languageDetection.languageMismatchError": "Ihr Inhalt scheint in :detectedLanguage zu sein, aber Sie haben :selectedLanguage ausgewählt. Bitte aktualisieren Sie Ihre Sprachauswahl.",
   "languageDetection.defaultMismatchError": "Sprachenkonflikt erkannt",
@@ -48948,14 +51464,14 @@ const de = {
   "voter.sort.votesCountDesc": "Stimmanzahl: Hoch zu Niedrig",
   "voter.sort.votesCountAsc": "Stimmanzahl: Niedrig zu Hoch",
   "voter.sort.proposalsVotedOnDesc": "Abstimmungen über Vorschläge: Hoch zu Niedrig",
-  rightSwipes: rightSwipes$7,
-  leftSwipes: leftSwipes$7,
+  rightSwipes: rightSwipes$8,
+  leftSwipes: leftSwipes$8,
   "workflows.createService.step1.clickToReplaceImage": "Hier klicken um Bild zu ersetzen",
   "workflows.createService.step1.clickToUploadImage": "Hier klicken um Bild hochzuladen",
   "graph.loadingConnections": "Verbindungen für :nodeName werden geladen ...",
   "graph.noAdditionalConnections": ":nodeName hat keine zusätzlichen Verbindungen",
   "graph.unknownNode": "Unbekannt",
-  loadingGraph: loadingGraph$6,
+  loadingGraph: loadingGraph$8,
   "voter.sort.proposalsVotedOnAsc": "Abstimmungen über Vorschläge: Niedrig zu Hoch",
   "services.service": "Service",
   "services.AddService": "Service hinzufügen",
@@ -48965,8 +51481,8 @@ const de = {
   "services.catalystServicesDesc": "Ein Raum für von Catalyst finanzierte Teams zur Zusammenarbeit, um Hilfe zu bitten und Services für das Ökosystem anzubieten.",
   "services.myServices": "Meine Services",
   "services.myServicesDesc": "Verwalten Sie Ihre Services und arbeiten Sie mit dem Catalyst-Ökosystem zusammen.",
-  endDate: endDate$7,
-  startDate: startDate$7,
+  endDate: endDate$8,
+  startDate: startDate$8,
   "workflows.publishToIpfs.success.contentIdLabel": "Ihre Inhalts-ID:",
   "workflows.publishToIpfs.success.copied": "Kopiert!",
   "workflows.publishToIpfs.success.copyCidTitle": "CID kopieren",
@@ -48974,461 +51490,479 @@ const de = {
   "workflows.publishToIpfs.reviewDetails": "Sie sind dabei, Ihre Liste auf IPFS zu veröffentlichen. Überprüfen Sie die Details unten.",
   "wallet.login": "Mit Wallet anmelden",
   "wallet.login.confirm": "Wir werden Sie mit Ihrer verbundenen Wallet anmelden, das mit dieser Wallet verknüpfte Konto wird authentifiziert. Wenn kein verknüpftes Konto gefunden wird, wird eines mit Ihrer Adresse erstellt. Sie können dieses Konto in Ihrem Dashboard unter der Seite 'Mein Profil' aktualisieren.<br><br> <strong>Haben Sie bereits ein Konto?</strong> Melden Sie sich mit E-Mail an und fügen Sie Ihre Wallet hinzu, damit Sie sich sowohl mit Wallet als auch mit E-Mail anmelden können.",
+  "funding.status.pending": "Ausstehend",
+  "funding.status.withdrawn": "Zurückgezogen",
+  "funding.status.fullyPaid": "Vollständig bezahlt",
+  "funding.status.funded": "Finanziert",
+  "funding.status.notFunded": "Nicht finanziert",
+  "project.status.votePending": "Abstimmung ausstehend",
+  "project.status.withdrawn": "Zurückgezogen",
+  "project.status.complete": "Abgeschlossen",
+  "project.status.inProgress": "In Bearbeitung",
+  "project.status.unfunded": "Nicht finanziert",
+  "proposals.celebrateCompletedProposals": "Abgeschlossene Vorschläge feiern",
+  "my.createVotingListWithStandardUi": "Standard-Arbeitsablauf verwenden",
+  "my.createVotingListWithCardedUi": "Kartenstapel-Arbeitsablauf verwenden",
+  "transactions.table.id": "Id",
+  "transactions.table.proposalPayout": "Vorschlagsauszahlung",
 };
 
-const __vite_glob_1_0 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_1_2 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
-    API: API$7,
-    Home: Home$7,
-    Link: Link$7,
-    abstain: abstain$7,
-    activeFund: activeFund$7,
-    addEmail: addEmail$7,
-    addYourCity: addYourCity$7,
-    allCurrencies: allCurrencies$7,
-    amount: amount$7,
-    appMessage: appMessage$7,
-    approved: approved$7,
-    articles: articles$7,
-    artistRole: artistRole$7,
-    assetName: assetName$7,
-    authMessage: authMessage$7,
-    awarded: awarded$7,
-    back: back$7,
-    bio: bio$7,
-    blockchainData: blockchainData$7,
-    bookmark: bookmark$7,
-    cantFindNFT: cantFindNFT$7,
-    cantFindNFTForMint: cantFindNFTForMint$7,
-    catalystAPI: catalystAPI$7,
-    ccv4Votes: ccv4Votes$7,
-    chooseMetaData: chooseMetaData$7,
-    chooseMetaDataDescription: chooseMetaDataDescription$7,
-    clear: clear$7,
-    comingSoon: comingSoon$7,
-    completed: completed$7,
-    confirmPassword: confirmPassword$7,
-    connect: connect$6,
-    connectWallet: connectWallet$6,
-    connections: connections$7,
-    cookies: cookies$7,
-    copied: copied$7,
-    copyToClipboard: copyToClipboard$7,
-    copyright: copyright$7,
-    currentPassword: currentPassword$6,
-    dReps: dReps$7,
-    data: data$7,
+    API: API$8,
+    Home: Home$8,
+    Link: Link$8,
+    abstain: abstain$8,
+    activeFund: activeFund$8,
+    addEmail: addEmail$8,
+    addYourCity: addYourCity$8,
+    allCurrencies: allCurrencies$8,
+    amount: amount$8,
+    appMessage: appMessage$8,
+    approved: approved$8,
+    articles: articles$8,
+    artistRole: artistRole$8,
+    assetName: assetName$8,
+    authMessage: authMessage$8,
+    awarded: awarded$8,
+    back: back$8,
+    bio: bio$8,
+    blockchainData: blockchainData$8,
+    bookmark: bookmark$8,
+    cantFindNFT: cantFindNFT$8,
+    cantFindNFTForMint: cantFindNFTForMint$8,
+    catalystAPI: catalystAPI$8,
+    ccv4Votes: ccv4Votes$8,
+    chooseMetaData: chooseMetaData$8,
+    chooseMetaDataDescription: chooseMetaDataDescription$8,
+    clear: clear$8,
+    comingSoon: comingSoon$8,
+    completed: completed$8,
+    confirmPassword: confirmPassword$8,
+    connect: connect$8,
+    connectWallet: connectWallet$8,
+    connections: connections$8,
+    cookies: cookies$8,
+    copied: copied$8,
+    copyToClipboard: copyToClipboard$8,
+    copyright: copyright$8,
+    currentPassword: currentPassword$8,
+    dReps: dReps$8,
+    data: data$8,
     default: de,
-    details: details$7,
-    developers: developers$7,
-    distributed: distributed$6,
-    email: email$7,
-    emailAddress: emailAddress$7,
-    endDate: endDate$7,
-    explore: explore$7,
-    facebook: facebook$7,
-    filterChart: filterChart$6,
-    filters: filters$7,
-    forgotPassword: forgotPassword$7,
-    from: from$7,
-    fundProject: fundProject$7,
-    funded: funded$7,
-    funding: funding$6,
-    general: general$7,
-    getStarted: getStarted$7,
-    github: github$7,
-    goToIdeascale: goToIdeascale$7,
-    impact: impact$7,
-    jormungandr: jormungandr$7,
-    knowledgeBase: knowledgeBase$7,
-    leftSwipes: leftSwipes$7,
-    legal: legal$7,
-    licenses: licenses$7,
-    linkedIn: linkedIn$7,
-    listsAndBookmarks: listsAndBookmarks$7,
-    loading: loading$7,
-    loadingGraph: loadingGraph$6,
-    login: login$7,
-    loginPrompt: loginPrompt$7,
-    loginToMint: loginToMint$7,
-    metaDataInstruction: metaDataInstruction$7,
-    metaTitle: metaTitle$7,
-    metadataStrikeInstruction: metadataStrikeInstruction$7,
-    minCharTextarea: minCharTextarea$6,
-    mintNFT: mintNFT$7,
-    minting: minting$7,
-    monthlyReports: monthlyReports$7,
-    mustBeProposer: mustBeProposer$7,
-    myCharts: myCharts$6,
-    myWallet: myWallet$6,
-    name: name$7,
-    next: next$7,
-    nftPaymentGatewayTitle: nftPaymentGatewayTitle$7,
-    nftPending: nftPending$7,
-    noBookmarksYet: noBookmarksYet$7,
-    noGroupBookmarks: noGroupBookmarks$7,
-    noImage: noImage$7,
-    noNFTDataAvailable: noNFTDataAvailable$7,
-    noPeopleBookmarks: noPeopleBookmarks$7,
-    noPreviewAvailable: noPreviewAvailable$7,
-    noProposalBookmarks: noProposalBookmarks$7,
-    noReviewBookmarks: noReviewBookmarks$7,
-    noVotes: noVotes$7,
-    nobookmarks: nobookmarks$7,
-    notSet: notSet$7,
-    numbers: numbers$7,
-    otherContributors: otherContributors$7,
-    password: password$7,
-    paymentGateway: paymentGateway$7,
-    policyID: policyID$7,
-    previous: previous$7,
-    privacy: privacy$7,
-    problem: problem$7,
-    profileBackground: profileBackground$7,
-    projectCatalyst: projectCatalyst$7,
-    projectTitle: projectTitle$7,
-    proposal: proposal$6,
-    register: register$7,
-    rememberMe: rememberMe$7,
-    requested: requested$7,
-    reviewerReputationScore: reviewerReputationScore$7,
-    reviewers: reviewers$7,
-    rightSwipes: rightSwipes$7,
-    role: role$7,
-    searchQuery: searchQuery$7,
-    seeAll: seeAll$7,
-    seeLess: seeLess$7,
-    seeMore: seeMore$7,
-    select: select$7,
-    selectLanguage: selectLanguage$7,
-    selectLanguageForContent: selectLanguageForContent$7,
-    selected: selected$7,
-    selection: selection$7,
-    signin: signin$7,
-    signup: signup$7,
-    social: social$7,
-    solution: solution$7,
-    spending: spending$7,
-    startDate: startDate$7,
-    submitted: submitted$7,
-    support: support$7,
-    teams: teams$7,
-    terms: terms$7,
-    to: to$7,
-    totalAda: totalAda$7,
-    totalUsd: totalUsd$7,
-    transaction: transaction$6,
-    twitter: twitter$7,
-    unavailableForMint: unavailableForMint$6,
-    updatePassword: updatePassword$6,
-    verificationCode: verificationCode$7,
-    verificationCodeLabel: verificationCodeLabel$7,
-    verificationInstructions: verificationInstructions$7,
-    verificationTitle: verificationTitle$7,
-    viewNFT: viewNFT$7,
-    voters: voters$7,
-    votes: votes$7,
-    wallets: wallets$7,
-    yes: yes$7,
-    yesVotes: yesVotes$7
+    details: details$8,
+    developers: developers$8,
+    distributed: distributed$8,
+    email: email$8,
+    emailAddress: emailAddress$8,
+    endDate: endDate$8,
+    explore: explore$8,
+    facebook: facebook$8,
+    filterChart: filterChart$8,
+    filters: filters$8,
+    forgotPassword: forgotPassword$8,
+    from: from$8,
+    fundProject: fundProject$8,
+    funded: funded$8,
+    funding: funding$8,
+    general: general$8,
+    getStarted: getStarted$8,
+    github: github$8,
+    goToIdeascale: goToIdeascale$8,
+    impact: impact$8,
+    jormungandr: jormungandr$8,
+    knowledgeBase: knowledgeBase$8,
+    leftSwipes: leftSwipes$8,
+    legal: legal$8,
+    licenses: licenses$8,
+    linkedIn: linkedIn$8,
+    listsAndBookmarks: listsAndBookmarks$8,
+    loading: loading$8,
+    loadingGraph: loadingGraph$8,
+    login: login$8,
+    loginPrompt: loginPrompt$8,
+    loginToMint: loginToMint$8,
+    metaDataInstruction: metaDataInstruction$8,
+    metaTitle: metaTitle$8,
+    metadataStrikeInstruction: metadataStrikeInstruction$8,
+    minCharTextarea: minCharTextarea$8,
+    mintNFT: mintNFT$8,
+    minting: minting$8,
+    monthlyReports: monthlyReports$8,
+    mustBeProposer: mustBeProposer$8,
+    myCharts: myCharts$8,
+    myWallet: myWallet$8,
+    name: name$8,
+    next: next$8,
+    nftPaymentGatewayTitle: nftPaymentGatewayTitle$8,
+    nftPending: nftPending$8,
+    noBookmarksYet: noBookmarksYet$8,
+    noGroupBookmarks: noGroupBookmarks$8,
+    noImage: noImage$8,
+    noNFTDataAvailable: noNFTDataAvailable$8,
+    noPeopleBookmarks: noPeopleBookmarks$8,
+    noPreviewAvailable: noPreviewAvailable$8,
+    noProposalBookmarks: noProposalBookmarks$8,
+    noReviewBookmarks: noReviewBookmarks$8,
+    noVotes: noVotes$8,
+    nobookmarks: nobookmarks$8,
+    notSet: notSet$8,
+    numbers: numbers$8,
+    otherContributors: otherContributors$8,
+    password: password$8,
+    paymentGateway: paymentGateway$8,
+    policyID: policyID$8,
+    previous: previous$8,
+    privacy: privacy$8,
+    problem: problem$8,
+    profileBackground: profileBackground$8,
+    projectCatalyst: projectCatalyst$8,
+    projectTitle: projectTitle$8,
+    proposal: proposal$8,
+    received: received$8,
+    register: register$8,
+    rememberMe: rememberMe$8,
+    requested: requested$8,
+    reviewerReputationScore: reviewerReputationScore$8,
+    reviewers: reviewers$8,
+    rightSwipes: rightSwipes$8,
+    role: role$8,
+    searchQuery: searchQuery$8,
+    seeAll: seeAll$8,
+    seeLess: seeLess$8,
+    seeMore: seeMore$8,
+    select: select$8,
+    selectLanguage: selectLanguage$8,
+    selectLanguageForContent: selectLanguageForContent$8,
+    selected: selected$8,
+    selection: selection$8,
+    signin: signin$8,
+    signup: signup$8,
+    social: social$8,
+    solution: solution$8,
+    spending: spending$8,
+    startDate: startDate$8,
+    submitted: submitted$8,
+    support: support$8,
+    teams: teams$8,
+    terms: terms$8,
+    to: to$8,
+    totalAda: totalAda$8,
+    totalUsd: totalUsd$8,
+    transaction: transaction$8,
+    twitter: twitter$8,
+    unavailableForMint: unavailableForMint$8,
+    updatePassword: updatePassword$8,
+    verificationCode: verificationCode$8,
+    verificationCodeLabel: verificationCodeLabel$8,
+    verificationInstructions: verificationInstructions$8,
+    verificationTitle: verificationTitle$8,
+    viewNFT: viewNFT$8,
+    voters: voters$8,
+    votes: votes$8,
+    wallets: wallets$8,
+    yes: yes$8,
+    yesVotes: yesVotes$8
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const activeFund$6 = "Active Fund";
-const addEmail$6 = "Add email";
-const addYourCity$6 = "Add your city";
-const appMessage$6 = "All Votes must be submitted in the official Catalyst Voting App. This is a research & planning tool only!";
-const articles$6 = "Articles";
-const assetName$6 = "Asset Name";
-const API$6 = "API";
-const from$6 = "From";
-const to$6 = "To";
-const authMessage$6 = "You can explore proposals, monthly reports, people, and groups. Filter proposals by funding status or budget size, Fund, Campaign, key words, and more.";
-const bio$6 = "Bio";
-const myWallet$5 = "My Wallet";
-const allCurrencies$6 = "All Currencies";
-const totalAda$6 = "Total Amount in ADA";
-const totalUsd$6 = "Total Amount in USD";
-const amount$6 = "Amount ";
-const minCharTextarea$5 = "Minimum 200 characters required";
-const blockchainData$6 = "Blockchain Data";
-const bookmark$6 = "Your personal space for organizing and managing proposal insights. Easily access your saved proposals, review notes, and share curated lists to stay on top of key ideas and opportunities.";
-const catalystAPI$6 = "Catalyst API";
-const ccv4Votes$6 = "CCV4 Votes";
-const chooseMetaData$6 = "Choose your own MetaData";
-const confirmPassword$6 = "Confirm Password";
-const connect$5 = "Connect";
-const updatePassword$5 = "Update Password";
-const currentPassword$5 = "Current Password";
-const connectWallet$5 = "Connect wallet";
-const comingSoon$6 = "Coming Soon";
-const cookies$6 = "Cookies";
-const copyright$6 = "© 2024 Catalyst Explorer. All rights reserved.";
-const connections$6 = "Connections";
-const minting$6 = "You're Minting";
-const loginToMint$6 = "Login to Mint";
-const unavailableForMint$5 = "Unavailable";
-const mustBeProposer$6 = "Must Be Proposer";
-const copied$6 = "Copied";
-const data$6 = "Data";
-const dReps$6 = "DReps";
-const email$6 = "Email";
-const emailAddress$6 = "Email Address";
-const general$6 = "General";
-const facebook$6 = "Facebook";
-const forgotPassword$6 = "Forgot password";
-const funding$5 = "Funding";
-const getStarted$6 = "Get started";
-const github$6 = "Github";
-const Home$6 = "Home";
-const jormungandr$6 = "Jormungandr";
-const knowledgeBase$6 = "Knowledge Base";
-const explore$6 = "Explore";
-const impact$6 = "Impact";
-const legal$6 = "Legal";
-const licenses$6 = "Licenses";
-const login$6 = "Login";
-const linkedIn$6 = "LinkedIn";
-const listsAndBookmarks$6 = "Lists and Bookmarks";
-const monthlyReports$6 = "Monthly Reports";
-const metaTitle$6 = "Meta Data Preview";
-const myCharts$5 = "My Charts";
-const mintNFT$6 = "Mint NFT";
-const name$6 = "Name";
-const viewNFT$6 = "View NFT";
-const nftPending$6 = "Nft Pending";
-const cantFindNFT$6 = "Can't find NFT for mint";
-const paymentGateway$6 = "NFT-MAKER PRO Payment Gateway";
-const fundProject$6 = "Funded Project Number";
-const projectTitle$6 = "Project Title";
-const yesVotes$6 = "Yes Votes";
-const noVotes$6 = "No Votes";
-const role$6 = "Role";
-const otherContributors$6 = "Other Contributors";
-const metaDataInstruction$6 = "You may strike through metadata by clicking the X icon. Struck-through information will be excluded from the final mint.";
-const nobookmarks$6 = "No Bookmarks Yet";
-const noBookmarksYet$6 = "You have not bookmarked any proposals, people, groups, or reviews. Start exploring and bookmark your favorites!";
-const noImage$6 = "No Image";
-const developers$6 = "Developers";
-const noProposalBookmarks$6 = "No proposal bookmarks found";
-const noGroupBookmarks$6 = "No group bookmarks found";
-const noPeopleBookmarks$6 = "No people bookmarks found";
-const noReviewBookmarks$6 = "No review bookmarks found";
-const numbers$6 = "Numbers";
-const password$6 = "Password";
-const policyID$6 = "Policy ID";
-const filters$6 = "Filters";
-const rememberMe$6 = "Remember me";
-const privacy$6 = "Privacy";
-const problem$6 = "Problem";
-const profileBackground$6 = "Profile Background";
-const projectCatalyst$6 = "Project catalyst Campaign name";
-const reviewers$6 = "Reviewers";
-const register$6 = "Register";
-const reviewerReputationScore$6 = "Reviewer Reputation Score";
-const searchQuery$6 = "No results match your search query";
-const signin$6 = "Sign in";
-const signup$6 = "Sign up";
-const social$6 = "Social";
-const spending$6 = "Spending";
-const support$6 = "Support";
-const seeAll$6 = "See All";
-const seeLess$6 = "See less";
-const seeMore$6 = "See more";
-const solution$6 = "Solution";
-const terms$6 = "Terms";
-const twitter$6 = "Twitter";
-const transaction$5 = "Transaction";
-const votes$6 = "My Votes";
-const voters$6 = "Voters";
-const wallets$6 = "Wallets";
-const details$6 = "Details";
-const teams$6 = "Team";
-const yes$6 = "Yes";
-const filterChart$5 = "Filter chart";
-const abstain$6 = "Abstain";
-const notSet$6 = "Not set";
-const loading$6 = "Loading";
-const Link$6 = "Link";
-const select$6 = "Select";
-const selected$6 = "Selected";
-const clear$6 = "clear";
-const selection$6 = "selection";
-const awarded$6 = "Awarded";
-const distributed$5 = "Distributed";
-const requested$6 = "Requested";
-const submitted$6 = "Submitted";
-const funded$6 = "Funded";
-const approved$6 = "Approved";
-const completed$6 = "Completed";
-const loginPrompt$6 = "Login to get started";
-const back$6 = "Back";
-const verificationTitle$6 = "Let's get you verified!";
-const verificationCodeLabel$6 = "Verification Code";
-const verificationCode$6 = "CODE$:";
-const verificationInstructions$6 = "To verify your ownership of this profile, please send a personal message to Lido Nation on Ideascale and include the code above.";
-const goToIdeascale$6 = "Go to Ideascale";
-const proposal$5 = "Proposal";
-const noNFTDataAvailable$6 = "No NFT data available";
-const noPreviewAvailable$6 = "No preview available";
-const chooseMetaDataDescription$6 = "Choose your own MetaData";
-const metadataStrikeInstruction$6 = "You may strike through metadata by clicking the X icon. Struck-through information will be excluded from the final mint.";
-const nftPaymentGatewayTitle$6 = "NFT-MAKER PRO Payment Gateway";
-const artistRole$6 = "Artist";
-const cantFindNFTForMint$6 = "Can't find NFT for mint";
-const copyToClipboard$6 = "Copy to clipboard";
-const previous$6 = "Previous";
-const next$6 = "Next";
-const selectLanguage$6 = "Select Language";
-const selectLanguageForContent$6 = "Select a language for your content";
-const rightSwipes$6 = " - Right Swipes";
-const leftSwipes$6 = " - Left Swipes";
-const loadingGraph$5 = "Loading graph";
-const endDate$6 = "End Date";
-const startDate$6 = "Start Date";
+const activeFund$7 = "Active Fund";
+const addEmail$7 = "Add email";
+const addYourCity$7 = "Add your city";
+const appMessage$7 = "All Votes must be submitted in the official Catalyst Voting App. This is a research & planning tool only!";
+const articles$7 = "Articles";
+const assetName$7 = "Asset Name";
+const API$7 = "API";
+const from$7 = "From";
+const to$7 = "To";
+const authMessage$7 = "You can explore proposals, monthly reports, people, and groups. Filter proposals by funding status or budget size, Fund, Campaign, key words, and more.";
+const bio$7 = "Bio";
+const myWallet$7 = "My Wallet";
+const allCurrencies$7 = "All Currencies";
+const totalAda$7 = "Total Amount in ADA";
+const totalUsd$7 = "Total Amount in USD";
+const amount$7 = "Amount ";
+const minCharTextarea$7 = "Minimum 200 characters required";
+const blockchainData$7 = "Blockchain Data";
+const bookmark$7 = "Your personal space for organizing and managing proposal insights. Easily access your saved proposals, review notes, and share curated lists to stay on top of key ideas and opportunities.";
+const catalystAPI$7 = "Catalyst API";
+const ccv4Votes$7 = "CCV4 Votes";
+const chooseMetaData$7 = "Choose your own MetaData";
+const confirmPassword$7 = "Confirm Password";
+const connect$7 = "Connect";
+const updatePassword$7 = "Update Password";
+const currentPassword$7 = "Current Password";
+const connectWallet$7 = "Connect wallet";
+const comingSoon$7 = "Coming Soon";
+const cookies$7 = "Cookies";
+const copyright$7 = " All rights reserved.";
+const connections$7 = "Connections";
+const minting$7 = "You're Minting";
+const loginToMint$7 = "Login to Mint";
+const unavailableForMint$7 = "Unavailable";
+const mustBeProposer$7 = "Must Be Proposer";
+const copied$7 = "Copied";
+const data$7 = "Data";
+const dReps$7 = "DReps";
+const email$7 = "Email";
+const emailAddress$7 = "Email Address";
+const general$7 = "General";
+const facebook$7 = "Facebook";
+const forgotPassword$7 = "Forgot password";
+const funding$7 = "Funding";
+const getStarted$7 = "Get started";
+const github$7 = "Github";
+const Home$7 = "Home";
+const jormungandr$7 = "Jormungandr";
+const knowledgeBase$7 = "Knowledge Base";
+const explore$7 = "Explore";
+const impact$7 = "Impact";
+const legal$7 = "Legal";
+const licenses$7 = "Licenses";
+const login$7 = "Login";
+const linkedIn$7 = "LinkedIn";
+const listsAndBookmarks$7 = "Lists and Bookmarks";
+const monthlyReports$7 = "Monthly Reports";
+const metaTitle$7 = "Meta Data Preview";
+const myCharts$7 = "My Charts";
+const mintNFT$7 = "Mint NFT";
+const name$7 = "Name";
+const viewNFT$7 = "View NFT";
+const nftPending$7 = "Nft Pending";
+const cantFindNFT$7 = "Can't find NFT for mint";
+const paymentGateway$7 = "NFT-MAKER PRO Payment Gateway";
+const fundProject$7 = "Funded Project Number";
+const projectTitle$7 = "Project Title";
+const yesVotes$7 = "Yes Votes";
+const noVotes$7 = "No Votes";
+const role$7 = "Role";
+const otherContributors$7 = "Other Contributors";
+const metaDataInstruction$7 = "You may strike through metadata by clicking the X icon. Struck-through information will be excluded from the final mint.";
+const nobookmarks$7 = "No Bookmarks Yet";
+const noBookmarksYet$7 = "You have not bookmarked any proposals, people, groups, or reviews. Start exploring and bookmark your favorites!";
+const noImage$7 = "No Image";
+const developers$7 = "Developers";
+const noProposalBookmarks$7 = "No proposal bookmarks found";
+const noGroupBookmarks$7 = "No group bookmarks found";
+const noPeopleBookmarks$7 = "No people bookmarks found";
+const noReviewBookmarks$7 = "No review bookmarks found";
+const numbers$7 = "Numbers";
+const password$7 = "Password";
+const policyID$7 = "Policy ID";
+const filters$7 = "Filters";
+const rememberMe$7 = "Remember me";
+const privacy$7 = "Privacy";
+const problem$7 = "Problem";
+const profileBackground$7 = "Profile Background";
+const projectCatalyst$7 = "Project catalyst Campaign name";
+const reviewers$7 = "Reviewers";
+const register$7 = "Register";
+const reviewerReputationScore$7 = "Reviewer Reputation Score";
+const searchQuery$7 = "No results match your search query";
+const signin$7 = "Sign in";
+const signup$7 = "Sign up";
+const social$7 = "Social";
+const spending$7 = "Spending";
+const support$7 = "Support";
+const seeAll$7 = "See All";
+const seeLess$7 = "See less";
+const seeMore$7 = "See more";
+const solution$7 = "Solution";
+const terms$7 = "Terms";
+const twitter$7 = "Twitter";
+const transaction$7 = "Transaction";
+const votes$7 = "My Votes";
+const voters$7 = "Voters";
+const wallets$7 = "Wallets";
+const details$7 = "Details";
+const teams$7 = "Team";
+const yes$7 = "Yes";
+const filterChart$7 = "Filter chart";
+const abstain$7 = "Abstain";
+const notSet$7 = "Not set";
+const loading$7 = "Loading";
+const Link$7 = "Link";
+const select$7 = "Select";
+const selected$7 = "Selected";
+const clear$7 = "clear";
+const selection$7 = "selection";
+const awarded$7 = "Awarded";
+const distributed$7 = "Distributed";
+const requested$7 = "Requested";
+const received$7 = "Received";
+const submitted$7 = "Submitted";
+const funded$7 = "Funded";
+const approved$7 = "Approved";
+const completed$7 = "Completed";
+const loginPrompt$7 = "Login to get started";
+const back$7 = "Back";
+const verificationTitle$7 = "Let's get you verified!";
+const verificationCodeLabel$7 = "Verification Code";
+const verificationCode$7 = "CODE$:";
+const verificationInstructions$7 = "To verify your ownership of this profile, please send a personal message to Lido Nation on Ideascale and include the code above.";
+const goToIdeascale$7 = "Go to Ideascale";
+const proposal$7 = "Proposal";
+const noNFTDataAvailable$7 = "No NFT data available";
+const noPreviewAvailable$7 = "No preview available";
+const chooseMetaDataDescription$7 = "Choose your own MetaData";
+const metadataStrikeInstruction$7 = "You may strike through metadata by clicking the X icon. Struck-through information will be excluded from the final mint.";
+const nftPaymentGatewayTitle$7 = "NFT-MAKER PRO Payment Gateway";
+const artistRole$7 = "Artist";
+const cantFindNFTForMint$7 = "Can't find NFT for mint";
+const copyToClipboard$7 = "Copy to clipboard";
+const previous$7 = "Previous";
+const next$7 = "Next";
+const selectLanguage$7 = "Select Language";
+const selectLanguageForContent$7 = "Select a language for your content";
+const rightSwipes$7 = " - Right Swipes";
+const leftSwipes$7 = " - Left Swipes";
+const loadingGraph$7 = "Loading graph";
+const endDate$7 = "End";
+const startDate$7 = "Start";
 const en = {
-  activeFund: activeFund$6,
-  addEmail: addEmail$6,
-  addYourCity: addYourCity$6,
-  appMessage: appMessage$6,
-  articles: articles$6,
-  assetName: assetName$6,
-  API: API$6,
-  from: from$6,
-  to: to$6,
-  authMessage: authMessage$6,
-  bio: bio$6,
-  myWallet: myWallet$5,
-  allCurrencies: allCurrencies$6,
-  totalAda: totalAda$6,
-  totalUsd: totalUsd$6,
-  amount: amount$6,
-  minCharTextarea: minCharTextarea$5,
-  blockchainData: blockchainData$6,
-  bookmark: bookmark$6,
-  catalystAPI: catalystAPI$6,
-  ccv4Votes: ccv4Votes$6,
-  chooseMetaData: chooseMetaData$6,
-  confirmPassword: confirmPassword$6,
-  connect: connect$5,
-  updatePassword: updatePassword$5,
-  currentPassword: currentPassword$5,
-  connectWallet: connectWallet$5,
-  comingSoon: comingSoon$6,
-  cookies: cookies$6,
-  copyright: copyright$6,
-  connections: connections$6,
-  minting: minting$6,
-  loginToMint: loginToMint$6,
-  unavailableForMint: unavailableForMint$5,
-  mustBeProposer: mustBeProposer$6,
-  copied: copied$6,
-  data: data$6,
-  dReps: dReps$6,
-  email: email$6,
-  emailAddress: emailAddress$6,
-  general: general$6,
-  facebook: facebook$6,
-  forgotPassword: forgotPassword$6,
-  funding: funding$5,
-  getStarted: getStarted$6,
-  github: github$6,
-  Home: Home$6,
-  jormungandr: jormungandr$6,
-  knowledgeBase: knowledgeBase$6,
-  explore: explore$6,
-  impact: impact$6,
-  legal: legal$6,
-  licenses: licenses$6,
-  login: login$6,
-  linkedIn: linkedIn$6,
-  listsAndBookmarks: listsAndBookmarks$6,
-  monthlyReports: monthlyReports$6,
-  metaTitle: metaTitle$6,
-  myCharts: myCharts$5,
-  mintNFT: mintNFT$6,
-  name: name$6,
-  viewNFT: viewNFT$6,
-  nftPending: nftPending$6,
-  cantFindNFT: cantFindNFT$6,
-  paymentGateway: paymentGateway$6,
-  fundProject: fundProject$6,
-  projectTitle: projectTitle$6,
-  yesVotes: yesVotes$6,
-  noVotes: noVotes$6,
-  role: role$6,
-  otherContributors: otherContributors$6,
-  metaDataInstruction: metaDataInstruction$6,
-  nobookmarks: nobookmarks$6,
-  noBookmarksYet: noBookmarksYet$6,
-  noImage: noImage$6,
-  developers: developers$6,
-  noProposalBookmarks: noProposalBookmarks$6,
-  noGroupBookmarks: noGroupBookmarks$6,
-  noPeopleBookmarks: noPeopleBookmarks$6,
-  noReviewBookmarks: noReviewBookmarks$6,
-  numbers: numbers$6,
-  password: password$6,
-  policyID: policyID$6,
-  filters: filters$6,
-  rememberMe: rememberMe$6,
-  privacy: privacy$6,
-  problem: problem$6,
-  profileBackground: profileBackground$6,
-  projectCatalyst: projectCatalyst$6,
-  reviewers: reviewers$6,
-  register: register$6,
-  reviewerReputationScore: reviewerReputationScore$6,
-  searchQuery: searchQuery$6,
-  signin: signin$6,
-  signup: signup$6,
-  social: social$6,
-  spending: spending$6,
-  support: support$6,
-  seeAll: seeAll$6,
-  seeLess: seeLess$6,
-  seeMore: seeMore$6,
-  solution: solution$6,
-  terms: terms$6,
-  twitter: twitter$6,
-  transaction: transaction$5,
-  votes: votes$6,
-  voters: voters$6,
-  wallets: wallets$6,
-  details: details$6,
-  teams: teams$6,
-  yes: yes$6,
-  filterChart: filterChart$5,
-  abstain: abstain$6,
-  notSet: notSet$6,
-  loading: loading$6,
-  Link: Link$6,
-  select: select$6,
-  selected: selected$6,
-  clear: clear$6,
-  selection: selection$6,
-  awarded: awarded$6,
-  distributed: distributed$5,
-  requested: requested$6,
-  submitted: submitted$6,
-  funded: funded$6,
-  approved: approved$6,
-  completed: completed$6,
-  loginPrompt: loginPrompt$6,
-  back: back$6,
-  verificationTitle: verificationTitle$6,
-  verificationCodeLabel: verificationCodeLabel$6,
-  verificationCode: verificationCode$6,
-  verificationInstructions: verificationInstructions$6,
-  goToIdeascale: goToIdeascale$6,
-  proposal: proposal$5,
-  noNFTDataAvailable: noNFTDataAvailable$6,
-  noPreviewAvailable: noPreviewAvailable$6,
-  chooseMetaDataDescription: chooseMetaDataDescription$6,
-  metadataStrikeInstruction: metadataStrikeInstruction$6,
-  nftPaymentGatewayTitle: nftPaymentGatewayTitle$6,
-  artistRole: artistRole$6,
-  cantFindNFTForMint: cantFindNFTForMint$6,
-  copyToClipboard: copyToClipboard$6,
+  activeFund: activeFund$7,
+  addEmail: addEmail$7,
+  addYourCity: addYourCity$7,
+  appMessage: appMessage$7,
+  articles: articles$7,
+  assetName: assetName$7,
+  API: API$7,
+  from: from$7,
+  to: to$7,
+  authMessage: authMessage$7,
+  bio: bio$7,
+  myWallet: myWallet$7,
+  allCurrencies: allCurrencies$7,
+  totalAda: totalAda$7,
+  totalUsd: totalUsd$7,
+  amount: amount$7,
+  minCharTextarea: minCharTextarea$7,
+  blockchainData: blockchainData$7,
+  bookmark: bookmark$7,
+  catalystAPI: catalystAPI$7,
+  ccv4Votes: ccv4Votes$7,
+  chooseMetaData: chooseMetaData$7,
+  confirmPassword: confirmPassword$7,
+  connect: connect$7,
+  updatePassword: updatePassword$7,
+  currentPassword: currentPassword$7,
+  connectWallet: connectWallet$7,
+  comingSoon: comingSoon$7,
+  cookies: cookies$7,
+  copyright: copyright$7,
+  connections: connections$7,
+  minting: minting$7,
+  loginToMint: loginToMint$7,
+  unavailableForMint: unavailableForMint$7,
+  mustBeProposer: mustBeProposer$7,
+  copied: copied$7,
+  data: data$7,
+  dReps: dReps$7,
+  email: email$7,
+  emailAddress: emailAddress$7,
+  general: general$7,
+  facebook: facebook$7,
+  forgotPassword: forgotPassword$7,
+  funding: funding$7,
+  getStarted: getStarted$7,
+  github: github$7,
+  Home: Home$7,
+  jormungandr: jormungandr$7,
+  knowledgeBase: knowledgeBase$7,
+  explore: explore$7,
+  impact: impact$7,
+  legal: legal$7,
+  licenses: licenses$7,
+  login: login$7,
+  linkedIn: linkedIn$7,
+  listsAndBookmarks: listsAndBookmarks$7,
+  monthlyReports: monthlyReports$7,
+  metaTitle: metaTitle$7,
+  myCharts: myCharts$7,
+  mintNFT: mintNFT$7,
+  name: name$7,
+  viewNFT: viewNFT$7,
+  nftPending: nftPending$7,
+  cantFindNFT: cantFindNFT$7,
+  paymentGateway: paymentGateway$7,
+  fundProject: fundProject$7,
+  projectTitle: projectTitle$7,
+  yesVotes: yesVotes$7,
+  noVotes: noVotes$7,
+  role: role$7,
+  otherContributors: otherContributors$7,
+  metaDataInstruction: metaDataInstruction$7,
+  nobookmarks: nobookmarks$7,
+  noBookmarksYet: noBookmarksYet$7,
+  noImage: noImage$7,
+  developers: developers$7,
+  noProposalBookmarks: noProposalBookmarks$7,
+  noGroupBookmarks: noGroupBookmarks$7,
+  noPeopleBookmarks: noPeopleBookmarks$7,
+  noReviewBookmarks: noReviewBookmarks$7,
+  numbers: numbers$7,
+  password: password$7,
+  policyID: policyID$7,
+  filters: filters$7,
+  rememberMe: rememberMe$7,
+  privacy: privacy$7,
+  problem: problem$7,
+  profileBackground: profileBackground$7,
+  projectCatalyst: projectCatalyst$7,
+  reviewers: reviewers$7,
+  register: register$7,
+  reviewerReputationScore: reviewerReputationScore$7,
+  searchQuery: searchQuery$7,
+  signin: signin$7,
+  signup: signup$7,
+  social: social$7,
+  spending: spending$7,
+  support: support$7,
+  seeAll: seeAll$7,
+  seeLess: seeLess$7,
+  seeMore: seeMore$7,
+  solution: solution$7,
+  terms: terms$7,
+  twitter: twitter$7,
+  transaction: transaction$7,
+  votes: votes$7,
+  voters: voters$7,
+  wallets: wallets$7,
+  details: details$7,
+  teams: teams$7,
+  yes: yes$7,
+  filterChart: filterChart$7,
+  abstain: abstain$7,
+  notSet: notSet$7,
+  loading: loading$7,
+  Link: Link$7,
+  select: select$7,
+  selected: selected$7,
+  clear: clear$7,
+  selection: selection$7,
+  awarded: awarded$7,
+  distributed: distributed$7,
+  requested: requested$7,
+  received: received$7,
+  submitted: submitted$7,
+  funded: funded$7,
+  approved: approved$7,
+  completed: completed$7,
+  loginPrompt: loginPrompt$7,
+  back: back$7,
+  verificationTitle: verificationTitle$7,
+  verificationCodeLabel: verificationCodeLabel$7,
+  verificationCode: verificationCode$7,
+  verificationInstructions: verificationInstructions$7,
+  goToIdeascale: goToIdeascale$7,
+  proposal: proposal$7,
+  noNFTDataAvailable: noNFTDataAvailable$7,
+  noPreviewAvailable: noPreviewAvailable$7,
+  chooseMetaDataDescription: chooseMetaDataDescription$7,
+  metadataStrikeInstruction: metadataStrikeInstruction$7,
+  nftPaymentGatewayTitle: nftPaymentGatewayTitle$7,
+  artistRole: artistRole$7,
+  cantFindNFTForMint: cantFindNFTForMint$7,
+  copyToClipboard: copyToClipboard$7,
   "activeFund.title": "Catalyst Active Fund",
   "activeFund.subtitle": "Stay updated with the latest active funding round. Review campaigns, track proposals, and bookmark the ones that matter most to you.",
   "activeFund.budget": "Total budget to be distributed",
@@ -49485,6 +52019,16 @@ const en = {
   "workflows.catalystDrepSignup.qualificationsPlaceholder": "What makes your qualified for this role in catalyst",
   "workflows.catalystDrepSignup.2roundsRule": "To proceed, you need to have participated in at least 2 cayalyst voting rounds.",
   "workflows.catalystDrepSignup.hasCatalystProfile": "To proceed, you need to have a catalyst profile linked to this connected wallet.",
+  "funding.status.pending": "Pending",
+  "funding.status.withdrawn": "Withdrawn",
+  "funding.status.fullyPaid": "Fully Paid",
+  "funding.status.funded": "Funded",
+  "funding.status.notFunded": "Not Funded",
+  "project.status.votePending": "Vote Pending",
+  "project.status.withdrawn": "Withdrawn",
+  "project.status.complete": "Complete",
+  "project.status.inProgress": "In progress",
+  "project.status.unfunded": "Unfunded",
   "workflows.catalystDrepSignup.signMessageInfo": "Verify wallet ownership.",
   "workflows.catalystDrepSignup.signMessage": "Sign so we can verify your wallet ownership.",
   "workflows.catalystDrepSignup.willMaintain": "I agree to store correctly this information and to maintain it",
@@ -49634,8 +52178,8 @@ const en = {
   "bookmarks.viewAsPublic": "View as public",
   "bookmarks.editListItem": "Edit list item",
   "bookmarks.publishToIpfs": "Publish to IPFS",
-  previous: previous$6,
-  next: next$6,
+  previous: previous$7,
+  next: next$7,
   "workflows.tinderProposal.step1.selectFund": "Select Fund",
   "workflows.tinderProposal.step1.selectFundPlaceholder": "Select Fund",
   "workflows.tinderProposal.step1.selectAllThatApply": "(Select all that apply)",
@@ -49742,8 +52286,8 @@ const en = {
   "workflows.publishToIpfs.noDescriptionAvailable": "No description available",
   "workflows.publishToIpfs.unknown": "Unknown",
   "workflows.publishToIpfs.separator": "|",
-  selectLanguage: selectLanguage$6,
-  selectLanguageForContent: selectLanguageForContent$6,
+  selectLanguage: selectLanguage$7,
+  selectLanguageForContent: selectLanguageForContent$7,
   "languageDetection.multipleLanguagesError": "Some fields appear to be written in different languages. Please ensure all content is in the same language.",
   "languageDetection.languageMismatchError": "Your content appears to be in :detectedLanguage but you have selected :selectedLanguage. Please update your language selection.",
   "languageDetection.defaultMismatchError": "Language mismatch detected",
@@ -50547,14 +53091,14 @@ const en = {
   "voter.sort.votesCountDesc": "Votes Count: High to Low",
   "voter.sort.votesCountAsc": "Votes Count: Low to High",
   "voter.sort.proposalsVotedOnDesc": "Proposals Voted On: High to Low",
-  rightSwipes: rightSwipes$6,
-  leftSwipes: leftSwipes$6,
+  rightSwipes: rightSwipes$7,
+  leftSwipes: leftSwipes$7,
   "workflows.createService.step1.clickToReplaceImage": "Click here to replace image",
   "workflows.createService.step1.clickToUploadImage": "Click here to upload image",
   "graph.loadingConnections": "Loading connections for :nodeName ...",
   "graph.noAdditionalConnections": ":nodeName has no additional connections",
   "graph.unknownNode": "Unknown",
-  loadingGraph: loadingGraph$5,
+  loadingGraph: loadingGraph$7,
   "voter.sort.proposalsVotedOnAsc": "Proposals Voted On: Low to High",
   "services.service": "Service",
   "services.AddService": "Add Service",
@@ -50564,8 +53108,8 @@ const en = {
   "services.catalystServicesDesc": "A space for Catalyst-funded teams to collaborate, request help, and offer services to the ecosystem.",
   "services.myServices": "My Services",
   "services.myServicesDesc": "Manage your services and collaborate with the Catalyst ecosystem.",
-  endDate: endDate$6,
-  startDate: startDate$6,
+  endDate: endDate$7,
+  startDate: startDate$7,
   "workflows.publishToIpfs.success.contentIdLabel": "Your Content ID:",
   "workflows.publishToIpfs.success.copied": "Copied!",
   "workflows.publishToIpfs.success.copyCidTitle": "Copy CID",
@@ -50575,459 +53119,462 @@ const en = {
   "wallet.login.confirm": "We are about to log you in using your connected wallet, the account linked to this wallet will be authenticated. If no linked account is found, one will be created using your address. You can update this account in you dashboard under 'My profile' page.<br><br> <strong>Already have an account?</strong> Login using email and add your wallet so you can login with either wallet or email.",
 };
 
-const __vite_glob_1_1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_1_3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
-    API: API$6,
-    Home: Home$6,
-    Link: Link$6,
-    abstain: abstain$6,
-    activeFund: activeFund$6,
-    addEmail: addEmail$6,
-    addYourCity: addYourCity$6,
-    allCurrencies: allCurrencies$6,
-    amount: amount$6,
-    appMessage: appMessage$6,
-    approved: approved$6,
-    articles: articles$6,
-    artistRole: artistRole$6,
-    assetName: assetName$6,
-    authMessage: authMessage$6,
-    awarded: awarded$6,
-    back: back$6,
-    bio: bio$6,
-    blockchainData: blockchainData$6,
-    bookmark: bookmark$6,
-    cantFindNFT: cantFindNFT$6,
-    cantFindNFTForMint: cantFindNFTForMint$6,
-    catalystAPI: catalystAPI$6,
-    ccv4Votes: ccv4Votes$6,
-    chooseMetaData: chooseMetaData$6,
-    chooseMetaDataDescription: chooseMetaDataDescription$6,
-    clear: clear$6,
-    comingSoon: comingSoon$6,
-    completed: completed$6,
-    confirmPassword: confirmPassword$6,
-    connect: connect$5,
-    connectWallet: connectWallet$5,
-    connections: connections$6,
-    cookies: cookies$6,
-    copied: copied$6,
-    copyToClipboard: copyToClipboard$6,
-    copyright: copyright$6,
-    currentPassword: currentPassword$5,
-    dReps: dReps$6,
-    data: data$6,
+    API: API$7,
+    Home: Home$7,
+    Link: Link$7,
+    abstain: abstain$7,
+    activeFund: activeFund$7,
+    addEmail: addEmail$7,
+    addYourCity: addYourCity$7,
+    allCurrencies: allCurrencies$7,
+    amount: amount$7,
+    appMessage: appMessage$7,
+    approved: approved$7,
+    articles: articles$7,
+    artistRole: artistRole$7,
+    assetName: assetName$7,
+    authMessage: authMessage$7,
+    awarded: awarded$7,
+    back: back$7,
+    bio: bio$7,
+    blockchainData: blockchainData$7,
+    bookmark: bookmark$7,
+    cantFindNFT: cantFindNFT$7,
+    cantFindNFTForMint: cantFindNFTForMint$7,
+    catalystAPI: catalystAPI$7,
+    ccv4Votes: ccv4Votes$7,
+    chooseMetaData: chooseMetaData$7,
+    chooseMetaDataDescription: chooseMetaDataDescription$7,
+    clear: clear$7,
+    comingSoon: comingSoon$7,
+    completed: completed$7,
+    confirmPassword: confirmPassword$7,
+    connect: connect$7,
+    connectWallet: connectWallet$7,
+    connections: connections$7,
+    cookies: cookies$7,
+    copied: copied$7,
+    copyToClipboard: copyToClipboard$7,
+    copyright: copyright$7,
+    currentPassword: currentPassword$7,
+    dReps: dReps$7,
+    data: data$7,
     default: en,
-    details: details$6,
-    developers: developers$6,
-    distributed: distributed$5,
-    email: email$6,
-    emailAddress: emailAddress$6,
-    endDate: endDate$6,
-    explore: explore$6,
-    facebook: facebook$6,
-    filterChart: filterChart$5,
-    filters: filters$6,
-    forgotPassword: forgotPassword$6,
-    from: from$6,
-    fundProject: fundProject$6,
-    funded: funded$6,
-    funding: funding$5,
-    general: general$6,
-    getStarted: getStarted$6,
-    github: github$6,
-    goToIdeascale: goToIdeascale$6,
-    impact: impact$6,
-    jormungandr: jormungandr$6,
-    knowledgeBase: knowledgeBase$6,
-    leftSwipes: leftSwipes$6,
-    legal: legal$6,
-    licenses: licenses$6,
-    linkedIn: linkedIn$6,
-    listsAndBookmarks: listsAndBookmarks$6,
-    loading: loading$6,
-    loadingGraph: loadingGraph$5,
-    login: login$6,
-    loginPrompt: loginPrompt$6,
-    loginToMint: loginToMint$6,
-    metaDataInstruction: metaDataInstruction$6,
-    metaTitle: metaTitle$6,
-    metadataStrikeInstruction: metadataStrikeInstruction$6,
-    minCharTextarea: minCharTextarea$5,
-    mintNFT: mintNFT$6,
-    minting: minting$6,
-    monthlyReports: monthlyReports$6,
-    mustBeProposer: mustBeProposer$6,
-    myCharts: myCharts$5,
-    myWallet: myWallet$5,
-    name: name$6,
-    next: next$6,
-    nftPaymentGatewayTitle: nftPaymentGatewayTitle$6,
-    nftPending: nftPending$6,
-    noBookmarksYet: noBookmarksYet$6,
-    noGroupBookmarks: noGroupBookmarks$6,
-    noImage: noImage$6,
-    noNFTDataAvailable: noNFTDataAvailable$6,
-    noPeopleBookmarks: noPeopleBookmarks$6,
-    noPreviewAvailable: noPreviewAvailable$6,
-    noProposalBookmarks: noProposalBookmarks$6,
-    noReviewBookmarks: noReviewBookmarks$6,
-    noVotes: noVotes$6,
-    nobookmarks: nobookmarks$6,
-    notSet: notSet$6,
-    numbers: numbers$6,
-    otherContributors: otherContributors$6,
-    password: password$6,
-    paymentGateway: paymentGateway$6,
-    policyID: policyID$6,
-    previous: previous$6,
-    privacy: privacy$6,
-    problem: problem$6,
-    profileBackground: profileBackground$6,
-    projectCatalyst: projectCatalyst$6,
-    projectTitle: projectTitle$6,
-    proposal: proposal$5,
-    register: register$6,
-    rememberMe: rememberMe$6,
-    requested: requested$6,
-    reviewerReputationScore: reviewerReputationScore$6,
-    reviewers: reviewers$6,
-    rightSwipes: rightSwipes$6,
-    role: role$6,
-    searchQuery: searchQuery$6,
-    seeAll: seeAll$6,
-    seeLess: seeLess$6,
-    seeMore: seeMore$6,
-    select: select$6,
-    selectLanguage: selectLanguage$6,
-    selectLanguageForContent: selectLanguageForContent$6,
-    selected: selected$6,
-    selection: selection$6,
-    signin: signin$6,
-    signup: signup$6,
-    social: social$6,
-    solution: solution$6,
-    spending: spending$6,
-    startDate: startDate$6,
-    submitted: submitted$6,
-    support: support$6,
-    teams: teams$6,
-    terms: terms$6,
-    to: to$6,
-    totalAda: totalAda$6,
-    totalUsd: totalUsd$6,
-    transaction: transaction$5,
-    twitter: twitter$6,
-    unavailableForMint: unavailableForMint$5,
-    updatePassword: updatePassword$5,
-    verificationCode: verificationCode$6,
-    verificationCodeLabel: verificationCodeLabel$6,
-    verificationInstructions: verificationInstructions$6,
-    verificationTitle: verificationTitle$6,
-    viewNFT: viewNFT$6,
-    voters: voters$6,
-    votes: votes$6,
-    wallets: wallets$6,
-    yes: yes$6,
-    yesVotes: yesVotes$6
+    details: details$7,
+    developers: developers$7,
+    distributed: distributed$7,
+    email: email$7,
+    emailAddress: emailAddress$7,
+    endDate: endDate$7,
+    explore: explore$7,
+    facebook: facebook$7,
+    filterChart: filterChart$7,
+    filters: filters$7,
+    forgotPassword: forgotPassword$7,
+    from: from$7,
+    fundProject: fundProject$7,
+    funded: funded$7,
+    funding: funding$7,
+    general: general$7,
+    getStarted: getStarted$7,
+    github: github$7,
+    goToIdeascale: goToIdeascale$7,
+    impact: impact$7,
+    jormungandr: jormungandr$7,
+    knowledgeBase: knowledgeBase$7,
+    leftSwipes: leftSwipes$7,
+    legal: legal$7,
+    licenses: licenses$7,
+    linkedIn: linkedIn$7,
+    listsAndBookmarks: listsAndBookmarks$7,
+    loading: loading$7,
+    loadingGraph: loadingGraph$7,
+    login: login$7,
+    loginPrompt: loginPrompt$7,
+    loginToMint: loginToMint$7,
+    metaDataInstruction: metaDataInstruction$7,
+    metaTitle: metaTitle$7,
+    metadataStrikeInstruction: metadataStrikeInstruction$7,
+    minCharTextarea: minCharTextarea$7,
+    mintNFT: mintNFT$7,
+    minting: minting$7,
+    monthlyReports: monthlyReports$7,
+    mustBeProposer: mustBeProposer$7,
+    myCharts: myCharts$7,
+    myWallet: myWallet$7,
+    name: name$7,
+    next: next$7,
+    nftPaymentGatewayTitle: nftPaymentGatewayTitle$7,
+    nftPending: nftPending$7,
+    noBookmarksYet: noBookmarksYet$7,
+    noGroupBookmarks: noGroupBookmarks$7,
+    noImage: noImage$7,
+    noNFTDataAvailable: noNFTDataAvailable$7,
+    noPeopleBookmarks: noPeopleBookmarks$7,
+    noPreviewAvailable: noPreviewAvailable$7,
+    noProposalBookmarks: noProposalBookmarks$7,
+    noReviewBookmarks: noReviewBookmarks$7,
+    noVotes: noVotes$7,
+    nobookmarks: nobookmarks$7,
+    notSet: notSet$7,
+    numbers: numbers$7,
+    otherContributors: otherContributors$7,
+    password: password$7,
+    paymentGateway: paymentGateway$7,
+    policyID: policyID$7,
+    previous: previous$7,
+    privacy: privacy$7,
+    problem: problem$7,
+    profileBackground: profileBackground$7,
+    projectCatalyst: projectCatalyst$7,
+    projectTitle: projectTitle$7,
+    proposal: proposal$7,
+    received: received$7,
+    register: register$7,
+    rememberMe: rememberMe$7,
+    requested: requested$7,
+    reviewerReputationScore: reviewerReputationScore$7,
+    reviewers: reviewers$7,
+    rightSwipes: rightSwipes$7,
+    role: role$7,
+    searchQuery: searchQuery$7,
+    seeAll: seeAll$7,
+    seeLess: seeLess$7,
+    seeMore: seeMore$7,
+    select: select$7,
+    selectLanguage: selectLanguage$7,
+    selectLanguageForContent: selectLanguageForContent$7,
+    selected: selected$7,
+    selection: selection$7,
+    signin: signin$7,
+    signup: signup$7,
+    social: social$7,
+    solution: solution$7,
+    spending: spending$7,
+    startDate: startDate$7,
+    submitted: submitted$7,
+    support: support$7,
+    teams: teams$7,
+    terms: terms$7,
+    to: to$7,
+    totalAda: totalAda$7,
+    totalUsd: totalUsd$7,
+    transaction: transaction$7,
+    twitter: twitter$7,
+    unavailableForMint: unavailableForMint$7,
+    updatePassword: updatePassword$7,
+    verificationCode: verificationCode$7,
+    verificationCodeLabel: verificationCodeLabel$7,
+    verificationInstructions: verificationInstructions$7,
+    verificationTitle: verificationTitle$7,
+    viewNFT: viewNFT$7,
+    voters: voters$7,
+    votes: votes$7,
+    wallets: wallets$7,
+    yes: yes$7,
+    yesVotes: yesVotes$7
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const activeFund$5 = "Fondo Activo";
-const addEmail$5 = "Añadir email";
-const addYourCity$5 = "Añadir tu ciudad";
-const appMessage$5 = "Todos los votos deben ser enviados en la aplicación oficial de votación de Catalyst. ¡Esta es solo una herramienta de investigación y planificación!";
-const articles$5 = "Artículos";
-const assetName$5 = "Nombre del Activo";
-const API$5 = "API";
-const from$5 = "Desde";
-const to$5 = "Hasta";
-const authMessage$5 = "Puedes explorar propuestas, reportes mensuales, personas y grupos. Filtra propuestas por estado de financiación o tamaño de presupuesto, Fondo, Campaña, palabras clave y más.";
-const bio$5 = "Biografía";
-const myWallet$4 = "Mi Billetera";
-const allCurrencies$5 = "Todas las Monedas";
-const totalAda$5 = "Cantidad Total en ADA";
-const totalUsd$5 = "Cantidad Total en USD";
-const amount$5 = "Cantidad ";
-const minCharTextarea$4 = "Se requieren mínimo 200 caracteres";
-const blockchainData$5 = "Datos de Blockchain";
-const bookmark$5 = "Tu espacio personal para organizar y gestionar información de propuestas. Accede fácilmente a tus propuestas guardadas, revisa notas y comparte listas curadas para mantenerte al día con ideas y oportunidades clave.";
-const catalystAPI$5 = "API de Catalyst";
-const ccv4Votes$5 = "Votos CCV4";
-const chooseMetaData$5 = "Elige tu propia MetaData";
-const confirmPassword$5 = "Confirmar Contraseña";
-const connect$4 = "Conectar";
-const updatePassword$4 = "Actualizar Contraseña";
-const currentPassword$4 = "Contraseña Actual";
-const connectWallet$4 = "Conectar billetera";
-const comingSoon$5 = "Próximamente";
-const cookies$5 = "Cookies";
-const copyright$5 = "© 2024 Catalyst Explorer. Todos los derechos reservados.";
-const connections$5 = "Conexiones";
-const minting$5 = "Estás Acuñando";
-const loginToMint$5 = "Iniciar sesión para Acuñar";
-const unavailableForMint$4 = "No Disponible";
-const mustBeProposer$5 = "Debe Ser Proponente";
-const copied$5 = "Copiado";
-const data$5 = "Datos";
-const dReps$5 = "DReps";
-const email$5 = "Email";
-const emailAddress$5 = "Dirección de Email";
-const general$5 = "General";
-const facebook$5 = "Facebook";
-const forgotPassword$5 = "Olvidé mi contraseña";
-const funding$4 = "Financiación";
-const getStarted$5 = "Comenzar";
-const github$5 = "Github";
-const Home$5 = "Inicio";
-const jormungandr$5 = "Jormungandr";
-const knowledgeBase$5 = "Base de Conocimientos";
-const explore$5 = "Explorar";
-const impact$5 = "Impacto";
-const legal$5 = "Legal";
-const licenses$5 = "Licencias";
-const login$5 = "Iniciar sesión";
-const linkedIn$5 = "LinkedIn";
-const listsAndBookmarks$5 = "Listas y Marcadores";
-const monthlyReports$5 = "Reportes Mensuales";
-const metaTitle$5 = "Vista previa de Meta Data";
-const myCharts$4 = "Mis Gráficos";
-const mintNFT$5 = "Acuñar NFT";
-const name$5 = "Nombre";
-const viewNFT$5 = "Ver NFT";
-const nftPending$5 = "NFT Pendiente";
-const cantFindNFT$5 = "No se puede encontrar NFT para acuñar";
-const paymentGateway$5 = "Pasarela de Pago NFT-MAKER PRO";
-const fundProject$5 = "Número de Proyecto Financiado";
-const projectTitle$5 = "Título del Proyecto";
-const yesVotes$5 = "Votos Sí";
-const noVotes$5 = "Votos No";
-const role$5 = "Rol";
-const otherContributors$5 = "Otros Contribuyentes";
-const metaDataInstruction$5 = "Puedes tachar metadata haciendo clic en el ícono X. La información tachada será excluida de la acuñación final.";
-const nobookmarks$5 = "Sin Marcadores Aún";
-const noBookmarksYet$5 = "No has marcado ninguna propuesta, persona, grupo o reseña. ¡Comienza a explorar y marca tus favoritos!";
-const noImage$5 = "Sin Imagen";
-const developers$5 = "Desarrolladores";
-const noProposalBookmarks$5 = "No se encontraron marcadores de propuestas";
-const noGroupBookmarks$5 = "No se encontraron marcadores de grupos";
-const noPeopleBookmarks$5 = "No se encontraron marcadores de personas";
-const noReviewBookmarks$5 = "No se encontraron marcadores de reseñas";
-const numbers$5 = "Números";
-const password$5 = "Contraseña";
-const policyID$5 = "ID de Política";
-const filters$5 = "Filtros";
-const rememberMe$5 = "Recordarme";
-const privacy$5 = "Privacidad";
-const problem$5 = "Problema";
-const profileBackground$5 = "Fondo de Perfil";
-const projectCatalyst$5 = "Nombre de Campaña de Project Catalyst";
-const reviewers$5 = "Revisores";
-const register$5 = "Registrarse";
-const reviewerReputationScore$5 = "Puntuación de Reputación del Revisor";
-const searchQuery$5 = "Ningún resultado coincide con tu búsqueda";
-const signin$5 = "Iniciar sesión";
-const signup$5 = "Registrarse";
-const social$5 = "Social";
-const spending$5 = "Gasto";
-const support$5 = "Soporte";
-const seeAll$5 = "Ver Todo";
-const seeLess$5 = "Ver menos";
-const seeMore$5 = "Ver más";
-const solution$5 = "Solución";
-const terms$5 = "Términos";
-const twitter$5 = "Twitter";
-const transaction$4 = "Transacción";
-const votes$5 = "Mis Votos";
-const voters$5 = "Votantes";
-const wallets$5 = "Billeteras";
-const details$5 = "Detalles";
-const teams$5 = "Equipo";
-const yes$5 = "Sí";
-const filterChart$4 = "Filtrar gráfico";
-const abstain$5 = "Abstención";
-const notSet$5 = "No establecido";
-const loading$5 = "Cargando";
-const Link$5 = "Enlace";
-const select$5 = "Seleccionar";
-const selected$5 = "Seleccionado";
-const clear$5 = "limpiar";
-const selection$5 = "selección";
-const awarded$5 = "Otorgado";
-const distributed$4 = "Distribuido";
-const requested$5 = "Solicitado";
-const submitted$5 = "Enviado";
-const funded$5 = "Financiado";
-const approved$5 = "Aprobado";
-const completed$5 = "Completado";
-const loginPrompt$5 = "Iniciar sesión para comenzar";
-const back$5 = "Atrás";
-const verificationTitle$5 = "¡Vamos a verificarte!";
-const verificationCodeLabel$5 = "Código de Verificación";
-const verificationCode$5 = "CÓDIGO:";
-const verificationInstructions$5 = "Para verificar tu propiedad de este perfil, por favor envía un mensaje personal a Lido Nation en Ideascale e incluye el código de arriba.";
-const goToIdeascale$5 = "Ir a Ideascale";
-const proposal$4 = "Propuesta";
-const noNFTDataAvailable$5 = "No hay datos NFT disponibles";
-const noPreviewAvailable$5 = "No hay vista previa disponible";
-const chooseMetaDataDescription$5 = "Elige tu propia MetaData";
-const metadataStrikeInstruction$5 = "Puedes tachar metadata haciendo clic en el ícono X. La información tachada será excluida de la acuñación final.";
-const nftPaymentGatewayTitle$5 = "Pasarela de Pago NFT-MAKER PRO";
-const artistRole$5 = "Artista";
-const cantFindNFTForMint$5 = "No se puede encontrar NFT para acuñar";
-const copyToClipboard$5 = "Copiar al portapapeles";
-const previous$5 = "Anterior";
-const next$5 = "Siguiente";
-const selectLanguage$5 = "Seleccionar Idioma";
-const selectLanguageForContent$5 = "Selecciona un idioma para tu contenido";
-const rightSwipes$5 = " - Deslizamientos Derechos";
-const leftSwipes$5 = " - Deslizamientos Izquierdos";
-const loadingGraph$4 = "Cargando gráfico";
-const endDate$5 = "Fecha de Finalización";
-const startDate$5 = "Fecha de Inicio";
+const activeFund$6 = "Fondo Activo";
+const addEmail$6 = "Añadir email";
+const addYourCity$6 = "Añadir tu ciudad";
+const appMessage$6 = "Todos los votos deben ser enviados en la aplicación oficial de votación de Catalyst. ¡Esta es solo una herramienta de investigación y planificación!";
+const articles$6 = "Artículos";
+const assetName$6 = "Nombre del Activo";
+const API$6 = "API";
+const from$6 = "Desde";
+const to$6 = "Hasta";
+const authMessage$6 = "Puedes explorar propuestas, reportes mensuales, personas y grupos. Filtra propuestas por estado de financiación o tamaño de presupuesto, Fondo, Campaña, palabras clave y más.";
+const bio$6 = "Biografía";
+const myWallet$6 = "Mi Billetera";
+const allCurrencies$6 = "Todas las Monedas";
+const totalAda$6 = "Cantidad Total en ADA";
+const totalUsd$6 = "Cantidad Total en USD";
+const amount$6 = "Cantidad ";
+const minCharTextarea$6 = "Se requieren mínimo 200 caracteres";
+const blockchainData$6 = "Datos de Blockchain";
+const bookmark$6 = "Tu espacio personal para organizar y gestionar información de propuestas. Accede fácilmente a tus propuestas guardadas, revisa notas y comparte listas curadas para mantenerte al día con ideas y oportunidades clave.";
+const catalystAPI$6 = "API de Catalyst";
+const ccv4Votes$6 = "Votos CCV4";
+const chooseMetaData$6 = "Elige tu propia MetaData";
+const confirmPassword$6 = "Confirmar Contraseña";
+const connect$6 = "Conectar";
+const updatePassword$6 = "Actualizar Contraseña";
+const currentPassword$6 = "Contraseña Actual";
+const connectWallet$6 = "Conectar billetera";
+const comingSoon$6 = "Próximamente";
+const cookies$6 = "Cookies";
+const copyright$6 = " Todos los derechos reservados.";
+const connections$6 = "Conexiones";
+const minting$6 = "Estás Acuñando";
+const loginToMint$6 = "Iniciar sesión para Acuñar";
+const unavailableForMint$6 = "No Disponible";
+const mustBeProposer$6 = "Debe Ser Proponente";
+const copied$6 = "Copiado";
+const data$6 = "Datos";
+const dReps$6 = "DReps";
+const email$6 = "Email";
+const emailAddress$6 = "Dirección de Email";
+const general$6 = "General";
+const facebook$6 = "Facebook";
+const forgotPassword$6 = "Olvidé mi contraseña";
+const funding$6 = "Financiación";
+const getStarted$6 = "Comenzar";
+const github$6 = "Github";
+const Home$6 = "Inicio";
+const jormungandr$6 = "Jormungandr";
+const knowledgeBase$6 = "Base de Conocimientos";
+const explore$6 = "Explorar";
+const impact$6 = "Impacto";
+const legal$6 = "Legal";
+const licenses$6 = "Licencias";
+const login$6 = "Iniciar sesión";
+const linkedIn$6 = "LinkedIn";
+const listsAndBookmarks$6 = "Listas y Marcadores";
+const monthlyReports$6 = "Reportes Mensuales";
+const metaTitle$6 = "Vista previa de Meta Data";
+const myCharts$6 = "Mis Gráficos";
+const mintNFT$6 = "Acuñar NFT";
+const name$6 = "Nombre";
+const viewNFT$6 = "Ver NFT";
+const nftPending$6 = "NFT Pendiente";
+const cantFindNFT$6 = "No se puede encontrar NFT para acuñar";
+const paymentGateway$6 = "Pasarela de Pago NFT-MAKER PRO";
+const fundProject$6 = "Número de Proyecto Financiado";
+const projectTitle$6 = "Título del Proyecto";
+const yesVotes$6 = "Votos Sí";
+const noVotes$6 = "Votos No";
+const role$6 = "Rol";
+const otherContributors$6 = "Otros Contribuyentes";
+const metaDataInstruction$6 = "Puedes tachar metadata haciendo clic en el ícono X. La información tachada será excluida de la acuñación final.";
+const nobookmarks$6 = "Sin Marcadores Aún";
+const noBookmarksYet$6 = "No has marcado ninguna propuesta, persona, grupo o reseña. ¡Comienza a explorar y marca tus favoritos!";
+const noImage$6 = "Sin Imagen";
+const developers$6 = "Desarrolladores";
+const noProposalBookmarks$6 = "No se encontraron marcadores de propuestas";
+const noGroupBookmarks$6 = "No se encontraron marcadores de grupos";
+const noPeopleBookmarks$6 = "No se encontraron marcadores de personas";
+const noReviewBookmarks$6 = "No se encontraron marcadores de reseñas";
+const numbers$6 = "Números";
+const password$6 = "Contraseña";
+const policyID$6 = "ID de Política";
+const filters$6 = "Filtros";
+const rememberMe$6 = "Recordarme";
+const privacy$6 = "Privacidad";
+const problem$6 = "Problema";
+const profileBackground$6 = "Fondo de Perfil";
+const projectCatalyst$6 = "Nombre de Campaña de Project Catalyst";
+const reviewers$6 = "Revisores";
+const register$6 = "Registrarse";
+const reviewerReputationScore$6 = "Puntuación de Reputación del Revisor";
+const searchQuery$6 = "Ningún resultado coincide con tu búsqueda";
+const signin$6 = "Iniciar sesión";
+const signup$6 = "Registrarse";
+const social$6 = "Social";
+const spending$6 = "Gasto";
+const support$6 = "Soporte";
+const seeAll$6 = "Ver Todo";
+const seeLess$6 = "Ver menos";
+const seeMore$6 = "Ver más";
+const solution$6 = "Solución";
+const terms$6 = "Términos";
+const twitter$6 = "Twitter";
+const transaction$6 = "Transacción";
+const votes$6 = "Mis Votos";
+const voters$6 = "Votantes";
+const wallets$6 = "Billeteras";
+const details$6 = "Detalles";
+const teams$6 = "Equipo";
+const yes$6 = "Sí";
+const filterChart$6 = "Filtrar gráfico";
+const abstain$6 = "Abstención";
+const notSet$6 = "No establecido";
+const loading$6 = "Cargando";
+const Link$6 = "Enlace";
+const select$6 = "Seleccionar";
+const selected$6 = "Seleccionado";
+const clear$6 = "limpiar";
+const selection$6 = "selección";
+const awarded$6 = "Otorgado";
+const distributed$6 = "Distribuido";
+const requested$6 = "Solicitado";
+const received$6 = "Recibido";
+const submitted$6 = "Enviado";
+const funded$6 = "Financiado";
+const approved$6 = "Aprobado";
+const completed$6 = "Completado";
+const loginPrompt$6 = "Iniciar sesión para comenzar";
+const back$6 = "Atrás";
+const verificationTitle$6 = "¡Vamos a verificarte!";
+const verificationCodeLabel$6 = "Código de Verificación";
+const verificationCode$6 = "CÓDIGO:";
+const verificationInstructions$6 = "Para verificar tu propiedad de este perfil, por favor envía un mensaje personal a Lido Nation en Ideascale e incluye el código de arriba.";
+const goToIdeascale$6 = "Ir a Ideascale";
+const proposal$6 = "Propuesta";
+const noNFTDataAvailable$6 = "No hay datos NFT disponibles";
+const noPreviewAvailable$6 = "No hay vista previa disponible";
+const chooseMetaDataDescription$6 = "Elige tu propia MetaData";
+const metadataStrikeInstruction$6 = "Puedes tachar metadata haciendo clic en el ícono X. La información tachada será excluida de la acuñación final.";
+const nftPaymentGatewayTitle$6 = "Pasarela de Pago NFT-MAKER PRO";
+const artistRole$6 = "Artista";
+const cantFindNFTForMint$6 = "No se puede encontrar NFT para acuñar";
+const copyToClipboard$6 = "Copiar al portapapeles";
+const previous$6 = "Anterior";
+const next$6 = "Siguiente";
+const selectLanguage$6 = "Seleccionar Idioma";
+const selectLanguageForContent$6 = "Selecciona un idioma para tu contenido";
+const rightSwipes$6 = " - Deslizamientos Derechos";
+const leftSwipes$6 = " - Deslizamientos Izquierdos";
+const loadingGraph$6 = "Cargando gráfico";
+const endDate$6 = "Fecha de Finalización";
+const startDate$6 = "Fecha de Inicio";
 const es = {
-  activeFund: activeFund$5,
-  addEmail: addEmail$5,
-  addYourCity: addYourCity$5,
-  appMessage: appMessage$5,
-  articles: articles$5,
-  assetName: assetName$5,
-  API: API$5,
-  from: from$5,
-  to: to$5,
-  authMessage: authMessage$5,
-  bio: bio$5,
-  myWallet: myWallet$4,
-  allCurrencies: allCurrencies$5,
-  totalAda: totalAda$5,
-  totalUsd: totalUsd$5,
-  amount: amount$5,
-  minCharTextarea: minCharTextarea$4,
-  blockchainData: blockchainData$5,
-  bookmark: bookmark$5,
-  catalystAPI: catalystAPI$5,
-  ccv4Votes: ccv4Votes$5,
-  chooseMetaData: chooseMetaData$5,
-  confirmPassword: confirmPassword$5,
-  connect: connect$4,
-  updatePassword: updatePassword$4,
-  currentPassword: currentPassword$4,
-  connectWallet: connectWallet$4,
-  comingSoon: comingSoon$5,
-  cookies: cookies$5,
-  copyright: copyright$5,
-  connections: connections$5,
-  minting: minting$5,
-  loginToMint: loginToMint$5,
-  unavailableForMint: unavailableForMint$4,
-  mustBeProposer: mustBeProposer$5,
-  copied: copied$5,
-  data: data$5,
-  dReps: dReps$5,
-  email: email$5,
-  emailAddress: emailAddress$5,
-  general: general$5,
-  facebook: facebook$5,
-  forgotPassword: forgotPassword$5,
-  funding: funding$4,
-  getStarted: getStarted$5,
-  github: github$5,
-  Home: Home$5,
-  jormungandr: jormungandr$5,
-  knowledgeBase: knowledgeBase$5,
-  explore: explore$5,
-  impact: impact$5,
-  legal: legal$5,
-  licenses: licenses$5,
-  login: login$5,
-  linkedIn: linkedIn$5,
-  listsAndBookmarks: listsAndBookmarks$5,
-  monthlyReports: monthlyReports$5,
-  metaTitle: metaTitle$5,
-  myCharts: myCharts$4,
-  mintNFT: mintNFT$5,
-  name: name$5,
-  viewNFT: viewNFT$5,
-  nftPending: nftPending$5,
-  cantFindNFT: cantFindNFT$5,
-  paymentGateway: paymentGateway$5,
-  fundProject: fundProject$5,
-  projectTitle: projectTitle$5,
-  yesVotes: yesVotes$5,
-  noVotes: noVotes$5,
-  role: role$5,
-  otherContributors: otherContributors$5,
-  metaDataInstruction: metaDataInstruction$5,
-  nobookmarks: nobookmarks$5,
-  noBookmarksYet: noBookmarksYet$5,
-  noImage: noImage$5,
-  developers: developers$5,
-  noProposalBookmarks: noProposalBookmarks$5,
-  noGroupBookmarks: noGroupBookmarks$5,
-  noPeopleBookmarks: noPeopleBookmarks$5,
-  noReviewBookmarks: noReviewBookmarks$5,
-  numbers: numbers$5,
-  password: password$5,
-  policyID: policyID$5,
-  filters: filters$5,
-  rememberMe: rememberMe$5,
-  privacy: privacy$5,
-  problem: problem$5,
-  profileBackground: profileBackground$5,
-  projectCatalyst: projectCatalyst$5,
-  reviewers: reviewers$5,
-  register: register$5,
-  reviewerReputationScore: reviewerReputationScore$5,
-  searchQuery: searchQuery$5,
-  signin: signin$5,
-  signup: signup$5,
-  social: social$5,
-  spending: spending$5,
-  support: support$5,
-  seeAll: seeAll$5,
-  seeLess: seeLess$5,
-  seeMore: seeMore$5,
-  solution: solution$5,
-  terms: terms$5,
-  twitter: twitter$5,
-  transaction: transaction$4,
-  votes: votes$5,
-  voters: voters$5,
-  wallets: wallets$5,
-  details: details$5,
-  teams: teams$5,
-  yes: yes$5,
-  filterChart: filterChart$4,
-  abstain: abstain$5,
-  notSet: notSet$5,
-  loading: loading$5,
-  Link: Link$5,
-  select: select$5,
-  selected: selected$5,
-  clear: clear$5,
-  selection: selection$5,
-  awarded: awarded$5,
-  distributed: distributed$4,
-  requested: requested$5,
-  submitted: submitted$5,
-  funded: funded$5,
-  approved: approved$5,
-  completed: completed$5,
-  loginPrompt: loginPrompt$5,
-  back: back$5,
-  verificationTitle: verificationTitle$5,
-  verificationCodeLabel: verificationCodeLabel$5,
-  verificationCode: verificationCode$5,
-  verificationInstructions: verificationInstructions$5,
-  goToIdeascale: goToIdeascale$5,
-  proposal: proposal$4,
-  noNFTDataAvailable: noNFTDataAvailable$5,
-  noPreviewAvailable: noPreviewAvailable$5,
-  chooseMetaDataDescription: chooseMetaDataDescription$5,
-  metadataStrikeInstruction: metadataStrikeInstruction$5,
-  nftPaymentGatewayTitle: nftPaymentGatewayTitle$5,
-  artistRole: artistRole$5,
-  cantFindNFTForMint: cantFindNFTForMint$5,
-  copyToClipboard: copyToClipboard$5,
+  activeFund: activeFund$6,
+  addEmail: addEmail$6,
+  addYourCity: addYourCity$6,
+  appMessage: appMessage$6,
+  articles: articles$6,
+  assetName: assetName$6,
+  API: API$6,
+  from: from$6,
+  to: to$6,
+  authMessage: authMessage$6,
+  bio: bio$6,
+  myWallet: myWallet$6,
+  allCurrencies: allCurrencies$6,
+  totalAda: totalAda$6,
+  totalUsd: totalUsd$6,
+  amount: amount$6,
+  minCharTextarea: minCharTextarea$6,
+  blockchainData: blockchainData$6,
+  bookmark: bookmark$6,
+  catalystAPI: catalystAPI$6,
+  ccv4Votes: ccv4Votes$6,
+  chooseMetaData: chooseMetaData$6,
+  confirmPassword: confirmPassword$6,
+  connect: connect$6,
+  updatePassword: updatePassword$6,
+  currentPassword: currentPassword$6,
+  connectWallet: connectWallet$6,
+  comingSoon: comingSoon$6,
+  cookies: cookies$6,
+  copyright: copyright$6,
+  connections: connections$6,
+  minting: minting$6,
+  loginToMint: loginToMint$6,
+  unavailableForMint: unavailableForMint$6,
+  mustBeProposer: mustBeProposer$6,
+  copied: copied$6,
+  data: data$6,
+  dReps: dReps$6,
+  email: email$6,
+  emailAddress: emailAddress$6,
+  general: general$6,
+  facebook: facebook$6,
+  forgotPassword: forgotPassword$6,
+  funding: funding$6,
+  getStarted: getStarted$6,
+  github: github$6,
+  Home: Home$6,
+  jormungandr: jormungandr$6,
+  knowledgeBase: knowledgeBase$6,
+  explore: explore$6,
+  impact: impact$6,
+  legal: legal$6,
+  licenses: licenses$6,
+  login: login$6,
+  linkedIn: linkedIn$6,
+  listsAndBookmarks: listsAndBookmarks$6,
+  monthlyReports: monthlyReports$6,
+  metaTitle: metaTitle$6,
+  myCharts: myCharts$6,
+  mintNFT: mintNFT$6,
+  name: name$6,
+  viewNFT: viewNFT$6,
+  nftPending: nftPending$6,
+  cantFindNFT: cantFindNFT$6,
+  paymentGateway: paymentGateway$6,
+  fundProject: fundProject$6,
+  projectTitle: projectTitle$6,
+  yesVotes: yesVotes$6,
+  noVotes: noVotes$6,
+  role: role$6,
+  otherContributors: otherContributors$6,
+  metaDataInstruction: metaDataInstruction$6,
+  nobookmarks: nobookmarks$6,
+  noBookmarksYet: noBookmarksYet$6,
+  noImage: noImage$6,
+  developers: developers$6,
+  noProposalBookmarks: noProposalBookmarks$6,
+  noGroupBookmarks: noGroupBookmarks$6,
+  noPeopleBookmarks: noPeopleBookmarks$6,
+  noReviewBookmarks: noReviewBookmarks$6,
+  numbers: numbers$6,
+  password: password$6,
+  policyID: policyID$6,
+  filters: filters$6,
+  rememberMe: rememberMe$6,
+  privacy: privacy$6,
+  problem: problem$6,
+  profileBackground: profileBackground$6,
+  projectCatalyst: projectCatalyst$6,
+  reviewers: reviewers$6,
+  register: register$6,
+  reviewerReputationScore: reviewerReputationScore$6,
+  searchQuery: searchQuery$6,
+  signin: signin$6,
+  signup: signup$6,
+  social: social$6,
+  spending: spending$6,
+  support: support$6,
+  seeAll: seeAll$6,
+  seeLess: seeLess$6,
+  seeMore: seeMore$6,
+  solution: solution$6,
+  terms: terms$6,
+  twitter: twitter$6,
+  transaction: transaction$6,
+  votes: votes$6,
+  voters: voters$6,
+  wallets: wallets$6,
+  details: details$6,
+  teams: teams$6,
+  yes: yes$6,
+  filterChart: filterChart$6,
+  abstain: abstain$6,
+  notSet: notSet$6,
+  loading: loading$6,
+  Link: Link$6,
+  select: select$6,
+  selected: selected$6,
+  clear: clear$6,
+  selection: selection$6,
+  awarded: awarded$6,
+  distributed: distributed$6,
+  requested: requested$6,
+  received: received$6,
+  submitted: submitted$6,
+  funded: funded$6,
+  approved: approved$6,
+  completed: completed$6,
+  loginPrompt: loginPrompt$6,
+  back: back$6,
+  verificationTitle: verificationTitle$6,
+  verificationCodeLabel: verificationCodeLabel$6,
+  verificationCode: verificationCode$6,
+  verificationInstructions: verificationInstructions$6,
+  goToIdeascale: goToIdeascale$6,
+  proposal: proposal$6,
+  noNFTDataAvailable: noNFTDataAvailable$6,
+  noPreviewAvailable: noPreviewAvailable$6,
+  chooseMetaDataDescription: chooseMetaDataDescription$6,
+  metadataStrikeInstruction: metadataStrikeInstruction$6,
+  nftPaymentGatewayTitle: nftPaymentGatewayTitle$6,
+  artistRole: artistRole$6,
+  cantFindNFTForMint: cantFindNFTForMint$6,
+  copyToClipboard: copyToClipboard$6,
   "activeFund.title": "Fondo Activo de Catalyst",
   "activeFund.subtitle": "Mantente al día con la última ronda activa de financiamiento. Revisa las campañas, sigue las propuestas y guarda en favoritos las que más te interesen.",
   "activeFund.budget": "Presupuesto total a distribuir",
@@ -51037,6 +53584,9 @@ const es = {
   "activeFund.bannerTitle": "¡Crea tu lista de votación!",
   "activeFund.bannerSubtitle": "¡Crea tus selecciones de votación para referencia y compartir! ¿Sabes lo que buscas? Usa el Flujo de Trabajo Estándar. ¿No sabes lo que buscas? Usa el Flujo de Trabajo de Barajado para deslizar a la derecha las propuestas que quieres revisar más, a la izquierda las que te abstendrás o pasarás en esta ronda.",
   "activeFund.supportUsTitle": "¡Apóyanos en la boleta!",
+  "activeFund.supportUsSubtitle": "Si encuentras valor en esta herramienta, por favor considera apoyarla en la boleta.",
+  "activeFund.supportUsProposalTitle": "Catalyst Todo-en-Uno: Notificaciones, Listas IA y Portafolios.",
+  "activeFund.supportUsSeeProposal": "Leer la Propuesta",
   "activeFund.supportUsProposalSubtitle": "Si recibimos financiación: Expandiremos catalystexplorer.com para transformar cómo interactúas con Catalyst a través de notificaciones inteligentes para eventos que te interesan, descubrimiento de propuestas impulsado por IA y construcción de portafolios profesionales.",
   "activeFund.campaignsTitle": "Categorías de campañas",
   "activeFund.campaigns.proposals": "Propuestas",
@@ -51230,8 +53780,8 @@ const es = {
   "bookmarks.viewAsPublic": "Ver como público",
   "bookmarks.editListItem": "Editar elemento de lista",
   "bookmarks.publishToIpfs": "Publicar en IPFS",
-  previous: previous$5,
-  next: next$5,
+  previous: previous$6,
+  next: next$6,
   "workflows.tinderProposal.step1.selectFund": "Seleccionar Fondo",
   "workflows.tinderProposal.step1.selectFundPlaceholder": "Seleccionar Fondo",
   "workflows.tinderProposal.step1.selectAllThatApply": "(Seleccionar todos los que apliquen)",
@@ -51338,8 +53888,8 @@ const es = {
   "workflows.publishToIpfs.noDescriptionAvailable": "No hay descripción disponible",
   "workflows.publishToIpfs.unknown": "Desconocido",
   "workflows.publishToIpfs.separator": "|",
-  selectLanguage: selectLanguage$5,
-  selectLanguageForContent: selectLanguageForContent$5,
+  selectLanguage: selectLanguage$6,
+  selectLanguageForContent: selectLanguageForContent$6,
   "languageDetection.multipleLanguagesError": "Algunos campos parecen estar escritos en diferentes idiomas. Por favor asegúrate de que todo el contenido esté en el mismo idioma.",
   "languageDetection.languageMismatchError": "Tu contenido parece estar en :detectedLanguage pero has seleccionado :selectedLanguage. Por favor actualiza tu selección de idioma.",
   "languageDetection.defaultMismatchError": "Se detectó desajuste de idioma",
@@ -51526,6 +54076,7 @@ const es = {
   "proposals.providedUrl": "URL Proporcionada",
   "proposals.listSubtitle": "Los votos de propuestas deben ser enviados en la aplicación oficial de votación de Catalyst",
   "proposals.quickPitchesListSubtitle": "300 segundos o menos de presentaciones rápidas de ideas en la boleta.",
+  "proposals.celebrateCompletedProposals": "Celebrando Propuestas Completadas",
   "proposals.celebrateCompletedProposalsSubtitle": "Algunas ideas que vale la pena celebrar... incluso podrías encontrar algo útil para tu próximo proyecto.",
   "proposals.pageSubtitle": "Buscar propuestas y desafíos por título, contenido o autor y co-autores",
   "proposals.seeMoreProposals": "Ver más propuestas",
@@ -51998,12 +54549,14 @@ const es = {
   "transactions.table.voterRegistration": "Registro de Votante",
   "transactions.table.type": "Tipo",
   "transactions.table.fund": "Fondo",
+  "transactions.table.id": "Id",
   "transactions.table.fragmentId": "ID de Fragmento",
   "transactions.table.caster": "Emisor",
   "transactions.table.timestamp": "Marca de tiempo",
   "transactions.table.choice": "Elección",
   "transactions.table.votingPower": "Poder de Voto",
   "transactions.table.rawFragment": "Fragmento Bruto",
+  "transactions.table.proposalPayout": "Pago de Propuesta",
   "transactions.table.totalOutputs": "Cantidad de Salida (Lovelace)",
   "transactions.table.totalInputs": "Entradas Totales",
   "transactions.table.weights": "Pesos",
@@ -52140,14 +54693,14 @@ const es = {
   "voter.sort.votesCountDesc": "Conteo de Votos: Alto a Bajo",
   "voter.sort.votesCountAsc": "Conteo de Votos: Bajo a Alto",
   "voter.sort.proposalsVotedOnDesc": "Propuestas Votadas: Alto a Bajo",
-  rightSwipes: rightSwipes$5,
-  leftSwipes: leftSwipes$5,
+  rightSwipes: rightSwipes$6,
+  leftSwipes: leftSwipes$6,
   "workflows.createService.step1.clickToReplaceImage": "Haz clic aquí para reemplazar imagen",
   "workflows.createService.step1.clickToUploadImage": "Haz clic aquí para subir imagen",
   "graph.loadingConnections": "Cargando conexiones para :nodeName ...",
   "graph.noAdditionalConnections": ":nodeName no tiene conexiones adicionales",
   "graph.unknownNode": "Desconocido",
-  loadingGraph: loadingGraph$4,
+  loadingGraph: loadingGraph$6,
   "voter.sort.proposalsVotedOnAsc": "Propuestas Votadas: Bajo a Alto",
   "services.service": "Servicio",
   "services.AddService": "Añadir Servicio",
@@ -52157,8 +54710,8 @@ const es = {
   "services.catalystServicesDesc": "Un espacio para que los equipos financiados por Catalyst colaboren, soliciten ayuda y ofrezcan servicios al ecosistema.",
   "services.myServices": "Mis Servicios",
   "services.myServicesDesc": "Gestiona tus servicios y colabora con el ecosistema Catalyst.",
-  endDate: endDate$5,
-  startDate: startDate$5,
+  endDate: endDate$6,
+  startDate: startDate$6,
   "workflows.publishToIpfs.success.contentIdLabel": "Tu ID de Contenido:",
   "workflows.publishToIpfs.success.copied": "¡Copiado!",
   "workflows.publishToIpfs.success.copyCidTitle": "Copiar CID",
@@ -52166,444 +54719,471 @@ const es = {
   "workflows.publishToIpfs.reviewDetails": "Estás a punto de publicar tu lista en IPFS. Revisa los detalles abajo.",
   "wallet.login": "Iniciar sesión con Billetera",
   "wallet.login.confirm": "Estamos a punto de iniciar tu sesión usando tu billetera conectada, la cuenta vinculada a esta billetera será autenticada. Si no se encuentra una cuenta vinculada, se creará una usando tu dirección. Puedes actualizar esta cuenta en tu panel bajo la página 'Mi perfil'.<br><br> <strong>¿Ya tienes una cuenta?</strong> Inicia sesión usando email y añade tu billetera para que puedas iniciar sesión con billetera o email.",
+  "funding.status.pending": "Pendiente",
+  "funding.status.withdrawn": "Retirado",
+  "funding.status.fullyPaid": "Pagado completamente",
+  "funding.status.funded": "Financiado",
+  "funding.status.notFunded": "No financiado",
+  "project.status.votePending": "Votación pendiente",
+  "project.status.withdrawn": "Retirado",
+  "project.status.complete": "Completo",
+  "project.status.inProgress": "En progreso",
+  "project.status.unfunded": "Sin financiación",
 };
 
-const __vite_glob_1_2 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_1_4 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
-    API: API$5,
-    Home: Home$5,
-    Link: Link$5,
-    abstain: abstain$5,
-    activeFund: activeFund$5,
-    addEmail: addEmail$5,
-    addYourCity: addYourCity$5,
-    allCurrencies: allCurrencies$5,
-    amount: amount$5,
-    appMessage: appMessage$5,
-    approved: approved$5,
-    articles: articles$5,
-    artistRole: artistRole$5,
-    assetName: assetName$5,
-    authMessage: authMessage$5,
-    awarded: awarded$5,
-    back: back$5,
-    bio: bio$5,
-    blockchainData: blockchainData$5,
-    bookmark: bookmark$5,
-    cantFindNFT: cantFindNFT$5,
-    cantFindNFTForMint: cantFindNFTForMint$5,
-    catalystAPI: catalystAPI$5,
-    ccv4Votes: ccv4Votes$5,
-    chooseMetaData: chooseMetaData$5,
-    chooseMetaDataDescription: chooseMetaDataDescription$5,
-    clear: clear$5,
-    comingSoon: comingSoon$5,
-    completed: completed$5,
-    confirmPassword: confirmPassword$5,
-    connect: connect$4,
-    connectWallet: connectWallet$4,
-    connections: connections$5,
-    cookies: cookies$5,
-    copied: copied$5,
-    copyToClipboard: copyToClipboard$5,
-    copyright: copyright$5,
-    currentPassword: currentPassword$4,
-    dReps: dReps$5,
-    data: data$5,
+    API: API$6,
+    Home: Home$6,
+    Link: Link$6,
+    abstain: abstain$6,
+    activeFund: activeFund$6,
+    addEmail: addEmail$6,
+    addYourCity: addYourCity$6,
+    allCurrencies: allCurrencies$6,
+    amount: amount$6,
+    appMessage: appMessage$6,
+    approved: approved$6,
+    articles: articles$6,
+    artistRole: artistRole$6,
+    assetName: assetName$6,
+    authMessage: authMessage$6,
+    awarded: awarded$6,
+    back: back$6,
+    bio: bio$6,
+    blockchainData: blockchainData$6,
+    bookmark: bookmark$6,
+    cantFindNFT: cantFindNFT$6,
+    cantFindNFTForMint: cantFindNFTForMint$6,
+    catalystAPI: catalystAPI$6,
+    ccv4Votes: ccv4Votes$6,
+    chooseMetaData: chooseMetaData$6,
+    chooseMetaDataDescription: chooseMetaDataDescription$6,
+    clear: clear$6,
+    comingSoon: comingSoon$6,
+    completed: completed$6,
+    confirmPassword: confirmPassword$6,
+    connect: connect$6,
+    connectWallet: connectWallet$6,
+    connections: connections$6,
+    cookies: cookies$6,
+    copied: copied$6,
+    copyToClipboard: copyToClipboard$6,
+    copyright: copyright$6,
+    currentPassword: currentPassword$6,
+    dReps: dReps$6,
+    data: data$6,
     default: es,
-    details: details$5,
-    developers: developers$5,
-    distributed: distributed$4,
-    email: email$5,
-    emailAddress: emailAddress$5,
-    endDate: endDate$5,
-    explore: explore$5,
-    facebook: facebook$5,
-    filterChart: filterChart$4,
-    filters: filters$5,
-    forgotPassword: forgotPassword$5,
-    from: from$5,
-    fundProject: fundProject$5,
-    funded: funded$5,
-    funding: funding$4,
-    general: general$5,
-    getStarted: getStarted$5,
-    github: github$5,
-    goToIdeascale: goToIdeascale$5,
-    impact: impact$5,
-    jormungandr: jormungandr$5,
-    knowledgeBase: knowledgeBase$5,
-    leftSwipes: leftSwipes$5,
-    legal: legal$5,
-    licenses: licenses$5,
-    linkedIn: linkedIn$5,
-    listsAndBookmarks: listsAndBookmarks$5,
-    loading: loading$5,
-    loadingGraph: loadingGraph$4,
-    login: login$5,
-    loginPrompt: loginPrompt$5,
-    loginToMint: loginToMint$5,
-    metaDataInstruction: metaDataInstruction$5,
-    metaTitle: metaTitle$5,
-    metadataStrikeInstruction: metadataStrikeInstruction$5,
-    minCharTextarea: minCharTextarea$4,
-    mintNFT: mintNFT$5,
-    minting: minting$5,
-    monthlyReports: monthlyReports$5,
-    mustBeProposer: mustBeProposer$5,
-    myCharts: myCharts$4,
-    myWallet: myWallet$4,
-    name: name$5,
-    next: next$5,
-    nftPaymentGatewayTitle: nftPaymentGatewayTitle$5,
-    nftPending: nftPending$5,
-    noBookmarksYet: noBookmarksYet$5,
-    noGroupBookmarks: noGroupBookmarks$5,
-    noImage: noImage$5,
-    noNFTDataAvailable: noNFTDataAvailable$5,
-    noPeopleBookmarks: noPeopleBookmarks$5,
-    noPreviewAvailable: noPreviewAvailable$5,
-    noProposalBookmarks: noProposalBookmarks$5,
-    noReviewBookmarks: noReviewBookmarks$5,
-    noVotes: noVotes$5,
-    nobookmarks: nobookmarks$5,
-    notSet: notSet$5,
-    numbers: numbers$5,
-    otherContributors: otherContributors$5,
-    password: password$5,
-    paymentGateway: paymentGateway$5,
-    policyID: policyID$5,
-    previous: previous$5,
-    privacy: privacy$5,
-    problem: problem$5,
-    profileBackground: profileBackground$5,
-    projectCatalyst: projectCatalyst$5,
-    projectTitle: projectTitle$5,
-    proposal: proposal$4,
-    register: register$5,
-    rememberMe: rememberMe$5,
-    requested: requested$5,
-    reviewerReputationScore: reviewerReputationScore$5,
-    reviewers: reviewers$5,
-    rightSwipes: rightSwipes$5,
-    role: role$5,
-    searchQuery: searchQuery$5,
-    seeAll: seeAll$5,
-    seeLess: seeLess$5,
-    seeMore: seeMore$5,
-    select: select$5,
-    selectLanguage: selectLanguage$5,
-    selectLanguageForContent: selectLanguageForContent$5,
-    selected: selected$5,
-    selection: selection$5,
-    signin: signin$5,
-    signup: signup$5,
-    social: social$5,
-    solution: solution$5,
-    spending: spending$5,
-    startDate: startDate$5,
-    submitted: submitted$5,
-    support: support$5,
-    teams: teams$5,
-    terms: terms$5,
-    to: to$5,
-    totalAda: totalAda$5,
-    totalUsd: totalUsd$5,
-    transaction: transaction$4,
-    twitter: twitter$5,
-    unavailableForMint: unavailableForMint$4,
-    updatePassword: updatePassword$4,
-    verificationCode: verificationCode$5,
-    verificationCodeLabel: verificationCodeLabel$5,
-    verificationInstructions: verificationInstructions$5,
-    verificationTitle: verificationTitle$5,
-    viewNFT: viewNFT$5,
-    voters: voters$5,
-    votes: votes$5,
-    wallets: wallets$5,
-    yes: yes$5,
-    yesVotes: yesVotes$5
+    details: details$6,
+    developers: developers$6,
+    distributed: distributed$6,
+    email: email$6,
+    emailAddress: emailAddress$6,
+    endDate: endDate$6,
+    explore: explore$6,
+    facebook: facebook$6,
+    filterChart: filterChart$6,
+    filters: filters$6,
+    forgotPassword: forgotPassword$6,
+    from: from$6,
+    fundProject: fundProject$6,
+    funded: funded$6,
+    funding: funding$6,
+    general: general$6,
+    getStarted: getStarted$6,
+    github: github$6,
+    goToIdeascale: goToIdeascale$6,
+    impact: impact$6,
+    jormungandr: jormungandr$6,
+    knowledgeBase: knowledgeBase$6,
+    leftSwipes: leftSwipes$6,
+    legal: legal$6,
+    licenses: licenses$6,
+    linkedIn: linkedIn$6,
+    listsAndBookmarks: listsAndBookmarks$6,
+    loading: loading$6,
+    loadingGraph: loadingGraph$6,
+    login: login$6,
+    loginPrompt: loginPrompt$6,
+    loginToMint: loginToMint$6,
+    metaDataInstruction: metaDataInstruction$6,
+    metaTitle: metaTitle$6,
+    metadataStrikeInstruction: metadataStrikeInstruction$6,
+    minCharTextarea: minCharTextarea$6,
+    mintNFT: mintNFT$6,
+    minting: minting$6,
+    monthlyReports: monthlyReports$6,
+    mustBeProposer: mustBeProposer$6,
+    myCharts: myCharts$6,
+    myWallet: myWallet$6,
+    name: name$6,
+    next: next$6,
+    nftPaymentGatewayTitle: nftPaymentGatewayTitle$6,
+    nftPending: nftPending$6,
+    noBookmarksYet: noBookmarksYet$6,
+    noGroupBookmarks: noGroupBookmarks$6,
+    noImage: noImage$6,
+    noNFTDataAvailable: noNFTDataAvailable$6,
+    noPeopleBookmarks: noPeopleBookmarks$6,
+    noPreviewAvailable: noPreviewAvailable$6,
+    noProposalBookmarks: noProposalBookmarks$6,
+    noReviewBookmarks: noReviewBookmarks$6,
+    noVotes: noVotes$6,
+    nobookmarks: nobookmarks$6,
+    notSet: notSet$6,
+    numbers: numbers$6,
+    otherContributors: otherContributors$6,
+    password: password$6,
+    paymentGateway: paymentGateway$6,
+    policyID: policyID$6,
+    previous: previous$6,
+    privacy: privacy$6,
+    problem: problem$6,
+    profileBackground: profileBackground$6,
+    projectCatalyst: projectCatalyst$6,
+    projectTitle: projectTitle$6,
+    proposal: proposal$6,
+    received: received$6,
+    register: register$6,
+    rememberMe: rememberMe$6,
+    requested: requested$6,
+    reviewerReputationScore: reviewerReputationScore$6,
+    reviewers: reviewers$6,
+    rightSwipes: rightSwipes$6,
+    role: role$6,
+    searchQuery: searchQuery$6,
+    seeAll: seeAll$6,
+    seeLess: seeLess$6,
+    seeMore: seeMore$6,
+    select: select$6,
+    selectLanguage: selectLanguage$6,
+    selectLanguageForContent: selectLanguageForContent$6,
+    selected: selected$6,
+    selection: selection$6,
+    signin: signin$6,
+    signup: signup$6,
+    social: social$6,
+    solution: solution$6,
+    spending: spending$6,
+    startDate: startDate$6,
+    submitted: submitted$6,
+    support: support$6,
+    teams: teams$6,
+    terms: terms$6,
+    to: to$6,
+    totalAda: totalAda$6,
+    totalUsd: totalUsd$6,
+    transaction: transaction$6,
+    twitter: twitter$6,
+    unavailableForMint: unavailableForMint$6,
+    updatePassword: updatePassword$6,
+    verificationCode: verificationCode$6,
+    verificationCodeLabel: verificationCodeLabel$6,
+    verificationInstructions: verificationInstructions$6,
+    verificationTitle: verificationTitle$6,
+    viewNFT: viewNFT$6,
+    voters: voters$6,
+    votes: votes$6,
+    wallets: wallets$6,
+    yes: yes$6,
+    yesVotes: yesVotes$6
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const activeFund$4 = "Fonds Actif";
-const addEmail$4 = "Ajouter un e-mail";
-const addYourCity$4 = "Ajoutez votre ville";
-const appMessage$4 = "Tous les votes doivent être soumis dans l'application officielle de vote Catalyst. Ceci n'est qu'un outil de recherche et de planification !";
-const articles$4 = "Articles";
-const assetName$4 = "Nom de l'actif";
-const API$4 = "API";
-const authMessage$4 = "Vous pouvez explorer les propositions, les rapports mensuels, les personnes et les groupes. Filtrez les propositions par statut de financement, budget, fonds, campagne, mots-clés, etc.";
-const bio$4 = "Biographie";
-const blockchainData$4 = "Blockchain Data";
-const bookmark$4 = "Votre espace personnel pour organiser et gérer les idées liées aux propositions. Accédez facilement à vos propositions sauvegardées, vos notes de révision et partagez des listes sélectionnées pour rester au fait des idées et opportunités clés.";
-const catalystAPI$4 = "API Catalyst";
-const ccv4Votes$4 = "Votes CCV4";
+const activeFund$5 = "Fonds Actif";
+const addEmail$5 = "Ajouter un e-mail";
+const addYourCity$5 = "Ajoutez votre ville";
+const appMessage$5 = "Tous les votes doivent être soumis dans l'application officielle de vote Catalyst. Ceci n'est qu'un outil de recherche et de planification !";
+const articles$5 = "Articles";
+const assetName$5 = "Nom de l'actif";
+const API$5 = "API";
+const authMessage$5 = "Vous pouvez explorer les propositions, les rapports mensuels, les personnes et les groupes. Filtrez les propositions par statut de financement, budget, fonds, campagne, mots-clés, etc.";
+const bio$5 = "Biographie";
+const blockchainData$5 = "Blockchain Data";
+const bookmark$5 = "Votre espace personnel pour organiser et gérer les idées liées aux propositions. Accédez facilement à vos propositions sauvegardées, vos notes de révision et partagez des listes sélectionnées pour rester au fait des idées et opportunités clés.";
+const catalystAPI$5 = "API Catalyst";
+const ccv4Votes$5 = "Votes CCV4";
 const charts = "Graphiques";
-const comingSoon$4 = "À venir";
-const from$4 = "De";
-const to$4 = "À";
+const comingSoon$5 = "À venir";
+const from$5 = "De";
+const to$5 = "À";
 const unavailable = "Indisponible";
-const confirmPassword$4 = "Confirmez le mot de passe";
-const chooseMetaData$4 = "Choisissez vos propres métadonnées";
-const allCurrencies$4 = "Toutes les devises";
-const totalAda$4 = "Montant total en ADA";
-const totalUsd$4 = "Montant total en USD";
-const amount$4 = "Montant ";
-const cookies$4 = "Cookies";
-const copyright$4 = "© 2024 Explorateur Catalyst. Tous droits réservés.";
-const connections$4 = "Connexions";
-const email$4 = "Email";
-const explore$4 = "Explorer";
-const data$4 = "Données";
-const dReps$4 = "DReps";
-const facebook$4 = "Facebook";
-const getStarted$4 = "Commencer";
-const general$4 = "Général";
-const github$4 = "Github";
-const emailAddress$4 = "Adresse e-mail";
-const fundProject$4 = "Numéro du projet financé";
-const Home$4 = "Accueil";
-const yesVotes$4 = "Votes pour";
-const noVotes$4 = "Votes contre";
-const role$4 = "Rôle";
-const projectTitle$4 = "Titre du projet";
-const impact$4 = "Impact";
-const jormungandr$4 = "Jormungandr";
-const knowledgeBase$4 = "Base de Connaissances";
-const legal$4 = "Légal";
-const licenses$4 = "Licences";
-const linkedIn$4 = "LinkedIn";
-const listsAndBookmarks$4 = "Listes et Signets";
-const login$4 = "Se connecter";
-const filters$4 = "Filtres";
-const forgotPassword$4 = "mot de passe oublié";
-const otherContributors$4 = "Autres contributeurs";
-const monthlyReports$4 = "Rapports Mensuels";
-const name$4 = "Nom";
-const nobookmarks$4 = "Pas encore de signets";
-const noBookmarksYet$4 = "Vous n'avez pas marqué de signets pour les propositions, les personnes, les groupes ou les évaluations. Commencez à explorer et ajoutez vos favoris à vos signets !";
-const noImage$4 = "Pas d'image";
-const developers$4 = "Développeurs";
-const metaDataInstruction$4 = "Vous pouvez barrer les métadonnées en cliquant sur l'icône X. Les informations barrées seront exclues du mint final.";
-const noProposalBookmarks$4 = "Aucun signet de proposition trouvé";
-const noPeopleBookmarks$4 = "Aucun signet de personne trouvé";
-const noGroupBookmarks$4 = "Aucun signet de groupe trouvé";
-const noReviewBookmarks$4 = "Aucun signet d'évaluation trouvé";
-const numbers$4 = "Chiffres";
-const mintNFT$4 = "Créer un NFT";
-const nftPending$4 = "NFT en attente";
-const privacy$4 = "Confidentialité";
-const profileBackground$4 = "Contexte du profil";
+const confirmPassword$5 = "Confirmez le mot de passe";
+const chooseMetaData$5 = "Choisissez vos propres métadonnées";
+const allCurrencies$5 = "Toutes les devises";
+const totalAda$5 = "Montant total en ADA";
+const totalUsd$5 = "Montant total en USD";
+const amount$5 = "Montant ";
+const cookies$5 = "Cookies";
+const copyright$5 = "© 2024 Explorateur Catalyst. Tous droits réservés.";
+const connections$5 = "Connexions";
+const email$5 = "Email";
+const explore$5 = "Explorer";
+const data$5 = "Données";
+const dReps$5 = "DReps";
+const facebook$5 = "Facebook";
+const getStarted$5 = "Commencer";
+const general$5 = "Général";
+const github$5 = "Github";
+const emailAddress$5 = "Adresse e-mail";
+const fundProject$5 = "Numéro du projet financé";
+const Home$5 = "Accueil";
+const yesVotes$5 = "Votes pour";
+const noVotes$5 = "Votes contre";
+const role$5 = "Rôle";
+const projectTitle$5 = "Titre du projet";
+const impact$5 = "Impact";
+const jormungandr$5 = "Jormungandr";
+const knowledgeBase$5 = "Base de Connaissances";
+const legal$5 = "Légal";
+const licenses$5 = "Licences";
+const linkedIn$5 = "LinkedIn";
+const listsAndBookmarks$5 = "Listes et Signets";
+const login$5 = "Se connecter";
+const filters$5 = "Filtres";
+const forgotPassword$5 = "mot de passe oublié";
+const otherContributors$5 = "Autres contributeurs";
+const monthlyReports$5 = "Rapports Mensuels";
+const name$5 = "Nom";
+const nobookmarks$5 = "Pas encore de signets";
+const noBookmarksYet$5 = "Vous n'avez pas marqué de signets pour les propositions, les personnes, les groupes ou les évaluations. Commencez à explorer et ajoutez vos favoris à vos signets !";
+const noImage$5 = "Pas d'image";
+const developers$5 = "Développeurs";
+const metaDataInstruction$5 = "Vous pouvez barrer les métadonnées en cliquant sur l'icône X. Les informations barrées seront exclues du mint final.";
+const noProposalBookmarks$5 = "Aucun signet de proposition trouvé";
+const noPeopleBookmarks$5 = "Aucun signet de personne trouvé";
+const noGroupBookmarks$5 = "Aucun signet de groupe trouvé";
+const noReviewBookmarks$5 = "Aucun signet d'évaluation trouvé";
+const numbers$5 = "Chiffres";
+const mintNFT$5 = "Créer un NFT";
+const nftPending$5 = "NFT en attente";
+const privacy$5 = "Confidentialité";
+const profileBackground$5 = "Contexte du profil";
 const proposalReviews = "Évaluations des propositions";
-const projectCatalyst$4 = "Nom de la campagne Projet Catalyst";
-const policyID$4 = "Policy ID";
-const metaTitle$4 = "Meta Data Preview";
-const password$4 = "Mot de passe";
+const projectCatalyst$5 = "Nom de la campagne Projet Catalyst";
+const policyID$5 = "Policy ID";
+const metaTitle$5 = "Meta Data Preview";
+const password$5 = "Mot de passe";
 const proposers = "Proposeurs";
-const problem$4 = "Problème";
-const register$4 = "Registre";
-const rememberMe$4 = "Souviens-toi de moi";
-const reviewerReputationScore$4 = "Score de réputation de l'évaluateur";
-const reviewers$4 = "Réviseurs";
-const searchQuery$4 = "Aucun résultat ne correspond à votre requête de recherche";
-const spending$4 = "Dépenses";
-const social$4 = "Social";
+const problem$5 = "Problème";
+const register$5 = "Registre";
+const rememberMe$5 = "Souviens-toi de moi";
+const reviewerReputationScore$5 = "Score de réputation de l'évaluateur";
+const reviewers$5 = "Réviseurs";
+const searchQuery$5 = "Aucun résultat ne correspond à votre requête de recherche";
+const spending$5 = "Dépenses";
+const social$5 = "Social";
 const transation = "Transaction";
-const twitter$4 = "Twitter";
-const support$4 = "Support";
-const seeAll$4 = "Voir Tout";
-const seeMore$4 = "Voir plus";
-const seeLess$4 = "Voir moins";
-const solution$4 = "Solution";
-const signup$4 = "S'inscrire";
-const terms$4 = "Conditions Générales";
-const votes$4 = "Mes Votes";
-const voters$4 = "Électrices";
-const wallets$4 = "Portefeuilles";
-const details$4 = "Détails";
-const teams$4 = "Équipe";
-const yes$4 = "Oui";
-const abstain$4 = "Abstention";
-const notSet$4 = "Non défini";
-const loading$4 = "Chargement";
-const Link$4 = "lien";
-const select$4 = "Sélectionner";
-const selected$4 = "choisie";
-const signin$4 = "Se connecter";
-const clear$4 = "claire";
-const copied$4 = "copié";
-const selection$4 = "sélection";
-const awarded$4 = "Récompensé";
-const requested$4 = "Demandée";
-const submitted$4 = "Soumise";
-const funded$4 = "Financé";
-const approved$4 = "Approuvée";
-const completed$4 = "Complété";
-const loginPrompt$4 = "Connectez-vous pour commencer";
-const loginToMint$4 = "Connectez-vous à Mint";
-const mustBeProposer$4 = "Doit être le proposant";
-const viewNFT$4 = "Voir NFT";
-const cantFindNFT$4 = "Je ne trouve pas de NFT pour Mint";
-const paymentGateway$4 = "Passerelle de paiement NFT-MAKER PRO";
-const minting$4 = "Vous frappez";
-const back$4 = "Retour";
-const verificationTitle$4 = "Vérifions votre identité !";
-const verificationCodeLabel$4 = "Code de vérification";
-const verificationCode$4 = "CODE$:";
-const verificationInstructions$4 = "Pour vérifier que vous êtes le propriétaire de ce profil, envoyez un message personnel à Lido Nation sur Ideascale et incluez le code ci-dessus.";
-const goToIdeascale$4 = "Aller sur Ideascale";
-const noNFTDataAvailable$4 = "Aucune donnée NFT disponible";
-const noPreviewAvailable$4 = "Aucun aperçu disponible";
-const chooseMetaDataDescription$4 = "Choisissez vos propres métadonnées";
-const metadataStrikeInstruction$4 = "Vous pouvez barrer les métadonnées en cliquant sur l'icône X. Les informations barrées seront exclues du mint final.";
-const nftPaymentGatewayTitle$4 = "Passerelle de paiement NFT-MAKER PRO";
-const artistRole$4 = "Artiste";
-const cantFindNFTForMint$4 = "Impossible de trouver le NFT à mint";
-const copyToClipboard$4 = "Copier dans le presse-papiers";
-const selectLanguage$4 = "Sélectionner la langue";
-const selectLanguageForContent$4 = "Sélectionnez une langue pour votre contenu";
-const previous$4 = "Précédent";
-const next$4 = "Suivant";
-const rightSwipes$4 = " - Balayages vers la droite";
-const leftSwipes$4 = " - Balayages vers la gauche";
-const endDate$4 = "Date de fin";
-const startDate$4 = "Date de début";
+const twitter$5 = "Twitter";
+const support$5 = "Support";
+const seeAll$5 = "Voir Tout";
+const seeMore$5 = "Voir plus";
+const seeLess$5 = "Voir moins";
+const solution$5 = "Solution";
+const signup$5 = "S'inscrire";
+const terms$5 = "Conditions Générales";
+const votes$5 = "Mes Votes";
+const voters$5 = "Électrices";
+const wallets$5 = "Portefeuilles";
+const details$5 = "Détails";
+const teams$5 = "Équipe";
+const yes$5 = "Oui";
+const abstain$5 = "Abstention";
+const notSet$5 = "Non défini";
+const loading$5 = "Chargement";
+const Link$5 = "lien";
+const select$5 = "Sélectionner";
+const selected$5 = "choisie";
+const signin$5 = "Se connecter";
+const clear$5 = "claire";
+const copied$5 = "copié";
+const selection$5 = "sélection";
+const awarded$5 = "Récompensé";
+const requested$5 = "Demandée";
+const received$5 = "Reçue";
+const submitted$5 = "Soumise";
+const funded$5 = "Financé";
+const approved$5 = "Approuvée";
+const completed$5 = "Complété";
+const loginPrompt$5 = "Connectez-vous pour commencer";
+const loginToMint$5 = "Connectez-vous à Mint";
+const mustBeProposer$5 = "Doit être le proposant";
+const viewNFT$5 = "Voir NFT";
+const cantFindNFT$5 = "Je ne trouve pas de NFT pour Mint";
+const paymentGateway$5 = "Passerelle de paiement NFT-MAKER PRO";
+const minting$5 = "Vous frappez";
+const back$5 = "Retour";
+const verificationTitle$5 = "Vérifions votre identité !";
+const verificationCodeLabel$5 = "Code de vérification";
+const verificationCode$5 = "CODE$:";
+const verificationInstructions$5 = "Pour vérifier que vous êtes le propriétaire de ce profil, envoyez un message personnel à Lido Nation sur Ideascale et incluez le code ci-dessus.";
+const goToIdeascale$5 = "Aller sur Ideascale";
+const noNFTDataAvailable$5 = "Aucune donnée NFT disponible";
+const noPreviewAvailable$5 = "Aucun aperçu disponible";
+const chooseMetaDataDescription$5 = "Choisissez vos propres métadonnées";
+const metadataStrikeInstruction$5 = "Vous pouvez barrer les métadonnées en cliquant sur l'icône X. Les informations barrées seront exclues du mint final.";
+const nftPaymentGatewayTitle$5 = "Passerelle de paiement NFT-MAKER PRO";
+const artistRole$5 = "Artiste";
+const cantFindNFTForMint$5 = "Impossible de trouver le NFT à mint";
+const copyToClipboard$5 = "Copier dans le presse-papiers";
+const selectLanguage$5 = "Sélectionner la langue";
+const selectLanguageForContent$5 = "Sélectionnez une langue pour votre contenu";
+const previous$5 = "Précédent";
+const next$5 = "Suivant";
+const rightSwipes$5 = " - Balayages vers la droite";
+const leftSwipes$5 = " - Balayages vers la gauche";
+const endDate$5 = "Date de fin";
+const startDate$5 = "Date de début";
+const connect$5 = "Connecter";
+const updatePassword$5 = "Mettre à jour le mot de passe";
+const currentPassword$5 = "Mot de passe actuel";
+const connectWallet$5 = "Connecter le portefeuille";
+const myWallet$5 = "Mon Portefeuille";
+const minCharTextarea$5 = "Minimum 200 caractères requis";
+const unavailableForMint$5 = "Indisponible";
+const funding$5 = "Financement";
+const transaction$5 = "Transaction";
+const filterChart$5 = "Filtrer le graphique";
+const distributed$5 = "Distribué";
+const proposal$5 = "Proposition";
+const myCharts$5 = "Mes Graphiques";
+const loadingGraph$5 = "Chargement du graphique";
 const fr = {
-  activeFund: activeFund$4,
-  addEmail: addEmail$4,
-  addYourCity: addYourCity$4,
-  appMessage: appMessage$4,
-  articles: articles$4,
-  assetName: assetName$4,
-  API: API$4,
-  authMessage: authMessage$4,
-  bio: bio$4,
-  blockchainData: blockchainData$4,
-  bookmark: bookmark$4,
-  catalystAPI: catalystAPI$4,
-  ccv4Votes: ccv4Votes$4,
+  activeFund: activeFund$5,
+  addEmail: addEmail$5,
+  addYourCity: addYourCity$5,
+  appMessage: appMessage$5,
+  articles: articles$5,
+  assetName: assetName$5,
+  API: API$5,
+  authMessage: authMessage$5,
+  bio: bio$5,
+  blockchainData: blockchainData$5,
+  bookmark: bookmark$5,
+  catalystAPI: catalystAPI$5,
+  ccv4Votes: ccv4Votes$5,
   charts,
-  comingSoon: comingSoon$4,
-  from: from$4,
-  to: to$4,
+  comingSoon: comingSoon$5,
+  from: from$5,
+  to: to$5,
   unavailable,
-  confirmPassword: confirmPassword$4,
-  chooseMetaData: chooseMetaData$4,
-  allCurrencies: allCurrencies$4,
-  totalAda: totalAda$4,
-  totalUsd: totalUsd$4,
-  amount: amount$4,
-  cookies: cookies$4,
-  copyright: copyright$4,
-  connections: connections$4,
-  email: email$4,
-  explore: explore$4,
-  data: data$4,
-  dReps: dReps$4,
-  facebook: facebook$4,
-  getStarted: getStarted$4,
-  general: general$4,
-  github: github$4,
-  emailAddress: emailAddress$4,
-  fundProject: fundProject$4,
-  Home: Home$4,
-  yesVotes: yesVotes$4,
-  noVotes: noVotes$4,
-  role: role$4,
-  projectTitle: projectTitle$4,
-  impact: impact$4,
-  jormungandr: jormungandr$4,
-  knowledgeBase: knowledgeBase$4,
-  legal: legal$4,
-  licenses: licenses$4,
-  linkedIn: linkedIn$4,
-  listsAndBookmarks: listsAndBookmarks$4,
-  login: login$4,
-  filters: filters$4,
-  forgotPassword: forgotPassword$4,
-  otherContributors: otherContributors$4,
-  monthlyReports: monthlyReports$4,
-  name: name$4,
-  nobookmarks: nobookmarks$4,
-  noBookmarksYet: noBookmarksYet$4,
-  noImage: noImage$4,
-  developers: developers$4,
-  metaDataInstruction: metaDataInstruction$4,
-  noProposalBookmarks: noProposalBookmarks$4,
-  noPeopleBookmarks: noPeopleBookmarks$4,
-  noGroupBookmarks: noGroupBookmarks$4,
-  noReviewBookmarks: noReviewBookmarks$4,
-  numbers: numbers$4,
-  mintNFT: mintNFT$4,
-  nftPending: nftPending$4,
-  privacy: privacy$4,
-  profileBackground: profileBackground$4,
+  confirmPassword: confirmPassword$5,
+  chooseMetaData: chooseMetaData$5,
+  allCurrencies: allCurrencies$5,
+  totalAda: totalAda$5,
+  totalUsd: totalUsd$5,
+  amount: amount$5,
+  cookies: cookies$5,
+  copyright: copyright$5,
+  connections: connections$5,
+  email: email$5,
+  explore: explore$5,
+  data: data$5,
+  dReps: dReps$5,
+  facebook: facebook$5,
+  getStarted: getStarted$5,
+  general: general$5,
+  github: github$5,
+  emailAddress: emailAddress$5,
+  fundProject: fundProject$5,
+  Home: Home$5,
+  yesVotes: yesVotes$5,
+  noVotes: noVotes$5,
+  role: role$5,
+  projectTitle: projectTitle$5,
+  impact: impact$5,
+  jormungandr: jormungandr$5,
+  knowledgeBase: knowledgeBase$5,
+  legal: legal$5,
+  licenses: licenses$5,
+  linkedIn: linkedIn$5,
+  listsAndBookmarks: listsAndBookmarks$5,
+  login: login$5,
+  filters: filters$5,
+  forgotPassword: forgotPassword$5,
+  otherContributors: otherContributors$5,
+  monthlyReports: monthlyReports$5,
+  name: name$5,
+  nobookmarks: nobookmarks$5,
+  noBookmarksYet: noBookmarksYet$5,
+  noImage: noImage$5,
+  developers: developers$5,
+  metaDataInstruction: metaDataInstruction$5,
+  noProposalBookmarks: noProposalBookmarks$5,
+  noPeopleBookmarks: noPeopleBookmarks$5,
+  noGroupBookmarks: noGroupBookmarks$5,
+  noReviewBookmarks: noReviewBookmarks$5,
+  numbers: numbers$5,
+  mintNFT: mintNFT$5,
+  nftPending: nftPending$5,
+  privacy: privacy$5,
+  profileBackground: profileBackground$5,
   proposalReviews,
-  projectCatalyst: projectCatalyst$4,
-  policyID: policyID$4,
-  metaTitle: metaTitle$4,
-  password: password$4,
+  projectCatalyst: projectCatalyst$5,
+  policyID: policyID$5,
+  metaTitle: metaTitle$5,
+  password: password$5,
   proposers,
-  problem: problem$4,
-  register: register$4,
-  rememberMe: rememberMe$4,
-  reviewerReputationScore: reviewerReputationScore$4,
-  reviewers: reviewers$4,
-  searchQuery: searchQuery$4,
-  spending: spending$4,
-  social: social$4,
+  problem: problem$5,
+  register: register$5,
+  rememberMe: rememberMe$5,
+  reviewerReputationScore: reviewerReputationScore$5,
+  reviewers: reviewers$5,
+  searchQuery: searchQuery$5,
+  spending: spending$5,
+  social: social$5,
   transation,
-  twitter: twitter$4,
-  support: support$4,
-  seeAll: seeAll$4,
-  seeMore: seeMore$4,
-  seeLess: seeLess$4,
-  solution: solution$4,
-  signup: signup$4,
-  terms: terms$4,
-  votes: votes$4,
-  voters: voters$4,
-  wallets: wallets$4,
-  details: details$4,
-  teams: teams$4,
-  yes: yes$4,
-  abstain: abstain$4,
-  notSet: notSet$4,
-  loading: loading$4,
-  Link: Link$4,
-  select: select$4,
-  selected: selected$4,
-  signin: signin$4,
-  clear: clear$4,
-  copied: copied$4,
-  selection: selection$4,
-  awarded: awarded$4,
-  requested: requested$4,
-  submitted: submitted$4,
-  funded: funded$4,
-  approved: approved$4,
-  completed: completed$4,
-  loginPrompt: loginPrompt$4,
-  loginToMint: loginToMint$4,
-  mustBeProposer: mustBeProposer$4,
-  viewNFT: viewNFT$4,
-  cantFindNFT: cantFindNFT$4,
-  paymentGateway: paymentGateway$4,
-  minting: minting$4,
-  back: back$4,
-  verificationTitle: verificationTitle$4,
-  verificationCodeLabel: verificationCodeLabel$4,
-  verificationCode: verificationCode$4,
-  verificationInstructions: verificationInstructions$4,
-  goToIdeascale: goToIdeascale$4,
-  noNFTDataAvailable: noNFTDataAvailable$4,
-  noPreviewAvailable: noPreviewAvailable$4,
-  chooseMetaDataDescription: chooseMetaDataDescription$4,
-  metadataStrikeInstruction: metadataStrikeInstruction$4,
-  nftPaymentGatewayTitle: nftPaymentGatewayTitle$4,
-  artistRole: artistRole$4,
-  cantFindNFTForMint: cantFindNFTForMint$4,
-  copyToClipboard: copyToClipboard$4,
+  twitter: twitter$5,
+  support: support$5,
+  seeAll: seeAll$5,
+  seeMore: seeMore$5,
+  seeLess: seeLess$5,
+  solution: solution$5,
+  signup: signup$5,
+  terms: terms$5,
+  votes: votes$5,
+  voters: voters$5,
+  wallets: wallets$5,
+  details: details$5,
+  teams: teams$5,
+  yes: yes$5,
+  abstain: abstain$5,
+  notSet: notSet$5,
+  loading: loading$5,
+  Link: Link$5,
+  select: select$5,
+  selected: selected$5,
+  signin: signin$5,
+  clear: clear$5,
+  copied: copied$5,
+  selection: selection$5,
+  awarded: awarded$5,
+  requested: requested$5,
+  received: received$5,
+  submitted: submitted$5,
+  funded: funded$5,
+  approved: approved$5,
+  completed: completed$5,
+  loginPrompt: loginPrompt$5,
+  loginToMint: loginToMint$5,
+  mustBeProposer: mustBeProposer$5,
+  viewNFT: viewNFT$5,
+  cantFindNFT: cantFindNFT$5,
+  paymentGateway: paymentGateway$5,
+  minting: minting$5,
+  back: back$5,
+  verificationTitle: verificationTitle$5,
+  verificationCodeLabel: verificationCodeLabel$5,
+  verificationCode: verificationCode$5,
+  verificationInstructions: verificationInstructions$5,
+  goToIdeascale: goToIdeascale$5,
+  noNFTDataAvailable: noNFTDataAvailable$5,
+  noPreviewAvailable: noPreviewAvailable$5,
+  chooseMetaDataDescription: chooseMetaDataDescription$5,
+  metadataStrikeInstruction: metadataStrikeInstruction$5,
+  nftPaymentGatewayTitle: nftPaymentGatewayTitle$5,
+  artistRole: artistRole$5,
+  cantFindNFTForMint: cantFindNFTForMint$5,
+  copyToClipboard: copyToClipboard$5,
   "proposalComparison.title": "Comparer les propositions Catalyst",
   "proposalComparison.subtitle": "Analysez et évaluez facilement les propositions pour prendre des décisions éclairées sur le financement, l’impact et l’alignement stratégique.",
   "proposalComparison.searchPlaceholder": "Rechercher une proposition",
@@ -52785,13 +55365,13 @@ const fr = {
   "bookmarks.viewAsPublic": "Voir en public",
   "bookmarks.editListItem": "Modifier l'élément de liste",
   "bookmarks.publishToIpfs": "Publier sur IPFS",
-  selectLanguage: selectLanguage$4,
-  selectLanguageForContent: selectLanguageForContent$4,
+  selectLanguage: selectLanguage$5,
+  selectLanguageForContent: selectLanguageForContent$5,
   "languageDetection.multipleLanguagesError": "Certains champs semblent être rédigés dans des langues différentes. Veuillez vous assurer que tout le contenu est dans la même langue.",
   "languageDetection.languageMismatchError": "Votre contenu semble être en :detectedLanguage mais vous avez sélectionné :selectedLanguage. Veuillez mettre à jour votre sélection de langue.",
   "languageDetection.defaultMismatchError": "Incompatibilité de langue détectée",
-  previous: previous$4,
-  next: next$4,
+  previous: previous$5,
+  next: next$5,
   "workflows.tinderProposal.step1.selectFund": "Sélectionner un Fonds",
   "workflows.tinderProposal.step1.selectFundPlaceholder": "Sélectionner un Fonds",
   "workflows.tinderProposal.step1.selectAllThatApply": "(Sélectionnez tout ce qui s'applique)",
@@ -53490,468 +56070,754 @@ const fr = {
   "bookmarks.createList": "Créer votre liste",
   "comments.comments": "Commentaires",
   "comments.reply": "Répondre",
-  rightSwipes: rightSwipes$4,
-  leftSwipes: leftSwipes$4,
+  rightSwipes: rightSwipes$5,
+  leftSwipes: leftSwipes$5,
   "workflows.createService.step1.clickToReplaceImage": "Cliquez ici pour remplacer l'image",
   "workflows.createService.step1.clickToUploadImage": "Cliquez ici pour télécharger une image",
   "graph.loadingConnections": "Chargement des connexions pour {nodeName}...",
   "graph.noAdditionalConnections": "{nodeName} n'a pas de connexions supplémentaires",
   "graph.unknownNode": "Inconnu",
-  endDate: endDate$4,
-  startDate: startDate$4,
+  endDate: endDate$5,
+  startDate: startDate$5,
   "workflows.publishToIpfs.success.contentIdLabel": "Votre ID de contenu :",
   "workflows.publishToIpfs.success.copied": "Copié !",
   "workflows.publishToIpfs.success.copyCidTitle": "Copier le CID",
   "workflows.publishToIpfs.success.openInNewTabTitle": "Ouvrir dans un nouvel onglet",
   "workflows.publishToIpfs.reviewDetails": "Vous êtes sur le point de publier votre liste sur IPFS. Consultez les détails ci-dessous.",
   "wallet.login": "Connexion portefeuille",
-  "wallet.login.confirm": "Nous allons vous connecter en utilisant votre portefeuille associé. Le compte lié à ce portefeuille sera authentifié. Si aucun compte lié n’est trouvé, un nouveau sera créé avec votre adresse. Vous pourrez ensuite mettre à jour ce compte dans votre tableau de bord, sous la page « Mon profil ». <br><br> <strong>Vous avez déjà un compte ?</strong> Connectez-vous avec votre e-mail et ajoutez votre portefeuille afin de pouvoir vous connecter soit avec votre portefeuille, soit avec votre e-mail.",
+  "wallet.login.confirm": "Nous allons vous connecter en utilisant votre portefeuille associé. Le compte lié à ce portefeuille sera authentifié. Si aucun compte lié n'est trouvé, un nouveau sera créé avec votre adresse. Vous pourrez ensuite mettre à jour ce compte dans votre tableau de bord, sous la page « Mon profil ». <br><br> <strong>Vous avez déjà un compte ?</strong> Connectez-vous avec votre e-mail et ajoutez votre portefeuille afin de pouvoir vous connecter soit avec votre portefeuille, soit avec votre e-mail.",
+  "funding.status.pending": "En attente",
+  "funding.status.withdrawn": "Retiré",
+  "funding.status.fullyPaid": "Entièrement payé",
+  "funding.status.funded": "Financé",
+  "funding.status.notFunded": "Non financé",
+  "project.status.votePending": "Vote en attente",
+  "project.status.withdrawn": "Retiré",
+  "project.status.complete": "Terminé",
+  "project.status.inProgress": "En cours",
+  "project.status.unfunded": "Non financé",
+  connect: connect$5,
+  updatePassword: updatePassword$5,
+  currentPassword: currentPassword$5,
+  connectWallet: connectWallet$5,
+  myWallet: myWallet$5,
+  minCharTextarea: minCharTextarea$5,
+  unavailableForMint: unavailableForMint$5,
+  funding: funding$5,
+  transaction: transaction$5,
+  filterChart: filterChart$5,
+  distributed: distributed$5,
+  proposal: proposal$5,
+  "activeFund.supportUsSeeProposal": "Lire la Proposition",
+  "proposalComparison.selectMetric": "Sélectionner la Métrique",
+  "proposalComparison.tableHeaders.campaign": "Campagne",
+  "proposalComparison.tableHeaders.problem": "Problème",
+  "proposalComparison.tableHeaders.openSource": "Open Source",
+  "workflows.completedProjectNfts.alreadyMinted": "Déjà créé",
+  "workflows.catalystDrepSignup.hasCatalystProfile": "Pour continuer, vous devez avoir un profil catalyst lié à ce portefeuille connecté.",
+  "workflows.catalystDrepSignup.submitStatementToIpfs": "Soumettre la Déclaration sur IPFS",
+  "workflows.catalystDrepSignup.publishing": "Publication sur IPFS...",
+  "workflows.catalystDrepSignup.publishedSuccessfully": "Déclaration de Plateforme Publiée avec Succès !",
+  "workflows.catalystDrepSignup.ipfsCid": "ID de Contenu IPFS",
+  "workflows.catalystDrepSignup.copyCid": "Copier le CID dans le presse-papiers",
+  "workflows.catalystDrepSignup.copied": "Copié !",
+  "workflows.catalystDrepSignup.openInNewTab": "Ouvrir dans un nouvel onglet",
+  "workflows.voterList.steps.readyToVote": "Prêt à Voter !!",
+  "workflows.voterList.steps.submitVotes": "Soumettre les Votes",
+  "workflows.voterList.steps.votesSubmitted": "Votes Soumis",
+  "workflows.voterList.steps.submitVotesInfo": "De votre liste de propositions sélectionnées, veuillez exprimer vos votes",
+  "workflows.voterList.steps.submitReviewedVotes": "Vous avez examiné vos sélections. Cliquez sur 'Soumettre les Votes' ci-dessous pour finaliser vos choix et terminer le processus.",
+  "workflows.voterList.steps.submitReviewedVotesInfo": "Vérification réussie. Continuez et soumettez votre vote",
+  "workflows.voterList.steps.votesSummary": "Résumé des Votes",
+  "workflows.voterList.steps.votesSummaryInfo": "Voici un résumé de vos votes. Pour modifier votre vote, retournez à l'écran précédent et amendez.",
+  "workflows.voterList.steps.connectWallet": "Connecter le Portefeuille",
+  "workflows.voterList.steps.connectWalletInfo": "Connectez votre portefeuille pour soumettre vos votes.",
+  "workflows.voterList.steps.submission": "Soumission",
+  "workflows.voterList.steps.submissionInfo": "Soumission de vos votes",
+  "my.userDashboard": "Tableau de Bord",
+  "my.createVotingListBlurb": "Créer une liste de vote est un moyen de préparer vos votes oui et abstention pour un tour de financement. Vous ne pouvez ajouter que des propositions d'un seul fonds.",
+  "my.createTinderListBlurb": "Créer une liste tinder est une interface de balayage droite-gauche pour créer des listes de vote. Vous ne pouvez ajouter que des propositions d'un seul fonds.",
+  "my.createBookmarkList": "Créer une Liste de Signets",
+  "my.createListBlurb": "Créer une liste de signets est un dossier vierge pour mettre des propositions, profils ideascale, groupes, évaluations et communautés sur plusieurs fonds.",
+  "my.createListTitle": "Sélectionnez le type de liste à créer. (Elles peuvent être partagées publiquement ou gardées privées.)",
+  "my.createVotingList": "Créer une Liste de Vote",
+  "my.createTinderList": "Créer une Liste Tinder",
+  "my.createVotingListWithStandardUi": "Utiliser le Flux Standard",
+  "my.createVotingListWithCardedUi": "Utiliser le Flux de Cartes",
+  "my.votes": "Votes",
+  "my.services": "Services",
+  "my.balance": "Solde",
+  "my.wallets": "Portefeuilles",
+  "my.deletingWallet": "Suppression",
+  "my.paymentAddresses": "Adresses de Paiement",
+  "my.myWallets": "Mes Portefeuilles",
+  "my.loadWallets": "Chargement des portefeuilles...",
+  "my.deleteWallet": "Supprimer le Portefeuille",
+  "my.manageWallets": "Voir et gérer tous les portefeuilles connectés à votre compte Catalyst Explorer",
+  "my.moreWalletsDetails": "Voir les détails du portefeuille...",
+  "my.connectWallet": "Ajouter un Portefeuille",
+  "my.my": "Mon",
+  "navigation.links.home": "Accueil",
+  "breadcrumbs.workflow": "Flux de travail",
+  "charts.setMetrics": "Sélectionner les Métriques du Graphique",
+  "charts.viewCharts": "Voir les Graphiques",
+  "charts.selectProposals": "Quels types de propositions vous intéressent le plus ?",
+  "charts.selectChartType": "Sélectionner le Type de Graphique (Sélectionnez tout ce qui s'applique)",
+  "charts.selectAllThatApply": "(Sélectionnez tout ce qui s'applique)",
+  "charts.submittedProposals": "Propositions Soumises",
+  "charts.approvedProposals": "Propositions Approuvées",
+  "charts.completedProposals": "Terminé",
+  "charts.next": "Suivant",
+  "charts.trendChart": "Graphique de Tendance",
+  "charts.distributionChart": "Graphique de Distribution",
+  "charts.lineChart": "Graphique Linéaire",
+  "charts.pieChart": "Graphique Circulaire",
+  "charts.barChart": "Graphique en Barres",
+  "charts.heatMap": "Carte de Chaleur",
+  "charts.treeMap": "Carte Arborescente",
+  "charts.scatterPlot": "Nuage de Points",
+  "charts.stackedBarChart": "Graphique en Barres Empilées",
+  "charts.funnelChart": "Graphique en Entonnoir",
+  "charts.chartOptions": "Options de Graphique",
+  "charts.edit": "Modifier",
+  "charts.noOptions": "Aucune option de graphique sélectionnée. Veuillez revenir et sélectionner les types de graphique",
+  "charts.viewBy": "Voir par",
+  "charts.fundingRate": "Taux de Financement",
+  "charts.fund": "Fonds",
+  "charts.year": "Année",
+  "charts.selectFund": "Sélectionner un Fonds",
+  "charts.value": "Valeur",
+  "charts.percentage": "Pourcentage",
+  "charts.share": "Partager",
+  "charts.noFundDataAvailable": "Aucune Donnée de Fonds Disponible",
+  "charts.noYearDataAvailable": "Aucune Donnée d'Année Disponible",
+  "charts.unfundedProposals": "Propositions Non Financées",
+  "charts.fundedProposals": "Propositions Financées",
+  "charts.inProgressProposals": "En Cours",
+  "charts.vsYear": "vs Année Précédente",
+  "charts.filterProposal": "Filtrez les propositions par statut pour voir ce qui est le plus pertinent pour vous.",
+  "charts.chooseChartType": "Choisissez comment vous voulez voir les données",
+  "metric.numbers": "Chiffres",
+  "metric.subtitle": "Voir les graphiques de projets et filtrer les résultats basés sur les fonds",
+  "metric.seeMore": "Voir plus",
+  "funds.browseByCampaign": "Parcourir par campagne",
+  "funds.browseByCampaignSubtitle": "La communauté a été invitée à proposer des solutions à ces campagnes",
+  "funds.totalAwarded": "Total Attribué",
+  "funds.inProgressProposals": "Propositions En Cours",
+  "funds.sortBy": "Trier Par",
+  "funds.options.lowToHigh": "Budget : Du Plus Bas au Plus Élevé",
+  "funds.options.highToLow": "Budget : Du Plus Élevé au Plus Bas",
+  "funds.options.proposalCountsLowToHigh": "Nombre de propositions : Du Plus Bas au Plus Élevé",
+  "funds.options.proposalCountsHighToLow": "Nombre de propositions : Du Plus Élevé au Plus Bas",
+  "proposals.celebrateCompletedProposals": "Célébrer les Propositions Terminées",
+  "proposals.fundingReceived": "Financement Reçu",
+  "proposals.manageProposal": "Gérer la Proposition",
+  "proposals.ideascale": "Ideascale",
+  "proposals.projectCatalyst": "Projectcatalyst.io",
+  "proposals.filters.approvedProposals": "Propositions Approuvées",
+  "proposals.filters.epoch": "Époque",
+  "proposals.filters.filters": "Filtres",
+  "proposals.filters.ideascaleProfiles": "Profils Ideascale",
+  "proposals.filters.numberOfProposals": "Nombre de Propositions",
+  "proposals.filters.awardedAda": "Attribué (ADA)",
+  "proposals.filters.awardedUsd": "Attribué (USD)",
+  "proposals.options.fundingStatusAtoZ": "Statut de Financement : A-Z",
+  "proposals.options.fundingStatusZtoA": "Statut de Financement : Z-A",
+  "proposals.options.titleAtoZ": "Alphabétiquement : A-Z",
+  "proposals.options.titleZtoA": "Alphabétiquement : Z-A",
+  "ideascaleProfiles.claimed": "Réclamé",
+  "ideascaleProfiles.bio": "Biographie",
+  "ideascaleProfiles.totalRequested": "Total Demandé",
+  "ideascaleProfiles.totalProposals": "Total des Propositions",
+  "ideascaleProfiles.awardedVsRequested": "Attribué vs Demandé",
+  "ideascaleProfiles.receivedVsAwarded": "Reçu vs Attribué",
+  "ideascaleProfiles.proposer": "Proposant",
+  "ideascaleProfiles.tabs.proposals": "Propositions",
+  "ideascaleProfiles.tabs.connections": "Connexions",
+  "ideascaleProfiles.tabs.groups": "Groupes",
+  "ideascaleProfiles.tabs.communities": "Communautés",
+  "ideascaleProfiles.tabs.reviews": "Évaluations",
+  "ideascaleProfiles.tabs.schedule": "Planning",
+  "ideascaleProfiles.tabs.reports": "Rapports",
+  "ideascaleProfiles.tabs.campaigns": "Campagnes",
+  "ideascaleProfiles.tabs.milestones": "Jalons",
+  "milestones.milestones": "Jalons",
+  "funds.singleFundSubtitle": "Plongez dans les jalons totaux, en comparant les jalons terminés, en cours et à terminer dans tout l'écosystème de financement.",
+  "users.about": "À propos",
+  "users.city": "Ville",
+  "users.website": "Site Web",
+  "users.network": "Réseau",
+  "users.personalInfo": "Informations Personnelles",
+  "users.photo": "Photo",
+  "users.photoSizeInstructions": "Image JPEG, PNG 150×150px",
+  "users.photoErrors.invalidType": "Le fichier doit être JPEG, PNG ou GIF",
+  "users.photoErrors.tooLarge": "La taille du fichier doit être inférieure à 5 MB",
+  "users.photoErrors.uploadFailed": "Échec du téléchargement de la photo",
+  "users.basicSettings": "Paramètres de Base",
+  "users.publicProfile": "Profil Public",
+  "users.profileLink": "Profil Public",
+  "users.socialProfiles": "Profils Sociaux",
+  "users.copied": "Copié !",
+  "users.noBiography": "Aucune biographie disponible",
+  "users.updateSocialProfiles": "Mettre à Jour les Profils Sociaux",
+  "users.updateProfileName": "Mettre à Jour le Nom du Profil",
+  "users.updateEmailAddress": "Mettre à Jour l'Adresse E-mail",
+  "users.updateCity": "Mettre à Jour la Ville",
+  "users.addCity": "Ajouter une Ville",
+  "users.noAddress": "Vous n'avez pas encore d'adresse",
+  "users.add": "Ajouter",
+  "users.recreate": "Re-créer",
+  "users.notProvided": "Non fourni",
+  "completedProjectNfts.claimAnotherProfile": "Réclamer un autre profil",
+  "completedProjectNfts.unavailable": "Indisponible !",
+  "profileWorkflow.noProfilesFound": "Aucun profil trouvé.",
+  "dreps.drepList.unavailable": "Indisponible",
+  myCharts: myCharts$5,
+  "reviews.select": "Sélectionner",
+  "transactions.utxos": "UTXOs",
+  "transactions.fromAddresses": "Adresses Source (Entrées)",
+  "transactions.toAddresses": "Adresses Destination (Sorties)",
+  "transactions.totalInput": "Entrée Totale",
+  "transactions.totalOutput": "Sortie Totale",
+  "transactions.table.id": "Id",
+  "transactions.table.proposalPayout": "Paiement de Proposition",
+  "transactions.table.type": "Type",
+  "transactions.table.fund": "Fonds",
+  "transactions.table.fragmentId": "ID de Fragment",
+  "transactions.table.caster": "Émetteur",
+  "transactions.table.timestamp": "Horodatage",
+  "transactions.table.choice": "Choix",
+  "transactions.table.votingPower": "Pouvoir de Vote",
+  "transactions.table.rawFragment": "Fragment Brut",
+  "transactions.table.totalOutputs": "Montant de Sortie (Lovelace)",
+  "transactions.table.totalInputs": "Total des Entrées",
+  "transactions.table.weights": "Poids",
+  "transactions.wallet.title": "Détails du Portefeuille",
+  "transactions.wallet.wallet": "Portefeuille",
+  "transactions.wallet.stakeKey": "Clé de Stake",
+  "transactions.wallet.catalystVotes": "Votes Catalyst",
+  "transactions.wallet.transactions": "Transactions",
+  "validation.required": "{{field}} est requis",
+  "voter.catalystVoters": "Électeurs Catalyst",
+  "voter.viewVoterInformation": "Obtenez une vue transparente et axée sur les données de la communauté active qui façonne l'avenir de Cardano",
+  "voter.searchPlaceholder": "Rechercher adresse de stake ou ID d'électeur",
+  "voter.votersTable": "Tableau des Électeurs",
+  "voter.noVotersFound": "Aucun électeur trouvé correspondant à vos critères de recherche",
+  "voter.notAvailable": "N/D",
+  "voter.active": "Actif",
+  "voter.inactive": "Inactif",
+  "voter.search": "Rechercher",
+  "voter.votingPower": "Pouvoir de Vote",
+  "voter.minimumVotingPower": "Pouvoir de Vote Minimum",
+  "voter.noFundsAvailable": "Aucun fonds disponible",
+  "voter.table.voterId": "ID d'Électeur",
+  "voter.table.stakeAddress": "Adresse de Stake",
+  "voter.table.votingPower": "Pouvoir de Vote",
+  "voter.table.proposalsVotedOn": "Propositions Votées",
+  "voter.table.latestFund": "Dernier Fonds",
+  "voter.table.status": "Statut",
+  "voter.filter.oneAda": "1+ ADA",
+  "voter.filter.tenAda": "10+ ADA",
+  "voter.filter.hundredAda": "100+ ADA",
+  "voter.filter.thousandAda": "1 000+ ADA",
+  "voter.filter.tenThousandAda": "10 000+ ADA",
+  "voter.filter.allVotingPowers": "Tous les Pouvoirs de Vote",
+  "voter.sort.newestFirst": "Le Plus Récent en Premier",
+  "voter.sort.oldestFirst": "Le Plus Ancien en Premier",
+  "voter.sort.votingPowerDesc": "Pouvoir de Vote : Élevé à Faible",
+  "voter.sort.votingPowerAsc": "Pouvoir de Vote : Faible à Élevé",
+  "voter.sort.votesCountDesc": "Nombre de Votes : Élevé à Faible",
+  "voter.sort.votesCountAsc": "Nombre de Votes : Faible à Élevé",
+  "voter.sort.proposalsVotedOnDesc": "Propositions Votées : Élevé à Faible",
+  "voter.sort.proposalsVotedOnAsc": "Propositions Votées : Faible à Élevé",
+  loadingGraph: loadingGraph$5,
+  "services.service": "Service",
+  "services.AddService": "Ajouter un Service",
+  "services.catalystServices": "Services Catalyst",
+  "services.hideCategories": "Masquer les Catégories",
+  "services.showCategories": "Afficher les Catégories",
+  "services.catalystServicesDesc": "Un espace pour les équipes financées par Catalyst pour collaborer, demander de l'aide et offrir des services à l'écosystème.",
+  "services.myServices": "Mes Services",
+  "services.myServicesDesc": "Gérez vos services et collaborez avec l'écosystème Catalyst.",
+  "wallet.connect.subtitle": "Choisissez le portefeuille avec lequel vous voulez vous connecter :",
+  "wallet.connect.addAnotherWallet": "Ajouter un autre portefeuille",
+  "icons.titles.discord": "Discord",
+  "icons.titles.github": "Github",
+  "icons.titles.login": "Icône de Connexion",
+  "icons.titles.connect_wallet": "Icône de Connexion de Portefeuille",
+  "icons.titles.register": "Icône d'Inscription",
+  "icons.titles.ideascaleProfile": "Icône de Profil Ideascale",
+  "icons.titles.linkedIn": "LinkedIn",
+  "icons.titles.tick": "Icône de Coche",
+  "icons.titles.x": "X",
+  "icons.titles.web": "Web",
+  "icons.titles.arrowDown": "Icône de Flèche vers le Bas",
+  "icons.titles.arrowUp": "Icône de Flèche vers le Haut",
+  "View All Lists": "Voir Toutes les Listes",
+  "View This List": "Voir Cette Liste",
 };
 
-const __vite_glob_1_3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_1_5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
-    API: API$4,
-    Home: Home$4,
-    Link: Link$4,
-    abstain: abstain$4,
-    activeFund: activeFund$4,
-    addEmail: addEmail$4,
-    addYourCity: addYourCity$4,
-    allCurrencies: allCurrencies$4,
-    amount: amount$4,
-    appMessage: appMessage$4,
-    approved: approved$4,
-    articles: articles$4,
-    artistRole: artistRole$4,
-    assetName: assetName$4,
-    authMessage: authMessage$4,
-    awarded: awarded$4,
-    back: back$4,
-    bio: bio$4,
-    blockchainData: blockchainData$4,
-    bookmark: bookmark$4,
-    cantFindNFT: cantFindNFT$4,
-    cantFindNFTForMint: cantFindNFTForMint$4,
-    catalystAPI: catalystAPI$4,
-    ccv4Votes: ccv4Votes$4,
+    API: API$5,
+    Home: Home$5,
+    Link: Link$5,
+    abstain: abstain$5,
+    activeFund: activeFund$5,
+    addEmail: addEmail$5,
+    addYourCity: addYourCity$5,
+    allCurrencies: allCurrencies$5,
+    amount: amount$5,
+    appMessage: appMessage$5,
+    approved: approved$5,
+    articles: articles$5,
+    artistRole: artistRole$5,
+    assetName: assetName$5,
+    authMessage: authMessage$5,
+    awarded: awarded$5,
+    back: back$5,
+    bio: bio$5,
+    blockchainData: blockchainData$5,
+    bookmark: bookmark$5,
+    cantFindNFT: cantFindNFT$5,
+    cantFindNFTForMint: cantFindNFTForMint$5,
+    catalystAPI: catalystAPI$5,
+    ccv4Votes: ccv4Votes$5,
     charts,
-    chooseMetaData: chooseMetaData$4,
-    chooseMetaDataDescription: chooseMetaDataDescription$4,
-    clear: clear$4,
-    comingSoon: comingSoon$4,
-    completed: completed$4,
-    confirmPassword: confirmPassword$4,
-    connections: connections$4,
-    cookies: cookies$4,
-    copied: copied$4,
-    copyToClipboard: copyToClipboard$4,
-    copyright: copyright$4,
-    dReps: dReps$4,
-    data: data$4,
+    chooseMetaData: chooseMetaData$5,
+    chooseMetaDataDescription: chooseMetaDataDescription$5,
+    clear: clear$5,
+    comingSoon: comingSoon$5,
+    completed: completed$5,
+    confirmPassword: confirmPassword$5,
+    connect: connect$5,
+    connectWallet: connectWallet$5,
+    connections: connections$5,
+    cookies: cookies$5,
+    copied: copied$5,
+    copyToClipboard: copyToClipboard$5,
+    copyright: copyright$5,
+    currentPassword: currentPassword$5,
+    dReps: dReps$5,
+    data: data$5,
     default: fr,
-    details: details$4,
-    developers: developers$4,
-    email: email$4,
-    emailAddress: emailAddress$4,
-    endDate: endDate$4,
-    explore: explore$4,
-    facebook: facebook$4,
-    filters: filters$4,
-    forgotPassword: forgotPassword$4,
-    from: from$4,
-    fundProject: fundProject$4,
-    funded: funded$4,
-    general: general$4,
-    getStarted: getStarted$4,
-    github: github$4,
-    goToIdeascale: goToIdeascale$4,
-    impact: impact$4,
-    jormungandr: jormungandr$4,
-    knowledgeBase: knowledgeBase$4,
-    leftSwipes: leftSwipes$4,
-    legal: legal$4,
-    licenses: licenses$4,
-    linkedIn: linkedIn$4,
-    listsAndBookmarks: listsAndBookmarks$4,
-    loading: loading$4,
-    login: login$4,
-    loginPrompt: loginPrompt$4,
-    loginToMint: loginToMint$4,
-    metaDataInstruction: metaDataInstruction$4,
-    metaTitle: metaTitle$4,
-    metadataStrikeInstruction: metadataStrikeInstruction$4,
-    mintNFT: mintNFT$4,
-    minting: minting$4,
-    monthlyReports: monthlyReports$4,
-    mustBeProposer: mustBeProposer$4,
-    name: name$4,
-    next: next$4,
-    nftPaymentGatewayTitle: nftPaymentGatewayTitle$4,
-    nftPending: nftPending$4,
-    noBookmarksYet: noBookmarksYet$4,
-    noGroupBookmarks: noGroupBookmarks$4,
-    noImage: noImage$4,
-    noNFTDataAvailable: noNFTDataAvailable$4,
-    noPeopleBookmarks: noPeopleBookmarks$4,
-    noPreviewAvailable: noPreviewAvailable$4,
-    noProposalBookmarks: noProposalBookmarks$4,
-    noReviewBookmarks: noReviewBookmarks$4,
-    noVotes: noVotes$4,
-    nobookmarks: nobookmarks$4,
-    notSet: notSet$4,
-    numbers: numbers$4,
-    otherContributors: otherContributors$4,
-    password: password$4,
-    paymentGateway: paymentGateway$4,
-    policyID: policyID$4,
-    previous: previous$4,
-    privacy: privacy$4,
-    problem: problem$4,
-    profileBackground: profileBackground$4,
-    projectCatalyst: projectCatalyst$4,
-    projectTitle: projectTitle$4,
+    details: details$5,
+    developers: developers$5,
+    distributed: distributed$5,
+    email: email$5,
+    emailAddress: emailAddress$5,
+    endDate: endDate$5,
+    explore: explore$5,
+    facebook: facebook$5,
+    filterChart: filterChart$5,
+    filters: filters$5,
+    forgotPassword: forgotPassword$5,
+    from: from$5,
+    fundProject: fundProject$5,
+    funded: funded$5,
+    funding: funding$5,
+    general: general$5,
+    getStarted: getStarted$5,
+    github: github$5,
+    goToIdeascale: goToIdeascale$5,
+    impact: impact$5,
+    jormungandr: jormungandr$5,
+    knowledgeBase: knowledgeBase$5,
+    leftSwipes: leftSwipes$5,
+    legal: legal$5,
+    licenses: licenses$5,
+    linkedIn: linkedIn$5,
+    listsAndBookmarks: listsAndBookmarks$5,
+    loading: loading$5,
+    loadingGraph: loadingGraph$5,
+    login: login$5,
+    loginPrompt: loginPrompt$5,
+    loginToMint: loginToMint$5,
+    metaDataInstruction: metaDataInstruction$5,
+    metaTitle: metaTitle$5,
+    metadataStrikeInstruction: metadataStrikeInstruction$5,
+    minCharTextarea: minCharTextarea$5,
+    mintNFT: mintNFT$5,
+    minting: minting$5,
+    monthlyReports: monthlyReports$5,
+    mustBeProposer: mustBeProposer$5,
+    myCharts: myCharts$5,
+    myWallet: myWallet$5,
+    name: name$5,
+    next: next$5,
+    nftPaymentGatewayTitle: nftPaymentGatewayTitle$5,
+    nftPending: nftPending$5,
+    noBookmarksYet: noBookmarksYet$5,
+    noGroupBookmarks: noGroupBookmarks$5,
+    noImage: noImage$5,
+    noNFTDataAvailable: noNFTDataAvailable$5,
+    noPeopleBookmarks: noPeopleBookmarks$5,
+    noPreviewAvailable: noPreviewAvailable$5,
+    noProposalBookmarks: noProposalBookmarks$5,
+    noReviewBookmarks: noReviewBookmarks$5,
+    noVotes: noVotes$5,
+    nobookmarks: nobookmarks$5,
+    notSet: notSet$5,
+    numbers: numbers$5,
+    otherContributors: otherContributors$5,
+    password: password$5,
+    paymentGateway: paymentGateway$5,
+    policyID: policyID$5,
+    previous: previous$5,
+    privacy: privacy$5,
+    problem: problem$5,
+    profileBackground: profileBackground$5,
+    projectCatalyst: projectCatalyst$5,
+    projectTitle: projectTitle$5,
+    proposal: proposal$5,
     proposalReviews,
     proposers,
-    register: register$4,
-    rememberMe: rememberMe$4,
-    requested: requested$4,
-    reviewerReputationScore: reviewerReputationScore$4,
-    reviewers: reviewers$4,
-    rightSwipes: rightSwipes$4,
-    role: role$4,
-    searchQuery: searchQuery$4,
-    seeAll: seeAll$4,
-    seeLess: seeLess$4,
-    seeMore: seeMore$4,
-    select: select$4,
-    selectLanguage: selectLanguage$4,
-    selectLanguageForContent: selectLanguageForContent$4,
-    selected: selected$4,
-    selection: selection$4,
-    signin: signin$4,
-    signup: signup$4,
-    social: social$4,
-    solution: solution$4,
-    spending: spending$4,
-    startDate: startDate$4,
-    submitted: submitted$4,
-    support: support$4,
-    teams: teams$4,
-    terms: terms$4,
-    to: to$4,
-    totalAda: totalAda$4,
-    totalUsd: totalUsd$4,
+    received: received$5,
+    register: register$5,
+    rememberMe: rememberMe$5,
+    requested: requested$5,
+    reviewerReputationScore: reviewerReputationScore$5,
+    reviewers: reviewers$5,
+    rightSwipes: rightSwipes$5,
+    role: role$5,
+    searchQuery: searchQuery$5,
+    seeAll: seeAll$5,
+    seeLess: seeLess$5,
+    seeMore: seeMore$5,
+    select: select$5,
+    selectLanguage: selectLanguage$5,
+    selectLanguageForContent: selectLanguageForContent$5,
+    selected: selected$5,
+    selection: selection$5,
+    signin: signin$5,
+    signup: signup$5,
+    social: social$5,
+    solution: solution$5,
+    spending: spending$5,
+    startDate: startDate$5,
+    submitted: submitted$5,
+    support: support$5,
+    teams: teams$5,
+    terms: terms$5,
+    to: to$5,
+    totalAda: totalAda$5,
+    totalUsd: totalUsd$5,
+    transaction: transaction$5,
     transation,
-    twitter: twitter$4,
+    twitter: twitter$5,
     unavailable,
-    verificationCode: verificationCode$4,
-    verificationCodeLabel: verificationCodeLabel$4,
-    verificationInstructions: verificationInstructions$4,
-    verificationTitle: verificationTitle$4,
-    viewNFT: viewNFT$4,
-    voters: voters$4,
-    votes: votes$4,
-    wallets: wallets$4,
-    yes: yes$4,
-    yesVotes: yesVotes$4
+    unavailableForMint: unavailableForMint$5,
+    updatePassword: updatePassword$5,
+    verificationCode: verificationCode$5,
+    verificationCodeLabel: verificationCodeLabel$5,
+    verificationInstructions: verificationInstructions$5,
+    verificationTitle: verificationTitle$5,
+    viewNFT: viewNFT$5,
+    voters: voters$5,
+    votes: votes$5,
+    wallets: wallets$5,
+    yes: yes$5,
+    yesVotes: yesVotes$5
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const activeFund$3 = "アクティブファンド";
-const addEmail$3 = "メールアドレス追加";
-const addYourCity$3 = "都市を追加";
-const appMessage$3 = "すべての投票は公式Catalyst Voting Appで提出する必要があります。これは調査・企画ツールです！";
-const articles$3 = "記事";
-const assetName$3 = "アセット名";
-const API$3 = "API";
-const from$3 = "開始";
-const to$3 = "終了";
-const authMessage$3 = "提案、月次レポート、人、グループを探索できます。資金調達状況や予算規模、ファンド、キャンペーン、キーワードなどで提案をフィルタリングできます。";
-const bio$3 = "プロフィール";
-const myWallet$3 = "マイウォレット";
-const allCurrencies$3 = "すべての通貨";
-const totalAda$3 = "ADA総額";
-const totalUsd$3 = "USD総額";
-const amount$3 = "金額 ";
-const minCharTextarea$3 = "最低200文字が必要です";
-const blockchainData$3 = "ブロックチェーンデータ";
-const bookmark$3 = "提案の洞察を整理・管理するための個人スペースです。保存した提案に簡単にアクセスし、ノートをレビューし、キュレーションしたリストを共有して重要なアイデアや機会を把握しましょう。";
-const catalystAPI$3 = "Catalyst API";
-const ccv4Votes$3 = "CCV4投票";
-const chooseMetaData$3 = "メタデータを選択";
-const confirmPassword$3 = "パスワード確認";
-const connect$3 = "接続";
-const updatePassword$3 = "パスワード更新";
-const currentPassword$3 = "現在のパスワード";
-const connectWallet$3 = "ウォレット接続";
-const comingSoon$3 = "近日公開";
-const cookies$3 = "クッキー";
-const copyright$3 = "© 2024 Catalyst Explorer. すべての権利を保有。";
-const connections$3 = "接続";
-const minting$3 = "ミント中";
-const loginToMint$3 = "ミントするにはログイン";
-const unavailableForMint$3 = "利用不可";
-const mustBeProposer$3 = "提案者である必要があります";
-const copied$3 = "コピーしました";
-const data$3 = "データ";
-const dReps$3 = "DReps";
-const email$3 = "メール";
-const emailAddress$3 = "メールアドレス";
-const general$3 = "一般";
-const facebook$3 = "Facebook";
-const forgotPassword$3 = "パスワードを忘れた";
-const funding$3 = "資金調達";
-const getStarted$3 = "開始する";
-const github$3 = "Github";
-const Home$3 = "ホーム";
-const jormungandr$3 = "Jormungandr";
-const knowledgeBase$3 = "ナレッジベース";
-const explore$3 = "探索";
-const impact$3 = "影響";
-const legal$3 = "法的事項";
-const licenses$3 = "ライセンス";
-const login$3 = "ログイン";
-const linkedIn$3 = "LinkedIn";
-const listsAndBookmarks$3 = "リストとブックマーク";
-const monthlyReports$3 = "月次レポート";
-const metaTitle$3 = "メタデータプレビュー";
-const myCharts$3 = "マイチャート";
-const mintNFT$3 = "NFTをミント";
-const name$3 = "名前";
-const viewNFT$3 = "NFTを表示";
-const nftPending$3 = "NFT保留中";
-const cantFindNFT$3 = "ミント用NFTが見つかりません";
-const paymentGateway$3 = "NFT-MAKER PRO決済ゲートウェイ";
-const fundProject$3 = "資金提供プロジェクト番号";
-const projectTitle$3 = "プロジェクトタイトル";
-const yesVotes$3 = "賛成票";
-const noVotes$3 = "反対票";
-const role$3 = "役割";
-const otherContributors$3 = "その他の貢献者";
-const metaDataInstruction$3 = "Xアイコンをクリックしてメタデータに取り消し線を付けることができます。取り消し線の付いた情報は最終ミントから除外されます。";
-const nobookmarks$3 = "まだブックマークはありません";
-const noBookmarksYet$3 = "まだ提案、人、グループ、レビューをブックマークしていません。探索を始めてお気に入りをブックマークしましょう！";
-const noImage$3 = "画像なし";
-const developers$3 = "開発者";
-const noProposalBookmarks$3 = "提案のブックマークが見つかりません";
-const noGroupBookmarks$3 = "グループのブックマークが見つかりません";
-const noPeopleBookmarks$3 = "人のブックマークが見つかりません";
-const noReviewBookmarks$3 = "レビューのブックマークが見つかりません";
-const numbers$3 = "数値";
-const password$3 = "パスワード";
-const policyID$3 = "ポリシーID";
-const filters$3 = "フィルター";
-const rememberMe$3 = "ログイン状態を保持";
-const privacy$3 = "プライバシー";
-const problem$3 = "問題";
-const profileBackground$3 = "プロフィール背景";
-const projectCatalyst$3 = "Project Catalystキャンペーン名";
-const reviewers$3 = "レビュアー";
-const register$3 = "登録";
-const reviewerReputationScore$3 = "レビュアー評価スコア";
-const searchQuery$3 = "検索クエリに一致する結果がありません";
-const signin$3 = "サインイン";
-const signup$3 = "サインアップ";
-const social$3 = "ソーシャル";
-const spending$3 = "支出";
-const support$3 = "サポート";
-const seeAll$3 = "すべて見る";
-const seeLess$3 = "簡略表示";
-const seeMore$3 = "詳細表示";
-const solution$3 = "解決策";
-const terms$3 = "利用規約";
-const twitter$3 = "Twitter";
-const transaction$3 = "取引";
-const votes$3 = "私の投票";
-const voters$3 = "投票者";
-const wallets$3 = "ウォレット";
-const details$3 = "詳細";
-const teams$3 = "チーム";
-const yes$3 = "はい";
-const filterChart$3 = "チャートフィルター";
-const abstain$3 = "棄権";
-const notSet$3 = "設定なし";
-const loading$3 = "読み込み中";
-const Link$3 = "リンク";
-const select$3 = "選択";
-const selected$3 = "選択済み";
-const clear$3 = "クリア";
-const selection$3 = "選択";
-const awarded$3 = "授与済み";
-const distributed$3 = "配布済み";
-const requested$3 = "要求済み";
-const submitted$3 = "提出済み";
-const funded$3 = "資金提供済み";
-const approved$3 = "承認済み";
-const completed$3 = "完了済み";
-const loginPrompt$3 = "開始するにはログインしてください";
-const back$3 = "戻る";
-const verificationTitle$3 = "認証を受けましょう！";
-const verificationCodeLabel$3 = "認証コード";
-const verificationCode$3 = "コード：";
-const verificationInstructions$3 = "このプロフィールの所有権を確認するには、IdeascaleでLido Nationに個人メッセージを送信し、上記のコードを含めてください。";
-const goToIdeascale$3 = "Ideascaleに移動";
-const proposal$3 = "提案";
-const noNFTDataAvailable$3 = "利用可能なNFTデータがありません";
-const noPreviewAvailable$3 = "プレビューは利用できません";
-const chooseMetaDataDescription$3 = "メタデータを選択";
-const metadataStrikeInstruction$3 = "Xアイコンをクリックしてメタデータに取り消し線を付けることができます。取り消し線の付いた情報は最終ミントから除外されます。";
-const nftPaymentGatewayTitle$3 = "NFT-MAKER PRO決済ゲートウェイ";
-const artistRole$3 = "アーティスト";
-const cantFindNFTForMint$3 = "ミント用NFTが見つかりません";
-const copyToClipboard$3 = "クリップボードにコピー";
-const previous$3 = "前へ";
-const next$3 = "次へ";
-const selectLanguage$3 = "言語選択";
-const selectLanguageForContent$3 = "コンテンツの言語を選択してください";
-const rightSwipes$3 = " - 右スワイプ";
-const leftSwipes$3 = " - 左スワイプ";
-const loadingGraph$3 = "グラフ読み込み中";
-const endDate$3 = "終了日";
-const startDate$3 = "開始日";
+const activeFund$4 = "アクティブファンド";
+const addEmail$4 = "メールアドレス追加";
+const addYourCity$4 = "都市を追加";
+const appMessage$4 = "すべての投票は公式Catalyst Voting Appで提出する必要があります。これは調査・企画ツールです！";
+const articles$4 = "記事";
+const assetName$4 = "アセット名";
+const API$4 = "API";
+const from$4 = "開始";
+const to$4 = "終了";
+const authMessage$4 = "提案、月次レポート、人、グループを探索できます。資金調達状況や予算規模、ファンド、キャンペーン、キーワードなどで提案をフィルタリングできます。";
+const bio$4 = "プロフィール";
+const myWallet$4 = "マイウォレット";
+const allCurrencies$4 = "すべての通貨";
+const totalAda$4 = "ADA総額";
+const totalUsd$4 = "USD総額";
+const amount$4 = "金額 ";
+const minCharTextarea$4 = "最低200文字が必要です";
+const blockchainData$4 = "ブロックチェーンデータ";
+const bookmark$4 = "提案の洞察を整理・管理するための個人スペースです。保存した提案に簡単にアクセスし、ノートをレビューし、キュレーションしたリストを共有して重要なアイデアや機会を把握しましょう。";
+const catalystAPI$4 = "Catalyst API";
+const ccv4Votes$4 = "CCV4投票";
+const chooseMetaData$4 = "メタデータを選択";
+const confirmPassword$4 = "パスワード確認";
+const connect$4 = "接続";
+const updatePassword$4 = "パスワード更新";
+const currentPassword$4 = "現在のパスワード";
+const connectWallet$4 = "ウォレット接続";
+const comingSoon$4 = "近日公開";
+const cookies$4 = "クッキー";
+const copyright$4 = " すべての権利を保有。";
+const connections$4 = "接続";
+const minting$4 = "ミント中";
+const loginToMint$4 = "ミントするにはログイン";
+const unavailableForMint$4 = "利用不可";
+const mustBeProposer$4 = "提案者である必要があります";
+const copied$4 = "コピーしました";
+const data$4 = "データ";
+const dReps$4 = "DReps";
+const email$4 = "メール";
+const emailAddress$4 = "メールアドレス";
+const general$4 = "一般";
+const facebook$4 = "Facebook";
+const forgotPassword$4 = "パスワードを忘れた";
+const funding$4 = "資金調達";
+const getStarted$4 = "開始する";
+const github$4 = "Github";
+const Home$4 = "ホーム";
+const jormungandr$4 = "Jormungandr";
+const knowledgeBase$4 = "ナレッジベース";
+const explore$4 = "探索";
+const impact$4 = "影響";
+const legal$4 = "法的事項";
+const licenses$4 = "ライセンス";
+const login$4 = "ログイン";
+const linkedIn$4 = "LinkedIn";
+const listsAndBookmarks$4 = "リストとブックマーク";
+const monthlyReports$4 = "月次レポート";
+const metaTitle$4 = "メタデータプレビュー";
+const myCharts$4 = "マイチャート";
+const mintNFT$4 = "NFTをミント";
+const name$4 = "名前";
+const viewNFT$4 = "NFTを表示";
+const nftPending$4 = "NFT保留中";
+const cantFindNFT$4 = "ミント用NFTが見つかりません";
+const paymentGateway$4 = "NFT-MAKER PRO決済ゲートウェイ";
+const fundProject$4 = "資金提供プロジェクト番号";
+const projectTitle$4 = "プロジェクトタイトル";
+const yesVotes$4 = "賛成票";
+const noVotes$4 = "反対票";
+const role$4 = "役割";
+const otherContributors$4 = "その他の貢献者";
+const metaDataInstruction$4 = "Xアイコンをクリックしてメタデータに取り消し線を付けることができます。取り消し線の付いた情報は最終ミントから除外されます。";
+const nobookmarks$4 = "まだブックマークはありません";
+const noBookmarksYet$4 = "まだ提案、人、グループ、レビューをブックマークしていません。探索を始めてお気に入りをブックマークしましょう！";
+const noImage$4 = "画像なし";
+const developers$4 = "開発者";
+const noProposalBookmarks$4 = "提案のブックマークが見つかりません";
+const noGroupBookmarks$4 = "グループのブックマークが見つかりません";
+const noPeopleBookmarks$4 = "人のブックマークが見つかりません";
+const noReviewBookmarks$4 = "レビューのブックマークが見つかりません";
+const numbers$4 = "数値";
+const password$4 = "パスワード";
+const policyID$4 = "ポリシーID";
+const filters$4 = "フィルター";
+const rememberMe$4 = "ログイン状態を保持";
+const privacy$4 = "プライバシー";
+const problem$4 = "問題";
+const profileBackground$4 = "プロフィール背景";
+const projectCatalyst$4 = "Project Catalystキャンペーン名";
+const reviewers$4 = "レビュアー";
+const register$4 = "登録";
+const reviewerReputationScore$4 = "レビュアー評価スコア";
+const searchQuery$4 = "検索クエリに一致する結果がありません";
+const signin$4 = "サインイン";
+const signup$4 = "サインアップ";
+const social$4 = "ソーシャル";
+const spending$4 = "支出";
+const support$4 = "サポート";
+const seeAll$4 = "すべて見る";
+const seeLess$4 = "簡略表示";
+const seeMore$4 = "詳細表示";
+const solution$4 = "解決策";
+const terms$4 = "利用規約";
+const twitter$4 = "Twitter";
+const transaction$4 = "取引";
+const votes$4 = "私の投票";
+const voters$4 = "投票者";
+const wallets$4 = "ウォレット";
+const details$4 = "詳細";
+const teams$4 = "チーム";
+const yes$4 = "はい";
+const filterChart$4 = "チャートフィルター";
+const abstain$4 = "棄権";
+const notSet$4 = "設定なし";
+const loading$4 = "読み込み中";
+const Link$4 = "リンク";
+const select$4 = "選択";
+const selected$4 = "選択済み";
+const clear$4 = "クリア";
+const selection$4 = "選択";
+const awarded$4 = "授与済み";
+const distributed$4 = "配布済み";
+const requested$4 = "要求済み";
+const received$4 = "受領済み";
+const submitted$4 = "提出済み";
+const funded$4 = "資金提供済み";
+const approved$4 = "承認済み";
+const completed$4 = "完了済み";
+const loginPrompt$4 = "開始するにはログインしてください";
+const back$4 = "戻る";
+const verificationTitle$4 = "認証を受けましょう！";
+const verificationCodeLabel$4 = "認証コード";
+const verificationCode$4 = "コード：";
+const verificationInstructions$4 = "このプロフィールの所有権を確認するには、IdeascaleでLido Nationに個人メッセージを送信し、上記のコードを含めてください。";
+const goToIdeascale$4 = "Ideascaleに移動";
+const proposal$4 = "提案";
+const noNFTDataAvailable$4 = "利用可能なNFTデータがありません";
+const noPreviewAvailable$4 = "プレビューは利用できません";
+const chooseMetaDataDescription$4 = "メタデータを選択";
+const metadataStrikeInstruction$4 = "Xアイコンをクリックしてメタデータに取り消し線を付けることができます。取り消し線の付いた情報は最終ミントから除外されます。";
+const nftPaymentGatewayTitle$4 = "NFT-MAKER PRO決済ゲートウェイ";
+const artistRole$4 = "アーティスト";
+const cantFindNFTForMint$4 = "ミント用NFTが見つかりません";
+const copyToClipboard$4 = "クリップボードにコピー";
+const previous$4 = "前へ";
+const next$4 = "次へ";
+const selectLanguage$4 = "言語選択";
+const selectLanguageForContent$4 = "コンテンツの言語を選択してください";
+const rightSwipes$4 = " - 右スワイプ";
+const leftSwipes$4 = " - 左スワイプ";
+const loadingGraph$4 = "グラフ読み込み中";
+const endDate$4 = "終了日";
+const startDate$4 = "開始日";
 const ja = {
-  activeFund: activeFund$3,
-  addEmail: addEmail$3,
-  addYourCity: addYourCity$3,
-  appMessage: appMessage$3,
-  articles: articles$3,
-  assetName: assetName$3,
-  API: API$3,
-  from: from$3,
-  to: to$3,
-  authMessage: authMessage$3,
-  bio: bio$3,
-  myWallet: myWallet$3,
-  allCurrencies: allCurrencies$3,
-  totalAda: totalAda$3,
-  totalUsd: totalUsd$3,
-  amount: amount$3,
-  minCharTextarea: minCharTextarea$3,
-  blockchainData: blockchainData$3,
-  bookmark: bookmark$3,
-  catalystAPI: catalystAPI$3,
-  ccv4Votes: ccv4Votes$3,
-  chooseMetaData: chooseMetaData$3,
-  confirmPassword: confirmPassword$3,
-  connect: connect$3,
-  updatePassword: updatePassword$3,
-  currentPassword: currentPassword$3,
-  connectWallet: connectWallet$3,
-  comingSoon: comingSoon$3,
-  cookies: cookies$3,
-  copyright: copyright$3,
-  connections: connections$3,
-  minting: minting$3,
-  loginToMint: loginToMint$3,
-  unavailableForMint: unavailableForMint$3,
-  mustBeProposer: mustBeProposer$3,
-  copied: copied$3,
-  data: data$3,
-  dReps: dReps$3,
-  email: email$3,
-  emailAddress: emailAddress$3,
-  general: general$3,
-  facebook: facebook$3,
-  forgotPassword: forgotPassword$3,
-  funding: funding$3,
-  getStarted: getStarted$3,
-  github: github$3,
-  Home: Home$3,
-  jormungandr: jormungandr$3,
-  knowledgeBase: knowledgeBase$3,
-  explore: explore$3,
-  impact: impact$3,
-  legal: legal$3,
-  licenses: licenses$3,
-  login: login$3,
-  linkedIn: linkedIn$3,
-  listsAndBookmarks: listsAndBookmarks$3,
-  monthlyReports: monthlyReports$3,
-  metaTitle: metaTitle$3,
-  myCharts: myCharts$3,
-  mintNFT: mintNFT$3,
-  name: name$3,
-  viewNFT: viewNFT$3,
-  nftPending: nftPending$3,
-  cantFindNFT: cantFindNFT$3,
-  paymentGateway: paymentGateway$3,
-  fundProject: fundProject$3,
-  projectTitle: projectTitle$3,
-  yesVotes: yesVotes$3,
-  noVotes: noVotes$3,
-  role: role$3,
-  otherContributors: otherContributors$3,
-  metaDataInstruction: metaDataInstruction$3,
-  nobookmarks: nobookmarks$3,
-  noBookmarksYet: noBookmarksYet$3,
-  noImage: noImage$3,
-  developers: developers$3,
-  noProposalBookmarks: noProposalBookmarks$3,
-  noGroupBookmarks: noGroupBookmarks$3,
-  noPeopleBookmarks: noPeopleBookmarks$3,
-  noReviewBookmarks: noReviewBookmarks$3,
-  numbers: numbers$3,
-  password: password$3,
-  policyID: policyID$3,
-  filters: filters$3,
-  rememberMe: rememberMe$3,
-  privacy: privacy$3,
-  problem: problem$3,
-  profileBackground: profileBackground$3,
-  projectCatalyst: projectCatalyst$3,
-  reviewers: reviewers$3,
-  register: register$3,
-  reviewerReputationScore: reviewerReputationScore$3,
-  searchQuery: searchQuery$3,
-  signin: signin$3,
-  signup: signup$3,
-  social: social$3,
-  spending: spending$3,
-  support: support$3,
-  seeAll: seeAll$3,
-  seeLess: seeLess$3,
-  seeMore: seeMore$3,
-  solution: solution$3,
-  terms: terms$3,
-  twitter: twitter$3,
-  transaction: transaction$3,
-  votes: votes$3,
-  voters: voters$3,
-  wallets: wallets$3,
-  details: details$3,
-  teams: teams$3,
-  yes: yes$3,
-  filterChart: filterChart$3,
-  abstain: abstain$3,
-  notSet: notSet$3,
-  loading: loading$3,
-  Link: Link$3,
-  select: select$3,
-  selected: selected$3,
-  clear: clear$3,
-  selection: selection$3,
-  awarded: awarded$3,
-  distributed: distributed$3,
-  requested: requested$3,
-  submitted: submitted$3,
-  funded: funded$3,
-  approved: approved$3,
-  completed: completed$3,
-  loginPrompt: loginPrompt$3,
-  back: back$3,
-  verificationTitle: verificationTitle$3,
-  verificationCodeLabel: verificationCodeLabel$3,
-  verificationCode: verificationCode$3,
-  verificationInstructions: verificationInstructions$3,
-  goToIdeascale: goToIdeascale$3,
-  proposal: proposal$3,
-  noNFTDataAvailable: noNFTDataAvailable$3,
-  noPreviewAvailable: noPreviewAvailable$3,
-  chooseMetaDataDescription: chooseMetaDataDescription$3,
-  metadataStrikeInstruction: metadataStrikeInstruction$3,
-  nftPaymentGatewayTitle: nftPaymentGatewayTitle$3,
-  artistRole: artistRole$3,
-  cantFindNFTForMint: cantFindNFTForMint$3,
-  copyToClipboard: copyToClipboard$3,
+  activeFund: activeFund$4,
+  addEmail: addEmail$4,
+  addYourCity: addYourCity$4,
+  appMessage: appMessage$4,
+  articles: articles$4,
+  assetName: assetName$4,
+  API: API$4,
+  from: from$4,
+  to: to$4,
+  authMessage: authMessage$4,
+  bio: bio$4,
+  myWallet: myWallet$4,
+  allCurrencies: allCurrencies$4,
+  totalAda: totalAda$4,
+  totalUsd: totalUsd$4,
+  amount: amount$4,
+  minCharTextarea: minCharTextarea$4,
+  blockchainData: blockchainData$4,
+  bookmark: bookmark$4,
+  catalystAPI: catalystAPI$4,
+  ccv4Votes: ccv4Votes$4,
+  chooseMetaData: chooseMetaData$4,
+  confirmPassword: confirmPassword$4,
+  connect: connect$4,
+  updatePassword: updatePassword$4,
+  currentPassword: currentPassword$4,
+  connectWallet: connectWallet$4,
+  comingSoon: comingSoon$4,
+  cookies: cookies$4,
+  copyright: copyright$4,
+  connections: connections$4,
+  minting: minting$4,
+  loginToMint: loginToMint$4,
+  unavailableForMint: unavailableForMint$4,
+  mustBeProposer: mustBeProposer$4,
+  copied: copied$4,
+  data: data$4,
+  dReps: dReps$4,
+  email: email$4,
+  emailAddress: emailAddress$4,
+  general: general$4,
+  facebook: facebook$4,
+  forgotPassword: forgotPassword$4,
+  funding: funding$4,
+  getStarted: getStarted$4,
+  github: github$4,
+  Home: Home$4,
+  jormungandr: jormungandr$4,
+  knowledgeBase: knowledgeBase$4,
+  explore: explore$4,
+  impact: impact$4,
+  legal: legal$4,
+  licenses: licenses$4,
+  login: login$4,
+  linkedIn: linkedIn$4,
+  listsAndBookmarks: listsAndBookmarks$4,
+  monthlyReports: monthlyReports$4,
+  metaTitle: metaTitle$4,
+  myCharts: myCharts$4,
+  mintNFT: mintNFT$4,
+  name: name$4,
+  viewNFT: viewNFT$4,
+  nftPending: nftPending$4,
+  cantFindNFT: cantFindNFT$4,
+  paymentGateway: paymentGateway$4,
+  fundProject: fundProject$4,
+  projectTitle: projectTitle$4,
+  yesVotes: yesVotes$4,
+  noVotes: noVotes$4,
+  role: role$4,
+  otherContributors: otherContributors$4,
+  metaDataInstruction: metaDataInstruction$4,
+  nobookmarks: nobookmarks$4,
+  noBookmarksYet: noBookmarksYet$4,
+  noImage: noImage$4,
+  developers: developers$4,
+  noProposalBookmarks: noProposalBookmarks$4,
+  noGroupBookmarks: noGroupBookmarks$4,
+  noPeopleBookmarks: noPeopleBookmarks$4,
+  noReviewBookmarks: noReviewBookmarks$4,
+  numbers: numbers$4,
+  password: password$4,
+  policyID: policyID$4,
+  filters: filters$4,
+  rememberMe: rememberMe$4,
+  privacy: privacy$4,
+  problem: problem$4,
+  profileBackground: profileBackground$4,
+  projectCatalyst: projectCatalyst$4,
+  reviewers: reviewers$4,
+  register: register$4,
+  reviewerReputationScore: reviewerReputationScore$4,
+  searchQuery: searchQuery$4,
+  signin: signin$4,
+  signup: signup$4,
+  social: social$4,
+  spending: spending$4,
+  support: support$4,
+  seeAll: seeAll$4,
+  seeLess: seeLess$4,
+  seeMore: seeMore$4,
+  solution: solution$4,
+  terms: terms$4,
+  twitter: twitter$4,
+  transaction: transaction$4,
+  votes: votes$4,
+  voters: voters$4,
+  wallets: wallets$4,
+  details: details$4,
+  teams: teams$4,
+  yes: yes$4,
+  filterChart: filterChart$4,
+  abstain: abstain$4,
+  notSet: notSet$4,
+  loading: loading$4,
+  Link: Link$4,
+  select: select$4,
+  selected: selected$4,
+  clear: clear$4,
+  selection: selection$4,
+  awarded: awarded$4,
+  distributed: distributed$4,
+  requested: requested$4,
+  received: received$4,
+  submitted: submitted$4,
+  funded: funded$4,
+  approved: approved$4,
+  completed: completed$4,
+  loginPrompt: loginPrompt$4,
+  back: back$4,
+  verificationTitle: verificationTitle$4,
+  verificationCodeLabel: verificationCodeLabel$4,
+  verificationCode: verificationCode$4,
+  verificationInstructions: verificationInstructions$4,
+  goToIdeascale: goToIdeascale$4,
+  proposal: proposal$4,
+  noNFTDataAvailable: noNFTDataAvailable$4,
+  noPreviewAvailable: noPreviewAvailable$4,
+  chooseMetaDataDescription: chooseMetaDataDescription$4,
+  metadataStrikeInstruction: metadataStrikeInstruction$4,
+  nftPaymentGatewayTitle: nftPaymentGatewayTitle$4,
+  artistRole: artistRole$4,
+  cantFindNFTForMint: cantFindNFTForMint$4,
+  copyToClipboard: copyToClipboard$4,
   "activeFund.title": "Catalyst アクティブファンド",
   "activeFund.subtitle": "最新の資金調達ラウンドを常にチェックしましょう。キャンペーンを確認し、提案を追跡して、最も重要なものをブックマークできます。",
   "activeFund.budget": "配分予定の総予算",
@@ -53961,6 +56827,9 @@ const ja = {
   "activeFund.bannerTitle": "あなたの投票リストを作成しよう！",
   "activeFund.bannerSubtitle": "参照と共有のために投票選択を作成しましょう！何を探しているか分かっていますか？スタンダードワークフローを使用してください。何を探しているか分からない場合は、カードデッキワークフローを使用して、二度目の検討をしたい提案で右スワイプ、今回棄権またはパスする提案で左スワイプしてください。",
   "activeFund.supportUsTitle": "投票で私たちをサポートしてください！",
+  "activeFund.supportUsSubtitle": "このツールに価値を感じている場合は、投票用紙でのサポートをご検討ください。",
+  "activeFund.supportUsProposalTitle": "オールインワン Catalyst：通知、AI リスト、ポートフォリオ",
+  "activeFund.supportUsSeeProposal": "提案を読む",
   "activeFund.supportUsProposalSubtitle": "資金調達された場合、私たちは次のことを行います：catalystexplorer.comを拡張し、重要なイベントのスマート通知、AIによる提案発見、プロフェッショナルポートフォリオ構築を通じてCatalystとのエンゲージメントを変革します。",
   "activeFund.campaignsTitle": "キャンペーンカテゴリー",
   "activeFund.campaigns.proposals": "提案",
@@ -54154,8 +57023,8 @@ const ja = {
   "bookmarks.viewAsPublic": "公開として表示",
   "bookmarks.editListItem": "リストアイテム編集",
   "bookmarks.publishToIpfs": "IPFSに公開",
-  previous: previous$3,
-  next: next$3,
+  previous: previous$4,
+  next: next$4,
   "workflows.tinderProposal.step1.selectFund": "ファンド選択",
   "workflows.tinderProposal.step1.selectFundPlaceholder": "ファンド選択",
   "workflows.tinderProposal.step1.selectAllThatApply": "（該当するものをすべて選択）",
@@ -54262,8 +57131,8 @@ const ja = {
   "workflows.publishToIpfs.noDescriptionAvailable": "説明がありません",
   "workflows.publishToIpfs.unknown": "不明",
   "workflows.publishToIpfs.separator": "｜",
-  selectLanguage: selectLanguage$3,
-  selectLanguageForContent: selectLanguageForContent$3,
+  selectLanguage: selectLanguage$4,
+  selectLanguageForContent: selectLanguageForContent$4,
   "languageDetection.multipleLanguagesError": "一部のフィールドが異なる言語で書かれているようです。すべてのコンテンツが同じ言語であることを確認してください。",
   "languageDetection.languageMismatchError": "あなたのコンテンツは:detectedLanguageで書かれているようですが、:selectedLanguageを選択しています。言語選択を更新してください。",
   "languageDetection.defaultMismatchError": "言語の不一致が検出されました",
@@ -54311,6 +57180,8 @@ const ja = {
   "my.createListBlurb": "ブックマークリストの作成は、複数のファンドにわたる提案、Ideascaleプロフィール、グループ、レビュー、コミュニティを入れるための空のフォルダーです。",
   "my.createListTitle": "作成するリストタイプを選択してください。（公開で共有するか、非公開で保持できます。）",
   "my.createVotingList": "投票リスト作成",
+  "my.createVotingListWithStandardUi": "スタンダードワークフローを使用",
+  "my.createVotingListWithCardedUi": "カードデッキワークフローを使用",
   "my.createTinderList": "Tinderリスト作成",
   "my.votes": "投票",
   "my.services": "サービス",
@@ -54448,6 +57319,7 @@ const ja = {
   "proposals.providedUrl": "提供されたURL",
   "proposals.listSubtitle": "提案投票は公式Catalyst Voting Appで提出する必要があります",
   "proposals.quickPitchesListSubtitle": "300秒以下のアイデアのクイックピッチが投票用紙に。",
+  "proposals.celebrateCompletedProposals": "完成した提案を祝う",
   "proposals.celebrateCompletedProposalsSubtitle": "祝う価値のあるアイデアたち...あなたの次のプロジェクトに役立つものが見つかるかもしれません。",
   "proposals.pageSubtitle": "タイトル、コンテンツ、作成者、共同作成者で提案とチャレンジを検索",
   "proposals.seeMoreProposals": "さらに多くの提案を見る",
@@ -54920,13 +57792,15 @@ const ja = {
   "transactions.table.voterRegistration": "投票者登録",
   "transactions.table.type": "タイプ",
   "transactions.table.fund": "ファンド",
+  "transactions.table.id": "Id",
   "transactions.table.fragmentId": "フラグメントID",
   "transactions.table.caster": "キャスター",
   "transactions.table.timestamp": "タイムスタンプ",
   "transactions.table.choice": "選択",
   "transactions.table.votingPower": "投票力",
   "transactions.table.rawFragment": "生フラグメント",
-  "transactions.table.totalOutputs": "出力金額（Lovelace）",
+  "transactions.table.proposalPayout": "提案支払い",
+  "transactions.table.totalOutputs": "アウトプット金額 (Lovelace)",
   "transactions.table.totalInputs": "総入力",
   "transactions.table.weights": "重み",
   "transactions.options.newestToOldest": "新しい順から古い順",
@@ -55062,14 +57936,14 @@ const ja = {
   "voter.sort.votesCountDesc": "投票数：高から低",
   "voter.sort.votesCountAsc": "投票数：低から高",
   "voter.sort.proposalsVotedOnDesc": "投票した提案：高から低",
-  rightSwipes: rightSwipes$3,
-  leftSwipes: leftSwipes$3,
+  rightSwipes: rightSwipes$4,
+  leftSwipes: leftSwipes$4,
   "workflows.createService.step1.clickToReplaceImage": "ここをクリックして画像を置き換え",
   "workflows.createService.step1.clickToUploadImage": "ここをクリックして画像をアップロード",
   "graph.loadingConnections": ":nodeNameの接続を読み込み中...",
   "graph.noAdditionalConnections": ":nodeNameには追加の接続がありません",
   "graph.unknownNode": "不明",
-  loadingGraph: loadingGraph$3,
+  loadingGraph: loadingGraph$4,
   "voter.sort.proposalsVotedOnAsc": "投票した提案：低から高",
   "services.service": "サービス",
   "services.AddService": "サービス追加",
@@ -55079,8 +57953,8 @@ const ja = {
   "services.catalystServicesDesc": "Catalyst資金提供チームが協力し、支援を要求し、エコシステムにサービスを提供するためのスペース。",
   "services.myServices": "マイサービス",
   "services.myServicesDesc": "あなたのサービスを管理し、Catalystエコシステムと協力してください。",
-  endDate: endDate$3,
-  startDate: startDate$3,
+  endDate: endDate$4,
+  startDate: startDate$4,
   "workflows.publishToIpfs.success.contentIdLabel": "あなたのコンテンツID：",
   "workflows.publishToIpfs.success.copied": "コピーしました！",
   "workflows.publishToIpfs.success.copyCidTitle": "CIDをコピー",
@@ -55088,461 +57962,474 @@ const ja = {
   "workflows.publishToIpfs.reviewDetails": "リストをIPFSに公開しようとしています。以下の詳細を確認してください。",
   "wallet.login": "ウォレットでログイン",
   "wallet.login.confirm": "接続されたウォレットを使用してログインしようとしています。このウォレットにリンクされたアカウントが認証されます。リンクされたアカウントが見つからない場合は、あなたのアドレスを使用して作成されます。このアカウントは「マイプロフィール」ページのダッシュボードで更新できます。<br><br> <strong>すでにアカウントをお持ちですか？</strong>メールを使用してログインし、ウォレットを追加することで、ウォレットまたはメールのどちらでもログインできます。",
+  "funding.status.pending": "保留中",
+  "funding.status.withdrawn": "取り下げられた",
+  "funding.status.fullyPaid": "完全支払済み",
+  "funding.status.funded": "資金提供済み",
+  "funding.status.notFunded": "資金未提供",
+  "project.status.votePending": "投票保留中",
+  "project.status.withdrawn": "取り下げられた",
+  "project.status.complete": "完了",
+  "project.status.inProgress": "進行中",
+  "project.status.unfunded": "資金未提供",
 };
 
-const __vite_glob_1_4 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_1_6 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
-    API: API$3,
-    Home: Home$3,
-    Link: Link$3,
-    abstain: abstain$3,
-    activeFund: activeFund$3,
-    addEmail: addEmail$3,
-    addYourCity: addYourCity$3,
-    allCurrencies: allCurrencies$3,
-    amount: amount$3,
-    appMessage: appMessage$3,
-    approved: approved$3,
-    articles: articles$3,
-    artistRole: artistRole$3,
-    assetName: assetName$3,
-    authMessage: authMessage$3,
-    awarded: awarded$3,
-    back: back$3,
-    bio: bio$3,
-    blockchainData: blockchainData$3,
-    bookmark: bookmark$3,
-    cantFindNFT: cantFindNFT$3,
-    cantFindNFTForMint: cantFindNFTForMint$3,
-    catalystAPI: catalystAPI$3,
-    ccv4Votes: ccv4Votes$3,
-    chooseMetaData: chooseMetaData$3,
-    chooseMetaDataDescription: chooseMetaDataDescription$3,
-    clear: clear$3,
-    comingSoon: comingSoon$3,
-    completed: completed$3,
-    confirmPassword: confirmPassword$3,
-    connect: connect$3,
-    connectWallet: connectWallet$3,
-    connections: connections$3,
-    cookies: cookies$3,
-    copied: copied$3,
-    copyToClipboard: copyToClipboard$3,
-    copyright: copyright$3,
-    currentPassword: currentPassword$3,
-    dReps: dReps$3,
-    data: data$3,
+    API: API$4,
+    Home: Home$4,
+    Link: Link$4,
+    abstain: abstain$4,
+    activeFund: activeFund$4,
+    addEmail: addEmail$4,
+    addYourCity: addYourCity$4,
+    allCurrencies: allCurrencies$4,
+    amount: amount$4,
+    appMessage: appMessage$4,
+    approved: approved$4,
+    articles: articles$4,
+    artistRole: artistRole$4,
+    assetName: assetName$4,
+    authMessage: authMessage$4,
+    awarded: awarded$4,
+    back: back$4,
+    bio: bio$4,
+    blockchainData: blockchainData$4,
+    bookmark: bookmark$4,
+    cantFindNFT: cantFindNFT$4,
+    cantFindNFTForMint: cantFindNFTForMint$4,
+    catalystAPI: catalystAPI$4,
+    ccv4Votes: ccv4Votes$4,
+    chooseMetaData: chooseMetaData$4,
+    chooseMetaDataDescription: chooseMetaDataDescription$4,
+    clear: clear$4,
+    comingSoon: comingSoon$4,
+    completed: completed$4,
+    confirmPassword: confirmPassword$4,
+    connect: connect$4,
+    connectWallet: connectWallet$4,
+    connections: connections$4,
+    cookies: cookies$4,
+    copied: copied$4,
+    copyToClipboard: copyToClipboard$4,
+    copyright: copyright$4,
+    currentPassword: currentPassword$4,
+    dReps: dReps$4,
+    data: data$4,
     default: ja,
-    details: details$3,
-    developers: developers$3,
-    distributed: distributed$3,
-    email: email$3,
-    emailAddress: emailAddress$3,
-    endDate: endDate$3,
-    explore: explore$3,
-    facebook: facebook$3,
-    filterChart: filterChart$3,
-    filters: filters$3,
-    forgotPassword: forgotPassword$3,
-    from: from$3,
-    fundProject: fundProject$3,
-    funded: funded$3,
-    funding: funding$3,
-    general: general$3,
-    getStarted: getStarted$3,
-    github: github$3,
-    goToIdeascale: goToIdeascale$3,
-    impact: impact$3,
-    jormungandr: jormungandr$3,
-    knowledgeBase: knowledgeBase$3,
-    leftSwipes: leftSwipes$3,
-    legal: legal$3,
-    licenses: licenses$3,
-    linkedIn: linkedIn$3,
-    listsAndBookmarks: listsAndBookmarks$3,
-    loading: loading$3,
-    loadingGraph: loadingGraph$3,
-    login: login$3,
-    loginPrompt: loginPrompt$3,
-    loginToMint: loginToMint$3,
-    metaDataInstruction: metaDataInstruction$3,
-    metaTitle: metaTitle$3,
-    metadataStrikeInstruction: metadataStrikeInstruction$3,
-    minCharTextarea: minCharTextarea$3,
-    mintNFT: mintNFT$3,
-    minting: minting$3,
-    monthlyReports: monthlyReports$3,
-    mustBeProposer: mustBeProposer$3,
-    myCharts: myCharts$3,
-    myWallet: myWallet$3,
-    name: name$3,
-    next: next$3,
-    nftPaymentGatewayTitle: nftPaymentGatewayTitle$3,
-    nftPending: nftPending$3,
-    noBookmarksYet: noBookmarksYet$3,
-    noGroupBookmarks: noGroupBookmarks$3,
-    noImage: noImage$3,
-    noNFTDataAvailable: noNFTDataAvailable$3,
-    noPeopleBookmarks: noPeopleBookmarks$3,
-    noPreviewAvailable: noPreviewAvailable$3,
-    noProposalBookmarks: noProposalBookmarks$3,
-    noReviewBookmarks: noReviewBookmarks$3,
-    noVotes: noVotes$3,
-    nobookmarks: nobookmarks$3,
-    notSet: notSet$3,
-    numbers: numbers$3,
-    otherContributors: otherContributors$3,
-    password: password$3,
-    paymentGateway: paymentGateway$3,
-    policyID: policyID$3,
-    previous: previous$3,
-    privacy: privacy$3,
-    problem: problem$3,
-    profileBackground: profileBackground$3,
-    projectCatalyst: projectCatalyst$3,
-    projectTitle: projectTitle$3,
-    proposal: proposal$3,
-    register: register$3,
-    rememberMe: rememberMe$3,
-    requested: requested$3,
-    reviewerReputationScore: reviewerReputationScore$3,
-    reviewers: reviewers$3,
-    rightSwipes: rightSwipes$3,
-    role: role$3,
-    searchQuery: searchQuery$3,
-    seeAll: seeAll$3,
-    seeLess: seeLess$3,
-    seeMore: seeMore$3,
-    select: select$3,
-    selectLanguage: selectLanguage$3,
-    selectLanguageForContent: selectLanguageForContent$3,
-    selected: selected$3,
-    selection: selection$3,
-    signin: signin$3,
-    signup: signup$3,
-    social: social$3,
-    solution: solution$3,
-    spending: spending$3,
-    startDate: startDate$3,
-    submitted: submitted$3,
-    support: support$3,
-    teams: teams$3,
-    terms: terms$3,
-    to: to$3,
-    totalAda: totalAda$3,
-    totalUsd: totalUsd$3,
-    transaction: transaction$3,
-    twitter: twitter$3,
-    unavailableForMint: unavailableForMint$3,
-    updatePassword: updatePassword$3,
-    verificationCode: verificationCode$3,
-    verificationCodeLabel: verificationCodeLabel$3,
-    verificationInstructions: verificationInstructions$3,
-    verificationTitle: verificationTitle$3,
-    viewNFT: viewNFT$3,
-    voters: voters$3,
-    votes: votes$3,
-    wallets: wallets$3,
-    yes: yes$3,
-    yesVotes: yesVotes$3
+    details: details$4,
+    developers: developers$4,
+    distributed: distributed$4,
+    email: email$4,
+    emailAddress: emailAddress$4,
+    endDate: endDate$4,
+    explore: explore$4,
+    facebook: facebook$4,
+    filterChart: filterChart$4,
+    filters: filters$4,
+    forgotPassword: forgotPassword$4,
+    from: from$4,
+    fundProject: fundProject$4,
+    funded: funded$4,
+    funding: funding$4,
+    general: general$4,
+    getStarted: getStarted$4,
+    github: github$4,
+    goToIdeascale: goToIdeascale$4,
+    impact: impact$4,
+    jormungandr: jormungandr$4,
+    knowledgeBase: knowledgeBase$4,
+    leftSwipes: leftSwipes$4,
+    legal: legal$4,
+    licenses: licenses$4,
+    linkedIn: linkedIn$4,
+    listsAndBookmarks: listsAndBookmarks$4,
+    loading: loading$4,
+    loadingGraph: loadingGraph$4,
+    login: login$4,
+    loginPrompt: loginPrompt$4,
+    loginToMint: loginToMint$4,
+    metaDataInstruction: metaDataInstruction$4,
+    metaTitle: metaTitle$4,
+    metadataStrikeInstruction: metadataStrikeInstruction$4,
+    minCharTextarea: minCharTextarea$4,
+    mintNFT: mintNFT$4,
+    minting: minting$4,
+    monthlyReports: monthlyReports$4,
+    mustBeProposer: mustBeProposer$4,
+    myCharts: myCharts$4,
+    myWallet: myWallet$4,
+    name: name$4,
+    next: next$4,
+    nftPaymentGatewayTitle: nftPaymentGatewayTitle$4,
+    nftPending: nftPending$4,
+    noBookmarksYet: noBookmarksYet$4,
+    noGroupBookmarks: noGroupBookmarks$4,
+    noImage: noImage$4,
+    noNFTDataAvailable: noNFTDataAvailable$4,
+    noPeopleBookmarks: noPeopleBookmarks$4,
+    noPreviewAvailable: noPreviewAvailable$4,
+    noProposalBookmarks: noProposalBookmarks$4,
+    noReviewBookmarks: noReviewBookmarks$4,
+    noVotes: noVotes$4,
+    nobookmarks: nobookmarks$4,
+    notSet: notSet$4,
+    numbers: numbers$4,
+    otherContributors: otherContributors$4,
+    password: password$4,
+    paymentGateway: paymentGateway$4,
+    policyID: policyID$4,
+    previous: previous$4,
+    privacy: privacy$4,
+    problem: problem$4,
+    profileBackground: profileBackground$4,
+    projectCatalyst: projectCatalyst$4,
+    projectTitle: projectTitle$4,
+    proposal: proposal$4,
+    received: received$4,
+    register: register$4,
+    rememberMe: rememberMe$4,
+    requested: requested$4,
+    reviewerReputationScore: reviewerReputationScore$4,
+    reviewers: reviewers$4,
+    rightSwipes: rightSwipes$4,
+    role: role$4,
+    searchQuery: searchQuery$4,
+    seeAll: seeAll$4,
+    seeLess: seeLess$4,
+    seeMore: seeMore$4,
+    select: select$4,
+    selectLanguage: selectLanguage$4,
+    selectLanguageForContent: selectLanguageForContent$4,
+    selected: selected$4,
+    selection: selection$4,
+    signin: signin$4,
+    signup: signup$4,
+    social: social$4,
+    solution: solution$4,
+    spending: spending$4,
+    startDate: startDate$4,
+    submitted: submitted$4,
+    support: support$4,
+    teams: teams$4,
+    terms: terms$4,
+    to: to$4,
+    totalAda: totalAda$4,
+    totalUsd: totalUsd$4,
+    transaction: transaction$4,
+    twitter: twitter$4,
+    unavailableForMint: unavailableForMint$4,
+    updatePassword: updatePassword$4,
+    verificationCode: verificationCode$4,
+    verificationCodeLabel: verificationCodeLabel$4,
+    verificationInstructions: verificationInstructions$4,
+    verificationTitle: verificationTitle$4,
+    viewNFT: viewNFT$4,
+    voters: voters$4,
+    votes: votes$4,
+    wallets: wallets$4,
+    yes: yes$4,
+    yesVotes: yesVotes$4
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const activeFund$2 = "활성 펀드";
-const addEmail$2 = "이메일 추가";
-const addYourCity$2 = "도시 추가";
-const appMessage$2 = "모든 투표는 공식 Catalyst Voting App에서 제출되어야 합니다. 이것은 연구 및 계획 도구입니다!";
-const articles$2 = "기사";
-const assetName$2 = "자산 이름";
-const API$2 = "API";
-const from$2 = "시작";
-const to$2 = "끝";
-const authMessage$2 = "제안, 월간 보고서, 사람, 그룹을 탐색할 수 있습니다. 자금 조달 상태나 예산 규모, 펀드, 캠페인, 키워드 등으로 제안을 필터링할 수 있습니다.";
-const bio$2 = "자기소개";
-const myWallet$2 = "내 지갑";
-const allCurrencies$2 = "모든 통화";
-const totalAda$2 = "ADA 총액";
-const totalUsd$2 = "USD 총액";
-const amount$2 = "금액 ";
-const minCharTextarea$2 = "최소 200자가 필요합니다";
-const blockchainData$2 = "블록체인 데이터";
-const bookmark$2 = "제안 정보를 정리하고 관리하기 위한 개인 공간입니다. 저장된 제안에 쉽게 액세스하고, 노트를 검토하며, 큐레이션된 리스트를 공유하여 주요 아이디어와 기회를 파악하세요.";
-const catalystAPI$2 = "Catalyst API";
-const ccv4Votes$2 = "CCV4 투표";
-const chooseMetaData$2 = "자체 메타데이터 선택";
-const confirmPassword$2 = "비밀번호 확인";
-const connect$2 = "연결";
-const updatePassword$2 = "비밀번호 업데이트";
-const currentPassword$2 = "현재 비밀번호";
-const connectWallet$2 = "지갑 연결";
-const comingSoon$2 = "곧 출시";
-const cookies$2 = "쿠키";
-const copyright$2 = "© 2024 Catalyst Explorer. 모든 권리 보유.";
-const connections$2 = "연결";
-const minting$2 = "민팅 중";
-const loginToMint$2 = "민팅하려면 로그인";
-const unavailableForMint$2 = "사용 불가";
-const mustBeProposer$2 = "제안자여야 함";
-const copied$2 = "복사됨";
-const data$2 = "데이터";
-const dReps$2 = "DReps";
-const email$2 = "이메일";
-const emailAddress$2 = "이메일 주소";
-const general$2 = "일반";
-const facebook$2 = "Facebook";
-const forgotPassword$2 = "비밀번호 찾기";
-const funding$2 = "자금 조달";
-const getStarted$2 = "시작하기";
-const github$2 = "Github";
-const Home$2 = "홈";
-const jormungandr$2 = "Jormungandr";
-const knowledgeBase$2 = "지식 베이스";
-const explore$2 = "탐색";
-const impact$2 = "영향";
-const legal$2 = "법적 사항";
-const licenses$2 = "라이선스";
-const login$2 = "로그인";
-const linkedIn$2 = "LinkedIn";
-const listsAndBookmarks$2 = "목록 및 북마크";
-const monthlyReports$2 = "월간 보고서";
-const metaTitle$2 = "메타데이터 미리보기";
-const myCharts$2 = "내 차트";
-const mintNFT$2 = "NFT 민팅";
-const name$2 = "이름";
-const viewNFT$2 = "NFT 보기";
-const nftPending$2 = "NFT 대기 중";
-const cantFindNFT$2 = "민팅할 NFT를 찾을 수 없음";
-const paymentGateway$2 = "NFT-MAKER PRO 결제 게이트웨이";
-const fundProject$2 = "자금 지원 프로젝트 번호";
-const projectTitle$2 = "프로젝트 제목";
-const yesVotes$2 = "찬성 투표";
-const noVotes$2 = "반대 투표";
-const role$2 = "역할";
-const otherContributors$2 = "기타 기여자";
-const metaDataInstruction$2 = "X 아이콘을 클릭하여 메타데이터를 취소선으로 표시할 수 있습니다. 취소선이 그어진 정보는 최종 민팅에서 제외됩니다.";
-const nobookmarks$2 = "아직 북마크 없음";
-const noBookmarksYet$2 = "제안, 사람, 그룹 또는 리뷰를 북마크하지 않았습니다. 탐색을 시작하고 즐겨찾기를 북마크하세요!";
-const noImage$2 = "이미지 없음";
-const developers$2 = "개발자";
-const noProposalBookmarks$2 = "제안 북마크를 찾을 수 없음";
-const noGroupBookmarks$2 = "그룹 북마크를 찾을 수 없음";
-const noPeopleBookmarks$2 = "사람 북마크를 찾을 수 없음";
-const noReviewBookmarks$2 = "리뷰 북마크를 찾을 수 없음";
-const numbers$2 = "숫자";
-const password$2 = "비밀번호";
-const policyID$2 = "정책 ID";
-const filters$2 = "필터";
-const rememberMe$2 = "로그인 상태 유지";
-const privacy$2 = "개인정보보호";
-const problem$2 = "문제";
-const profileBackground$2 = "프로필 배경";
-const projectCatalyst$2 = "Project Catalyst 캠페인 이름";
-const reviewers$2 = "리뷰어";
-const register$2 = "등록";
-const reviewerReputationScore$2 = "리뷰어 평판 점수";
-const searchQuery$2 = "검색 쿼리와 일치하는 결과가 없습니다";
-const signin$2 = "로그인";
-const signup$2 = "회원가입";
-const social$2 = "소셜";
-const spending$2 = "지출";
-const support$2 = "지원";
-const seeAll$2 = "모두 보기";
-const seeLess$2 = "간략히 보기";
-const seeMore$2 = "더 보기";
-const solution$2 = "해결책";
-const terms$2 = "약관";
-const twitter$2 = "Twitter";
-const transaction$2 = "거래";
-const votes$2 = "내 투표";
-const voters$2 = "투표자";
-const wallets$2 = "지갑";
-const details$2 = "세부사항";
-const teams$2 = "팀";
-const yes$2 = "예";
-const filterChart$2 = "차트 필터";
-const abstain$2 = "기권";
-const notSet$2 = "설정되지 않음";
-const loading$2 = "로딩 중";
-const Link$2 = "링크";
-const select$2 = "선택";
-const selected$2 = "선택됨";
-const clear$2 = "지우기";
-const selection$2 = "선택";
-const awarded$2 = "수여됨";
-const distributed$2 = "배포됨";
-const requested$2 = "요청됨";
-const submitted$2 = "제출됨";
-const funded$2 = "자금 지원됨";
-const approved$2 = "승인됨";
-const completed$2 = "완료됨";
-const loginPrompt$2 = "시작하려면 로그인하세요";
-const back$2 = "뒤로";
-const verificationTitle$2 = "인증을 받으세요!";
-const verificationCodeLabel$2 = "인증 코드";
-const verificationCode$2 = "코드:";
-const verificationInstructions$2 = "이 프로필의 소유권을 확인하려면 Ideascale에서 Lido Nation에게 개인 메시지를 보내고 위의 코드를 포함하세요.";
-const goToIdeascale$2 = "Ideascale로 이동";
-const proposal$2 = "제안";
-const noNFTDataAvailable$2 = "사용 가능한 NFT 데이터 없음";
-const noPreviewAvailable$2 = "미리보기 사용할 수 없음";
-const chooseMetaDataDescription$2 = "자체 메타데이터 선택";
-const metadataStrikeInstruction$2 = "X 아이콘을 클릭하여 메타데이터를 취소선으로 표시할 수 있습니다. 취소선이 그어진 정보는 최종 민팅에서 제외됩니다.";
-const nftPaymentGatewayTitle$2 = "NFT-MAKER PRO 결제 게이트웨이";
-const artistRole$2 = "아티스트";
-const cantFindNFTForMint$2 = "민팅할 NFT를 찾을 수 없음";
-const copyToClipboard$2 = "클립보드에 복사";
-const previous$2 = "이전";
-const next$2 = "다음";
-const selectLanguage$2 = "언어 선택";
-const selectLanguageForContent$2 = "콘텐츠 언어를 선택하세요";
-const rightSwipes$2 = " - 오른쪽 스와이프";
-const leftSwipes$2 = " - 왼쪽 스와이프";
-const loadingGraph$2 = "그래프 로딩 중";
-const endDate$2 = "종료일";
-const startDate$2 = "시작일";
+const activeFund$3 = "활성 펀드";
+const addEmail$3 = "이메일 추가";
+const addYourCity$3 = "도시 추가";
+const appMessage$3 = "모든 투표는 공식 Catalyst Voting App에서 제출되어야 합니다. 이것은 연구 및 계획 도구입니다!";
+const articles$3 = "기사";
+const assetName$3 = "자산 이름";
+const API$3 = "API";
+const from$3 = "시작";
+const to$3 = "끝";
+const authMessage$3 = "제안, 월간 보고서, 사람, 그룹을 탐색할 수 있습니다. 자금 조달 상태나 예산 규모, 펀드, 캠페인, 키워드 등으로 제안을 필터링할 수 있습니다.";
+const bio$3 = "자기소개";
+const myWallet$3 = "내 지갑";
+const allCurrencies$3 = "모든 통화";
+const totalAda$3 = "ADA 총액";
+const totalUsd$3 = "USD 총액";
+const amount$3 = "금액 ";
+const minCharTextarea$3 = "최소 200자가 필요합니다";
+const blockchainData$3 = "블록체인 데이터";
+const bookmark$3 = "제안 정보를 정리하고 관리하기 위한 개인 공간입니다. 저장된 제안에 쉽게 액세스하고, 노트를 검토하며, 큐레이션된 리스트를 공유하여 주요 아이디어와 기회를 파악하세요.";
+const catalystAPI$3 = "Catalyst API";
+const ccv4Votes$3 = "CCV4 투표";
+const chooseMetaData$3 = "자체 메타데이터 선택";
+const confirmPassword$3 = "비밀번호 확인";
+const connect$3 = "연결";
+const updatePassword$3 = "비밀번호 업데이트";
+const currentPassword$3 = "현재 비밀번호";
+const connectWallet$3 = "지갑 연결";
+const comingSoon$3 = "곧 출시";
+const cookies$3 = "쿠키";
+const copyright$3 = " 모든 권리 보유.";
+const connections$3 = "연결";
+const minting$3 = "민팅 중";
+const loginToMint$3 = "민팅하려면 로그인";
+const unavailableForMint$3 = "사용 불가";
+const mustBeProposer$3 = "제안자여야 함";
+const copied$3 = "복사됨";
+const data$3 = "데이터";
+const dReps$3 = "DReps";
+const email$3 = "이메일";
+const emailAddress$3 = "이메일 주소";
+const general$3 = "일반";
+const facebook$3 = "Facebook";
+const forgotPassword$3 = "비밀번호 찾기";
+const funding$3 = "자금 조달";
+const getStarted$3 = "시작하기";
+const github$3 = "Github";
+const Home$3 = "홈";
+const jormungandr$3 = "Jormungandr";
+const knowledgeBase$3 = "지식 베이스";
+const explore$3 = "탐색";
+const impact$3 = "영향";
+const legal$3 = "법적 사항";
+const licenses$3 = "라이선스";
+const login$3 = "로그인";
+const linkedIn$3 = "LinkedIn";
+const listsAndBookmarks$3 = "목록 및 북마크";
+const monthlyReports$3 = "월간 보고서";
+const metaTitle$3 = "메타데이터 미리보기";
+const myCharts$3 = "내 차트";
+const mintNFT$3 = "NFT 민팅";
+const name$3 = "이름";
+const viewNFT$3 = "NFT 보기";
+const nftPending$3 = "NFT 대기 중";
+const cantFindNFT$3 = "민팅할 NFT를 찾을 수 없음";
+const paymentGateway$3 = "NFT-MAKER PRO 결제 게이트웨이";
+const fundProject$3 = "자금 지원 프로젝트 번호";
+const projectTitle$3 = "프로젝트 제목";
+const yesVotes$3 = "찬성 투표";
+const noVotes$3 = "반대 투표";
+const role$3 = "역할";
+const otherContributors$3 = "기타 기여자";
+const metaDataInstruction$3 = "X 아이콘을 클릭하여 메타데이터를 취소선으로 표시할 수 있습니다. 취소선이 그어진 정보는 최종 민팅에서 제외됩니다.";
+const nobookmarks$3 = "아직 북마크 없음";
+const noBookmarksYet$3 = "제안, 사람, 그룹 또는 리뷰를 북마크하지 않았습니다. 탐색을 시작하고 즐겨찾기를 북마크하세요!";
+const noImage$3 = "이미지 없음";
+const developers$3 = "개발자";
+const noProposalBookmarks$3 = "제안 북마크를 찾을 수 없음";
+const noGroupBookmarks$3 = "그룹 북마크를 찾을 수 없음";
+const noPeopleBookmarks$3 = "사람 북마크를 찾을 수 없음";
+const noReviewBookmarks$3 = "리뷰 북마크를 찾을 수 없음";
+const numbers$3 = "숫자";
+const password$3 = "비밀번호";
+const policyID$3 = "정책 ID";
+const filters$3 = "필터";
+const rememberMe$3 = "로그인 상태 유지";
+const privacy$3 = "개인정보보호";
+const problem$3 = "문제";
+const profileBackground$3 = "프로필 배경";
+const projectCatalyst$3 = "Project Catalyst 캠페인 이름";
+const reviewers$3 = "리뷰어";
+const register$3 = "등록";
+const reviewerReputationScore$3 = "리뷰어 평판 점수";
+const searchQuery$3 = "검색 쿼리와 일치하는 결과가 없습니다";
+const signin$3 = "로그인";
+const signup$3 = "회원가입";
+const social$3 = "소셜";
+const spending$3 = "지출";
+const support$3 = "지원";
+const seeAll$3 = "모두 보기";
+const seeLess$3 = "간략히 보기";
+const seeMore$3 = "더 보기";
+const solution$3 = "해결책";
+const terms$3 = "약관";
+const twitter$3 = "Twitter";
+const transaction$3 = "거래";
+const votes$3 = "내 투표";
+const voters$3 = "투표자";
+const wallets$3 = "지갑";
+const details$3 = "세부사항";
+const teams$3 = "팀";
+const yes$3 = "예";
+const filterChart$3 = "차트 필터";
+const abstain$3 = "기권";
+const notSet$3 = "설정되지 않음";
+const loading$3 = "로딩 중";
+const Link$3 = "링크";
+const select$3 = "선택";
+const selected$3 = "선택됨";
+const clear$3 = "지우기";
+const selection$3 = "선택";
+const awarded$3 = "수여됨";
+const distributed$3 = "배포됨";
+const requested$3 = "요청됨";
+const received$3 = "받음";
+const submitted$3 = "제출됨";
+const funded$3 = "자금 지원됨";
+const approved$3 = "승인됨";
+const completed$3 = "완료됨";
+const loginPrompt$3 = "시작하려면 로그인하세요";
+const back$3 = "뒤로";
+const verificationTitle$3 = "인증을 받으세요!";
+const verificationCodeLabel$3 = "인증 코드";
+const verificationCode$3 = "코드:";
+const verificationInstructions$3 = "이 프로필의 소유권을 확인하려면 Ideascale에서 Lido Nation에게 개인 메시지를 보내고 위의 코드를 포함하세요.";
+const goToIdeascale$3 = "Ideascale로 이동";
+const proposal$3 = "제안";
+const noNFTDataAvailable$3 = "사용 가능한 NFT 데이터 없음";
+const noPreviewAvailable$3 = "미리보기 사용할 수 없음";
+const chooseMetaDataDescription$3 = "자체 메타데이터 선택";
+const metadataStrikeInstruction$3 = "X 아이콘을 클릭하여 메타데이터를 취소선으로 표시할 수 있습니다. 취소선이 그어진 정보는 최종 민팅에서 제외됩니다.";
+const nftPaymentGatewayTitle$3 = "NFT-MAKER PRO 결제 게이트웨이";
+const artistRole$3 = "아티스트";
+const cantFindNFTForMint$3 = "민팅할 NFT를 찾을 수 없음";
+const copyToClipboard$3 = "클립보드에 복사";
+const previous$3 = "이전";
+const next$3 = "다음";
+const selectLanguage$3 = "언어 선택";
+const selectLanguageForContent$3 = "콘텐츠 언어를 선택하세요";
+const rightSwipes$3 = " - 오른쪽 스와이프";
+const leftSwipes$3 = " - 왼쪽 스와이프";
+const loadingGraph$3 = "그래프 로딩 중";
+const endDate$3 = "종료일";
+const startDate$3 = "시작일";
 const ko = {
-  activeFund: activeFund$2,
-  addEmail: addEmail$2,
-  addYourCity: addYourCity$2,
-  appMessage: appMessage$2,
-  articles: articles$2,
-  assetName: assetName$2,
-  API: API$2,
-  from: from$2,
-  to: to$2,
-  authMessage: authMessage$2,
-  bio: bio$2,
-  myWallet: myWallet$2,
-  allCurrencies: allCurrencies$2,
-  totalAda: totalAda$2,
-  totalUsd: totalUsd$2,
-  amount: amount$2,
-  minCharTextarea: minCharTextarea$2,
-  blockchainData: blockchainData$2,
-  bookmark: bookmark$2,
-  catalystAPI: catalystAPI$2,
-  ccv4Votes: ccv4Votes$2,
-  chooseMetaData: chooseMetaData$2,
-  confirmPassword: confirmPassword$2,
-  connect: connect$2,
-  updatePassword: updatePassword$2,
-  currentPassword: currentPassword$2,
-  connectWallet: connectWallet$2,
-  comingSoon: comingSoon$2,
-  cookies: cookies$2,
-  copyright: copyright$2,
-  connections: connections$2,
-  minting: minting$2,
-  loginToMint: loginToMint$2,
-  unavailableForMint: unavailableForMint$2,
-  mustBeProposer: mustBeProposer$2,
-  copied: copied$2,
-  data: data$2,
-  dReps: dReps$2,
-  email: email$2,
-  emailAddress: emailAddress$2,
-  general: general$2,
-  facebook: facebook$2,
-  forgotPassword: forgotPassword$2,
-  funding: funding$2,
-  getStarted: getStarted$2,
-  github: github$2,
-  Home: Home$2,
-  jormungandr: jormungandr$2,
-  knowledgeBase: knowledgeBase$2,
-  explore: explore$2,
-  impact: impact$2,
-  legal: legal$2,
-  licenses: licenses$2,
-  login: login$2,
-  linkedIn: linkedIn$2,
-  listsAndBookmarks: listsAndBookmarks$2,
-  monthlyReports: monthlyReports$2,
-  metaTitle: metaTitle$2,
-  myCharts: myCharts$2,
-  mintNFT: mintNFT$2,
-  name: name$2,
-  viewNFT: viewNFT$2,
-  nftPending: nftPending$2,
-  cantFindNFT: cantFindNFT$2,
-  paymentGateway: paymentGateway$2,
-  fundProject: fundProject$2,
-  projectTitle: projectTitle$2,
-  yesVotes: yesVotes$2,
-  noVotes: noVotes$2,
-  role: role$2,
-  otherContributors: otherContributors$2,
-  metaDataInstruction: metaDataInstruction$2,
-  nobookmarks: nobookmarks$2,
-  noBookmarksYet: noBookmarksYet$2,
-  noImage: noImage$2,
-  developers: developers$2,
-  noProposalBookmarks: noProposalBookmarks$2,
-  noGroupBookmarks: noGroupBookmarks$2,
-  noPeopleBookmarks: noPeopleBookmarks$2,
-  noReviewBookmarks: noReviewBookmarks$2,
-  numbers: numbers$2,
-  password: password$2,
-  policyID: policyID$2,
-  filters: filters$2,
-  rememberMe: rememberMe$2,
-  privacy: privacy$2,
-  problem: problem$2,
-  profileBackground: profileBackground$2,
-  projectCatalyst: projectCatalyst$2,
-  reviewers: reviewers$2,
-  register: register$2,
-  reviewerReputationScore: reviewerReputationScore$2,
-  searchQuery: searchQuery$2,
-  signin: signin$2,
-  signup: signup$2,
-  social: social$2,
-  spending: spending$2,
-  support: support$2,
-  seeAll: seeAll$2,
-  seeLess: seeLess$2,
-  seeMore: seeMore$2,
-  solution: solution$2,
-  terms: terms$2,
-  twitter: twitter$2,
-  transaction: transaction$2,
-  votes: votes$2,
-  voters: voters$2,
-  wallets: wallets$2,
-  details: details$2,
-  teams: teams$2,
-  yes: yes$2,
-  filterChart: filterChart$2,
-  abstain: abstain$2,
-  notSet: notSet$2,
-  loading: loading$2,
-  Link: Link$2,
-  select: select$2,
-  selected: selected$2,
-  clear: clear$2,
-  selection: selection$2,
-  awarded: awarded$2,
-  distributed: distributed$2,
-  requested: requested$2,
-  submitted: submitted$2,
-  funded: funded$2,
-  approved: approved$2,
-  completed: completed$2,
-  loginPrompt: loginPrompt$2,
-  back: back$2,
-  verificationTitle: verificationTitle$2,
-  verificationCodeLabel: verificationCodeLabel$2,
-  verificationCode: verificationCode$2,
-  verificationInstructions: verificationInstructions$2,
-  goToIdeascale: goToIdeascale$2,
-  proposal: proposal$2,
-  noNFTDataAvailable: noNFTDataAvailable$2,
-  noPreviewAvailable: noPreviewAvailable$2,
-  chooseMetaDataDescription: chooseMetaDataDescription$2,
-  metadataStrikeInstruction: metadataStrikeInstruction$2,
-  nftPaymentGatewayTitle: nftPaymentGatewayTitle$2,
-  artistRole: artistRole$2,
-  cantFindNFTForMint: cantFindNFTForMint$2,
-  copyToClipboard: copyToClipboard$2,
+  activeFund: activeFund$3,
+  addEmail: addEmail$3,
+  addYourCity: addYourCity$3,
+  appMessage: appMessage$3,
+  articles: articles$3,
+  assetName: assetName$3,
+  API: API$3,
+  from: from$3,
+  to: to$3,
+  authMessage: authMessage$3,
+  bio: bio$3,
+  myWallet: myWallet$3,
+  allCurrencies: allCurrencies$3,
+  totalAda: totalAda$3,
+  totalUsd: totalUsd$3,
+  amount: amount$3,
+  minCharTextarea: minCharTextarea$3,
+  blockchainData: blockchainData$3,
+  bookmark: bookmark$3,
+  catalystAPI: catalystAPI$3,
+  ccv4Votes: ccv4Votes$3,
+  chooseMetaData: chooseMetaData$3,
+  confirmPassword: confirmPassword$3,
+  connect: connect$3,
+  updatePassword: updatePassword$3,
+  currentPassword: currentPassword$3,
+  connectWallet: connectWallet$3,
+  comingSoon: comingSoon$3,
+  cookies: cookies$3,
+  copyright: copyright$3,
+  connections: connections$3,
+  minting: minting$3,
+  loginToMint: loginToMint$3,
+  unavailableForMint: unavailableForMint$3,
+  mustBeProposer: mustBeProposer$3,
+  copied: copied$3,
+  data: data$3,
+  dReps: dReps$3,
+  email: email$3,
+  emailAddress: emailAddress$3,
+  general: general$3,
+  facebook: facebook$3,
+  forgotPassword: forgotPassword$3,
+  funding: funding$3,
+  getStarted: getStarted$3,
+  github: github$3,
+  Home: Home$3,
+  jormungandr: jormungandr$3,
+  knowledgeBase: knowledgeBase$3,
+  explore: explore$3,
+  impact: impact$3,
+  legal: legal$3,
+  licenses: licenses$3,
+  login: login$3,
+  linkedIn: linkedIn$3,
+  listsAndBookmarks: listsAndBookmarks$3,
+  monthlyReports: monthlyReports$3,
+  metaTitle: metaTitle$3,
+  myCharts: myCharts$3,
+  mintNFT: mintNFT$3,
+  name: name$3,
+  viewNFT: viewNFT$3,
+  nftPending: nftPending$3,
+  cantFindNFT: cantFindNFT$3,
+  paymentGateway: paymentGateway$3,
+  fundProject: fundProject$3,
+  projectTitle: projectTitle$3,
+  yesVotes: yesVotes$3,
+  noVotes: noVotes$3,
+  role: role$3,
+  otherContributors: otherContributors$3,
+  metaDataInstruction: metaDataInstruction$3,
+  nobookmarks: nobookmarks$3,
+  noBookmarksYet: noBookmarksYet$3,
+  noImage: noImage$3,
+  developers: developers$3,
+  noProposalBookmarks: noProposalBookmarks$3,
+  noGroupBookmarks: noGroupBookmarks$3,
+  noPeopleBookmarks: noPeopleBookmarks$3,
+  noReviewBookmarks: noReviewBookmarks$3,
+  numbers: numbers$3,
+  password: password$3,
+  policyID: policyID$3,
+  filters: filters$3,
+  rememberMe: rememberMe$3,
+  privacy: privacy$3,
+  problem: problem$3,
+  profileBackground: profileBackground$3,
+  projectCatalyst: projectCatalyst$3,
+  reviewers: reviewers$3,
+  register: register$3,
+  reviewerReputationScore: reviewerReputationScore$3,
+  searchQuery: searchQuery$3,
+  signin: signin$3,
+  signup: signup$3,
+  social: social$3,
+  spending: spending$3,
+  support: support$3,
+  seeAll: seeAll$3,
+  seeLess: seeLess$3,
+  seeMore: seeMore$3,
+  solution: solution$3,
+  terms: terms$3,
+  twitter: twitter$3,
+  transaction: transaction$3,
+  votes: votes$3,
+  voters: voters$3,
+  wallets: wallets$3,
+  details: details$3,
+  teams: teams$3,
+  yes: yes$3,
+  filterChart: filterChart$3,
+  abstain: abstain$3,
+  notSet: notSet$3,
+  loading: loading$3,
+  Link: Link$3,
+  select: select$3,
+  selected: selected$3,
+  clear: clear$3,
+  selection: selection$3,
+  awarded: awarded$3,
+  distributed: distributed$3,
+  requested: requested$3,
+  received: received$3,
+  submitted: submitted$3,
+  funded: funded$3,
+  approved: approved$3,
+  completed: completed$3,
+  loginPrompt: loginPrompt$3,
+  back: back$3,
+  verificationTitle: verificationTitle$3,
+  verificationCodeLabel: verificationCodeLabel$3,
+  verificationCode: verificationCode$3,
+  verificationInstructions: verificationInstructions$3,
+  goToIdeascale: goToIdeascale$3,
+  proposal: proposal$3,
+  noNFTDataAvailable: noNFTDataAvailable$3,
+  noPreviewAvailable: noPreviewAvailable$3,
+  chooseMetaDataDescription: chooseMetaDataDescription$3,
+  metadataStrikeInstruction: metadataStrikeInstruction$3,
+  nftPaymentGatewayTitle: nftPaymentGatewayTitle$3,
+  artistRole: artistRole$3,
+  cantFindNFTForMint: cantFindNFTForMint$3,
+  copyToClipboard: copyToClipboard$3,
   "activeFund.title": "Catalyst 활성 펀드",
   "activeFund.subtitle": "최신 활성 자금 조달 라운드를 확인하세요. 캠페인을 검토하고, 제안을 추적하며, 가장 중요한 제안을 북마크할 수 있습니다.",
   "activeFund.budget": "배분될 총 예산",
@@ -55552,6 +58439,9 @@ const ko = {
   "activeFund.bannerTitle": "투표 목록을 만드세요!",
   "activeFund.bannerSubtitle": "참조 및 공유를 위한 투표 선택을 만드세요! 무엇을 찾고 있는지 알고 있나요? 표준 워크플로를 사용하세요. 무엇을 찾고 있는지 모르겠다면 카드 덱 워크플로를 사용하여 두 번째로 검토하고 싶은 제안에서 오른쪽으로 스와이프하고, 이번 라운드에서 기권하거나 패스할 제안에서 왼쪽으로 스와이프하세요.",
   "activeFund.supportUsTitle": "투표로 저희를 지지해 주세요!",
+  "activeFund.supportUsSubtitle": "이 도구에서 가치를 찾고 있다면 투표용지에서 지지를 고려해 주세요.",
+  "activeFund.supportUsProposalTitle": "올인원 Catalyst: 알림, AI 리스트 & 포트폴리오",
+  "activeFund.supportUsSeeProposal": "제안 읽기",
   "activeFund.supportUsProposalSubtitle": "자금을 받게 되면 다음과 같은 일을 할 것입니다: catalystexplorer.com을 확장하여 관심 있는 이벤트에 대한 스마트 알림, AI 기반 제안 발견, 전문 포트폴리오 구축을 통해 Catalyst와의 참여를 변화시킬 것입니다.",
   "activeFund.campaignsTitle": "캠페인 카테고리",
   "activeFund.campaigns.proposals": "제안",
@@ -55745,8 +58635,8 @@ const ko = {
   "bookmarks.viewAsPublic": "공개로 보기",
   "bookmarks.editListItem": "목록 항목 편집",
   "bookmarks.publishToIpfs": "IPFS에 게시",
-  previous: previous$2,
-  next: next$2,
+  previous: previous$3,
+  next: next$3,
   "workflows.tinderProposal.step1.selectFund": "펀드 선택",
   "workflows.tinderProposal.step1.selectFundPlaceholder": "펀드 선택",
   "workflows.tinderProposal.step1.selectAllThatApply": "(해당하는 모든 것 선택)",
@@ -55853,8 +58743,8 @@ const ko = {
   "workflows.publishToIpfs.noDescriptionAvailable": "사용 가능한 설명 없음",
   "workflows.publishToIpfs.unknown": "알 수 없음",
   "workflows.publishToIpfs.separator": "|",
-  selectLanguage: selectLanguage$2,
-  selectLanguageForContent: selectLanguageForContent$2,
+  selectLanguage: selectLanguage$3,
+  selectLanguageForContent: selectLanguageForContent$3,
   "languageDetection.multipleLanguagesError": "일부 필드가 다른 언어로 작성된 것 같습니다. 모든 콘텐츠가 같은 언어인지 확인해 주세요.",
   "languageDetection.languageMismatchError": "콘텐츠가 :detectedLanguage로 작성된 것 같지만 :selectedLanguage를 선택했습니다. 언어 선택을 업데이트해 주세요.",
   "languageDetection.defaultMismatchError": "언어 불일치 감지됨",
@@ -55902,6 +58792,8 @@ const ko = {
   "my.createListBlurb": "북마크 목록 만들기는 여러 펀드에 걸친 제안, Ideascale 프로필, 그룹, 리뷰, 커뮤니티를 넣을 빈 폴더입니다.",
   "my.createListTitle": "만들 목록 유형을 선택하세요. (공개적으로 공유하거나 비공개로 유지할 수 있습니다.)",
   "my.createVotingList": "투표 목록 만들기",
+  "my.createVotingListWithStandardUi": "표준 워크플로 사용",
+  "my.createVotingListWithCardedUi": "카드 덱 워크플로 사용",
   "my.createTinderList": "틴더 목록 만들기",
   "my.votes": "투표",
   "my.services": "서비스",
@@ -56039,6 +58931,7 @@ const ko = {
   "proposals.providedUrl": "제공된 URL",
   "proposals.listSubtitle": "제안 투표는 공식 Catalyst Voting App에서 제출해야 합니다",
   "proposals.quickPitchesListSubtitle": "300초 이하의 아이디어 빠른 피치가 투표용지에 있습니다.",
+  "proposals.celebrateCompletedProposals": "완료된 제안 축하하기",
   "proposals.celebrateCompletedProposalsSubtitle": "축하할 가치가 있는 아이디어들... 당신의 다음 프로젝트에 유용한 것을 찾을 수도 있습니다.",
   "proposals.pageSubtitle": "제목, 콘텐트, 작성자 및 공동 작성자로 제안과 챌린지 검색",
   "proposals.seeMoreProposals": "더 많은 제안 보기",
@@ -56510,13 +59403,15 @@ const ko = {
   "transactions.table.view": "보기",
   "transactions.table.voterRegistration": "투표자 등록",
   "transactions.table.type": "유형",
-  "transactions.table.fund": "펀드",
+  "transactions.table.fund": "펰드",
+  "transactions.table.id": "Id",
   "transactions.table.fragmentId": "조각 ID",
   "transactions.table.caster": "투표자",
   "transactions.table.timestamp": "타임스탬프",
   "transactions.table.choice": "선택",
   "transactions.table.votingPower": "투표력",
-  "transactions.table.rawFragment": "원시 조각",
+  "transactions.table.rawFragment": "날 조각",
+  "transactions.table.proposalPayout": "제안 지급",
   "transactions.table.totalOutputs": "출력 금액 (Lovelace)",
   "transactions.table.totalInputs": "총 입력",
   "transactions.table.weights": "가중치",
@@ -56653,14 +59548,14 @@ const ko = {
   "voter.sort.votesCountDesc": "투표 수: 높은 순에서 낮은 순",
   "voter.sort.votesCountAsc": "투표 수: 낮은 순에서 높은 순",
   "voter.sort.proposalsVotedOnDesc": "투표한 제안: 높은 순에서 낮은 순",
-  rightSwipes: rightSwipes$2,
-  leftSwipes: leftSwipes$2,
+  rightSwipes: rightSwipes$3,
+  leftSwipes: leftSwipes$3,
   "workflows.createService.step1.clickToReplaceImage": "여기를 클릭하여 이미지 교체",
   "workflows.createService.step1.clickToUploadImage": "여기를 클릭하여 이미지 업로드",
   "graph.loadingConnections": ":nodeName의 연결 로딩 중...",
   "graph.noAdditionalConnections": ":nodeName에는 추가 연결이 없습니다",
   "graph.unknownNode": "알 수 없음",
-  loadingGraph: loadingGraph$2,
+  loadingGraph: loadingGraph$3,
   "voter.sort.proposalsVotedOnAsc": "투표한 제안: 낮은 순에서 높은 순",
   "services.service": "서비스",
   "services.AddService": "서비스 추가",
@@ -56670,8 +59565,8 @@ const ko = {
   "services.catalystServicesDesc": "Catalyst 자금 지원 팀들이 협력하고 도움을 요청하며 생태계에 서비스를 제공하는 공간입니다.",
   "services.myServices": "내 서비스",
   "services.myServicesDesc": "서비스를 관리하고 Catalyst 생태계와 협력하세요.",
-  endDate: endDate$2,
-  startDate: startDate$2,
+  endDate: endDate$3,
+  startDate: startDate$3,
   "workflows.publishToIpfs.success.contentIdLabel": "콘텐츠 ID:",
   "workflows.publishToIpfs.success.copied": "복사됨!",
   "workflows.publishToIpfs.success.copyCidTitle": "CID 복사",
@@ -56679,461 +59574,474 @@ const ko = {
   "workflows.publishToIpfs.reviewDetails": "목록을 IPFS에 게시하려고 합니다. 아래 세부사항을 검토하세요.",
   "wallet.login": "지갑으로 로그인",
   "wallet.login.confirm": "연결된 지갑을 사용하여 로그인하려고 합니다. 이 지갑에 연결된 계정이 인증됩니다. 연결된 계정을 찾을 수 없으면 주소를 사용하여 생성됩니다. 대시보드의 '내 프로필' 페이지에서 이 계정을 업데이트할 수 있습니다.<br><br> <strong>이미 계정이 있으신가요?</strong> 이메일로 로그인하고 지갑을 추가하여 지갑 또는 이메일로 로그인할 수 있습니다.",
+  "funding.status.pending": "대기 중",
+  "funding.status.withdrawn": "철회됨",
+  "funding.status.fullyPaid": "전액 지급됨",
+  "funding.status.funded": "자금 지원됨",
+  "funding.status.notFunded": "자금 지원 안됨",
+  "project.status.votePending": "투표 대기 중",
+  "project.status.withdrawn": "철회됨",
+  "project.status.complete": "완료",
+  "project.status.inProgress": "진행 중",
+  "project.status.unfunded": "자금 지원 안됨",
 };
 
-const __vite_glob_1_5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_1_7 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
-    API: API$2,
-    Home: Home$2,
-    Link: Link$2,
-    abstain: abstain$2,
-    activeFund: activeFund$2,
-    addEmail: addEmail$2,
-    addYourCity: addYourCity$2,
-    allCurrencies: allCurrencies$2,
-    amount: amount$2,
-    appMessage: appMessage$2,
-    approved: approved$2,
-    articles: articles$2,
-    artistRole: artistRole$2,
-    assetName: assetName$2,
-    authMessage: authMessage$2,
-    awarded: awarded$2,
-    back: back$2,
-    bio: bio$2,
-    blockchainData: blockchainData$2,
-    bookmark: bookmark$2,
-    cantFindNFT: cantFindNFT$2,
-    cantFindNFTForMint: cantFindNFTForMint$2,
-    catalystAPI: catalystAPI$2,
-    ccv4Votes: ccv4Votes$2,
-    chooseMetaData: chooseMetaData$2,
-    chooseMetaDataDescription: chooseMetaDataDescription$2,
-    clear: clear$2,
-    comingSoon: comingSoon$2,
-    completed: completed$2,
-    confirmPassword: confirmPassword$2,
-    connect: connect$2,
-    connectWallet: connectWallet$2,
-    connections: connections$2,
-    cookies: cookies$2,
-    copied: copied$2,
-    copyToClipboard: copyToClipboard$2,
-    copyright: copyright$2,
-    currentPassword: currentPassword$2,
-    dReps: dReps$2,
-    data: data$2,
+    API: API$3,
+    Home: Home$3,
+    Link: Link$3,
+    abstain: abstain$3,
+    activeFund: activeFund$3,
+    addEmail: addEmail$3,
+    addYourCity: addYourCity$3,
+    allCurrencies: allCurrencies$3,
+    amount: amount$3,
+    appMessage: appMessage$3,
+    approved: approved$3,
+    articles: articles$3,
+    artistRole: artistRole$3,
+    assetName: assetName$3,
+    authMessage: authMessage$3,
+    awarded: awarded$3,
+    back: back$3,
+    bio: bio$3,
+    blockchainData: blockchainData$3,
+    bookmark: bookmark$3,
+    cantFindNFT: cantFindNFT$3,
+    cantFindNFTForMint: cantFindNFTForMint$3,
+    catalystAPI: catalystAPI$3,
+    ccv4Votes: ccv4Votes$3,
+    chooseMetaData: chooseMetaData$3,
+    chooseMetaDataDescription: chooseMetaDataDescription$3,
+    clear: clear$3,
+    comingSoon: comingSoon$3,
+    completed: completed$3,
+    confirmPassword: confirmPassword$3,
+    connect: connect$3,
+    connectWallet: connectWallet$3,
+    connections: connections$3,
+    cookies: cookies$3,
+    copied: copied$3,
+    copyToClipboard: copyToClipboard$3,
+    copyright: copyright$3,
+    currentPassword: currentPassword$3,
+    dReps: dReps$3,
+    data: data$3,
     default: ko,
-    details: details$2,
-    developers: developers$2,
-    distributed: distributed$2,
-    email: email$2,
-    emailAddress: emailAddress$2,
-    endDate: endDate$2,
-    explore: explore$2,
-    facebook: facebook$2,
-    filterChart: filterChart$2,
-    filters: filters$2,
-    forgotPassword: forgotPassword$2,
-    from: from$2,
-    fundProject: fundProject$2,
-    funded: funded$2,
-    funding: funding$2,
-    general: general$2,
-    getStarted: getStarted$2,
-    github: github$2,
-    goToIdeascale: goToIdeascale$2,
-    impact: impact$2,
-    jormungandr: jormungandr$2,
-    knowledgeBase: knowledgeBase$2,
-    leftSwipes: leftSwipes$2,
-    legal: legal$2,
-    licenses: licenses$2,
-    linkedIn: linkedIn$2,
-    listsAndBookmarks: listsAndBookmarks$2,
-    loading: loading$2,
-    loadingGraph: loadingGraph$2,
-    login: login$2,
-    loginPrompt: loginPrompt$2,
-    loginToMint: loginToMint$2,
-    metaDataInstruction: metaDataInstruction$2,
-    metaTitle: metaTitle$2,
-    metadataStrikeInstruction: metadataStrikeInstruction$2,
-    minCharTextarea: minCharTextarea$2,
-    mintNFT: mintNFT$2,
-    minting: minting$2,
-    monthlyReports: monthlyReports$2,
-    mustBeProposer: mustBeProposer$2,
-    myCharts: myCharts$2,
-    myWallet: myWallet$2,
-    name: name$2,
-    next: next$2,
-    nftPaymentGatewayTitle: nftPaymentGatewayTitle$2,
-    nftPending: nftPending$2,
-    noBookmarksYet: noBookmarksYet$2,
-    noGroupBookmarks: noGroupBookmarks$2,
-    noImage: noImage$2,
-    noNFTDataAvailable: noNFTDataAvailable$2,
-    noPeopleBookmarks: noPeopleBookmarks$2,
-    noPreviewAvailable: noPreviewAvailable$2,
-    noProposalBookmarks: noProposalBookmarks$2,
-    noReviewBookmarks: noReviewBookmarks$2,
-    noVotes: noVotes$2,
-    nobookmarks: nobookmarks$2,
-    notSet: notSet$2,
-    numbers: numbers$2,
-    otherContributors: otherContributors$2,
-    password: password$2,
-    paymentGateway: paymentGateway$2,
-    policyID: policyID$2,
-    previous: previous$2,
-    privacy: privacy$2,
-    problem: problem$2,
-    profileBackground: profileBackground$2,
-    projectCatalyst: projectCatalyst$2,
-    projectTitle: projectTitle$2,
-    proposal: proposal$2,
-    register: register$2,
-    rememberMe: rememberMe$2,
-    requested: requested$2,
-    reviewerReputationScore: reviewerReputationScore$2,
-    reviewers: reviewers$2,
-    rightSwipes: rightSwipes$2,
-    role: role$2,
-    searchQuery: searchQuery$2,
-    seeAll: seeAll$2,
-    seeLess: seeLess$2,
-    seeMore: seeMore$2,
-    select: select$2,
-    selectLanguage: selectLanguage$2,
-    selectLanguageForContent: selectLanguageForContent$2,
-    selected: selected$2,
-    selection: selection$2,
-    signin: signin$2,
-    signup: signup$2,
-    social: social$2,
-    solution: solution$2,
-    spending: spending$2,
-    startDate: startDate$2,
-    submitted: submitted$2,
-    support: support$2,
-    teams: teams$2,
-    terms: terms$2,
-    to: to$2,
-    totalAda: totalAda$2,
-    totalUsd: totalUsd$2,
-    transaction: transaction$2,
-    twitter: twitter$2,
-    unavailableForMint: unavailableForMint$2,
-    updatePassword: updatePassword$2,
-    verificationCode: verificationCode$2,
-    verificationCodeLabel: verificationCodeLabel$2,
-    verificationInstructions: verificationInstructions$2,
-    verificationTitle: verificationTitle$2,
-    viewNFT: viewNFT$2,
-    voters: voters$2,
-    votes: votes$2,
-    wallets: wallets$2,
-    yes: yes$2,
-    yesVotes: yesVotes$2
+    details: details$3,
+    developers: developers$3,
+    distributed: distributed$3,
+    email: email$3,
+    emailAddress: emailAddress$3,
+    endDate: endDate$3,
+    explore: explore$3,
+    facebook: facebook$3,
+    filterChart: filterChart$3,
+    filters: filters$3,
+    forgotPassword: forgotPassword$3,
+    from: from$3,
+    fundProject: fundProject$3,
+    funded: funded$3,
+    funding: funding$3,
+    general: general$3,
+    getStarted: getStarted$3,
+    github: github$3,
+    goToIdeascale: goToIdeascale$3,
+    impact: impact$3,
+    jormungandr: jormungandr$3,
+    knowledgeBase: knowledgeBase$3,
+    leftSwipes: leftSwipes$3,
+    legal: legal$3,
+    licenses: licenses$3,
+    linkedIn: linkedIn$3,
+    listsAndBookmarks: listsAndBookmarks$3,
+    loading: loading$3,
+    loadingGraph: loadingGraph$3,
+    login: login$3,
+    loginPrompt: loginPrompt$3,
+    loginToMint: loginToMint$3,
+    metaDataInstruction: metaDataInstruction$3,
+    metaTitle: metaTitle$3,
+    metadataStrikeInstruction: metadataStrikeInstruction$3,
+    minCharTextarea: minCharTextarea$3,
+    mintNFT: mintNFT$3,
+    minting: minting$3,
+    monthlyReports: monthlyReports$3,
+    mustBeProposer: mustBeProposer$3,
+    myCharts: myCharts$3,
+    myWallet: myWallet$3,
+    name: name$3,
+    next: next$3,
+    nftPaymentGatewayTitle: nftPaymentGatewayTitle$3,
+    nftPending: nftPending$3,
+    noBookmarksYet: noBookmarksYet$3,
+    noGroupBookmarks: noGroupBookmarks$3,
+    noImage: noImage$3,
+    noNFTDataAvailable: noNFTDataAvailable$3,
+    noPeopleBookmarks: noPeopleBookmarks$3,
+    noPreviewAvailable: noPreviewAvailable$3,
+    noProposalBookmarks: noProposalBookmarks$3,
+    noReviewBookmarks: noReviewBookmarks$3,
+    noVotes: noVotes$3,
+    nobookmarks: nobookmarks$3,
+    notSet: notSet$3,
+    numbers: numbers$3,
+    otherContributors: otherContributors$3,
+    password: password$3,
+    paymentGateway: paymentGateway$3,
+    policyID: policyID$3,
+    previous: previous$3,
+    privacy: privacy$3,
+    problem: problem$3,
+    profileBackground: profileBackground$3,
+    projectCatalyst: projectCatalyst$3,
+    projectTitle: projectTitle$3,
+    proposal: proposal$3,
+    received: received$3,
+    register: register$3,
+    rememberMe: rememberMe$3,
+    requested: requested$3,
+    reviewerReputationScore: reviewerReputationScore$3,
+    reviewers: reviewers$3,
+    rightSwipes: rightSwipes$3,
+    role: role$3,
+    searchQuery: searchQuery$3,
+    seeAll: seeAll$3,
+    seeLess: seeLess$3,
+    seeMore: seeMore$3,
+    select: select$3,
+    selectLanguage: selectLanguage$3,
+    selectLanguageForContent: selectLanguageForContent$3,
+    selected: selected$3,
+    selection: selection$3,
+    signin: signin$3,
+    signup: signup$3,
+    social: social$3,
+    solution: solution$3,
+    spending: spending$3,
+    startDate: startDate$3,
+    submitted: submitted$3,
+    support: support$3,
+    teams: teams$3,
+    terms: terms$3,
+    to: to$3,
+    totalAda: totalAda$3,
+    totalUsd: totalUsd$3,
+    transaction: transaction$3,
+    twitter: twitter$3,
+    unavailableForMint: unavailableForMint$3,
+    updatePassword: updatePassword$3,
+    verificationCode: verificationCode$3,
+    verificationCodeLabel: verificationCodeLabel$3,
+    verificationInstructions: verificationInstructions$3,
+    verificationTitle: verificationTitle$3,
+    viewNFT: viewNFT$3,
+    voters: voters$3,
+    votes: votes$3,
+    wallets: wallets$3,
+    yes: yes$3,
+    yesVotes: yesVotes$3
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const activeFund$1 = "Fundo Ativo";
-const addEmail$1 = "Adicionar email";
-const addYourCity$1 = "Adicione sua cidade";
-const appMessage$1 = "Todos os votos devem ser submetidos no aplicativo oficial Catalyst Voting. Esta é apenas uma ferramenta de pesquisa e planejamento!";
-const articles$1 = "Artigos";
-const assetName$1 = "Nome do Ativo";
-const API$1 = "API";
-const from$1 = "De";
-const to$1 = "Para";
-const authMessage$1 = "Você pode explorar propostas, relatórios mensais, pessoas e grupos. Filtre propostas por status de financiamento ou tamanho do orçamento, Fundo, Campanha, palavras-chave e muito mais.";
-const bio$1 = "Bio";
-const myWallet$1 = "Minha Carteira";
-const allCurrencies$1 = "Todas as Moedas";
-const totalAda$1 = "Valor Total em ADA";
-const totalUsd$1 = "Valor Total em USD";
-const amount$1 = "Valor ";
-const minCharTextarea$1 = "Mínimo de 200 caracteres necessário";
-const blockchainData$1 = "Dados da Blockchain";
-const bookmark$1 = "Seu espaço pessoal para organizar e gerenciar insights de propostas. Acesse facilmente suas propostas salvas, revise anotações e compartilhe listas curadas para ficar por dentro das principais ideias e oportunidades.";
-const catalystAPI$1 = "API do Catalyst";
-const ccv4Votes$1 = "Votos CCV4";
-const chooseMetaData$1 = "Escolha seus próprios metadados";
-const confirmPassword$1 = "Confirmar Senha";
-const connect$1 = "Conectar";
-const updatePassword$1 = "Atualizar Senha";
-const currentPassword$1 = "Senha Atual";
-const connectWallet$1 = "Conectar carteira";
-const comingSoon$1 = "Em breve";
-const cookies$1 = "Cookies";
-const copyright$1 = "© 2024 Catalyst Explorer. Todos os direitos reservados.";
-const connections$1 = "Conexões";
-const minting$1 = "Você está mintando";
-const loginToMint$1 = "Faça login para mintar";
-const unavailableForMint$1 = "Indisponível";
-const mustBeProposer$1 = "Deve ser proponente";
-const copied$1 = "Copiado";
-const data$1 = "Dados";
-const dReps$1 = "DReps";
-const email$1 = "Email";
-const emailAddress$1 = "Endereço de Email";
-const general$1 = "Geral";
-const facebook$1 = "Facebook";
-const forgotPassword$1 = "Esqueci a senha";
-const funding$1 = "Financiamento";
-const getStarted$1 = "Começar";
-const github$1 = "Github";
-const Home$1 = "Início";
-const jormungandr$1 = "Jormungandr";
-const knowledgeBase$1 = "Base de Conhecimento";
-const explore$1 = "Explorar";
-const impact$1 = "Impacto";
-const legal$1 = "Legal";
-const licenses$1 = "Licenças";
-const login$1 = "Login";
-const linkedIn$1 = "LinkedIn";
-const listsAndBookmarks$1 = "Listas e Favoritos";
-const monthlyReports$1 = "Relatórios Mensais";
-const metaTitle$1 = "Visualização de Metadados";
-const myCharts$1 = "Meus Gráficos";
-const mintNFT$1 = "Mintar NFT";
-const name$1 = "Nome";
-const viewNFT$1 = "Visualizar NFT";
-const nftPending$1 = "NFT Pendente";
-const cantFindNFT$1 = "Não é possível encontrar NFT para mintar";
-const paymentGateway$1 = "Gateway de Pagamento NFT-MAKER PRO";
-const fundProject$1 = "Número do Projeto Financiado";
-const projectTitle$1 = "Título do Projeto";
-const yesVotes$1 = "Votos Sim";
-const noVotes$1 = "Votos Não";
-const role$1 = "Papel";
-const otherContributors$1 = "Outros Colaboradores";
-const metaDataInstruction$1 = "Você pode riscar metadados clicando no ícone X. Informações riscadas serão excluídas da cunhagem final.";
-const nobookmarks$1 = "Ainda não há favoritos";
-const noBookmarksYet$1 = "Você não favoritou nenhuma proposta, pessoa, grupo ou avaliação. Comece explorando e favorite seus favoritos!";
-const noImage$1 = "Sem Imagem";
-const developers$1 = "Desenvolvedores";
-const noProposalBookmarks$1 = "Nenhum favorito de proposta encontrado";
-const noGroupBookmarks$1 = "Nenhum favorito de grupo encontrado";
-const noPeopleBookmarks$1 = "Nenhum favorito de pessoa encontrado";
-const noReviewBookmarks$1 = "Nenhum favorito de avaliação encontrado";
-const numbers$1 = "Números";
-const password$1 = "Senha";
-const policyID$1 = "ID da Política";
-const filters$1 = "Filtros";
-const rememberMe$1 = "Lembrar de mim";
-const privacy$1 = "Privacidade";
-const problem$1 = "Problema";
-const profileBackground$1 = "Plano de Fundo do Perfil";
-const projectCatalyst$1 = "Nome da Campanha do Project Catalyst";
-const reviewers$1 = "Avaliadores";
-const register$1 = "Registrar";
-const reviewerReputationScore$1 = "Pontuação de Reputação do Avaliador";
-const searchQuery$1 = "Nenhum resultado corresponde à sua consulta de pesquisa";
-const signin$1 = "Entrar";
-const signup$1 = "Inscrever-se";
-const social$1 = "Social";
-const spending$1 = "Gastos";
-const support$1 = "Suporte";
-const seeAll$1 = "Ver Tudo";
-const seeLess$1 = "Ver menos";
-const seeMore$1 = "Ver mais";
-const solution$1 = "Solução";
-const terms$1 = "Termos";
-const twitter$1 = "Twitter";
-const transaction$1 = "Transação";
-const votes$1 = "Meus Votos";
-const voters$1 = "Eleitores";
-const wallets$1 = "Carteiras";
-const details$1 = "Detalhes";
-const teams$1 = "Equipe";
-const yes$1 = "Sim";
-const filterChart$1 = "Filtrar gráfico";
-const abstain$1 = "Abster-se";
-const notSet$1 = "Não definido";
-const loading$1 = "Carregando";
-const Link$1 = "Link";
-const select$1 = "Selecionar";
-const selected$1 = "Selecionado";
-const clear$1 = "limpar";
-const selection$1 = "seleção";
-const awarded$1 = "Premiado";
-const distributed$1 = "Distribuído";
-const requested$1 = "Solicitado";
-const submitted$1 = "Submetido";
-const funded$1 = "Financiado";
-const approved$1 = "Aprovado";
-const completed$1 = "Concluído";
-const loginPrompt$1 = "Faça login para começar";
-const back$1 = "Voltar";
-const verificationTitle$1 = "Vamos verificar você!";
-const verificationCodeLabel$1 = "Código de Verificação";
-const verificationCode$1 = "CÓDIGO:";
-const verificationInstructions$1 = "Para verificar sua propriedade deste perfil, envie uma mensagem pessoal para Lido Nation no Ideascale e inclua o código acima.";
-const goToIdeascale$1 = "Ir para Ideascale";
-const proposal$1 = "Proposta";
-const noNFTDataAvailable$1 = "Nenhum dado de NFT disponível";
-const noPreviewAvailable$1 = "Nenhuma visualização disponível";
-const chooseMetaDataDescription$1 = "Escolha seus próprios metadados";
-const metadataStrikeInstruction$1 = "Você pode riscar metadados clicando no ícone X. Informações riscadas serão excluídas da cunhagem final.";
-const nftPaymentGatewayTitle$1 = "Gateway de Pagamento NFT-MAKER PRO";
-const artistRole$1 = "Artista";
-const cantFindNFTForMint$1 = "Não é possível encontrar NFT para mintar";
-const copyToClipboard$1 = "Copiar para área de transferência";
-const previous$1 = "Anterior";
-const next$1 = "Próximo";
-const selectLanguage$1 = "Selecionar Idioma";
-const selectLanguageForContent$1 = "Selecione um idioma para seu conteúdo";
-const rightSwipes$1 = " - Deslizes à Direita";
-const leftSwipes$1 = " - Deslizes à Esquerda";
-const loadingGraph$1 = "Carregando gráfico";
-const endDate$1 = "Data de Término";
-const startDate$1 = "Data de Início";
+const activeFund$2 = "Fundo Ativo";
+const addEmail$2 = "Adicionar email";
+const addYourCity$2 = "Adicione sua cidade";
+const appMessage$2 = "Todos os votos devem ser submetidos no aplicativo oficial Catalyst Voting. Esta é apenas uma ferramenta de pesquisa e planejamento!";
+const articles$2 = "Artigos";
+const assetName$2 = "Nome do Ativo";
+const API$2 = "API";
+const from$2 = "De";
+const to$2 = "Para";
+const authMessage$2 = "Você pode explorar propostas, relatórios mensais, pessoas e grupos. Filtre propostas por status de financiamento ou tamanho do orçamento, Fundo, Campanha, palavras-chave e muito mais.";
+const bio$2 = "Bio";
+const myWallet$2 = "Minha Carteira";
+const allCurrencies$2 = "Todas as Moedas";
+const totalAda$2 = "Valor Total em ADA";
+const totalUsd$2 = "Valor Total em USD";
+const amount$2 = "Valor ";
+const minCharTextarea$2 = "Mínimo de 200 caracteres necessário";
+const blockchainData$2 = "Dados da Blockchain";
+const bookmark$2 = "Seu espaço pessoal para organizar e gerenciar insights de propostas. Acesse facilmente suas propostas salvas, revise anotações e compartilhe listas curadas para ficar por dentro das principais ideias e oportunidades.";
+const catalystAPI$2 = "API do Catalyst";
+const ccv4Votes$2 = "Votos CCV4";
+const chooseMetaData$2 = "Escolha seus próprios metadados";
+const confirmPassword$2 = "Confirmar Senha";
+const connect$2 = "Conectar";
+const updatePassword$2 = "Atualizar Senha";
+const currentPassword$2 = "Senha Atual";
+const connectWallet$2 = "Conectar carteira";
+const comingSoon$2 = "Em breve";
+const cookies$2 = "Cookies";
+const copyright$2 = " Todos os direitos reservados.";
+const connections$2 = "Conexões";
+const minting$2 = "Você está mintando";
+const loginToMint$2 = "Faça login para mintar";
+const unavailableForMint$2 = "Indisponível";
+const mustBeProposer$2 = "Deve ser proponente";
+const copied$2 = "Copiado";
+const data$2 = "Dados";
+const dReps$2 = "DReps";
+const email$2 = "Email";
+const emailAddress$2 = "Endereço de Email";
+const general$2 = "Geral";
+const facebook$2 = "Facebook";
+const forgotPassword$2 = "Esqueci a senha";
+const funding$2 = "Financiamento";
+const getStarted$2 = "Começar";
+const github$2 = "Github";
+const Home$2 = "Início";
+const jormungandr$2 = "Jormungandr";
+const knowledgeBase$2 = "Base de Conhecimento";
+const explore$2 = "Explorar";
+const impact$2 = "Impacto";
+const legal$2 = "Legal";
+const licenses$2 = "Licenças";
+const login$2 = "Login";
+const linkedIn$2 = "LinkedIn";
+const listsAndBookmarks$2 = "Listas e Favoritos";
+const monthlyReports$2 = "Relatórios Mensais";
+const metaTitle$2 = "Visualização de Metadados";
+const myCharts$2 = "Meus Gráficos";
+const mintNFT$2 = "Mintar NFT";
+const name$2 = "Nome";
+const viewNFT$2 = "Visualizar NFT";
+const nftPending$2 = "NFT Pendente";
+const cantFindNFT$2 = "Não é possível encontrar NFT para mintar";
+const paymentGateway$2 = "Gateway de Pagamento NFT-MAKER PRO";
+const fundProject$2 = "Número do Projeto Financiado";
+const projectTitle$2 = "Título do Projeto";
+const yesVotes$2 = "Votos Sim";
+const noVotes$2 = "Votos Não";
+const role$2 = "Papel";
+const otherContributors$2 = "Outros Colaboradores";
+const metaDataInstruction$2 = "Você pode riscar metadados clicando no ícone X. Informações riscadas serão excluídas da cunhagem final.";
+const nobookmarks$2 = "Ainda não há favoritos";
+const noBookmarksYet$2 = "Você não favoritou nenhuma proposta, pessoa, grupo ou avaliação. Comece explorando e favorite seus favoritos!";
+const noImage$2 = "Sem Imagem";
+const developers$2 = "Desenvolvedores";
+const noProposalBookmarks$2 = "Nenhum favorito de proposta encontrado";
+const noGroupBookmarks$2 = "Nenhum favorito de grupo encontrado";
+const noPeopleBookmarks$2 = "Nenhum favorito de pessoa encontrado";
+const noReviewBookmarks$2 = "Nenhum favorito de avaliação encontrado";
+const numbers$2 = "Números";
+const password$2 = "Senha";
+const policyID$2 = "ID da Política";
+const filters$2 = "Filtros";
+const rememberMe$2 = "Lembrar de mim";
+const privacy$2 = "Privacidade";
+const problem$2 = "Problema";
+const profileBackground$2 = "Plano de Fundo do Perfil";
+const projectCatalyst$2 = "Nome da Campanha do Project Catalyst";
+const reviewers$2 = "Avaliadores";
+const register$2 = "Registrar";
+const reviewerReputationScore$2 = "Pontuação de Reputação do Avaliador";
+const searchQuery$2 = "Nenhum resultado corresponde à sua consulta de pesquisa";
+const signin$2 = "Entrar";
+const signup$2 = "Inscrever-se";
+const social$2 = "Social";
+const spending$2 = "Gastos";
+const support$2 = "Suporte";
+const seeAll$2 = "Ver Tudo";
+const seeLess$2 = "Ver menos";
+const seeMore$2 = "Ver mais";
+const solution$2 = "Solução";
+const terms$2 = "Termos";
+const twitter$2 = "Twitter";
+const transaction$2 = "Transação";
+const votes$2 = "Meus Votos";
+const voters$2 = "Eleitores";
+const wallets$2 = "Carteiras";
+const details$2 = "Detalhes";
+const teams$2 = "Equipe";
+const yes$2 = "Sim";
+const filterChart$2 = "Filtrar gráfico";
+const abstain$2 = "Abster-se";
+const notSet$2 = "Não definido";
+const loading$2 = "Carregando";
+const Link$2 = "Link";
+const select$2 = "Selecionar";
+const selected$2 = "Selecionado";
+const clear$2 = "limpar";
+const selection$2 = "seleção";
+const awarded$2 = "Premiado";
+const distributed$2 = "Distribuído";
+const requested$2 = "Solicitado";
+const received$2 = "Recebido";
+const submitted$2 = "Submetido";
+const funded$2 = "Financiado";
+const approved$2 = "Aprovado";
+const completed$2 = "Concluído";
+const loginPrompt$2 = "Faça login para começar";
+const back$2 = "Voltar";
+const verificationTitle$2 = "Vamos verificar você!";
+const verificationCodeLabel$2 = "Código de Verificação";
+const verificationCode$2 = "CÓDIGO:";
+const verificationInstructions$2 = "Para verificar sua propriedade deste perfil, envie uma mensagem pessoal para Lido Nation no Ideascale e inclua o código acima.";
+const goToIdeascale$2 = "Ir para Ideascale";
+const proposal$2 = "Proposta";
+const noNFTDataAvailable$2 = "Nenhum dado de NFT disponível";
+const noPreviewAvailable$2 = "Nenhuma visualização disponível";
+const chooseMetaDataDescription$2 = "Escolha seus próprios metadados";
+const metadataStrikeInstruction$2 = "Você pode riscar metadados clicando no ícone X. Informações riscadas serão excluídas da cunhagem final.";
+const nftPaymentGatewayTitle$2 = "Gateway de Pagamento NFT-MAKER PRO";
+const artistRole$2 = "Artista";
+const cantFindNFTForMint$2 = "Não é possível encontrar NFT para mintar";
+const copyToClipboard$2 = "Copiar para área de transferência";
+const previous$2 = "Anterior";
+const next$2 = "Próximo";
+const selectLanguage$2 = "Selecionar Idioma";
+const selectLanguageForContent$2 = "Selecione um idioma para seu conteúdo";
+const rightSwipes$2 = " - Deslizes à Direita";
+const leftSwipes$2 = " - Deslizes à Esquerda";
+const loadingGraph$2 = "Carregando gráfico";
+const endDate$2 = "Data de Término";
+const startDate$2 = "Data de Início";
 const pt = {
-  activeFund: activeFund$1,
-  addEmail: addEmail$1,
-  addYourCity: addYourCity$1,
-  appMessage: appMessage$1,
-  articles: articles$1,
-  assetName: assetName$1,
-  API: API$1,
-  from: from$1,
-  to: to$1,
-  authMessage: authMessage$1,
-  bio: bio$1,
-  myWallet: myWallet$1,
-  allCurrencies: allCurrencies$1,
-  totalAda: totalAda$1,
-  totalUsd: totalUsd$1,
-  amount: amount$1,
-  minCharTextarea: minCharTextarea$1,
-  blockchainData: blockchainData$1,
-  bookmark: bookmark$1,
-  catalystAPI: catalystAPI$1,
-  ccv4Votes: ccv4Votes$1,
-  chooseMetaData: chooseMetaData$1,
-  confirmPassword: confirmPassword$1,
-  connect: connect$1,
-  updatePassword: updatePassword$1,
-  currentPassword: currentPassword$1,
-  connectWallet: connectWallet$1,
-  comingSoon: comingSoon$1,
-  cookies: cookies$1,
-  copyright: copyright$1,
-  connections: connections$1,
-  minting: minting$1,
-  loginToMint: loginToMint$1,
-  unavailableForMint: unavailableForMint$1,
-  mustBeProposer: mustBeProposer$1,
-  copied: copied$1,
-  data: data$1,
-  dReps: dReps$1,
-  email: email$1,
-  emailAddress: emailAddress$1,
-  general: general$1,
-  facebook: facebook$1,
-  forgotPassword: forgotPassword$1,
-  funding: funding$1,
-  getStarted: getStarted$1,
-  github: github$1,
-  Home: Home$1,
-  jormungandr: jormungandr$1,
-  knowledgeBase: knowledgeBase$1,
-  explore: explore$1,
-  impact: impact$1,
-  legal: legal$1,
-  licenses: licenses$1,
-  login: login$1,
-  linkedIn: linkedIn$1,
-  listsAndBookmarks: listsAndBookmarks$1,
-  monthlyReports: monthlyReports$1,
-  metaTitle: metaTitle$1,
-  myCharts: myCharts$1,
-  mintNFT: mintNFT$1,
-  name: name$1,
-  viewNFT: viewNFT$1,
-  nftPending: nftPending$1,
-  cantFindNFT: cantFindNFT$1,
-  paymentGateway: paymentGateway$1,
-  fundProject: fundProject$1,
-  projectTitle: projectTitle$1,
-  yesVotes: yesVotes$1,
-  noVotes: noVotes$1,
-  role: role$1,
-  otherContributors: otherContributors$1,
-  metaDataInstruction: metaDataInstruction$1,
-  nobookmarks: nobookmarks$1,
-  noBookmarksYet: noBookmarksYet$1,
-  noImage: noImage$1,
-  developers: developers$1,
-  noProposalBookmarks: noProposalBookmarks$1,
-  noGroupBookmarks: noGroupBookmarks$1,
-  noPeopleBookmarks: noPeopleBookmarks$1,
-  noReviewBookmarks: noReviewBookmarks$1,
-  numbers: numbers$1,
-  password: password$1,
-  policyID: policyID$1,
-  filters: filters$1,
-  rememberMe: rememberMe$1,
-  privacy: privacy$1,
-  problem: problem$1,
-  profileBackground: profileBackground$1,
-  projectCatalyst: projectCatalyst$1,
-  reviewers: reviewers$1,
-  register: register$1,
-  reviewerReputationScore: reviewerReputationScore$1,
-  searchQuery: searchQuery$1,
-  signin: signin$1,
-  signup: signup$1,
-  social: social$1,
-  spending: spending$1,
-  support: support$1,
-  seeAll: seeAll$1,
-  seeLess: seeLess$1,
-  seeMore: seeMore$1,
-  solution: solution$1,
-  terms: terms$1,
-  twitter: twitter$1,
-  transaction: transaction$1,
-  votes: votes$1,
-  voters: voters$1,
-  wallets: wallets$1,
-  details: details$1,
-  teams: teams$1,
-  yes: yes$1,
-  filterChart: filterChart$1,
-  abstain: abstain$1,
-  notSet: notSet$1,
-  loading: loading$1,
-  Link: Link$1,
-  select: select$1,
-  selected: selected$1,
-  clear: clear$1,
-  selection: selection$1,
-  awarded: awarded$1,
-  distributed: distributed$1,
-  requested: requested$1,
-  submitted: submitted$1,
-  funded: funded$1,
-  approved: approved$1,
-  completed: completed$1,
-  loginPrompt: loginPrompt$1,
-  back: back$1,
-  verificationTitle: verificationTitle$1,
-  verificationCodeLabel: verificationCodeLabel$1,
-  verificationCode: verificationCode$1,
-  verificationInstructions: verificationInstructions$1,
-  goToIdeascale: goToIdeascale$1,
-  proposal: proposal$1,
-  noNFTDataAvailable: noNFTDataAvailable$1,
-  noPreviewAvailable: noPreviewAvailable$1,
-  chooseMetaDataDescription: chooseMetaDataDescription$1,
-  metadataStrikeInstruction: metadataStrikeInstruction$1,
-  nftPaymentGatewayTitle: nftPaymentGatewayTitle$1,
-  artistRole: artistRole$1,
-  cantFindNFTForMint: cantFindNFTForMint$1,
-  copyToClipboard: copyToClipboard$1,
+  activeFund: activeFund$2,
+  addEmail: addEmail$2,
+  addYourCity: addYourCity$2,
+  appMessage: appMessage$2,
+  articles: articles$2,
+  assetName: assetName$2,
+  API: API$2,
+  from: from$2,
+  to: to$2,
+  authMessage: authMessage$2,
+  bio: bio$2,
+  myWallet: myWallet$2,
+  allCurrencies: allCurrencies$2,
+  totalAda: totalAda$2,
+  totalUsd: totalUsd$2,
+  amount: amount$2,
+  minCharTextarea: minCharTextarea$2,
+  blockchainData: blockchainData$2,
+  bookmark: bookmark$2,
+  catalystAPI: catalystAPI$2,
+  ccv4Votes: ccv4Votes$2,
+  chooseMetaData: chooseMetaData$2,
+  confirmPassword: confirmPassword$2,
+  connect: connect$2,
+  updatePassword: updatePassword$2,
+  currentPassword: currentPassword$2,
+  connectWallet: connectWallet$2,
+  comingSoon: comingSoon$2,
+  cookies: cookies$2,
+  copyright: copyright$2,
+  connections: connections$2,
+  minting: minting$2,
+  loginToMint: loginToMint$2,
+  unavailableForMint: unavailableForMint$2,
+  mustBeProposer: mustBeProposer$2,
+  copied: copied$2,
+  data: data$2,
+  dReps: dReps$2,
+  email: email$2,
+  emailAddress: emailAddress$2,
+  general: general$2,
+  facebook: facebook$2,
+  forgotPassword: forgotPassword$2,
+  funding: funding$2,
+  getStarted: getStarted$2,
+  github: github$2,
+  Home: Home$2,
+  jormungandr: jormungandr$2,
+  knowledgeBase: knowledgeBase$2,
+  explore: explore$2,
+  impact: impact$2,
+  legal: legal$2,
+  licenses: licenses$2,
+  login: login$2,
+  linkedIn: linkedIn$2,
+  listsAndBookmarks: listsAndBookmarks$2,
+  monthlyReports: monthlyReports$2,
+  metaTitle: metaTitle$2,
+  myCharts: myCharts$2,
+  mintNFT: mintNFT$2,
+  name: name$2,
+  viewNFT: viewNFT$2,
+  nftPending: nftPending$2,
+  cantFindNFT: cantFindNFT$2,
+  paymentGateway: paymentGateway$2,
+  fundProject: fundProject$2,
+  projectTitle: projectTitle$2,
+  yesVotes: yesVotes$2,
+  noVotes: noVotes$2,
+  role: role$2,
+  otherContributors: otherContributors$2,
+  metaDataInstruction: metaDataInstruction$2,
+  nobookmarks: nobookmarks$2,
+  noBookmarksYet: noBookmarksYet$2,
+  noImage: noImage$2,
+  developers: developers$2,
+  noProposalBookmarks: noProposalBookmarks$2,
+  noGroupBookmarks: noGroupBookmarks$2,
+  noPeopleBookmarks: noPeopleBookmarks$2,
+  noReviewBookmarks: noReviewBookmarks$2,
+  numbers: numbers$2,
+  password: password$2,
+  policyID: policyID$2,
+  filters: filters$2,
+  rememberMe: rememberMe$2,
+  privacy: privacy$2,
+  problem: problem$2,
+  profileBackground: profileBackground$2,
+  projectCatalyst: projectCatalyst$2,
+  reviewers: reviewers$2,
+  register: register$2,
+  reviewerReputationScore: reviewerReputationScore$2,
+  searchQuery: searchQuery$2,
+  signin: signin$2,
+  signup: signup$2,
+  social: social$2,
+  spending: spending$2,
+  support: support$2,
+  seeAll: seeAll$2,
+  seeLess: seeLess$2,
+  seeMore: seeMore$2,
+  solution: solution$2,
+  terms: terms$2,
+  twitter: twitter$2,
+  transaction: transaction$2,
+  votes: votes$2,
+  voters: voters$2,
+  wallets: wallets$2,
+  details: details$2,
+  teams: teams$2,
+  yes: yes$2,
+  filterChart: filterChart$2,
+  abstain: abstain$2,
+  notSet: notSet$2,
+  loading: loading$2,
+  Link: Link$2,
+  select: select$2,
+  selected: selected$2,
+  clear: clear$2,
+  selection: selection$2,
+  awarded: awarded$2,
+  distributed: distributed$2,
+  requested: requested$2,
+  received: received$2,
+  submitted: submitted$2,
+  funded: funded$2,
+  approved: approved$2,
+  completed: completed$2,
+  loginPrompt: loginPrompt$2,
+  back: back$2,
+  verificationTitle: verificationTitle$2,
+  verificationCodeLabel: verificationCodeLabel$2,
+  verificationCode: verificationCode$2,
+  verificationInstructions: verificationInstructions$2,
+  goToIdeascale: goToIdeascale$2,
+  proposal: proposal$2,
+  noNFTDataAvailable: noNFTDataAvailable$2,
+  noPreviewAvailable: noPreviewAvailable$2,
+  chooseMetaDataDescription: chooseMetaDataDescription$2,
+  metadataStrikeInstruction: metadataStrikeInstruction$2,
+  nftPaymentGatewayTitle: nftPaymentGatewayTitle$2,
+  artistRole: artistRole$2,
+  cantFindNFTForMint: cantFindNFTForMint$2,
+  copyToClipboard: copyToClipboard$2,
   "activeFund.title": "Fundo Ativo Catalyst",
   "activeFund.subtitle": "Mantenha-se atualizado com a rodada ativa de financiamento mais recente. Revise campanhas, acompanhe propostas e marque como favoritas aquelas que mais importam para você.",
   "activeFund.budget": "Orçamento total a ser distribuído",
@@ -57143,6 +60051,9 @@ const pt = {
   "activeFund.bannerTitle": "Crie sua lista de votação!",
   "activeFund.bannerSubtitle": "Crie suas escolhas de votação para referência e compartilhamento! Você sabe o que está procurando? Use o Fluxo de Trabalho Padrão. Você não sabe o que está procurando? Use o Fluxo de Trabalho Card Deck para deslizar à direita em propostas que deseja dar uma segunda olhada, à esquerda em propostas que você irá se abster ou passar nesta rodada.",
   "activeFund.supportUsTitle": "Nos apoie na votação!",
+  "activeFund.supportUsSubtitle": "Se você está encontrando valor nesta ferramenta, considere apoiar na votação.",
+  "activeFund.supportUsProposalTitle": "Catalyst Tudo-em-Um: Notificações, Listas IA e Portfólios.",
+  "activeFund.supportUsSeeProposal": "Ler a Proposta",
   "activeFund.supportUsProposalSubtitle": "Se financiados, vamos: Expandir o catalystexplorer.com para transformar como você se envolve com o Catalyst através de notificações inteligentes para eventos que importam para você, descoberta de propostas alimentada por IA e construção de portfólios profissionais.",
   "activeFund.campaignsTitle": "Categorias de campanhas",
   "activeFund.campaigns.proposals": "Propostas",
@@ -57227,6 +60138,7 @@ const pt = {
   "workflows.resetPassword.resend": "Reenviar Email",
   "workflows.voterList.welcome": "Antes de começar, vamos configurar sua Lista de Votação. Uma Lista de Votação é uma coleção de propostas que você apoia e quer que outros considerem. Isso ajuda a simplificar a participação na governança. Pronto para começar? Nos próximos passos, você nomeará sua lista, adicionará propostas e explicará seu raciocínio para selecioná-las.",
   "workflows.voterList.proposalsOnly": "Ao contrário de outros tipos de lista, apenas propostas podem ser adicionadas às listas de votação.",
+  "workflows.voterList.prototype": "<strong>Atenção: Isto ainda é um protótipo e nada é submetido na blockchain ainda!</strong>",
   "workflows.voterList.title": "Título",
   "workflows.voterList.description": "Descrição",
   "workflows.voterList.descriptionPlaceholder": "Descreva o propósito desta lista em poucas palavras.",
@@ -57335,8 +60247,8 @@ const pt = {
   "bookmarks.viewAsPublic": "Ver como público",
   "bookmarks.editListItem": "Editar item da lista",
   "bookmarks.publishToIpfs": "Publicar no IPFS",
-  previous: previous$1,
-  next: next$1,
+  previous: previous$2,
+  next: next$2,
   "workflows.tinderProposal.step1.selectFund": "Selecionar Fundo",
   "workflows.tinderProposal.step1.selectFundPlaceholder": "Selecionar Fundo",
   "workflows.tinderProposal.step1.selectAllThatApply": "(Selecione todos que se aplicam)",
@@ -57450,8 +60362,8 @@ const pt = {
   "workflows.publishToIpfs.reviewDetails": "Você está prestes a publicar sua lista no IPFS. Revise os detalhes abaixo.",
   "workflows.publishToIpfs.unknown": "Desconhecido",
   "workflows.publishToIpfs.separator": "|",
-  selectLanguage: selectLanguage$1,
-  selectLanguageForContent: selectLanguageForContent$1,
+  selectLanguage: selectLanguage$2,
+  selectLanguageForContent: selectLanguageForContent$2,
   "languageDetection.multipleLanguagesError": "Alguns campos parecem estar escritos em idiomas diferentes. Certifique-se de que todo o conteúdo esteja no mesmo idioma.",
   "languageDetection.languageMismatchError": "Seu conteúdo parece estar em :detectedLanguage, mas você selecionou :selectedLanguage. Atualize sua seleção de idioma.",
   "languageDetection.defaultMismatchError": "Incompatibilidade de idioma detectada",
@@ -57499,6 +60411,8 @@ const pt = {
   "my.createListBlurb": "Criar uma lista de favoritos é uma pasta em branco para colocar propostas, perfis do ideascale, grupos, avaliações e comunidades de múltiplos fundos.",
   "my.createListTitle": "Selecione tipo de lista para criar. (Elas podem ser compartilhadas publicamente ou mantidas privadas.)",
   "my.createVotingList": "Criar Lista de Votação",
+  "my.createVotingListWithStandardUi": "Usar Fluxo de Trabalho Padrão",
+  "my.createVotingListWithCardedUi": "Usar Fluxo de Trabalho Card Deck",
   "my.createTinderList": "Criar Lista Tinder",
   "my.votes": "Votos",
   "my.services": "Serviços",
@@ -57636,6 +60550,7 @@ const pt = {
   "proposals.providedUrl": "URL Fornecida",
   "proposals.listSubtitle": "Votos de propostas devem ser submetidos no aplicativo oficial Catalyst Voting",
   "proposals.quickPitchesListSubtitle": "Apresentações rápidas de ideias de 300 segundos ou menos na cédula.",
+  "proposals.celebrateCompletedProposals": "Celebrando Proposta Concluída",
   "proposals.celebrateCompletedProposalsSubtitle": "Algumas ideias que vale a pena celebrar... você pode até encontrar algo útil para seu próximo projeto.",
   "proposals.pageSubtitle": "Procurar propostas e desafios por título, conteúdo ou autor e co-autores",
   "proposals.seeMoreProposals": "Ver mais propostas",
@@ -58108,12 +61023,14 @@ const pt = {
   "transactions.table.voterRegistration": "Registro de Votante",
   "transactions.table.type": "Tipo",
   "transactions.table.fund": "Fundo",
+  "transactions.table.id": "Id",
   "transactions.table.fragmentId": "ID do Fragmento",
   "transactions.table.caster": "Eleitor",
   "transactions.table.timestamp": "Timestamp",
   "transactions.table.choice": "Escolha",
   "transactions.table.votingPower": "Poder de Voto",
   "transactions.table.rawFragment": "Fragmento Bruto",
+  "transactions.table.proposalPayout": "Pagamento da Proposta",
   "transactions.table.totalOutputs": "Valor de Saída (Lovelace)",
   "transactions.table.totalInputs": "Total de Entradas",
   "transactions.table.weights": "Pesos",
@@ -58250,12 +61167,12 @@ const pt = {
   "voter.sort.votesCountDesc": "Contagem de Votos: Alto para Baixo",
   "voter.sort.votesCountAsc": "Contagem de Votos: Baixo para Alto",
   "voter.sort.proposalsVotedOnDesc": "Propostas Votadas: Alto para Baixo",
-  rightSwipes: rightSwipes$1,
-  leftSwipes: leftSwipes$1,
+  rightSwipes: rightSwipes$2,
+  leftSwipes: leftSwipes$2,
   "graph.loadingConnections": "Carregando conexões para :nodeName ...",
   "graph.noAdditionalConnections": ":nodeName não tem conexões adicionais",
   "graph.unknownNode": "Desconhecido",
-  loadingGraph: loadingGraph$1,
+  loadingGraph: loadingGraph$2,
   "voter.sort.proposalsVotedOnAsc": "Propostas Votadas: Baixo para Alto",
   "services.service": "Serviço",
   "services.AddService": "Adicionar Serviço",
@@ -58265,13 +61182,1635 @@ const pt = {
   "services.catalystServicesDesc": "Um espaço para equipes financiadas pelo Catalyst colaborarem, solicitarem ajuda e oferecerem serviços ao ecossistema.",
   "services.myServices": "Meus Serviços",
   "services.myServicesDesc": "Gerencie seus serviços e colabore com o ecossistema Catalyst.",
-  endDate: endDate$1,
-  startDate: startDate$1,
+  endDate: endDate$2,
+  startDate: startDate$2,
   "wallet.login": "Login com Carteira",
   "wallet.login.confirm": "Estamos prestes a fazer seu login usando sua carteira conectada, a conta vinculada a esta carteira será autenticada. Se nenhuma conta vinculada for encontrada, uma será criada usando seu endereço. Você pode atualizar esta conta no seu painel sob a página 'Meu perfil'.<br><br> <strong>Já tem uma conta?</strong> Faça login usando email e adicione sua carteira para que possa fazer login com carteira ou email.",
+  "funding.status.pending": "Pendente",
+  "funding.status.withdrawn": "Retirado",
+  "funding.status.fullyPaid": "Totalmente pago",
+  "funding.status.funded": "Financiado",
+  "funding.status.notFunded": "Não Financiado",
+  "project.status.votePending": "Votação Pendente",
+  "project.status.withdrawn": "Retirado",
+  "project.status.complete": "Completo",
+  "project.status.inProgress": "Em Progresso",
+  "project.status.unfunded": "Não Financiado",
 };
 
-const __vite_glob_1_6 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_1_8 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+    __proto__: null,
+    API: API$2,
+    Home: Home$2,
+    Link: Link$2,
+    abstain: abstain$2,
+    activeFund: activeFund$2,
+    addEmail: addEmail$2,
+    addYourCity: addYourCity$2,
+    allCurrencies: allCurrencies$2,
+    amount: amount$2,
+    appMessage: appMessage$2,
+    approved: approved$2,
+    articles: articles$2,
+    artistRole: artistRole$2,
+    assetName: assetName$2,
+    authMessage: authMessage$2,
+    awarded: awarded$2,
+    back: back$2,
+    bio: bio$2,
+    blockchainData: blockchainData$2,
+    bookmark: bookmark$2,
+    cantFindNFT: cantFindNFT$2,
+    cantFindNFTForMint: cantFindNFTForMint$2,
+    catalystAPI: catalystAPI$2,
+    ccv4Votes: ccv4Votes$2,
+    chooseMetaData: chooseMetaData$2,
+    chooseMetaDataDescription: chooseMetaDataDescription$2,
+    clear: clear$2,
+    comingSoon: comingSoon$2,
+    completed: completed$2,
+    confirmPassword: confirmPassword$2,
+    connect: connect$2,
+    connectWallet: connectWallet$2,
+    connections: connections$2,
+    cookies: cookies$2,
+    copied: copied$2,
+    copyToClipboard: copyToClipboard$2,
+    copyright: copyright$2,
+    currentPassword: currentPassword$2,
+    dReps: dReps$2,
+    data: data$2,
+    default: pt,
+    details: details$2,
+    developers: developers$2,
+    distributed: distributed$2,
+    email: email$2,
+    emailAddress: emailAddress$2,
+    endDate: endDate$2,
+    explore: explore$2,
+    facebook: facebook$2,
+    filterChart: filterChart$2,
+    filters: filters$2,
+    forgotPassword: forgotPassword$2,
+    from: from$2,
+    fundProject: fundProject$2,
+    funded: funded$2,
+    funding: funding$2,
+    general: general$2,
+    getStarted: getStarted$2,
+    github: github$2,
+    goToIdeascale: goToIdeascale$2,
+    impact: impact$2,
+    jormungandr: jormungandr$2,
+    knowledgeBase: knowledgeBase$2,
+    leftSwipes: leftSwipes$2,
+    legal: legal$2,
+    licenses: licenses$2,
+    linkedIn: linkedIn$2,
+    listsAndBookmarks: listsAndBookmarks$2,
+    loading: loading$2,
+    loadingGraph: loadingGraph$2,
+    login: login$2,
+    loginPrompt: loginPrompt$2,
+    loginToMint: loginToMint$2,
+    metaDataInstruction: metaDataInstruction$2,
+    metaTitle: metaTitle$2,
+    metadataStrikeInstruction: metadataStrikeInstruction$2,
+    minCharTextarea: minCharTextarea$2,
+    mintNFT: mintNFT$2,
+    minting: minting$2,
+    monthlyReports: monthlyReports$2,
+    mustBeProposer: mustBeProposer$2,
+    myCharts: myCharts$2,
+    myWallet: myWallet$2,
+    name: name$2,
+    next: next$2,
+    nftPaymentGatewayTitle: nftPaymentGatewayTitle$2,
+    nftPending: nftPending$2,
+    noBookmarksYet: noBookmarksYet$2,
+    noGroupBookmarks: noGroupBookmarks$2,
+    noImage: noImage$2,
+    noNFTDataAvailable: noNFTDataAvailable$2,
+    noPeopleBookmarks: noPeopleBookmarks$2,
+    noPreviewAvailable: noPreviewAvailable$2,
+    noProposalBookmarks: noProposalBookmarks$2,
+    noReviewBookmarks: noReviewBookmarks$2,
+    noVotes: noVotes$2,
+    nobookmarks: nobookmarks$2,
+    notSet: notSet$2,
+    numbers: numbers$2,
+    otherContributors: otherContributors$2,
+    password: password$2,
+    paymentGateway: paymentGateway$2,
+    policyID: policyID$2,
+    previous: previous$2,
+    privacy: privacy$2,
+    problem: problem$2,
+    profileBackground: profileBackground$2,
+    projectCatalyst: projectCatalyst$2,
+    projectTitle: projectTitle$2,
+    proposal: proposal$2,
+    received: received$2,
+    register: register$2,
+    rememberMe: rememberMe$2,
+    requested: requested$2,
+    reviewerReputationScore: reviewerReputationScore$2,
+    reviewers: reviewers$2,
+    rightSwipes: rightSwipes$2,
+    role: role$2,
+    searchQuery: searchQuery$2,
+    seeAll: seeAll$2,
+    seeLess: seeLess$2,
+    seeMore: seeMore$2,
+    select: select$2,
+    selectLanguage: selectLanguage$2,
+    selectLanguageForContent: selectLanguageForContent$2,
+    selected: selected$2,
+    selection: selection$2,
+    signin: signin$2,
+    signup: signup$2,
+    social: social$2,
+    solution: solution$2,
+    spending: spending$2,
+    startDate: startDate$2,
+    submitted: submitted$2,
+    support: support$2,
+    teams: teams$2,
+    terms: terms$2,
+    to: to$2,
+    totalAda: totalAda$2,
+    totalUsd: totalUsd$2,
+    transaction: transaction$2,
+    twitter: twitter$2,
+    unavailableForMint: unavailableForMint$2,
+    updatePassword: updatePassword$2,
+    verificationCode: verificationCode$2,
+    verificationCodeLabel: verificationCodeLabel$2,
+    verificationInstructions: verificationInstructions$2,
+    verificationTitle: verificationTitle$2,
+    viewNFT: viewNFT$2,
+    voters: voters$2,
+    votes: votes$2,
+    wallets: wallets$2,
+    yes: yes$2,
+    yesVotes: yesVotes$2
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const activeFund$1 = "Mfuko wa Kisiasa";
+const addEmail$1 = "Ongeza barua pepe";
+const addYourCity$1 = "Ongeza jiji lako";
+const appMessage$1 = "Kura zote lazima ziwasilishwe kwenye Programu ya Kupiga Kura ya Catalyst. Hii ni chombo cha utafiti na upangaji tu!";
+const articles$1 = "Makala";
+const assetName$1 = "Jina la Mali";
+const API$1 = "API";
+const from$1 = "Kutoka";
+const to$1 = "Kwenda";
+const authMessage$1 = "Unaweza kuchunguza mapendekezo, ripoti za kila mwezi, watu, na vikundi. Chuja mapendekezo kwa hali ya ufadhili au ukubwa wa bajeti, Mfuko, Kampeni, maneno muhimu, na zaidi.";
+const bio$1 = "Wasifu";
+const myWallet$1 = "Mkoba Wangu";
+const allCurrencies$1 = "Sarafu Zote";
+const totalAda$1 = "Jumla ya Kiasi katika ADA";
+const totalUsd$1 = "Jumla ya Kiasi katika USD";
+const amount$1 = "Kiasi";
+const minCharTextarea$1 = "Angalau herufi 200 zinahitajika";
+const blockchainData$1 = "Data ya Blockchain";
+const bookmark$1 = "Nafasi yako ya kibinafsi ya kuandaa na kudhibiti maarifa ya mapendekezo. Fikia kwa urahisi mapendekezo yako yaliyohifadhiwa, mapitio ya maelezo, na shiriki orodha zilizopangwa ili kubaki juu ya mawazo muhimu na fursa.";
+const catalystAPI$1 = "Catalyst API";
+const ccv4Votes$1 = "Kura za CCV4";
+const chooseMetaData$1 = "Chagua MetaData yako mwenyewe";
+const confirmPassword$1 = "Thibitisha Nenosiri";
+const connect$1 = "Unganisha";
+const updatePassword$1 = "Sasisha Nenosiri";
+const currentPassword$1 = "Nenosiri la Sasa";
+const connectWallet$1 = "Unganisha mkoba";
+const comingSoon$1 = "Inakuja Hivi Karibuni";
+const cookies$1 = "Vidakuzi";
+const copyright$1 = "© 2024 Catalyst Explorer. Haki zote zimehifadhiwa.";
+const connections$1 = "Miunganiko";
+const minting$1 = "Unaunda";
+const loginToMint$1 = "Ingia ili kuunda";
+const unavailableForMint$1 = "Haipatikani";
+const mustBeProposer$1 = "Lazima uwe Mpendekeza";
+const copied$1 = "Imenakiliwa";
+const data$1 = "Data";
+const dReps$1 = "DReps";
+const email$1 = "Barua pepe";
+const emailAddress$1 = "Anwani ya Barua Pepe";
+const general$1 = "Jumla";
+const facebook$1 = "Facebook";
+const forgotPassword$1 = "Umesahau nenosiri";
+const funding$1 = "Ufadhili";
+const getStarted$1 = "Anza";
+const github$1 = "Github";
+const Home$1 = "Nyumbani";
+const jormungandr$1 = "Jormungandr";
+const knowledgeBase$1 = "Msingi wa Maarifa";
+const explore$1 = "Chunguza";
+const impact$1 = "Athari";
+const legal$1 = "Kisheria";
+const licenses$1 = "Leseni";
+const login$1 = "Ingia";
+const linkedIn$1 = "LinkedIn";
+const listsAndBookmarks$1 = "Orodha na Alamisho";
+const monthlyReports$1 = "Ripoti za Kila Mwezi";
+const metaTitle$1 = "Onyesho la Meta Data";
+const myCharts$1 = "Chati Zangu";
+const mintNFT$1 = "Unda NFT";
+const name$1 = "Jina";
+const viewNFT$1 = "Ona NFT";
+const nftPending$1 = "NFT Inasubiri";
+const cantFindNFT$1 = "Haiwezi kupata NFT ya kuunda";
+const paymentGateway$1 = "Lango la Malipo la NFT-MAKER PRO";
+const fundProject$1 = "Nambari ya Mradi Uliofadhiliwa";
+const projectTitle$1 = "Kichwa cha Mradi";
+const yesVotes$1 = "Kura za Ndiyo";
+const noVotes$1 = "Kura za La";
+const role$1 = "Jukumu";
+const otherContributors$1 = "Wachangiaji Wengine";
+const metaDataInstruction$1 = "Unaweza kufuta metadata kwa kubonyeza ikoni ya X. Taarifa zilizofutwa hazitajumuishwa katika uundaji wa mwisho.";
+const nobookmarks$1 = "Hakuna Alamisho Bado";
+const noBookmarksYet$1 = "Hujaweka alamisho yoyote ya mapendekezo, watu, vikundi, au mapitio. Anza kuchunguza na weka alamisho ya vipendwa vyako!";
+const noImage$1 = "Hakuna Picha";
+const developers$1 = "Wasanidi";
+const noProposalBookmarks$1 = "Hakuna alamisho ya mapendekezo yaliyopatikana";
+const noGroupBookmarks$1 = "Hakuna alamisho ya vikundi yaliyopatikana";
+const noPeopleBookmarks$1 = "Hakuna alamisho ya watu yaliyopatikana";
+const noReviewBookmarks$1 = "Hakuna alamisho ya mapitio yaliyopatikana";
+const numbers$1 = "Nambari";
+const password$1 = "Nenosiri";
+const policyID$1 = "Kitambulisho cha Sera";
+const filters$1 = "Vichunjo";
+const rememberMe$1 = "Nikumbuke";
+const privacy$1 = "Faragha";
+const problem$1 = "Tatizo";
+const profileBackground$1 = "Mazingira ya Wasifu";
+const projectCatalyst$1 = "Jina la Kampeni ya Mradi wa Catalyst";
+const reviewers$1 = "Wakaguzi";
+const register$1 = "Jisajili";
+const reviewerReputationScore$1 = "Alama ya Sifa ya Mkaguzi";
+const searchQuery$1 = "Hakuna matokeo yanayolingana na utafutaji wako";
+const signin$1 = "Ingia";
+const signup$1 = "Jisajili";
+const social$1 = "Kijamii";
+const spending$1 = "Matumizi";
+const support$1 = "Msaada";
+const seeAll$1 = "Ona Yote";
+const seeLess$1 = "Ona kidogo";
+const seeMore$1 = "Ona zaidi";
+const solution$1 = "Suluhisho";
+const terms$1 = "Masharti";
+const twitter$1 = "Twitter";
+const transaction$1 = "Muamala";
+const votes$1 = "Kura Zangu";
+const voters$1 = "Wapiga Kura";
+const wallets$1 = "Mikoba";
+const details$1 = "Maelezo";
+const teams$1 = "Timu";
+const yes$1 = "Ndiyo";
+const filterChart$1 = "Chuja chati";
+const abstain$1 = "Zuia";
+const notSet$1 = "Haijawekwa";
+const loading$1 = "Inapakia";
+const Link$1 = "Kiungo";
+const select$1 = "Chagua";
+const selected$1 = "Umechagua";
+const clear$1 = "futa";
+const selection$1 = "uchaguzi";
+const awarded$1 = "Imetolewa";
+const distributed$1 = "Imegawanywa";
+const requested$1 = "Imeombwa";
+const received$1 = "Imepokelewa";
+const submitted$1 = "Imewasilishwa";
+const funded$1 = "Imefadhiliwa";
+const approved$1 = "Imeidhinishwa";
+const completed$1 = "Imekamilika";
+const loginPrompt$1 = "Ingia ili kuanza";
+const back$1 = "Rudi";
+const verificationTitle$1 = "Hebu kukuhalalisha!";
+const verificationCodeLabel$1 = "Msimbo wa Uhalalishaji";
+const verificationCode$1 = "MSIMBO$:";
+const verificationInstructions$1 = "Ili kuhalalisha umiliki wako wa wasifu huu, tafadhali tuma ujumbe wa kibinafsi kwa Lido Nation kwenye Ideascale na ujumuishe msimbo hapo juu.";
+const goToIdeascale$1 = "Nenda kwa Ideascale";
+const proposal$1 = "Pendekezo";
+const noNFTDataAvailable$1 = "Hakuna data ya NFT inayopatikana";
+const noPreviewAvailable$1 = "Hakuna muhtasari unapatikana";
+const chooseMetaDataDescription$1 = "Chagua MetaData yako mwenyewe";
+const metadataStrikeInstruction$1 = "Unaweza kufuta metadata kwa kubonyeza ikoni ya X. Taarifa zilizofutwa hazitajumuishwa katika uundaji wa mwisho.";
+const nftPaymentGatewayTitle$1 = "Lango la Malipo la NFT-MAKER PRO";
+const artistRole$1 = "Msanii";
+const cantFindNFTForMint$1 = "Haiwezi kupata NFT ya kuunda";
+const copyToClipboard$1 = "Nakili kwenye ubao wa kunakili";
+const previous$1 = "Awali";
+const next$1 = "Ifuatayo";
+const selectLanguage$1 = "Chagua Lugha";
+const selectLanguageForContent$1 = "Chagua lugha ya maudhui yako";
+const rightSwipes$1 = "- Papasa Kulia";
+const leftSwipes$1 = "- Papasa Kushoto";
+const loadingGraph$1 = "Inapakia grafu";
+const endDate$1 = "Tarehe ya Mwisho";
+const startDate$1 = "Tarehe ya Mwanzo";
+const sw = {
+  activeFund: activeFund$1,
+  addEmail: addEmail$1,
+  addYourCity: addYourCity$1,
+  appMessage: appMessage$1,
+  articles: articles$1,
+  assetName: assetName$1,
+  API: API$1,
+  from: from$1,
+  to: to$1,
+  authMessage: authMessage$1,
+  bio: bio$1,
+  myWallet: myWallet$1,
+  allCurrencies: allCurrencies$1,
+  totalAda: totalAda$1,
+  totalUsd: totalUsd$1,
+  amount: amount$1,
+  minCharTextarea: minCharTextarea$1,
+  blockchainData: blockchainData$1,
+  bookmark: bookmark$1,
+  catalystAPI: catalystAPI$1,
+  ccv4Votes: ccv4Votes$1,
+  chooseMetaData: chooseMetaData$1,
+  confirmPassword: confirmPassword$1,
+  connect: connect$1,
+  updatePassword: updatePassword$1,
+  currentPassword: currentPassword$1,
+  connectWallet: connectWallet$1,
+  comingSoon: comingSoon$1,
+  cookies: cookies$1,
+  copyright: copyright$1,
+  connections: connections$1,
+  minting: minting$1,
+  loginToMint: loginToMint$1,
+  unavailableForMint: unavailableForMint$1,
+  mustBeProposer: mustBeProposer$1,
+  copied: copied$1,
+  data: data$1,
+  dReps: dReps$1,
+  email: email$1,
+  emailAddress: emailAddress$1,
+  general: general$1,
+  facebook: facebook$1,
+  forgotPassword: forgotPassword$1,
+  funding: funding$1,
+  getStarted: getStarted$1,
+  github: github$1,
+  Home: Home$1,
+  jormungandr: jormungandr$1,
+  knowledgeBase: knowledgeBase$1,
+  explore: explore$1,
+  impact: impact$1,
+  legal: legal$1,
+  licenses: licenses$1,
+  login: login$1,
+  linkedIn: linkedIn$1,
+  listsAndBookmarks: listsAndBookmarks$1,
+  monthlyReports: monthlyReports$1,
+  metaTitle: metaTitle$1,
+  myCharts: myCharts$1,
+  mintNFT: mintNFT$1,
+  name: name$1,
+  viewNFT: viewNFT$1,
+  nftPending: nftPending$1,
+  cantFindNFT: cantFindNFT$1,
+  paymentGateway: paymentGateway$1,
+  fundProject: fundProject$1,
+  projectTitle: projectTitle$1,
+  yesVotes: yesVotes$1,
+  noVotes: noVotes$1,
+  role: role$1,
+  otherContributors: otherContributors$1,
+  metaDataInstruction: metaDataInstruction$1,
+  nobookmarks: nobookmarks$1,
+  noBookmarksYet: noBookmarksYet$1,
+  noImage: noImage$1,
+  developers: developers$1,
+  noProposalBookmarks: noProposalBookmarks$1,
+  noGroupBookmarks: noGroupBookmarks$1,
+  noPeopleBookmarks: noPeopleBookmarks$1,
+  noReviewBookmarks: noReviewBookmarks$1,
+  numbers: numbers$1,
+  password: password$1,
+  policyID: policyID$1,
+  filters: filters$1,
+  rememberMe: rememberMe$1,
+  privacy: privacy$1,
+  problem: problem$1,
+  profileBackground: profileBackground$1,
+  projectCatalyst: projectCatalyst$1,
+  reviewers: reviewers$1,
+  register: register$1,
+  reviewerReputationScore: reviewerReputationScore$1,
+  searchQuery: searchQuery$1,
+  signin: signin$1,
+  signup: signup$1,
+  social: social$1,
+  spending: spending$1,
+  support: support$1,
+  seeAll: seeAll$1,
+  seeLess: seeLess$1,
+  seeMore: seeMore$1,
+  solution: solution$1,
+  terms: terms$1,
+  twitter: twitter$1,
+  transaction: transaction$1,
+  votes: votes$1,
+  voters: voters$1,
+  wallets: wallets$1,
+  details: details$1,
+  teams: teams$1,
+  yes: yes$1,
+  filterChart: filterChart$1,
+  abstain: abstain$1,
+  notSet: notSet$1,
+  loading: loading$1,
+  Link: Link$1,
+  select: select$1,
+  selected: selected$1,
+  clear: clear$1,
+  selection: selection$1,
+  awarded: awarded$1,
+  distributed: distributed$1,
+  requested: requested$1,
+  received: received$1,
+  submitted: submitted$1,
+  funded: funded$1,
+  approved: approved$1,
+  completed: completed$1,
+  loginPrompt: loginPrompt$1,
+  back: back$1,
+  verificationTitle: verificationTitle$1,
+  verificationCodeLabel: verificationCodeLabel$1,
+  verificationCode: verificationCode$1,
+  verificationInstructions: verificationInstructions$1,
+  goToIdeascale: goToIdeascale$1,
+  proposal: proposal$1,
+  noNFTDataAvailable: noNFTDataAvailable$1,
+  noPreviewAvailable: noPreviewAvailable$1,
+  chooseMetaDataDescription: chooseMetaDataDescription$1,
+  metadataStrikeInstruction: metadataStrikeInstruction$1,
+  nftPaymentGatewayTitle: nftPaymentGatewayTitle$1,
+  artistRole: artistRole$1,
+  cantFindNFTForMint: cantFindNFTForMint$1,
+  copyToClipboard: copyToClipboard$1,
+  "activeFund.title": "Mfuko wa Kisiasa wa Catalyst",
+  "activeFund.subtitle": "Baki umesasishwa na duru ya hivi punde ya ufadhili. Kagua kampeni, fuatilia mapendekezo, na weka alamisho ya yale yanayokuhusisha zaidi.",
+  "activeFund.budget": "Jumla ya bajeti ya kugawanywa",
+  "activeFund.distributed": "Imegawanywa",
+  "activeFund.remaining": "Iliyobakia",
+  "activeFund.createBookmarkList": "Unda Orodha ya Alamisho",
+  "activeFund.bannerTitle": "Jenga orodha yako ya kupiga kura!",
+  "activeFund.supportUsTitle": "Tutumie kwenye kura!",
+  "activeFund.bannerSubtitle": "Unda chaguzi zako za kupiga kura kwa kurejelea na kushiriki! Unajua unachokitafuta? Tumia Utaratibu wa Kawaida. Hujui unachokitafuta? Tumia Utaratibu wa Kadi ili kupapasa kulia kwenye mapendekezo unayotaka kuangalia tena, kushoto kwenye yale utakayozuia au kupita katika duru hii.",
+  "activeFund.supportUsSubtitle": "Ikiwa unapata thamani katika chombo hiki tafadhali fikiria kutuunga mkono kwenye kura.",
+  "activeFund.supportUsProposalTitle": "Catalyst Yote-katika-Moja: Arifa, Orodha za AI na Mipangilio.",
+  "activeFund.supportUsSeeProposal": "Soma Pendekezo",
+  "activeFund.supportUsProposalSubtitle": "Ikiwa tutafadhiliwa tutafanya: Panua catalystexplorer.com ili kubadilisha jinsi unavyoshirikiana na Catalyst kupitia arifa za akili za matukio unayojali, ugunduzi wa mapendekezo unaongozwa na AI, na ujenzi wa mipangilio ya kitaalamu.",
+  "activeFund.campaignsTitle": "Makundi ya Kampeni",
+  "activeFund.campaigns.proposals": "Mapendekezo",
+  "activeFund.campaigns.viewProposals": "Ona Mapendekezo",
+  "activeFund.campaigns.createList": "Unda Orodha",
+  "proposalComparison.title": "Linganisha Mapendekezo ya Catalyst",
+  "proposalComparison.subtitle": "Changanua na tathmini mapendekezo kwa urahisi ili kufanya maamuzi ya habari kuhusu ufadhili, athari, na muendelezo wa mkakati.",
+  "proposalComparison.searchPlaceholder": "Tafuta pendekezo",
+  "proposalComparison.viewProposal": "Ona Pendekezo",
+  "proposalComparison.selectMetric": "Chagua Kipimo",
+  "proposalComparison.tableHeaders.metric": "Kipimo",
+  "proposalComparison.tableHeaders.reorder": "Panga upya",
+  "proposalComparison.tableHeaders.title": "Kichwa",
+  "proposalComparison.tableHeaders.fund": "Mfuko",
+  "proposalComparison.tableHeaders.status": "Hali",
+  "proposalComparison.tableHeaders.solution": "Suluhisho",
+  "proposalComparison.tableHeaders.funding": "Ufadhili Uliopokelewa",
+  "proposalComparison.tableHeaders.yesVotes": "Kura za Ndiyo",
+  "proposalComparison.tableHeaders.noVotes": "Kura za La",
+  "proposalComparison.tableHeaders.team": "Timu",
+  "proposalComparison.tableHeaders.action": "Kitendo",
+  "proposalComparison.tableHeaders.campaign": "Kampeni",
+  "proposalComparison.tableHeaders.problem": "Tatizo",
+  "proposalComparison.tableHeaders.openSource": "Chanzo Huru",
+  "workflows.claimIdeascale.selectProfile": "Chagua Wasifu",
+  "workflows.claimIdeascale.submitDetails": "Wasilisha Maelezo",
+  "workflows.claimIdeascale.verification": "Msimbo wa uhalalishaji",
+  "workflows.claimIdeascale.chooseProfile": "Chagua wasifu(wa) unayotaka kudai. 🚀",
+  "workflows.claimIdeascale.submitDetailsForm": "Wasilisha maelezo ungependa yasasishwe kwenye akaunti.",
+  "workflows.claimIdeascale.verifyOnIdeascale": "Ili kuhalalisha umiliki wako wa wasifu huu, tafadhali tuma ujumbe wa kibinafsi kwa Lido Nation kwenye Ideascale na ujumuishe msimbo hapo juu.",
+  "workflows.completedProjectNfts.selectProfile": "Chagua Wasifu",
+  "workflows.completedProjectNfts.selectProposal": "Chagua Pendekezo",
+  "workflows.completedProjectNfts.selectProfileInfo": "Chagua wasifu(wa) unayotaka kuunda kutoka. Wasifu uliochaguliwa unapaswa kuunganishwa na mradi uliokamilika ambao NFT yake unaunda. Huna uhakika ni lipi la kuchagua? Hakuna wasiwasi—chagua tu wasifu zote zinazopatikana na tutashughulikia mengineyo! 🚀",
+  "workflows.completedProjectNfts.selectProposalInfo": "Ili kuanza, tafadhali chagua pendekezo la kuunda kutoka",
+  "workflows.completedProjectNfts.viewNft": "Ona NFT",
+  "workflows.completedProjectNfts.alreadyMinted": "Tayari imeundwa",
+  "workflows.catalystDrepSignup.motivations": "2. Motisha",
+  "workflows.catalystDrepSignup.objectives": "1. Malengo Yako",
+  "workflows.catalystDrepSignup.qualifications": "3. Vipimo",
+  "workflows.catalystDrepSignup.motivationsPlaceholder": "Onyesha uongozi wako, ahadi na maono ya jamii",
+  "workflows.catalystDrepSignup.objectivesPlaceholder": "Andika kuhusu maadili yako na mkabala wako wa utawala...",
+  "workflows.catalystDrepSignup.qualificationsPlaceholder": "Ni nini kinachokufanya ukiwa tayari kwa jukumu hili katika catalyst",
+  "workflows.catalystDrepSignup.2roundsRule": "Ili kuendelea, unahitaji kuwa umeshiriki katika angalau duru 2 za kupiga kura za cayalyst.",
+  "workflows.catalystDrepSignup.hasCatalystProfile": "Ili kuendelea, unahitaji kuwa na wasifu wa catalyst uliounganishwa na mkoba huu ulioungwa.",
+  "funding.status.pending": "Inasubiri",
+  "funding.status.withdrawn": "Imeondolewa",
+  "funding.status.fullyPaid": "Imelipwa Kamili",
+  "funding.status.funded": "Imefadhiliwa",
+  "funding.status.notFunded": "Haijafadhiliwa",
+  "project.status.votePending": "Kura Inasubiri",
+  "project.status.withdrawn": "Imeondolewa",
+  "project.status.complete": "Kamili",
+  "project.status.inProgress": "Inaendelea",
+  "project.status.unfunded": "Haijafadhiliwa",
+  "workflows.catalystDrepSignup.signMessageInfo": "Hakikisha umiliki wa mkoba.",
+  "workflows.catalystDrepSignup.signMessage": "Saini ili tuweze kuhalalisha umiliki wa mkoba wako.",
+  "workflows.catalystDrepSignup.willMaintain": "Ninakubali kuhifadhi kwa usahihi taarifa hii na kuidumisha",
+  "workflows.catalystDrepSignup.createAccount": "Unda Akaunti",
+  "workflows.catalystDrepSignup.createAccountInfo": "\n1. Ikiwa tayari una akaunti, ingia kwa kutumia taarifa zako za uingizaji.\n2. Ikiwa ni mpya, jisajili kwa kutumia barua pepe yako na kuunda nenosiri salama.\n3. Hakikisha barua pepe yako ili kuamilisha akaunti yako.",
+  "workflows.catalystDrepSignup.connectWallet": "Unganisha Mkoba",
+  "workflows.catalystDrepSignup.connectWalletInfo": "\n1. Chagua mkoba wa Cardano unaoungwa (k.m., Yoroi, Daedalus, Eternl).\n2. Fuata maelekezo ya kuunganisha mkoba wako kwa usalama.\n3. Tutatumia mkoba kuhalalisha kwamba umeshiriki katika angalau duru 2 za kupiga kura za ufadhili wa catalyst baada ya hapo utaweza kuendelea na usajili wako.\n4. Bonyeza 'Ifuatayo' ili kusaini ujumbe kwa mkoba wako.",
+  "workflows.catalystDrepSignup.signWallet": "Saini Muamala",
+  "workflows.catalystDrepSignup.signWalletInfo": "\n1. Idhinisha kitendo cha mara moja cha kusaini ujumbe ili kuhalalisha umiliki wa mkoba wako.\n2. Kitendo hiki hakihamishi pesa lakini kinaunganisha mkoba wako na akaunti yako ya DRep.\n3. Fuata maelekezo ya mkoba ili kukamilisha mchakato wa kusaini.",
+  "workflows.catalystDrepSignup.success": "Mafanikio",
+  "workflows.catalystDrepSignup.successStepMsg": "Mkoba wako umeongezwa kwenye akaunti hii ya drep.",
+  "workflows.catalystDrepSignup.successInfo": "\n1. Ikiwa imefanikiwa, utaona ujumbe wa uthibitisho, na akaunti yako ya DRep itakuwa hai.\n2. Ikiwa kuna hitilafu, angalia kwa:\n* Muunganiko mbaya wa mkoba\n* Kucheleweshwa kwa mtandao au makosa\n3. Jaribu tena au wasiliana na msaada ikiwa matatizo yanaendelea.",
+  "workflows.catalystDrepSignup.platformStatement": "Taarifa ya Jukwaa",
+  "workflows.catalystDrepSignup.platformStatementMsg": "Taarifa ya Jukwaa. Julikisha jamii ni nani wewe na unachosimama nacho.",
+  "workflows.catalystDrepSignup.platformStatementInfo": "\n1. Jitambulishe kama DRep na ueleze kanuni zako za utawala.\n2. Eleza kwa nini wamiliki wa ADA wanapaswa kukukabidhia.\n3. Uunge mkono lugha nyingi ili kufikia hadhira ya kimataifa.",
+  "workflows.catalystDrepSignup.submitStatement": "Wasilisha Taarifa",
+  "workflows.catalystDrepSignup.submitStatementToIpfs": "Wasilisha Taarifa kwa IPFS",
+  "workflows.catalystDrepSignup.publishing": "Inachapisha kwenye IPFS...",
+  "workflows.catalystDrepSignup.publishedSuccessfully": "Taarifa ya Jukwaa Imechapishwa kwa Mafanikio!",
+  "workflows.catalystDrepSignup.ipfsCid": "Kitambulisho cha Maudhui ya IPFS",
+  "workflows.catalystDrepSignup.copyCid": "Nakili CID kwenye ubao wa kunakili",
+  "workflows.catalystDrepSignup.copied": "Imenakiliwa!",
+  "workflows.catalystDrepSignup.openInNewTab": "Fungua katika kichupo kipya",
+  "workflows.resetPassword.alreadyHaveAccount": "Tayari una akaunti?",
+  "workflows.resetPassword.checkInbox": "Angalia Sanduku lako la Barua",
+  "workflows.resetPassword.confirmPassword": "Thibitisha Nenosiri",
+  "workflows.resetPassword.continue": "Endelea",
+  "workflows.resetPassword.email": "Barua pepe",
+  "workflows.resetPassword.enterEmail": "Ingiza barua pepe yako ili kuweka upya nenosiri.",
+  "workflows.resetPassword.enterNewPassword": "Ingiza Nenosiri lako Jipya",
+  "workflows.resetPassword.forgot": "Umesahau nenosiri",
+  "workflows.resetPassword.forgotInfo": "Ili kuweka upya nenosiri lako, ingiza barua pepe iliyosajiliwa ambayo una akaunti ya Catalyst Explorer.",
+  "workflows.resetPassword.newPassword": "Nenosiri Jipya",
+  "workflows.resetPassword.reset": "Weka upya Nenosiri",
+  "workflows.resetPassword.resetInfo": "Unda nenosiri jipya la akaunti yako. Hakikisha ni kali na salama.",
+  "workflows.resetPassword.sent": "Kiungo cha kuweka upya nenosiri kimetumwa kwenye barua pepe yako. Angalia sanduku lako la barua (au folda ya spam) na fuata maelekezo ya kuweka upya nenosiri lako.",
+  "workflows.resetPassword.submit": "Wasilisha",
+  "workflows.resetPassword.resend": "Tuma Tena Barua Pepe",
+  "workflows.voterList.welcome": "Kabla hujaanza, hebu tuwe orodha yako ya Kupiga Kura. Orodha ya Kupiga Kura ni mkusanyiko wa mapendekezo unayouunga mkono na unataka wengine wazingatie. Hii inasaidia kurahisisha ushiriki wa utawala. Uko tayari kuanza? Katika hatua zijazo, utaitaja orodha yako, kuongeza mapendekezo, na kueleza mantiki yako ya kuyachagua.",
+  "workflows.voterList.proposalsOnly": "Tofauti na aina zingine za orodha, mapendekezo tu yanaweza kuongezwa kwenye orodha za kupiga kura.",
+  "workflows.voterList.prototype": "<strong>OA: Hii bado ni nakala ya mfano na hakuna chochote kinachowasilishwa kwenye mnyororo bado!</strong>",
+  "workflows.voterList.title": "Kichwa",
+  "workflows.voterList.description": "Maelezo",
+  "workflows.voterList.descriptionPlaceholder": "Eleza kusudi la orodha hii kwa maneno machache.",
+  "workflows.voterList.descriptionHint": "Lazima iwe angalau herufi 100.",
+  "workflows.voterList.selectFund": "Chagua Mfuko",
+  "workflows.voterList.visibility": "Mwonekano",
+  "workflows.voterList.browseProposal": "Vinjari Pendekezo",
+  "workflows.voterList.submitVote": "Wasilisha Kura",
+  "workflows.voterList.visibilityOptions.public": "Ya Umma",
+  "workflows.voterList.visibilityOptions.private": "Ya Binafsi",
+  "workflows.voterList.visibilityOptions.delegators": "Wajumbe",
+  "workflows.voterList.comments": "Maoni",
+  "workflows.voterList.commentsEnabled": "Maoni Yameruhusiwa",
+  "workflows.voterList.chooseColor": "Chagua Rangi",
+  "workflows.voterList.pickTheme": "Chagua mada ya orodha",
+  "workflows.voterList.status": "Hali",
+  "workflows.voterList.statusOptions.published": "Chapisha",
+  "workflows.voterList.statusOptions.draft": "Rasimu",
+  "workflows.voterList.selectCampaign": "Chagua kampeni:",
+  "workflows.voterList.allCampaigns": "Zote",
+  "workflows.voterList.selectedProposals": "Mapendekezo Yaliyochaguliwa:",
+  "workflows.voterList.proposalCard.budget": "Bajeti:",
+  "workflows.voterList.proposalCard.fund": "Mfuko:",
+  "workflows.voterList.proposalCard.campaign": "Kampeni:",
+  "workflows.voterList.proposalCard.voteYes": "Ndiyo",
+  "workflows.voterList.proposalCard.voteAbstain": "Zuia",
+  "workflows.voterList.searchProposals": "Tafuta pendekezo",
+  "workflows.voterList.errors.titleRequired": "Kichwa kinahitajika",
+  "workflows.voterList.errors.fundRequired": "Uchaguzi wa mfuko unahitajika",
+  "workflows.voterList.errors.descriptionLength": "Maelezo lazima yawe na herufi 200",
+  "workflows.voterList.errors.rationaleLength": "Mantiki lazima iwe na angalau herufi 200",
+  "workflows.voterList.rationale.label": "Mantiki",
+  "workflows.voterList.rationale.placeholder": "Fupishe mantiki nyuma ya uchaguzi wako.",
+  "workflows.voterList.rationale.hint": "Angalau herufi 200 zinahitajika",
+  "workflows.voterList.success.title": "Mafanikio!!",
+  "workflows.voterList.success.message": "Tafadhali kumbuka kuwa kura hizi bado hazijawasilishwa kwenye mnyororo.",
+  "workflows.voterList.steps.details": "Maelezo",
+  "workflows.voterList.steps.listDetail": "Undani wa Orodha",
+  "workflows.voterList.steps.listDetailInfo": "Ipe orodha yako ya Kupiga Kura jina na maelezo mafupi. Hii inasaidia wengine kuelewa orodha yako inahusu nini",
+  "workflows.voterList.steps.proposals": "Mapendekezo",
+  "workflows.voterList.steps.proposalsInfo": "Sasa, hebu tuongeze mapendekezo kwenye orodha yako ya Kupiga Kura. Unaweza kutafuta mapendekezo yaliyopo na kuchagua yale yanayolingana.",
+  "workflows.voterList.steps.rationale": "Mantiki",
+  "workflows.voterList.steps.rationaleInfo": "Kwa nini ulichagua mapendekezo haya? Kutoa mantiki kunasaidia wengine kuelewa chaguzi zako na kufanya orodha yako iwe na uaminifu zaidi.",
+  "workflows.voterList.steps.readyToVote": "Tayari Kupiga Kura!!",
+  "workflows.voterList.steps.submitVotes": "Wasilisha Kura",
+  "workflows.voterList.steps.listCreated": "Orodha Imeundwa",
+  "workflows.voterList.steps.votesSubmitted": "Kura Zimewasilishwa",
+  "workflows.voterList.steps.submitVotesInfo": "Kutoka orodha yako ya mapendekezo yaliyochaguliwa, tafadhali piga kura zako",
+  "workflows.voterList.steps.submitReviewedVotes": "Umekagua uchaguzi wako. Bonyeza 'Wasilisha Kura' hapa chini ili kuhitimisha chaguzi zako na kukamilisha mchakato.",
+  "workflows.voterList.steps.submitReviewedVotesInfo": "Imehalalishwa kwa mafanikio. Endelea na kuwasilisha kura yako",
+  "workflows.voterList.steps.votesSummary": "Muhtasari wa Kura",
+  "workflows.voterList.steps.votesSummaryInfo": "Hapa kuna muhtasari wa kupiga kura kwako. Ili kufanya mabadiliko kwenye kura yako, nenda kwenye skrini ya awali na urekebishe.",
+  "workflows.voterList.steps.connectWallet": "Unganisha Mkoba",
+  "workflows.voterList.steps.connectWalletInfo": "Unganisha mkoba wako ili kuwasilisha kura zako.",
+  "workflows.voterList.steps.submission": "Uwasilishaji",
+  "workflows.voterList.steps.submissionInfo": "Inawasilisha kura zako",
+  "workflows.signature.steps.connectWallet": "Unganisha Mkoba",
+  "workflows.signature.steps.signHotWallet": "Saini Mkoba wa Moto",
+  "workflows.signature.steps.nameWallet": "Jina la Mkoba",
+  "workflows.signature.signWallet": "Saini mkoba",
+  "workflows.signature.nameWallet": "Jina la Mkoba",
+  "workflows.signature.inputWalletNamePlaceHolder": "Jina la Mkoba",
+  "workflows.signature.walletNameCondition": "Lazima iwe na angalau herufi 6.",
+  "workflows.signature.walletNameDescription": "Ipe mkoba wako jina la kuonyeshwa kwenye dashibodi yako ya mikoba.",
+  "workflows.signature.signAuth": "Kwa kusaini, unaidhinisha kitendo hiki kwa usalama kwa mkoba wako. Ufunguo wako wa siri unabaki Salama. Endelea ikiwa maelezo ni sahihi.",
+  "workflows.signature.signMessage": "Saini",
+  "workflows.signature.signing": "Inasaini...",
+  "workflows.signature.success.title": "Mafanikio!!",
+  "workflows.signature.success.message": "Saini yako ilifanikiwa na kurekodiwa kwa usalama. Muamala wako sasa umeuidhinishwa na uko tayari kuendelea.",
+  "workflows.signature.success.successfullySigned": "Mkoba wako umesainiwa kwa mafanikio.",
+  "workflows.signature.errors.failedToGetSignature": "Imeshindwa kupata saini kutoka kwa mkoba",
+  "workflows.signature.errors.failedToSaveSignature": "Imeshindwa kuhifadhi saini: {{details}}",
+  "workflows.signature.errors.processingError": "Hitilafu wakati wa mchakato wa saini: {{details}}",
+  "workflows.signature.errors.unknownError": "Hitilafu isiyojulikana imetokea",
+  "workflows.signature.duplicateSignature": "Saini rudufu imegunduliwa. Saini hii tayari imehifadhiwa.",
+  "workflows.signature.signatureDetails": "Maelezo ya Saini",
+  "workflows.signature.stakingKey": "Ufunguo wa Hisa",
+  "workflows.signature.walletInfo": "Taarifa za Mkoba",
+  "workflows.signature.messageToSign": "Ujumbe wa Kusaini",
+  "workflows.signature.signatureResult": "Matokeo ya Saini",
+  "workflows.signature.duplicatesFound": "Saini Rudufu Zimepatikana",
+  "workflows.signature.duplicatesMessage": "Tumepata saini kwenye mfumo wetu zenye ufunguo sawa wa hisa.",
+  "workflows.signature.verification.title": "Uhalalishaji wa Mkoba wa Catalyst Explorer",
+  "workflows.bookmarks.success.title": "Mafanikio!!",
+  "workflows.bookmarks.success.message": "Orodha yako ya Alamisho imeundwa!",
+  "workflows.bookmarks.intro": "Kabla hujaanza, hebu tuwe orodha yako ya Alamisho. Orodha ya alamisho ni mkusanyiko wa kibinafsi wa vitu vilivyohifadhiwa, ukuwezesha kuandaa kwa urahisi, kufikia, na kudhibiti maudhui yanayokuhusika nawe. Uko tayari kuanza?\n\n*Katika hatua zijazo, utaitaja orodha yako, kuongeza orodha yako, na kueleza mantiki yako ya kuyachagua.*",
+  "workflows.bookmarks.details": "Maelezo",
+  "workflows.bookmarks.listDetail": "Undani wa Orodha",
+  "workflows.bookmarks.listDetailInfo": "Ipe orodha yako ya Kupiga Kura jina na maelezo mafupi. Hii inasaidia wengine kuelewa orodha yako inahusu nini",
+  "workflows.bookmarks.listItems": "Vitu vya Orodha",
+  "workflows.bookmarks.listItemsInfo": "Sasa, hebu tuongeze vitu vinavyohusiana kwenye orodha yako ya Alamisho. Unaweza kutafuta mapendekezo yaliyopo na kuchagua yale yanayolingana.",
+  "workflows.bookmarks.rationale": "Mantiki",
+  "workflows.bookmarks.rationaleInfo": "Kwa nini ulichagua vitu hivi? Kutoa mantiki kunasaidia wengine kuelewa chaguzi zako na kufanya orodha yako iwe na uaminifu zaidi.",
+  "workflows.bookmarks.bookmarkCreated": "Orodha yako ya Alamisho imeundwa!",
+  "workflows.bookmarks.viewList": "Ona Orodha",
+  "workflows.bookmarks.placeholder": "Tafuta mapendekezo kwa kichwa, neno kuu, au mpendekeza...",
+  "workflows.bookmarks.text": "Pata mapendekezo unayovutiwa nayo na uweke alamisho kwenye orodha maalum kwa ufuatiliaji na ulinganisho rahisi.",
+  "workflows.publishToIpfs.description": "Kuchapisha kwenye IPFS kunafanya orodha yako ipatikane kwa umma kwenye mtandao uliogawanywa. Baada ya kuchapishwa, haiwezi kubadilishwa, lakini unaweza kuchapisha matoleo yaliyosasishwa baadaye.",
+  "workflows.publishToIpfs.whatWillBePublished": "Kile kitakachochapishwa:",
+  "workflows.publishToIpfs.listTitleDescription": "Kichwa cha orodha na maelezo",
+  "workflows.publishToIpfs.itemsInList": "Vitu katika orodha",
+  "workflows.publishToIpfs.metadata": "Metadata (tarehe, muundaji)",
+  "bookmarks.listMustHaveItemsAndVoter": "Orodha lazima iwe na vitu na iwe orodha ya mpiga kura ili kuchapishwa kwenye IPFS",
+  "bookmarks.listMustHaveItems": "Orodha lazima iwe na vitu ili kuchapishwa kwenye IPFS",
+  "bookmarks.onlyVoterLists": "Orodha za wapiga kura tu zinaweza kuchapishwa kwenye IPFS",
+  "bookmarks.viewAsPublic": "Ona kama ya umma",
+  "bookmarks.editListItem": "Hariri kipengee cha orodha",
+  "bookmarks.publishToIpfs": "Chapisha kwenye IPFS",
+  previous: previous$1,
+  next: next$1,
+  selectLanguage: selectLanguage$1,
+  selectLanguageForContent: selectLanguageForContent$1,
+  "workflows.tinderProposal.step1.selectAllThatApply": "(Chagua vyote vinavyohusika)",
+  "workflows.tinderProposal.step1.proposalTypesQuestion": "Chagua kategoria zote unazovutiwa nazo.",
+  "workflows.tinderProposal.step1.proposalSizeQuestion": "Ni ukubwa gani wa pendekezo au upeo unaoupendelea?",
+  "workflows.tinderProposal.step1.impactTypeQuestion": "Ni aina gani ya athari unayovutiwa zaidi kuiona?",
+  "workflows.tinderProposal.step1.proposalSizes.smallScale": "Kiwango kidogo / bajeti ndogo",
+  "workflows.tinderProposal.step1.proposalSizes.midSize": "Kiwango cha kati / cha majaribio",
+  "workflows.tinderProposal.step1.proposalSizes.largeScale": "Kiwango kikubwa / athari kubwa",
+  "workflows.tinderProposal.step1.impactTypes.localRegional": "Athari za ndani / za kikanda",
+  "workflows.tinderProposal.step1.impactTypes.globalChange": "Mabadiliko ya kimataifa",
+  "workflows.tinderProposal.step1.impactTypes.ecosystemDevelopment": "Maendeleo ya mazingira",
+  "workflows.tinderProposal.step1.processing": "Inashughulika...",
+  "workflows.tinderProposal.step1.continue": "Endelea",
+  "workflows.tinderProposal.step1.begin": "Anza",
+  "workflows.tinderProposal.step1.untitledCampaign": "Kampeni Bila Jina",
+  "workflows.tinderProposal.step1.untitledFund": "Mfuko Bila Jina",
+  "workflows.tinderProposal.step2.title": "Kichwa",
+  "workflows.tinderProposal.step2.titlePlaceholder": "Kichwa",
+  "workflows.tinderProposal.step2.titleRequired": "Kichwa kinahitajika",
+  "workflows.tinderProposal.step2.descriptionMinLength69": "Maelezo lazima yawe na angalau herufi 69",
+  "workflows.tinderProposal.step2.descriptionMinLength50": "Maelezo lazima yawe na angalau herufi 50",
+  "workflows.tinderProposal.step2.save": "Hifadhi",
+  "workflows.tinderProposal.step3.editSettings": "Hariri Mipangilio",
+  "workflows.tinderProposal.step3.noButtonText": "La",
+  "workflows.tinderProposal.step3.yesButtonText": "Ndiyo",
+  "workflows.tinderProposal.step3.allDone": "Yote yamekamilika!",
+  "workflows.tinderProposal.step3.viewedAllProposals": "Umeangalia mapendekezo yote :count",
+  "workflows.tinderProposal.step3.loadingProposals": "Inapakia mapendekezo...",
+  "workflows.tinderProposal.step3.noProposalsFound": "Hakuna mapendekezo yaliyopatikana yanayolingana na vigezo vyako.",
+  "workflows.tinderProposal.step3.failedToLoadProposals": "Imeshindwa kupakia mapendekezo. Tafadhali jaribu tena.",
+  "workflows.tinderProposal.step3.saveProgress": "Hifadhi Maendeleo",
+  "workflows.tinderProposal.step4.swipeList": "Orodha za Kupapasa",
+  "workflows.tinderProposal.step4.organizeSwipesDescription": "Tumeunda orodha chache kukusaidia kupanga mapapasho yako zaidi.",
+  "workflows.tinderProposal.step4.rightSwipes": "Papasa Kulia",
+  "workflows.tinderProposal.step4.leftSwipes": "Papasa Kushoto",
+  "workflows.tinderProposal.step4.proposalsYouLiked": "Mapendekezo uliyoyapenda",
+  "workflows.tinderProposal.step4.proposalsYouPassed": "Mapendekezo uliyoyapita",
+  "workflows.tinderProposal.step4.saves": "Mahifadhi",
+  "workflows.tinderProposal.step4.viewList": "Ona Orodha",
+  "workflows.tinderProposal.step4.editList": "Hariri Orodha",
+  "workflows.tinderProposal.step4.editListTitle": "Hariri Orodha",
+  "workflows.tinderProposal.step4.delete": "Futa",
+  "workflows.tinderProposal.step4.viewMode": "Muonekano wa kutazama",
+  "workflows.tinderProposal.step4.editMode": "Muonekano wa kuhariri",
+  "workflows.tinderProposal.step4.keepSwiping": "Endelea Kupapasa",
+  "workflows.tinderProposal.step4.refineMyInterests": "Boresha Mapendeleo Yangu",
+  "workflows.tinderProposal.step4.allCollectionsDeleted": "Makusanyo yote yamefutwa.",
+  "workflows.tinderProposal.step4.noCollectionsAvailable": "Hakuna makusanyo yanayopatikana.",
+  "workflows.tinderProposal.step4.continueSwipingMessage": "Endelea kupapasa ili kuunda makusanyo mapya.",
+  "workflows.tinderProposal.step4.startSwipingMessage": "Anza kupapasa ili kuunda kusanyo lako la kwanza.",
+  "workflows.tinderProposal.step4.defaultTitles.passedProposals": "Mapendekezo Yaliyopitishwa",
+  "workflows.tinderProposal.step4.defaultTitles.likedProposals": "Mapendekezo Yaliyopendwa",
+  "workflows.tinderProposal.step4.defaultDescriptions.passedProposals": "Mkusanyiko wa mapendekezo niliamua kuyapita.",
+  "workflows.tinderProposal.step4.defaultDescriptions.likedProposals": "Mkusanyiko wa mapendekezo niliyoyapenda na nataka kuyaunga mkono.",
+  "workflows.tinderProposal.stepDetails.getStarted": "Anza",
+  "workflows.tinderProposal.stepDetails.createList": "Unda Orodha",
+  "workflows.tinderProposal.stepDetails.exploreIdeas": "Chunguza Mawazo",
+  "workflows.tinderProposal.stepDetails.mySwipeList": "Orodha Yangu ya Kupapasa",
+  "View All Lists": "Ona Orodha Zote",
+  "View This List": "Ona Orodha Hii",
+  "error404.mainText": "Samahani, hatukuweza kupata unachokitafuta",
+  "error404.subText": "Hebu Kupata Njia Yako ya Kurudi!",
+  "recordsNotFound.message": "Hiki ndicho tunachokijua",
+  "app.name": "Catalyst Explorer",
+  "app.contactEmail": "support@lidonation.com",
+  "app.appLogoAlt": "Nembo ya Catalyst Explorer.",
+  "buttons.titles.claim": "Kitufe cha Kudai",
+  "buttons.titles.claimed": "Kitufe cha Kilichodaiwa",
+  "buttons.titles.share": "Kitufe cha Kushiriki",
+  "buttons.titles.createWallet": "Unda Mkoba",
+  "buttons.bookmark": "Alamisho",
+  "searchResults.noResults.title": "Hakuna matokeo yaliyopatikana",
+  "searchResults.noResults.description": "Utafutaji wako \":query\" haukupatana na matokeo yoyote. Tafadhali jaribu tena.",
+  "searchResults.tabs.proposals": "Mapendekezo",
+  "searchResults.tabs.articles": "Makala",
+  "searchResults.tabs.ideascaleProfiles": "Wasifu wa Ideascale",
+  "searchResults.tabs.groups": "Vikundi",
+  "searchResults.tabs.communities": "Jamii",
+  "searchResults.tabs.connections": "Miunganiko",
+  "searchResults.tabs.locations": "Maeneo",
+  "searchResults.tabs.reviews": "Mapitio",
+  "searchResults.results.title": "Matokeo ya utafutaji wa \":query\"",
+  "searchResults.results.viewMore": "Ona zaidi",
+  "my.dashboard": "Dashibodi Yangu",
+  "my.userDashboard": "Dashibodi",
+  "my.profile": "Wasifu",
+  "my.proposals": "Mapendekezo",
+  "my.reviews": "Mapitio",
+  "my.groups": "Vikundi",
+  "my.communities": "Jamii",
+  "my.transactions": "Miamala",
+  "my.noTransactions": "Hakuna Miamala Iliyopatikana.",
+  "my.lists": "Orodha",
+  "my.items": "vipengee",
+  "my.manage": "Simamia",
+  "my.createVotingListBlurb": "Kuunda orodha ya kupiga kura ni njia ya kupanga kura zako za ndiyo na kuzuia kwa duru ya ufadhili. Unaweza tu kuongeza mapendekezo kutoka kwa mfuko mmoja.",
+  "my.createTinderListBlurb": "Kuunda orodha ya tinder ni kiolesura cha kupapasa kulia kupapasa kushoto kwa kuunda orodha za kupiga kura. Unaweza tu kuongeza mapendekezo kutoka kwa mfuko mmoja.",
+  "my.createList": "Unda Orodha Mpya",
+  "my.createBookmarkList": "Unda Orodha ya Alamisho",
+  "my.createListBlurb": "Kuunda orodha ya alamisho ni folda tupu ya kuweka mapendekezo, wasifu wa ideascale, vikundi, mapitio, na jamii kwa mifuko mingi.",
+  "my.createListTitle": "Chagua aina ya orodha ya kuunda. (Zinaweza kushirikiwa hadharani au kuhifadhiwa kibinafsi.)",
+  "my.createVotingList": "Unda Orodha ya Kupiga Kura",
+  "my.createTinderList": "Unda Orodha ya Tinder",
+  "my.createVotingListWithStandardUi": "Tumia Mtiririko wa Kawaida",
+  "my.createVotingListWithCardedUi": "Tumia Mtiririko wa Mfuko wa Kadi",
+  "my.votes": "Kura",
+  "my.services": "Huduma",
+  "my.balance": "Salio",
+  "my.wallets": "Mikoba",
+  "my.deletingWallet": "Inafuta",
+  "my.paymentAddresses": "Anwani za Malipo",
+  "my.myWallets": "Mikoba Yangu",
+  "my.loadWallets": "Inapakia mikoba...",
+  "my.deleteWallet": "Futa Mkoba",
+  "my.manageWallets": "Angalia na simamia mikoba yote iliyounganishwa na akaunti yako ya Catalyst Explorer",
+  "my.moreWalletsDetails": "Angalia maelezo ya mkoba...",
+  "my.connectWallet": "Ongeza Mkoba",
+  "my.my": "Yangu",
+  "navigation.mobile.sidebar": "Sehemu ya uongozi wa ukingo wa simu",
+  "navigation.mobile.content": "Viungo vya uongozi wa simu",
+  "navigation.desktop.sidebar": "Sehemu ya uongozi wa ukingo",
+  "navigation.sidebar.open": "Fungua ukingo",
+  "navigation.sidebar.close": "Funga ukingo",
+  "navigation.links.home": "Nyumbani",
+  "breadcrumbs.home": "Nyumbani",
+  "breadcrumbs.workflow": "Mtiririko wa Kazi",
+  "charts.setMetrics": "Chagua Vipimo vya Chati",
+  "charts.viewCharts": "Angalia Chati",
+  "charts.selectProposals": "Ni aina gani za mapendekezo zinazokuvutia zaidi?",
+  "charts.selectChartType": "Chagua Aina ya Chati (Chagua vyote vinavyohusika)",
+  "charts.selectAllThatApply": "(Chagua vyote vinavyohusika)",
+  "charts.submittedProposals": "Mapendekezo Yaliyowasilishwa",
+  "charts.approvedProposals": "Mapendekezo Yaliyoidhinishwa",
+  "charts.completedProposals": "Yamekamilika",
+  "charts.next": "Ifuatayo",
+  "charts.trendChart": "Chati ya Mwelekeo",
+  "charts.distributionChart": "Chati ya Usambazaji",
+  "charts.lineChart": "Chati ya Mstari",
+  "charts.pieChart": "Chati ya Paii",
+  "charts.barChart": "Chati ya Baa",
+  "charts.heatMap": "Ramani ya Joto",
+  "charts.treeMap": "Ramani ya Mti",
+  "charts.scatterPlot": "Mpango wa Kutawanya",
+  "charts.stackedBarChart": "Chati ya Baa Zilizopangwa",
+  "charts.funnelChart": "Chati ya Bomba",
+  "charts.chartOptions": "Chaguzi za Chati",
+  "charts.edit": "Hariri",
+  "charts.noOptions": "Hakuna chaguzi za chati zilizochaguliwa. Tafadhali rudi nyuma na uchague aina za chati",
+  "charts.viewBy": "Angalia Kwa",
+  "charts.fundingRate": "Kiwango cha Ufadhili",
+  "charts.fund": "Mfuko",
+  "charts.year": "Mwaka",
+  "charts.selectFund": "Chagua Mfuko",
+  "charts.value": "Thamani",
+  "charts.percentage": "Asilimia",
+  "charts.share": "Shiriki",
+  "charts.noFundDataAvailable": "Hakuna Data ya Mfuko Inayopatikana",
+  "charts.noYearDataAvailable": "Hakuna Data ya Mwaka Inayopatikana",
+  "charts.unfundedProposals": "Mapendekezo Yasiyofadhiliwa",
+  "charts.fundedProposals": "Mapendekezo Yaliyofadhiliwa",
+  "charts.inProgressProposals": "Yanayoendelea",
+  "charts.vsYear": "dhidi ya Mwaka Uliopita",
+  "charts.filterProposal": "Chuja mapendekezo kwa hali ili kuona yanayokuhusisha zaidi.",
+  "charts.chooseChartType": "Chagua jinsi unavyotaka kuona data",
+  "pagination.next": "Ifuatayo",
+  "pagination.previous": "Awali",
+  "pagination.morePages": "Kurasa zaidi",
+  "pagination.goPreviousPage": "Nenda ukurasa uliopita",
+  "pagination.goNextPage": "Nenda ukurasa unaofuata",
+  "registration.alreadyRegistered": "Tayari umesajiliwa?",
+  "registration.passwordCharacters": "Lazima iwe herufi 8",
+  "registration.noAccount": "Huna akaunti?",
+  "searchBar.placeholder": "Tafuta mapendekezo, mifuko, watu, makala na data",
+  "searchBar.all_filters": "Vichunjo Vyote",
+  "searchBar.variants.all": "Vikundi Vyote",
+  "catalystIntro.title.normalText": "Mradi wa Catalyst",
+  "catalystIntro.title.highlightedText": "inakuza uvumbuzi wa ushirikiano",
+  "catalystIntro.subtitle": "Catalyst inaendeleza ukuaji wa mazingira ya Cardano kwa kuunganisha mawazo ya uvumbuzi na ufadhili, unaoungwa mkono na kupiga kura kwa jamii na hazina ya Cardano.",
+  "metric.numbers": "Nambari",
+  "metric.subtitle": "Angalia chati za miradi na chuja matokeo kulingana na mifuko",
+  "metric.seeMore": "Ona zaidi",
+  "metric.vs": "dhidi ya mfuko uliopita",
+  "announcements.none": "Hakuna matangazo yanayopatikana",
+  "announcements.timeRemaining": "Muda uliosalia",
+  "announcements.remaining": "Unaosalia",
+  "funds.funds": "Mifuko",
+  "funds.fund": "Mfuko",
+  "funds.pageSubtitle": "Tafuta mifuko kwa kichwa, maudhui, au mwandishi na waandishi wenzake",
+  "funds.singleFundSubtitle": "Zingatia jumla ya malengo, kulinganisha yaliyokamilika, yanayoendelea, na yale ya kukamilishwa katika mfumo mzima wa ufadhili.",
+  "funds.browseByCampaign": "Vinjari kwa kampeni",
+  "funds.browseByCampaignSubtitle": "Jamii iliulizwa kutoa ufumbuzi wa kampeni hizi",
+  "funds.totalAwarded": "Jumla Iliyotolewa",
+  "funds.lastFund": "mfuko wa mwisho",
+  "funds.fundedProjects": "Miradi Iliyofadhiliwa",
+  "funds.subtitle": "Tafuta mapendekezo na changamoto kwa kichwa, maudhui, au mwandishi na waandishi wenzake",
+  "funds.fundRounds": "Duru za Mfuko",
+  "funds.fundedProposals": "Mapendekezo Yaliyofadhiliwa",
+  "funds.totalFundsAwardedAda": "Jumla ya Mifuko Iliyotolewa ADA",
+  "funds.totalFundsAwardedUsd": "Jumla ya Mifuko Iliyotolewa USD",
+  "funds.completedProposals": "Mapendekezo Yaliyokamilika",
+  "funds.inProgressProposals": "Mapendekezo Yanayoendelea",
+  "funds.sortBy": "Panga Kwa",
+  "funds.filter": "Chunjo",
+  "funds.options.lowToHigh": "Bajeti: Chini hadi Juu",
+  "funds.options.highToLow": "Bajeti: Juu hadi Chini",
+  "funds.options.proposalCountsLowToHigh": "Idadi ya mapendekezo: Chini hadi Juu",
+  "funds.options.proposalCountsHighToLow": "Idadi ya mapendekezo: Juu hadi Chini",
+  "proposals.filters.projectLength": "Urefu wa Mradi (miezi)",
+  "proposals.filters.filters": "Vichunjo",
+  "proposals.filters.ideascaleProfiles": "Wasifu wa Ideascale",
+  "proposals.filters.numberOfProposals": "Idadi ya Mapendekezo",
+  "proposals.filters.awardedAda": "Iliyotolewa (ADA)",
+  "proposals.filters.awardedUsd": "Iliyotolewa (USD)",
+  "proposals.filters.fund": "Mfuko",
+  "proposals.options.sort": "Panga kwa",
+  "proposals.options.oldToNew": "Ya Zamani hadi Mpya",
+  "proposals.options.newToOld": "Ya Mpya hadi Zamani",
+  "proposals.options.lowToHigh": "Bajeti: Chini hadi Juu",
+  "proposals.options.highToLow": "Bajeti: Juu hadi Chini",
+  "proposals.options.opensourceProposals": "Mapendekezo ya Chanzo Huru",
+  "proposals.options.nonOpensourceProposals": "Mapendekezo Yasiyochangzo Huru",
+  "proposals.options.complete": "Kamili",
+  "proposals.options.inProgress": "Inaendelea",
+  "proposals.options.unfunded": "Haijafadhiliwa",
+  "proposals.options.overBudget": "Zaidi ya Bajeti",
+  "proposals.options.notApproved": "Haijaidhinishwa",
+  "proposals.options.funded": "Imefadhiliwa",
+  "proposals.options.fullyPaid": "Imelipwa Kamili",
+  "proposals.options.selectStatus": "Chagua Hali",
+  "proposals.options.budget": "Bajeti",
+  "proposals.options.filterValues": "Thamani za Kuchuja",
+  "proposals.options.impactProposal": "Mapendekezo ya Athari",
+  "proposals.options.womenProposals": "Mapendekezo ya Wanawake",
+  "proposals.options.ideafestProposals": "Mapendekezo ya Ideafest",
+  "proposals.options.quickPitches": "Manukuu ya Haraka",
+  "proposals.options.noResults": "Hakuna matokeo yaliyopatikana.",
+  "proposals.options.typeMore": "Jaribu kuandika herufi zaidi",
+  "proposals.options.votesCastLowToHigh": "Kura Zilizotolewa: Chini hadi Juu",
+  "proposals.options.votesCastHighToLow": "Kura Zilizotolewa: Juu hadi Chini",
+  "proposals.options.budgetHighToLow": "Bajeti: Juu hadi Chini",
+  "proposals.options.budgetLowToHigh": "Bajeti: Chini hadi Juu",
+  "proposals.options.communityRankingHighToLow": "Uongozi wa Jamii: Juu hadi Chini",
+  "proposals.options.communityRankingLowToHigh": "Uongozi wa Jamii: Chini hadi Juu",
+  "proposals.options.paymentsReceivedHighToLow": "Malipo Yaliyopokelewa: Juu hadi Chini",
+  "proposals.options.projectLengthHighToLow": "Urefu wa Mradi: Juu hadi Chini",
+  "proposals.options.projectLengthLowToHigh": "Urefu wa Mradi: Chini hadi Juu",
+  "proposals.options.paymentsReceivedLowToHigh": "Malipo Yaliyopokelewa: Chini hadi Juu",
+  "proposals.options.yesVotesHighToLow": "Kura za Ndiyo: Juu hadi Chini",
+  "proposals.options.yesVotesLowToHigh": "Kura za Ndiyo: Chini hadi Juu",
+  "proposals.options.noVotesLowToHigh": "Kura za La: Chini hadi Juu",
+  "proposals.options.noVotesHighToLow": "Kura za La: Juu hadi Chini",
+  "proposals.options.ratingHighToLow": "Ukadiriaji: Juu hadi Chini",
+  "proposals.options.ratingLowToHigh": "Ukadiriaji: Chini hadi Juu",
+  "proposals.options.impactAlignmentHighToLow": "Muunganiko wa Athari: Juu hadi Chini",
+  "proposals.options.impactAlignmentLowToHigh": "Muunganiko wa Athari: Chini hadi Juu",
+  "proposals.options.feasibilityHighToLow": "Uwezekano: Juu hadi Chini",
+  "proposals.options.feasibilityLowToHigh": "Uwezekano: Chini hadi Juu",
+  "proposals.options.valueForMoneyHighToLow": "Thamani kwa pesa: Juu hadi Chini",
+  "proposals.options.valueForMoneyLowToHigh": "Thamani kwa pesa: Chini hadi Juu",
+  "proposals.options.fundingStatusAtoZ": "Hali ya Ufadhili: A-Z",
+  "proposals.options.fundingStatusZtoA": "Hali ya Ufadhili: Z-A",
+  "proposals.options.titleAtoZ": "Kwa alfabeti: A-Z",
+  "proposals.options.titleZtoA": "Kwa alfabeti: Z-A",
+  "proposals.tabs.details": "Maelezo",
+  "proposals.tabs.schedule": "Ratiba",
+  "proposals.tabs.community": "Tathmini ya Jamii",
+  "proposals.tabs.team": "Taarifa za Timu",
+  "listQuickCreate.createListLong": "Unda orodha mpya ili kuanza",
+  "listQuickCreate.createListShort": "Unda orodha",
+  "listQuickCreate.addAll": "Ongeza kwenye Orodha",
+  "listQuickCreate.addList": "Orodha Mpya",
+  "listQuickCreate.public": "Fanya ya umma?",
+  "listQuickCreate.createListPlaceholder": "Unda orodha mpya",
+  "listQuickCreate.addDescPlaceholder": "Ongeza maelezo",
+  "listQuickCreate.noLists": "Hakuna orodha zilizoopatikana",
+  "listQuickCreate.addBookmark": "Ongeza Alamisho",
+  "listQuickCreate.successfulBookmarked": "Imefanikiwa kuongezwa kwenye alamisho zako!",
+  "listQuickCreate.success.title": "Mafanikio",
+  "listQuickCreate.success.message": "Orodha imeundwa kwa mafanikio",
+  "listQuickCreate.removeBookmark": "Ondoa",
+  "listQuickCreate.listName": "Jina la Orodha",
+  "listQuickCreate.listDescription": "Maelezo ya Orodha",
+  "listQuickCreate.create": "Unda",
+  "listQuickCreate.cancel": "Ghairi",
+  "listQuickCreate.listFetchError": "Hitilafu ya kupata orodha",
+  "listQuickCreate.listCreateError": "Hitilafu ya kuunda orodha",
+  "listQuickCreate.errorUpdating": "Hitilafu ya kusasisha uchaguzi",
+  "listQuickCreate.validationErrors.general": "Hitilafu imetokea",
+  "listQuickCreate.validationErrors.inputCheck": "Tafadhali kagua maingizo yako",
+  "listQuickCreate.validationErrors.emptyFields": "Jina na Maelezo yanahitajika",
+  "listQuickCreate.validationErrors.name": "Jina linahitajika",
+  "listQuickCreate.validationErrors.shortName": "Jina lazima liwe na angalau herufi 5",
+  "listQuickCreate.validationErrors.shortDescription": "Maelezo lazima yawe na angalau herufi 10",
+  "listQuickCreate.validationErrors.description": "Maelezo yanahitajika",
+  "ideascaleProfiles.people": "Watu",
+  "ideascaleProfiles.ideascaleProfiles": "Wasifu wa Ideascale",
+  "ideascaleProfiles.ownProposals": "Mapendekezo Binafsi",
+  "ideascaleProfiles.coProposals": "Mapendekezo ya Pamoja",
+  "ideascaleProfiles.pageSubtitle": "Tafuta mapendekezo na changamoto kwa kichwa, maudhui, au mwandishi na waandishi wenzake",
+  "ideascaleProfiles.limitFunds": "Pungusa kwa mifuko",
+  "ideascaleProfiles.projectStatus": "Hali ya mradi",
+  "ideascaleProfiles.limitTags": "Pungusa kwa lebo",
+  "ideascaleProfiles.fundingStatus": "Hali ya Ufadhili",
+  "ideascaleProfiles.proposer": "Mpendekeza",
+  "ideascaleProfiles.collaborator": "Mshirika",
+  "ideascaleProfiles.noIdeascaleProfiles": "Hakuna Wasifu wa Ideascale Ulioopatikana",
+  "ideascaleProfiles.bio": "Wasifu",
+  "ideascaleProfiles.claimed": "Umedaiwa",
+  "ideascaleProfiles.claim": "Dai Wasifu",
+  "ideascaleProfiles.totalRequested": "Jumla Iliyoombwa",
+  "ideascaleProfiles.totalProposals": "Jumla ya Mapendekezo",
+  "ideascaleProfiles.awardedVsRequested": "Iliyotolewa dhidi ya Iliyoombwa",
+  "ideascaleProfiles.receivedVsAwarded": "Iliyopokelewa dhidi ya Iliyotolewa",
+  "ideascaleProfiles.options.alphabeticallyAsc": "Kwa alfabeti: A hadi Z",
+  "ideascaleProfiles.options.alphabeticallyDesc": "Kwa alfabeti: Z hadi A",
+  "ideascaleProfiles.options.awardedAdaLowToHigh": "Kiasi Kilichotolewa ADA: Chini hadi Juu",
+  "ideascaleProfiles.options.awardedAdaHighToLow": "Kiasi Kilichotolewa ADA: Juu hadi Chini",
+  "ideascaleProfiles.options.awardedUsdLowToHigh": "Kiasi Kilichotolewa USD: Chini hadi Juu",
+  "ideascaleProfiles.options.awardedUsdHighToLow": "Kiasi Kilichotolewa USD: Juu hadi Chini",
+  "ideascaleProfiles.options.primaryProposalCountLowToHigh": "Idadi ya Mapendekezo ya Msingi: Chini hadi Juu",
+  "ideascaleProfiles.options.primaryProposalCountHighToLow": "Idadi ya Mapendekezo ya Msingi: Juu hadi Chini",
+  "ideascaleProfiles.options.coProposalCountLowToHigh": "Idadi ya Mapendekezo ya Pamoja: Chini hadi Juu",
+  "ideascaleProfiles.options.coProposalCountHighToLow": "Idadi ya Mapendekezo ya Pamoja: Juu hadi Chini",
+  "ideascaleProfiles.tabs.proposals": "Mapendekezo",
+  "ideascaleProfiles.tabs.connections": "Miunganiko",
+  "ideascaleProfiles.tabs.groups": "Vikundi",
+  "ideascaleProfiles.tabs.communities": "Jamii",
+  "ideascaleProfiles.tabs.reviews": "Mapitio",
+  "ideascaleProfiles.tabs.schedule": "Ratiba",
+  "ideascaleProfiles.tabs.reports": "Ripoti",
+  "ideascaleProfiles.tabs.campaigns": "Kampeni",
+  "ideascaleProfiles.tabs.milestones": "Malengo",
+  "milestones.milestones": "Malengo",
+  "groups.groups": "Vikundi",
+  "groups.title": "Vikundi vya Catalyst",
+  "groups.subtitle": "Tofauti, huru, na pamoja kuhamasisha kiwango cha juu cha ushirikiano wa kibinadamu",
+  "groups.fundedProposals": "Mapendekezo Yaliyofadhiliwa",
+  "groups.received": "Imepokelewa",
+  "groups.requested": "Imeombwa",
+  "groups.totalRequested": "Jumla Iliyoombwa",
+  "groups.completed": "Imekamilika",
+  "groups.funded": "Imefadhiliwa",
+  "groups.unfunded": "Haijafadhiliwa",
+  "groups.manageGroup": "Simamia Kikundi",
+  "groups.awardedVsRequested": "Iliyotolewa dhidi ya Iliyoombwa",
+  "groups.receivedVsAwarded": "Iliyopokelewa dhidi ya Iliyotolewa",
+  "groups.reviews": "Mapitio",
+  "groups.noMembers": "Kikundi hiki hakina wanachama",
+  "groups.viewMembers": "Angalia Wanachama",
+  "groups.options.alphabetically": "Kwa alfabeti: A hadi Z",
+  "groups.options.amountAwardedAdaDesc": "Kiasi Kilichotolewa ADA: Juu hadi Chini",
+  "groups.options.amountAwardedAdaAsc": "Kiasi Kilichotolewa ADA: Chini hadi Juu",
+  "groups.options.amountAwardedUsdDesc": "Kiasi Kilichotolewa USD: Juu hadi Chini",
+  "groups.options.amountAwardedUsdAsc": "Kiasi Kilichotolewa USD: Chini hadi Juu",
+  "communities.communities": "Jamii",
+  "communities.dashboard": "Dashibodi ya Jamii",
+  "communities.groups": "Vikundi Vilivyouungwa Mkono",
+  "communities.events": "Matukio ya jamii",
+  "communities.title": "Jamii za Catalyst",
+  "communities.subtitle": "Tofauti, huru, na pamoja kuhamasisha kiwango cha juu cha ushirikiano wa kibinadamu",
+  "communities.proposalSummary": "Muhtasari wa Mapendekezo",
+  "communities.totalRequested": "Jumla Iliyoombwa",
+  "communities.proposals": "Mapendekezo Yaliyouungwa Mkono",
+  "communities.proposers": "Watu Waliouungwa Mkono",
+  "communities.ideascale-profiles": "Watu Waliouungwa Mkono",
+  "communities.collaborators": "Washirika",
+  "communities.totalAmountAwarded": "Jumla ya Kiasi Kilichotolewa",
+  "communities.totalAmountDistributed": "Jumla ya Kiasi Kilichogawanywa",
+  "communities.totalAmountRemaining": "Jumla ya Kiasi Kilichobakia",
+  "communities.totalAwarded": "Jumla ya Kiasi cha ADA na USD Kilichotolewa",
+  "communities.totalDistributed": "Jumla ya Kiasi cha ADA na USD Kilichogawanywa",
+  "communities.totalRemained": "Jumla ya Kiasi cha ADA na USD Kilichobakia",
+  "communities.amountAwardedUsd": "Kiasi Kilichotolewa USD",
+  "communities.amountAwardedAda": "Kiasi Kilichotolewa ADA",
+  "communities.amountAwarded": "Kiasi Kilichotolewa",
+  "communities.amountDistributed": "Kiasi Kilichogawanywa",
+  "communities.amountRemaining": "Kiasi Kilichobakia",
+  "communities.options.alphabetically": "Kwa alfabeti: A hadi Z",
+  "communities.options.amountAwardedAdaDesc": "Kiasi Kilichotolewa ADA: Juu hadi Chini",
+  "communities.options.amountAwardedAdaAsc": "Kiasi Kilichotolewa ADA: Chini hadi Juu",
+  "communities.options.amountAwardedUsdDesc": "Kiasi Kilichotolewa USD: Juu hadi Chini",
+  "communities.options.amountAwardedUsdAsc": "Kiasi Kilichotolewa USD: Chini hadi Juu",
+  "communities.tabs.dashboard": "Dashibodi",
+  "communities.tabs.proposals": "Mapendekezo",
+  "communities.tabs.members": "Wanachama",
+  "communities.tabs.groups": "Vikundi",
+  "communities.tabs.events": "Matukio",
+  "communities.filters.totalAdaAwarded": "Jumla ya Kiasi cha ADA Kilichotolewa",
+  "communities.filters.totalUsdAwarded": "Jumla ya Kiasi cha USD Kilichotolewa",
+  "communities.filters.totalAdaDistributed": "Jumla ya Kiasi cha ADA Kilichogawanywa",
+  "communities.filters.totalUsdDistributed": "Jumla ya Kiasi cha USD Kilichogawanywa",
+  "communities.filters.totalAdaRemaining": "Jumla ya Kiasi cha ADA Kilichobakia",
+  "communities.filters.totalUsdRemaining": "Jumla ya Kiasi cha USD Kilichobakia",
+  "posts.title": "Machapisho ya Catalyst",
+  "posts.subtitle": "Habari za hivi punde na machapisho kutoka kwa jamii yetu",
+  "theme.theme": "Dhana",
+  "theme.options": "Chaguzi za dhana",
+  "theme.light": "Mwanga",
+  "theme.dark": "Giza",
+  "theme.voltaire": "Voltaire",
+  "theme.changeMode": "Badilisha dhana hadi hali ya {{mode}}",
+  "users.editProfile": "Hariri wasifu",
+  "users.viewProfile": "Angalia Wasifu Kamili",
+  "users.viewIdeascale": "Angalia na Wasiliana na mtumiaji kwenye Ideascale",
+  "users.profile": "wasifu",
+  "users.about": "Kuhusu",
+  "users.city": "Jiji",
+  "users.website": "Tovuti",
+  "users.network": "Mtandao",
+  "users.personalInfo": "Taarifa za Kibinafsi",
+  "users.photo": "Picha",
+  "users.photoSizeInstructions": "Picha ya 150×150px JPEG, PNG",
+  "users.photoErrors.invalidType": "Faili lazima iwe JPEG, PNG, au GIF",
+  "users.photoErrors.tooLarge": "Ukubwa wa faili lazima uwe chini ya 5MB",
+  "users.photoErrors.uploadFailed": "Imeshindwa kupakia picha",
+  "users.basicSettings": "Mipangilio ya Msingi",
+  "users.publicProfile": "Wasifu wa Umma",
+  "users.profileLink": "Wasifu wa Umma",
+  "users.socialProfiles": "Wasifu za Kijamii",
+  "users.copied": "Imenakiliwa!",
+  "users.noBiography": "Hakuna wasifu unapatikana",
+  "users.updateSocialProfiles": "Sasisha Wasifu za Kijamii",
+  "users.updateProfileName": "Sasisha Jina la Wasifu",
+  "users.updateEmailAddress": "Sasisha Anwani ya Barua Pepe",
+  "users.updateCity": "Sasisha Jiji",
+  "users.addCity": "Ongeza Jiji",
+  "users.noAddress": "Bado huna anwani",
+  "users.add": "Ongeza",
+  "users.recreate": "Unda tena",
+  "users.notProvided": "Haijatolewa",
+  "completedProjectNfts.title": "NFT za Miradi Iliyokamilika",
+  "completedProjectNfts.subtitle": "Timu za miradi ya Project Catalyst zilizokamilika zinakaribisha kuunda NFT ya kusherehekea kuashiria mafanikio yao na kushiriki na ulimwengu!",
+  "completedProjectNfts.nowMinting": "Sasa inaunda",
+  "completedProjectNfts.celebrateYourWork": "Sherehekea kazi yako ngumu",
+  "completedProjectNfts.onCardanoMainnet": "kwenye mtandao mkuu wa Cardano.",
+  "completedProjectNfts.communityFunded": "Wanachama wa Jamii Waliofadhiliwa",
+  "completedProjectNfts.projectsCompleted": "Miradi Iliyokamilika",
+  "completedProjectNfts.usdDistributed": "USD Iliyogawanywa",
+  "completedProjectNfts.adaDistributed": "Ada Iliyogawanywa",
+  "completedProjectNfts.description": "Kila NFT ni ya kipekee, na vipengee vya muundo vilivyoongozwa na kichwa na mada ya mradi wako! Soma taarifa ya msanii hapa: ",
+  "completedProjectNfts.artistStatement": "NFT za Ukamilishaji wa Mradi kwa Project Catalyst",
+  "completedProjectNfts.proposalsSearchBar.placeHolder": "Tafuta pendekezo",
+  "completedProjectNfts.step": "Hatua",
+  "completedProjectNfts.claimAnotherProfile": "Dai wasifu mwingine",
+  "completedProjectNfts.claimProfile": "Dai Wasifu wa Ideascale",
+  "completedProjectNfts.unavailable": "Haipatikani!",
+  "completedProjectNfts.reservedUntil": "Imehifadhiwa hadi",
+  "completedProjectNfts.paymentPending": "Malipo Yanasubiri",
+  "completedProjectNfts.mintCompletionNft": "Unda NFT ya Ukamilishaji",
+  "completedProjectNfts.projectComplete": "Mradi Umekamilika?",
+  "completedProjectNfts.timeForLaunchParty": "Wakati wa sherehe ya uzinduzi!",
+  "profileWorkflow.sectionTitle.start": "Ili kuanza, tafadhali chagua mmoja wa wasifu zako uliodai hapo chini",
+  "profileWorkflow.sectionTitle.selectProposal": "Chagua mmoja wa mapendekezo yako yaliyokamilika ili kuanza kuunda",
+  "profileWorkflow.sectionTitle.claimProfile": "Dai wasifu mwingine",
+  "profileWorkflow.myProfiles": "Wasifu Zangu",
+  "profileWorkflow.back": "Nyuma",
+  "profileWorkflow.selectProposal": "Chagua pendekezo lako liliokamilika",
+  "profileWorkflow.name": "Jina",
+  "profileWorkflow.email": "Barua pepe",
+  "profileWorkflow.bio": "Wasifu",
+  "profileWorkflow.ideascaleProfile": "Wasifu wa Ideascale",
+  "profileWorkflow.twitter": "Twitter",
+  "profileWorkflow.discord": "Discord",
+  "profileWorkflow.linkedIn": "LinkedIn",
+  "profileWorkflow.profileLink": "(Kiungo cha wasifu)",
+  "profileWorkflow.twitterHandle": "(@handle)",
+  "profileWorkflow.discordUsername": "(Jina la mtumiaji)",
+  "profileWorkflow.claimProfile": "Dai Wasifu",
+  "profileWorkflow.processing": "Inashughulika...",
+  "profileWorkflow.nowMinting": "Sasa Inaunda",
+  "profileWorkflow.fundsRange": "Mifuko 2 - 12",
+  "profileWorkflow.loggedInAs": "Umeingia kama",
+  "profileWorkflow.proposalsCount": "Mapendekezo {{count}}",
+  "profileWorkflow.unavailable": "Haipatikani",
+  "profileWorkflow.noProfilesFound": "Hakuna wasifu zilizoopatikana.",
+  "profileWorkflow.findCatalystUser": "Pata mtumiaji wa catalyst",
+  "profileWorkflow.available": "Inapatikana",
+  "profileWorkflow.noProposalsAvailable": "Hakuna mapendekezo yaliyopatikana kwa wasifu huu.",
+  "profileWorkflow.budget": "Bajeti",
+  "profileWorkflow.previous": "Awali",
+  "profileWorkflow.next": "Ifuatayo",
+  "profileWorkflow.fund": "Mfuko",
+  "profileWorkflow.campaign": "Kampeni",
+  "profileWorkflow.verificationTitle": "Hebu kukuhalalisha!",
+  "profileWorkflow.verificationCode": "Msimbo wa Uhalalishaji",
+  "profileWorkflow.verificationInstructions": "Ili kuhalalisha umiliki wako wa wasifu huu, tafadhali tuma ujumbe wa kibinafsi kwa Lido Nation kwenye Ideascale na ujumuishe msimbo hapo juu.",
+  "profileWorkflow.goToIdeascale": "Nenda kwa Ideascale",
+  "validation.required": "{{field}} inahitajika",
+  "validation.emailFormat": "Tafadhali ingiza anwani halali ya barua pepe",
+  "validation.passwordLength": "Nenosiri lazima liwe na angalau herufi 8",
+  "validation.passwordMatch": "Manenosiri hayalingani",
+  "wallet.connectedWallet": "Unganisha Mkoba",
+  "wallet.connect.title": "Unganisha Mkoba",
+  "wallet.connect.subtitle": "Chagua mkoba unaotaka kuunganisha nao:",
+  "wallet.connect.initializing": "Inaanzisha muunganiko wa mkoba...",
+  "wallet.connect.connectedTo": "Imeunganishwa na:",
+  "wallet.connect.disconnect": "Tenganisha Mkoba",
+  "wallet.connect.selectWallet": "Chagua mkoba",
+  "wallet.connect.addAnotherWallet": "Ongeza mkoba mwingine",
+  "wallet.connect.noWallets.title": "Hakuna mikoba inayoungwa mkono iliyogunduliwa",
+  "wallet.connect.noWallets.subtitle": "Tafadhali sakinisha Lace, Eternl, Flint, au mkoba mwingine wa Cardano",
+  "wallet.connect.errors.notInitialized": "Maktaba ya Cardano bado haijaanzishwa. Tafadhali jaribu tena baada ya muda.",
+  "wallet.connect.errors.walletNotFound": "Mkoba wa {{walletName}} haujapatikana. Tafadhali usakinishe kwanza.",
+  "wallet.connect.errors.wrongNetwork": "Mtandao mbaya umegunduliwa. Tafadhali badili hadi {{expected}}",
+  "wallet.connect.errors.noAddresses": "Hakuna anwani zilizopatikana kwenye mkoba",
+  "wallet.connect.errors.connectionFailed": "Muunganiko umeshindwa",
+  "wallet.connect.errors.disconnectError": "Hitilafu ya kutenganisha mkoba",
+  "wallet.connect.errors.contextError": "useWallet lazima itumike ndani ya WalletProvider",
+  "wallet.connect.errors.wasmInitError": "Imeshindwa kuanzisha moduli ya Cardano WASM",
+  "wallet.connect.errors.wasmLibError": "Imeshindwa kuanzisha maktaba ya muunganiko wa mkoba",
+  "wallet.status.connected": "Imeunganishwa",
+  "wallet.status.connecting": "Inaunganisha",
+  "wallet.status.disconnect": "Tenganisha",
+  "wallet.login": "Ingia kwa Mkoba",
+  "bookmarks.permanentDelete": "Kitendo hiki hakiwezi kutendua, na alamisho zote kwenye orodha hii zitaondolewa kabisa.",
+  "bookmarks.confirmDelete": "Una uhakika unataka kufuta orodha hii nzima ya alamisho?",
+  "bookmarks.editList": "Hariri Orodha",
+  "bookmarks.deletesList": "Futa Orodha",
+  "bookmarks.manage": "Simamia Orodha",
+  "bookmarks.viewPublic": "Ona kama ya Umma",
+  "bookmarks.listSetting": "Mipangilio ya Orodha",
+  "bookmarks.listTitle": "Gundua Orodha za Jamii",
+  "bookmarks.listSubtitle": "Vinjari na utafute orodha za alamisho zilizopangwa na wengine.",
+  "bookmarks.myBookmarks": "Alamisho Zangu",
+  "bookmarks.searchPlaceholder": "Tafuta orodha",
+  "bookmarks.sort.paymentsReceivedHighToLowADA": "Malipo Yaliyopokelewa(ADA): Juu hadi Chini",
+  "bookmarks.sort.paymentsReceivedLowToHighADA": "Malipo Yaliyopokelewa(ADA): Chini hadi Juu",
+  "bookmarks.sort.paymentsReceivedHighToLowUSD": "Malipo Yaliyopokelewa(USD): Juu hadi Chini",
+  "bookmarks.sort.paymentsReceivedLowToHighUSD": "Malipo Yaliyopokelewa(USD): Chini hadi Juu",
+  "bookmarks.sort.budgetHighToLowADA": "Bajeti(ADA): Juu hadi Chini",
+  "bookmarks.sort.budgetLowToHighADA": "Bajeti(ADA): Chini hadi Juu",
+  "bookmarks.sort.budgetHighToLowUSD": "Bajeti(USD): Juu hadi Chini",
+  "bookmarks.sort.budgetLowToHighUSD": "Bajeti(USD): Chini hadi Juu",
+  "bookmarks.sort.alphabeticallyAZ": "Kwa alfabeti: A hadi Z",
+  "bookmarks.sort.updatedAtASC": "Iliyosasishwa Mwisho",
+  "bookmarks.sort.itemsCountASC": "Vitu vilivyoongezwa: Chini Hadi Juu",
+  "bookmarks.sort.itemsCountDESC": "Vitu vilivyoongezwa: Juu hadi Chini",
+  "bookmarks.comments": "Maoni",
+  "bookmarks.lastModified": "Iliyosasishwa Mwisho",
+  "bookmarks.createList": "Unda Orodha Yako",
+  "comments.comments": "Maoni",
+  "comments.reply": "Jibu",
+  rightSwipes: rightSwipes$1,
+  leftSwipes: leftSwipes$1,
+  "workflows.createService.step1.clickToReplaceImage": "Bonyeza hapa ili kubadilisha picha",
+  "workflows.createService.step1.clickToUploadImage": "Bonyeza hapa ili kupakia picha",
+  "graph.loadingConnections": "Inapakia miunganiko kwa :nodeName ...",
+  "graph.noAdditionalConnections": ":nodeName hana miunganiko ya ziada",
+  "graph.unknownNode": "Haijulikani",
+  loadingGraph: loadingGraph$1,
+  "services.service": "Huduma",
+  "services.AddService": "Ongeza Huduma",
+  "services.catalystServices": "Huduma za Catalyst",
+  "services.hideCategories": "Ficha Kategoria",
+  "services.showCategories": "Onyesha Kategoria",
+  "services.catalystServicesDesc": "Nafasi kwa timu zilizofadhiliwa na Catalyst kushirikiana, kuomba msaada, na kutoa huduma kwa mazingira.",
+  "services.myServices": "Huduma Zangu",
+  "services.myServicesDesc": "Simamia huduma zako na ushirikiane na mazingira ya Catalyst.",
+  endDate: endDate$1,
+  startDate: startDate$1,
+  "workflows.publishToIpfs.success.contentIdLabel": "Kitambulisho chako cha Maudhui:",
+  "workflows.publishToIpfs.success.copied": "Imenakiliwa!",
+  "workflows.publishToIpfs.success.copyCidTitle": "Nakili CID",
+  "workflows.publishToIpfs.success.openInNewTabTitle": "Fungua katika kichupo kipya",
+  "workflows.publishToIpfs.reviewDetails": "Unakaribia kuchapisha orodha yako kwenye IPFS. Kagua maelezo hapo chini.",
+  "dreps.dreps": "DReps",
+  "dreps.drepSearch": "Tafuta DRep",
+  "dreps.drepStatus": "Hali ya DRep",
+  "dreps.votingPowerAda": "Nguvu ya Kupiga Kura (₳)",
+  "dreps.drepList.title": "Orodha ya DReps",
+  "dreps.drepList.subtitle": "Wawakilishi wa Uwakilishi katika Project Catalyst.",
+  "dreps.drepList.signUp": "Jisajili kuwa DRep",
+  "dreps.drepList.drep": "DRep",
+  "dreps.drepList.registeredOn": "Amesajiliwa mnamo",
+  "dreps.drepList.lastActive": "Mwisho kuwa hai",
+  "dreps.drepList.votingPower": "Nguvu ya Kupiga Kura",
+  "dreps.drepList.delegators": "Wajumbe",
+  "dreps.drepList.status": "Hali",
+  "dreps.drepList.delegate": "Kabidhiana",
+  "dreps.drepList.undelegate": "Ondoa ukabidhiano",
+  "dreps.drepList.anHourAgo": "saa moja iliyopita",
+  "dreps.drepList.copied": "Imenakiliwa!",
+  "dreps.drepList.unavailable": "Haipatikani",
+  "dreps.faq.faq": "Maswali Yanayoulizwa Mara kwa Mara",
+  "dreps.faq.question1": "DRep ni nini?",
+  "dreps.faq.answer1": "DRep (Mwakilishi wa Ukabidhiano) ni mwanachama wa jamii anayeaminiwa ambaye anapiga kura kwenye mapendekezo ya utawala kwa niaba ya wamiliki wa ADA.",
+  "dreps.faq.question2": "Kwa nini nikabidhie nguvu yangu ya kupiga kura?",
+  "dreps.faq.answer2": "Ukabidhiano unakuruhusu kuwa na sauti katika utawala wa Cardano bila kulazimika kukagua na kupiga kura kwenye kila pendekezo mwenyewe.",
+  "dreps.faq.question3": "Ninachagua DRep vipi?",
+  "dreps.faq.answer3": "Unaweza kuchagua DRep kulingana na maadili yao, ujuzi, na historia ya kupiga kura. Vinjari wasifu na uchague mmoja anayelingana na maono yako ya Cardano.",
+  "dreps.faq.question4": "Ninaweza kubadilisha DRep wangu?",
+  "dreps.faq.answer4": "Ndiyo, unaweza kukabidhia upya nguvu yako ya kupiga kura kwa DRep tofauti wakati wowote.",
+  "dreps.faq.question5": "Ukabidhiano ni salama?",
+  "dreps.faq.answer5": "Ndiyo, ukabidhiano ni salama. ADA yako haitoki kwenye mkoba wako, na unadumisha udhibiti kamili juu ya pesa zako.",
+  "dreps.faq.question6": "Ninapata tuzo kwa kukabidhia?",
+  "dreps.faq.answer6": "Kwa sasa, ukabidhiano unazingatia ushiriki wa utawala, si zawadi za kifedha.",
+  "dreps.faq.question7": "DReps wanafanya maamuzi vipi?",
+  "dreps.faq.answer7": "DReps wanachambua mapendekezo kwa umakini, wakihakikisha kura za habari, za ubora wa juu zinazofaidi mazingira ya Cardano.",
+  "dreps.filters.status": "hali",
+  "dreps.filters.votingPower": "Nguvu ya Kupiga Kura",
+  "dreps.filters.delegators": "Wajumbe",
+  "dreps.landing.title": "Umba Mustakbali wa Cardano, Kabidhia kwa DRep Leo!",
+  "dreps.landing.subtitle": "Wawakilishi wa Ukabidhiano (DReps) ni wanachama wa jamii wanaowakilisha maslahi ya jamii katika Project Catalyst. Wanachaguliwa na jamii kushiriki katika utawala wa mazingira ya Catalyst.",
+  "dreps.landing.findDrep": "Pata Drep",
+  "dreps.landing.signUp": "Jisajili kuwa DRep",
+  "dreps.landing.aDrep": "DReps ni nini?",
+  "dreps.landing.drepDescription": "DReps (Wawakilishi wa Ukabidhiano), wana piga kura kwenye mapendekezo ya utawala katika Cardano kwa niaba ya wamiliki wa ADA. Badala ya kupiga kura binafsi, unaweza kukabidhia nguvu yako ya kupiga kura kwa DRep anayewakilisha maslahi yako kusaidia kuumba mustakbali wa Cardano kwa ufanisi na uwazi.",
+  "dreps.landing.projectCatalyst": "Ukuaji Unaoendelea wa Project Catalyst na Mahitaji ya Ukabidhiano",
+  "dreps.landing.projectCatalystDescription": "Project Catalyst ya jamii ya Cardano imekua haraka, na Fund8 ikipokea karibu mapendekezo 1,000. Ili kudhibiti mzigo huu unaongezeka wa kazi, mfumo mpya wa ukabidhiano unaanzishwa kwa utawala endelevu.",
+  "dreps.landing.empower": "Kuwezesha Wapiga Kura wa Kimya kupitia Ukabidhiano",
+  "dreps.landing.empowerDescription": "Ukabidhiano unaruhusu wamiliki wa ADA kutoa nguvu zao za kupiga kura kwa DReps, kuhakikisha sauti zao zinasikika katika mapendekezo zaidi. DReps wanaboresha ufanyaji wa maamuzi katika Project Catalyst kwa kupiga kura kwenye mapendekezo mengi.",
+  "dreps.landing.excite": "Umesisimuka kwa DReps katika catalyst?",
+  "dreps.landing.answerExcite": "Jiunge na uwe msonga wa mbele!",
+  "dreps.options.alphabetically": "Kwa alfabeti: A hadi Z",
+  "dreps.options.delegatorsDesc": "Wajumbe: Juu hadi Chini",
+  "dreps.options.delegatorsAsc": "Wajumbe: Chini hadi Juu",
+  "dreps.options.votersDesc": "Wapiga Kura: Juu hadi Chini",
+  "dreps.options.votersAsc": "Wapiga Kura: Chini hadi Juu",
+  "dreps.options.active": "Hai",
+  "dreps.options.inactive": "Hajai",
+  "reviews.reviews": "Mapitio",
+  "reviews.reviewer": "Mkaguzi",
+  "reviews.helpfulReview": "Je, hii ilikuwa tathmini ya msaada?",
+  "reviews.yes": "Ndiyo",
+  "reviews.no": "La",
+  "reviews.select": "Chagua",
+  "reviews.processing": "Inashughulika...",
+  "reviews.options.ratingAsc": "Ukadiriaji: Chini hadi Juu",
+  "reviews.options.ratingDesc": "Ukadiriaji: Juu hadi Chini",
+  "reviews.options.avgReputationScoreAsc": "Sifa: Chini hadi Juu",
+  "reviews.options.avgReputationScoreDesc": "Sifa: Juu hadi Chini",
+  "reviews.options.helpful": "Ya msaada",
+  "reviews.options.notHelpful": "Si ya msaada",
+  "reviews.filters.funds": "Mfuko",
+  "reviews.filters.proposals": "Pendekezo",
+  "reviews.filters.reviewerIds": "Kitambulisho cha Mkaguzi",
+  "reviews.filters.helpful": "Ya msaada",
+  "reviews.filters.ratings": "Ukadiriaji",
+  "reviews.filters.reputationScores": "Alama za Sifa",
+  "transactions.allTimeVotes": "Kura za Wakati Wote",
+  "transactions.balance": "Salio",
+  "transactions.utxos": "UTXOs",
+  "transactions.fromAddresses": "Kutoka Anwani (Maingizio)",
+  "transactions.toAddresses": "Kwenda Anwani (Matokeo)",
+  "transactions.totalInput": "Jumla ya Maingizo",
+  "transactions.totalOutput": "Jumla ya Matokeo",
+  "transactions.block": "Kizuizi",
+  "transactions.fundsParticipated": "Mifuko Iliyoshiriki",
+  "transactions.title": "Miamala",
+  "transactions.type": "Aina ya muamala",
+  "transactions.delegations": "Ukabidhiano",
+  "transactions.details": "Maelezo ya Muamala",
+  "transactions.drepStatus": "Hali ya Ukabidhiano wa Drep",
+  "transactions.message": "Maelezo ya muamala wa Cardano",
+  "transactions.metadata": "Metadata",
+  "transactions.nonce": "Nonce",
+  "transactions.pageTitle": "Miamala ya Catalyst Kwenye Mnyororo",
+  "transactions.pageDescription": "Sajili ufunguo wako wa hisa ili kushiriki katika uhisa, utawala, na miamala salama kwenye mtandao wa Cardano.",
+  "transactions.paymentAddress": "Anwani ya Malipo",
+  "transactions.rawData": "Data Ghafi",
+  "transactions.stakePub": "Stake Pub",
+  "transactions.view": "Angalia maelezo ya mkoba...",
+  "transactions.votingPurpose": "Kusudi la Kupiga Kura",
+  "transactions.witness": "Shahidi",
+  "transactions.walletDetails": "Maelezo ya mkoba",
+  "transactions.table.viewDetails": "Angalia maelezo ya muamala",
+  "transactions.table.copyTxHash": "Nakili hash ya muamala",
+  "transactions.table.copyStakeAddress": "Nakili anwani ya hisa",
+  "transactions.table.copyBlockHash": "Nakili hash ya kizuizi",
+  "transactions.table.hash": "Hash",
+  "transactions.table.stakeAddress": "Anwani ya Hisa",
+  "transactions.table.epoch": "Kipindi",
+  "transactions.table.id": "Kitambulisho",
+  "transactions.table.block": "Kizuizi",
+  "transactions.table.actions": "Vitendo",
+  "transactions.table.view": "Angalia",
+  "transactions.table.voterRegistration": "Usajili wa Mpiga Kura",
+  "transactions.table.proposalPayout": "Malipo ya Pendekezo",
+  "transactions.table.type": "Aina",
+  "transactions.table.fund": "Mfuko",
+  "transactions.table.fragmentId": "Kitambulisho cha Kipande",
+  "transactions.table.caster": "Mtupaji",
+  "transactions.table.timestamp": "Alama ya Wakati",
+  "transactions.table.choice": "Uchaguzi",
+  "transactions.table.votingPower": "Nguvu ya Kupiga Kura",
+  "transactions.table.rawFragment": "Kipande Ghafi",
+  "transactions.table.totalOutputs": "Kiasi cha Matokeo (Lovelace)",
+  "transactions.table.totalInputs": "Jumla ya Maingizio",
+  "transactions.table.weights": "Uzito",
+  "transactions.options.newestToOldest": "Ya Hivi Punde hadi ya Zamani",
+  "transactions.options.oldestToNewest": "Ya Zamani hadi ya Hivi Punde",
+  "transactions.options.blockAsc": "Kizuizi: Chini hadi Juu",
+  "transactions.options.blockDesc": "Kizuizi: Juu hadi Chini",
+  "transactions.options.epochAsc": "Kipindi: Chini hadi Juu",
+  "transactions.options.epochDesc": "Kipindi: Juu hadi Chini",
+  "transactions.options.amountHighToLow": "Kiasi cha Matokeo: Juu hadi Chini",
+  "transactions.options.amountLowToHigh": "Kiasi cha Matokeo: Chini hadi Juu",
+  "transactions.options.weightHighToLow": "Uzito: Juu hadi Chini",
+  "transactions.options.weightLowToHigh": "Uzito: Chini hadi Juu",
+  "transactions.searchBar.placeholder": "Tafuta hash ya muamala, kipindi, kizuizi",
+  "transactions.wallet.title": "Maelezo ya Mkoba",
+  "transactions.wallet.wallet": "Mkoba",
+  "transactions.wallet.stakeKey": "Ufunguo wa Hisa",
+  "transactions.wallet.catalystVotes": "Kura za Catalyst",
+  "transactions.wallet.transactions": "Miamala",
+  "vote.catalystVotes": "Kura za Catalyst",
+  "vote.viewOnchainTransactions": "Angalia miamala ya kwenye mnyororo (jormugandr) ya kura zilizotolewa",
+  "vote.noStakeAddressFound": "Hakuna anwani ya hisa iliyopatikana",
+  "vote.stakeAddress": "Anwani ya Hisa",
+  "vote.choice": "Uchaguzi",
+  "vote.noChoicesAvailable": "Hakuna machaguzi yanayopatikana",
+  "vote.noEpochsAvailable": "Hakuna vipindi vinavyopatikana",
+  "vote.votingHistory": "Historia ya Kupiga Kura",
+  "vote.votingPowerHighToLow": "Nguvu ya Kupiga Kura: Juu hadi Chini",
+  "vote.votingPowerLowToHigh": "Nguvu ya Kupiga Kura: Chini hadi Juu",
+  "vote.timeOlderToNewer": "Wakati: Ya Zamani hadi Mpya",
+  "vote.timeNewerToOlder": "Wakati: Ya Mpya hadi Zamani",
+  "vote.search": "Tafuta",
+  "vote.searchBar": "Bandika anwani ya hisa hapa...",
+  "vote.searchPlaceholder": "Tafuta kwa Kitambulisho cha Kipande, Mtupaji, au Kipande Ghafi",
+  "vote.secondarySearch": "Utafutaji wa Pili",
+  "vote.sort": "Panga",
+  "vote.searchStakeFragmentCaster": "Tafuta kwa anwani ya hisa, kitambulisho cha kipande, mtupaji",
+  "vote.notAvailable": "H/P",
+  "vote.timeAgo.justNow": "Sasa hivi",
+  "vote.timeAgo.anHourAgo": "saa moja iliyopita",
+  "vote.timeAgo.hoursAgo": "masaa {{hours}} yaliyopita",
+  "vote.timeAgo.aDayAgo": "siku moja iliyopita",
+  "vote.timeAgo.daysAgo": "siku {{days}} zilizopita",
+  "vote.table.fund": "Mfuko",
+  "vote.table.stakeAddress": "Anwani ya Hisa",
+  "vote.table.fragmentId": "Kitambulisho cha Kipande",
+  "vote.table.caster": "Mtupaji",
+  "vote.table.timestamp": "Wakati",
+  "vote.table.choice": "Uchaguzi",
+  "vote.table.votingPower": "Nguvu ya Kupiga Kura",
+  "vote.table.rawFragment": "Kipande Ghafi",
+  "voter.catalystVoters": "Wapiga Kura wa Catalyst",
+  "voter.viewVoterInformation": "Pata mwonekano wa uwazi na wa kufuata data ya jamii hai inayoumba mustakbali wa Cardano",
+  "voter.searchPlaceholder": "Tafuta anwani ya hisa au kitambulisho cha mpiga kura",
+  "voter.votersTable": "Jedwali la Wapiga Kura",
+  "voter.noVotersFound": "Hakuna wapiga kura walioopatikana wanaolingana na vigezo vyako vya utafutaji",
+  "voter.notAvailable": "H/P",
+  "voter.active": "Hai",
+  "voter.inactive": "Hajai",
+  "voter.search": "Tafuta",
+  "voter.votingPower": "Nguvu ya Kupiga Kura",
+  "voter.minimumVotingPower": "Nguvu ya Chini ya Kupiga Kura",
+  "voter.noFundsAvailable": "Hakuna mifuko inayopatikana",
+  "voter.table.voterId": "Kitambulisho cha Mpiga Kura",
+  "voter.table.stakeAddress": "Anwani ya Hisa",
+  "voter.table.votingPower": "Nguvu ya Kupiga Kura",
+  "voter.table.proposalsVotedOn": "Mapendekezo Yaliyopigiwa Kura",
+  "voter.table.latestFund": "Mfuko wa Hivi Punde",
+  "voter.table.status": "Hali",
+  "voter.filter.oneAda": "1+ ADA",
+  "voter.filter.tenAda": "10+ ADA",
+  "voter.filter.hundredAda": "100+ ADA",
+  "voter.filter.thousandAda": "1,000+ ADA",
+  "voter.filter.tenThousandAda": "10,000+ ADA",
+  "voter.filter.allVotingPowers": "Nguvu Zote za Kupiga Kura",
+  "voter.sort.newestFirst": "Ya Hivi Punde Kwanza",
+  "voter.sort.oldestFirst": "Ya Zamani Kwanza",
+  "voter.sort.votingPowerDesc": "Nguvu ya Kupiga Kura: Juu hadi Chini",
+  "voter.sort.votingPowerAsc": "Nguvu ya Kupiga Kura: Chini hadi Juu",
+  "voter.sort.votesCountDesc": "Idadi ya Kura: Juu hadi Chini",
+  "voter.sort.votesCountAsc": "Idadi ya Kura: Chini hadi Juu",
+  "voter.sort.proposalsVotedOnDesc": "Mapendekezo Yaliyopigiwa Kura: Juu hadi Chini",
+  "voter.sort.proposalsVotedOnAsc": "Mapendekezo Yaliyopigiwa Kura: Chini hadi Juu",
+  "icons.titles.arrowCurved": "Ikoni ya Mshale Uliochoromoka",
+  "icons.titles.arrow_left": "Ikoni ya Mshale wa Kushoto",
+  "icons.titles.barLine": "Ikoni ya Chati ya Mstari wa Baa",
+  "icons.titles.blue_eye": "Ikoni ya Jicho la Samawati",
+  "icons.titles.bookmark": "Ikoni ya Kukagua Alamisho",
+  "icons.titles.bookmark_on": "Ikoni ya Alamisho Limeloweshwa",
+  "icons.titles.bookmark_off": "Ikoni ya Alamisho Limezimwa",
+  "icons.titles.bucket": "Ikoni ya Ndoo",
+  "icons.titles.cardSwitch": "Ikoni ya Kubadilisha Kadi",
+  "icons.titles.chart": "Ikoni ya Chati",
+  "icons.titles.check": "Ikoni ya Kukagua",
+  "icons.titles.chevron_up": "Ikoni ya Chevron Juu",
+  "icons.titles.chevron_down": "Ikoni ya Chevron Chini",
+  "icons.titles.close": "Ikoni ya kufunga",
+  "icons.titles.connect_wallet": "Ikoni ya kuunganisha mkoba",
+  "icons.titles.connections": "Ikoni ya Miunganiko",
+  "icons.titles.darkMode": "Ikoni ya Hali ya Giza",
+  "icons.titles.discord": "Discord",
+  "icons.titles.folder": "Ikoni ya Folda",
+  "icons.titles.filter": "Ikoni ya Kuchuja",
+  "icons.titles.github": "Github",
+  "icons.titles.home": "Ikoni ya Nyumbani",
+  "icons.titles.lightMode": "Ikoni ya Hali ya Mwanga",
+  "icons.titles.login": "Ikoni ya Kuingia",
+  "icons.titles.logOut": "Ikoni ya Kutoka",
+  "icons.titles.mail": "Ikoni ya Barua",
+  "icons.titles.menu": "Ikoni ya Menyu",
+  "icons.titles.miniCardSwitch": "Ikoni ya Kubadilisha Kadi Ndogo",
+  "icons.titles.more": "Ikoni ya Zaidi",
+  "icons.titles.note": "Ikoni ya Kidokezo",
+  "icons.titles.notificationBox": "Ikoni ya Sanduku la Arifa",
+  "icons.titles.numbers": "Ikoni ya Nambari",
+  "icons.titles.people": "Ikoni ya Watu",
+  "icons.titles.ideascaleProfile": "Ikoni ya Wasifu wa Ideascale",
+  "icons.titles.search": "Ikoni ya Kutafuta",
+  "icons.titles.voltaireMode": "Ikoni ya Hali ya Voltaire",
+  "icons.titles.register": "Ikoni ya Kujisajili",
+  "icons.titles.link": "Ikoni ya Kiungo",
+  "icons.titles.linkedIn": "LinkedIn",
+  "icons.titles.listBullet": "Ikoni ya Risasi za Orodha",
+  "icons.titles.verticalColumn": "Ikoni ya Nguzo za Wima",
+  "icons.titles.videoCamera": "Ikoni ya Kamera ya Video",
+  "icons.titles.playerPause": "Ikoni ya Kusitisha",
+  "icons.titles.playerPlay": "Ikoni ya Kucheza",
+  "icons.titles.playerRewindLeft": "Ikoni ya Kurudisha Kushoto",
+  "icons.titles.playerRewindRight": "Ikoni ya Kurudisha Kulia",
+  "icons.titles.playerSkipBack": "Ikoni ya Kuruka Nyuma",
+  "icons.titles.playerSkipForward": "Ikoni ya Kuruka Mbele",
+  "icons.titles.playerStop": "Ikoni ya Kusimamisha",
+  "icons.titles.arrowTrendingUp": "Ikoni ya Mwelekeo wa Kupanda",
+  "icons.titles.arrowTrendingDown": "Ikoni ya Mwelekeo wa Kushuka",
+  "icons.titles.file": "Ikoni ya Faili",
+  "icons.titles.ada": "Ikoni ya Ada",
+  "icons.titles.usd": "Ikoni ya USD",
+  "icons.titles.tick": "Ikoni ya Kucheki",
+  "icons.titles.x": "X",
+  "icons.titles.web": "Wavuti",
+  "icons.titles.arrowDown": "Ikoni ya Mshale wa Chini",
+  "icons.titles.arrowUp": "Ikoni ya Mshale wa Juu",
+  "segments.completed": "Imekamilika",
+  "segments.unfunded": "Haijafadhiliwa",
+  "segments.funded": "Imefadhiliwa",
+  "segments.ownProposals": "Mapendekezo Binafsi",
+  "segments.collaboratingProposals": "Mapendekezo ya Kushirikiano",
+  "workflows.tinderProposal.step1.selectFund": "Chagua Mfuko",
+  "workflows.tinderProposal.step1.selectFundPlaceholder": "Chagua Mfuko",
+  "workflows.createService.step1.howToContribute": "Ungependa kuchangia vipi?",
+  "workflows.createService.step1.offerService": "Nataka kutoa huduma kwa jamii",
+  "workflows.createService.step1.needService": "Ninahitaji huduma kutoka kwa jamii",
+  "workflows.createService.step1.offeringServiceBadge": "Kutoa Huduma",
+  "workflows.createService.step1.requestingServiceBadge": "Kuomba Huduma",
+  "workflows.createService.step1.serviceTitle": "Kichwa cha huduma",
+  "workflows.createService.step1.imageHeader": "Kichwa cha Picha",
+  "workflows.createService.step1.description": "Maelezo",
+  "workflows.createService.step1.category": "Kategoria",
+  "workflows.createService.step1.selectCategories": "Chagua kategoria...",
+  "workflows.createService.step1.selectedCategories": "Umechagua: kategoria :count",
+  "workflows.createService.step1.selectedImageText": "Umechagua: :fileName",
+  "workflows.createService.step1.existingImageText": "Picha ya sasa - bonyeza ili kubadilisha",
+  "workflows.createService.step2.serviceCreatedSuccess": "Huduma imeundwa kwa mafanikio!",
+  "workflows.createService.step2.name": "Jina",
+  "workflows.createService.step2.emailAddress": "Anwani ya barua pepe",
+  "workflows.createService.step2.websiteUrl": "URL ya Tovuti",
+  "workflows.createService.step2.github": "Github",
+  "workflows.createService.step2.linkedin": "LinkedIn",
+  "workflows.createService.step2.location": "Mahali",
+  "workflows.createService.step2.enterCity": "Ingiza jiji",
+  "workflows.createService.step2.addNetwork": "Ongeza Mtandao",
+  "workflows.createService.step2.saving": "Inahifadhi...",
+  "workflows.createService.step2.contactInfoSavedSuccess": "Taarifa za mawasiliano zimehifadhiwa kwa mafanikio!",
+  "workflows.createService.step2.submitService": "Wasilisha Huduma",
+  "workflows.createService.step2.validation.emailInvalid": "Tafadhali ingiza anwani halali ya barua pepe",
+  "workflows.createService.step2.validation.websiteInvalid": "Tafadhali ingiza URL halali ya tovuti",
+  "workflows.createService.stepDetails.serviceDetails": "Maelezo ya Huduma",
+  "workflows.createService.stepDetails.contactDetails": "Maelezo ya Mawasiliano",
+  "workflows.publishToIpfs.stepDetails.introduction": "Utangulizi",
+  "workflows.publishToIpfs.stepDetails.reviewList": "Kagua Orodha",
+  "workflows.publishToIpfs.success.title": "Imechapishwa kwa Mafanikio!",
+  "workflows.publishToIpfs.success.message": "Rasimu yako ya kura imechapishwa kwa mafanikio kwenye IPFS na sasa inapatikana kwenye wavuti iliyogawanywa.",
+  "workflows.publishToIpfs.noListSelected.title": "Hakuna Orodha ya Mpiga Kura Iliyochaguliwa",
+  "workflows.publishToIpfs.noListSelected.message": "Ili kuchapisha rasimu ya kura kwenye IPFS, unahitaji kuchagua orodha ya mpiga kura kwanza.",
+  "workflows.publishToIpfs.noListSelected.instructions": "Nenda kwenye orodha yako ya mpiga kura, bonyeza nukta tatu za wima (⋮), kisha bonyeza \"Chapisha kwenye IPFS\".",
+  "workflows.publishToIpfs.noListSelected.goToLists": "Nenda kwa Orodha Zangu",
+  "workflows.publishToIpfs.error": "Hitilafu:",
+  "workflows.publishToIpfs.items": "Vipengee:",
+  "workflows.publishToIpfs.created": "Imeundwa:",
+  "workflows.publishToIpfs.previous": "Awali",
+  "workflows.publishToIpfs.publishingToIpfs": "Inachapisha kwenye IPFS...",
+  "workflows.publishToIpfs.publishToIpfs": "Chapisha kwenye IPFS",
+  "workflows.publishToIpfs.howToGetStarted": "Jinsi ya kuanza:",
+  "workflows.publishToIpfs.noDescriptionAvailable": "Hakuna maelezo yanayopatikana",
+  "workflows.publishToIpfs.unknown": "Haijulikani",
+  "workflows.publishToIpfs.separator": "|",
+  "languageDetection.multipleLanguagesError": "Baadhi ya sehemu zinaonekana kuandikwa kwa lugha tofauti. Tafadhali hakikisha maudhui yote ni kwa lugha moja.",
+  "languageDetection.languageMismatchError": "Maudhui yako yanaonekana kuwa kwa :detectedLanguage lakini umechagua :selectedLanguage. Tafadhali sasisha uchaguzi wako wa lugha.",
+  "languageDetection.defaultMismatchError": "Kutokuelewana kwa lugha kumegunduliwa",
+  "proposals.allProposals": "Mapendekezo yote",
+  "proposals.proposals": "Mapendekezo",
+  "proposals.proposalSummary": "Muhtasari wa Mapendekezo",
+  "proposals.projectVideo": "Video ya Mradi",
+  "proposals.providedUrl": "URL Iliyotolewa",
+  "proposals.listSubtitle": "Kura za mapendekezo lazima ziwasilishwe kwenye Programu Rasmi ya Kupiga Kura ya Catalyst",
+  "proposals.quickPitchesListSubtitle": "Manukuu ya haraka ya sekunde 300 au chini ya mawazo yaliyomo kwenye kura.",
+  "proposals.celebrateCompletedProposalsSubtitle": "Baadhi ya mawazo yanayostahili kusherehekewa... yamkini utapata kitu cha kutumia katika mradi wako ujao.",
+  "proposals.pageSubtitle": "Tafuta mapendekezo na changamoto kwa kichwa, maudhui, au mwandishi na waandishi wenzake",
+  "proposals.seeMoreProposals": "Ona mapendekezo zaidi",
+  "proposals.seeMoreQuickPitches": "Ona manukuu zaidi",
+  "proposals.quickPitch": "Nukuu ya Haraka",
+  "proposals.proposalReviews": "Mapitio ya Mapendekezo",
+  "proposals.proposalQuickPitches": "Manukuu ya Haraka ya Mapendekezo",
+  "proposals.celebrateCompletedProposals": "Kusherehekea Mapendekezo Yaliyokamilika",
+  "proposals.CSVs": "CSV za Mapendekezo",
+  "proposals.impactAlignment": "Muunganiko wa Athari",
+  "proposals.feasibility": "Uwezekano",
+  "proposals.valueForMoney": "Thamani kwa Pesa",
+  "proposals.totalProposals": "Jumla ya Mapendekezo",
+  "proposals.viewTeam": "Angalia Timu",
+  "proposals.action": "Vitendo",
+  "proposals.status": "Hali",
+  "proposals.owner": "Mmiliki",
+  "proposals.outstanding": "Mapendekezo Yasiyokamilika",
+  "proposals.completed": "Mapendekezo Yaliyokamilika",
+  "proposals.catalystConnection": "Miunganiko ya Catalyst",
+  "proposals.fundingReceived": "Ufadhili Uliopokelewa",
+  "proposals.manageProposal": "Simamia Pendekezo",
+  "proposals.totalRequested": "Jumla Iliyoombwa",
+  "proposals.ideascale": "Ideascale",
+  "proposals.projectCatalyst": "Projectcatalyst.io",
+  "proposals.errors.noUrl": "Hakuna URL ya video iliyotolewa",
+  "proposals.errors.invalidYoutubeFormat": "Muundo wa kiungo cha YouTube si sahihi",
+  "proposals.errors.invalidVimeoFormat": "Muundo wa kiungo cha Vimeo si sahihi",
+  "proposals.errors.invalidUrlFormat": "Muundo wa URL si sahihi",
+  "proposals.errors.invalidUrl": "Muundo wa URL si sahihi",
+  "proposals.filters.fundingStatus": "Hali ya Ufadhili",
+  "proposals.filters.approvedProposals": "Mapendekezo Yaliyoidhinishwa",
+  "proposals.filters.epoch": "Kipindi",
+  "proposals.filters.opensource": "Chanzo huru",
+  "proposals.filters.projectStatus": "Hali ya Mradi",
+  "proposals.filters.tags": "Lebo",
+  "proposals.filters.campaigns": "Kampeni",
+  "proposals.filters.communities": "Jamii",
+  "proposals.filters.communityCohort": "Kundi la Jamii",
+  "proposals.filters.proposers": "Wapendekeza",
+  "proposals.filters.groups": "Vikundi",
+  "proposals.filters.budgets": "Bajeti",
+  "proposals.filters.budget": "Bajeti",
+  "wallet.login.confirm": "Tunakaribia kukuingiza kwa kutumia mkoba wako ulioungwa, akaunti iliyounganishwa na mkoba huu itahalalishwa. Ikiwa hakuna akaunti iliyounganishwa itapatikana, moja itaundwa kwa kutumia anwani yako. Unaweza kusasisha akaunti hii katika dashibodi yako chini ya ukurasa wa 'Wasifu wangu'.<br><br> <strong>Tayari una akaunti?</strong> Ingia kwa kutumia barua pepe na uongeze mkoba wako ili uweze kuingia kwa mkoba au barua pepe.",
+};
+
+const __vite_glob_1_9 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     API: API$1,
     Home: Home$1,
@@ -58313,7 +62852,7 @@ const __vite_glob_1_6 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePro
     currentPassword: currentPassword$1,
     dReps: dReps$1,
     data: data$1,
-    default: pt,
+    default: sw,
     details: details$1,
     developers: developers$1,
     distributed: distributed$1,
@@ -58383,6 +62922,7 @@ const __vite_glob_1_6 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePro
     projectCatalyst: projectCatalyst$1,
     projectTitle: projectTitle$1,
     proposal: proposal$1,
+    received: received$1,
     register: register$1,
     rememberMe: rememberMe$1,
     requested: requested$1,
@@ -58457,7 +62997,7 @@ const currentPassword = "当前密码";
 const connectWallet = "连接钱包";
 const comingSoon = "即将推出";
 const cookies = "Cookie";
-const copyright = "© 2024 Catalyst Explorer. 版权所有。";
+const copyright = " 版权所有。";
 const connections = "连接";
 const minting = "您正在铸造";
 const loginToMint = "登录以铸造";
@@ -58551,6 +63091,7 @@ const selection = "选择";
 const awarded = "获奖";
 const distributed = "已分配";
 const requested = "已请求";
+const received = "已收到";
 const submitted = "已提交";
 const funded = "已资助";
 const approved = "已批准";
@@ -58704,6 +63245,7 @@ const zh = {
   awarded,
   distributed,
   requested,
+  received,
   submitted,
   funded,
   approved,
@@ -58732,6 +63274,11 @@ const zh = {
   "activeFund.createBookmarkList": "创建书签列表",
   "activeFund.bannerTitle": "构建您的投票清单！",
   "activeFund.bannerSubtitle": "为参考和分享创建您的投票选择！您知道自己在找什么吗？使用标准工作流。不知道自己在找什么？使用卡牌工作流，对您想要二次考量的提案向右滑动，对您在本轮中弃权或放弃的提案向左滑动。",
+  "activeFund.supportUsTitle": "在投票中支持我们！",
+  "activeFund.supportUsSubtitle": "如果您在这个工具中发现了价值，请考虑在投票中支持。",
+  "activeFund.supportUsProposalTitle": "一体化 Catalyst：通知、AI 列表和投资组合",
+  "activeFund.supportUsSeeProposal": "阅读提案",
+  "activeFund.supportUsProposalSubtitle": "如果获得资助，我们将：扩展 catalystexplorer.com，通过您关心的事件的智能通知、AI 驱动的提案发现和专业投资组合构建来改变您与 Catalyst 的互动方式。",
   "activeFund.campaignsTitle": "活动类别",
   "activeFund.campaigns.proposals": "提案",
   "activeFund.campaigns.viewProposals": "查看提案",
@@ -58815,6 +63362,7 @@ const zh = {
   "workflows.resetPassword.resend": "重新发送邮件",
   "workflows.voterList.welcome": "在开始之前，让我们设置您的投票列表。投票列表是您支持并希望其他人考虑的提案集合。这有助于简化治理参与。准备开始了吗？在接下来的步骤中，您将命名您的列表、添加提案并解释选择它们的理由。",
   "workflows.voterList.proposalsOnly": "与其他列表类型不同，只能将提案添加到投票列表中。",
+  "workflows.voterList.prototype": "<strong>注意：这仍然是一个原型，还没有提交到链上！</strong>",
   "workflows.voterList.title": "标题",
   "workflows.voterList.description": "描述",
   "workflows.voterList.descriptionPlaceholder": "用几个词描述此列表的目的。",
@@ -59087,6 +63635,8 @@ const zh = {
   "my.createListBlurb": "创建书签列表是一个空白文件夹，用于放置来自多个基金的提案、ideascale 个人资料、组织、评论和社区。",
   "my.createListTitle": "选择要创建的列表类型。（它们可以公开分享或保持私人。）",
   "my.createVotingList": "创建投票列表",
+  "my.createVotingListWithStandardUi": "使用标准工作流",
+  "my.createVotingListWithCardedUi": "使用卡牌工作流",
   "my.createTinderList": "创建 Tinder 列表",
   "my.votes": "投票",
   "my.services": "服务",
@@ -59223,11 +63773,15 @@ const zh = {
   "proposals.projectVideo": "项目视频",
   "proposals.providedUrl": "提供的 URL",
   "proposals.listSubtitle": "提案投票必须在官方 Catalyst Voting 应用程序中提交",
+  "proposals.quickPitchesListSubtitle": "300秒或更短的想法快速推介在投票中。",
+  "proposals.celebrateCompletedProposals": "庆祝已完成的提案",
+  "proposals.celebrateCompletedProposalsSubtitle": "一些值得庆祝的想法...您甚至可能在下一个项目中找到有用的东西。",
   "proposals.pageSubtitle": "按标题、内容或作者和共同作者搜索提案和挑战",
   "proposals.seeMoreProposals": "查看更多提案",
   "proposals.seeMoreQuickPitches": "查看更多展示",
   "proposals.quickPitch": "快速推介",
   "proposals.proposalReviews": "提案评论",
+  "proposals.proposalQuickPitches": "提案快速推介",
   "proposals.CSVs": "提案 CSV",
   "proposals.impactAlignment": "影响一致性",
   "proposals.feasibility": "可行性",
@@ -59693,13 +64247,15 @@ const zh = {
   "transactions.table.voterRegistration": "投票者注册",
   "transactions.table.type": "类型",
   "transactions.table.fund": "基金",
+  "transactions.table.id": "Id",
   "transactions.table.fragmentId": "片段 ID",
   "transactions.table.caster": "投票者",
   "transactions.table.timestamp": "时间戳",
   "transactions.table.choice": "选择",
   "transactions.table.votingPower": "投票权",
   "transactions.table.rawFragment": "原始片段",
-  "transactions.table.totalOutputs": "输出金额（Lovelace）",
+  "transactions.table.proposalPayout": "提案支付",
+  "transactions.table.totalOutputs": "输出金额 (Lovelace)",
   "transactions.table.totalInputs": "总输入",
   "transactions.table.weights": "权重",
   "transactions.options.newestToOldest": "最新到最旧",
@@ -59854,9 +64410,19 @@ const zh = {
   startDate,
   "wallet.login": "钱包登录",
   "wallet.login.confirm": "我们即将使用您连接的钱包为您登录，与此钱包关联的账户将被验证。如果未找到关联账户，将使用您的地址创建一个。您可以在仪表板的\"我的个人资料\"页面中更新此账户。<br><br> <strong>已有账户？</strong>使用邮箱登录并添加您的钱包，这样您就可以使用钱包或邮箱登录。",
+  "funding.status.pending": "待处理",
+  "funding.status.withdrawn": "已撤回",
+  "funding.status.fullyPaid": "全额支付",
+  "funding.status.funded": "已获资金",
+  "funding.status.notFunded": "未资助",
+  "project.status.votePending": "待投票",
+  "project.status.withdrawn": "撤回",
+  "project.status.complete": "完成",
+  "project.status.inProgress": "进行中",
+  "project.status.unfunded": "未资助",
 };
 
-const __vite_glob_1_7 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const __vite_glob_1_10 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
     __proto__: null,
     API,
     Home,
@@ -59968,6 +64534,7 @@ const __vite_glob_1_7 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePro
     projectCatalyst,
     projectTitle,
     proposal,
+    received,
     register,
     rememberMe,
     requested,
@@ -60086,7 +64653,7 @@ const Breadcrumbs = ({
         return /* @__PURE__ */ jsxs(React__default.Fragment, { children: [
           index > 0 && /* @__PURE__ */ jsx("span", { className: "flex items-center", children: separator }),
           isEllipsis ? /* @__PURE__ */ jsx(MoreHorizontal, { className: "text-content h-4 w-4" }) : isLast ? /* @__PURE__ */ jsx("span", { className: activeClassName, children: formatLabel(item.label, isHome) }) : /* @__PURE__ */ jsx(
-            Link$8,
+            Link$b,
             {
               href: item.href,
               className: itemClassName,
@@ -60151,7 +64718,7 @@ const GraphButton = () => {
   const { t } = useLaravelReactI18n();
   const onProposals = usePage().component == "Proposals/Index";
   return /* @__PURE__ */ jsx(Fragment, { children: onProposals && /* @__PURE__ */ jsx(
-    Link$8,
+    Link$b,
     {
       href: useLocalizedRoute("charts.proposals"),
       className: "bg-bg-dark hover:bg-opacity-90 mb-4 flex items-center justify-center overflow-hidden rounded-xl px-4 py-3 shadow-lg transition-all",
@@ -60165,11 +64732,22 @@ const GraphButton = () => {
 const LANGS = [
   { value: "en", label: "English" },
   { value: "es", label: "Español" },
-  { value: "fr", label: "Français" },
   { value: "de", label: "Deutsch" },
+  { value: "fr", label: "Français" },
+  { value: "pt", label: "Português" },
+  { value: "am", label: "አማርኛ" },
+  { value: "ar", label: "العربية" },
   { value: "ja", label: "日本語" },
+  { value: "ko", label: "한국어" },
+  { value: "sw", label: "Kiswahili" },
   { value: "zh", label: "中文" }
 ];
+const RTL_LANGS = ["ar"];
+const updateDocumentDirection = (locale) => {
+  const isRTL = RTL_LANGS.includes(locale);
+  document.documentElement.dir = isRTL ? "rtl" : "ltr";
+  document.documentElement.lang = locale;
+};
 function LangSwitcher() {
   const { currentLocale, setLocale } = useLaravelReactI18n();
   const { locale } = usePage().props;
@@ -60179,11 +64757,17 @@ function LangSwitcher() {
     if (!selectedLang || typeof selectedLang !== "string") return;
     if (currentLocale() === selectedLang) return;
     setLocale(selectedLang);
+    updateDocumentDirection(selectedLang);
     const pathParts = window.location.pathname.split("/");
     pathParts[1] = selectedLang;
     const newPath = pathParts.join("/") || "/";
     window.history.pushState({}, "", newPath + window.location.search);
   }, [selectedLang]);
+  useEffect(() => {
+    if (selectedLang) {
+      updateDocumentDirection(selectedLang);
+    }
+  }, []);
   const handleSelect = (lang) => {
     if (lang === selectedLang) return;
     setSelectedLang(lang);
@@ -60225,7 +64809,7 @@ function NavLinkItem({
     {
       className: `relative w-full ${disable ? "bg-opacity-50 z-50 cursor-not-allowed" : ""}`,
       children: /* @__PURE__ */ jsxs(
-        Link$8,
+        Link$b,
         {
           ...rest,
           href: !disable ? href : "#",
@@ -60594,7 +65178,7 @@ function AppNavigation() {
     if (!path) return "";
     const isAbsoluteUrl = path.startsWith("http://") || path.startsWith("https://");
     const parsedPath = isAbsoluteUrl ? new URL(path).pathname : path;
-    const normalizedPath = parsedPath.replace(/^\/(en|fr|sw)(\/|$)/, "/");
+    const normalizedPath = parsedPath.replace(/^\/(am|ar|de|en|es|fr|ja|ko|pt|ru|sw|zh)(\/|$)/, "/");
     const basePath = normalizedPath.split("?")[0];
     return basePath.endsWith("/") && basePath !== "/" ? basePath.slice(0, -1) : basePath;
   };
@@ -61474,7 +66058,7 @@ const UserDetails = ({ user }) => {
           ) }),
           /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
             /* @__PURE__ */ jsx(
-              Link$8,
+              Link$b,
               {
                 href: generateLocalizedRoute("my.dashboard"),
                 className: "text-4 text-content font-semibold",
@@ -61484,7 +66068,7 @@ const UserDetails = ({ user }) => {
             ),
             /* @__PURE__ */ jsx(Paragraph, { className: "text-5 text-content text-xs", children: user?.email }),
             /* @__PURE__ */ jsx(
-              Link$8,
+              Link$b,
               {
                 href: generateLocalizedRoute("profile.edit"),
                 className: "text-5 text-primary font-semibold",
@@ -62173,7 +66757,7 @@ function Footer() {
     /* @__PURE__ */ jsx("section", { className: "container", "data-testid": "footer-copyright", children: /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap items-center justify-center gap-4 border-t pt-8 lg:justify-between", children: [
       " ",
       /* @__PURE__ */ jsx("div", { className: "", children: /* @__PURE__ */ jsx(CatalystWhiteLogo, {}) }),
-      /* @__PURE__ */ jsx(Paragraph, { className: "text-base font-normal text-gray-300", children: t("copyright") })
+      /* @__PURE__ */ jsx(Paragraph, { className: "text-base font-normal text-gray-300", children: `${(/* @__PURE__ */ new Date()).getFullYear().toString()}  ${" " + t("copyright")}` })
     ] }) })
   ] });
 }
@@ -62244,11 +66828,18 @@ function MainLayout({ children }) {
 
 function AppLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { t } = useLaravelReactI18n();
+  const { t, currentLocale } = useLaravelReactI18n();
   const { url, props } = usePage();
   const breadcrumbItems = generateBreadcrumbs(url, props["locale"]);
   const memoizedChildren = useMemo(() => children, [children]);
   const savedTheme = typeof window === "undefined" ? null : localStorage.getItem("theme");
+  const RTL_LANGS = ["ar"];
+  const isRTL = RTL_LANGS.includes(currentLocale());
+  useEffect(() => {
+    const locale = currentLocale();
+    document.documentElement.dir = RTL_LANGS.includes(locale) ? "rtl" : "ltr";
+    document.documentElement.lang = locale;
+  }, [currentLocale()]);
   const isAuthPage = url.includes("login") || url.includes("register");
   return /* @__PURE__ */ jsxs(MainLayout, { children: [
     /* @__PURE__ */ jsx(
@@ -62267,7 +66858,7 @@ function AppLayout({ children }) {
     /* @__PURE__ */ jsxs(
       "section",
       {
-        className: `bg-background-lighter lg:mt-4 ${isAuthPage ? "" : "lg:ml-72"} ${isAuthPage ? "" : "lg:rounded-tl-4xl"}`,
+        className: `bg-background-lighter lg:mt-4 ${isAuthPage ? "" : "lg:ml-(--sidebar-width) rtl:ml-0 rtl:mr-(--sidebar-width)"} ${isAuthPage ? "" : "lg:rounded-tl-4xl"}`,
         children: [
           /* @__PURE__ */ jsx(
             "header",
@@ -62326,12 +66917,12 @@ function AppLayout({ children }) {
     /* @__PURE__ */ jsx(
       ToastContainer,
       {
-        position: "top-right",
+        position: isRTL ? "top-left" : "top-right",
         autoClose: 5e3,
         hideProgressBar: false,
         newestOnTop: false,
         closeOnClick: true,
-        rtl: false,
+        rtl: isRTL,
         pauseOnFocusLoss: true,
         draggable: true,
         pauseOnHover: true,
@@ -62353,7 +66944,7 @@ createServer(async (page) => {
       const page2 = resolvePageComponent(
         `./Pages/${name}.tsx`,
         // @ts-ignore
-        /* #__PURE__ */ Object.assign({"./Pages/ActiveFund/Index.tsx": __vite_glob_0_0,"./Pages/ActiveFund/Partials/ActiveFundBanner.tsx": __vite_glob_0_1,"./Pages/ActiveFund/Partials/CampaignCard.tsx": __vite_glob_0_2,"./Pages/ActiveFund/Partials/CreateListBanner.tsx": __vite_glob_0_3,"./Pages/ActiveFund/Partials/SupportCxBanner.tsx": __vite_glob_0_4,"./Pages/Auth/ConfirmPassword.tsx": __vite_glob_0_5,"./Pages/Auth/ForgotPassword.tsx": __vite_glob_0_6,"./Pages/Auth/Login.tsx": __vite_glob_0_7,"./Pages/Auth/Partials/LoginForm.tsx": __vite_glob_0_8,"./Pages/Auth/Partials/RegisterForm.tsx": __vite_glob_0_9,"./Pages/Auth/Register.tsx": __vite_glob_0_10,"./Pages/Auth/ResetPassword.tsx": __vite_glob_0_11,"./Pages/Auth/VerifyEmail.tsx": __vite_glob_0_12,"./Pages/Bookmarks/Index.tsx": __vite_glob_0_13,"./Pages/Bookmarks/Manage.tsx": __vite_glob_0_14,"./Pages/Bookmarks/Partials/BookmarkModelSearch.tsx": __vite_glob_0_15,"./Pages/Bookmarks/Partials/CreateListPicker.tsx": __vite_glob_0_16,"./Pages/Bookmarks/Partials/DropdownMenu.tsx": __vite_glob_0_17,"./Pages/Bookmarks/Partials/EditListForm.tsx": __vite_glob_0_18,"./Pages/Bookmarks/View.tsx": __vite_glob_0_19,"./Pages/Campaign/Index.tsx": __vite_glob_0_20,"./Pages/Campaign/Partials/CampaignAccordion.tsx": __vite_glob_0_21,"./Pages/Campaign/Partials/CampaignCard.tsx": __vite_glob_0_22,"./Pages/Campaign/Partials/CampaignCardExtended.tsx": __vite_glob_0_23,"./Pages/Campaign/Partials/CampaignCardMini.tsx": __vite_glob_0_24,"./Pages/Campaign/Partials/CampaignList.tsx": __vite_glob_0_25,"./Pages/Campaign/Partials/CampaignLoader.tsx": __vite_glob_0_26,"./Pages/Campaign/Partials/DistributedVsAwarded.tsx": __vite_glob_0_27,"./Pages/Charts/Index.tsx": __vite_glob_0_28,"./Pages/Charts/Partials/AllCharts.tsx": __vite_glob_0_29,"./Pages/Charts/Partials/BarChart.tsx": __vite_glob_0_30,"./Pages/Charts/Partials/ChartCard.tsx": __vite_glob_0_31,"./Pages/Charts/Partials/ChartLoading.tsx": __vite_glob_0_32,"./Pages/Charts/Partials/FunnelChart.tsx": __vite_glob_0_33,"./Pages/Charts/Partials/HeatMap.tsx": __vite_glob_0_34,"./Pages/Charts/Partials/LineChart.tsx": __vite_glob_0_35,"./Pages/Charts/Partials/PieChart.tsx": __vite_glob_0_36,"./Pages/Charts/Partials/ScatterPlots.tsx": __vite_glob_0_37,"./Pages/Charts/Partials/SetChartMetrics.tsx": __vite_glob_0_38,"./Pages/Charts/Partials/StackedBarChart.tsx": __vite_glob_0_39,"./Pages/Charts/Partials/Step1.tsx": __vite_glob_0_40,"./Pages/Charts/Partials/Step2.tsx": __vite_glob_0_41,"./Pages/Charts/Partials/Step3.tsx": __vite_glob_0_42,"./Pages/Charts/Partials/TreeMap.tsx": __vite_glob_0_43,"./Pages/ComingSoon.tsx": __vite_glob_0_44,"./Pages/Communities/CommunityLayout.tsx": __vite_glob_0_45,"./Pages/Communities/Dashboard/Index.tsx": __vite_glob_0_46,"./Pages/Communities/Events/Index.tsx": __vite_glob_0_47,"./Pages/Communities/Groups/Index.tsx": __vite_glob_0_48,"./Pages/Communities/IdeascaleProfiles/Index.tsx": __vite_glob_0_49,"./Pages/Communities/Index.tsx": __vite_glob_0_50,"./Pages/Communities/Partials/CommunitiesList.tsx": __vite_glob_0_51,"./Pages/Communities/Partials/CommunitiesPaginatedList.tsx": __vite_glob_0_52,"./Pages/Communities/Partials/CommunityCard.tsx": __vite_glob_0_53,"./Pages/Communities/Partials/CommunityCardMini.tsx": __vite_glob_0_54,"./Pages/Communities/Partials/CommunityFilters.tsx": __vite_glob_0_55,"./Pages/Communities/Partials/CommunityFundingChart.tsx": __vite_glob_0_56,"./Pages/Communities/Partials/CommunityIdeascaleProfiles.tsx": __vite_glob_0_57,"./Pages/Communities/Partials/CommunityLoader.tsx": __vite_glob_0_58,"./Pages/Communities/Partials/CommunityTab.tsx": __vite_glob_0_59,"./Pages/Communities/Partials/JoinCommunityButton.tsx": __vite_glob_0_60,"./Pages/Communities/Partials/ProposalSummary.tsx": __vite_glob_0_61,"./Pages/Communities/Proposals/Index.tsx": __vite_glob_0_62,"./Pages/CompletedProjectNfts/Index.tsx": __vite_glob_0_63,"./Pages/CompletedProjectNfts/Partials/BlockchainData.tsx": __vite_glob_0_64,"./Pages/CompletedProjectNfts/Partials/ClaimProfileForm.tsx": __vite_glob_0_65,"./Pages/CompletedProjectNfts/Partials/CompletedProposalCard.tsx": __vite_glob_0_66,"./Pages/CompletedProjectNfts/Partials/ContributorProfile.tsx": __vite_glob_0_67,"./Pages/CompletedProjectNfts/Partials/MetaData.tsx": __vite_glob_0_68,"./Pages/CompletedProjectNfts/Partials/MetaDataPreview.tsx": __vite_glob_0_69,"./Pages/CompletedProjectNfts/Partials/MintButton.tsx": __vite_glob_0_70,"./Pages/CompletedProjectNfts/Partials/MintedNftsCard.tsx": __vite_glob_0_71,"./Pages/CompletedProjectNfts/Partials/MintedNftsCardLoader.tsx": __vite_glob_0_72,"./Pages/CompletedProjectNfts/Partials/MintedNftsList.tsx": __vite_glob_0_73,"./Pages/CompletedProjectNfts/Partials/PageHeader.tsx": __vite_glob_0_74,"./Pages/CompletedProjectNfts/Partials/ProfileCard.tsx": __vite_glob_0_75,"./Pages/CompletedProjectNfts/Partials/ProfileList.tsx": __vite_glob_0_76,"./Pages/CompletedProjectNfts/Partials/ProfileSearchBar.tsx": __vite_glob_0_77,"./Pages/CompletedProjectNfts/Partials/ProposalList.tsx": __vite_glob_0_78,"./Pages/CompletedProjectNfts/Partials/ProposalSearchBar.tsx": __vite_glob_0_79,"./Pages/CompletedProjectNfts/Partials/Show.tsx": __vite_glob_0_80,"./Pages/CompletedProjectNfts/Partials/StatisticCard.tsx": __vite_glob_0_81,"./Pages/CompletedProjectNfts/Partials/StepTracker.tsx": __vite_glob_0_82,"./Pages/CompletedProjectNfts/Partials/VerificationCard.tsx": __vite_glob_0_83,"./Pages/Connections/Index.tsx": __vite_glob_0_84,"./Pages/Dreps/DrepList.tsx": __vite_glob_0_85,"./Pages/Dreps/Index.tsx": __vite_glob_0_86,"./Pages/Dreps/Partials/DrepFilters.tsx": __vite_glob_0_87,"./Pages/Dreps/Partials/DrepTable.tsx": __vite_glob_0_88,"./Pages/Dreps/Partials/FaqSection.tsx": __vite_glob_0_89,"./Pages/Error404.tsx": __vite_glob_0_90,"./Pages/Funds/Campaign.tsx": __vite_glob_0_91,"./Pages/Funds/Fund.tsx": __vite_glob_0_92,"./Pages/Funds/Index.tsx": __vite_glob_0_93,"./Pages/Funds/Partials/FundCard.tsx": __vite_glob_0_94,"./Pages/Funds/Partials/FundCardLoader.tsx": __vite_glob_0_95,"./Pages/Funds/Partials/FundsBarChart.tsx": __vite_glob_0_96,"./Pages/Funds/Partials/FundsBarChartLoading.tsx": __vite_glob_0_97,"./Pages/Funds/Partials/FundsList.tsx": __vite_glob_0_98,"./Pages/Funds/Partials/FundsSortBy.tsx": __vite_glob_0_99,"./Pages/Funds/Partials/HeroSection.tsx": __vite_glob_0_100,"./Pages/Groups/Connections/Index.tsx": __vite_glob_0_101,"./Pages/Groups/Group.tsx": __vite_glob_0_102,"./Pages/Groups/GroupLayout.tsx": __vite_glob_0_103,"./Pages/Groups/IdeascaleProfiles/Index.tsx": __vite_glob_0_104,"./Pages/Groups/Index.tsx": __vite_glob_0_105,"./Pages/Groups/Locations/Index.tsx": __vite_glob_0_106,"./Pages/Groups/Partials/BioCard.tsx": __vite_glob_0_107,"./Pages/Groups/Partials/GroupCard.tsx": __vite_glob_0_108,"./Pages/Groups/Partials/GroupCardExtended.tsx": __vite_glob_0_109,"./Pages/Groups/Partials/GroupCardExtendedLoader.tsx": __vite_glob_0_110,"./Pages/Groups/Partials/GroupCardMini.tsx": __vite_glob_0_111,"./Pages/Groups/Partials/GroupCardMiniLoader.tsx": __vite_glob_0_112,"./Pages/Groups/Partials/GroupFilters.tsx": __vite_glob_0_113,"./Pages/Groups/Partials/GroupHeroSection.tsx": __vite_glob_0_114,"./Pages/Groups/Partials/GroupList.tsx": __vite_glob_0_115,"./Pages/Groups/Partials/GroupPaginatedList.tsx": __vite_glob_0_116,"./Pages/Groups/Partials/GroupSocials.tsx": __vite_glob_0_117,"./Pages/Groups/Partials/GroupTab.tsx": __vite_glob_0_118,"./Pages/Groups/Proposals/Index.tsx": __vite_glob_0_119,"./Pages/Groups/Reviews/Index.tsx": __vite_glob_0_120,"./Pages/Home/Index.tsx": __vite_glob_0_121,"./Pages/Home/Partials/Announcement/AnnouncementCard.tsx": __vite_glob_0_122,"./Pages/Home/Partials/Announcement/AnnouncementCarousel.tsx": __vite_glob_0_123,"./Pages/Home/Partials/Announcement/Chips/AnnouncementCardChip.tsx": __vite_glob_0_124,"./Pages/Home/Partials/Announcement/Chips/AnnouncementCountdownChip.tsx": __vite_glob_0_125,"./Pages/Home/Partials/Announcement/SpecialAnnouncementLoading.tsx": __vite_glob_0_126,"./Pages/Home/Partials/Announcement/SpecialAnnouncementsCard.tsx": __vite_glob_0_127,"./Pages/Home/Partials/Announcement/SpecialAnnouncementsCarousel.tsx": __vite_glob_0_128,"./Pages/Home/Partials/CatalystIntro.tsx": __vite_glob_0_129,"./Pages/Home/Partials/GlobalSearch.tsx": __vite_glob_0_130,"./Pages/IdeascaleProfile/Campaigns/Index.tsx": __vite_glob_0_131,"./Pages/IdeascaleProfile/Communities/Index.tsx": __vite_glob_0_132,"./Pages/IdeascaleProfile/Connections/Index.tsx": __vite_glob_0_133,"./Pages/IdeascaleProfile/Groups/Index.tsx": __vite_glob_0_134,"./Pages/IdeascaleProfile/IdeascaleProfileLayout.tsx": __vite_glob_0_135,"./Pages/IdeascaleProfile/Index.tsx": __vite_glob_0_136,"./Pages/IdeascaleProfile/Milestones/Index.tsx": __vite_glob_0_137,"./Pages/IdeascaleProfile/Partials/ClaimedButton.tsx": __vite_glob_0_138,"./Pages/IdeascaleProfile/Partials/FundingStatusToggle.tsx": __vite_glob_0_139,"./Pages/IdeascaleProfile/Partials/IdeaScaleProfileLoader.tsx": __vite_glob_0_140,"./Pages/IdeascaleProfile/Partials/IdeascaleProfileCard.tsx": __vite_glob_0_141,"./Pages/IdeascaleProfile/Partials/IdeascaleProfileCardMini.tsx": __vite_glob_0_142,"./Pages/IdeascaleProfile/Partials/IdeascaleProfileList.tsx": __vite_glob_0_143,"./Pages/IdeascaleProfile/Partials/IdeascaleProfilePaginatedList.tsx": __vite_glob_0_144,"./Pages/IdeascaleProfile/Partials/IdeascaleProfileSubmittedCard.tsx": __vite_glob_0_145,"./Pages/IdeascaleProfile/Partials/IdeascaleProfileTab.tsx": __vite_glob_0_146,"./Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent.tsx": __vite_glob_0_147,"./Pages/IdeascaleProfile/Partials/IdeascaleProfilesFilters.tsx": __vite_glob_0_148,"./Pages/IdeascaleProfile/Partials/MilestoneAccordion.tsx": __vite_glob_0_149,"./Pages/IdeascaleProfile/Partials/MilestoneApprovalButtons.tsx": __vite_glob_0_150,"./Pages/IdeascaleProfile/Partials/MilestoneDateProgressBar.tsx": __vite_glob_0_151,"./Pages/IdeascaleProfile/Partials/MilestoneTrackButton.tsx": __vite_glob_0_152,"./Pages/IdeascaleProfile/Partials/RelatedIdeascaleProfileList.tsx": __vite_glob_0_153,"./Pages/IdeascaleProfile/Partials/ShareButton.tsx": __vite_glob_0_154,"./Pages/IdeascaleProfile/Proposals/Index.tsx": __vite_glob_0_155,"./Pages/IdeascaleProfile/Reports/Index.tsx": __vite_glob_0_156,"./Pages/IdeascaleProfile/Reviews/Index.tsx": __vite_glob_0_157,"./Pages/Jormungandr/Index.tsx": __vite_glob_0_158,"./Pages/Map.tsx": __vite_glob_0_159,"./Pages/Metrics/Partials/MetricCard.tsx": __vite_glob_0_160,"./Pages/Metrics/Partials/MetricCardLoading.tsx": __vite_glob_0_161,"./Pages/Metrics/Partials/MetricsCardList.tsx": __vite_glob_0_162,"./Pages/Milestones/Index.tsx": __vite_glob_0_163,"./Pages/My/Bookmarks/Index.tsx": __vite_glob_0_164,"./Pages/My/Bookmarks/Partials/BookmarkButton.tsx": __vite_glob_0_165,"./Pages/My/Bookmarks/Partials/BookmarkNavigation.tsx": __vite_glob_0_166,"./Pages/My/Bookmarks/Partials/BookmarkSearchControls.tsx": __vite_glob_0_167,"./Pages/My/Bookmarks/Partials/BookmarkToolbar.tsx": __vite_glob_0_168,"./Pages/My/Bookmarks/Partials/BookmarksList.tsx": __vite_glob_0_169,"./Pages/My/Bookmarks/Partials/CreateItem.tsx": __vite_glob_0_170,"./Pages/My/Bookmarks/Partials/Show.tsx": __vite_glob_0_171,"./Pages/My/Communities/Index.tsx": __vite_glob_0_172,"./Pages/My/Components/UserSection.tsx": __vite_glob_0_173,"./Pages/My/Components/UserTab.tsx": __vite_glob_0_174,"./Pages/My/Dashboard.tsx": __vite_glob_0_175,"./Pages/My/Groups/Index.tsx": __vite_glob_0_176,"./Pages/My/Groups/Partials/MyGroupsList.tsx": __vite_glob_0_177,"./Pages/My/Lists/BookmarkCollection.tsx": __vite_glob_0_178,"./Pages/My/Lists/Index.tsx": __vite_glob_0_179,"./Pages/My/Lists/Partials/BookmarkCollectionCard.tsx": __vite_glob_0_180,"./Pages/My/Lists/Partials/BookmarkCollectionList.tsx": __vite_glob_0_181,"./Pages/My/Lists/Partials/BookmarkCollectionListLoader.tsx": __vite_glob_0_182,"./Pages/My/Lists/Partials/CreateListButton.tsx": __vite_glob_0_183,"./Pages/My/Lists/Partials/ListCreateFromBookmarkSave/Step1.tsx": __vite_glob_0_184,"./Pages/My/Lists/Partials/ListCreateFromBookmarkSave/Step2.tsx": __vite_glob_0_185,"./Pages/My/Lists/Partials/ListCreateFromBookmarkSave/Step3.tsx": __vite_glob_0_186,"./Pages/My/Lists/Partials/QuickCreate.tsx": __vite_glob_0_187,"./Pages/My/Lists/Partials/TransitionMenu.tsx": __vite_glob_0_188,"./Pages/My/MyLayout.tsx": __vite_glob_0_189,"./Pages/My/Profile/Edit.tsx": __vite_glob_0_190,"./Pages/My/Profile/Index.tsx": __vite_glob_0_191,"./Pages/My/Profile/Partials/DeleteUserForm.tsx": __vite_glob_0_192,"./Pages/My/Profile/Partials/EditSocialsForm.tsx": __vite_glob_0_193,"./Pages/My/Profile/Partials/ProfileField.tsx": __vite_glob_0_194,"./Pages/My/Profile/Partials/ProfilePhotoUploader.tsx": __vite_glob_0_195,"./Pages/My/Profile/Partials/ProfileSection.tsx": __vite_glob_0_196,"./Pages/My/Profile/Partials/UpdatePasswordForm.tsx": __vite_glob_0_197,"./Pages/My/Profile/Partials/UpdateProfileInformationForm.tsx": __vite_glob_0_198,"./Pages/My/Profile/Partials/UpdateProfilesModal.tsx": __vite_glob_0_199,"./Pages/My/Proposals/Index.tsx": __vite_glob_0_200,"./Pages/My/Proposals/ManageProposal.tsx": __vite_glob_0_201,"./Pages/My/Proposals/partials/ManageProposalButton.tsx": __vite_glob_0_202,"./Pages/My/Proposals/partials/MyProposalsFilters.tsx": __vite_glob_0_203,"./Pages/My/Reviews/Index.tsx": __vite_glob_0_204,"./Pages/My/Services/Index.tsx": __vite_glob_0_205,"./Pages/My/Transactions/Index.tsx": __vite_glob_0_206,"./Pages/My/Transactions/Partials/MyTransactionRow.tsx": __vite_glob_0_207,"./Pages/My/Transactions/Partials/MyTranscationsTable.tsx": __vite_glob_0_208,"./Pages/My/Votes/Votes.tsx": __vite_glob_0_209,"./Pages/My/Wallets/Index.tsx": __vite_glob_0_210,"./Pages/My/partials/UserFundSummary.tsx": __vite_glob_0_211,"./Pages/My/partials/UserSummaryChart.tsx": __vite_glob_0_212,"./Pages/Numbers/Index.tsx": __vite_glob_0_213,"./Pages/Posts/Index.tsx": __vite_glob_0_214,"./Pages/Posts/Partials/PostCard.tsx": __vite_glob_0_215,"./Pages/Posts/Partials/PostListLoader.tsx": __vite_glob_0_216,"./Pages/Profile/Dashboard.tsx": __vite_glob_0_217,"./Pages/Profile/Edit.tsx": __vite_glob_0_218,"./Pages/Profile/Partials/UserSection.tsx": __vite_glob_0_219,"./Pages/Profile/Partials/UserTab.tsx": __vite_glob_0_220,"./Pages/Proposals/CommunityReview/Index.tsx": __vite_glob_0_221,"./Pages/Proposals/Comparison/Partials/ColumnHeader.tsx": __vite_glob_0_222,"./Pages/Proposals/Comparison/Partials/ComparisonTableFilters.tsx": __vite_glob_0_223,"./Pages/Proposals/Comparison/Partials/RowVisibilitySelector.tsx": __vite_glob_0_224,"./Pages/Proposals/Comparison/ProposalComparison.tsx": __vite_glob_0_225,"./Pages/Proposals/Comparison/ProposalComparisonTable.tsx": __vite_glob_0_226,"./Pages/Proposals/Comparison/SortableProposalColumn.tsx": __vite_glob_0_227,"./Pages/Proposals/Details/Index.tsx": __vite_glob_0_228,"./Pages/Proposals/Index.tsx": __vite_glob_0_229,"./Pages/Proposals/Partials/CardLayoutSwitcher.tsx": __vite_glob_0_230,"./Pages/Proposals/Partials/CompareButton.tsx": __vite_glob_0_231,"./Pages/Proposals/Partials/FundFiltersContainer.tsx": __vite_glob_0_232,"./Pages/Proposals/Partials/FundsFilter.tsx": __vite_glob_0_233,"./Pages/Proposals/Partials/MetricsBar.tsx": __vite_glob_0_234,"./Pages/Proposals/Partials/ProposalCard.tsx": __vite_glob_0_235,"./Pages/Proposals/Partials/ProposalCardFooter.tsx": __vite_glob_0_236,"./Pages/Proposals/Partials/ProposalCardHeader.tsx": __vite_glob_0_237,"./Pages/Proposals/Partials/ProposalCardMini.tsx": __vite_glob_0_238,"./Pages/Proposals/Partials/ProposalCardNav.tsx": __vite_glob_0_239,"./Pages/Proposals/Partials/ProposalContent.tsx": __vite_glob_0_240,"./Pages/Proposals/Partials/ProposalExtendedCard.tsx": __vite_glob_0_241,"./Pages/Proposals/Partials/ProposalFilters.tsx": __vite_glob_0_242,"./Pages/Proposals/Partials/ProposalFundingDetails.tsx": __vite_glob_0_243,"./Pages/Proposals/Partials/ProposalFundingPercentages.tsx": __vite_glob_0_244,"./Pages/Proposals/Partials/ProposalFundingStatus.tsx": __vite_glob_0_245,"./Pages/Proposals/Partials/ProposalHorizontalCard.tsx": __vite_glob_0_246,"./Pages/Proposals/Partials/ProposalHorizontalCardLoading.tsx": __vite_glob_0_247,"./Pages/Proposals/Partials/ProposalList.tsx": __vite_glob_0_248,"./Pages/Proposals/Partials/ProposalMiniCardLoader.tsx": __vite_glob_0_249,"./Pages/Proposals/Partials/ProposalPaginatedList.tsx": __vite_glob_0_250,"./Pages/Proposals/Partials/ProposalQuickpitch.tsx": __vite_glob_0_251,"./Pages/Proposals/Partials/ProposalResults.tsx": __vite_glob_0_252,"./Pages/Proposals/Partials/ProposalResultsLoading.tsx": __vite_glob_0_253,"./Pages/Proposals/Partials/ProposalSolution.tsx": __vite_glob_0_254,"./Pages/Proposals/Partials/ProposalStatus.tsx": __vite_glob_0_255,"./Pages/Proposals/Partials/ProposalTab.tsx": __vite_glob_0_256,"./Pages/Proposals/Partials/ProposalTable.tsx": __vite_glob_0_257,"./Pages/Proposals/Partials/ProposalTableHeaderCell.tsx": __vite_glob_0_258,"./Pages/Proposals/Partials/ProposalTableLoading.tsx": __vite_glob_0_259,"./Pages/Proposals/Partials/ProposalTableView.tsx": __vite_glob_0_260,"./Pages/Proposals/Partials/ProposalUsers.tsx": __vite_glob_0_261,"./Pages/Proposals/Partials/ProposalVerticalCard.tsx": __vite_glob_0_262,"./Pages/Proposals/Partials/ProposalVerticalCardLoading.tsx": __vite_glob_0_263,"./Pages/Proposals/Partials/RelatedProposals.tsx": __vite_glob_0_264,"./Pages/Proposals/Proposal.tsx": __vite_glob_0_265,"./Pages/Proposals/ProposalLayout.tsx": __vite_glob_0_266,"./Pages/Proposals/Schedule/Index.tsx": __vite_glob_0_267,"./Pages/Proposals/TeamInformation/Index.tsx": __vite_glob_0_268,"./Pages/Reviews/Index.tsx": __vite_glob_0_269,"./Pages/Reviews/Partials/RelatedReviews.tsx": __vite_glob_0_270,"./Pages/Reviews/Partials/Review.tsx": __vite_glob_0_271,"./Pages/Reviews/Partials/ReviewHorizontalCardLoader.tsx": __vite_glob_0_272,"./Pages/Reviews/Partials/ReviewsFilters.tsx": __vite_glob_0_273,"./Pages/S/Index.tsx": __vite_glob_0_274,"./Pages/S/Partials/DynamicSearchResults.tsx": __vite_glob_0_275,"./Pages/S/Partials/ResultTabs.tsx": __vite_glob_0_276,"./Pages/S/Partials/SearchResultsLoading.tsx": __vite_glob_0_277,"./Pages/Services/Index.tsx": __vite_glob_0_278,"./Pages/Services/Partials/SearchControls.tsx": __vite_glob_0_279,"./Pages/Services/Partials/ServiceSearchBar.tsx": __vite_glob_0_280,"./Pages/Services/Partials/ServiceTypeFilter.tsx": __vite_glob_0_281,"./Pages/Transactions/Index.tsx": __vite_glob_0_282,"./Pages/Transactions/Partials/CatalystVotesRow.tsx": __vite_glob_0_283,"./Pages/Transactions/Partials/CatalystVotesTable.tsx": __vite_glob_0_284,"./Pages/Transactions/Partials/CopyableCell.tsx": __vite_glob_0_285,"./Pages/Transactions/Partials/DetailRow.tsx": __vite_glob_0_286,"./Pages/Transactions/Partials/MetadataCard.tsx": __vite_glob_0_287,"./Pages/Transactions/Partials/TransactionDetailsCard.tsx": __vite_glob_0_288,"./Pages/Transactions/Partials/TransactionRow.tsx": __vite_glob_0_289,"./Pages/Transactions/Partials/TransactionTable.tsx": __vite_glob_0_290,"./Pages/Transactions/Partials/TransactionsFilters.tsx": __vite_glob_0_291,"./Pages/Transactions/Partials/UTXOsCard.tsx": __vite_glob_0_292,"./Pages/Transactions/Partials/WalletDetailsCard.tsx": __vite_glob_0_293,"./Pages/Transactions/Partials/WalletTransactionsTable.tsx": __vite_glob_0_294,"./Pages/Transactions/TransactionDetail.tsx": __vite_glob_0_295,"./Pages/Transactions/TxDetail.tsx": __vite_glob_0_296,"./Pages/Voters/Index.tsx": __vite_glob_0_297,"./Pages/Voters/Partials/VoterFilters.tsx": __vite_glob_0_298,"./Pages/Voters/Partials/VotersTable.tsx": __vite_glob_0_299,"./Pages/Votes/Index.tsx": __vite_glob_0_300,"./Pages/Votes/Partials/VoteFilters.tsx": __vite_glob_0_301,"./Pages/Votes/Partials/VoterHistoryTable.tsx": __vite_glob_0_302,"./Pages/Votes/Partials/VoterHistoryTableLoader.tsx": __vite_glob_0_303,"./Pages/Wallets/Wallet.tsx": __vite_glob_0_304,"./Pages/Workflows/CatalystDrepSignup/Step1.tsx": __vite_glob_0_305,"./Pages/Workflows/CatalystDrepSignup/Step2.tsx": __vite_glob_0_306,"./Pages/Workflows/CatalystDrepSignup/Step3.tsx": __vite_glob_0_307,"./Pages/Workflows/CatalystDrepSignup/Step5.tsx": __vite_glob_0_308,"./Pages/Workflows/CatalystDrepSignup/Success.tsx": __vite_glob_0_309,"./Pages/Workflows/CatalystDrepSignup/partials/DrepSignupForm.tsx": __vite_glob_0_310,"./Pages/Workflows/CatalystDrepSignup/partials/IpfsSuccessDisplay.tsx": __vite_glob_0_311,"./Pages/Workflows/ClaimIdeascaleProfile/Step1.tsx": __vite_glob_0_312,"./Pages/Workflows/ClaimIdeascaleProfile/Step2.tsx": __vite_glob_0_313,"./Pages/Workflows/ClaimIdeascaleProfile/Step3.tsx": __vite_glob_0_314,"./Pages/Workflows/ClaimIdeascaleProfile/partials/ClaimProfileForm.tsx": __vite_glob_0_315,"./Pages/Workflows/CompletedProjectNfts/Step1.tsx": __vite_glob_0_316,"./Pages/Workflows/CompletedProjectNfts/Step2.tsx": __vite_glob_0_317,"./Pages/Workflows/CreateBookmark/Step1.tsx": __vite_glob_0_318,"./Pages/Workflows/CreateBookmark/Step2.tsx": __vite_glob_0_319,"./Pages/Workflows/CreateBookmark/Step3.tsx": __vite_glob_0_320,"./Pages/Workflows/CreateBookmark/Step4.tsx": __vite_glob_0_321,"./Pages/Workflows/CreateBookmark/Success.tsx": __vite_glob_0_322,"./Pages/Workflows/CreateService/Partials/CategoriesSelector.tsx": __vite_glob_0_323,"./Pages/Workflows/CreateService/Step1.tsx": __vite_glob_0_324,"./Pages/Workflows/CreateService/Step2.tsx": __vite_glob_0_325,"./Pages/Workflows/CreateVoterList/Step1.tsx": __vite_glob_0_326,"./Pages/Workflows/CreateVoterList/Step2.tsx": __vite_glob_0_327,"./Pages/Workflows/CreateVoterList/Step3.tsx": __vite_glob_0_328,"./Pages/Workflows/CreateVoterList/Step4.tsx": __vite_glob_0_329,"./Pages/Workflows/CreateVoterList/Step5.tsx": __vite_glob_0_330,"./Pages/Workflows/CreateVoterList/Step6.tsx": __vite_glob_0_331,"./Pages/Workflows/CreateVoterList/Step7.tsx": __vite_glob_0_332,"./Pages/Workflows/CreateVoterList/Step8.tsx": __vite_glob_0_333,"./Pages/Workflows/CreateVoterList/Step9.tsx": __vite_glob_0_334,"./Pages/Workflows/CreateVoterList/Success.tsx": __vite_glob_0_335,"./Pages/Workflows/CreateVoterList/WorkflowTable.tsx": __vite_glob_0_336,"./Pages/Workflows/CreateVoterList/partials/ProposalSearchBar.tsx": __vite_glob_0_337,"./Pages/Workflows/Login.tsx": __vite_glob_0_338,"./Pages/Workflows/Partials/Success.tsx": __vite_glob_0_339,"./Pages/Workflows/Partials/WorkflowContent.tsx": __vite_glob_0_340,"./Pages/Workflows/Partials/WorkflowFooter.tsx": __vite_glob_0_341,"./Pages/Workflows/Partials/WorkflowNav.tsx": __vite_glob_0_342,"./Pages/Workflows/PasswordReset/Step1.tsx": __vite_glob_0_343,"./Pages/Workflows/PasswordReset/Step2.tsx": __vite_glob_0_344,"./Pages/Workflows/PublishToIpfs/Step1.tsx": __vite_glob_0_345,"./Pages/Workflows/PublishToIpfs/Step2.tsx": __vite_glob_0_346,"./Pages/Workflows/PublishToIpfs/Success.tsx": __vite_glob_0_347,"./Pages/Workflows/SignatureCapture/Step1.tsx": __vite_glob_0_348,"./Pages/Workflows/SignatureCapture/Step2.tsx": __vite_glob_0_349,"./Pages/Workflows/SignatureCapture/Step3.tsx": __vite_glob_0_350,"./Pages/Workflows/SignatureCapture/Success.tsx": __vite_glob_0_351,"./Pages/Workflows/TinderProposal/Partials/SlideOverContent.tsx": __vite_glob_0_352,"./Pages/Workflows/TinderProposal/Partials/SwipeCard.tsx": __vite_glob_0_353,"./Pages/Workflows/TinderProposal/Step1.tsx": __vite_glob_0_354,"./Pages/Workflows/TinderProposal/Step2.tsx": __vite_glob_0_355,"./Pages/Workflows/TinderProposal/Step3.tsx": __vite_glob_0_356,"./Pages/Workflows/TinderProposal/Step4.tsx": __vite_glob_0_357,"./Pages/Workflows/WorkflowLayout.tsx": __vite_glob_0_358})
+        /* #__PURE__ */ Object.assign({"./Pages/ActiveFund/Index.tsx": __vite_glob_0_0,"./Pages/ActiveFund/Partials/ActiveFundBanner.tsx": __vite_glob_0_1,"./Pages/ActiveFund/Partials/CampaignCard.tsx": __vite_glob_0_2,"./Pages/ActiveFund/Partials/CreateListBanner.tsx": __vite_glob_0_3,"./Pages/ActiveFund/Partials/SupportCxBanner.tsx": __vite_glob_0_4,"./Pages/ArabicTest.tsx": __vite_glob_0_5,"./Pages/Auth/ConfirmPassword.tsx": __vite_glob_0_6,"./Pages/Auth/ForgotPassword.tsx": __vite_glob_0_7,"./Pages/Auth/Login.tsx": __vite_glob_0_8,"./Pages/Auth/Partials/LoginForm.tsx": __vite_glob_0_9,"./Pages/Auth/Partials/RegisterForm.tsx": __vite_glob_0_10,"./Pages/Auth/Register.tsx": __vite_glob_0_11,"./Pages/Auth/ResetPassword.tsx": __vite_glob_0_12,"./Pages/Auth/VerifyEmail.tsx": __vite_glob_0_13,"./Pages/Bookmarks/Index.tsx": __vite_glob_0_14,"./Pages/Bookmarks/Manage.tsx": __vite_glob_0_15,"./Pages/Bookmarks/Partials/BookmarkModelSearch.tsx": __vite_glob_0_16,"./Pages/Bookmarks/Partials/CreateListPicker.tsx": __vite_glob_0_17,"./Pages/Bookmarks/Partials/DropdownMenu.tsx": __vite_glob_0_18,"./Pages/Bookmarks/Partials/EditListForm.tsx": __vite_glob_0_19,"./Pages/Bookmarks/View.tsx": __vite_glob_0_20,"./Pages/Campaign/Index.tsx": __vite_glob_0_21,"./Pages/Campaign/Partials/CampaignAccordion.tsx": __vite_glob_0_22,"./Pages/Campaign/Partials/CampaignCard.tsx": __vite_glob_0_23,"./Pages/Campaign/Partials/CampaignCardExtended.tsx": __vite_glob_0_24,"./Pages/Campaign/Partials/CampaignCardMini.tsx": __vite_glob_0_25,"./Pages/Campaign/Partials/CampaignList.tsx": __vite_glob_0_26,"./Pages/Campaign/Partials/CampaignLoader.tsx": __vite_glob_0_27,"./Pages/Campaign/Partials/DistributedVsAwarded.tsx": __vite_glob_0_28,"./Pages/Charts/Index.tsx": __vite_glob_0_29,"./Pages/Charts/Partials/AllCharts.tsx": __vite_glob_0_30,"./Pages/Charts/Partials/BarChart.tsx": __vite_glob_0_31,"./Pages/Charts/Partials/ChartCard.tsx": __vite_glob_0_32,"./Pages/Charts/Partials/ChartLoading.tsx": __vite_glob_0_33,"./Pages/Charts/Partials/FunnelChart.tsx": __vite_glob_0_34,"./Pages/Charts/Partials/HeatMap.tsx": __vite_glob_0_35,"./Pages/Charts/Partials/LineChart.tsx": __vite_glob_0_36,"./Pages/Charts/Partials/PieChart.tsx": __vite_glob_0_37,"./Pages/Charts/Partials/ScatterPlots.tsx": __vite_glob_0_38,"./Pages/Charts/Partials/SetChartMetrics.tsx": __vite_glob_0_39,"./Pages/Charts/Partials/StackedBarChart.tsx": __vite_glob_0_40,"./Pages/Charts/Partials/Step1.tsx": __vite_glob_0_41,"./Pages/Charts/Partials/Step2.tsx": __vite_glob_0_42,"./Pages/Charts/Partials/Step3.tsx": __vite_glob_0_43,"./Pages/Charts/Partials/TreeMap.tsx": __vite_glob_0_44,"./Pages/ComingSoon.tsx": __vite_glob_0_45,"./Pages/Communities/CommunityLayout.tsx": __vite_glob_0_46,"./Pages/Communities/Dashboard/Index.tsx": __vite_glob_0_47,"./Pages/Communities/Events/Index.tsx": __vite_glob_0_48,"./Pages/Communities/Groups/Index.tsx": __vite_glob_0_49,"./Pages/Communities/IdeascaleProfiles/Index.tsx": __vite_glob_0_50,"./Pages/Communities/Index.tsx": __vite_glob_0_51,"./Pages/Communities/Partials/CommunitiesList.tsx": __vite_glob_0_52,"./Pages/Communities/Partials/CommunitiesPaginatedList.tsx": __vite_glob_0_53,"./Pages/Communities/Partials/CommunityCard.tsx": __vite_glob_0_54,"./Pages/Communities/Partials/CommunityCardMini.tsx": __vite_glob_0_55,"./Pages/Communities/Partials/CommunityFilters.tsx": __vite_glob_0_56,"./Pages/Communities/Partials/CommunityFundingChart.tsx": __vite_glob_0_57,"./Pages/Communities/Partials/CommunityIdeascaleProfiles.tsx": __vite_glob_0_58,"./Pages/Communities/Partials/CommunityLoader.tsx": __vite_glob_0_59,"./Pages/Communities/Partials/CommunityTab.tsx": __vite_glob_0_60,"./Pages/Communities/Partials/JoinCommunityButton.tsx": __vite_glob_0_61,"./Pages/Communities/Partials/ProposalSummary.tsx": __vite_glob_0_62,"./Pages/Communities/Proposals/Index.tsx": __vite_glob_0_63,"./Pages/CompletedProjectNfts/Index.tsx": __vite_glob_0_64,"./Pages/CompletedProjectNfts/Partials/BlockchainData.tsx": __vite_glob_0_65,"./Pages/CompletedProjectNfts/Partials/ClaimProfileForm.tsx": __vite_glob_0_66,"./Pages/CompletedProjectNfts/Partials/CompletedProposalCard.tsx": __vite_glob_0_67,"./Pages/CompletedProjectNfts/Partials/ContributorProfile.tsx": __vite_glob_0_68,"./Pages/CompletedProjectNfts/Partials/MetaData.tsx": __vite_glob_0_69,"./Pages/CompletedProjectNfts/Partials/MetaDataPreview.tsx": __vite_glob_0_70,"./Pages/CompletedProjectNfts/Partials/MintButton.tsx": __vite_glob_0_71,"./Pages/CompletedProjectNfts/Partials/MintedNftsCard.tsx": __vite_glob_0_72,"./Pages/CompletedProjectNfts/Partials/MintedNftsCardLoader.tsx": __vite_glob_0_73,"./Pages/CompletedProjectNfts/Partials/MintedNftsList.tsx": __vite_glob_0_74,"./Pages/CompletedProjectNfts/Partials/PageHeader.tsx": __vite_glob_0_75,"./Pages/CompletedProjectNfts/Partials/ProfileCard.tsx": __vite_glob_0_76,"./Pages/CompletedProjectNfts/Partials/ProfileList.tsx": __vite_glob_0_77,"./Pages/CompletedProjectNfts/Partials/ProfileSearchBar.tsx": __vite_glob_0_78,"./Pages/CompletedProjectNfts/Partials/ProposalList.tsx": __vite_glob_0_79,"./Pages/CompletedProjectNfts/Partials/ProposalSearchBar.tsx": __vite_glob_0_80,"./Pages/CompletedProjectNfts/Partials/Show.tsx": __vite_glob_0_81,"./Pages/CompletedProjectNfts/Partials/StatisticCard.tsx": __vite_glob_0_82,"./Pages/CompletedProjectNfts/Partials/StepTracker.tsx": __vite_glob_0_83,"./Pages/CompletedProjectNfts/Partials/VerificationCard.tsx": __vite_glob_0_84,"./Pages/Connections/Index.tsx": __vite_glob_0_85,"./Pages/Dreps/DrepList.tsx": __vite_glob_0_86,"./Pages/Dreps/Index.tsx": __vite_glob_0_87,"./Pages/Dreps/Partials/DrepFilters.tsx": __vite_glob_0_88,"./Pages/Dreps/Partials/DrepTable.tsx": __vite_glob_0_89,"./Pages/Dreps/Partials/FaqSection.tsx": __vite_glob_0_90,"./Pages/Error404.tsx": __vite_glob_0_91,"./Pages/Funds/Campaign.tsx": __vite_glob_0_92,"./Pages/Funds/Fund.tsx": __vite_glob_0_93,"./Pages/Funds/Index.tsx": __vite_glob_0_94,"./Pages/Funds/Partials/FundCard.tsx": __vite_glob_0_95,"./Pages/Funds/Partials/FundCardLoader.tsx": __vite_glob_0_96,"./Pages/Funds/Partials/FundsBarChart.tsx": __vite_glob_0_97,"./Pages/Funds/Partials/FundsBarChartLoading.tsx": __vite_glob_0_98,"./Pages/Funds/Partials/FundsList.tsx": __vite_glob_0_99,"./Pages/Funds/Partials/FundsSortBy.tsx": __vite_glob_0_100,"./Pages/Funds/Partials/HeroSection.tsx": __vite_glob_0_101,"./Pages/Groups/Connections/Index.tsx": __vite_glob_0_102,"./Pages/Groups/Group.tsx": __vite_glob_0_103,"./Pages/Groups/GroupLayout.tsx": __vite_glob_0_104,"./Pages/Groups/IdeascaleProfiles/Index.tsx": __vite_glob_0_105,"./Pages/Groups/Index.tsx": __vite_glob_0_106,"./Pages/Groups/Locations/Index.tsx": __vite_glob_0_107,"./Pages/Groups/Partials/BioCard.tsx": __vite_glob_0_108,"./Pages/Groups/Partials/GroupCard.tsx": __vite_glob_0_109,"./Pages/Groups/Partials/GroupCardExtended.tsx": __vite_glob_0_110,"./Pages/Groups/Partials/GroupCardExtendedLoader.tsx": __vite_glob_0_111,"./Pages/Groups/Partials/GroupCardMini.tsx": __vite_glob_0_112,"./Pages/Groups/Partials/GroupCardMiniLoader.tsx": __vite_glob_0_113,"./Pages/Groups/Partials/GroupFilters.tsx": __vite_glob_0_114,"./Pages/Groups/Partials/GroupHeroSection.tsx": __vite_glob_0_115,"./Pages/Groups/Partials/GroupList.tsx": __vite_glob_0_116,"./Pages/Groups/Partials/GroupPaginatedList.tsx": __vite_glob_0_117,"./Pages/Groups/Partials/GroupSocials.tsx": __vite_glob_0_118,"./Pages/Groups/Partials/GroupTab.tsx": __vite_glob_0_119,"./Pages/Groups/Proposals/Index.tsx": __vite_glob_0_120,"./Pages/Groups/Reviews/Index.tsx": __vite_glob_0_121,"./Pages/Home/Index.tsx": __vite_glob_0_122,"./Pages/Home/Partials/Announcement/AnnouncementCard.tsx": __vite_glob_0_123,"./Pages/Home/Partials/Announcement/AnnouncementCarousel.tsx": __vite_glob_0_124,"./Pages/Home/Partials/Announcement/Chips/AnnouncementCardChip.tsx": __vite_glob_0_125,"./Pages/Home/Partials/Announcement/Chips/AnnouncementCountdownChip.tsx": __vite_glob_0_126,"./Pages/Home/Partials/Announcement/SpecialAnnouncementLoading.tsx": __vite_glob_0_127,"./Pages/Home/Partials/Announcement/SpecialAnnouncementsCard.tsx": __vite_glob_0_128,"./Pages/Home/Partials/Announcement/SpecialAnnouncementsCarousel.tsx": __vite_glob_0_129,"./Pages/Home/Partials/CatalystIntro.tsx": __vite_glob_0_130,"./Pages/Home/Partials/GlobalSearch.tsx": __vite_glob_0_131,"./Pages/IdeascaleProfile/Campaigns/Index.tsx": __vite_glob_0_132,"./Pages/IdeascaleProfile/Communities/Index.tsx": __vite_glob_0_133,"./Pages/IdeascaleProfile/Connections/Index.tsx": __vite_glob_0_134,"./Pages/IdeascaleProfile/Groups/Index.tsx": __vite_glob_0_135,"./Pages/IdeascaleProfile/IdeascaleProfileLayout.tsx": __vite_glob_0_136,"./Pages/IdeascaleProfile/Index.tsx": __vite_glob_0_137,"./Pages/IdeascaleProfile/Milestones/Index.tsx": __vite_glob_0_138,"./Pages/IdeascaleProfile/Partials/ClaimedButton.tsx": __vite_glob_0_139,"./Pages/IdeascaleProfile/Partials/FundingStatusToggle.tsx": __vite_glob_0_140,"./Pages/IdeascaleProfile/Partials/IdeaScaleProfileLoader.tsx": __vite_glob_0_141,"./Pages/IdeascaleProfile/Partials/IdeascaleProfileCard.tsx": __vite_glob_0_142,"./Pages/IdeascaleProfile/Partials/IdeascaleProfileCardMini.tsx": __vite_glob_0_143,"./Pages/IdeascaleProfile/Partials/IdeascaleProfileList.tsx": __vite_glob_0_144,"./Pages/IdeascaleProfile/Partials/IdeascaleProfilePaginatedList.tsx": __vite_glob_0_145,"./Pages/IdeascaleProfile/Partials/IdeascaleProfileSubmittedCard.tsx": __vite_glob_0_146,"./Pages/IdeascaleProfile/Partials/IdeascaleProfileTab.tsx": __vite_glob_0_147,"./Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent.tsx": __vite_glob_0_148,"./Pages/IdeascaleProfile/Partials/IdeascaleProfilesFilters.tsx": __vite_glob_0_149,"./Pages/IdeascaleProfile/Partials/MilestoneAccordion.tsx": __vite_glob_0_150,"./Pages/IdeascaleProfile/Partials/MilestoneApprovalButtons.tsx": __vite_glob_0_151,"./Pages/IdeascaleProfile/Partials/MilestoneDateProgressBar.tsx": __vite_glob_0_152,"./Pages/IdeascaleProfile/Partials/MilestoneTrackButton.tsx": __vite_glob_0_153,"./Pages/IdeascaleProfile/Partials/RelatedIdeascaleProfileList.tsx": __vite_glob_0_154,"./Pages/IdeascaleProfile/Partials/ShareButton.tsx": __vite_glob_0_155,"./Pages/IdeascaleProfile/Proposals/Index.tsx": __vite_glob_0_156,"./Pages/IdeascaleProfile/Reports/Index.tsx": __vite_glob_0_157,"./Pages/IdeascaleProfile/Reviews/Index.tsx": __vite_glob_0_158,"./Pages/Jormungandr/Index.tsx": __vite_glob_0_159,"./Pages/Map.tsx": __vite_glob_0_160,"./Pages/Metrics/Partials/MetricCard.tsx": __vite_glob_0_161,"./Pages/Metrics/Partials/MetricCardLoading.tsx": __vite_glob_0_162,"./Pages/Metrics/Partials/MetricsCardList.tsx": __vite_glob_0_163,"./Pages/Milestones/Index.tsx": __vite_glob_0_164,"./Pages/My/Bookmarks/Index.tsx": __vite_glob_0_165,"./Pages/My/Bookmarks/Partials/BookmarkButton.tsx": __vite_glob_0_166,"./Pages/My/Bookmarks/Partials/BookmarkNavigation.tsx": __vite_glob_0_167,"./Pages/My/Bookmarks/Partials/BookmarkSearchControls.tsx": __vite_glob_0_168,"./Pages/My/Bookmarks/Partials/BookmarkToolbar.tsx": __vite_glob_0_169,"./Pages/My/Bookmarks/Partials/BookmarksList.tsx": __vite_glob_0_170,"./Pages/My/Bookmarks/Partials/CreateItem.tsx": __vite_glob_0_171,"./Pages/My/Bookmarks/Partials/Show.tsx": __vite_glob_0_172,"./Pages/My/Communities/Index.tsx": __vite_glob_0_173,"./Pages/My/Components/UserSection.tsx": __vite_glob_0_174,"./Pages/My/Components/UserTab.tsx": __vite_glob_0_175,"./Pages/My/Dashboard.tsx": __vite_glob_0_176,"./Pages/My/Groups/Index.tsx": __vite_glob_0_177,"./Pages/My/Groups/Partials/MyGroupsList.tsx": __vite_glob_0_178,"./Pages/My/Lists/BookmarkCollection.tsx": __vite_glob_0_179,"./Pages/My/Lists/Index.tsx": __vite_glob_0_180,"./Pages/My/Lists/Partials/BookmarkCollectionCard.tsx": __vite_glob_0_181,"./Pages/My/Lists/Partials/BookmarkCollectionList.tsx": __vite_glob_0_182,"./Pages/My/Lists/Partials/BookmarkCollectionListLoader.tsx": __vite_glob_0_183,"./Pages/My/Lists/Partials/CreateListButton.tsx": __vite_glob_0_184,"./Pages/My/Lists/Partials/ListCreateFromBookmarkSave/Step1.tsx": __vite_glob_0_185,"./Pages/My/Lists/Partials/ListCreateFromBookmarkSave/Step2.tsx": __vite_glob_0_186,"./Pages/My/Lists/Partials/ListCreateFromBookmarkSave/Step3.tsx": __vite_glob_0_187,"./Pages/My/Lists/Partials/QuickCreate.tsx": __vite_glob_0_188,"./Pages/My/Lists/Partials/TransitionMenu.tsx": __vite_glob_0_189,"./Pages/My/MyLayout.tsx": __vite_glob_0_190,"./Pages/My/Profile/Edit.tsx": __vite_glob_0_191,"./Pages/My/Profile/Index.tsx": __vite_glob_0_192,"./Pages/My/Profile/Partials/DeleteUserForm.tsx": __vite_glob_0_193,"./Pages/My/Profile/Partials/EditSocialsForm.tsx": __vite_glob_0_194,"./Pages/My/Profile/Partials/ProfileField.tsx": __vite_glob_0_195,"./Pages/My/Profile/Partials/ProfilePhotoUploader.tsx": __vite_glob_0_196,"./Pages/My/Profile/Partials/ProfileSection.tsx": __vite_glob_0_197,"./Pages/My/Profile/Partials/UpdatePasswordForm.tsx": __vite_glob_0_198,"./Pages/My/Profile/Partials/UpdateProfileInformationForm.tsx": __vite_glob_0_199,"./Pages/My/Profile/Partials/UpdateProfilesModal.tsx": __vite_glob_0_200,"./Pages/My/Proposals/Index.tsx": __vite_glob_0_201,"./Pages/My/Proposals/ManageProposal.tsx": __vite_glob_0_202,"./Pages/My/Proposals/partials/ManageProposalButton.tsx": __vite_glob_0_203,"./Pages/My/Proposals/partials/MyProposalsFilters.tsx": __vite_glob_0_204,"./Pages/My/Reviews/Index.tsx": __vite_glob_0_205,"./Pages/My/Services/Index.tsx": __vite_glob_0_206,"./Pages/My/Transactions/Index.tsx": __vite_glob_0_207,"./Pages/My/Transactions/Partials/MyTransactionRow.tsx": __vite_glob_0_208,"./Pages/My/Transactions/Partials/MyTranscationsTable.tsx": __vite_glob_0_209,"./Pages/My/Votes/Votes.tsx": __vite_glob_0_210,"./Pages/My/Wallets/Index.tsx": __vite_glob_0_211,"./Pages/My/partials/UserFundSummary.tsx": __vite_glob_0_212,"./Pages/My/partials/UserSummaryChart.tsx": __vite_glob_0_213,"./Pages/Numbers/Index.tsx": __vite_glob_0_214,"./Pages/Posts/Index.tsx": __vite_glob_0_215,"./Pages/Posts/Partials/PostCard.tsx": __vite_glob_0_216,"./Pages/Posts/Partials/PostListLoader.tsx": __vite_glob_0_217,"./Pages/Profile/Dashboard.tsx": __vite_glob_0_218,"./Pages/Profile/Edit.tsx": __vite_glob_0_219,"./Pages/Profile/Partials/UserSection.tsx": __vite_glob_0_220,"./Pages/Profile/Partials/UserTab.tsx": __vite_glob_0_221,"./Pages/Proposals/CommunityReview/Index.tsx": __vite_glob_0_222,"./Pages/Proposals/Comparison/Partials/ColumnHeader.tsx": __vite_glob_0_223,"./Pages/Proposals/Comparison/Partials/ComparisonTableFilters.tsx": __vite_glob_0_224,"./Pages/Proposals/Comparison/Partials/RowVisibilitySelector.tsx": __vite_glob_0_225,"./Pages/Proposals/Comparison/ProposalComparison.tsx": __vite_glob_0_226,"./Pages/Proposals/Comparison/ProposalComparisonTable.tsx": __vite_glob_0_227,"./Pages/Proposals/Comparison/SortableProposalColumn.tsx": __vite_glob_0_228,"./Pages/Proposals/Details/Index.tsx": __vite_glob_0_229,"./Pages/Proposals/Index.tsx": __vite_glob_0_230,"./Pages/Proposals/Partials/CardLayoutSwitcher.tsx": __vite_glob_0_231,"./Pages/Proposals/Partials/CompareButton.tsx": __vite_glob_0_232,"./Pages/Proposals/Partials/FundFiltersContainer.tsx": __vite_glob_0_233,"./Pages/Proposals/Partials/FundsFilter.tsx": __vite_glob_0_234,"./Pages/Proposals/Partials/MetricsBar.tsx": __vite_glob_0_235,"./Pages/Proposals/Partials/ProposalCard.tsx": __vite_glob_0_236,"./Pages/Proposals/Partials/ProposalCardFooter.tsx": __vite_glob_0_237,"./Pages/Proposals/Partials/ProposalCardHeader.tsx": __vite_glob_0_238,"./Pages/Proposals/Partials/ProposalCardMini.tsx": __vite_glob_0_239,"./Pages/Proposals/Partials/ProposalCardNav.tsx": __vite_glob_0_240,"./Pages/Proposals/Partials/ProposalContent.tsx": __vite_glob_0_241,"./Pages/Proposals/Partials/ProposalExtendedCard.tsx": __vite_glob_0_242,"./Pages/Proposals/Partials/ProposalFilters.tsx": __vite_glob_0_243,"./Pages/Proposals/Partials/ProposalFundingDetails.tsx": __vite_glob_0_244,"./Pages/Proposals/Partials/ProposalFundingPercentages.tsx": __vite_glob_0_245,"./Pages/Proposals/Partials/ProposalFundingStatus.tsx": __vite_glob_0_246,"./Pages/Proposals/Partials/ProposalHorizontalCard.tsx": __vite_glob_0_247,"./Pages/Proposals/Partials/ProposalHorizontalCardLoading.tsx": __vite_glob_0_248,"./Pages/Proposals/Partials/ProposalList.tsx": __vite_glob_0_249,"./Pages/Proposals/Partials/ProposalMiniCardLoader.tsx": __vite_glob_0_250,"./Pages/Proposals/Partials/ProposalPaginatedList.tsx": __vite_glob_0_251,"./Pages/Proposals/Partials/ProposalQuickpitch.tsx": __vite_glob_0_252,"./Pages/Proposals/Partials/ProposalResults.tsx": __vite_glob_0_253,"./Pages/Proposals/Partials/ProposalResultsLoading.tsx": __vite_glob_0_254,"./Pages/Proposals/Partials/ProposalSolution.tsx": __vite_glob_0_255,"./Pages/Proposals/Partials/ProposalStatus.tsx": __vite_glob_0_256,"./Pages/Proposals/Partials/ProposalTab.tsx": __vite_glob_0_257,"./Pages/Proposals/Partials/ProposalTable.tsx": __vite_glob_0_258,"./Pages/Proposals/Partials/ProposalTableHeaderCell.tsx": __vite_glob_0_259,"./Pages/Proposals/Partials/ProposalTableLoading.tsx": __vite_glob_0_260,"./Pages/Proposals/Partials/ProposalTableView.tsx": __vite_glob_0_261,"./Pages/Proposals/Partials/ProposalUsers.tsx": __vite_glob_0_262,"./Pages/Proposals/Partials/ProposalVerticalCard.tsx": __vite_glob_0_263,"./Pages/Proposals/Partials/ProposalVerticalCardLoading.tsx": __vite_glob_0_264,"./Pages/Proposals/Partials/RelatedProposals.tsx": __vite_glob_0_265,"./Pages/Proposals/Proposal.tsx": __vite_glob_0_266,"./Pages/Proposals/ProposalLayout.tsx": __vite_glob_0_267,"./Pages/Proposals/Schedule/Index.tsx": __vite_glob_0_268,"./Pages/Proposals/TeamInformation/Index.tsx": __vite_glob_0_269,"./Pages/Reviews/Index.tsx": __vite_glob_0_270,"./Pages/Reviews/Partials/RelatedReviews.tsx": __vite_glob_0_271,"./Pages/Reviews/Partials/Review.tsx": __vite_glob_0_272,"./Pages/Reviews/Partials/ReviewHorizontalCardLoader.tsx": __vite_glob_0_273,"./Pages/Reviews/Partials/ReviewsFilters.tsx": __vite_glob_0_274,"./Pages/S/Index.tsx": __vite_glob_0_275,"./Pages/S/Partials/DynamicSearchResults.tsx": __vite_glob_0_276,"./Pages/S/Partials/ResultTabs.tsx": __vite_glob_0_277,"./Pages/S/Partials/SearchResultsLoading.tsx": __vite_glob_0_278,"./Pages/Services/Index.tsx": __vite_glob_0_279,"./Pages/Services/Partials/SearchControls.tsx": __vite_glob_0_280,"./Pages/Services/Partials/ServiceSearchBar.tsx": __vite_glob_0_281,"./Pages/Services/Partials/ServiceTypeFilter.tsx": __vite_glob_0_282,"./Pages/Services/Show.tsx": __vite_glob_0_283,"./Pages/Transactions/Index.tsx": __vite_glob_0_284,"./Pages/Transactions/Partials/CatalystVotesRow.tsx": __vite_glob_0_285,"./Pages/Transactions/Partials/CatalystVotesTable.tsx": __vite_glob_0_286,"./Pages/Transactions/Partials/CopyableCell.tsx": __vite_glob_0_287,"./Pages/Transactions/Partials/DetailRow.tsx": __vite_glob_0_288,"./Pages/Transactions/Partials/MetadataCard.tsx": __vite_glob_0_289,"./Pages/Transactions/Partials/TransactionDetailsCard.tsx": __vite_glob_0_290,"./Pages/Transactions/Partials/TransactionRow.tsx": __vite_glob_0_291,"./Pages/Transactions/Partials/TransactionTable.tsx": __vite_glob_0_292,"./Pages/Transactions/Partials/TransactionsFilters.tsx": __vite_glob_0_293,"./Pages/Transactions/Partials/UTXOsCard.tsx": __vite_glob_0_294,"./Pages/Transactions/Partials/WalletDetailsCard.tsx": __vite_glob_0_295,"./Pages/Transactions/Partials/WalletTransactionsTable.tsx": __vite_glob_0_296,"./Pages/Transactions/TransactionDetail.tsx": __vite_glob_0_297,"./Pages/Transactions/TxDetail.tsx": __vite_glob_0_298,"./Pages/Voters/Index.tsx": __vite_glob_0_299,"./Pages/Voters/Partials/VoterFilters.tsx": __vite_glob_0_300,"./Pages/Voters/Partials/VotersTable.tsx": __vite_glob_0_301,"./Pages/Votes/Index.tsx": __vite_glob_0_302,"./Pages/Votes/Partials/VoteFilters.tsx": __vite_glob_0_303,"./Pages/Votes/Partials/VoterHistoryTable.tsx": __vite_glob_0_304,"./Pages/Votes/Partials/VoterHistoryTableLoader.tsx": __vite_glob_0_305,"./Pages/Wallets/Wallet.tsx": __vite_glob_0_306,"./Pages/Workflows/CatalystDrepSignup/Step1.tsx": __vite_glob_0_307,"./Pages/Workflows/CatalystDrepSignup/Step2.tsx": __vite_glob_0_308,"./Pages/Workflows/CatalystDrepSignup/Step3.tsx": __vite_glob_0_309,"./Pages/Workflows/CatalystDrepSignup/Step5.tsx": __vite_glob_0_310,"./Pages/Workflows/CatalystDrepSignup/Success.tsx": __vite_glob_0_311,"./Pages/Workflows/CatalystDrepSignup/partials/DrepSignupForm.tsx": __vite_glob_0_312,"./Pages/Workflows/CatalystDrepSignup/partials/IpfsSuccessDisplay.tsx": __vite_glob_0_313,"./Pages/Workflows/ClaimIdeascaleProfile/Step1.tsx": __vite_glob_0_314,"./Pages/Workflows/ClaimIdeascaleProfile/Step2.tsx": __vite_glob_0_315,"./Pages/Workflows/ClaimIdeascaleProfile/Step3.tsx": __vite_glob_0_316,"./Pages/Workflows/ClaimIdeascaleProfile/partials/ClaimProfileForm.tsx": __vite_glob_0_317,"./Pages/Workflows/CompletedProjectNfts/Step1.tsx": __vite_glob_0_318,"./Pages/Workflows/CompletedProjectNfts/Step2.tsx": __vite_glob_0_319,"./Pages/Workflows/CreateBookmark/Step1.tsx": __vite_glob_0_320,"./Pages/Workflows/CreateBookmark/Step2.tsx": __vite_glob_0_321,"./Pages/Workflows/CreateBookmark/Step3.tsx": __vite_glob_0_322,"./Pages/Workflows/CreateBookmark/Step4.tsx": __vite_glob_0_323,"./Pages/Workflows/CreateBookmark/Success.tsx": __vite_glob_0_324,"./Pages/Workflows/CreateService/Partials/CategoriesSelector.tsx": __vite_glob_0_325,"./Pages/Workflows/CreateService/Step1.tsx": __vite_glob_0_326,"./Pages/Workflows/CreateService/Step2.tsx": __vite_glob_0_327,"./Pages/Workflows/CreateVoterList/Step1.tsx": __vite_glob_0_328,"./Pages/Workflows/CreateVoterList/Step2.tsx": __vite_glob_0_329,"./Pages/Workflows/CreateVoterList/Step3.tsx": __vite_glob_0_330,"./Pages/Workflows/CreateVoterList/Step4.tsx": __vite_glob_0_331,"./Pages/Workflows/CreateVoterList/Step5.tsx": __vite_glob_0_332,"./Pages/Workflows/CreateVoterList/Step6.tsx": __vite_glob_0_333,"./Pages/Workflows/CreateVoterList/Step7.tsx": __vite_glob_0_334,"./Pages/Workflows/CreateVoterList/Step8.tsx": __vite_glob_0_335,"./Pages/Workflows/CreateVoterList/Step9.tsx": __vite_glob_0_336,"./Pages/Workflows/CreateVoterList/Success.tsx": __vite_glob_0_337,"./Pages/Workflows/CreateVoterList/WorkflowTable.tsx": __vite_glob_0_338,"./Pages/Workflows/CreateVoterList/partials/ProposalSearchBar.tsx": __vite_glob_0_339,"./Pages/Workflows/Login.tsx": __vite_glob_0_340,"./Pages/Workflows/Partials/Success.tsx": __vite_glob_0_341,"./Pages/Workflows/Partials/WorkflowContent.tsx": __vite_glob_0_342,"./Pages/Workflows/Partials/WorkflowFooter.tsx": __vite_glob_0_343,"./Pages/Workflows/Partials/WorkflowNav.tsx": __vite_glob_0_344,"./Pages/Workflows/PasswordReset/Step1.tsx": __vite_glob_0_345,"./Pages/Workflows/PasswordReset/Step2.tsx": __vite_glob_0_346,"./Pages/Workflows/PublishToIpfs/Step1.tsx": __vite_glob_0_347,"./Pages/Workflows/PublishToIpfs/Step2.tsx": __vite_glob_0_348,"./Pages/Workflows/PublishToIpfs/Success.tsx": __vite_glob_0_349,"./Pages/Workflows/SignatureCapture/Step1.tsx": __vite_glob_0_350,"./Pages/Workflows/SignatureCapture/Step2.tsx": __vite_glob_0_351,"./Pages/Workflows/SignatureCapture/Step3.tsx": __vite_glob_0_352,"./Pages/Workflows/SignatureCapture/Success.tsx": __vite_glob_0_353,"./Pages/Workflows/TinderProposal/Partials/SlideOverContent.tsx": __vite_glob_0_354,"./Pages/Workflows/TinderProposal/Partials/SwipeCard.tsx": __vite_glob_0_355,"./Pages/Workflows/TinderProposal/Step1.tsx": __vite_glob_0_356,"./Pages/Workflows/TinderProposal/Step2.tsx": __vite_glob_0_357,"./Pages/Workflows/TinderProposal/Step3.tsx": __vite_glob_0_358,"./Pages/Workflows/TinderProposal/Step4.tsx": __vite_glob_0_359,"./Pages/Workflows/WorkflowLayout.tsx": __vite_glob_0_360})
       );
       page2.then((module) => {
         module.default.layout = module.default.layout || ((module2) => /* @__PURE__ */ jsx(AppLayout, { children: module2 }));
@@ -62375,7 +66966,7 @@ createServer(async (page) => {
         {
           locale,
           fallbackLocale: "en",
-          files: /* #__PURE__ */ Object.assign({"/lang/de.json": __vite_glob_1_0,"/lang/en.json": __vite_glob_1_1,"/lang/es.json": __vite_glob_1_2,"/lang/fr.json": __vite_glob_1_3,"/lang/ja.json": __vite_glob_1_4,"/lang/ko.json": __vite_glob_1_5,"/lang/pt.json": __vite_glob_1_6,"/lang/zh.json": __vite_glob_1_7
+          files: /* #__PURE__ */ Object.assign({"/lang/am.json": __vite_glob_1_0,"/lang/ar.json": __vite_glob_1_1,"/lang/de.json": __vite_glob_1_2,"/lang/en.json": __vite_glob_1_3,"/lang/es.json": __vite_glob_1_4,"/lang/fr.json": __vite_glob_1_5,"/lang/ja.json": __vite_glob_1_6,"/lang/ko.json": __vite_glob_1_7,"/lang/pt.json": __vite_glob_1_8,"/lang/sw.json": __vite_glob_1_9,"/lang/zh.json": __vite_glob_1_10
 
 }),
           children: /* @__PURE__ */ jsx(ModalStackProvider, { children: /* @__PURE__ */ jsx(StrictMode, { children: /* @__PURE__ */ jsx(App, { ...props }) }) })

@@ -1,4 +1,38 @@
 {
+  "lang/am.json": [
+    "/build/assets/ideascale-logo-BQpIFLFZ.png",
+    "/build/assets/bg-concentric-circles-Ck3QTOTO.png",
+    "/build/assets/login-image-five-Dd7qbmTz.png",
+    "/build/assets/login-image-four-BuziHKIy.png",
+    "/build/assets/login-image-one-CxLBIZlC.png",
+    "/build/assets/login-image-three-D2PiQho3.png",
+    "/build/assets/login-image-two-D2IAgfdH.png",
+    "/build/assets/catalyst-logo-dark-CZiPVQ7x.png",
+    "/build/assets/catalyst-logo-light-BPj2SQ6h.png",
+    "/build/assets/project-completion-nfts-Bh2SVFfT.jpg",
+    "/build/assets/cardano-ada-logo-CXz5P2i2.png",
+    "/build/assets/dreps-banner-0MEmb8-H.jpg",
+    "/build/assets/project-catalyst-banner-DBGY1mDD.jpg",
+    "/build/assets/group-header-CAoSzOgy.jpg",
+    "/build/assets/background-header-BI9T-A_9.png"
+  ],
+  "lang/ar.json": [
+    "/build/assets/ideascale-logo-BQpIFLFZ.png",
+    "/build/assets/bg-concentric-circles-Ck3QTOTO.png",
+    "/build/assets/login-image-five-Dd7qbmTz.png",
+    "/build/assets/login-image-four-BuziHKIy.png",
+    "/build/assets/login-image-one-CxLBIZlC.png",
+    "/build/assets/login-image-three-D2PiQho3.png",
+    "/build/assets/login-image-two-D2IAgfdH.png",
+    "/build/assets/catalyst-logo-dark-CZiPVQ7x.png",
+    "/build/assets/catalyst-logo-light-BPj2SQ6h.png",
+    "/build/assets/project-completion-nfts-Bh2SVFfT.jpg",
+    "/build/assets/cardano-ada-logo-CXz5P2i2.png",
+    "/build/assets/dreps-banner-0MEmb8-H.jpg",
+    "/build/assets/project-catalyst-banner-DBGY1mDD.jpg",
+    "/build/assets/group-header-CAoSzOgy.jpg",
+    "/build/assets/background-header-BI9T-A_9.png"
+  ],
   "lang/de.json": [
     "/build/assets/ideascale-logo-BQpIFLFZ.png",
     "/build/assets/bg-concentric-circles-Ck3QTOTO.png",
@@ -118,6 +152,23 @@
     "/build/assets/group-header-CAoSzOgy.jpg",
     "/build/assets/background-header-BI9T-A_9.png"
   ],
+  "lang/sw.json": [
+    "/build/assets/ideascale-logo-BQpIFLFZ.png",
+    "/build/assets/bg-concentric-circles-Ck3QTOTO.png",
+    "/build/assets/login-image-five-Dd7qbmTz.png",
+    "/build/assets/login-image-four-BuziHKIy.png",
+    "/build/assets/login-image-one-CxLBIZlC.png",
+    "/build/assets/login-image-three-D2PiQho3.png",
+    "/build/assets/login-image-two-D2IAgfdH.png",
+    "/build/assets/catalyst-logo-dark-CZiPVQ7x.png",
+    "/build/assets/catalyst-logo-light-BPj2SQ6h.png",
+    "/build/assets/project-completion-nfts-Bh2SVFfT.jpg",
+    "/build/assets/cardano-ada-logo-CXz5P2i2.png",
+    "/build/assets/dreps-banner-0MEmb8-H.jpg",
+    "/build/assets/project-catalyst-banner-DBGY1mDD.jpg",
+    "/build/assets/group-header-CAoSzOgy.jpg",
+    "/build/assets/background-header-BI9T-A_9.png"
+  ],
   "lang/zh.json": [
     "/build/assets/ideascale-logo-BQpIFLFZ.png",
     "/build/assets/bg-concentric-circles-Ck3QTOTO.png",
@@ -153,21 +204,8 @@
     "/build/assets/background-header-BI9T-A_9.png"
   ],
   "node_modules/mapbox-gl/dist/mapbox-gl.css": [
-    "/build/assets/ideascale-logo-BQpIFLFZ.png",
-    "/build/assets/bg-concentric-circles-Ck3QTOTO.png",
-    "/build/assets/login-image-five-Dd7qbmTz.png",
-    "/build/assets/login-image-four-BuziHKIy.png",
-    "/build/assets/login-image-one-CxLBIZlC.png",
-    "/build/assets/login-image-three-D2PiQho3.png",
-    "/build/assets/login-image-two-D2IAgfdH.png",
-    "/build/assets/catalyst-logo-dark-CZiPVQ7x.png",
-    "/build/assets/catalyst-logo-light-BPj2SQ6h.png",
-    "/build/assets/project-completion-nfts-Bh2SVFfT.jpg",
-    "/build/assets/cardano-ada-logo-CXz5P2i2.png",
-    "/build/assets/dreps-banner-0MEmb8-H.jpg",
-    "/build/assets/project-catalyst-banner-DBGY1mDD.jpg",
-    "/build/assets/group-header-CAoSzOgy.jpg",
-    "/build/assets/background-header-BI9T-A_9.png"
+    "/build/assets/GlobalMap-CjdmTPbF.js",
+    "/build/assets/GlobalMap--d70tv_y.css"
   ],
   "node_modules/plyr-react/plyr.css": [
     "/build/assets/ideascale-logo-BQpIFLFZ.png",
@@ -340,6 +378,23 @@
     "/build/assets/background-header-BI9T-A_9.png"
   ],
   "resources/js/Components/ChartFilter.tsx": [
+    "/build/assets/ideascale-logo-BQpIFLFZ.png",
+    "/build/assets/bg-concentric-circles-Ck3QTOTO.png",
+    "/build/assets/login-image-five-Dd7qbmTz.png",
+    "/build/assets/login-image-four-BuziHKIy.png",
+    "/build/assets/login-image-one-CxLBIZlC.png",
+    "/build/assets/login-image-three-D2PiQho3.png",
+    "/build/assets/login-image-two-D2IAgfdH.png",
+    "/build/assets/catalyst-logo-dark-CZiPVQ7x.png",
+    "/build/assets/catalyst-logo-light-BPj2SQ6h.png",
+    "/build/assets/project-completion-nfts-Bh2SVFfT.jpg",
+    "/build/assets/cardano-ada-logo-CXz5P2i2.png",
+    "/build/assets/dreps-banner-0MEmb8-H.jpg",
+    "/build/assets/project-catalyst-banner-DBGY1mDD.jpg",
+    "/build/assets/group-header-CAoSzOgy.jpg",
+    "/build/assets/background-header-BI9T-A_9.png"
+  ],
+  "resources/js/Components/ClientOnly.tsx": [
     "/build/assets/ideascale-logo-BQpIFLFZ.png",
     "/build/assets/bg-concentric-circles-Ck3QTOTO.png",
     "/build/assets/login-image-five-Dd7qbmTz.png",
@@ -561,21 +616,8 @@
     "/build/assets/background-header-BI9T-A_9.png"
   ],
   "resources/js/Components/GlobalMap.tsx": [
-    "/build/assets/ideascale-logo-BQpIFLFZ.png",
-    "/build/assets/bg-concentric-circles-Ck3QTOTO.png",
-    "/build/assets/login-image-five-Dd7qbmTz.png",
-    "/build/assets/login-image-four-BuziHKIy.png",
-    "/build/assets/login-image-one-CxLBIZlC.png",
-    "/build/assets/login-image-three-D2PiQho3.png",
-    "/build/assets/login-image-two-D2IAgfdH.png",
-    "/build/assets/catalyst-logo-dark-CZiPVQ7x.png",
-    "/build/assets/catalyst-logo-light-BPj2SQ6h.png",
-    "/build/assets/project-completion-nfts-Bh2SVFfT.jpg",
-    "/build/assets/cardano-ada-logo-CXz5P2i2.png",
-    "/build/assets/dreps-banner-0MEmb8-H.jpg",
-    "/build/assets/project-catalyst-banner-DBGY1mDD.jpg",
-    "/build/assets/group-header-CAoSzOgy.jpg",
-    "/build/assets/background-header-BI9T-A_9.png"
+    "/build/assets/GlobalMap-CjdmTPbF.js",
+    "/build/assets/GlobalMap--d70tv_y.css"
   ],
   "resources/js/Components/Graph.tsx": [
     "/build/assets/ideascale-logo-BQpIFLFZ.png",
@@ -3008,6 +3050,23 @@
     "/build/assets/group-header-CAoSzOgy.jpg",
     "/build/assets/background-header-BI9T-A_9.png"
   ],
+  "resources/js/Components/svgs/LocationIcon.tsx": [
+    "/build/assets/ideascale-logo-BQpIFLFZ.png",
+    "/build/assets/bg-concentric-circles-Ck3QTOTO.png",
+    "/build/assets/login-image-five-Dd7qbmTz.png",
+    "/build/assets/login-image-four-BuziHKIy.png",
+    "/build/assets/login-image-one-CxLBIZlC.png",
+    "/build/assets/login-image-three-D2PiQho3.png",
+    "/build/assets/login-image-two-D2IAgfdH.png",
+    "/build/assets/catalyst-logo-dark-CZiPVQ7x.png",
+    "/build/assets/catalyst-logo-light-BPj2SQ6h.png",
+    "/build/assets/project-completion-nfts-Bh2SVFfT.jpg",
+    "/build/assets/cardano-ada-logo-CXz5P2i2.png",
+    "/build/assets/dreps-banner-0MEmb8-H.jpg",
+    "/build/assets/project-catalyst-banner-DBGY1mDD.jpg",
+    "/build/assets/group-header-CAoSzOgy.jpg",
+    "/build/assets/background-header-BI9T-A_9.png"
+  ],
   "resources/js/Components/svgs/LogOut.tsx": [
     "/build/assets/ideascale-logo-BQpIFLFZ.png",
     "/build/assets/bg-concentric-circles-Ck3QTOTO.png",
@@ -3451,6 +3510,23 @@
     "/build/assets/background-header-BI9T-A_9.png"
   ],
   "resources/js/Components/svgs/VerificationBadge.tsx": [
+    "/build/assets/ideascale-logo-BQpIFLFZ.png",
+    "/build/assets/bg-concentric-circles-Ck3QTOTO.png",
+    "/build/assets/login-image-five-Dd7qbmTz.png",
+    "/build/assets/login-image-four-BuziHKIy.png",
+    "/build/assets/login-image-one-CxLBIZlC.png",
+    "/build/assets/login-image-three-D2PiQho3.png",
+    "/build/assets/login-image-two-D2IAgfdH.png",
+    "/build/assets/catalyst-logo-dark-CZiPVQ7x.png",
+    "/build/assets/catalyst-logo-light-BPj2SQ6h.png",
+    "/build/assets/project-completion-nfts-Bh2SVFfT.jpg",
+    "/build/assets/cardano-ada-logo-CXz5P2i2.png",
+    "/build/assets/dreps-banner-0MEmb8-H.jpg",
+    "/build/assets/project-catalyst-banner-DBGY1mDD.jpg",
+    "/build/assets/group-header-CAoSzOgy.jpg",
+    "/build/assets/background-header-BI9T-A_9.png"
+  ],
+  "resources/js/Components/svgs/VerifyBadge.tsx": [
     "/build/assets/ideascale-logo-BQpIFLFZ.png",
     "/build/assets/bg-concentric-circles-Ck3QTOTO.png",
     "/build/assets/login-image-five-Dd7qbmTz.png",
@@ -4029,6 +4105,23 @@
     "/build/assets/background-header-BI9T-A_9.png"
   ],
   "resources/js/Pages/ActiveFund/Partials/SupportCxBanner.tsx": [
+    "/build/assets/ideascale-logo-BQpIFLFZ.png",
+    "/build/assets/bg-concentric-circles-Ck3QTOTO.png",
+    "/build/assets/login-image-five-Dd7qbmTz.png",
+    "/build/assets/login-image-four-BuziHKIy.png",
+    "/build/assets/login-image-one-CxLBIZlC.png",
+    "/build/assets/login-image-three-D2PiQho3.png",
+    "/build/assets/login-image-two-D2IAgfdH.png",
+    "/build/assets/catalyst-logo-dark-CZiPVQ7x.png",
+    "/build/assets/catalyst-logo-light-BPj2SQ6h.png",
+    "/build/assets/project-completion-nfts-Bh2SVFfT.jpg",
+    "/build/assets/cardano-ada-logo-CXz5P2i2.png",
+    "/build/assets/dreps-banner-0MEmb8-H.jpg",
+    "/build/assets/project-catalyst-banner-DBGY1mDD.jpg",
+    "/build/assets/group-header-CAoSzOgy.jpg",
+    "/build/assets/background-header-BI9T-A_9.png"
+  ],
+  "resources/js/Pages/ArabicTest.tsx": [
     "/build/assets/ideascale-logo-BQpIFLFZ.png",
     "/build/assets/bg-concentric-circles-Ck3QTOTO.png",
     "/build/assets/login-image-five-Dd7qbmTz.png",
@@ -8755,6 +8848,23 @@
     "/build/assets/background-header-BI9T-A_9.png"
   ],
   "resources/js/Pages/Services/Partials/ServiceTypeFilter.tsx": [
+    "/build/assets/ideascale-logo-BQpIFLFZ.png",
+    "/build/assets/bg-concentric-circles-Ck3QTOTO.png",
+    "/build/assets/login-image-five-Dd7qbmTz.png",
+    "/build/assets/login-image-four-BuziHKIy.png",
+    "/build/assets/login-image-one-CxLBIZlC.png",
+    "/build/assets/login-image-three-D2PiQho3.png",
+    "/build/assets/login-image-two-D2IAgfdH.png",
+    "/build/assets/catalyst-logo-dark-CZiPVQ7x.png",
+    "/build/assets/catalyst-logo-light-BPj2SQ6h.png",
+    "/build/assets/project-completion-nfts-Bh2SVFfT.jpg",
+    "/build/assets/cardano-ada-logo-CXz5P2i2.png",
+    "/build/assets/dreps-banner-0MEmb8-H.jpg",
+    "/build/assets/project-catalyst-banner-DBGY1mDD.jpg",
+    "/build/assets/group-header-CAoSzOgy.jpg",
+    "/build/assets/background-header-BI9T-A_9.png"
+  ],
+  "resources/js/Pages/Services/Show.tsx": [
     "/build/assets/ideascale-logo-BQpIFLFZ.png",
     "/build/assets/bg-concentric-circles-Ck3QTOTO.png",
     "/build/assets/login-image-five-Dd7qbmTz.png",
