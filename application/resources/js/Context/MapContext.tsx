@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext } from 'react';
-import { MapRef, MapProps } from 'react-map-gl/mapbox';
+import { MapProps } from 'react-map-gl';
 
 interface PointsType {
     lat: number;
@@ -13,7 +13,7 @@ interface MapConfig {
     show3DBuildings: boolean;
 }
 
-// define default configuration
+
 const defaultConfig: MapConfig = {
     config: {
         mapboxAccessToken: import.meta.env.VITE_MAPBOX_ACCESS_TOKEN,
