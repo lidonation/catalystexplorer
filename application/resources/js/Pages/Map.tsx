@@ -1,7 +1,9 @@
-import GlobalMap from '@/Components/GlobalMap';
 import { MapProvider } from '@/Context/MapContext';
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { MapProps } from 'react-map-gl';
+
+// Dynamic import with lazy loading for GlobalMap (no SSR)
+const GlobalMap = lazy(() => import('@/Components/GlobalMap'));
 
 interface Point {
     id: number;
@@ -48,7 +50,18 @@ const MapPage: React.FC = () => {
     return (
         <MapProvider customConfig={customConfig} show3DBuildings={true}>
             <div className="min-h-screen bg-gray-100 p-4 dark:bg-gray-800">
-                <GlobalMap points={points} height="500px" width="100%" />
+                <Suspense
+                    fallback={
+                        <div 
+                            className="flex items-center justify-center bg-gray-100 text-gray-500" 
+                            style={{ height: '500px', width: '100%' }}
+                        >
+                            Loading map...
+                        </div>
+                    }
+                >
+                    <GlobalMap points={points} height="500px" width="100%" />
+                </Suspense>
             </div>
         </MapProvider>
     );
