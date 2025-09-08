@@ -1,4 +1,5 @@
 import ServiceData = App.DataTransferObjects.ServiceData;
+import PrimaryLink from './atoms/PrimaryLink';
 
 export default function ServiceCard({ service }: { service: ServiceData }) {
     const statusBadgeClasses = {
@@ -63,7 +64,12 @@ export default function ServiceCard({ service }: { service: ServiceData }) {
                         className="text-content justify-start self-stretch text-xl leading-normal font-medium"
                         data-testid="service-card-title"
                     >
-                        {service.title}
+                        <a
+                            href={service.link}
+                            className="no-underline hover:text-primary"
+                        >
+                            {service.title}
+                        </a>
                     </div>
                     <div className="justify-start text-sm leading-none font-normal text-slate-500">
                         {service.name ||
