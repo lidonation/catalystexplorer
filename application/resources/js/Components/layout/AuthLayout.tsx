@@ -23,9 +23,9 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
     return (
         <div className=" flex min-h-screen w-full flex-col items-center justify-center lg:flex-row">
             <div
-                className="container inline-flex flex-col items-center justify-start gap-7  p-4 ">
-                <div className="bg-background w-full shadow-md rounded-xl my-28">
-                    <div className="flex justify-center py-3 px-8">
+                className="container inline-flex flex-col items-center justify-start gap-7 ">
+                <div className="bg-background w-full shadow-md rounded-xl my-28 max-w-lg">
+                    <div className="flex justify-center py-8 px-8">
                         <CatalystLogo />
                     </div>
                     {children}
