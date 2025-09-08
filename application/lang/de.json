@@ -28,7 +28,7 @@
     "connectWallet": "Wallet verbinden",
     "comingSoon": "Demnächst",
     "cookies": "Cookies",
-    "copyright": "© 2024 Catalyst Explorer. Alle Rechte vorbehalten.",
+    "copyright": " Alle Rechte vorbehalten.",
     "connections": "Verbindungen",
     "minting": "Sie prägen",
     "loginToMint": "Zum Prägen anmelden",
@@ -1294,5 +1294,4 @@
     "my.createVotingListWithStandardUi": "Standard-Arbeitsablauf verwenden",
     "my.createVotingListWithCardedUi": "Kartenstapel-Arbeitsablauf verwenden",
     "transactions.table.id": "Id",
-    "transactions.table.proposalPayout": "Vorschlagsauszahlung"
-}
+    "transactions.table.proposalPayout": "Vorschlagsauszahlung"}

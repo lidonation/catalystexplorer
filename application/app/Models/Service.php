@@ -33,7 +33,7 @@ class Service extends Model implements HasMedia
         'linkedin',
     ];
 
-    protected $appends = ['header_image_url'];
+    protected $appends = ['header_image_url', 'effective_contact_details'];
 
     protected $hidden = [];
 
@@ -93,16 +93,60 @@ class Service extends Model implements HasMedia
         );
     }
 
-    public function getEffectiveContactDetailsAttribute(): array
+    public function effectiveName(): Attribute
     {
-        return [
-            'name' => $this->effective_name,
-            'email' => $this->effective_email,
-            'website' => $this->effective_website,
-            'github' => $this->effective_github,
-            'linkedin' => $this->effective_linkedin,
-            'location' => $this->effective_location,
-        ];
+        return Attribute::make(
+            get: fn () => $this->name ?? $this->user?->name
+        );
+    }
+
+    public function effectiveEmail(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->email ?? $this->user?->email
+        );
+    }
+
+    public function effectiveWebsite(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->website ?? $this->user?->website
+        );
+    }
+
+    public function effectiveGithub(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->github ?? $this->user?->github
+        );
+    }
+
+    public function effectiveLinkedin(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->linkedin ?? $this->user?->linkedin
+        );
+    }
+
+    public function effectiveLocation(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->locations->first()?->city ?? $this->user?->location?->city ?? null
+        );
+    }
+
+    public function effectiveContactDetails(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => [
+                'name' => $this->effective_name,
+                'email' => $this->effective_email,
+                'website' => $this->effective_website,
+                'github' => $this->effective_github,
+                'linkedin' => $this->effective_linkedin,
+                'location' => $this->effective_location,
+            ]
+        );
     }
 
     public function scopeSearch($query, ?string $search)

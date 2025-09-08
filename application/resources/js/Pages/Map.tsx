@@ -1,49 +1,57 @@
 import GlobalMap from '@/Components/GlobalMap';
 import { MapProvider } from '@/Context/MapContext';
 import React from 'react';
-import { MapRef, MapProps } from 'react-map-gl/mapbox';
+import { MapProps } from 'react-map-gl';
 
-const MAPBOX_TOKEN = 'YOUR_MAPBOX_ACCESS_TOKEN';
+interface Point {
+    id: number;
+    latitude: number;
+    longitude: number;
+    title: string;
+    description?: string;
+}
 
-const points = [
+const points: Point[] = [
     {
-        lat: -1.286389, // Nairobi, Kenya
-        lng: 36.817223,
-        label: 'Nairobi',
-        icon: 'https://cdn-icons-png.flaticon.com/128/684/684908.png',
+        id: 1,
+        latitude: -1.286389, // Nairobi, Kenya
+        longitude: 36.817223,
+        title: 'Nairobi',
+        description: 'Marker for Nairobi',
     },
     {
-        lat: 51.5074, // London, UK
-        lng: -0.1278,
-        label: 'London',
-        icon: 'https://cdn-icons-png.flaticon.com/128/684/684908.png',
+        id: 2,
+        latitude: 51.5074, // London, UK
+        longitude: -0.1278,
+        title: 'London',
+        description: 'Marker for London',
     },
     {
-        lat: 40.7128, // New York, USA
-        lng: -74.006,
-        label: 'New York',
-        icon: 'https://cdn-icons-png.flaticon.com/128/684/684908.png',
+        id: 3,
+        latitude: 40.7128, // New York, USA
+        longitude: -74.006,
+        title: 'New York',
+        description: 'Marker for New York',
     },
 ];
 
 const customConfig: Partial<MapProps> = {
     initialViewState: {
-        longitude: 88.7749,
-        latitude: 88.4194,
-        zoom: 10,
+        longitude: 36.817223,
+        latitude: -1.286389,
+        zoom: 2,
     },
-    pitch: 4,
-    zoom: 2,
+    pitch: 0,
 };
 
-const App: React.FC = () => {
+const MapPage: React.FC = () => {
     return (
         <MapProvider customConfig={customConfig} show3DBuildings={true}>
             <div className="min-h-screen bg-gray-100 p-4 dark:bg-gray-800">
-                <GlobalMap points={points} />
+                <GlobalMap points={points} height="500px" width="100%" />
             </div>
         </MapProvider>
     );
 };
 
-export default App;
+export default MapPage;

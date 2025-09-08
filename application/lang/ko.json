@@ -28,7 +28,7 @@
     "connectWallet": "지갑 연결",
     "comingSoon": "곧 출시",
     "cookies": "쿠키",
-    "copyright": "© 2024 Catalyst Explorer. 모든 권리 보유.",
+    "copyright": " 모든 권리 보유.",
     "connections": "연결",
     "minting": "민팅 중",
     "loginToMint": "민팅하려면 로그인",
@@ -1296,5 +1296,4 @@
     "project.status.withdrawn": "철회됨",
     "project.status.complete": "완료",
     "project.status.inProgress": "진행 중",
-    "project.status.unfunded": "자금 지원 안됨"
-}
+    "project.status.unfunded": "자금 지원 안됨"}
