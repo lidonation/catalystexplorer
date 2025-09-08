@@ -143,7 +143,7 @@ const MilestoneDateProgressBar: React.FC<MilestoneDateProgressBarProps> = ({
             aria-valuenow={Math.round(percentNow)}
         >
             <div
-                className="flex w-full flex-col gap-8 space-y-2 px-16"
+                className="flex w-full flex-col gap-2 space-y-2"
                 data-testid="milestone-progress-content"
             >
                 {/* Labels Section */}
@@ -151,61 +151,37 @@ const MilestoneDateProgressBar: React.FC<MilestoneDateProgressBarProps> = ({
                     className="relative h-6 w-full text-sm font-medium"
                     data-testid="milestone-labels-section"
                 >
-                    {/* Vertical pointer lines */}
-                    {verticalLines.map((line, index) => (
-                        <div
-                            key={index}
-                            className="bg-gray-persist absolute z-0 w-0.5"
-                            style={{
-                                left: line.left,
-                                top: '100%',
-                                height: '40px',
-                                transform:
-                                    line.left !== '0%'
-                                        ? 'translateX(-50%)'
-                                        : undefined,
-                            }}
-                            data-testid={line.testId}
-                            aria-hidden="true"
-                        />
-                    ))}
 
-                    {/* Additional line for end date when labels overlap */}
-                    {(labelsOverlap.startEnd || labelsOverlap.endNow) && (
-                        <div
-                            className="bg-gray-persist absolute z-0 w-0.5"
-                            style={{
-                                left: `${endPosition}%`,
-                                top: '-60px',
-                                height: 'calc(100% + 60px + 40px)',
-                                transform: 'translateX(-50%)',
-                            }}
-                            data-testid="milestone-end-line-extended"
-                            aria-hidden="true"
-                        />
-                    )}
-
-                    {/* Start Date Label */}
+                    {/* Start Date Label with Speech Bubble */}
                     <div
                         ref={startDateLabelRef}
-                        className="border-background-lighter bg-background absolute z-10 flex flex-col justify-items-center rounded-lg border px-1 py-1 shadow-md"
+                        className="absolute z-10 flex flex-col justify-items-center"
                         style={{
-                            left: '0%',
-                            transform: 'translateX(-50%)',
+                            left: '8%',
+                            transform: 'translateX(-50%)'
                         }}
                         data-testid="milestone-start-date-label"
                         aria-label={`Project start date: ${formatDate(start)}`}
                     >
-                        <Paragraph
-                            size="xs"
-                            className="text-gray-persist w-full text-center"
-                        >
-                            {t('startDate')}
-                        </Paragraph>
-                        <Paragraph size="xs" className="font-bold">
-                            {formatDate(start)}
-                        </Paragraph>
+                        <div className="relative">
+                            {/* Main speech bubble - more pointed */}
+                            <div className="bg-purple-light rounded-sm px-3 py-2 relative">
+                                <Paragraph size="xs" className="flex gap-1 z-0">
+                                    <span className="text-highlight">{t('startDate')}</span>
+                                    <span className="text-dark font-bold">{formatDate(start)}</span>
+                                </Paragraph>
+                            </div>
+
+                            {/* Speech bubble arrow pointing down-left - larger and sharper */}
+                            <div className="absolute top-full left-0.5 z-2 -mt-0.5">
+                                {/* Arrow shadow */}
+                                <div className="absolute w-0 h-0 border-l-[10px] border-r-[10px] border-t-[12px] border-l-transparent border-r-transparent border-t-purple-light transform translate-y-px"></div>
+                                {/* Arrow fill */}
+                                <div className="w-0 h-0 border-l-[10px] border-r-[10px] border-t-[12px] border-l-transparent border-r-transparent border-t-purple-light"></div>
+                            </div>
+                        </div>
                     </div>
+
 
                     {/* Current Date Label */}
                     <div
@@ -214,8 +190,8 @@ const MilestoneDateProgressBar: React.FC<MilestoneDateProgressBarProps> = ({
                         style={{
                             left: `${nowPosition}%`,
                             top: '100%',
-                            transform: 'translateX(-50%)',
-                            whiteSpace: 'nowrap',
+                            transform: 'translateX(-95%)',
+                            whiteSpace: 'nowrap'
                         }}
                         data-testid="milestone-current-date-label"
                         aria-label={`Current date: ${formatDate(now)}`}
@@ -228,31 +204,40 @@ const MilestoneDateProgressBar: React.FC<MilestoneDateProgressBarProps> = ({
                         </Paragraph>
                     </div>
 
-                    {/* End Date Label */}
+
+                    {/* End Date Label with Speech Bubble */}
                     <div
                         ref={endDateLabelRef}
-                        className="border-background-lighter bg-background absolute z-10 flex flex-col justify-items-center rounded-lg border px-1 py-1 shadow-md"
+                        className="absolute z-10 flex flex-col justify-items-center"
                         style={{
                             left: `${endPosition}%`,
-                            transform: 'translateX(-50%)',
+                            transform: 'translateX(-95%)',
                             whiteSpace: 'nowrap',
                             top:
                                 labelsOverlap.startEnd || labelsOverlap.endNow
-                                    ? '-60px'
-                                    : '0px',
+                                    ? '-20px'
+                                    : '0px'
                         }}
                         data-testid="milestone-end-date-label"
                         aria-label={`Project end date: ${formatDate(end)}`}
                     >
-                        <Paragraph
-                            size="xs"
-                            className="text-gray-persist w-full text-center"
-                        >
-                            {t('endDate')}
-                        </Paragraph>
-                        <Paragraph size="xs" className="font-bold">
-                            {formatDate(end)}
-                        </Paragraph>
+                        <div className="relative">
+                            {/* Main speech bubble - more pointed */}
+                            <div className="bg-purple-light rounded-sm px-3 py-2 relative">
+                                <Paragraph size="xs" className="flex gap-1 z-0">
+                                    <span className="text-highlight">{t('endDate')}</span>
+                                    <span className="text-dark font-bold">{formatDate(end)}</span>
+                                </Paragraph>
+                            </div>
+
+                            {/* Speech bubble arrow pointing down-left - larger and sharper */}
+                            <div className="absolute top-full right-0.5 z-2 -mt-0.5">
+                                {/* Arrow shadow */}
+                                <div className="absolute w-0 h-0 border-l-[10px] border-r-[10px] border-t-[12px] border-l-transparent border-r-transparent border-t-purple-light transform translate-y-px"></div>
+                                {/* Arrow fill */}
+                                <div className="w-0 h-0 border-l-[10px] border-r-[10px] border-t-[12px] border-l-transparent border-r-transparent border-t-purple-light"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -262,7 +247,7 @@ const MilestoneDateProgressBar: React.FC<MilestoneDateProgressBarProps> = ({
                     data-testid="milestone-progress-track"
                     aria-hidden="true"
                 >
-                    <div className="relative h-full">
+                <div className="relative h-full">
                         <div
                             className={`h-full ${barColor} rounded-full transition-all duration-500`}
                             style={{ width: `${progressWidth}%` }}

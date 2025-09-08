@@ -74,7 +74,7 @@ const MilestoneAccordion: React.FC<MilestoneAccordionProps> = ({
                     key={index}
                     className="border-background-lighter w-full border-t px-4 pt-4"
                 >
-                    <div className="flex w-full items-center justify-between">
+                    <div className="relative w-full">
                         <div className="flex w-full flex-col gap-4">
                             <Title level="4" className="font-medium">
                                 {`${t('Milestone')} ${milestone.milestone} : ${currencySymbol}${milestone.cost.toLocaleString()}`}
@@ -86,7 +86,7 @@ const MilestoneAccordion: React.FC<MilestoneAccordionProps> = ({
                         </div>
                         <Button
                             onClick={() => toggleAccordion(index)}
-                            className={`flex size-8 items-center justify-center text-lg transition-transform`}
+                            className={`flex size-8 items-center justify-center text-lg transition-transform absolute right-1 top-0`}
                         >
                             {openIndex === index ? (
                                 <ChevronUp />
@@ -128,7 +128,7 @@ const MilestoneAccordion: React.FC<MilestoneAccordionProps> = ({
                                         </tr>
 
                                         <tr className="border-background-lighter border-t">
-                                            <th className="border-background-lighter border-r px-4 py-2 text-left">
+                                            <th className="border-background-lighter border-r px-4 py-2 text-left flex flex-col justify-start">
                                                 {t('Milestone Details')}
                                             </th>
                                             <td className="border-background-lighter border-r px-4 py-2 text-left">
@@ -143,7 +143,7 @@ const MilestoneAccordion: React.FC<MilestoneAccordionProps> = ({
                                         </tr>
 
                                         <tr className="border-background-lighter border-t">
-                                            <th className="border-background-lighter border-r px-4 py-2 text-left">
+                                            <th className="border-background-lighter border-r px-4 py-2 text-left flex flex-col justify-start">
                                                 {t('Acceptance Criteria')}
                                             </th>
                                             <td className="border-background-lighter border-r px-4 py-2 text-left">

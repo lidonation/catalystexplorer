@@ -96,7 +96,7 @@ export default function BookmarkButton({
                     {isBookmarked ? (
                         <BookmarkOnIcon width={width} height={height} />
                     ) : (
-                        <BookmarkOffIcon className='text-content' width={width} height={height} />
+                        <BookmarkOffIcon className={buttonTheme} width={width} height={height} />
                     )}
                 </button>
             }

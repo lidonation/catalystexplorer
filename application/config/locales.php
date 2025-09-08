@@ -1,11 +1,13 @@
 <?php
 
 return [
-   
-    'supported' => ['en', 'es', 'fr', 'de', 'ja', 'ko', 'pt', 'ru', 'zh'],
 
- 
+    'supported' => ['am', 'ar', 'en', 'es', 'fr', 'de', 'ja', 'ko', 'pt', 'ru', 'zh'],
+
+
     'names' => [
+        'am' => 'አማርኛ',
+        'ar' => 'العربية',
         'en' => 'English',
         'es' => 'Español',
         'fr' => 'Français',
