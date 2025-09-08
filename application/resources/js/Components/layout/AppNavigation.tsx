@@ -424,6 +424,15 @@ function AppNavigation() {
                                                     active={false}
                                                     data-testid="numbers-charts-link"
                                                 ></NavLinkItem>
+                                                <NavLinkItem
+                                                    href={useLocalizedRoute('services.index')}
+                                                    disable={false}
+                                                    title={t('my.services')}
+                                                    ariaLabel={`Services ${t('link')}`}
+                                                    active={false}
+                                                    prefetch
+                                                    data-testid="services-link"
+                                                ></NavLinkItem>
                                             </div>
                                         )}
                                     </div>
