@@ -3,9 +3,12 @@ import Title from '@/Components/atoms/Title';
 import Card from '@/Components/Card';
 import VerifyBadge from '@/Components/svgs/VerifyBadge';
 import { Head } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense, lazy } from 'react';
 import GroupSocials from '../Groups/Partials/GroupSocials';
 import ServiceData = App.DataTransferObjects.ServiceData;
+
+// Dynamic import with lazy loading for GlobalMap (no SSR)
+const GlobalMap = lazy(() => import('@/Components/GlobalMap'));
 
 interface EffectiveDetails {
     github?: string;
@@ -184,20 +187,28 @@ export default function Show({ service }: ShowProps) {
                     </Title>
                     <div className="flex flex-col gap-5 sm:flex-row">
                         <div className="h-52 w-full sm:w-84">
-                            {/* {isClient && points.length > 0 ? (
-                                <GlobalMap
-                                    points={points}
-                                    initialZoom={10}
-                                    height="208px"
-                                    width="100%"
-                                />
+                            {isClient && points.length > 0 ? (
+                                <Suspense
+                                    fallback={
+                                        <div className="flex h-52 w-full items-center justify-center rounded-lg bg-gray-100 text-gray-500">
+                                            Loading map...
+                                        </div>
+                                    }
+                                >
+                                    <GlobalMap
+                                        points={points}
+                                        initialZoom={10}
+                                        height="208px"
+                                        width="100%"
+                                    />
+                                </Suspense>
                             ) : (
                                 <div className="flex h-52 w-full items-center justify-center rounded-lg bg-gray-100 text-gray-500">
                                     {points.length === 0
                                         ? 'No locations available'
                                         : 'Loading map...'}
                                 </div>
-                            )} */}
+                            )}
                         </div>
 
                         <div className="mb-5 w-full sm:flex-1 sm:pt-11">
