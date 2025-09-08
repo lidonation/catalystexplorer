@@ -28,7 +28,7 @@
     "connectWallet": "Wallet verbinden",
     "comingSoon": "Demnächst",
     "cookies": "Cookies",
-    "copyright": "© 2024 Catalyst Explorer. Alle Rechte vorbehalten.",
+    "copyright": " Alle Rechte vorbehalten.",
     "connections": "Verbindungen",
     "minting": "Sie prägen",
     "loginToMint": "Zum Prägen anmelden",
@@ -150,7 +150,6 @@
     "activeFund.createBookmarkList": "Lesezeichenliste erstellen",
     "activeFund.bannerTitle": "Erstellen Sie Ihre Abstimmungsliste!",
     "activeFund.bannerSubtitle": "Erstellen Sie Ihre Stimmauswahl für Referenz und Austausch! Sie wissen, was Sie suchen? Nutzen Sie den Standard-Workflow. Sie wissen nicht, was Sie suchen? Nutzen Sie den Kartenstapel-Workflow, um nach rechts bei Vorschlägen zu wischen, die Sie genauer betrachten möchten, nach links bei denen, bei denen Sie sich enthalten oder diese Runde überspringen.",
-
     "activeFund.campaignsTitle": "Kampagnenkategorien",
     "activeFund.campaigns.proposals": "Vorschläge",
     "activeFund.campaigns.viewProposals": "Vorschläge anzeigen",
