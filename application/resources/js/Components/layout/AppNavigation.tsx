@@ -3,7 +3,7 @@ import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { usePage } from '@inertiajs/react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { BookmarkCheckIcon } from 'lucide-react';
+import { BookmarkCheckIcon, LeafIcon } from 'lucide-react';
 import { useState } from 'react';
 import NavLinkItem from '../atoms/NavLinkItem';
 import ModalNavLink from '../ModalNavLink';
@@ -22,6 +22,9 @@ import NoteIcon from '../svgs/NoteIcon';
 import NotificationBoxIcon from '../svgs/NotificationBoxIcon';
 import NumbersIcon from '../svgs/NumbersIcon';
 import PeopleIcon from '../svgs/PeopleIcon';
+import ConnectIcon from '@/Components/svgs/ConnectIcon.tsx';
+import PlusIcon from '@/Components/svgs/PlusIcon.tsx';
+import StarIcon from '@/Components/svgs/StarIcon.tsx';
 
 function AppNavigation() {
     const { t } = useLaravelReactI18n();
@@ -64,6 +67,16 @@ function AppNavigation() {
                     className={isActive ? 'text-primary-100' : 'text-dark'}
                 />
             ),
+        },
+        {
+            href: useLocalizedRoute('services.index'),
+            title: t('services.catalystServices'),
+            icon: (isActive: boolean) => (
+                <LeafIcon
+                    className={isActive ? 'text-primary-100' : 'text-dark'}
+                />
+            ),
+            hideOnMyRoute: true,
         },
         {
             href: useLocalizedRoute('funds.index'),
@@ -423,15 +436,6 @@ function AppNavigation() {
                                                     ariaLabel={`${t('myCharts')} ${t('link')}`}
                                                     active={false}
                                                     data-testid="numbers-charts-link"
-                                                ></NavLinkItem>
-                                                <NavLinkItem
-                                                    href={useLocalizedRoute('services.index')}
-                                                    disable={false}
-                                                    title={t('my.services')}
-                                                    ariaLabel={`Services ${t('link')}`}
-                                                    active={false}
-                                                    prefetch
-                                                    data-testid="numbers-services-link"
                                                 ></NavLinkItem>
                                             </div>
                                         )}

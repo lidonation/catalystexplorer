@@ -13,16 +13,16 @@ import RemoveBookmarkButton from '@/Components/RemoveBookmarkButton';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
-type ColumnKey = 
-    | 'title' 
-    | 'proposal' 
-    | 'fund' 
-    | 'status' 
-    | 'funding' 
-    | 'teams' 
-    | 'yesVotes' 
-    | 'abstainVotes' 
-    | 'action' 
+type ColumnKey =
+    | 'title'
+    | 'proposal'
+    | 'fund'
+    | 'status'
+    | 'funding'
+    | 'teams'
+    | 'yesVotes'
+    | 'abstainVotes'
+    | 'action'
     | 'viewProposal'
     | 'budget'
     | 'category'
@@ -151,7 +151,7 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
         if (customActions || renderActions) {
             return { customActions, renderActions };
         }
-        
+
         if (iconOnlyActions) {
             return {
                 renderActions: {
@@ -160,7 +160,7 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
                 }
             };
         }
-        
+
         return {
             renderActions: {
                 view: (proposal: ProposalData) => renderDefaultViewAction(proposal, t),
