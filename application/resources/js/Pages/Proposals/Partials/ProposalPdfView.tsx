@@ -16,16 +16,19 @@ import CatalystEyeIcon from '@/Components/svgs/CatalystEyeIcon';
 interface ProposalPdfViewProps {
   proposals: PaginatedData<ProposalData[]> | { data: ProposalData[], total: number, isPdf: boolean };
   listTitle: string;
+  isAuthor: boolean;
   pageBackgroundColor?: string;
   onOpenSettings?: () => void;
 }
 
 const ProposalPdfView: React.FC<ProposalPdfViewProps> = ({
   proposals,
+  isAuthor,
   listTitle,
   onOpenSettings
 }) => {
   const { t } = useLaravelReactI18n();
+
   const itemCount = proposals.data?.length || 0;
 
   const defaultPdfColumns: ColumnKey[] = ['title', 'budget', 'category', 'openSourced', 'teams', 'viewProposal'];
@@ -99,7 +102,7 @@ const ProposalPdfView: React.FC<ProposalPdfViewProps> = ({
               disableSorting={true}
               columns={selectedColumns || defaultPdfColumns}
               showPagination={false}
-              iconOnlyActions={showIconActions}
+              iconOnlyActions={showIconActions && isAuthor}
               iconActionsConfig={['rationale', 'removeBookmark', 'compare']}
               customStyles={{
                 tableWrapper: '!border-table-header-bg !shadow-none rounded-lg',
