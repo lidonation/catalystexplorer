@@ -100,5 +100,11 @@ final class BookmarkCollectionData extends Data
 
         #[TypeScriptOptional]
         public ?string $list_type,
+
+        /**
+         * @var array<string, string>|null
+         */
+        #[TypeScriptOptional]
+        public ?array $workflow_params
     ) {}
 }

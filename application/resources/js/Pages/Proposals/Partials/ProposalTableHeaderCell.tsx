@@ -9,6 +9,8 @@ interface TableHeaderCellProps {
     sortDirection?: 'asc' | 'desc' | null;
     onSort?: () => void;
     isLastColumn?: boolean;
+    alignment?: 'left' | 'center' | 'right';
+    textColorClass?: string;
 }
 
 const TableHeaderCell: React.FC<TableHeaderCellProps> = ({
@@ -17,23 +19,28 @@ const TableHeaderCell: React.FC<TableHeaderCellProps> = ({
     sortDirection = null,
     onSort,
     isLastColumn = false,
-}) => (
-    <div
-        className="flex cursor-pointer items-center justify-center gap-1"
-        onClick={sortable ? onSort : undefined}
-        data-testid="table-header-cell"
-    >
+    alignment = 'left',
+    textColorClass = 'text-content/60',
+}) => {
+    const justifyClass = alignment === 'center' ? 'justify-center' : alignment === 'right' ? 'justify-end' : 'justify-start';
+
+    return (
+        <div
+            className={`flex cursor-pointer items-center ${justifyClass} gap-1`}
+            onClick={sortable ? onSort : undefined}
+            data-testid="table-header-cell"
+        >
         {typeof label === 'string' ? (
             <Paragraph
                 size="sm"
-                className="text-content/60 text-left font-medium text-nowrap"
+                className={`text-left font-medium text-nowrap ${textColorClass}`}
                 data-testid="table-header-label"
             >
                 {label}
             </Paragraph>
         ) : (
             <div
-                className="text-content/60 text-left font-medium text-nowrap"
+                className={`text-left font-medium text-nowrap ${textColorClass}`}
                 data-testid="table-header-label-element"
             >
                 {label}
@@ -50,7 +57,7 @@ const TableHeaderCell: React.FC<TableHeaderCellProps> = ({
                     className={
                         sortDirection === 'asc'
                             ? 'text-primary'
-                            : 'text-content/60'
+                            : textColorClass
                     }
                     data-testid="table-header-sort-up"
                 />
@@ -60,13 +67,14 @@ const TableHeaderCell: React.FC<TableHeaderCellProps> = ({
                     className={
                         sortDirection === 'desc'
                             ? 'text-primary'
-                            : 'text-content/60'
+                            : textColorClass
                     }
                     data-testid="table-header-sort-down"
                 />
             </div>
         )}
-    </div>
-);
+        </div>
+    );
+};
 
 export default TableHeaderCell;

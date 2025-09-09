@@ -9,4 +9,6 @@ export enum userSettingEnums {
     VIEW_HORIZONTAL = 'viewHorizontal',
     VIEW_MINI = 'viewMini', 
     VIEW_TABLE = 'viewTable',
+    PROPOSAL_PDF_COLUMNS = 'proposalPdfColumns',
+    GROUP_BY_CATEGORIES = 'groupByCategories',
 }
