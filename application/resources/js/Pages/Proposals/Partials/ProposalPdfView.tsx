@@ -28,7 +28,7 @@ const ProposalPdfView: React.FC<ProposalPdfViewProps> = ({
   const { t } = useLaravelReactI18n();
   const itemCount = proposals.data?.length || 0;
 
-  const defaultPdfColumns: ColumnKey[] = ['title', 'budget', 'category', 'openSourced', 'teams', 'viewProposal', 'action'];
+  const defaultPdfColumns: ColumnKey[] = ['title', 'budget', 'category', 'openSourced', 'teams', 'viewProposal'];
 
   const {
     value: selectedColumns,
@@ -38,7 +38,7 @@ const ProposalPdfView: React.FC<ProposalPdfViewProps> = ({
   );
 
   const hasNoColumns = !selectedColumns || selectedColumns.length === 0;
-  
+
   // Check if viewProposal column is selected to enable icon actions
   const showIconActions = selectedColumns?.includes('viewProposal') ?? false;
 
