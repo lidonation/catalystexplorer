@@ -183,6 +183,8 @@ class BookmarksController extends Controller
             Inertia::render('Error404');
         }
 
+        $this->setFilters($request);
+
         $currentPage = request(ProposalSearchParams::PAGE()->value, 1);
 
         $model_type = BookmarkableType::from(Str::kebab($type))->getModelClass();
@@ -201,11 +203,36 @@ class BookmarksController extends Controller
         $relationships = $relationshipsMap[$model_type] ?? [];
         $counts = $countMap[$model_type] ?? [];
 
+        $bookmarkItemIds = $bookmarkCollection->items
+            ->where('model_type', $model_type)
+            ->pluck('model_id')
+            ->toArray();
+
+        $isPdfView = $request->input(ProposalSearchParams::VIEW()->value) === 'pdf' && $model_type === Proposal::class;
+
+        if ($isPdfView && ! empty($bookmarkItemIds)) {
+            $proposals = $model_type::with($relationships)->withCount($counts)
+                ->whereIn('id', $bookmarkItemIds)
+                ->get();
+
+            $proposalsData = $model_type::toDtoCollection($proposals);
+
+            return Inertia::render('Bookmarks/Manage', [
+                'bookmarkCollection' => $bookmarkCollection->load('author'),
+                'type' => $type,
+                'filters' => array_merge([ProposalSearchParams::PAGE()->value => $currentPage]),
+                $type => [
+                    'data' => $proposalsData,
+                    'total' => count($bookmarkItemIds),
+                    'isPdf' => true,
+                ],
+            ]);
+        }
+
+        // Regular paginated view
         $data = $model_type::with($relationships)->withCount($counts)->whereIn(
             'id',
-            $bookmarkCollection->items
-                ->where('model_type', $model_type)
-                ->pluck('model_id')
+            $bookmarkItemIds
         )->paginate(12, ['*'], ProposalSearchParams::PAGE()->value);
 
         $pagination = to_length_aware_paginator(
@@ -215,7 +242,7 @@ class BookmarksController extends Controller
         return Inertia::render('Bookmarks/Manage', [
             'bookmarkCollection' => $bookmarkCollection->load('author'),
             'type' => $type,
-            'filters' => [ProposalSearchParams::PAGE()->value => $currentPage],
+            'filters' => array_merge([ProposalSearchParams::PAGE()->value => $currentPage]),
             $type => $pagination,
         ]);
     }
@@ -231,6 +258,7 @@ class BookmarksController extends Controller
             ProposalSearchParams::PAGE()->value => 'integer|nullable',
             ProposalSearchParams::LIMIT()->value => 'integer|nullable',
             ProposalSearchParams::SORTS()->value => 'string|nullable',
+            ProposalSearchParams::VIEW()->value => 'string|nullable',
         ]);
 
         $this->filters = $this->queryParams;

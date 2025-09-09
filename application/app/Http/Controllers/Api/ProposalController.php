@@ -96,6 +96,34 @@ class ProposalController extends Controller
     }
 
     /**
+     * Store a rationale for a proposal
+     */
+    public function storeRationale(Request $request, string $id): \Illuminate\Http\RedirectResponse
+    {
+        $request->validate([
+            'rationale' => 'required|string|max:5000',
+        ]);
+
+        $proposal = Proposal::findOrFail($id);
+        $user = $request->user();
+
+        if (! $user) {
+            return back()->withErrors(['error' => 'Authentication required']);
+        }
+
+        $rationaleKey = "rationale_user_{$user->id}";
+
+        $existingRationale = $proposal->metas()->where('key', $rationaleKey)->first();
+        $isUpdate = ! is_null($existingRationale);
+
+        $proposal->saveMeta($rationaleKey, $request->rationale);
+
+        $message = $isUpdate ? 'Rationale updated successfully' : 'Rationale saved successfully';
+
+        return back()->with('success', $message);
+    }
+
+    /**
      * Legacy endpoint for backwards compatibility
      */
     public function proposals(): array
