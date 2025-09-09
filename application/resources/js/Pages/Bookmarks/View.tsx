@@ -14,7 +14,7 @@ import {
     generateLocalizedRoute,
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
-import { Head, router } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useState } from 'react';
@@ -65,6 +65,8 @@ type BookmarkCollectionListProps =
     bookmarkCollection: BookmarkCollectionData;
     filters: SearchParams;
 };
+
+
 
 const View = (props: BookmarkCollectionListProps) => {
     const { type, bookmarkCollection } = props;
@@ -230,6 +232,9 @@ const ProposalContent = (props: BookmarkCollectionListProps) => {
     const { type, bookmarkCollection } = props;
     const { getFilter, setFilters, filters } = useFilterContext();
     const { t } = useLaravelReactI18n();
+    const { auth } = usePage().props;
+    const user = bookmarkCollection?.author;
+    const isAuthor = auth?.user?.id == user?.id;
 
     const [isHorizontal, setIsHorizontal] = useState(false);
     const [isMini, setIsMini] = useState(false);
@@ -433,6 +438,7 @@ const ProposalContent = (props: BookmarkCollectionListProps) => {
                         <div className="container">
                             <ProposalPdfView
                                 proposals={props.proposals}
+                                isAuthor={isAuthor}
                                 listTitle={bookmarkCollection.title ?? 'My List'}
                                 onOpenSettings={() => setActiveEditModal(true)}
                             />
@@ -501,7 +507,16 @@ const ProposalContent = (props: BookmarkCollectionListProps) => {
                         onClearAllFilters={clearAllFilters}
                     />
                 )}
+
+                {isAuthor && <DropdownMenu
+                    items={dropdownMenuItems}
+                    className="relative"
+                    dropdownClassName="bg-background border border-gray-200 rounded-lg shadow-lg overflow-visible"
+                    matchButtonWidth={true}
+                />}
             </div>
+
+
 
             <div className="mx-auto my-8">{component}</div>
 
