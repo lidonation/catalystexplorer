@@ -29,6 +29,18 @@ class CatalystDrepController extends Controller
         return Inertia::render('Dreps/Index');
     }
 
+    public function show(string $stake_address): Response
+    {
+        $drep = CatalystDrep::whereHas('signatures', function ($query) use ($stake_address) {
+            $query->where('stake_address', $stake_address);
+        })
+            ->firstOrFail();
+
+        return Inertia::render('Dreps/Drep', [
+            'drep' => $drep
+        ]);
+    }
+
     /**
      * Display the specified resource.
      */
@@ -359,7 +371,7 @@ class CatalystDrepController extends Controller
                 'filename' => $filename,
             ]);
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Failed to publish platform statement to IPFS: '.$e->getMessage()]);
+            return back()->withErrors(['error' => 'Failed to publish platform statement to IPFS: ' . $e->getMessage()]);
         }
     }
 

@@ -4,6 +4,7 @@ import CopyIcon from '@/Components/svgs/CopyIcon';
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 import axiosClient from '@/utils/axiosClient';
 import { currency } from '@/utils/currency';
+import { generateLocalizedRoute, useLocalizedRoute } from '@/utils/localizedRoute';
 import { Button } from '@headlessui/react';
 import { router, usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
@@ -21,6 +22,7 @@ export default function DrepTable({
     delegatedDrepStakeAddress,
 }: DrepTableProps) {
     const { t } = useLaravelReactI18n();
+    // const localizedRoute = useLocalizedRoute();
 
     const [copySuccess, setCopySuccess] = useState<Record<number, boolean>>(
         Object.fromEntries(dreps.map((_, index) => [index, false])),
@@ -45,6 +47,7 @@ export default function DrepTable({
         // { label: t('dreps.drepList.delegators') },
         { label: t('dreps.drepList.status') },
         { label: t('dreps.drepList.delegate') },
+        { label: t('transactions.table.view') },
     ];
 
     const handleCopy = (text: string, index: number) => {
@@ -170,6 +173,14 @@ export default function DrepTable({
             );
         }
     };
+
+       const handleViewDetails = (drep: CatalystDrepData) => {
+        const route = generateLocalizedRoute('dreps.show', {
+            stake_address: drep?.stake_address,
+        });
+        router.visit(route);
+    };
+
     return (
         <div className="w-full overflow-x-auto overflow-y-auto rounded-t-lg shadow-md">
             <table className="w-full">
@@ -221,18 +232,9 @@ export default function DrepTable({
                                 )}
                             </td>
 
-                            {/* <td className="border-dark/30 border px-4 py-2">
-                                <span> {drep.registeredOn}</span> <br />
-                                <span className="text-gray-persist mt-2">
-                                    {t('dreps.drepList.anHourAgo')}
-                                </span>
-                            </td> */}
                             <td className="border-dark/30 border px-4 py-2 text-nowrap">
                                 <span> {drep.last_active ?? 'Fund 13'}</span>{' '}
                                 <br />
-                                {/* <span className="text-gray-persist mt-2">
-                                    {t('dreps.drepList.anHourAgo')}
-                                </span> */}
                             </td>
                             <td className="border-dark/30 border px-4 py-2">
                                 {drep.voting_power
@@ -282,6 +284,14 @@ export default function DrepTable({
                                         </PrimaryButton>
                                     )}
                                 </div>
+                            </td>
+                            <td className="px-4 py-2">
+                                <PrimaryButton
+                                    onClick={() => handleViewDetails(drep)}
+                                    className="bg-primary px-4 py-2 text-sm"
+                                >
+                                    {t('transactions.table.view')}
+                                </PrimaryButton>
                             </td>
                         </tr>
                     ))}
