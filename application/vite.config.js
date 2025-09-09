@@ -21,6 +21,7 @@ export default defineConfig({
             ziggy: path.resolve('vendor/tightenco/ziggy/dist'),
             '@': path.resolve(__dirname, 'resources/js'),
         },
+        extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json'],
     },
     // server: {
     //     hmr: {
@@ -30,6 +31,13 @@ export default defineConfig({
     // },
     ssr: {
         noExternal: ['@inertiajs/server'],
+        external: [
+            'react-map-gl',
+            'react-map-gl/mapbox',
+            'mapbox-gl',
+            '@mapbox/mapbox-gl-geocoder',
+            'mapbox-gl/dist/mapbox-gl.css'
+        ],
     },
     build: {
         target: 'esnext',

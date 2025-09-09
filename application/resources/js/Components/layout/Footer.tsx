@@ -333,7 +333,7 @@ export default function Footer() {
                         <CatalystWhiteLogo />
                     </div>
                     <Paragraph className="text-base font-normal text-gray-300">
-                        {t('copyright')}
+                        {`${new Date().getFullYear().toString()}  ${' '+t('copyright')}`}
                     </Paragraph>
                 </div>
             </section>

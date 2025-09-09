@@ -6,7 +6,7 @@ export interface ExpandableContentAnimationProps {
     lineClamp?: number;
     className?: string;
     marginBottom?: number;
-    contentRef?: RefObject<HTMLElement> | null;
+    contentRef?: RefObject<HTMLElement | null> | null;
     onHoverChange?: ((hovered: boolean) => void) | null;
 }
 

@@ -1,135 +1,98 @@
-import { useMapContext } from '@/Context/MapContext';
-import { useThemeContext } from '@/Context/ThemeContext';
-import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import Map, { Layer, Marker, Source } from 'react-map-gl';
+import React, { useState } from 'react';
+import ReactMapGL, { Marker, Popup } from 'react-map-gl';
 
-// Define the type for map points
-interface MapPoint {
-    lat: number;
-    lng: number;
-    label: string;
-    icon: string;
+interface Point {
+    id: number;
+    latitude: number;
+    longitude: number;
+    title: string;
+    description?: string;
 }
 
-// Props for the GlobalMap component
 interface GlobalMapProps {
-    points: MapPoint[];
+    points: Point[];
+    initialZoom?: number;
+    height?: string;
+    width?: string;
+    mapStyle?: string;
 }
 
-const GlobalMap: React.FC<GlobalMapProps> = ({ points }) => {
-    const { config, show3DBuildings } = useMapContext();
-    const { theme } = useThemeContext();
-    const mapRef = useRef<mapboxgl.Map | null>(null);
-    const [isLoaded, setIsLoaded] = useState(false);
+const GlobalMap: React.FC<GlobalMapProps> = ({
+    points,
+    initialZoom = 2,
+    height = '500px',
+    width = '100%',
+    mapStyle = 'mapbox://styles/mapbox/streets-v11',
+}) => {
+    const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
 
-    useEffect(() => {
-        if (mapRef.current && points.length > 0) {
-            const bounds = new mapboxgl.LngLatBounds();
-            points.forEach((point) => bounds.extend([point.lng, point.lat]));
-            mapRef.current.fitBounds(bounds, { padding: 50, maxZoom: 15 });
-        }
-    }, [points]);
 
-    const markers = useMemo(
-        () =>
-            points.map((point, index) => (
-                <Marker key={index} longitude={point.lng} latitude={point.lat}>
-                    <img
-                        src={point.icon}
-                        alt={point.label}
-                        className="h-8 w-8"
-                    />
-                </Marker>
-            )),
-        [points],
-    );
+    const initialViewport = {
+        latitude: points[0]?.latitude || 0,
+        longitude: points[0]?.longitude || 0,
+        zoom: initialZoom,
+    };
+
+    if (!points || points.length === 0) {
+        return (
+            <div
+                style={{ width, height }}
+                className="flex items-center justify-center bg-gray-100 text-gray-500"
+            >
+                No locations to display
+            </div>
+        );
+    }
 
     return (
-        <div className={`h-[700px] w-full`}>
-            <Map
-                ref={(ref) => (mapRef.current = ref?.getMap() ?? null)}
-                // 🔑 Basic configuration
-                mapboxAccessToken={config.mapboxAccessToken}
-                mapStyle={
-                    theme == 'dark'
-                        ? 'mapbox://styles/mapbox/dark-v9'
-                        : 'mapbox://styles/mapbox/light-v9'
-                }
+        <div style={{ width, height }} className="relative">
+            <ReactMapGL
+                initialViewState={initialViewport}
+                mapStyle={mapStyle}
+                mapboxAccessToken={import.meta.env.VITE_MAPBOX_ACCESS_TOKEN}
+                onClick={() => setSelectedPoint(null)}
+                onError={(err) => console.error('Map error:', err)}
                 style={{ width: '100%', height: '100%' }}
-                // 🔍 View settings
-                initialViewState={config.initialViewState}
-                latitude={config?.latitude ?? 0.4194} // Center latitude
-                longitude={config?.longitude ?? 0.7749} // Center longitude
-                zoom={config?.zoom ?? 2} // Zoom level
-                minZoom={config?.minZoom ?? 0} // Minimum zoom level
-                maxZoom={config?.maxZoom ?? 20} // Maximum zoom level
-                bearing={config?.bearing ?? 0} // Camera rotation in degrees
-                pitch={config?.pitch ?? 0} // Tilt in degrees
-                // 🎛️ Interaction settings
-                interactive={config?.interactive ?? true} // Enable/disable user interaction
-                dragPan={config?.dragPan ?? true} // Enable dragging to pan the map
-                dragRotate={config?.dragRotate ?? true} // Enable dragging to rotate the map
-                scrollZoom={config?.scrollZoom ?? true} // Enable scroll wheel zoom
-                touchZoomRotate={config?.touchZoomRotate ?? true} // Enable pinch zoom & rotate
-                doubleClickZoom={config?.doubleClickZoom ?? true} // Enable double-click zoom
-                keyboard={config?.keyboard ?? true} // Enable keyboard shortcuts
-                // 🎨 Map appearance & projection
-                projection={{ name: 'mercator' }} // Projection (e.g., 'mercator', 'globe')
-                preserveDrawingBuffer={config?.preserveDrawingBuffer ?? false} // Preserve canvas buffer for screenshots
-                antialias={true} // Improve rendering smoothness
-                // 🗺️ Terrain & 3D buildings
-                terrain={
-                    config?.terrain ?? {
-                        source: 'mapbox-dem',
-                        exaggeration: 1.5,
-                    }
-                } // Add 3D terrain
-                renderWorldCopies={config?.renderWorldCopies ?? true} // Wraps world map horizontally
-                // 📌 Markers & layers
-                maxBounds={
-                    config?.maxBounds ?? [
-                        [-180, -85],
-                        [180, 85],
-                    ]
-                } // Restrict panning outside bounds
-                // ⚙️ API configurations
-                locale={
-                    config?.locale ?? {
-                        'AttributionControl.ToggleAttribution': 'Show credits',
-                    }
-                } // Localization
-                // 🎯 Event handlers
-                onLoad={() => setIsLoaded(true)}
-                // 🔄 Performance optimizations
-                trackResize={config?.trackResize ?? true} // Auto-adjust size on window resize
-                optimizeForTerrain={true} // Optimize rendering for terrain
             >
-                {/* 3D Buildings Layer */}
-                {isLoaded && show3DBuildings && (
-                    <Source
-                        id="mapbox-buildings"
-                        type="vector"
-                        url="mapbox://mapbox.3d-buildings"
-                    >
-                        <Layer
-                            id="3d-buildings"
-                            source="mapbox-buildings"
-                            source-layer="building"
-                            type="fill-extrusion"
-                            paint={{
-                                'fill-extrusion-color': true ? '#aaa' : '#888',
-                                'fill-extrusion-height': ['get', 'height'],
-                                'fill-extrusion-opacity': 0.6,
-                            }}
-                        />
-                    </Source>
-                )}
+                {points.map((point) => (
+                    <Marker
+                        key={point.id}
+                        latitude={point.latitude}
+                        longitude={point.longitude}
+                        color="red"
+                        onClick={(e) => {
+                            e.originalEvent.stopPropagation();
+                            setSelectedPoint(point);
+                        }}
+                    />
+                ))}
 
-                {/* Render Custom Markers */}
-                {markers}
-            </Map>
+                {selectedPoint && (
+                    <Popup
+                        latitude={selectedPoint.latitude}
+                        longitude={selectedPoint.longitude}
+                        onClose={() => setSelectedPoint(null)}
+                        closeOnClick={false}
+                        anchor="top"
+                    >
+                        <div className="p-3">
+                            <h3 className="mb-1 text-lg font-semibold">
+                                {selectedPoint.title}
+                            </h3>
+                            {selectedPoint.description && (
+                                <p className="text-sm text-gray-600">
+                                    {selectedPoint.description}
+                                </p>
+                            )}
+                            <div className="mt-2 text-xs text-gray-400">
+                                {selectedPoint.latitude.toFixed(4)},{' '}
+                                {selectedPoint.longitude.toFixed(4)}
+                            </div>
+                        </div>
+                    </Popup>
+                )}
+            </ReactMapGL>
         </div>
     );
 };

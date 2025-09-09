@@ -5,9 +5,23 @@ return [
     /**
      * The locales you wish to support.
      */
-    'supported_locales' => ['en', 'de', 'zh', 'ja', 'sw', 'es', 'fr'],
+    'supported_locales' => ['en', 'am', 'ar', 'de', 'zh', 'ko', 'pt', 'ja', 'sw', 'es', 'fr'],
 
     'supported_locale_details' => [
+        'am' => [
+            'key' => 'am',
+            'name' => 'Amharic',
+            'script' => 'Ethi',
+            'native' => 'አማርኛ',
+            'regional' => 'am_ET',
+        ],
+        'ar' => [
+            'key' => 'ar',
+            'name' => 'Arabic',
+            'script' => 'Arab',
+            'native' => 'العربية',
+            'regional' => 'ar_SA',
+        ],
         'de' => [
             'key' => 'de',
             'name' => 'German',
@@ -36,12 +50,26 @@ return [
             'native' => 'français',
             'regional' => 'fr_FR',
         ],
+        'pt' => [
+            'key' => 'pt',
+            'name' => 'Portuguese',
+            'script' => 'Latn',
+            'native' => 'Português',
+            'regional' => 'pt_PT',
+        ],
         'sw' => [
             'key' => 'sw',
             'name' => 'Swahili',
             'script' => 'Latn',
             'native' => 'Kiswahili',
             'regional' => 'sw_KE',
+        ],
+        'ko' => [
+            'key' => 'ko',
+            'name' => 'Korean',
+            'script' => 'Kore',
+            'native' => '한국어',
+            'regional' => 'ko_KO',
         ],
         'ja' => [
             'key' => 'ja',

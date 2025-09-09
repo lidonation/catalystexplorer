@@ -21,21 +21,25 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
     const { t } = useLaravelReactI18n();
 
     return (
-        <div className="flex min-h-screen w-full flex-col items-center justify-center lg:flex-row">
-            <div className="bg-background mt-30 mr-54 mb-30 ml-54 inline-flex w-[300px] flex-col items-center justify-start gap-7 rounded-xl p-4 shadow-md sm:w-[400px] lg:w-[700px]">
-                <div className="flex justify-center p-3">
-                    <CatalystLogo />
+        <div className=" flex min-h-screen w-full flex-col items-center justify-center lg:flex-row">
+            <div
+                className="container inline-flex flex-col items-center justify-start gap-7 ">
+                <div className="bg-background w-full shadow-md rounded-xl my-28 max-w-lg">
+                    <div className="flex justify-center py-8 px-8">
+                        <CatalystLogo />
+                    </div>
+                    {children}
                 </div>
-                {children}
             </div>
 
-            <div className="splash-wrapper from-background-home-gradient-color-1 to-background-home-gradient-color-2 z-10 hidden w-full justify-center bg-gradient-to-r lg:sticky lg:-top-64 lg:order-2 lg:flex lg:h-screen lg:rounded-tl-4xl">
+            <div
+                className="splash-wrapper from-background-home-gradient-color-1 to-background-home-gradient-color-2 z-10 hidden ml-10 w-full justify-center bg-gradient-to-r lg:sticky lg:-top-64 lg:order-2 lg:flex lg:h-screen lg:rounded-tl-4xl">
                 <div
                     className="relative flex h-full w-full flex-col justify-center overflow-visible lg:gap-8 lg:pt-8"
                     style={{
                         backgroundImage: `url(${ConcentricCircles})`,
                         backgroundPosition: 'top',
-                        backgroundRepeat: 'no-repeat',
+                        backgroundRepeat: 'no-repeat'
                     }}
                 >
                     <div className="absolute top-0 left-0 p-4 md:p-6 lg:p-10">

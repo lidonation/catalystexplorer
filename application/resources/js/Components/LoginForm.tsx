@@ -3,7 +3,7 @@ import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import TextInput from '@/Components/atoms/TextInput';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
-import { generateLocalizedRoute } from '@/utils/localizedRoute';
+import { generateLocalizedRoute, useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link, router, useForm } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { FormEventHandler, useState } from 'react';
@@ -133,7 +133,7 @@ export default function LoginForm({ title, postRoute }: LoginFormProps) {
                             </label>
                         </div>
                         <Link
-                            href="#"
+                            href={useLocalizedRoute('password.request')}
                             className="text-primary text-xs hover:underline sm:text-sm"
                             data-testid="login-forgot-password-link"
                         >
@@ -154,7 +154,7 @@ export default function LoginForm({ title, postRoute }: LoginFormProps) {
                 <p className="text-dark mt-4 text-center text-xs sm:text-sm">
                     {t('registration.noAccount')}{' '}
                     <Link
-                        href="#"
+                        href={useLocalizedRoute('register')}
                         className="text-primary font-medium hover:underline"
                         data-testid="login-signup-link"
                     >

@@ -497,6 +497,10 @@ Route::localized(
             ->group(function () {
                 Route::get('/', fn() => Inertia::render('ComingSoon', ['context' => 'CCV4 Data']))->name('index');
             });
+
+        // Arabic Test Route
+        Route::get('/arabic-test', fn() => Inertia::render('ArabicTest'))
+            ->name('arabic-test');
     }
 
 );

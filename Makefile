@@ -3,7 +3,7 @@ export
 
 sail := ./application/vendor/bin/sail
 compose := docker-compose exec -T catalystexplorer.com
-nodeVersion := 20
+nodeVersion := 24.3.0
 
 .PHONY: init
 init:

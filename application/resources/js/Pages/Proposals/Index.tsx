@@ -10,17 +10,18 @@ import { PageProps } from '@/types';
 import { PaginatedData } from '@/types/paginated-data';
 import { ProposalMetrics } from '@/types/proposal-metrics';
 import { SearchParams } from '@/types/search-params';
-import { Head } from '@inertiajs/react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { useEffect, useState } from 'react';
+import { Head, WhenVisible } from '@inertiajs/react';
+import { useEffect, useState, useCallback } from 'react';
+import { useLaravelReactI18n } from "laravel-react-i18n";
+import { motion, AnimatePresence } from 'framer-motion';
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
 import FundFiltersContainer from './Partials/FundFiltersContainer';
 import ProposalFilters from './Partials/ProposalFilters';
 import ProposalPaginatedList from './Partials/ProposalPaginatedList';
 import ProposalTableView from './Partials/ProposalTableView';
+import { userSettingEnums } from '@/enums/user-setting-enums';
+import { useUserSetting } from '@/Hooks/useUserSettings';
 import ProposalData = App.DataTransferObjects.ProposalData;
-// @ts-ignore
 
 interface HomePageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
@@ -36,24 +37,98 @@ export default function Index({
     metrics,
 }: PageProps<HomePageProps>) {
     const { t } = useLaravelReactI18n();
-
-    // const { createProposalPlaylist } = usePlayer();
     const { setMetrics } = useMetrics();
 
-    const [isHorizontal, setIsHorizontal] = useState(false);
-    const [isMini, setIsMini] = useState(false);
-    const [isTableView, setIsTableView] = useState(false);
+    const { 
+        value: isHorizontal, 
+        setValue: setIsHorizontalPersistent,
+        isLoading: isHorizontalLoading 
+    } = useUserSetting<boolean>(userSettingEnums.VIEW_HORIZONTAL, false);
+    
+    const { 
+        value: isMini, 
+        setValue: setIsMiniPersistent,
+        isLoading: isMiniLoading 
+    } = useUserSetting<boolean>(userSettingEnums.VIEW_MINI, false);
+    
+    const { 
+        value: isTableView, 
+        setValue: setIsTableViewPersistent,
+        isLoading: isTableViewLoading 
+    } = useUserSetting<boolean>(userSettingEnums.VIEW_TABLE, false);
+
     const [showFilters, setShowFilters] = useState(false);
+    const [settingsInitialized, setSettingsInitialized] = useState(false);
 
     const [quickPitchView, setQuickPitchView] = useState(
         !!parseInt(filters[ParamsEnum.QUICK_PITCHES]),
     );
 
-    // useEffect(() => {
-    //     if (proposals && proposals.data?.length && quickPitchView) {
-    //         createProposalPlaylist(proposals?.data);
-    //     }
-    // }, [proposals, quickPitchView]);
+    // Track when all settings are fully loaded
+    useEffect(() => {
+        if (!isHorizontalLoading && !isMiniLoading && !isTableViewLoading) {
+            setSettingsInitialized(true);
+        }
+    }, [isHorizontalLoading, isMiniLoading, isTableViewLoading]);
+
+    const isViewSettingsLoading = isHorizontalLoading || isMiniLoading || isTableViewLoading;
+    
+    const createDebugHandler = (name: string, handler: Function) => {
+        return async (...args: any[]) => {
+            try {
+                const result = await handler(...args);
+                return result;
+            } catch (error) {
+                throw error;
+            }
+        };
+    };
+
+    const handleSetIsHorizontal = useCallback(createDebugHandler(
+        'handleSetIsHorizontal',
+        async (value: boolean) => {
+            await setIsHorizontalPersistent(value);
+            
+            if (value) {
+                await setIsTableViewPersistent(false);
+                await setIsMiniPersistent(false);
+            }
+        }
+    ), [setIsHorizontalPersistent, setIsTableViewPersistent, setIsMiniPersistent]);
+
+    const handleSetIsMini = useCallback(createDebugHandler(
+        'handleSetIsMini',
+        async (value: boolean) => {
+            await setIsMiniPersistent(value);
+            
+            if (value) {
+                await setIsTableViewPersistent(false);
+                await setIsHorizontalPersistent(false);
+            }
+        }
+    ), [setIsMiniPersistent, setIsTableViewPersistent, setIsHorizontalPersistent]);
+
+    const handleSetIsTableView = useCallback(createDebugHandler(
+        'handleSetIsTableView',
+        async (value: boolean) => {
+            await setIsTableViewPersistent(value);
+            
+            if (value) {
+                await setIsMiniPersistent(false);
+                await setIsHorizontalPersistent(false);
+            }
+        }
+    ), [setIsTableViewPersistent, setIsMiniPersistent, setIsHorizontalPersistent]);
+
+    const handleSetQuickPitchView = useCallback((value: boolean) => {
+        setQuickPitchView(value);
+        
+        if (value) {
+            setIsMiniPersistent(false).catch(e => console.error('Failed to disable mini:', e));
+            setIsTableViewPersistent(false).catch(e => console.error('Failed to disable table:', e));
+            setIsHorizontalPersistent(false).catch(e => console.error('Failed to disable horizontal:', e));
+        }
+    }, [setIsMiniPersistent, setIsTableViewPersistent, setIsHorizontalPersistent]);
 
     useEffect(() => {
         if (metrics) {
@@ -63,7 +138,11 @@ export default function Index({
         return () => {
             setMetrics(undefined);
         };
-    }, [metrics]);
+    }, [metrics, setMetrics]);
+
+    const currentIsHorizontal = isHorizontal ?? false;
+    const currentIsMini = isMini ?? false;
+    const currentIsTableView = isTableView ?? false;
 
     return (
         <ListProvider>
@@ -112,51 +191,61 @@ export default function Index({
                 </section>
 
                 <section className="container flex flex-col items-end pt-2 pb-1">
-                    <CardLayoutSwitcher
-                        isHorizontal={isHorizontal}
-                        quickPitchView={quickPitchView}
-                        isMini={isMini}
-                        isTableView={isTableView}
-                        setIsMini={setIsMini}
-                        setIsHorizontal={setIsHorizontal}
-                        setGlobalQuickPitchView={setQuickPitchView}
-                        setIsTableView={setIsTableView}
-                    />
+                    {isViewSettingsLoading ? (
+                        <div className="flex items-center justify-center w-[240px] h-[50px] bg-background rounded-lg border-[2px] border-gray-300">
+                            <Paragraph size="sm" className="text-gray-500">Loading view settings...</Paragraph>
+                        </div>
+                    ) : (
+                        <CardLayoutSwitcher
+                            isHorizontal={currentIsHorizontal}
+                            quickPitchView={quickPitchView}
+                            isMini={currentIsMini}
+                            isTableView={currentIsTableView}
+                            setIsMini={(value) => {
+                                handleSetIsMini(value);
+                            }}
+                            setIsHorizontal={(value) => {
+                                handleSetIsHorizontal(value);
+                            }}
+                            setGlobalQuickPitchView={(value) => {
+                                handleSetQuickPitchView(value);
+                            }}
+                            setIsTableView={(value) => {
+                                handleSetIsTableView(value);
+                            }}
+                        />
+                    )}
                 </section>
 
-                <AnimatePresence mode="wait">
-                    <motion.div
-                        key={isTableView ? 'table' : 'list'}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.4, ease: 'easeInOut' }}
-                    >
-                        {isTableView ? (
-                            <ProposalTableView
-                                proposals={proposals}
-                                actionType="view"
-                                disableSorting={true}
-                                columnVisibility={{
-                                    fund: true,
-                                    proposal: false,
-                                    title: true,
-                                    yesVotes: true,
-                                    abstainVotes: true,
-                                    teams: true,
-                                }}
-                            />
-                        ) : (
-                            <ProposalPaginatedList
-                                proposals={proposals}
-                                isHorizontal={isHorizontal}
-                                isMini={isMini}
-                                quickPitchView={quickPitchView}
-                                setQuickPitchView={setQuickPitchView}
-                            />
-                        )}
-                    </motion.div>
-                </AnimatePresence>
+                {settingsInitialized ? (
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={currentIsTableView ? 'table' : 'list'}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.4, ease: 'easeInOut' }}
+                        >
+                            {currentIsTableView ? (
+                                <ProposalTableView
+                                    proposals={proposals}
+                                    actionType="view"
+                                    disableSorting={true}
+                                    columns={['title', 'viewProposal', 'fund', 'status', 'funding', 'teams', 'yesVotes', 'abstainVotes']}
+                                    iconOnlyActions={true}
+                                />
+                            ) : (
+                                <ProposalPaginatedList
+                                    proposals={proposals}
+                                    isHorizontal={currentIsHorizontal}
+                                    isMini={currentIsMini}
+                                    quickPitchView={quickPitchView}
+                                    setQuickPitchView={setQuickPitchView}
+                                />
+                            )}
+                        </motion.div>
+                    </AnimatePresence>
+                ) : null}
             </FiltersProvider>
         </ListProvider>
     );

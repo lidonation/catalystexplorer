@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\DataTransferObjects\FundData;
-use App\DataTransferObjects\ProjectScheduleData;
 use App\DataTransferObjects\ProposalData;
 use App\DataTransferObjects\ReviewData;
 use App\Enums\ProposalSearchParams;
@@ -30,7 +29,7 @@ class ProposalsController extends Controller
 {
     protected int $currentPage = 1;
 
-    protected int $limit = 24;
+    protected int $limit = 32;
 
     protected array $queryParams = [];
 
@@ -240,12 +239,11 @@ class ProposalsController extends Controller
         $proposal = Proposal::with(['schedule.milestones'])
             ->where('slug', $slug)->firstOrFail();
 
-        //        dd(ProjectScheduleData::from($proposal->schedule));
-        //        dd($this->getProposalBaseData($request, $proposal));
-
         return Inertia::render(
             'Proposals/Schedule/Index',
-            $this->getProposalBaseData($request, $proposal),
+            [
+                'proposal' => $this->getProposalBaseData($request, $proposal),
+            ]
         );
     }
 
@@ -380,7 +378,7 @@ class ProposalsController extends Controller
 
         $limit = isset($this->queryParams[ProposalSearchParams::LIMIT()->value])
             ? (int) $this->queryParams[ProposalSearchParams::LIMIT()->value]
-            : 24;
+            : 32;
 
         $args['offset'] = ($page - 1) * $limit;
         $args['limit'] = $limit;
@@ -743,56 +741,12 @@ class ProposalsController extends Controller
 
         $proposal->loadMissing(['author']);
 
-        // Manually build the proposal data to avoid hidden field issues and type mismatches
-        $proposalData = [
-            'id' => $proposal->getKey(), // Use getKey() to get the primary key value
-            'user_id' => $proposal->user_id,
-            'title' => $proposal->title,
-            'slug' => $proposal->slug,
-            'website' => $proposal->website,
-            'excerpt' => $proposal->excerpt,
-            'content' => $proposal->content,
-            'amount_requested' => $proposal->amount_requested,
-            'amount_received' => $proposal->amount_received,
-            'definition_of_success' => $proposal->definition_of_success,
-            'status' => $proposal->status,
-            'funding_status' => $proposal->funding_status,
-            'funded_at' => $proposal->funded_at,
-            'deleted_at' => $proposal->deleted_at,
-            'funding_updated_at' => $proposal->funding_updated_at,
-            'yes_votes_count' => $proposal->yes_votes_count,
-            'no_votes_count' => $proposal->no_votes_count,
-            'abstain_votes_count' => $proposal->abstain_votes_count,
-            'comment_prompt' => $proposal->comment_prompt,
-            'social_excerpt' => $proposal->social_excerpt,
-            'ideascale_link' => $proposal->ideascale_link,
-            'projectcatalyst_io_link' => $proposal->projectcatalyst_io_url ?? null,
-            'type' => $proposal->type,
-            'meta_title' => $proposal->meta_title,
-            'problem' => $proposal->problem,
-            'solution' => $proposal->solution,
-            'experience' => $proposal->experience,
-            'currency' => $proposal->currency,
-            'minted_nfts_fingerprint' => null, // TODO: implement if needed
-            'ranking_total' => $proposal->ranking_total,
-            'quickpitch' => $proposal->quickpitch,
-            'quickpitch_length' => $proposal->quickpitch_length,
-            'opensource' => $proposal->opensource,
-            'link' => $proposal->link,
-            'order' => null, // TODO: implement if needed
-            'campaign' => null,
-            'schedule' => null,
-            'fund' => null,
-        ];
+        $proposalData = ProposalData::from($proposal);
+        //        $proposalData['alignment_score'] = $proposal->getDiscussionRankingScore('Impact Alignment') ?? 0;
+        //        $proposalData['feasibility_score'] = 0; // $proposal->getDiscussionRankingScore('Feasibility') ?? 0;
+        //        $proposalData['auditability_score'] = 0; // $proposal->getDiscussionRankingScore('Value for money') ?? 0;
 
-        // Temporarily disable these due to UUID/text type mismatch issues
-        $proposalData['alignment_score'] = 0; // $proposal->getDiscussionRankingScore('Impact Alignment') ?? 0;
-        $proposalData['feasibility_score'] = 0; // $proposal->getDiscussionRankingScore('Feasibility') ?? 0;
-        $proposalData['auditability_score'] = 0; // $proposal->getDiscussionRankingScore('Value for money') ?? 0;
-
-        return [
-            'proposal' => ProposalData::from($proposalData),
-        ];
+        return $proposalData;
     }
 
     public function getProposalMetrics(Request $request)

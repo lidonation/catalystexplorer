@@ -1,3 +1,5 @@
+import { useLaravelReactI18n } from 'laravel-react-i18n';
+
 export default function ProposalStatus({
     status = 'pending',
     funding_status = 'funded',
@@ -5,24 +7,25 @@ export default function ProposalStatus({
     status: null | string;
     funding_status: undefined | string;
 }) {
+    const { t } = useLaravelReactI18n();
     let statusColor = '';
     let projectStatus = '';
 
     if (status === 'pending') {
         statusColor = 'bg-primary';
-        projectStatus = 'Vote Pending';
+        projectStatus = t('project.status.votePending');
     } else if (funding_status === 'withdrawn') {
         statusColor = 'bg-light';
-        projectStatus = 'Withdrawn';
+        projectStatus = t('project.status.withdrawn');
     } else if (status === 'complete') {
         statusColor = 'bg-success';
-        projectStatus = 'Complete';
+        projectStatus = t('project.status.complete');
     } else if (status === 'in_progress') {
         statusColor = 'bg-primary';
-        projectStatus = 'In progress';
+        projectStatus = t('project.status.inProgress');
     } else if (status === 'unfunded') {
         statusColor = 'bg-accent-secondary';
-        projectStatus = 'Unfunded';
+        projectStatus = t('project.status.unfunded');
     }
 
     return (

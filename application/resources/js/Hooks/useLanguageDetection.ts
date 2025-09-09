@@ -16,7 +16,7 @@ interface LanguageValidation {
     message?: string;
 }
 
-const useLanguageDetection = () => {
+export function useLanguageDetection()   {
     const { t } = useLaravelReactI18n();
 
     const detectLanguage = useCallback(
@@ -32,12 +32,12 @@ const useLanguageDetection = () => {
             try {
                 // Clean the text for better detection
                 const cleanText = text
-                    .replace(/https?:\/\/[^\s]+/g, '') // Remove URLs
+                    .replace(/https?:\/\/[^\s]+/g, '')
                     .replace(
                         /[^\w\s\u00C0-\u017F\u0400-\u04FF\u4E00-\u9FFF\uAC00-\uD7AF]/g,
                         ' ',
-                    ) // Keep only letters and basic punctuation
-                    .replace(/\s+/g, ' ') // Normalize whitespace
+                    )
+                    .replace(/\s+/g, ' ')
                     .trim();
 
                 if (cleanText.length < minLength) {
@@ -56,7 +56,6 @@ const useLanguageDetection = () => {
                     mappedLanguage as any,
                 );
 
-                // Determine confidence based on text length and detection result
                 let confidence: 'high' | 'medium' | 'low' | 'none' = 'low';
 
                 if (cleanText.length > 300 && detected !== 'und') {

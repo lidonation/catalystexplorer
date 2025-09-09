@@ -17,6 +17,9 @@ class UserSettingData extends Data
         public array $proposalComparison,
         public array $proposalType,
         public array $chartOptions,
-        public array $chartType
+        public array $chartType,
+        public array $viewHorizontal,
+        public array $viewMini,
+        public array $viewTable,
     ) {}
 }

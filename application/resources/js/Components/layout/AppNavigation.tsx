@@ -37,7 +37,7 @@ function AppNavigation() {
         const isAbsoluteUrl =
             path.startsWith('http://') || path.startsWith('https://');
         const parsedPath = isAbsoluteUrl ? new URL(path).pathname : path;
-        const normalizedPath = parsedPath.replace(/^\/(en|fr|sw)(\/|$)/, '/');
+        const normalizedPath = parsedPath.replace(/^\/(am|ar|de|en|es|fr|ja|ko|pt|ru|sw|zh)(\/|$)/, '/');
         const basePath = normalizedPath.split('?')[0];
         return basePath.endsWith('/') && basePath !== '/'
             ? basePath.slice(0, -1)
@@ -423,6 +423,15 @@ function AppNavigation() {
                                                     ariaLabel={`${t('myCharts')} ${t('link')}`}
                                                     active={false}
                                                     data-testid="numbers-charts-link"
+                                                ></NavLinkItem>
+                                                <NavLinkItem
+                                                    href={useLocalizedRoute('services.index')}
+                                                    disable={false}
+                                                    title={t('my.services')}
+                                                    ariaLabel={`Services ${t('link')}`}
+                                                    active={false}
+                                                    prefetch
+                                                    data-testid="numbers-services-link"
                                                 ></NavLinkItem>
                                             </div>
                                         )}

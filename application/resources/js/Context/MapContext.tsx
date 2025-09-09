@@ -13,7 +13,7 @@ interface MapConfig {
     show3DBuildings: boolean;
 }
 
-// define default configuration
+
 const defaultConfig: MapConfig = {
     config: {
         mapboxAccessToken: import.meta.env.VITE_MAPBOX_ACCESS_TOKEN,
