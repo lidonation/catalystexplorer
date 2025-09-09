@@ -22,7 +22,6 @@ export default function DrepTable({
     delegatedDrepStakeAddress,
 }: DrepTableProps) {
     const { t } = useLaravelReactI18n();
-    // const localizedRoute = useLocalizedRoute();
 
     const [copySuccess, setCopySuccess] = useState<Record<number, boolean>>(
         Object.fromEntries(dreps.map((_, index) => [index, false])),
@@ -248,12 +247,12 @@ export default function DrepTable({
                             <td className="border-dark/30 border px-4 py-2">
                                 <div
                                     className={`flex items-center justify-center rounded border p-1.5 text-sm ${
-                                        drep.status === 'Active'
+                                        drep.status === 'active'
                                             ? 'text-success border-success/50 bg-success/10'
                                             : 'text-error border-error/50 bg-error/10'
                                     }`}
                                 >
-                                    {'N/A'}
+                                    {drep?.status ? drep.status : 'N/A'}
                                 </div>
                             </td>
                             <td className="px-4 py-2">

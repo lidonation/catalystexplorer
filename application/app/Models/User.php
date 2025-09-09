@@ -70,14 +70,14 @@ class User extends Authenticatable implements HasMedia
         $string = $this->name ?? $this->email;
 
         return Attribute::make(
-            get: fn () => "https://api.multiavatar.com/{$string}.png"
+            get: fn() => "https://api.multiavatar.com/{$string}.png"
         );
     }
 
     public function heroImgUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => count($this->getMedia('profile')) ? $this->getMedia('profile')[0]->getFullUrl() : $this->gravatar
+            get: fn() => count($this->getMedia('profile')) ? $this->getMedia('profile')[0]->getFullUrl() : $this->gravatar
         );
     }
 
@@ -148,6 +148,14 @@ class User extends Authenticatable implements HasMedia
 
     public function stakeAddress(): Attribute
     {
-        return Attribute::make(get: fn () => $this->signatures()?->first()?->stake_address);
+        return Attribute::make(get: fn() => $this->signatures()?->first()?->stake_address);
+    }
+
+    public function votingPower(): Attribute
+    {
+        return Attribute::make(get: function () {
+            $balance = $this->signatures()?->first()?->wallet_balance ?? 0;
+            return (float) $balance;
+        });
     }
 }
