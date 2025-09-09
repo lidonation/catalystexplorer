@@ -89,6 +89,9 @@
         --cx-purple-light: #EEEFFD;
         --cx-content-darker: #071437;
 
+        --cx-table-header-bg: #B1E2F0;
+        --cx-table-header-text: #4B5675;
+
         --cx-display-xs: 1.5rem;
         --cx-display-sm: 1.875rem;
         --cx-display-md: 2rem;
@@ -104,7 +107,7 @@
         --cx-primary-light: #effafc;
         --cx-primary-light-border: #5a9aa7;
         --cx-primary-dark: #165a72;
-        --cx-secondary: #000000;
+        --cx-secondary: #3facd1;
         --cx-light: #667085;
         --cx-dark: #667085;
         --cx-accent: #8cdefa;
@@ -154,6 +157,9 @@
         --border-secondary-color: #3facd1;
         --bg-light-persist: #ffffff;
         --cx-tooltip-background: #667085;
+        
+        --cx-table-header-bg: #2a3f50;
+        --cx-table-header-text: #b1e2f0;
     }
 
     [data-theme='voltaire'] {
@@ -161,7 +167,7 @@
         --cx-primary-light: #effafc;
         --cx-primary-light-border: #78b6c2;
         --cx-primary-dark: #165a72;
-        --cx-secondary: #000000;
+        --cx-secondary: #3facd1;
         --cx-light: #667085;
         --cx-dark: #667085;
         --cx-accent: #1f2d3d;
@@ -207,6 +213,9 @@
         --content-success-darker: #06c710;
         --border-primary-color: #b1e3f1;
         --border-secondary-color: #3facd1;
+        
+        --cx-table-header-bg: #b1e3f1;
+        --cx-table-header-text: #1f2d3d;
     }
 
     .bg-background {

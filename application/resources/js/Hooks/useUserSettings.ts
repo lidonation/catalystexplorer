@@ -45,9 +45,14 @@ export function useUserSetting<T = any>(
                     theme: null,
                     viewChartBy: null,
                     proposalComparison: null,
+                    proposalType: null,
+                    chartOptions: null,
+                    chartType: null,
                     viewHorizontal: false,
                     viewMini: false,
                     viewTable: false,
+                    proposalPdfColumns: null,
+                    groupByCategories: false,
                 };
             }
 

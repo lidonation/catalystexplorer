@@ -569,6 +569,22 @@ class Proposal extends Model
         );
     }
 
+    public function userRationale(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $user = auth()->user();
+                if (! $user) {
+                    return null;
+                }
+
+                $rationaleKey = "rationale_user_{$user->id}";
+
+                return $this->metas()->where('key', $rationaleKey)->first()?->content;
+            }
+        );
+    }
+
     /**
      * Modify the query used to retrieve models when making all the models searchable.
      */

@@ -33,7 +33,7 @@ class BookmarkCollection extends Model
 
     public $meiliIndexName = 'cx_bookmark_collections';
 
-    protected $appends = ['types_count', 'tinder_direction', 'list_type'];
+    protected $appends = ['types_count', 'tinder_direction', 'list_type', 'workflow_params'];
 
     protected $guarded = [];
 
@@ -201,6 +201,56 @@ class BookmarkCollection extends Model
                 }
 
                 return 'voter';
+            }
+        );
+    }
+
+    public function workflowParams(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $listType = $this->list_type;
+
+                switch ($listType) {
+                    case 'tinder':
+                        if ($this->model_type === TinderCollection::class && $this->model_id) {
+
+                            $tinderCollectionHash = $this->model_id;
+
+                            $relatedCollections = static::where('model_type', TinderCollection::class)
+                                ->where('model_id', $tinderCollectionHash)
+                                ->get();
+
+                            $leftCollection = $relatedCollections->where('tinder_direction', 'left')->first();
+                            $rightCollection = $relatedCollections->where('tinder_direction', 'right')->first();
+
+                            if (! $leftCollection && ! $rightCollection && $relatedCollections->count() >= 2) {
+                                $leftCollection = $relatedCollections->first();
+                                $rightCollection = $relatedCollections->skip(1)->first();
+                            } elseif (! $leftCollection && ! $rightCollection && $relatedCollections->count() === 1) {
+                                $currentCollection = $relatedCollections->first();
+                                if ($currentCollection->id === $this->id) {
+                                    $rightCollection = $currentCollection;
+                                }
+                            }
+
+                            return [
+                                'leftBookmarkCollectionHash' => $leftCollection?->id,
+                                'rightBookmarkCollectionHash' => $rightCollection?->id,
+                                'tinderCollectionHash' => $tinderCollectionHash,
+                            ];
+                        }
+
+                        return null;
+
+                    case 'voter':
+                    case 'normal':
+                        // These workflows use the collection ID directly, no additional params needed
+                        return null;
+
+                    default:
+                        return null;
+                }
             }
         );
     }

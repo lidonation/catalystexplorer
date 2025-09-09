@@ -8,11 +8,14 @@ import TextInput from '@/Components/atoms/TextInput';
 import ValueLabel from '@/Components/atoms/ValueLabel';
 import InputError from '@/Components/InputError';
 import RadioGroup from '@/Components/RadioGroup';
+import ColumnSelector, { ColumnKey } from '@/Components/ColumnSelector';
 import { StatusEnum, VisibilityEnum } from '@/enums/votes-enums';
+import { userSettingEnums } from '@/enums/user-setting-enums';
+import { useUserSetting } from '@/Hooks/useUserSettings';
 import { InertiaFormProps, useForm } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import lodashPkg from 'lodash';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 
 export type ListForm = InertiaFormProps<{
@@ -37,6 +40,25 @@ export default function EditListForm({
     const { t } = useLaravelReactI18n();
     const colorInputRef = useRef<HTMLInputElement>(null);
 
+    // Default PDF columns (same as in ProposalPdfView)
+    const defaultPdfColumns: ColumnKey[] = ['title', 'budget', 'category', 'openSourced', 'teams'];
+    
+    const {
+        value: selectedColumns,
+        setValue: setSelectedColumns,
+    } = useUserSetting<ColumnKey[]>(
+        userSettingEnums.PROPOSAL_PDF_COLUMNS,
+        defaultPdfColumns,
+    );
+
+    const {
+        value: groupByCategories,
+        setValue: setGroupByCategories,
+    } = useUserSetting<boolean>(
+        userSettingEnums.GROUP_BY_CATEGORIES as keyof App.DataTransferObjects.UserSettingData,
+        false,
+    );
+
     const form = useForm({
         title: bookmarkCollection?.title || '',
         visibility: bookmarkCollection?.visibility || VisibilityEnum.UNLISTED,
@@ -45,6 +67,16 @@ export default function EditListForm({
         color: bookmarkCollection?.color || '#2596BE',
         status: bookmarkCollection?.status || StatusEnum.DRAFT,
     });
+
+    const handleVisibilityChange = (value: string) => {
+        form.setData('visibility', value);
+    };
+
+    const handleStatusChange = (value: string) => {
+        form.setData('status', value);
+    };
+    
+    const showColumnSelector = bookmarkCollection?.list_type === 'voter' || bookmarkCollection?.list_type === 'tinder';
 
     return (
         <div className="space-y-6 pt-6">
@@ -83,6 +115,26 @@ export default function EditListForm({
                 <InputError message={form.errors.content} />
             </div>
 
+            {/* Group by categories - only show for voting and tinder lists */}
+            {showColumnSelector && (
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
+                    <div className="mr-2">
+                        <ValueLabel className="text-content">
+                            Group by categories
+                        </ValueLabel>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <CustomSwitch
+                            checked={groupByCategories ?? false}
+                            onCheckedChange={(checked) => setGroupByCategories(checked)}
+                            color="bg-primary"
+                            size="md"
+                            className="!w-auto"
+                        />
+                    </div>
+                </div>
+            )}
+
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
                 <div>
                     <ValueLabel className="text-content">
@@ -93,7 +145,7 @@ export default function EditListForm({
                     <RadioGroup
                         name="visibility"
                         selectedValue={form.data.visibility}
-                        onChange={(value) => form.setData('visibility', value)}
+                        onChange={handleVisibilityChange}
                         options={[
                             {
                                 value: lowerCase(VisibilityEnum.PUBLIC),
@@ -116,6 +168,7 @@ export default function EditListForm({
                         ]}
                         labelClassName="font-bold text-gray-persist ml-2"
                         groupClassName="flex-no-wrap"
+                        data-testid="visibility-radio-group"
                     />
                 </div>
             </div>
@@ -181,7 +234,7 @@ export default function EditListForm({
                     <RadioGroup
                         name="status"
                         selectedValue={form.data.status}
-                        onChange={(value) => form.setData('status', value)}
+                        onChange={handleStatusChange}
                         options={[
                             {
                                 value: lowerCase(StatusEnum.PUBLISHED),
@@ -196,9 +249,27 @@ export default function EditListForm({
                                 ),
                             },
                         ]}
+                        data-testid="status-radio-group"
                     />
                 </div>
             </div>
+
+            {/* Column Selector - only show for voting and tinder lists */}
+            {showColumnSelector && (
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-full">
+                        <ValueLabel className="text-content">
+                            {t('workflows.voterList.selectMetrics')}
+                        </ValueLabel>
+                    </div>
+                    <div className="w-full">
+                        <ColumnSelector
+                            selectedColumns={selectedColumns || defaultPdfColumns}
+                            onSelectionChange={setSelectedColumns}
+                        />
+                    </div>
+                </div>
+            )}
 
             <div className="flex justify-between gap-4">
                 <PrimaryButton

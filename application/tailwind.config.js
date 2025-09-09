@@ -110,11 +110,15 @@ export default {
                 'purple-light': 'var(--cx-purple-light)',
                 'content-darker': 'var(--cx-content-darker)',
 
+                'table-header-bg': 'var(--cx-table-header-bg)',
+                'table-header-text': 'var(--cx-table-header-text)',
+
                 border: {
                     primary: 'var(--cx-primary)',
                     secondary: 'var(--cx-border-secondary-color)',
                     dark: 'var(--cx-dark)',
                     'dark-on-dark': 'var(--cx-border-color-dark)',
+                    'table-header-bg': 'var(--cx-table-header-bg)',
                 },
 
                 tooltip: 'var(--cx-tooltip-background)',
