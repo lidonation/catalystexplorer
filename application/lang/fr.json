@@ -1312,5 +1312,18 @@
     "icons.titles.arrowDown": "Icône de Flèche vers le Bas",
     "icons.titles.arrowUp": "Icône de Flèche vers le Haut",
     "View All Lists": "Voir Toutes les Listes",
-    "View This List": "Voir Cette Liste"
+    "View This List": "Voir Cette Liste",
+    "widgets.quickPitch.title": "Présentation rapide",
+    "widgets.quickPitch.description": "Ajoutez ou mettez à jour l'URL de la vidéo de présentation rapide de votre proposition. Nous prenons en charge les vidéos YouTube et Vimeo.",
+    "widgets.quickPitch.urlLabel": "URL de la vidéo",
+    "widgets.quickPitch.supportedFormats": "Prend en charge les URL YouTube et Vimeo",
+    "widgets.quickPitch.update": "Mettre à jour la présentation",
+    "widgets.quickPitch.updating": "Mise à jour...",
+    "widgets.quickPitch.success": "Présentation rapide mise à jour avec succès !",
+    "widgets.quickPitch.errors.required": "Une URL de vidéo est requise",
+    "widgets.quickPitch.errors.invalidUrl": "Veuillez saisir une URL YouTube ou Vimeo valide",
+    "widgets.quickPitch.errors.updateFailed": "Échec de la mise à jour de la présentation. Veuillez réessayer.",
+    "proposals.manageProposal": "Gérer la proposition",
+    "proposals.managingProposal": "Managing: :title",
+    "proposals.manageDescription": "Utilisez les widgets ci-dessous pour gérer les paramètres et le contenu de votre proposition."
 }

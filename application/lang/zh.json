@@ -1301,5 +1301,18 @@
     "project.status.withdrawn": "撤回",
     "project.status.complete": "完成",
     "project.status.inProgress": "进行中",
-    "project.status.unfunded": "未资助"
+    "project.status.unfunded": "未资助",
+    "widgets.quickPitch.title": "快速推介",
+    "widgets.quickPitch.description": "添加或更新您提案的快速推介视频URL。我们支持YouTube和Vimeo视频。",
+    "widgets.quickPitch.urlLabel": "视频URL",
+    "widgets.quickPitch.supportedFormats": "支持YouTube和Vimeo URL",
+    "widgets.quickPitch.update": "更新快速推介",
+    "widgets.quickPitch.updating": "更新中...",
+    "widgets.quickPitch.success": "快速推介更新成功！",
+    "widgets.quickPitch.errors.required": "需要视频URL",
+    "widgets.quickPitch.errors.invalidUrl": "请输入有效的YouTube或Vimeo URL",
+    "widgets.quickPitch.errors.updateFailed": "更新快速推介失败。请再试一次。",
+    "proposals.manageProposal": "管理提案",
+    "proposals.managingProposal": "Managing: :title",
+    "proposals.manageDescription": "使用下方的小部件来管理您提案的设置和内容。"
 }

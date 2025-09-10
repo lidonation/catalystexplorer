@@ -61,9 +61,8 @@ Route::localized(
 
                 Route::prefix('proposals')->as('proposals.')->group(function () {
                     Route::get('/', [ProposalsController::class, 'myProposals'])->name('index');
-                    Route::get('/{proposal}/manage', function () {
-                        return Inertia::render('My/Proposals/ManageProposal');
-                    })->name('manage');
+                    Route::get('/{proposal}/manage', [ProposalsController::class, 'manageProposal'])->name('manage');
+                    Route::patch('/{proposal}/quick-pitch', [ProposalsController::class, 'updateQuickPitch'])->name('quickpitch.update');
                 });
 
                 Route::get('/reviews', [ProfileController::class, 'myReviews'])->name('reviews');
