@@ -40,7 +40,7 @@ const Step1: React.FC<Step1Props> = ({
         email: catalystDrep?.email ?? '',
         bio: catalystDrep?.bio ?? '',
         link: catalystDrep?.link ?? '',
-        willMaintain: false,
+        willMaintain: false as boolean,
         locale: savedLocale,
     });
 
@@ -49,7 +49,14 @@ const Step1: React.FC<Step1Props> = ({
             const formData = formRef.current.getFormData;
 
             if (!formData.data.willMaintain) {
-                form.setError({ willMaintain: '1' });
+                form.setError({
+                    willMaintain: '1',
+                    locale: '',
+                    name: '',
+                    email: '',
+                    bio:'',
+                    link: '',
+                });
                 return;
             }
 
@@ -57,9 +64,14 @@ const Step1: React.FC<Step1Props> = ({
             const languageValidation = formRef.current.validateLanguages();
             if (!languageValidation.isValid) {
                 form.setError({
+                    willMaintain: '',
+                    locale: '',
+                    name: '',
+                    email: '',
                     bio:
                         languageValidation.message ||
                         t('languageDetection.defaultMismatchError'),
+                    link: '',
                 });
                 return;
             }
