@@ -235,19 +235,20 @@ const ProposalPdfHeader: React.FC<ProposalPdfHeaderProps> = ({
         onClose={() => setShowConfirmModal(false)}
         onConfirm={handleModalConfirm}
         title={t('proposalPdfHeader.replaceComparisonListTitle')}
-        message={
-          hasExistingComparisons
-            ? t('proposalPdfHeader.replaceComparisonListMessage', { 
-                count: existingComparisons?.length ?? 0, 
-                newCount: itemCount 
-              })
-            : t('proposalPdfHeader.addComparisonListMessage', { count: itemCount })
-        }
         confirmText={t('proposalPdfHeader.continue')}
         cancelText={t('proposalPdfHeader.cancel')}
         variant="warning"
         isLoading={isLoading}
-      />
+      >
+        <Paragraph className="text-sm text-gray-persist">
+          {hasExistingComparisons
+            ? t('proposalPdfHeader.replaceComparisonListMessage', { 
+                count: existingComparisons?.length ?? 0, 
+                newCount: itemCount 
+              })
+            : t('proposalPdfHeader.addComparisonListMessage', { count: itemCount })}
+        </Paragraph>
+      </ConfirmationModal>
     </div>
   );
 };
