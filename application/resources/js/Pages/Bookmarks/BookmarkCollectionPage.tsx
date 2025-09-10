@@ -371,6 +371,14 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                         disabledTooltip: !isTinderList ? t('workflows.tinderProposal.onlyTinderLists') : undefined
                     },
                     {
+                        label: t('my.manage'),
+                        type: 'link',
+                        href: generateLocalizedRoute('my.lists.manage', {
+                            bookmarkCollection: bookmarkCollection.id,
+                            type: 'proposals',
+                        }) || '',
+                    },
+                    {
                         label: t('bookmarks.editListItem'),
                         type: 'link' as const,
                         href: ((isVoterList || isNormalList)) ? getWorkflowUrl() : '',
@@ -471,7 +479,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
     return (
         <div>
             <div className="container mb-4 flex justify-end items-center gap-4">
-             
+
                 {type === 'proposals' && (
                     <CardLayoutSwitcher
                         quickPitchView={quickPitchView}
