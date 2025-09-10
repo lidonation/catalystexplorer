@@ -16,7 +16,7 @@ import CatalystEyeIcon from '@/Components/svgs/CatalystEyeIcon';
 interface ProposalPdfViewProps {
   proposals: PaginatedData<ProposalData[]> | { data: ProposalData[], total: number, isPdf: boolean };
   listTitle: string;
-  isAuthor: boolean;
+  isAuthor?: boolean;
   pageBackgroundColor?: string;
   onOpenSettings?: () => void;
 }
