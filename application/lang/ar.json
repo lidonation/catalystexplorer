@@ -208,5 +208,10 @@
     "project.status.withdrawn": "مسحوب",
     "project.status.complete": "مكتمل",
     "project.status.inProgress": "قيد التنفيذ",
-    "project.status.unfunded": "غير ممول"
+    "project.status.unfunded": "غير ممول",
+    "dreps.details": "تفاصيل الممثل",
+    "dreps.delegationStatus": "حالة التفويض",
+    "dreps.votingPower": "قوة التصويت",
+    "dreps.vote": "تصويت",
+    "dreps.stake": "الحصة"
 }

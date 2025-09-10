@@ -48,8 +48,7 @@ export default function DrepTable({
         { label: t('dreps.drepList.votingPower') },
         // { label: t('dreps.drepList.delegators') },
         { label: t('dreps.drepList.status') },
-        { label: t('dreps.drepList.delegate') },
-        { label: t('transactions.table.view') },
+        { label: t('dreps.drepList.delegate') }
     ];
 
     const handleCopy = (text: string, index: number) => {

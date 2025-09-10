@@ -1054,6 +1054,11 @@
     "dreps.options.votersAsc": "Wähler: Niedrig zu Hoch",
     "dreps.options.active": "Aktiv",
     "dreps.options.inactive": "Inaktiv",
+    "dreps.details": "Drep-Details",
+    "dreps.delegationStatus": "Delegationsstatus",
+    "dreps.votingPower": "Stimmkraft",
+    "dreps.vote": "Abstimmen",
+    "dreps.stake": "Einsatz",
     "reviews.reviews": "Bewertungen",
     "reviews.reviewer": "Gutachter",
     "reviews.helpfulReview": "War das eine hilfreiche Bewertung?",
@@ -1294,4 +1299,5 @@
     "my.createVotingListWithStandardUi": "Standard-Arbeitsablauf verwenden",
     "my.createVotingListWithCardedUi": "Kartenstapel-Arbeitsablauf verwenden",
     "transactions.table.id": "Id",
-    "transactions.table.proposalPayout": "Vorschlagsauszahlung"}
+    "transactions.table.proposalPayout": "Vorschlagsauszahlung"
+}
