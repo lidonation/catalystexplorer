@@ -213,10 +213,10 @@ class Proposal extends Model
         );
     }
 
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
+    //    public function getRouteKeyName(): string
+    //    {
+    //        return 'slug';
+    //    }
 
     public function currency(): Attribute
     {

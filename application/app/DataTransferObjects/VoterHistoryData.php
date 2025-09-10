@@ -55,5 +55,9 @@ final class VoterHistoryData extends Data
 
         #[TypeScriptOptional]
         public FundData|string|null $fund,
+
+        #[TypeScriptOptional]
+        public ?string $proposal_title,
+
     ) {}
 }
