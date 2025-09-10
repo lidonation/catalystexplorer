@@ -54,4 +54,12 @@ return [
         'ipfs_gateway' => env('BLOCKFROST_IPFS_GATEWAY', 'https://ipfs.blockfrost.io/api/v0'),
         'ipfs_public_gateway' => env('BLOCKFROST_IPFS_PUBLIC_GATEWAY', 'https://ipfs.io/ipfs/'),
     ],
+
+    'youtube' => [
+        'api_key' => env('YOUTUBE_API_KEY'),
+    ],
+
+    'vimeo' => [
+        'access_token' => env('VIMEO_ACCESS_TOKEN'),
+    ],
 ];

@@ -37,7 +37,9 @@ final class CatalystDrepData extends Data
 
         public ?string $locale,
 
-        public ?int $delegators_count
+        public ?int $delegators_count,
+
+        public ?string $created_at,
 
     ) {}
 }

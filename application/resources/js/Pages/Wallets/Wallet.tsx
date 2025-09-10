@@ -38,7 +38,6 @@ export default function Wallet({
 }: WalletProps) {
     const { t } = useLaravelReactI18n();
     const [activeTab, setActiveTab] = useState('votes');
-    console.log({ walletTransactions, walletStats });
 
     return (
         <>

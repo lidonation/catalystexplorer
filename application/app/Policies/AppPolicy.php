@@ -16,9 +16,13 @@ class AppPolicy
     /**
      * Perform pre-authorization checks.
      */
-    public function before(User $user, string $ability): bool
+    public function before(?User $user, string $ability): ?bool
     {
-        return $user->hasAnyRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value]);
+        if ($user?->hasAnyRole([RoleEnum::admin()->value, RoleEnum::super_admin()->value])) {
+            return true;
+        }
+
+        return null;
     }
 
     /**

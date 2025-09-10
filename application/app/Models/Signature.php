@@ -34,7 +34,8 @@ class Signature extends Model
     ];
 
     protected $casts = [
-        'user_id' => 'string', // Cast user_id as string to handle UUIDs
+        'user_id' => 'string',
+        'wallet_balance' => 'decimal:2', // Cast user_id as string to handle UUIDs
     ];
 
     /**

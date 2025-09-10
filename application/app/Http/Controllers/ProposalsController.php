@@ -8,16 +8,20 @@ use App\DataTransferObjects\FundData;
 use App\DataTransferObjects\ProposalData;
 use App\DataTransferObjects\ReviewData;
 use App\Enums\ProposalSearchParams;
+use App\Http\Requests\UpdateProposalQuickPitchRequest;
 use App\Models\Connection;
 use App\Models\Fund;
 use App\Models\IdeascaleProfile;
 use App\Models\Metric;
 use App\Models\Proposal;
 use App\Repositories\ProposalRepository;
+use App\Services\VideoService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Stringable;
 use Inertia\Inertia;
@@ -278,6 +282,60 @@ class ProposalsController extends Controller
             'proposals' => $proposals,
             'filters' => $this->queryParams,
         ]);
+    }
+
+    public function manageProposal(Request $request, Proposal $proposal): Response
+    {
+        //        $this->authorize('manage', $proposal);
+
+        return Inertia::render('My/Proposals/ManageProposal', [
+            'proposal' => ProposalData::from($proposal),
+        ]);
+    }
+
+    public function updateQuickPitch(UpdateProposalQuickPitchRequest $request, Proposal $proposal): RedirectResponse
+    {
+        //        $this->authorize('manage', $proposal);
+
+        $url = $request->validated()['quickpitch'];
+
+        try {
+            // Normalize YouTube URLs to youtu.be format
+            $normalizedUrl = app(VideoService::class)->normalizeYouTubeUrl($url);
+
+            // Try to get video metadata for duration
+            $duration = null;
+            try {
+                $metadata = app(VideoService::class)->getVideoMetadata($normalizedUrl);
+                $duration = $metadata['duration'] ?? null;
+            } catch (\Exception $e) {
+                Log::warning('Failed to fetch video metadata for proposal quick pitch', [
+                    'proposal_id' => $proposal->id,
+                    'url' => $normalizedUrl,
+                    'error' => $e->getMessage(),
+                ]);
+                // Continue without duration - we don't want to fail the entire update
+            }
+
+            // Update the proposal
+            $proposal->update([
+                'quickpitch' => $normalizedUrl,
+                'quickpitch_length' => $duration,
+            ]);
+
+            return redirect()->back()->with('success', 'Quick pitch updated successfully');
+
+        } catch (\Exception $e) {
+            Log::error('Failed to update proposal quick pitch', [
+                'proposal_id' => $proposal->id,
+                'url' => $url,
+                'error' => $e->getMessage(),
+            ]);
+
+            return redirect()->back()->withErrors([
+                'quickpitch' => 'Failed to update quick pitch. Please try again.',
+            ]);
+        }
     }
 
     public function charts(Request $request): Response

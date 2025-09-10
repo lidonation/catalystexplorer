@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\DataTransferObjects\CatalystDrepData;
+use App\DataTransferObjects\UserData;
 use App\Models\CatalystDrep;
 use App\Models\Meta;
 use App\Models\Signature;
@@ -27,6 +28,33 @@ class CatalystDrepController extends Controller
         $drep = '';
 
         return Inertia::render('Dreps/Index');
+    }
+
+    public function show(Request $request, string $stake_address): Response
+    {
+        $user = Auth::user();
+        $drep = CatalystDrep::whereHas('signatures', function ($query) use ($stake_address) {
+            $query->where('stake_address', $stake_address);
+        })
+            ->firstOrFail();
+
+        $delegatedDrepStakeAddress = DB::table('catalyst_drep_user')
+            ->where('user_id', $user?->id)
+            ->pluck('catalyst_drep_stake_address')
+            ->first();
+
+        $delegators = to_length_aware_paginator(
+            UserData::collect(
+                $drep->delegators()->paginate(8, ['*'], 'p', $request->input('p'))
+            )
+        )->onEachSide(0);
+
+        return Inertia::render('Dreps/Drep', [
+            'drep' => CatalystDrepData::from($drep),
+            'delegatedDrepStakeAddress' => $delegatedDrepStakeAddress,
+            'delegators' => $delegators,
+            'filters' => [],
+        ]);
     }
 
     /**

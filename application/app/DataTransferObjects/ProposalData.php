@@ -131,7 +131,7 @@ final class ProposalData extends Data
 
         public ?bool $opensource,
 
-        public string $link,
+        public ?string $link,
 
         #[TypeScriptOptional]
         public ?int $order,

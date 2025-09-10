@@ -44,6 +44,4 @@ const Manage = (props: BookmarkCollectionListProps) => {
     return <BookmarkCollectionPage {...props} mode="manage" />;
 };
 
-
-
 export default Manage;
