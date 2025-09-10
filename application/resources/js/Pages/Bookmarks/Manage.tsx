@@ -435,6 +435,7 @@ const ProposalContent = (props: BookmarkCollectionListProps) => {
                                 proposals={props.proposals}
                                 listTitle={bookmarkCollection.title ?? 'My List'}
                                 onOpenSettings={() => setActiveEditModal(true)}
+                                isAuthor={true}
                             />
                         </div>
                     );
