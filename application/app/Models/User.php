@@ -150,4 +150,13 @@ class User extends Authenticatable implements HasMedia
     {
         return Attribute::make(get: fn () => $this->signatures()?->first()?->stake_address);
     }
+
+    public function votingPower(): Attribute
+    {
+        return Attribute::make(get: function () {
+            $balance = $this->signatures()?->first()?->wallet_balance ?? 0;
+
+            return (float) $balance;
+        });
+    }
 }

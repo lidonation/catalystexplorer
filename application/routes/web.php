@@ -434,6 +434,9 @@ Route::localized(
 
                 Route::get('/list', [CatalystDrepController::class, 'list'])
                     ->name('list');
+                
+                 Route::get('/drep/{stake_address}', [CatalystDrepController::class, 'show'])
+                    ->name('show');    
             }
         );
 

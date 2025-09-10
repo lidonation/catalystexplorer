@@ -109,6 +109,7 @@ last_active: string | null;
 status: string | null;
 locale: string | null;
 delegators_count: number | null;
+created_at: string | null;
 };
 export type CategoryData = {
 id: string;
@@ -608,6 +609,8 @@ email: string | null;
 hero_img_url: string | null;
 email_verified_at: string | null;
 locations: any | null;
+voting_power?: number | null;
+stake_address?: string | null;
 };
 export type UserSettingData = {
 language: string;
@@ -654,5 +657,6 @@ deleted_at?: string;
 voting_power?: number;
 snapshot?: App.DataTransferObjects.SnapshotData;
 fund?: App.DataTransferObjects.FundData | string | null;
+proposal_title?: string | null;
 };
 }

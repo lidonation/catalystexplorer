@@ -1059,6 +1059,11 @@
     "dreps.options.votersAsc": "投票者：低から高",
     "dreps.options.active": "アクティブ",
     "dreps.options.inactive": "非アクティブ",
+    "dreps.details": "Drepの詳細",
+    "dreps.delegationStatus": "委任状況",
+    "dreps.votingPower": "投票権",
+    "dreps.vote": "投票",
+    "dreps.stake": "ステーク",
     "reviews.reviews": "レビュー",
     "reviews.reviewer": "レビュアー",
     "reviews.helpfulReview": "これは役に立つレビューでしたか？",
@@ -1296,4 +1301,5 @@
     "project.status.withdrawn": "取り下げられた",
     "project.status.complete": "完了",
     "project.status.inProgress": "進行中",
-    "project.status.unfunded": "資金未提供"}
+    "project.status.unfunded": "資金未提供"
+}
