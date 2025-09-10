@@ -6,12 +6,10 @@ namespace App\Http\Controllers;
 
 use App\DataTransferObjects\CatalystDrepData;
 use App\DataTransferObjects\UserData;
-use App\DataTransferObjects\VoterHistoryData;
 use App\Models\CatalystDrep;
 use App\Models\Meta;
 use App\Models\Signature;
 use App\Models\User;
-use App\Models\VoterHistory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -45,13 +43,6 @@ class CatalystDrepController extends Controller
             ->pluck('catalyst_drep_stake_address')
             ->first();
 
-        $votingHistory = to_length_aware_paginator(VoterHistoryData::collect(
-            VoterHistory::where('stake_address', $drep->stake_address)
-                ->whereNotNull('proposal')
-                ->orderBy('time', 'desc')
-                ->paginate(8, ['*'], 'p', $request->input('p'))
-        ))->onEachSide(0);
-
         $delegators = to_length_aware_paginator(
             UserData::collect(
                 $drep->delegators()->paginate(8, ['*'], 'p', $request->input('p'))
@@ -61,7 +52,6 @@ class CatalystDrepController extends Controller
         return Inertia::render('Dreps/Drep', [
             'drep' => CatalystDrepData::from($drep),
             'delegatedDrepStakeAddress' => $delegatedDrepStakeAddress,
-            'votingHistory' => $votingHistory,
             'delegators' => $delegators,
             'filters' => [],
         ]);
@@ -397,7 +387,7 @@ class CatalystDrepController extends Controller
                 'filename' => $filename,
             ]);
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Failed to publish platform statement to IPFS: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Failed to publish platform statement to IPFS: '.$e->getMessage()]);
         }
     }
 

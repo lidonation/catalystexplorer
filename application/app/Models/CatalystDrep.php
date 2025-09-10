@@ -44,7 +44,7 @@ class CatalystDrep extends Model
 
     public function stakeAddress(): Attribute
     {
-        return Attribute::make(get: fn() => $this->signatures()?->first()?->stake_address);
+        return Attribute::make(get: fn () => $this->signatures()?->first()?->stake_address);
     }
 
     public function lastActive(): Attribute
@@ -64,6 +64,7 @@ class CatalystDrep extends Model
                 ->get()
                 ->sum(function ($delegator) {
                     $balance = $delegator->signatures()?->first()?->wallet_balance ?? 0;
+
                     return (float) $balance;
                 });
 

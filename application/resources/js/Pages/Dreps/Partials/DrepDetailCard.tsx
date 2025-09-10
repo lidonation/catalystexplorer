@@ -45,11 +45,8 @@ export default function DrepDetailsCard({ drep }: DrepDetailsCardProps) {
                     <DetailRow label={t('dreps.drepList.lastActive')}>
                         <div className="flex-1">
                             <Value className="text-content font-bold">
-                                {drep?.last_active ? formatTimestamp(drep?.last_active || '') : 'N/A'}
+                                <span> {drep.last_active ?? 'Fund 13'}</span>{' '}
                             </Value>
-                            <span className="text-gray-persist text-sm">
-                                {drep?.last_active ? getTimeSince(drep?.last_active || '') : 'N/A'}
-                            </span>
                         </div>
                     </DetailRow>
 

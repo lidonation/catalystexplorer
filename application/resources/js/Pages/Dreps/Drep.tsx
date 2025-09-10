@@ -26,14 +26,12 @@ import DelegatorTable from './Partials/DelegatorsTable';
 interface DrepPageProps {
     drep: CatalystDrepData;
     delegatedDrepStakeAddress?: string;
-    votingHistory?: PaginatedData<VotingHistoryData[]>;
     delegators?: PaginatedData<DelegatorData[]>;
     filters: SearchParams;
 }
 const DrepPage = ({
     drep,
     delegatedDrepStakeAddress,
-    votingHistory,
     delegators,
     filters,
 }: DrepPageProps) => {
@@ -171,13 +169,36 @@ const DrepPage = ({
         }
     };
 
-    useEffect(()=>{
-        console.log('votes', votingHistory);
-    })
+    const voterHistory = [
+        {
+            proposal_title: 'DeFi Lending Protocol',
+            choice: 1
+        },
+        {
+            proposal_title: 'Education for Africa',
+            choice: 1
+        },
+        {
+            proposal_title: 'Catalyst Tooling Upgrade',
+            choice: 2
+        },
+        {
+            proposal_title: 'Community Workshops',
+            choice: 1
+        },
+        {
+            proposal_title: 'NFT Infrastructure Upgrade',
+            choice: 2
+        },
+        {
+            proposal_title: 'Identity & Security Research',
+            choice: 1
+        },
+    ]
 
     return (
         <FiltersProvider defaultFilters={filters}>
-            <div className="w-full">
+            <div className="w-full pt-8">
                 <Head title="Dreps" />
                 <header className="container flex w-full justify-between">
                     <div className="flex gap-2">
@@ -279,24 +300,13 @@ const DrepPage = ({
                             </div>
                             <div className="py-4">
                                 {activeTab === 'Voting History' ? (
-                                    (votingHistory?.data?.length ?? 0) > 0 ? (
+                                    (voterHistory?.length ?? 0) > 0 ? (
                                         <>
                                             <VoterHistoryTable
                                                 votingHistory={
-                                                    votingHistory?.data ?? []
+                                                    voterHistory ?? []
                                                 }
                                             />
-                                            <div className="bg-background flex w-full items-center justify-center rounded-b-lg pt-2 shadow-[0_2px_4px_rgba(0,0,0,0.05)]">
-                                                <div className="mt-2">
-                                                    {votingHistory && (
-                                                        <Paginator
-                                                            pagination={
-                                                                votingHistory
-                                                            }
-                                                        />
-                                                    )}
-                                                </div>
-                                            </div>
                                         </>
                                     ) : (
                                         <RecordsNotFound />

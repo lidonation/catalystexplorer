@@ -4,9 +4,12 @@ import CopyIcon from '@/Components/svgs/CopyIcon';
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 import axiosClient from '@/utils/axiosClient';
 import { currency } from '@/utils/currency';
-import { generateLocalizedRoute, useLocalizedRoute } from '@/utils/localizedRoute';
+import {
+    generateLocalizedRoute,
+    useLocalizedRoute,
+} from '@/utils/localizedRoute';
 import { Button } from '@headlessui/react';
-import { router, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
@@ -173,13 +176,6 @@ export default function DrepTable({
         }
     };
 
-       const handleViewDetails = (drep: CatalystDrepData) => {
-        const route = generateLocalizedRoute('dreps.show', {
-            stake_address: drep?.stake_address,
-        });
-        router.visit(route);
-    };
-
     return (
         <div className="w-full overflow-x-auto overflow-y-auto rounded-t-lg shadow-md">
             <table className="w-full">
@@ -203,7 +199,18 @@ export default function DrepTable({
                     {dreps.map((drep, index) => (
                         <tr key={index} className="border-dark/30 border-b">
                             <td className="text-gray-persist flex items-center gap-2 px-4 py-8">
-                                <span>{drep?.stake_address}</span>
+                                {drep?.stake_address ? (
+                                    <Link
+                                        href={useLocalizedRoute('dreps.show', {
+                                            stake_address: drep.stake_address,
+                                        })}
+                                        className="hover:text-primary"
+                                    >
+                                        <span>{drep.stake_address}</span>
+                                    </Link>
+                                ) : (
+                                    <span className="text-gray-400">No stake address</span>
+                                )}
                                 <Button
                                     className="text-content-light hover:text-content flex cursor-pointer items-center transition-colors duration-300 ease-in-out"
                                     onClick={() =>
@@ -278,19 +285,12 @@ export default function DrepTable({
                                                     drep?.stake_address,
                                                 )
                                             }
+                                            disabled={!drep?.stake_address}
                                         >
                                             {t('dreps.drepList.delegate')}
                                         </PrimaryButton>
                                     )}
                                 </div>
-                            </td>
-                            <td className="px-4 py-2">
-                                <PrimaryButton
-                                    onClick={() => handleViewDetails(drep)}
-                                    className="bg-primary px-4 py-2 text-sm"
-                                >
-                                    {t('transactions.table.view')}
-                                </PrimaryButton>
                             </td>
                         </tr>
                     ))}

@@ -12,7 +12,7 @@ interface ColumnConfig<T> {
 }
 
 interface VoterHistoryTableProps {
-    votingHistory: VoterHistoryData[];
+    votingHistory: any[];
 }
 
 export const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
@@ -20,10 +20,6 @@ export const VoterHistoryTable: React.FC<VoterHistoryTableProps> = ({
 }) => {
     const { t } = useLaravelReactI18n();
 
-    const formatAddress = (address: string) => {
-        if (!address) return '';
-        return `${address.substring(0, 12)}...${address.substring(address.length - 8)}`;
-    };
 
     const columns: ColumnConfig<VoterHistoryData>[] = [
         {

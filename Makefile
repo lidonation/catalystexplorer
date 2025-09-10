@@ -5,7 +5,7 @@ sail := ./application/vendor/bin/sail
 compose := docker-compose exec -T catalystexplorer.com
 nodeVersion := 24.3.0
 
-.PHONY: init
+.PHONY: initde
 init:
 	cp ./application/.env.example ./application/.env
 	docker run --rm --interactive --tty \
