@@ -22,7 +22,7 @@ class CatalystDrep extends Model
 
     public $translatable = ['bio', 'motivation', 'qualifications', 'objective'];
 
-    public $appends = ['stake_address', 'voting_power', 'last_active', 'delegators'];
+    public $appends = ['stake_address', 'voting_power', 'last_active'];
 
     public $withCount = ['delegators'];
 
@@ -63,7 +63,9 @@ class CatalystDrep extends Model
                 ->with(['signatures'])
                 ->get()
                 ->sum(function ($delegator) {
-                    return $delegator->signatures()?->first()?->wallet_balance ?? 0;
+                    $balance = $delegator->signatures()?->first()?->wallet_balance ?? 0;
+
+                    return (float) $balance;
                 });
 
             return (float) $ownBalance + (float) $delegatorBalance;

@@ -25,5 +25,9 @@ class UserData extends Data
 
         #[DataCollectionOf(LocationData::class)]
         public ?DataCollection $locations,
+
+        public ?string $stake_address,
+
+        public ?float $voting_power,
     ) {}
 }

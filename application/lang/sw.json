@@ -362,7 +362,7 @@
     "next": "Ifuatayo",
     "selectLanguage": "Chagua Lugha",
     "selectLanguageForContent": "Chagua lugha ya maudhui yako",
-    
+
     "workflows.tinderProposal.step1.selectAllThatApply": "(Chagua vyote vinavyohusika)",
     "workflows.tinderProposal.step1.proposalTypesQuestion": "Chagua kategoria zote unazovutiwa nazo.",
     "workflows.tinderProposal.step1.proposalSizeQuestion": "Ni ukubwa gani wa pendekezo au upeo unaoupendelea?",
@@ -420,7 +420,7 @@
     "workflows.tinderProposal.stepDetails.createList": "Unda Orodha",
     "workflows.tinderProposal.stepDetails.exploreIdeas": "Chunguza Mawazo",
     "workflows.tinderProposal.stepDetails.mySwipeList": "Orodha Yangu ya Kupapasa",
-    
+
     "View All Lists": "Ona Orodha Zote",
     "View This List": "Ona Orodha Hii",
     "error404.mainText": "Samahani, hatukuweza kupata unachokitafuta",
@@ -434,7 +434,7 @@
     "buttons.titles.share": "Kitufe cha Kushiriki",
     "buttons.titles.createWallet": "Unda Mkoba",
     "buttons.bookmark": "Alamisho",
-    
+
     "searchResults.noResults.title": "Hakuna matokeo yaliyopatikana",
     "searchResults.noResults.description": "Utafutaji wako \":query\" haukupatana na matokeo yoyote. Tafadhali jaribu tena.",
     "searchResults.tabs.proposals": "Mapendekezo",
@@ -447,7 +447,7 @@
     "searchResults.tabs.reviews": "Mapitio",
     "searchResults.results.title": "Matokeo ya utafutaji wa \":query\"",
     "searchResults.results.viewMore": "Ona zaidi",
-    
+
     "my.dashboard": "Dashibodi Yangu",
     "my.userDashboard": "Dashibodi",
     "my.profile": "Wasifu",
@@ -483,7 +483,7 @@
     "my.moreWalletsDetails": "Angalia maelezo ya mkoba...",
     "my.connectWallet": "Ongeza Mkoba",
     "my.my": "Yangu",
-    
+
     "navigation.mobile.sidebar": "Sehemu ya uongozi wa ukingo wa simu",
     "navigation.mobile.content": "Viungo vya uongozi wa simu",
     "navigation.desktop.sidebar": "Sehemu ya uongozi wa ukingo",
@@ -492,7 +492,7 @@
     "navigation.links.home": "Nyumbani",
     "breadcrumbs.home": "Nyumbani",
     "breadcrumbs.workflow": "Mtiririko wa Kazi",
-    
+
     "charts.setMetrics": "Chagua Vipimo vya Chati",
     "charts.viewCharts": "Angalia Chati",
     "charts.selectProposals": "Ni aina gani za mapendekezo zinazokuvutia zaidi?",
@@ -531,34 +531,34 @@
     "charts.vsYear": "dhidi ya Mwaka Uliopita",
     "charts.filterProposal": "Chuja mapendekezo kwa hali ili kuona yanayokuhusisha zaidi.",
     "charts.chooseChartType": "Chagua jinsi unavyotaka kuona data",
-    
+
     "pagination.next": "Ifuatayo",
     "pagination.previous": "Awali",
     "pagination.morePages": "Kurasa zaidi",
     "pagination.goPreviousPage": "Nenda ukurasa uliopita",
     "pagination.goNextPage": "Nenda ukurasa unaofuata",
-    
+
     "registration.alreadyRegistered": "Tayari umesajiliwa?",
     "registration.passwordCharacters": "Lazima iwe herufi 8",
     "registration.noAccount": "Huna akaunti?",
-    
+
     "searchBar.placeholder": "Tafuta mapendekezo, mifuko, watu, makala na data",
     "searchBar.all_filters": "Vichunjo Vyote",
     "searchBar.variants.all": "Vikundi Vyote",
-    
+
     "catalystIntro.title.normalText": "Mradi wa Catalyst",
     "catalystIntro.title.highlightedText": "inakuza uvumbuzi wa ushirikiano",
     "catalystIntro.subtitle": "Catalyst inaendeleza ukuaji wa mazingira ya Cardano kwa kuunganisha mawazo ya uvumbuzi na ufadhili, unaoungwa mkono na kupiga kura kwa jamii na hazina ya Cardano.",
-    
+
     "metric.numbers": "Nambari",
     "metric.subtitle": "Angalia chati za miradi na chuja matokeo kulingana na mifuko",
     "metric.seeMore": "Ona zaidi",
     "metric.vs": "dhidi ya mfuko uliopita",
-    
+
     "announcements.none": "Hakuna matangazo yanayopatikana",
     "announcements.timeRemaining": "Muda uliosalia",
     "announcements.remaining": "Unaosalia",
-    
+
     "funds.funds": "Mifuko",
     "funds.fund": "Mfuko",
     "funds.pageSubtitle": "Tafuta mifuko kwa kichwa, maudhui, au mwandishi na waandishi wenzake",
@@ -581,7 +581,7 @@
     "funds.options.highToLow": "Bajeti: Juu hadi Chini",
     "funds.options.proposalCountsLowToHigh": "Idadi ya mapendekezo: Chini hadi Juu",
     "funds.options.proposalCountsHighToLow": "Idadi ya mapendekezo: Juu hadi Chini",
-    
+
     "proposals.filters.projectLength": "Urefu wa Mradi (miezi)",
     "proposals.filters.filters": "Vichunjo",
     "proposals.filters.ideascaleProfiles": "Wasifu wa Ideascale",
@@ -642,7 +642,7 @@
     "proposals.tabs.schedule": "Ratiba",
     "proposals.tabs.community": "Tathmini ya Jamii",
     "proposals.tabs.team": "Taarifa za Timu",
-    
+
     "listQuickCreate.createListLong": "Unda orodha mpya ili kuanza",
     "listQuickCreate.createListShort": "Unda orodha",
     "listQuickCreate.addAll": "Ongeza kwenye Orodha",
@@ -670,7 +670,7 @@
     "listQuickCreate.validationErrors.shortName": "Jina lazima liwe na angalau herufi 5",
     "listQuickCreate.validationErrors.shortDescription": "Maelezo lazima yawe na angalau herufi 10",
     "listQuickCreate.validationErrors.description": "Maelezo yanahitajika",
-    
+
     "ideascaleProfiles.people": "Watu",
     "ideascaleProfiles.ideascaleProfiles": "Wasifu wa Ideascale",
     "ideascaleProfiles.ownProposals": "Mapendekezo Binafsi",
@@ -710,7 +710,7 @@
     "ideascaleProfiles.tabs.campaigns": "Kampeni",
     "ideascaleProfiles.tabs.milestones": "Malengo",
     "milestones.milestones": "Malengo",
-    
+
     "groups.groups": "Vikundi",
     "groups.title": "Vikundi vya Catalyst",
     "groups.subtitle": "Tofauti, huru, na pamoja kuhamasisha kiwango cha juu cha ushirikiano wa kibinadamu",
@@ -732,7 +732,7 @@
     "groups.options.amountAwardedAdaAsc": "Kiasi Kilichotolewa ADA: Chini hadi Juu",
     "groups.options.amountAwardedUsdDesc": "Kiasi Kilichotolewa USD: Juu hadi Chini",
     "groups.options.amountAwardedUsdAsc": "Kiasi Kilichotolewa USD: Chini hadi Juu",
-    
+
     "communities.communities": "Jamii",
     "communities.dashboard": "Dashibodi ya Jamii",
     "communities.groups": "Vikundi Vilivyouungwa Mkono",
@@ -772,17 +772,17 @@
     "communities.filters.totalUsdDistributed": "Jumla ya Kiasi cha USD Kilichogawanywa",
     "communities.filters.totalAdaRemaining": "Jumla ya Kiasi cha ADA Kilichobakia",
     "communities.filters.totalUsdRemaining": "Jumla ya Kiasi cha USD Kilichobakia",
-    
+
     "posts.title": "Machapisho ya Catalyst",
     "posts.subtitle": "Habari za hivi punde na machapisho kutoka kwa jamii yetu",
-    
+
     "theme.theme": "Dhana",
     "theme.options": "Chaguzi za dhana",
     "theme.light": "Mwanga",
     "theme.dark": "Giza",
     "theme.voltaire": "Voltaire",
     "theme.changeMode": "Badilisha dhana hadi hali ya {{mode}}",
-    
+
     "users.editProfile": "Hariri wasifu",
     "users.viewProfile": "Angalia Wasifu Kamili",
     "users.viewIdeascale": "Angalia na Wasiliana na mtumiaji kwenye Ideascale",
@@ -812,7 +812,7 @@
     "users.add": "Ongeza",
     "users.recreate": "Unda tena",
     "users.notProvided": "Haijatolewa",
-    
+
     "completedProjectNfts.title": "NFT za Miradi Iliyokamilika",
     "completedProjectNfts.subtitle": "Timu za miradi ya Project Catalyst zilizokamilika zinakaribisha kuunda NFT ya kusherehekea kuashiria mafanikio yao na kushiriki na ulimwengu!",
     "completedProjectNfts.nowMinting": "Sasa inaunda",
@@ -834,7 +834,7 @@
     "completedProjectNfts.mintCompletionNft": "Unda NFT ya Ukamilishaji",
     "completedProjectNfts.projectComplete": "Mradi Umekamilika?",
     "completedProjectNfts.timeForLaunchParty": "Wakati wa sherehe ya uzinduzi!",
-    
+
     "profileWorkflow.sectionTitle.start": "Ili kuanza, tafadhali chagua mmoja wa wasifu zako uliodai hapo chini",
     "profileWorkflow.sectionTitle.selectProposal": "Chagua mmoja wa mapendekezo yako yaliyokamilika ili kuanza kuunda",
     "profileWorkflow.sectionTitle.claimProfile": "Dai wasifu mwingine",
@@ -871,12 +871,12 @@
     "profileWorkflow.verificationCode": "Msimbo wa Uhalalishaji",
     "profileWorkflow.verificationInstructions": "Ili kuhalalisha umiliki wako wa wasifu huu, tafadhali tuma ujumbe wa kibinafsi kwa Lido Nation kwenye Ideascale na ujumuishe msimbo hapo juu.",
     "profileWorkflow.goToIdeascale": "Nenda kwa Ideascale",
-    
+
     "validation.required": "{{field}} inahitajika",
     "validation.emailFormat": "Tafadhali ingiza anwani halali ya barua pepe",
     "validation.passwordLength": "Nenosiri lazima liwe na angalau herufi 8",
     "validation.passwordMatch": "Manenosiri hayalingani",
-    
+
     "wallet.connectedWallet": "Unganisha Mkoba",
     "wallet.connect.title": "Unganisha Mkoba",
     "wallet.connect.subtitle": "Chagua mkoba unaotaka kuunganisha nao:",
@@ -900,7 +900,7 @@
     "wallet.status.connecting": "Inaunganisha",
     "wallet.status.disconnect": "Tenganisha",
     "wallet.login": "Ingia kwa Mkoba",
-    
+
     "bookmarks.permanentDelete": "Kitendo hiki hakiwezi kutendua, na alamisho zote kwenye orodha hii zitaondolewa kabisa.",
     "bookmarks.confirmDelete": "Una uhakika unataka kufuta orodha hii nzima ya alamisho?",
     "bookmarks.editList": "Hariri Orodha",
@@ -927,21 +927,21 @@
     "bookmarks.comments": "Maoni",
     "bookmarks.lastModified": "Iliyosasishwa Mwisho",
     "bookmarks.createList": "Unda Orodha Yako",
-    
+
     "comments.comments": "Maoni",
     "comments.reply": "Jibu",
-    
+
     "rightSwipes": "- Papasa Kulia",
     "leftSwipes": "- Papasa Kushoto",
-    
+
     "workflows.createService.step1.clickToReplaceImage": "Bonyeza hapa ili kubadilisha picha",
     "workflows.createService.step1.clickToUploadImage": "Bonyeza hapa ili kupakia picha",
-    
+
     "graph.loadingConnections": "Inapakia miunganiko kwa :nodeName ...",
     "graph.noAdditionalConnections": ":nodeName hana miunganiko ya ziada",
     "graph.unknownNode": "Haijulikani",
     "loadingGraph": "Inapakia grafu",
-    
+
     "services.service": "Huduma",
     "services.AddService": "Ongeza Huduma",
     "services.catalystServices": "Huduma za Catalyst",
@@ -950,16 +950,16 @@
     "services.catalystServicesDesc": "Nafasi kwa timu zilizofadhiliwa na Catalyst kushirikiana, kuomba msaada, na kutoa huduma kwa mazingira.",
     "services.myServices": "Huduma Zangu",
     "services.myServicesDesc": "Simamia huduma zako na ushirikiane na mazingira ya Catalyst.",
-    
+
     "endDate": "Tarehe ya Mwisho",
     "startDate": "Tarehe ya Mwanzo",
-    
+
     "workflows.publishToIpfs.success.contentIdLabel": "Kitambulisho chako cha Maudhui:",
     "workflows.publishToIpfs.success.copied": "Imenakiliwa!",
     "workflows.publishToIpfs.success.copyCidTitle": "Nakili CID",
     "workflows.publishToIpfs.success.openInNewTabTitle": "Fungua katika kichupo kipya",
     "workflows.publishToIpfs.reviewDetails": "Unakaribia kuchapisha orodha yako kwenye IPFS. Kagua maelezo hapo chini.",
-    
+
     "dreps.dreps": "DReps",
     "dreps.drepSearch": "Tafuta DRep",
     "dreps.drepStatus": "Hali ya DRep",
@@ -1015,7 +1015,11 @@
     "dreps.options.votersAsc": "Wapiga Kura: Chini hadi Juu",
     "dreps.options.active": "Hai",
     "dreps.options.inactive": "Hajai",
-    
+    "dreps.details": "Maelezo ya Drep",
+    "dreps.delegationStatus": "Hali ya Uwakilishi",
+    "dreps.votingPower": "Nguvu ya Kupiga Kura",
+    "dreps.vote": "Kura",
+    "dreps.stake": "Hisa",
     "reviews.reviews": "Mapitio",
     "reviews.reviewer": "Mkaguzi",
     "reviews.helpfulReview": "Je, hii ilikuwa tathmini ya msaada?",
@@ -1035,7 +1039,7 @@
     "reviews.filters.helpful": "Ya msaada",
     "reviews.filters.ratings": "Ukadiriaji",
     "reviews.filters.reputationScores": "Alama za Sifa",
-    
+
     "transactions.allTimeVotes": "Kura za Wakati Wote",
     "transactions.balance": "Salio",
     "transactions.utxos": "UTXOs",
@@ -1102,7 +1106,7 @@
     "transactions.wallet.stakeKey": "Ufunguo wa Hisa",
     "transactions.wallet.catalystVotes": "Kura za Catalyst",
     "transactions.wallet.transactions": "Miamala",
-    
+
     "vote.catalystVotes": "Kura za Catalyst",
     "vote.viewOnchainTransactions": "Angalia miamala ya kwenye mnyororo (jormugandr) ya kura zilizotolewa",
     "vote.noStakeAddressFound": "Hakuna anwani ya hisa iliyopatikana",
@@ -1135,7 +1139,7 @@
     "vote.table.choice": "Uchaguzi",
     "vote.table.votingPower": "Nguvu ya Kupiga Kura",
     "vote.table.rawFragment": "Kipande Ghafi",
-    
+
     "voter.catalystVoters": "Wapiga Kura wa Catalyst",
     "voter.viewVoterInformation": "Pata mwonekano wa uwazi na wa kufuata data ya jamii hai inayoumba mustakbali wa Cardano",
     "voter.searchPlaceholder": "Tafuta anwani ya hisa au kitambulisho cha mpiga kura",
@@ -1168,7 +1172,7 @@
     "voter.sort.votesCountAsc": "Idadi ya Kura: Chini hadi Juu",
     "voter.sort.proposalsVotedOnDesc": "Mapendekezo Yaliyopigiwa Kura: Juu hadi Chini",
     "voter.sort.proposalsVotedOnAsc": "Mapendekezo Yaliyopigiwa Kura: Chini hadi Juu",
-    
+
     "icons.titles.arrowCurved": "Ikoni ya Mshale Uliochoromoka",
     "icons.titles.arrow_left": "Ikoni ya Mshale wa Kushoto",
     "icons.titles.barLine": "Ikoni ya Chati ya Mstari wa Baa",
@@ -1228,13 +1232,13 @@
     "icons.titles.web": "Wavuti",
     "icons.titles.arrowDown": "Ikoni ya Mshale wa Chini",
     "icons.titles.arrowUp": "Ikoni ya Mshale wa Juu",
-    
+
     "segments.completed": "Imekamilika",
     "segments.unfunded": "Haijafadhiliwa",
     "segments.funded": "Imefadhiliwa",
     "segments.ownProposals": "Mapendekezo Binafsi",
     "segments.collaboratingProposals": "Mapendekezo ya Kushirikiano",
-    
+
     "workflows.tinderProposal.step1.selectFund": "Chagua Mfuko",
     "workflows.tinderProposal.step1.selectFundPlaceholder": "Chagua Mfuko",
     "workflows.createService.step1.howToContribute": "Ungependa kuchangia vipi?",
