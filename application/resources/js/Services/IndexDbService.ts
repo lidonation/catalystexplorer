@@ -116,4 +116,9 @@ export class IndexedDBService {
                 : query.toArray();
         });
     }
+
+    /** Clear all records from a table */
+    static async clear<K extends TableName>(tableName: K): Promise<void> {
+        return db[tableName].clear();
+    }
 }

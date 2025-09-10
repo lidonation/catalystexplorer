@@ -1,5 +1,5 @@
 import ValueLabel from '@/Components/atoms/ValueLabel';
-import React from 'react';
+import React, { useCallback } from 'react';
 
 interface RadioOption {
     value: string;
@@ -27,33 +27,56 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
     onChange,
     direction = 'horizontal',
     labelClassName = 'text-gray-persist ml-2',
-    radioClassName = 'h-4 w-4 text-primary focus:ring-primary focus:ring-offset-1 focus:ring-offset-primary focus:ring-1 border-gray-light ',
+    radioClassName = 'transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 cursor-pointer',
     groupClassName = '',
     required = false,
     'data-testid': dataTestId,
 }) => {
+    const handleChange = useCallback((value: string) => {
+        onChange(value);
+    }, [onChange, name, selectedValue]);
+    
     return (
         <div
             className={`flex ${direction === 'horizontal' ? 'space-x-4' : 'flex-col space-y-2'} ${groupClassName}`}
         >
-            {options.map((option) => (
-                <label key={option.value} className="inline-flex items-center">
-                    <input
-                        type="radio"
-                        name={name}
-                        value={option.value}
-                        checked={selectedValue === option.value}
-                        onChange={() => onChange(option.value)}
-                        disabled={option.disabled}
-                        className={radioClassName}
-                        required={required}
-                        data-testid={dataTestId}
-                    />
-                    <ValueLabel className={labelClassName}>
-                        {option.label}
-                    </ValueLabel>
-                </label>
-            ))}
+            {options.map((option, index) => {
+                const radioId = `${name}-${option.value}`;
+                const isChecked = selectedValue === option.value;
+                
+                return (
+                    <label key={option.value} htmlFor={radioId} className="inline-flex items-center cursor-pointer">
+                        <input
+                            id={radioId}
+                            type="radio"
+                            name={name}
+                            value={option.value}
+                            checked={isChecked}
+                            onChange={() => handleChange(option.value)}
+                            disabled={option.disabled}
+                            className={`${radioClassName} ${isChecked ? 'radio-checked' : 'radio-unchecked'}`}
+                            required={required}
+                            data-testid={dataTestId ? `${dataTestId}-${index}` : undefined}
+                            style={{
+                                backgroundColor: isChecked ? 'var(--cx-primary)' : 'var(--cx-background)',
+                                borderColor: isChecked ? 'var(--cx-primary)' : 'var(--cx-border-secondary-color)',
+                                boxShadow: isChecked ? 'inset 0 0 0 2px var(--cx-background)' : 'none',
+                                borderWidth: '2px',
+                                borderStyle: 'solid',
+                                width: '16px',
+                                height: '16px',
+                                borderRadius: '50%',
+                                appearance: 'none',
+                                WebkitAppearance: 'none',
+                                MozAppearance: 'none',
+                            }}
+                        />
+                        <ValueLabel className={labelClassName}>
+                            {option.label}
+                        </ValueLabel>
+                    </label>
+                );
+            })}
         </div>
     );
 };

@@ -20,6 +20,7 @@ import { PaginatedData } from '@/types/paginated-data';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import Paragraph from '@/Components/atoms/Paragraph';
+import { currency } from '@/utils/currency';
 
 interface ColumnConfig {
     key: string;
@@ -50,15 +51,28 @@ type ColumnKey =
     | 'yesVotes'
     | 'abstainVotes'
     | 'action'
-    | 'viewProposal';
+    | 'viewProposal'
+    | 'budget'
+    | 'category'
+    | 'openSourced';
 
 interface CustomActionProps {
     proposal: ProposalData;
     'data-testid'?: string;
 }
 
+interface TableStyleProps {
+    tableWrapper?: string;
+    tableHeader?: string;
+    headerCell?: string;
+    tableBody?: string;
+    bodyCell?: string;
+    table?: string;
+    headerText?: string;
+}
+
 interface ProposalTableProps {
-    proposals: PaginatedData<ProposalData[]>;
+    proposals: PaginatedData<ProposalData[]> | { data: ProposalData[], total: number, isPdf: boolean };
     columns?: ColumnKey[];
     actionType?: ActionType;
     disableSorting?: boolean;
@@ -72,6 +86,8 @@ interface ProposalTableProps {
         manage?: (proposal: ProposalData) => React.ReactNode;
         view?: (proposal: ProposalData) => React.ReactNode;
     };
+    customStyles?: TableStyleProps;
+    headerAlignment?: 'left' | 'center' | 'right';
 }
 
 const ProposalTable: React.FC<ProposalTableProps> = ({
@@ -81,7 +97,9 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                                                          disableSorting = false,
                                                          showPagination = true,
                                                          customActions,
-                                                         renderActions
+                                                         renderActions,
+                                                         customStyles,
+                                                         headerAlignment = 'left'
                                                      }) => {
     const { t } = useLaravelReactI18n();
     const { setFilters, getFilter } = useFilterContext();
@@ -189,10 +207,10 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                     data-testid={`proposal-fund-${proposal.id}`}
                 >
                     {proposal.fund?.label && (
-                        <span className="items-center py-1 rounded-full text-xs font-medium text-content text-nowrap"
-                              data-testid={`proposal-fund-label-${proposal.id}`}>
+                        <Paragraph className="items-center py-1 rounded-full text-xs font-medium text-content text-nowrap"
+                                  data-testid={`proposal-fund-label-${proposal.id}`}>
                             {proposal.fund.label}
-                        </span>
+                        </Paragraph>
                     )}
                 </div>
             )
@@ -252,9 +270,9 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                         height={20}
                         data-testid="yes-vote-icon"
                     />
-                    <span className="flex gap-2 text-content/60" data-testid="yes-votes-label">
+                    <div className="flex gap-2 text-content/60" data-testid="yes-votes-label">
                         <Paragraph size="sm">{t('yesVotes')}</Paragraph>
-                    </span>
+                    </div>
                 </div>
             ),
             sortable: !disableSorting,
@@ -376,6 +394,54 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                     </div>
                 );
             }
+        },
+        budget: {
+            key: 'budget',
+            label: t('proposalComparison.tableHeaders.budget'),
+            sortable: !disableSorting,
+            sortKey: 'amount_requested',
+            renderCell: (proposal: ProposalData) => {
+                const currencyCode = proposal.currency || 'USD';
+                const formattedBudget = proposal.amount_requested
+                    ? (currency(parseInt(proposal.amount_requested.toString()), 2, currencyCode) as string)
+                    : 'N/A';
+
+                return (
+                    <div data-testid={`proposal-budget-${proposal.id}`}>
+                        <Paragraph className="text-md font-medium text-content" data-testid={`proposal-budget-amount-${proposal.id}`}>
+                            {formattedBudget}
+                        </Paragraph>
+                    </div>
+                );
+            }
+        },
+        category: {
+            key: 'category',
+            label: t('proposalComparison.tableHeaders.category'),
+            sortable: !disableSorting,
+            sortKey: 'campaign_id',
+            renderCell: (proposal: ProposalData) => (
+                <div data-testid={`proposal-category-${proposal.id}`}>
+                    <div className="flex items-center">
+                        <Paragraph className="text-md" data-testid={`proposal-campaign-label-${proposal.id}`}>
+                            {proposal.campaign?.title || proposal.fund?.label || 'N/A'}
+                        </Paragraph>
+                    </div>
+                </div>
+            )
+        },
+        openSourced: {
+            key: 'openSourced',
+            label: t('proposals.openSourced'),
+            sortable: !disableSorting,
+            sortKey: 'opensourced',
+            renderCell: (proposal: ProposalData) => (
+                <div className="text-center w-24" data-testid={`proposal-opensourced-${proposal.id}`}>
+                    <Paragraph className={`inline-flex items-center px-2 py-1 text-xs font-medium`} data-testid={`proposal-opensourced-status-${proposal.id}`}>
+                        {proposal.opensource ? t('Yes') : t('No')}
+                    </Paragraph>
+                </div>
+            )
         }
     };
 
@@ -404,17 +470,38 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
         [selectedUserMap]
     );
 
+    const defaultStyles: TableStyleProps = {
+        tableWrapper: 'mb-8 rounded-lg border-2 border-gray-200 bg-background shadow-md',
+        tableHeader: 'border-gray-200 whitespace-nowrap bg-background-lighter',
+        headerCell: 'border-gray-200 border-b border-r px-4 py-3 text-left font-medium text-content last:border-r-0',
+        tableBody: '',
+        bodyCell: 'border-gray-200 border-b border-r px-4 py-4 text-content last:border-r-0',
+        table: 'w-max min-w-full',
+        headerText: 'text-content/60'
+    };
+
+    // Merge custom styles with defaults - custom styles will override defaults
+    const styles = {
+        tableWrapper: `${defaultStyles.tableWrapper} ${customStyles?.tableWrapper || ''}`.trim(),
+        tableHeader: `${defaultStyles.tableHeader} ${customStyles?.tableHeader || ''}`.trim(),
+        headerCell: `${defaultStyles.headerCell} ${customStyles?.headerCell || ''}`.trim(),
+        tableBody: `${defaultStyles.tableBody} ${customStyles?.tableBody || ''}`.trim(),
+        bodyCell: `${defaultStyles.bodyCell} ${customStyles?.bodyCell || ''}`.trim(),
+        table: `${defaultStyles.table} ${customStyles?.table || ''}`.trim(),
+        headerText: customStyles?.headerText || defaultStyles.headerText
+    };
+
     return (
-        <div className="mb-8 rounded-lg border-2 border-gray-200 bg-background shadow-md">
+        <div className={styles.tableWrapper}>
             <div className="overflow-x-auto">
-                <table className="w-max min-w-full">
-                    <thead className="border-gray-200 whitespace-nowrap bg-background-lighter"
+                <table className={styles.table}>
+                    <thead className={styles.tableHeader}
                            data-testid="proposal-table-header">
                     <tr data-testid="proposal-table-header-row">
                         {orderedColumns.map(column => (
                             <th
                                 key={column.key}
-                                className="border-gray-200 border-b border-r px-4 py-3 text-left font-medium text-content last:border-r-0"
+                                className={styles.headerCell}
                                 data-testid={`proposal-table-header-${column.key}`}
                             >
                                 <TableHeaderCell
@@ -422,6 +509,8 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                                     sortable={column.sortable}
                                     sortDirection={column.sortKey === sortField ? sortDirection as 'asc' | 'desc' | null : null}
                                     onSort={column.sortable ? () => handleSort(column.sortKey || column.key) : undefined}
+                                    alignment={headerAlignment}
+                                    textColorClass={styles.headerText}
                                     data-testid={`proposal-table-header-cell-${column.key}`}
                                 />
                             </th>
@@ -442,7 +531,7 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                                 {orderedColumns.map(column => (
                                     <td
                                         key={`${proposalHash}-${column.key}`}
-                                        className="border-gray-200 border-b border-r px-4 py-4 text-content last:border-r-0"
+                                        className={styles.bodyCell}
                                         data-testid={`proposal-table-cell-${proposalHash}-${column.key}`}
                                     >
                                         {column.renderCell(proposal, helpers)}
@@ -455,7 +544,7 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                 </table>
             </div>
 
-            {showPagination && proposals && proposals.data && proposals.data.length > 0 && (
+            {showPagination && proposals && proposals.data && proposals.data.length > 0 && 'current_page' in proposals && (
                 <div className="border-t border-gray-200 px-4 py-4">
                     <Paginator
                         pagination={proposals}

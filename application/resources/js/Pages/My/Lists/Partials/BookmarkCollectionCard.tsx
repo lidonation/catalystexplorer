@@ -42,17 +42,16 @@ const BookmarkCollectionCard = ({
                 router.visit(viewListRoute);
             },
         },
-        ...(isAuthor
-            ? [
-                  {
-                      label: t('my.manage'),
-                      type: 'button' as const,
-                      onClick: () => {
-                          router.visit(manageListRoute);
-                      },
-                  },
-              ]
-            : []),
+
+        {
+            label: t('my.manage'),
+            type: 'button' as const,
+            onClick: () => {
+                router.visit(manageListRoute);
+            },
+            disabled: !isAuthor,
+        },
+
     ];
     return (
         <Card
@@ -104,9 +103,9 @@ const BookmarkCollectionCard = ({
                             name={user?.name ?? 'Anonymous'}
                         />
 
-                        <span className="lg:text-md text-xs font-semibold">
+                        <Paragraph className="lg:text-md text-xs font-semibold">
                             {user?.name}
-                        </span>
+                        </Paragraph>
                     </div>
 
                     {collection?.updated_at && (
@@ -115,12 +114,12 @@ const BookmarkCollectionCard = ({
                             data-testid="last-modified"
                         >
                             <Clock className="hidden h-5 w-5 lg:block" />
-                            <span className="font-semibold">
+                            <Paragraph className="font-semibold">
                                 {t('bookmarks.lastModified')}:{' '}
-                            </span>
-                            <span>
+                            </Paragraph>
+                            <Paragraph>
                                 {formatTimestamp(collection?.updated_at)}
-                            </span>
+                            </Paragraph>
                         </div>
                     )}
 
@@ -129,10 +128,10 @@ const BookmarkCollectionCard = ({
                         data-testid="comments-count"
                     >
                         <MessageCircle className="hidden h-5 w-5 lg:block" />
-                        <span className="font-semibold">
+                        <Paragraph className="font-semibold">
                             {t('bookmarks.comments')}:{' '}
-                        </span>
-                        <span>{collection.comments_count ?? 0}</span>
+                        </Paragraph>
+                        <Paragraph>{collection.comments_count ?? 0}</Paragraph>
                     </div>
                 </div>
             </div>
@@ -152,7 +151,7 @@ const BookmarkCollectionCard = ({
                 })}
             </div>
             <div className="absolute top-4 right-4">
-                <DropdownMenu items={dropdownMenuItems} />
+                <DropdownMenu items={dropdownMenuItems} useSimpleTrigger={true} />
             </div>
 
             <div

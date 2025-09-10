@@ -136,5 +136,8 @@ final class ProposalData extends Data
         #[TypeScriptOptional]
         public ?int $order,
 
+        #[TypeScriptOptional]
+        public ?string $user_rationale,
+
     ) {}
 }

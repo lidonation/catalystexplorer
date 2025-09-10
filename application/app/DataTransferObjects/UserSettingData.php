@@ -21,5 +21,7 @@ class UserSettingData extends Data
         public array $viewHorizontal,
         public array $viewMini,
         public array $viewTable,
+        public array $proposalPdfColumns,
+        public bool $groupByCategories,
     ) {}
 }
