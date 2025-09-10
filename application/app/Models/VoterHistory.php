@@ -199,11 +199,6 @@ class VoterHistory extends Model
         return $this->hasOne(Snapshot::class, 'id', 'snapshot_id');
     }
 
-    public function proposal_title(): HasOne
-    {
-        return $this->hasOne(Proposal::class, 'old_id', 865)->pluck('title');
-    }
-
     /**
      * The model's casts.
      *
