@@ -13,6 +13,8 @@ use Laravel\Nova\Auth\PasswordValidationRules;
 use Laravel\Nova\Card;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\Gravatar;
+use Laravel\Nova\Fields\HasMany;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Filters\Filter;
@@ -67,6 +69,11 @@ class Users extends Resource
                 ->sortable()
                 ->rules('required', 'max:255'),
 
+            Number::make(__('Proposals Count'), function () {
+                return $this->proposals()->count();
+            })->onlyOnIndex()
+                ->sortable(),
+
             Text::make('Email')
                 ->sortable()
                 ->rules('required', 'email', 'max:254')
@@ -77,6 +84,43 @@ class Users extends Resource
                 ->onlyOnForms()
                 ->creationRules($this->passwordRules())
                 ->updateRules($this->optionalPasswordRules()),
+
+            Text::make(__('Profile Summary'), function () {
+                $catalystCount = $this->claimedProfiles()->count();
+                $ideascaleCount = $this->ideascale_profiles()->count();
+
+                return "Catalyst: {$catalystCount}, Ideascale: {$ideascaleCount}";
+            })->onlyOnIndex(),
+
+            Text::make(__('Proposal'), function () {
+                // Get separate counts for each profile type
+                $catalystCount = $this->proposals()
+                    ->whereIn('id', function ($query) {
+                        $query->select('proposal_id')
+                            ->from('proposal_profiles')
+                            ->where('profile_type', 'App\\Models\\CatalystProfile');
+                    })->count();
+                $ideascaleCount = $this->proposals()
+                    ->whereIn('id', function ($query) {
+                        $query->select('proposal_id')
+                            ->from('proposal_profiles')
+                            ->where('profile_type', 'App\\Models\\IdeascaleProfile');
+                    })->count();
+
+                return "Catalyst: {$catalystCount}, Ideascale: {$ideascaleCount}";
+            })->onlyOnDetail(),
+
+            // Profiles Panel
+            Panel::make('Claimed Profiles', [
+                HasMany::make(__('Catalyst Profiles'), 'claimedProfiles', CatalystProfiles::class),
+
+                HasMany::make(__('Ideascale Profiles'), 'ideascale_profiles', IdeascaleProfiles::class),
+            ]),
+
+            // Proposals Panel
+            Panel::make('Proposals', [
+                HasMany::make(__('Proposals'), 'proposals', Proposals::class),
+            ]),
         ];
     }
 
