@@ -1,3 +1,11 @@
+# [1.25.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.24.0...v1.25.0) (2025-09-10)
+
+
+### Features
+
+* **dreps:** single drep page ([79fe743](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/79fe7432a45227d4a9ed14607ecd0f4f2fe7b3f6))
+* **email template:** ln-1988 added a custom email template ([c8b6fcf](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/c8b6fcf2dd9bc4eb1d7611e99b5c523010fa0022))
+
 # [1.24.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.23.0...v1.24.0) (2025-09-08)
 
 
