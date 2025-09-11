@@ -9,9 +9,13 @@ use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Spatie\Image\Enums\CropPosition;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -81,17 +85,17 @@ class User extends Authenticatable implements HasMedia
         );
     }
 
-    public function ideascale_profiles()
+    public function ideascale_profiles(): User|HasMany
     {
         return $this->hasMany(IdeascaleProfile::class, 'claimed_by_uuid', 'id');
     }
 
-    public function reviews()
+    public function reviews(): User|HasMany
     {
         return $this->hasMany(Review::class);
     }
 
-    public function nfts()
+    public function nfts(): User|HasMany
     {
         return $this->hasMany(Nft::class);
     }
@@ -101,12 +105,12 @@ class User extends Authenticatable implements HasMedia
         return $this->belongsToMany(Community::class, 'community_has_users', 'user_id', 'community_id', 'id', 'id');
     }
 
-    public function signatures()
+    public function signatures(): User|HasMany
     {
         return $this->hasMany(Signature::class, 'user_id', 'id');
     }
 
-    public function transactions()
+    public function transactions(): HasManyThrough|User
     {
         return $this->hasManyThrough(
             Transaction::class,
@@ -141,9 +145,69 @@ class User extends Authenticatable implements HasMedia
             ->singleFile();
     }
 
-    public function location()
+    public function location(): BelongsTo
     {
         return $this->belongsTo(Location::class);
+    }
+
+    public function claimedProfiles(): HasMany
+    {
+        return $this->hasMany(CatalystProfile::class, 'claimed_by');
+    }
+
+    /**
+     * Get all claimed profiles (both CatalystProfile and IdeascaleProfile)
+     */
+    public function claimedProfilesAll(): Collection
+    {
+        $catalystProfiles = $this->claimedProfiles()->get()->map(function ($profile) {
+            return [
+                'id' => $profile->id,
+                'type' => 'CatalystProfile',
+                'username' => $profile->username,
+                'name' => $profile->name,
+                'model' => $profile,
+            ];
+        });
+
+        $ideascaleProfiles = $this->ideascale_profiles()->get()->map(function ($profile) {
+            return [
+                'id' => $profile->id,
+                'type' => 'IdeascaleProfile',
+                'username' => $profile->username,
+                'name' => $profile->name,
+                'model' => $profile,
+            ];
+        });
+
+        return $catalystProfiles->concat($ideascaleProfiles);
+    }
+
+    /**
+     * Get all proposals through claimed profiles via pivot table (polymorphic relationship)
+     * Returns a query builder that supports pagination and database operations
+     */
+    public function proposals()
+    {
+        return Proposal::whereIn('id', function ($query) {
+            $query->select('proposal_id')
+                ->from('proposal_profiles')
+                ->where('profile_type', 'App\\Models\\CatalystProfile')
+                ->whereIn('profile_id', function ($subQuery) {
+                    $subQuery->select('id')
+                        ->from('catalyst_profiles')
+                        ->where('claimed_by', $this->id);
+                });
+        })->orWhereIn('id', function ($query) {
+            $query->select('proposal_id')
+                ->from('proposal_profiles')
+                ->where('profile_type', 'App\\Models\\IdeascaleProfile')
+                ->whereIn('profile_id', function ($subQuery) {
+                    $subQuery->select('id')
+                        ->from('ideascale_profiles')
+                        ->where('claimed_by_uuid', $this->id);
+                });
+        });
     }
 
     public function stakeAddress(): Attribute

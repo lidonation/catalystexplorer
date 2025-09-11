@@ -213,5 +213,18 @@
     "dreps.delegationStatus": "حالة التفويض",
     "dreps.votingPower": "قوة التصويت",
     "dreps.vote": "تصويت",
-    "dreps.stake": "الحصة"
+    "dreps.stake": "الحصة",
+    "widgets.quickPitch.title": "عرض سريع",
+    "widgets.quickPitch.description": "إضافة أو تحديث رابط فيديو العرض السريع لاقتراحك. نحن ندعم فيديوهات YouTube و Vimeo.",
+    "widgets.quickPitch.urlLabel": "رابط الفيديو",
+    "widgets.quickPitch.supportedFormats": "يدعم روابط YouTube و Vimeo",
+    "widgets.quickPitch.update": "تحديث العرض السريع",
+    "widgets.quickPitch.updating": "جاري التحديث...",
+    "widgets.quickPitch.success": "تم تحديث العرض السريع بنجاح!",
+    "widgets.quickPitch.errors.required": "مطلوب رابط فيديو",
+    "widgets.quickPitch.errors.invalidUrl": "يرجى إدخال رابط YouTube أو Vimeo صالح",
+    "widgets.quickPitch.errors.updateFailed": "فشل تحديث العرض السريع. يرجى المحاولة مرة أخرى.",
+    "proposals.manageProposal": "إدارة الاقتراح",
+    "proposals.managingProposal": "إدارة: :title",
+    "proposals.manageDescription": "استخدم الوحدات أدناه لإدارة إعدادات ومحتوى اقتراحك."
 }

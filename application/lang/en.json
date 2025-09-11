@@ -1349,5 +1349,17 @@
     "proposalPdfHeader.add": "Add...",
     "confirmationModal.confirm": "Confirm",
     "confirmationModal.cancel": "Cancel",
-    "confirmationModal.processing": "Processing..."
+    "confirmationModal.processing": "Processing...",
+    "widgets.quickPitch.title": "Quick Pitch",
+    "widgets.quickPitch.description": "Add or update your proposal's quick pitch video URL. We support YouTube and Vimeo videos.",
+    "widgets.quickPitch.urlLabel": "Video URL",
+    "widgets.quickPitch.supportedFormats": "Supports YouTube and Vimeo URLs",
+    "widgets.quickPitch.update": "Update Quick Pitch",
+    "widgets.quickPitch.updating": "Updating...",
+    "widgets.quickPitch.success": "Quick pitch updated successfully!",
+    "widgets.quickPitch.errors.required": "A video URL is required",
+    "widgets.quickPitch.errors.invalidUrl": "Please enter a valid YouTube or Vimeo URL",
+    "widgets.quickPitch.errors.updateFailed": "Failed to update quick pitch. Please try again.",
+    "proposals.managingProposal": "Managing: :title",
+    "proposals.manageDescription": "Use the widgets below to manage your proposal settings and content."
 }

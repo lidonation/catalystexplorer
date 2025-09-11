@@ -213,10 +213,10 @@ class Proposal extends Model
         );
     }
 
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
+    //    public function getRouteKeyName(): string
+    //    {
+    //        return 'slug';
+    //    }
 
     public function currency(): Attribute
     {
@@ -540,17 +540,13 @@ class Proposal extends Model
     public function users(): HasMany
     {
         return $this->hasMany(ProposalProfile::class, 'proposal_id', 'id')
-            ->with([
-                'model',
-            ]);
+            ->with('model');
     }
 
     public function proposal_profiles(): HasMany
     {
         return $this->hasMany(ProposalProfile::class, 'proposal_id', 'id')
-            ->with([
-                'model',
-            ]);
+            ->with('model');
     }
 
     public function completedProjectNft(): Attribute

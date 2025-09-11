@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import {
     Dialog,
@@ -16,7 +16,7 @@ interface ConfirmationModalProps {
     onClose: () => void;
     onConfirm: () => void;
     title: string;
-    message: string;
+    children: ReactNode;
     confirmText?: string;
     cancelText?: string;
     variant?: 'warning' | 'danger' | 'info';
@@ -28,7 +28,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
     onClose,
     onConfirm,
     title,
-    message,
+    children,
     confirmText,
     cancelText,
     variant = 'warning',
@@ -80,7 +80,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                     leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                     leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                 >
-                    <DialogPanel className="bg-background mb-6 transform overflow-hidden rounded-lg shadow-xl transition-all sm:mx-auto sm:w-full sm:max-w-md border border-gray-200">
+                    <DialogPanel className="bg-background mb-6 transform overflow-hidden rounded-lg shadow-xl transition-all sm:mx-auto sm:w-full sm:max-w-md border border-light-gray-persist">
                         <div className="p-6">
                             <div className="flex items-center mb-4">
                                 <div className={`flex-shrink-0 mr-3 ${styles.icon}`}>
@@ -92,9 +92,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                             </div>
                             
                             <div className="mb-6">
-                                <Paragraph className="text-sm text-gray-persist">
-                                    {message}
-                                </Paragraph>
+                                {children}
                             </div>
                             
                             <div className="flex justify-end space-x-3">
