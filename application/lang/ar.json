@@ -235,5 +235,13 @@
     "widgets.quickPitch.errors.updateFailed": "فشل تحديث العرض السريع. يرجى المحاولة مرة أخرى.",
     "proposals.manageProposal": "إدارة الاقتراح",
     "proposals.managingProposal": "إدارة: :title",
-    "proposals.manageDescription": "استخدم الوحدات أدناه لإدارة إعدادات ومحتوى اقتراحك."
+    "proposals.manageDescription": "استخدم الوحدات أدناه لإدارة إعدادات ومحتوى اقتراحك.",
+    "services.services": "الخدمات",
+    "services.networks": "الشبكات",
+    "services.getInTouch": "تواصل معنا",
+    "services.mapLoadingOnClient": "يتم تحميل الخريطة على العميل...",
+    "services.loadingMap": "جاري تحميل الخريطة...",
+    "services.noLocationsAvailalble": "لا توجد مواقع متاحة",
+    "services.unknownUser": "مستخدم غير معروف",
+    "services.noBioAvailable": "لا توجد سيرة ذاتية متاحة"
 }

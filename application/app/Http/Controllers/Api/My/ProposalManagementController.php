@@ -10,6 +10,7 @@ use App\Models\Proposal;
 use App\Services\VideoService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 
 class ProposalManagementController extends Controller
@@ -23,7 +24,7 @@ class ProposalManagementController extends Controller
      */
     public function updateQuickPitch(UpdateProposalQuickPitchRequest $request, Proposal $proposal): JsonResponse
     {
-        $this->authorize('manage', $proposal);
+        Gate::authorize('manage', $proposal);
 
         $url = $request->validated()['quickpitch'];
 

@@ -17,11 +17,11 @@ use App\Models\Group;
 use App\Models\IdeascaleProfile;
 use App\Models\Proposal;
 use App\Models\Review;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
@@ -29,8 +29,6 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class MyBookmarksController extends Controller
 {
-    use AuthorizesRequests;
-
     protected int $defaultLimit = 36;
 
     protected int $defaultPage = 1;
@@ -87,7 +85,7 @@ class MyBookmarksController extends Controller
             return response()->json([], SymfonyResponse::HTTP_NOT_FOUND);
         }
 
-        $this->authorize('view', $bookmarkItem);
+        Gate::authorize('view', $bookmarkItem);
 
         return
             Inertia::render('My/Bookmarks/Partials/Show', [
@@ -209,7 +207,7 @@ class MyBookmarksController extends Controller
 
     public function create(Request $request): JsonResponse|InertiaResponse
     {
-        $this->authorize('create', BookmarkItem::class);
+        Gate::authorize('create', BookmarkItem::class);
 
         try {
             $validated = $request->validate([
