@@ -1,3 +1,4 @@
+{{-- resources/views/emails/partials/footer.blade.php --}}
 <tr>
     <td class="footer">
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto; text-align: center;">
@@ -8,7 +9,7 @@
                             <td style="padding: 5px; display: inline-block;">
                                 @include('emails.components.button', [
                                     'url' => route('proposals.index'),
-                                    'text' => 'Proposals',
+                                    'text' => __('emails.footer.proposals'),
                                     'color' => '#0891b2',
                                     'preset' => 'footer',
                                     'style' => 'display: inline-block; margin: 0; padding: 8px 16px;'
@@ -18,7 +19,7 @@
                             <td style="padding: 5px; display: inline-block;">
                                 @include('emails.components.button', [
                                     'url' => route('funds.index'),
-                                    'text' => 'Funds',
+                                    'text' => __('emails.footer.funds'),
                                     'color' => '#0891b2',
                                     'preset' => 'footer',
                                     'style' => 'display: inline-block; margin: 0; padding: 8px 16px;'
@@ -28,7 +29,7 @@
                             <td style="padding: 5px; display: inline-block;">
                                 @include('emails.components.button', [
                                     'url' => route('completedProjectsNfts.index'),
-                                    'text' => 'Completion NFTs',
+                                    'text' => __('emails.footer.completion_nfts'),
                                     'color' => '#0891b2',
                                     'preset' => 'footer',
                                     'style' => 'display: inline-block; margin: 0; padding: 8px 16px;'
@@ -38,7 +39,7 @@
                             <td style="padding: 5px; display: inline-block;">
                                 @include('emails.components.button', [
                                     'url' => url(app()->getLocale() . '/my/dashboard'),
-                                    'text' => 'Catalyst Numbers',
+                                    'text' => __('emails.footer.catalyst_numbers'),
                                     'color' => '#0891b2',
                                     'preset' => 'footer',
                                     'style' => 'display: inline-block; margin: 0; padding: 8px 16px;'
@@ -74,9 +75,8 @@
                 @if(isset($unsubscribeText))
                     {!! Illuminate\Mail\Markdown::parse($unsubscribeText) !!}
                 @else
-                    This message was sent to <span style="color: #6b7280 !important; text-decoration: none !important; font-weight: 600;">{{ $userEmail }}</span> because you have an account on Catalyst Explorer.
-                    <br><br>
-                    © {{ date('Y') }} Catalyst Explorer. All rights reserved.
+                    {{-- {!! Illuminate\Mail\Markdown::parse(__('emails.footer.unsubscribe_text_part_1')) !!}{{ $userEmail }}{!! Illuminate\Mail\Markdown::parse(__('emails.footer.unsubscribe_text_part_2')) !!} --}}
+                    {!! Illuminate\Mail\Markdown::parse(__('emails.footer.unsubscribe_text', ['email' => $userEmail])) !!}
                 @endif
             </span>
         </div>
@@ -89,4 +89,4 @@
             <img src="{{ $message->embed($imageUrl) }}" alt="Catalyst Explorer Logo"/>
         </div>
     </td>
-</tr>
+</tr>   

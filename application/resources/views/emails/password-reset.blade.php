@@ -1,40 +1,32 @@
 {{-- resources/views/emails/password-reset.blade.php --}}
 @extends('emails.layouts.base')
 
-@section('title', 'Reset Your Password - Catalyst Explorer')
+@section('title', __('emails.password_reset.title'))
 
 @section('content')
-    @include('emails.components.greeting', ['user' => $user])
+    @include('emails.components.greeting', [
+        'content' => ($user->name ? __('emails.common.greeting') . ' ' . $user->name : __('emails.common.greeting'))
+    ])
     
     @include('emails.components.text-block', [
         'type' => 'body',
-        'content' => 'You are receiving this email because we received a password reset request for your account.'
+        'content' => __('emails.password_reset.body')
     ])
     
     @include('emails.components.button', [
         'url' => $resetUrl,
-        'text' => 'Reset Password',
+        'text' => __('emails.password_reset.button_text'),
         'preset' => 'default',
         'color' => '#0891b2'
     ])
     
     @include('emails.components.text-block', [
         'type' => 'body',
-        'content' => 'This password reset link will expire in **60 minutes**.
-    
-            If you did not request a password reset, no further action is required.
-        '
+        'content' => __('emails.password_reset.expiry_notice')
     ])
     
     @include('emails.components.text-block', [
         'type' => 'signature',
-        'content' => '**Best regards,**  
-            **Catalyst Explorer Team**
-
-            ---
-
-            If you\'re having trouble clicking the button, copy and paste the URL below into your web browser:  
-            [' . $resetUrl . '](' . $resetUrl . ')
-        '
+        'content' => __('emails.password_reset.signature', ['resetUrl' => $resetUrl])
     ])
 @endsection
