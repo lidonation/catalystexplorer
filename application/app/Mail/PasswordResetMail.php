@@ -23,7 +23,7 @@ class PasswordResetMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Reset Your Password - Catalyst Explorer',
+            subject: __('emails.password_reset.title'),
         );
     }
 

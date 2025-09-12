@@ -223,4 +223,22 @@ class User extends Authenticatable implements HasMedia
             return (float) $balance;
         });
     }
+
+    /**
+     * Send the password reset notification.
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $resetUrl = url(route('password.reset', [
+            'token' => $token,
+            'email' => $this->email,
+        ]));
+
+        Mail::to($this->email)->send(new PasswordResetMail($this, $resetUrl));
+    }
+
+    public function sendWelcomeEmail(): void
+    {
+        Mail::to($this->email)->send(new WelcomeEmailMail($this));
+    }
 }

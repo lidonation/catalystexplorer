@@ -28,7 +28,7 @@ class WelcomeEmailMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Welcome to '.config('app.name').'!',
+            subject: __('emails.welcome.title'),
         );
     }
 
