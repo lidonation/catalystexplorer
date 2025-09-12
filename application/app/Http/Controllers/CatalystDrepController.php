@@ -58,7 +58,7 @@ class CatalystDrepController extends Controller
         $votingListQuery = BookmarkCollection::query()
             ->where('user_id', $drep->user_id)
             ->where('status', 'published')
-            ->where('visibility', $userIsDelegator === true ? 'delegators' : 'public');
+            ->whereIn('visibility', $userIsDelegator ? ['public', 'delegators'] : ['public']);
 
         $votingList = to_length_aware_paginator(
             BookmarkCollectionData::collect(
