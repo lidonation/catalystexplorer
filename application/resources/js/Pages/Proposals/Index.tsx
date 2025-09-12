@@ -134,7 +134,16 @@ export default function Index({
                                     proposals={proposals}
                                     actionType="view"
                                     disableSorting={true}
-                                    columns={['title', 'viewProposal', 'fund', 'status', 'funding', 'teams', 'yesVotes', 'abstainVotes']}
+                                    columns={[
+                                        'title', 
+                                        'viewProposal', 
+                                        'fund', 
+                                        'status', 
+                                        'funding', 
+                                        'teams', 
+                                        'yesVotes', 
+                                        'abstainVotes'
+                                    ]}
                                     iconOnlyActions={true}
                                 />
                             ) : (

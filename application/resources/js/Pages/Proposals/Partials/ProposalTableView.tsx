@@ -1,32 +1,21 @@
 import Paginator from '@/Components/Paginator';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
+import ColumnSelector from '@/Components/ColumnSelector';
+import VerticalColumnIcon from '@/Components/svgs/VerticalColumnIcon';
 import { PaginatedData } from '@/types/paginated-data';
 import { WhenVisible } from '@inertiajs/react';
 import { motion } from 'framer-motion';
-import React from 'react';
-import ProposalTable from './ProposalTable';
+import React, { useRef } from 'react';
+import ProposalTable, { DynamicColumnConfig } from './ProposalTable';
 import ProposalTableLoading from './ProposalTableLoading';
 import CompareButton from './CompareButton';
 import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import RationaleButton from '@/Components/RationaleButton';
 import RemoveBookmarkButton from '@/Components/RemoveBookmarkButton';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { useUserSetting } from '@/Hooks/useUserSettings';
+import { userSettingEnums } from '@/enums/user-setting-enums';
 import ProposalData = App.DataTransferObjects.ProposalData;
-
-type ColumnKey =
-    | 'title'
-    | 'proposal'
-    | 'fund'
-    | 'status'
-    | 'funding'
-    | 'teams'
-    | 'yesVotes'
-    | 'abstainVotes'
-    | 'action'
-    | 'viewProposal'
-    | 'budget'
-    | 'category'
-    | 'openSourced';
 
 interface CustomActionProps {
     proposal: ProposalData;
@@ -39,7 +28,7 @@ interface ProposalTableViewProps {
     proposals: PaginatedData<ProposalData[]> | { data: ProposalData[], total: number, isPdf: boolean };
     actionType?: 'manage' | 'view';
     disableSorting?: boolean;
-    columns?: ColumnKey[];
+    columns?: string[] | DynamicColumnConfig[] | (string | DynamicColumnConfig)[];
     showPagination?: boolean;
     iconOnlyActions?: boolean;
     iconActionsConfig?: IconAction[];
@@ -61,6 +50,7 @@ interface ProposalTableViewProps {
         headerText?: string;
     };
     headerAlignment?: 'left' | 'center' | 'right';
+    onColumnSelectorOpen?: () => void; // Callback to open column selector
 }
 
 const renderIconOnlyViewActions = (proposal: ProposalData, actionsConfig: IconAction[] = ['compare', 'bookmark']) => {
@@ -143,9 +133,24 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
     customActions,
     renderActions,
     customStyles,
-    headerAlignment = 'left'
+    headerAlignment = 'left',
+    onColumnSelectorOpen
 }) => {
     const { t } = useLaravelReactI18n();
+
+    // Use selected columns from user settings, fall back to prop columns if not set
+    const defaultColumns = ['title', 'budget', 'category', 'openSourced', 'teams', 'viewProposal'];
+    const {
+        value: selectedColumns,
+        setValue: setSelectedColumns,
+        isLoading: isColumnsLoading
+    } = useUserSetting<string[]>(
+        userSettingEnums.PROPOSAL_PDF_COLUMNS,
+        columns as string[] || defaultColumns
+    );
+
+    // Use selected columns if available, otherwise fall back to prop columns
+    const activeColumns = selectedColumns || columns;
 
     const getActionsConfig = () => {
         if (customActions || renderActions) {
@@ -169,11 +174,39 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
         };
     };
 
+    const handleColumnSelectionChange = (columns: string[]) => {
+        setSelectedColumns(columns);
+    };
+
+    const handleOpenColumnSelector = () => {
+        // Scroll to the column selector and draw user's attention to it
+        const columnSelectorContainer = document.querySelector('[data-testid="column-selector"]')?.parentElement;
+        if (columnSelectorContainer) {
+            columnSelectorContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Add a temporary highlight class to draw attention
+            columnSelectorContainer.classList.add('ring-2', 'ring-primary', 'ring-offset-2', 'ring-offset-background');
+            setTimeout(() => {
+                columnSelectorContainer.classList.remove('ring-2', 'ring-primary', 'ring-offset-2', 'ring-offset-background');
+            }, 3000);
+        }
+    };
+
     const actionsConfig = getActionsConfig();
 
     return (
         <>
             <div className="container mt-8">
+                {!isColumnsLoading && (
+                    <div className="flex justify-start mb-4">
+                        <ColumnSelector
+                            selectedColumns={selectedColumns || defaultColumns}
+                            onSelectionChange={handleColumnSelectionChange}
+                            icon={<VerticalColumnIcon className="w-4 h-4" />}
+                            className="z-10"
+                        />
+                    </div>
+                )}
+                
                 <WhenVisible
                     fallback={<ProposalTableLoading />}
                     data="proposals"
@@ -189,12 +222,13 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
                                 actionType={actionType}
                                 disableSorting={disableSorting}
                                 proposals={proposals}
-                                columns={columns}
+                                columns={activeColumns}
                                 showPagination={showPagination}
                                 customActions={actionsConfig.customActions}
                                 renderActions={actionsConfig.renderActions}
                                 customStyles={customStyles}
                                 headerAlignment={headerAlignment}
+                                onColumnSelectorOpen={onColumnSelectorOpen || handleOpenColumnSelector}
                             />
                         </motion.div>
                     ) : (

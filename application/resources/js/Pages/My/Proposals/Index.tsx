@@ -1,5 +1,7 @@
 import SearchControls from '@/Components/atoms/SearchControls';
 import Title from '@/Components/atoms/Title';
+import ColumnSelector from '@/Components/ColumnSelector';
+import VerticalColumnIcon from '@/Components/svgs/VerticalColumnIcon';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import ProposalSortingOptions from '@/lib/ProposalSortOptions';
@@ -10,6 +12,8 @@ import { Head } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useState } from 'react';
 import MyProposalFilters from './partials/MyProposalsFilters';
+import { useUserSetting } from '@/Hooks/useUserSettings';
+import { userSettingEnums } from '@/enums/user-setting-enums';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface MyProposalsProps {
@@ -20,6 +24,20 @@ interface MyProposalsProps {
 export default function MyProposals({ proposals, filters }: MyProposalsProps) {
     const { t } = useLaravelReactI18n();
     const [showFilters, setShowFilters] = useState(false);
+
+    const defaultColumns = ['proposal', 'status', 'funding', 'teams', 'action'];
+    const {
+        value: selectedColumns,
+        setValue: setSelectedColumns,
+        isLoading: isColumnsLoading
+    } = useUserSetting<string[]>(
+        userSettingEnums.PROPOSAL_PDF_COLUMNS,
+        defaultColumns
+    );
+
+    const handleColumnSelectionChange = (columns: string[]) => {
+        setSelectedColumns(columns);
+    };
 
     return (
         <FiltersProvider
@@ -53,10 +71,24 @@ export default function MyProposals({ proposals, filters }: MyProposalsProps) {
                         <MyProposalFilters />
                     </section>
 
+                    {!isColumnsLoading && (
+                        <div className="flex justify-start mb-4">
+                            <ColumnSelector
+                                selectedColumns={selectedColumns || defaultColumns}
+                                onSelectionChange={handleColumnSelectionChange}
+                                icon={<VerticalColumnIcon className="w-4 h-4" />}
+                                className="z-10"
+                            />
+                        </div>
+                    )}
+
                     <div className="overflow-hidden rounded-lg border border-gray-200">
                         {proposals?.data && proposals?.data?.length > 0 ? (
                             <div>
-                                <ProposalTable proposals={proposals} />
+                                <ProposalTable 
+                                    proposals={proposals} 
+                                    columns={selectedColumns || defaultColumns}
+                                />
                             </div>
                         ) : (
                             <div className="py-8 text-center">
