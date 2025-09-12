@@ -12,15 +12,15 @@ class SignaturePolicy extends AppPolicy
     /**
      * Determine whether the user can view any signatures (wallets).
      */
-    public function viewAny(User $user): bool
+    public function viewAny(?User $user): bool
     {
-        return true; // Users can view their own wallets
+        return true;
     }
 
     /**
      * Determine whether the user can view the signature (wallet).
      */
-    public function view(User $user, Signature $signature): bool
+    public function view(?User $user, Signature $signature): bool
     {
         return parent::canView($user, $signature);
     }
