@@ -14,29 +14,31 @@ import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronLeft } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
-import DrepDetailsCard from './Partials/DrepDetailCard';
-import VoterHistoryTable from './Partials/VoterHistoryTable';
-import CatalystDrepData = App.DataTransferObjects.CatalystDrepData;
-import VotingHistoryData = App.DataTransferObjects.VoterHistoryData;
-import DelegatorData = App.DataTransferObjects.UserData;
 import DelegatorTable from './Partials/DelegatorsTable';
+import DrepDetailsCard from './Partials/DrepDetailCard';
+import VotingListTable from './Partials/VotingListTable';
+import CatalystDrepData = App.DataTransferObjects.CatalystDrepData;
+import DelegatorData = App.DataTransferObjects.UserData;
+import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 
 interface DrepPageProps {
     drep: CatalystDrepData;
     delegatedDrepStakeAddress?: string;
-    delegators?: PaginatedData<DelegatorData[]>;
+    delegators: PaginatedData<DelegatorData[]>;
+    votingList: PaginatedData<BookmarkCollectionData[]>;
     filters: SearchParams;
 }
 const DrepPage = ({
     drep,
     delegatedDrepStakeAddress,
     delegators,
+    votingList,
     filters,
 }: DrepPageProps) => {
     const { t } = useLaravelReactI18n();
-    const [activeTab, setActiveTab] = useState('Voting History');
+    const [activeTab, setActiveTab] = useState('Voting List');
     const formatAddress = (address: string) => {
         if (!address) return '';
         return `${address.substring(0, 12)}...${address.substring(address.length - 8)}`;
@@ -70,19 +72,19 @@ const DrepPage = ({
     const handleDelegate = async (drepStakeAddress: string | null) => {
         try {
             if (currentDelegatedDrep) {
-                toast.error('You can only delegate once', {
+                toast.error(t('dreps.delegateOnce'), {
                     className: 'bg-background text-content',
                 });
                 return;
             }
             if (!drepStakeAddress) {
-                toast.error('DRep stake address is required', {
+                toast.error(t('dreps.stakeAddressIsRequired'), {
                     className: 'bg-background text-content',
                 });
                 return;
             }
             if (!connectedWalletProvider || !stakeAddress) {
-                toast.info('Please connect your wallet to continue', {
+                toast.info(t('dreps.connectWallet'), {
                     className: 'bg-background text-content',
                 });
                 openConnectWalletSlider();
@@ -111,16 +113,19 @@ const DrepPage = ({
 
             if (res) {
                 setCurrentDelegatedDrep(drepStakeAddress);
-                toast.success(res?.data?.message || 'Delegation Successful!', {
-                    className: 'bg-background text-content',
-                    toastId: 'delegation-successful',
-                });
+                toast.success(
+                    res?.data?.message || t('dreps.delegationSuccessful'),
+                    {
+                        className: 'bg-background text-content',
+                        toastId: 'delegation-successful',
+                    },
+                );
             }
         } catch (err: any) {
             toast.error(
                 err.response?.data?.message ||
                     err.response?.data?.error ||
-                    'Delegation Failed!',
+                    t('dreps.delegationFailed'),
                 {
                     className: 'bg-background text-content',
                     toastId: 'delegation-failed',
@@ -149,7 +154,7 @@ const DrepPage = ({
                 });
 
                 toast.success(
-                    res?.data?.message || 'Undelegation Successful!',
+                    res?.data?.message || t('dreps.undelegationSuccessful'),
                     {
                         toastId: 'undelegation-successful',
                         className: 'bg-background text-content',
@@ -160,7 +165,7 @@ const DrepPage = ({
             toast.error(
                 err.response?.data?.message ||
                     err.response?.data?.error ||
-                    'Undelegation Failed!',
+                    t('dreps.undelegationFailed'),
                 {
                     className: 'bg-background text-content',
                     toastId: 'undelegation-failed',
@@ -168,33 +173,6 @@ const DrepPage = ({
             );
         }
     };
-
-    const voterHistory = [
-        {
-            proposal_title: 'DeFi Lending Protocol',
-            choice: 1
-        },
-        {
-            proposal_title: 'Education for Africa',
-            choice: 1
-        },
-        {
-            proposal_title: 'Catalyst Tooling Upgrade',
-            choice: 2
-        },
-        {
-            proposal_title: 'Community Workshops',
-            choice: 1
-        },
-        {
-            proposal_title: 'NFT Infrastructure Upgrade',
-            choice: 2
-        },
-        {
-            proposal_title: 'Identity & Security Research',
-            choice: 1
-        },
-    ]
 
     return (
         <FiltersProvider defaultFilters={filters}>
@@ -274,15 +252,15 @@ const DrepPage = ({
                                 <nav className="-mb-px flex space-x-8">
                                     <button
                                         className={`cursor-pointer border-b-2 px-1 py-4 text-sm font-medium ${
-                                            activeTab === 'Voting History'
+                                            activeTab === 'Voting List'
                                                 ? 'border-primary text-primary'
                                                 : 'text-gray-persist border-transparent'
                                         }`}
                                         onClick={() =>
-                                            setActiveTab('Voting History')
+                                            setActiveTab('Voting List')
                                         }
                                     >
-                                        {t('vote.votingHistory')}
+                                        {t('dreps.votingList')}
                                     </button>
                                     <button
                                         className={`cursor-pointer border-b-2 px-1 py-4 text-sm font-medium ${
@@ -299,12 +277,12 @@ const DrepPage = ({
                                 </nav>
                             </div>
                             <div className="py-4">
-                                {activeTab === 'Voting History' ? (
-                                    (voterHistory?.length ?? 0) > 0 ? (
+                                {activeTab === 'Voting List' ? (
+                                    (votingList?.data?.length ?? 0) > 0 ? (
                                         <>
-                                            <VoterHistoryTable
-                                                votingHistory={
-                                                    voterHistory ?? []
+                                            <VotingListTable
+                                                votingList={
+                                                    votingList?.data ?? []
                                                 }
                                             />
                                         </>

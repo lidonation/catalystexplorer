@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\DataTransferObjects\BookmarkCollectionData;
 use App\DataTransferObjects\CatalystDrepData;
 use App\DataTransferObjects\UserData;
+use App\Models\BookmarkCollection;
 use App\Models\CatalystDrep;
 use App\Models\Meta;
 use App\Models\Signature;
@@ -49,10 +51,26 @@ class CatalystDrepController extends Controller
             )
         )->onEachSide(0);
 
+        $userIsDelegator = $drep->delegators()
+            ->wherePivot('user_id', Auth::id())
+            ->exists();
+
+        $votingListQuery = BookmarkCollection::query()
+            ->where('user_id', $drep->user_id)
+            ->where('status', 'published')
+            ->where('visibility', $userIsDelegator === true ? 'delegators' : 'public');
+
+        $votingList = to_length_aware_paginator(
+            BookmarkCollectionData::collect(
+                $votingListQuery->paginate(8, ['*'], 'v', request()->input('v'))
+            )
+        )->onEachSide(0);
+
         return Inertia::render('Dreps/Drep', [
             'drep' => CatalystDrepData::from($drep),
             'delegatedDrepStakeAddress' => $delegatedDrepStakeAddress,
             'delegators' => $delegators,
+            'votingList' => $votingList,
             'filters' => [],
         ]);
     }
