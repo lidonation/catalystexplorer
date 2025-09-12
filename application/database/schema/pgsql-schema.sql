@@ -2,8 +2,10 @@
 -- PostgreSQL database dump
 --
 
+\restrict hDABjSKQFAWUAGQelEWmrPBwWB1eCU9KFvKYVo2irvoeEN3TAz9Lcqf3b3j8zNR
+
 -- Dumped from database version 17.1 (Debian 17.1-1.pgdg120+1)
--- Dumped by pg_dump version 17.5 (Debian 17.5-1.pgdg120+1)
+-- Dumped by pg_dump version 17.6 (Debian 17.6-1.pgdg13+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -172,7 +174,7 @@ CREATE TABLE public.bookmark_collections (
     id uuid NOT NULL,
     parent_id uuid,
     type_id text,
-    model_id text
+    model_id uuid
 );
 
 
@@ -201,23 +203,10 @@ CREATE TABLE public.bookmark_collections_users (
 
 
 --
--- Name: bookmark_items_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.bookmark_items_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
 -- Name: bookmark_items; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.bookmark_items (
-    id bigint DEFAULT nextval('public.bookmark_items_id_seq'::regclass) NOT NULL,
     model_type character varying(255) NOT NULL,
     title text,
     content text,
@@ -227,10 +216,24 @@ CREATE TABLE public.bookmark_items (
     deleted_at timestamp(0) without time zone,
     vote character varying(255),
     user_id uuid,
-    model_id text,
     bookmark_collection_id uuid,
+    old_id bigint,
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    model_id uuid DEFAULT gen_random_uuid(),
     CONSTRAINT bookmark_items_vote_check CHECK (((vote)::text = ANY (ARRAY[('1'::character varying)::text, ('-1'::character varying)::text, ('0'::character varying)::text])))
 );
+
+
+--
+-- Name: bookmark_items_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.bookmark_items_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
 
 
 --
@@ -346,23 +349,38 @@ ALTER SEQUENCE public.cardano_budget_proposals_id_seq OWNED BY public.cardano_bu
 
 
 --
+-- Name: catalyst_drep_user; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.catalyst_drep_user (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    catalyst_drep_id uuid NOT NULL,
+    user_id uuid NOT NULL,
+    catalyst_drep_stake_address character varying(255) NOT NULL,
+    user_stake_address character varying(255) NOT NULL,
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone
+);
+
+
+--
 -- Name: catalyst_dreps; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.catalyst_dreps (
     name character varying(255) NOT NULL,
     email character varying(255) NOT NULL,
-    bio text,
     link text,
-    objective text,
-    motivation text,
-    qualifications text,
     created_at timestamp(0) without time zone,
     updated_at timestamp(0) without time zone,
     deleted_at timestamp(0) without time zone,
     id uuid NOT NULL,
     old_id bigint,
-    user_id uuid
+    user_id uuid,
+    bio json,
+    motivation json,
+    qualifications json,
+    objective json
 );
 
 
@@ -402,12 +420,13 @@ ALTER SEQUENCE public.catalyst_profile_has_proposal_id_seq OWNED BY public.catal
 
 CREATE TABLE public.catalyst_profiles (
     username text NOT NULL,
-    claimed_by bigint,
     created_at timestamp(0) without time zone,
     updated_at timestamp(0) without time zone,
     name text,
     id uuid NOT NULL,
-    old_id bigint
+    old_id bigint,
+    catalyst_id character varying(255),
+    claimed_by uuid
 );
 
 
@@ -416,37 +435,19 @@ CREATE TABLE public.catalyst_profiles (
 --
 
 CREATE TABLE public.categories (
-    id bigint NOT NULL,
     created_at timestamp(0) without time zone,
     updated_at timestamp(0) without time zone,
-    parent_id bigint,
     name character varying(255) NOT NULL,
     description text,
     slug character varying(255) NOT NULL,
     type character varying(255) DEFAULT 'category'::character varying NOT NULL,
     sort_order integer DEFAULT 0 NOT NULL,
     level integer DEFAULT 0 NOT NULL,
-    is_active boolean DEFAULT true NOT NULL
+    is_active boolean DEFAULT true NOT NULL,
+    old_id bigint,
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    parent_id uuid
 );
-
-
---
--- Name: categories_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.categories_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.categories_id_seq OWNED BY public.categories.id;
 
 
 --
@@ -602,33 +603,15 @@ ALTER SEQUENCE public.connections_id_seq OWNED BY public.connections.id;
 --
 
 CREATE TABLE public.delegations (
-    id bigint NOT NULL,
-    registration_id bigint NOT NULL,
     voting_pub character varying(255) NOT NULL,
     weight integer NOT NULL,
     cat_onchain_id text,
     created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone
+    updated_at timestamp(0) without time zone,
+    registration_id uuid NOT NULL,
+    old_id bigint,
+    id uuid DEFAULT gen_random_uuid() NOT NULL
 );
-
-
---
--- Name: delegations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.delegations_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: delegations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.delegations_id_seq OWNED BY public.delegations.id;
 
 
 --
@@ -710,9 +693,10 @@ CREATE TABLE public.funds (
     label text,
     currency character varying(3) DEFAULT 'usd'::character varying NOT NULL,
     review_started_at timestamp(0) without time zone,
-    user_id bigint,
     id uuid NOT NULL,
-    parent_id uuid
+    parent_id uuid,
+    old_user_id bigint,
+    user_id uuid DEFAULT gen_random_uuid() NOT NULL
 );
 
 
@@ -731,8 +715,8 @@ CREATE TABLE public.group_has_ideascale_profile (
 --
 
 CREATE TABLE public.group_has_proposal (
-    group_id uuid,
-    proposal_id uuid
+    group_id uuid NOT NULL,
+    proposal_id uuid NOT NULL
 );
 
 
@@ -968,33 +952,15 @@ CREATE TABLE public.media (
 --
 
 CREATE TABLE public.metas (
-    id bigint NOT NULL,
     model_type text NOT NULL,
     key text NOT NULL,
     content text NOT NULL,
     created_at timestamp(0) without time zone,
     updated_at timestamp(0) without time zone,
-    model_id text
+    model_id text,
+    old_id bigint,
+    id uuid DEFAULT gen_random_uuid() NOT NULL
 );
-
-
---
--- Name: metas_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.metas_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: metas_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.metas_id_seq OWNED BY public.metas.id;
 
 
 --
@@ -1206,8 +1172,8 @@ CREATE TABLE public.model_has_roles (
 
 CREATE TABLE public.model_signature (
     model_type text NOT NULL,
-    model_id bigint NOT NULL,
-    signature_id bigint NOT NULL
+    signature_id uuid NOT NULL,
+    model_id uuid NOT NULL
 );
 
 
@@ -1216,30 +1182,12 @@ CREATE TABLE public.model_signature (
 --
 
 CREATE TABLE public.model_tag (
-    id bigint NOT NULL,
-    tag_id bigint NOT NULL,
+    tag_id uuid NOT NULL,
     model_id text NOT NULL,
-    model_type text NOT NULL
+    model_type text NOT NULL,
+    old_id bigint,
+    id uuid DEFAULT gen_random_uuid() NOT NULL
 );
-
-
---
--- Name: model_tag_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.model_tag_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: model_tag_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.model_tag_id_seq OWNED BY public.model_tag.id;
 
 
 --
@@ -1489,30 +1437,12 @@ CREATE TABLE public.proposal_milestones (
 --
 
 CREATE TABLE public.proposal_profiles (
-    id bigint NOT NULL,
     profile_type character varying(255) NOT NULL,
     profile_id uuid NOT NULL,
-    proposal_id uuid NOT NULL
+    proposal_id uuid NOT NULL,
+    old_id bigint,
+    id uuid DEFAULT gen_random_uuid() NOT NULL
 );
-
-
---
--- Name: proposal_profiles_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.proposal_profiles_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: proposal_profiles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.proposal_profiles_id_seq OWNED BY public.proposal_profiles.id;
 
 
 --
@@ -1625,32 +1555,14 @@ ALTER SEQUENCE public.reactions_id_seq OWNED BY public.reactions.id;
 --
 
 CREATE TABLE public.registrations (
-    id bigint NOT NULL,
     tx text NOT NULL,
     stake_pub text NOT NULL,
     stake_key text NOT NULL,
     created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone
+    updated_at timestamp(0) without time zone,
+    old_id bigint,
+    id uuid DEFAULT gen_random_uuid() NOT NULL
 );
-
-
---
--- Name: registrations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.registrations_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: registrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.registrations_id_seq OWNED BY public.registrations.id;
 
 
 --
@@ -1827,7 +1739,7 @@ CREATE TABLE public.rules (
     operator character varying(255) NOT NULL,
     predicate character varying(255),
     logical_operator character varying(255) NOT NULL,
-    old_model_id bigint NOT NULL,
+    old_model_id bigint,
     model_type character varying(255) NOT NULL,
     created_at timestamp(0) without time zone,
     updated_at timestamp(0) without time zone,
@@ -1864,14 +1776,10 @@ ALTER SEQUENCE public.rules_id_seq OWNED BY public.rules.old_id;
 
 CREATE TABLE public.service_model (
     old_id bigint NOT NULL,
-    old_service_id bigint NOT NULL,
     model_type character varying(255) NOT NULL,
-    old_model_id bigint NOT NULL,
-    created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone,
-    id uuid NOT NULL,
     service_id uuid,
-    model_id uuid
+    model_id uuid,
+    id uuid DEFAULT gen_random_uuid() NOT NULL
 );
 
 
@@ -1954,37 +1862,34 @@ CREATE TABLE public.sessions (
 --
 
 CREATE TABLE public.signatures (
-    id bigint NOT NULL,
     stake_key character varying(255),
     signature text NOT NULL,
     signature_key text,
-    user_id bigint,
     wallet_provider character varying(255),
     created_at timestamp(0) without time zone,
     updated_at timestamp(0) without time zone,
     stake_address text,
     wallet_name character varying(255),
-    user_uuid uuid
+    old_id bigint,
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    user_id uuid
 );
 
 
 --
--- Name: signatures_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: snapshots; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.signatures_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: signatures_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.signatures_id_seq OWNED BY public.signatures.id;
+CREATE TABLE public.snapshots (
+    snapshot_name character varying(255),
+    model_type character varying(255) NOT NULL,
+    model_id text NOT NULL,
+    epoch integer NOT NULL,
+    "order" smallint NOT NULL,
+    snapshot_at timestamp without time zone NOT NULL,
+    old_id bigint,
+    id uuid DEFAULT gen_random_uuid() NOT NULL
+);
 
 
 --
@@ -2000,26 +1905,10 @@ CREATE SEQUENCE public.snapshots_id_seq
 
 
 --
--- Name: snapshots; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.snapshots (
-    id bigint DEFAULT nextval('public.snapshots_id_seq'::regclass) NOT NULL,
-    snapshot_name character varying(255),
-    model_type character varying(255) NOT NULL,
-    model_id text NOT NULL,
-    epoch integer NOT NULL,
-    "order" smallint NOT NULL,
-    snapshot_at timestamp without time zone NOT NULL
-);
-
-
---
 -- Name: tags; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.tags (
-    id bigint NOT NULL,
     title text NOT NULL,
     meta_title text NOT NULL,
     slug text NOT NULL,
@@ -2027,27 +1916,10 @@ CREATE TABLE public.tags (
     content text,
     created_at timestamp(0) without time zone,
     updated_at timestamp(0) without time zone,
-    deleted_at timestamp(0) without time zone
+    deleted_at timestamp(0) without time zone,
+    old_id bigint,
+    id uuid DEFAULT gen_random_uuid() NOT NULL
 );
-
-
---
--- Name: tags_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.tags_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: tags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.tags_id_seq OWNED BY public.tags.id;
 
 
 --
@@ -2179,9 +2051,9 @@ ALTER SEQUENCE public.txes_id_seq OWNED BY public.txes.id;
 --
 
 CREATE TABLE public.users (
-    old_id bigint NOT NULL,
-    name character varying(255) NOT NULL,
-    email character varying(255) NOT NULL,
+    old_id bigint,
+    name character varying(255),
+    email character varying(255),
     email_verified_at timestamp(0) without time zone,
     password character varying(255),
     remember_token character varying(100),
@@ -2250,10 +2122,10 @@ CREATE TABLE public.voter_histories (
     raw_fragment text NOT NULL,
     proposal bigint NOT NULL,
     choice integer NOT NULL,
-    snapshot_id bigint,
     created_at timestamp(0) without time zone,
     updated_at timestamp(0) without time zone,
-    deleted_at timestamp(0) with time zone
+    deleted_at timestamp(0) with time zone,
+    snapshot_id uuid
 );
 
 
@@ -2314,6 +2186,24 @@ CREATE TABLE public.voters (
 
 
 --
+-- Name: voting_powers; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.voting_powers (
+    delegate character varying(255),
+    voter_id text NOT NULL,
+    voting_power double precision NOT NULL,
+    consumed boolean DEFAULT false,
+    votes_cast integer DEFAULT 0 NOT NULL,
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone,
+    snapshot_id uuid NOT NULL,
+    old_id bigint,
+    id uuid DEFAULT gen_random_uuid() NOT NULL
+);
+
+
+--
 -- Name: voting_powers_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -2323,23 +2213,6 @@ CREATE SEQUENCE public.voting_powers_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-
-
---
--- Name: voting_powers; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.voting_powers (
-    id bigint DEFAULT nextval('public.voting_powers_id_seq'::regclass) NOT NULL,
-    delegate character varying(255),
-    snapshot_id bigint NOT NULL,
-    voter_id text NOT NULL,
-    voting_power double precision NOT NULL,
-    consumed boolean DEFAULT false,
-    votes_cast integer DEFAULT 0 NOT NULL,
-    created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone
-);
 
 
 --
@@ -2364,13 +2237,6 @@ ALTER TABLE ONLY public.catalyst_profile_has_proposal ALTER COLUMN id SET DEFAUL
 
 
 --
--- Name: categories id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.categories ALTER COLUMN id SET DEFAULT nextval('public.categories_id_seq'::regclass);
-
-
---
 -- Name: comment_notification_subscriptions id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2382,13 +2248,6 @@ ALTER TABLE ONLY public.comment_notification_subscriptions ALTER COLUMN id SET D
 --
 
 ALTER TABLE ONLY public.connections ALTER COLUMN id SET DEFAULT nextval('public.connections_id_seq'::regclass);
-
-
---
--- Name: delegations id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.delegations ALTER COLUMN id SET DEFAULT nextval('public.delegations_id_seq'::regclass);
 
 
 --
@@ -2420,13 +2279,6 @@ ALTER TABLE ONLY public.jobs ALTER COLUMN id SET DEFAULT nextval('public.jobs_id
 
 
 --
--- Name: metas id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.metas ALTER COLUMN id SET DEFAULT nextval('public.metas_id_seq'::regclass);
-
-
---
 -- Name: migrations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2438,13 +2290,6 @@ ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.m
 --
 
 ALTER TABLE ONLY public.model_has_locations ALTER COLUMN id SET DEFAULT nextval('public.model_has_locations_id_seq'::regclass);
-
-
---
--- Name: model_tag id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.model_tag ALTER COLUMN id SET DEFAULT nextval('public.model_tag_id_seq'::regclass);
 
 
 --
@@ -2469,24 +2314,10 @@ ALTER TABLE ONLY public.permissions ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
--- Name: proposal_profiles id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.proposal_profiles ALTER COLUMN id SET DEFAULT nextval('public.proposal_profiles_id_seq'::regclass);
-
-
---
 -- Name: reactions id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.reactions ALTER COLUMN id SET DEFAULT nextval('public.reactions_id_seq'::regclass);
-
-
---
--- Name: registrations id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.registrations ALTER COLUMN id SET DEFAULT nextval('public.registrations_id_seq'::regclass);
 
 
 --
@@ -2518,20 +2349,6 @@ ALTER TABLE ONLY public.services ALTER COLUMN old_id SET DEFAULT nextval('public
 
 
 --
--- Name: signatures id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.signatures ALTER COLUMN id SET DEFAULT nextval('public.signatures_id_seq'::regclass);
-
-
---
--- Name: tags id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.tags ALTER COLUMN id SET DEFAULT nextval('public.tags_id_seq'::regclass);
-
-
---
 -- Name: translations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2543,13 +2360,6 @@ ALTER TABLE ONLY public.translations ALTER COLUMN id SET DEFAULT nextval('public
 --
 
 ALTER TABLE ONLY public.txes ALTER COLUMN id SET DEFAULT nextval('public.txes_id_seq'::regclass);
-
-
---
--- Name: users old_id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.users ALTER COLUMN old_id SET DEFAULT nextval('public.users_id_seq'::regclass);
 
 
 --
@@ -2640,6 +2450,22 @@ ALTER TABLE ONLY public.cardano_budget_proposals
 
 
 --
+-- Name: catalyst_drep_user catalyst_drep_user_catalyst_drep_id_user_id_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.catalyst_drep_user
+    ADD CONSTRAINT catalyst_drep_user_catalyst_drep_id_user_id_unique UNIQUE (catalyst_drep_id, user_id);
+
+
+--
+-- Name: catalyst_drep_user catalyst_drep_user_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.catalyst_drep_user
+    ADD CONSTRAINT catalyst_drep_user_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: catalyst_dreps catalyst_dreps_email_unique; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2669,14 +2495,6 @@ ALTER TABLE ONLY public.catalyst_profile_has_proposal
 
 ALTER TABLE ONLY public.catalyst_profiles
     ADD CONSTRAINT catalyst_profiles_pkey PRIMARY KEY (id);
-
-
---
--- Name: categories categories_parent_id_slug_unique; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.categories
-    ADD CONSTRAINT categories_parent_id_slug_unique UNIQUE (parent_id, slug);
 
 
 --
@@ -3350,13 +3168,6 @@ CREATE INDEX catalyst_profiles_uuid_index ON public.catalyst_profiles USING btre
 
 
 --
--- Name: categories_parent_id_type_index; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX categories_parent_id_type_index ON public.categories USING btree (parent_id, type);
-
-
---
 -- Name: commentator_reactions; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3434,10 +3245,31 @@ CREATE UNIQUE INDEX media_uuid_unique ON public.media USING btree (uuid);
 
 
 --
+-- Name: metrics_context_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX metrics_context_index ON public.metrics USING btree (context);
+
+
+--
 -- Name: metrics_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX metrics_id_index ON public.metrics USING btree (id);
+
+
+--
+-- Name: metrics_type_context_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX metrics_type_context_index ON public.metrics USING btree (type, context);
+
+
+--
+-- Name: metrics_type_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX metrics_type_index ON public.metrics USING btree (type);
 
 
 --
@@ -3595,6 +3427,41 @@ CREATE INDEX proposals_campaign_uuid_index ON public.proposals USING btree (camp
 
 
 --
+-- Name: proposals_funding_status_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX proposals_funding_status_index ON public.proposals USING btree (funding_status);
+
+
+--
+-- Name: proposals_status_funding_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX proposals_status_funding_index ON public.proposals USING btree (status, funding_status);
+
+
+--
+-- Name: proposals_status_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX proposals_status_index ON public.proposals USING btree (status);
+
+
+--
+-- Name: proposals_type_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX proposals_type_index ON public.proposals USING btree (type);
+
+
+--
+-- Name: proposals_type_status_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX proposals_type_status_index ON public.proposals USING btree (type, status);
+
+
+--
 -- Name: ratings_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3637,13 +3504,6 @@ CREATE INDEX reviews_reviewer_id_index ON public.reviews USING btree (reviewer_i
 
 
 --
--- Name: service_model_model_type_model_id_index; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX service_model_model_type_model_id_index ON public.service_model USING btree (model_type, old_model_id);
-
-
---
 -- Name: sessions_last_activity_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3662,6 +3522,13 @@ CREATE INDEX sessions_user_id_index ON public.sessions USING btree (user_id);
 --
 
 CREATE INDEX signatures_stake_key_index ON public.signatures USING btree (stake_key);
+
+
+--
+-- Name: signatures_user_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX signatures_user_id_index ON public.signatures USING btree (user_id);
 
 
 --
@@ -3763,6 +3630,22 @@ ALTER TABLE ONLY public.campaigns
 
 
 --
+-- Name: catalyst_drep_user catalyst_drep_user_catalyst_drep_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.catalyst_drep_user
+    ADD CONSTRAINT catalyst_drep_user_catalyst_drep_id_foreign FOREIGN KEY (catalyst_drep_id) REFERENCES public.catalyst_dreps(id) ON DELETE CASCADE;
+
+
+--
+-- Name: catalyst_drep_user catalyst_drep_user_user_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.catalyst_drep_user
+    ADD CONSTRAINT catalyst_drep_user_user_id_foreign FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
 -- Name: catalyst_dreps catalyst_dreps_user_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3791,7 +3674,7 @@ ALTER TABLE ONLY public.catalyst_profile_has_proposal
 --
 
 ALTER TABLE ONLY public.categories
-    ADD CONSTRAINT categories_parent_id_foreign FOREIGN KEY (parent_id) REFERENCES public.categories(id) ON DELETE CASCADE;
+    ADD CONSTRAINT categories_parent_id_foreign FOREIGN KEY (parent_id) REFERENCES public.categories(id);
 
 
 --
@@ -3991,7 +3874,7 @@ ALTER TABLE ONLY public.model_has_roles
 --
 
 ALTER TABLE ONLY public.model_signature
-    ADD CONSTRAINT model_signature_signature_id_foreign FOREIGN KEY (signature_id) REFERENCES public.signatures(id);
+    ADD CONSTRAINT model_signature_signature_id_foreign FOREIGN KEY (signature_id) REFERENCES public.signatures(id) ON DELETE CASCADE;
 
 
 --
@@ -4115,6 +3998,14 @@ ALTER TABLE ONLY public.service_model
 
 
 --
+-- Name: signatures signatures_user_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.signatures
+    ADD CONSTRAINT signatures_user_id_foreign FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE SET NULL;
+
+
+--
 -- Name: tinder_collections tinder_collections_user_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4134,12 +4025,16 @@ ALTER TABLE ONLY public.voting_powers
 -- PostgreSQL database dump complete
 --
 
+\unrestrict hDABjSKQFAWUAGQelEWmrPBwWB1eCU9KFvKYVo2irvoeEN3TAz9Lcqf3b3j8zNR
+
 --
 -- PostgreSQL database dump
 --
 
+\restrict O9cCMpshROfiKNUWAREnRy7eQWaEUnKyKTXoPlzq3Evd6XsizaXVPaIw4hp65Uy
+
 -- Dumped from database version 17.1 (Debian 17.1-1.pgdg120+1)
--- Dumped by pg_dump version 17.5 (Debian 17.5-1.pgdg120+1)
+-- Dumped by pg_dump version 17.6 (Debian 17.6-1.pgdg13+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -4367,6 +4262,33 @@ COPY public.migrations (id, migration, batch) FROM stdin;
 277	2025_08_13_213630_migrate_ratings_model_id_to_uuid	16
 278	2025_08_13_214110_migrate_reviews_model_id_to_uuid	17
 279	2025_08_14_091635_convert_media_model_id_to_uuid_type	18
+280	2025_08_14_104726_convert_tags_to_uuid_primary_key	19
+281	2025_08_15_141414_update_bookmark_item_table	20
+282	2025_08_15_161146_update_category_table	20
+283	2025_08_15_161550_update_metas_table	20
+284	2025_08_15_162702_update_service_model_table	21
+285	2025_08_16_182824_add_uuid_to_registrations_table	21
+286	2025_08_16_183341_convert_delegations_to_uuid_primary_key	21
+287	2025_08_16_183454_convert_snapshots_to_uuid_primary_key	21
+288	2025_08_16_185923_convert_voting_powers_to_uuid_primary_key	21
+289	2025_08_16_192000_convert_signatures_to_uuid_primary_key	22
+290	2025_08_17_113308_convert_catalyst_drep_fields_to_json	22
+291	2025_08_17_141834_create_catalyst_drep_user_table	22
+292	2025_08_17_150031_update_profile_proposal_table	22
+293	2025_08_17_150342_update_model_tag_table	22
+294	2025_08_18_224144_add_not_null_constraints_to_group_has_proposal_table	23
+295	2025_08_18_224703_add_uuid_validation_to_bookmark_items	23
+296	2025_08_19_095102_update_user_table	24
+297	2025_08_19_110134_update_signatures_table	24
+298	2025_08_19_120748_update_catalyst_profiles_table	24
+299	2025_08_26_134545_make_old_model_id_nullable_in_rules_table	25
+300	2025_08_27_161937_update_bookmark_items_table	26
+301	2025_08_27_174944_update_bookmarkitems_table	27
+334	2025_01_31_000000_add_proposal_metrics_indexes	28
+335	2025_08_28_194934_update_f-14_proposal	28
+336	2025_08_31_162540_convert_bookmark_collection_model_id_to_uuid_type	29
+337	2025_09_10_123306_update_catalyst_profiles_claimed_by_to_uuid	30
+370	2025_09_10_231747_merge_duplicate_catalyst_profiles	31
 \.
 
 
@@ -4374,10 +4296,12 @@ COPY public.migrations (id, migration, batch) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 279, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 370, true);
 
 
 --
 -- PostgreSQL database dump complete
 --
+
+\unrestrict O9cCMpshROfiKNUWAREnRy7eQWaEUnKyKTXoPlzq3Evd6XsizaXVPaIw4hp65Uy
 

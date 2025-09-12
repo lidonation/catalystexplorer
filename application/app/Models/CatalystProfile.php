@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class CatalystProfile extends Model
@@ -25,5 +26,13 @@ class CatalystProfile extends Model
             'profile_id',
             'proposal_id'
         );
+    }
+
+    /**
+     * Get the user who claimed this catalyst profile.
+     */
+    public function claimedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'claimed_by');
     }
 }

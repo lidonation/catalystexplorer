@@ -76,19 +76,19 @@ export default function DrepTable({
     const handleDelegate = async (drepStakeAddress: string | null) => {
         try {
             if (currentDelegatedDrep) {
-                toast.error('You can only delegate once', {
+                toast.error(t('dreps.delegateOnce'), {
                     className: 'bg-background text-content',
                 });
                 return;
             }
             if (!drepStakeAddress) {
-                toast.error('DRep stake address is required', {
+                toast.error(t('dreps.stakeAddressIsRequired'), {
                     className: 'bg-background text-content',
                 });
                 return;
             }
             if (!connectedWalletProvider || !stakeAddress) {
-                toast.info('Please connect your wallet to continue', {
+                toast.info(t('dreps.connectWallet'), {
                     className: 'bg-background text-content',
                 });
                 openConnectWalletSlider();
@@ -117,7 +117,7 @@ export default function DrepTable({
 
             if (res) {
                 setCurrentDelegatedDrep(drepStakeAddress);
-                toast.success(res?.data?.message || 'Delegation Successful!', {
+                toast.success(res?.data?.message || t('dreps.delegationSuccessful'), {
                     className: 'bg-background text-content',
                     toastId: 'delegation-successful',
                 });
@@ -126,7 +126,7 @@ export default function DrepTable({
             toast.error(
                 err.response?.data?.message ||
                     err.response?.data?.error ||
-                    'Delegation Failed!',
+                   t('dreps.delegationFailed'),
                 {
                     className: 'bg-background text-content',
                     toastId: 'delegation-failed',
@@ -155,7 +155,7 @@ export default function DrepTable({
                 });
 
                 toast.success(
-                    res?.data?.message || 'Undelegation Successful!',
+                    res?.data?.message || t('dreps.undelegationSuccessful'),
                     {
                         toastId: 'undelegation-successful',
                         className: 'bg-background text-content',
@@ -166,7 +166,7 @@ export default function DrepTable({
             toast.error(
                 err.response?.data?.message ||
                     err.response?.data?.error ||
-                    'Undelegation Failed!',
+                    t('dreps.undelegationFailed'),
                 {
                     className: 'bg-background text-content',
                     toastId: 'undelegation-failed',

@@ -77,6 +77,10 @@ class Proposals extends Resource
                 ),
             ]),
 
+            BelongsTo::make(__('Fund'), 'fund', Funds::class)
+                ->searchable()
+                ->filterable(),
+
             Text::make('View Proposal', function () {
                 return '<a style="color: #578ae4" href="'.$this->link.'" target="_blank">View</a>';
             })->asHtml()->hideWhenCreating()->hideWhenUpdating(),
@@ -93,10 +97,6 @@ class Proposals extends Resource
                 ->onlyOnForms(),
 
             BelongsTo::make(__('Schedule'), 'schedule', ProjectSchedules::class),
-
-            BelongsTo::make(__('Fund'), 'fund', Funds::class)
-                ->searchable()
-                ->filterable(),
 
             HasMany::make('Metadata', 'metas', Metas::class),
 
