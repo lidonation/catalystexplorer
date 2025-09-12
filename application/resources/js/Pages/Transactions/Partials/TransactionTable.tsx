@@ -188,13 +188,13 @@ export const CardanoTransactionTable: React.FC<
                                 key={index}
                                 transaction={tx}
                                 columns={columns}
-                                onViewDetails={() => {
-                                    console.log(
-                                        t('transactions.table.viewDetails') +
-                                            ':',
-                                        tx.tx_hash,
-                                    );
-                                }}
+                                // onViewDetails={() => {
+                                //     console.log(
+                                //         t('transactions.table.viewDetails') +
+                                //             ':',
+                                //         tx.tx_hash,
+                                //     );
+                                // }}
                             />
                         ))}
                     </tbody>

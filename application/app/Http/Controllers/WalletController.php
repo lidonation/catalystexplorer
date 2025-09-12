@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\DataTransferObjects\TransactionData;
 use App\DataTransferObjects\VoterHistoryData;
 use App\Enums\TransactionSearchParams;
+use App\Models\Signature;
 use App\Models\Transaction;
 use App\Models\Voter;
 use App\Repositories\VoterHistoryRepository;
@@ -16,7 +17,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Fluent;
 use Inertia\Inertia;
@@ -31,7 +34,7 @@ class WalletController extends Controller
     protected array $queryParams = [];
 
     public function __construct(
-        private WalletInfoService $walletInfoService
+        private readonly WalletInfoService $walletInfoService
     ) {}
 
     public function show(Request $request, ?string $param1 = null, ?string $param2 = null): Response
@@ -205,26 +208,29 @@ class WalletController extends Controller
     public function index(Request $request): Response
     {
         try {
-            $userId = Auth::id();
+            $user = Auth::user();
 
-            if (! $userId) {
+            if (! $user) {
                 return $this->emptyPagination($request);
             }
+
+            Gate::authorize('viewAny', Signature::class);
 
             $page = $request->get('page', 1);
             $limit = $request->get('limit', 4);
 
-            $walletsPaginator = $this->walletInfoService->getUserWallets($userId, $page, $limit);
+            $walletsPaginator = $this->walletInfoService->getUserWallets($user->getAuthIdentifier(), $page, $limit);
 
             $walletsPaginator->withPath($request->url())
                 ->appends($request->query());
+
             $walletsArray = $walletsPaginator->through(fn ($wallet) => $wallet->toArray());
 
             return Inertia::render('My/Wallets/Index', [
                 'connectedWallets' => $walletsPaginator,
             ]);
         } catch (\Exception $e) {
-            Log::error("Error loading wallets for user {$userId}: ".$e->getMessage());
+            Log::error("Error loading wallets for user {$user->getAuthIdentifier()}: ".$e->getMessage());
 
             return $this->emptyPagination($request, 'Unable to load wallet data. Please try again.');
         }
@@ -233,17 +239,32 @@ class WalletController extends Controller
     public function destroy(Request $request, string $stakeAddress): JsonResponse|RedirectResponse
     {
         try {
-            $userId = Auth::id();
+            $user = Auth::user();
 
-            if (! $userId) {
+            if (! $user) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Unauthorized',
                 ], 401);
             }
 
+            // Find the signature/wallet to authorize against
+            $signature = Signature::where('user_id', $user->id)
+                ->where('stake_address', $stakeAddress)
+                ->first();
+
+            if (! $signature) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Wallet not found',
+                ], 404);
+            }
+
+            // Authorize the delete action using the policy
+            Gate::authorize('delete', $signature);
+
             $deletedCount = DB::table('signatures')
-                ->where('user_id', $userId)
+                ->where('user_id', $user->id)
                 ->where('stake_address', $stakeAddress)
                 ->delete();
 
@@ -259,6 +280,66 @@ class WalletController extends Controller
             Log::error("💥 Error deleting wallet for stake address {$stakeAddress}: ".$e->getMessage());
 
             return redirect()->route('my.wallets')->with('error', 'Failed to delete wallet');
+        }
+    }
+
+    public function update(Request $request, string $walletId): RedirectResponse
+    {
+        try {
+            $user = Auth::user();
+
+            if (! $user) {
+                return redirect()->route('my.wallets')
+                    ->with('error', 'Unauthorized');
+            }
+
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:50|min:1',
+            ]);
+
+            // Find the signature/wallet to authorize against
+            $signature = Signature::where('user_id', $user->id)
+                ->where('id', $walletId)
+                ->first();
+
+            if (! $signature) {
+                return redirect()->route('my.wallets')
+                    ->with('error', 'Wallet not found');
+            }
+
+            // Authorize the update action using the policy
+            Gate::authorize('update', $signature);
+
+            $updatedCount = DB::table('signatures')
+                ->where('user_id', $user->id)
+                ->where('id', $walletId)
+                ->update([
+                    'wallet_name' => trim($validatedData['name']),
+                    'updated_at' => now(),
+                ]);
+
+            if ($updatedCount === 0) {
+                return redirect()->route('my.wallets')
+                    ->with('error', 'Wallet not found or unable to update');
+            }
+
+            // Clear relevant caches for this wallet
+            if ($signature && $signature->stake_address) {
+                $stakeAddress = $signature->stake_address;
+                Cache::forget("signature_count_{$stakeAddress}");
+                Cache::forget("last_used_{$stakeAddress}");
+                Cache::forget("latest_wallet_info_{$stakeAddress}");
+                Cache::forget("wallet_stats_{$stakeAddress}");
+            }
+
+            return redirect()->route('my.wallets')
+                ->with('success', 'Wallet name updated successfully');
+
+        } catch (\Exception $e) {
+            Log::error("💥 Error updating wallet name for ID {$walletId}: ".$e->getMessage());
+
+            return redirect()->route('my.wallets')
+                ->with('error', 'Failed to update wallet name');
         }
     }
 

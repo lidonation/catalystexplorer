@@ -72,6 +72,8 @@ Route::localized(
                             ->name('services');
                 Route::get('/wallets/{stakeKey}', [WalletController::class, 'show'])
                         ->name('wallets.show');
+                Route::patch('/wallets/{walletId}', [WalletController::class, 'update'])
+                        ->name('wallets.update');
                 Route::delete('/wallets/{stakeAddress}', [WalletController::class, 'destroy'])
                         ->name('wallets.destroy');
             });

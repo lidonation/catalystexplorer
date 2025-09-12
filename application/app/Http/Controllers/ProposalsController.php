@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Stringable;
@@ -286,7 +287,7 @@ class ProposalsController extends Controller
 
     public function manageProposal(Request $request, Proposal $proposal): Response
     {
-        //        $this->authorize('manage', $proposal);
+        Gate::authorize('manage', $proposal);
 
         return Inertia::render('My/Proposals/ManageProposal', [
             'proposal' => ProposalData::from($proposal),
@@ -295,7 +296,7 @@ class ProposalsController extends Controller
 
     public function updateQuickPitch(UpdateProposalQuickPitchRequest $request, Proposal $proposal): RedirectResponse
     {
-        //        $this->authorize('manage', $proposal);
+        Gate::authorize('manage', $proposal);
 
         $url = $request->validated()['quickpitch'];
 

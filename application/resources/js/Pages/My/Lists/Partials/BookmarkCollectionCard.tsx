@@ -12,6 +12,7 @@ import DropdownMenu, {
     DropdownMenuItem,
 } from '../../../Bookmarks/Partials/DropdownMenu';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
+import { truncateMiddle } from '@/utils/truncateMiddle.ts';
 
 const BookmarkCollectionCard = ({
     collection,
@@ -104,7 +105,7 @@ const BookmarkCollectionCard = ({
                         />
 
                         <Paragraph className="lg:text-md text-xs font-semibold">
-                            {user?.name}
+                            {truncateMiddle(user?.name || '', 22)}
                         </Paragraph>
                     </div>
 

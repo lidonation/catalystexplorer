@@ -1,3 +1,10 @@
+# [1.26.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.25.0...v1.26.0) (2025-09-12)
+
+
+### Features
+
+* adding markdown and rich content to single service page ([3821c65](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/3821c6525df25e2242de54719874c6db09301d67))
+
 # [1.25.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.24.0...v1.25.0) (2025-09-10)
 
 
