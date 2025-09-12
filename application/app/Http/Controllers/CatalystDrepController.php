@@ -60,7 +60,6 @@ class CatalystDrepController extends Controller
             ->where('status', 'published')
             ->whereIn('visibility', $userIsDelegator ? ['public', 'delegators'] : ['public']);
 
-
         $votingList = to_length_aware_paginator(
             BookmarkCollectionData::collect(
                 $votingListQuery->paginate(8, ['*'], 'p', request()->input('p'))
@@ -406,7 +405,7 @@ class CatalystDrepController extends Controller
                 'filename' => $filename,
             ]);
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Failed to publish platform statement to IPFS: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Failed to publish platform statement to IPFS: '.$e->getMessage()]);
         }
     }
 

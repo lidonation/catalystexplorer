@@ -1,12 +1,14 @@
-import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import Card from '@/Components/Card';
 import ClientOnly from '@/Components/ClientOnly';
+import RichContent from '@/Components/RichContent';
 import VerifyBadge from '@/Components/svgs/VerifyBadge';
 import { Head } from '@inertiajs/react';
-import { useEffect, useState, Suspense, lazy } from 'react';
+import Markdown from 'marked-react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import GroupSocials from '../Groups/Partials/GroupSocials';
 import ServiceData = App.DataTransferObjects.ServiceData;
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 
 // Dynamic import with lazy loading for GlobalMap (lib does not have SSR support)
 const GlobalMap = lazy(() => import('@/Components/GlobalMap'));
@@ -39,6 +41,7 @@ type Point = {
 
 export default function Show({ service }: ShowProps) {
     const [points, setPoints] = useState<Point[]>([]);
+    const {t} = useLaravelReactI18n();
 
     const socialGroup = {
         id: service.id ?? 'service-' + Math.random().toString(36).substr(2, 9),
@@ -53,7 +56,6 @@ export default function Show({ service }: ShowProps) {
                   .join(', ')
             : '',
     };
-
 
     useEffect(() => {
         async function fetchCoordinates() {
@@ -106,22 +108,26 @@ export default function Show({ service }: ShowProps) {
                             className="text-content text-xl leading-6 font-semibold tracking-tight"
                             data-testid="services-page-title"
                         >
-                            {service.user?.name ?? 'Unknown User'}
+                            {service.user?.name ?? t('services.unknownUser')}
                         </Title>
                         <VerifyBadge />
                     </div>
                 </div>
 
-                <Paragraph size="md" className="pb-6 font-normal">
-                    {(service.user as User)?.bio ?? 'No bio available.'}
-                </Paragraph>
+                <div className="text-md pb-6 font-normal">
+                    <Markdown>
+                        {String(
+                            (service.user as User)?.bio ?? t('services.noBioAvailable'),
+                        )}
+                    </Markdown>
+                </div>
 
                 <div>
                     <Title
                         level="2"
                         className="text-content pb-4 text-base leading-none font-semibold"
                     >
-                        Services
+                        {t('services.services')}
                     </Title>
                     <div className="flex min-h-[28px] flex-wrap items-start justify-start gap-1.5 self-stretch pb-6">
                         {service.categories?.map((category) => (
@@ -130,9 +136,10 @@ export default function Show({ service }: ShowProps) {
                                 className="bg-background-lighter border-border-secondary inline-flex max-w-full flex-shrink-0 items-center rounded border p-2"
                                 title={category.name}
                             >
-                                <div className="text-foreground-secondary text-xs leading-3 font-medium">
-                                    {category.name}
-                                </div>
+                                <RichContent
+                                    className="text-foreground-secondary text-xs leading-3 font-medium"
+                                    content={category?.name}
+                                />
                             </div>
                         ))}
                     </div>
@@ -142,7 +149,7 @@ export default function Show({ service }: ShowProps) {
                             level="2"
                             className="text-content pb-4 text-base leading-none font-semibold"
                         >
-                            Networks
+                            {t('services.networks')}
                         </Title>
                         <GroupSocials
                             iconContainerClass="flex flex-col gap-2.5 "
@@ -170,17 +177,14 @@ export default function Show({ service }: ShowProps) {
                 </Title>
 
                 {service.description && (
-                    <Paragraph
-                        size="md"
-                        className="mb-6 text-base leading-6 font-normal tracking-normal break-words sm:mb-7"
-                    >
-                        {service.description}
-                    </Paragraph>
+                    <div className="mb-6 text-base leading-6 font-normal tracking-normal break-words sm:mb-7">
+                        <Markdown>{String(service.description ?? '')}</Markdown>
+                    </div>
                 )}
 
                 <div className="gap-5">
                     <Title className="text-content mb-5 text-xl leading-4 font-semibold">
-                        Get in touch
+                        {t('services.getInTouch')}
                     </Title>
                     <div className="flex flex-col gap-5 sm:flex-row">
                         <div className="h-52 w-full sm:w-84">
@@ -188,14 +192,14 @@ export default function Show({ service }: ShowProps) {
                                 <ClientOnly
                                     fallback={
                                         <div className="flex h-52 w-full items-center justify-center rounded-lg bg-gray-100 text-gray-500">
-                                            Map loading on client...
+                                           {t('services.mapLoadingOnClient')}
                                         </div>
                                     }
                                 >
                                     <Suspense
                                         fallback={
                                             <div className="flex h-52 w-full items-center justify-center rounded-lg bg-gray-100 text-gray-500">
-                                                Loading map...
+                                                {t('services.loadingMap')}
                                             </div>
                                         }
                                     >
@@ -209,7 +213,7 @@ export default function Show({ service }: ShowProps) {
                                 </ClientOnly>
                             ) : (
                                 <div className="flex h-52 w-full items-center justify-center rounded-lg bg-gray-100 text-gray-500">
-                                    No locations available
+                                    {t('services.noLocationsAvailable')}
                                 </div>
                             )}
                         </div>
