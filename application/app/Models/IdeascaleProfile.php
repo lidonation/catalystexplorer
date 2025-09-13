@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
 use Laravolt\Avatar\Facade as Avatar;
 use Spatie\MediaLibrary\HasMedia;
@@ -57,7 +59,9 @@ class IdeascaleProfile extends Model implements HasMedia
     public $appends = ['hero_img_url'];
 
     public $withCount = [
-        // Temporarily disabled problematic counts due to UUID/bigint type mismatch
+        // Re-enabled proposals count with proper type casting
+        'proposals',
+        // Keep others disabled until type mismatches are resolved
         // 'completed_proposals',
         // 'funded_proposals',
         // 'unfunded_proposals',
@@ -65,7 +69,6 @@ class IdeascaleProfile extends Model implements HasMedia
         // 'outstanding_proposals',
         // 'own_proposals',
         // 'collaborating_proposals',
-        // 'proposals', // Temporarily disabled due to uuid/character varying type mismatch
         // 'reviews', // Temporarily disabled due to bigint/text type mismatch in review->discussion join
     ];
 
@@ -301,6 +304,7 @@ class IdeascaleProfile extends Model implements HasMedia
 
     /**
      * Get all proposals using the polymorphic relationship.
+     * Fixed with proper type casting to handle UUID/string type mismatches.
      */
     public function proposals(): MorphToMany
     {
@@ -310,7 +314,7 @@ class IdeascaleProfile extends Model implements HasMedia
             'proposal_profiles',
             'profile_id',
             'proposal_id'
-        )->where('type', 'proposal');
+        )->where('proposals.type', 'proposal');
     }
 
     public function groups(): BelongsToMany
@@ -390,7 +394,9 @@ class IdeascaleProfile extends Model implements HasMedia
 
     public function toSearchableArray(): array
     {
-        // Temporarily simplified to avoid problematic relationship loading
+        // Load the model with required counts for indexing
+        $this->loadCount(['proposals']);
+
         $array = $this->toArray();
 
         // Remove hash field from indexing - we only use UUIDs now
@@ -398,12 +404,65 @@ class IdeascaleProfile extends Model implements HasMedia
             unset($array['hash']);
         }
 
-        // Basic indexable data without problematic relationships for now
+        // Calculate proposals count with fallback methods
+        $proposalsCount = $this->getProposalsCount();
+
         return array_merge($array, [
             'hero_img_url' => $this->hero_img_url,
-            'proposals_count' => $this->proposals_count ?? 0,
-            // Temporarily omit other problematic counts until relationships are fixed
+            'proposals_count' => $proposalsCount,
+            'amount_requested_ada' => $this->amount_requested_ada,
+            'amount_requested_usd' => $this->amount_requested_usd,
+            'amount_awarded_ada' => $this->amount_awarded_ada,
+            'amount_awarded_usd' => $this->amount_awarded_usd,
+            'amount_distributed_ada' => $this->amount_distributed_ada,
+            'amount_distributed_usd' => $this->amount_distributed_usd,
+            // Add other counts when type mismatches are fixed
         ]);
+    }
+
+    /**
+     * Get the proposals count with fallback methods
+     * to handle type mismatches gracefully
+     */
+    public function getProposalsCount(): int
+    {
+        // Try to get from loaded count first
+        if (isset($this->attributes['proposals_count'])) {
+            return (int) $this->attributes['proposals_count'];
+        }
+
+        // Fallback to direct database query with proper type casting
+        try {
+            return (int) DB::table('proposal_profiles')
+                ->join('proposals', 'proposals.id', '=', 'proposal_profiles.proposal_id')
+                ->where('proposal_profiles.profile_type', 'App\\Models\\IdeascaleProfile')
+                ->whereRaw('CAST(proposal_profiles.profile_id as VARCHAR) = ?', [(string) $this->id])
+                ->where('proposals.type', 'proposal')
+                ->count();
+        } catch (\Exception $e) {
+            Log::warning('Failed to get proposals count for IdeascaleProfile', [
+                'profile_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return 0;
+        }
+    }
+
+    /**
+     * Force refresh the proposals count and update search index
+     */
+    public function refreshProposalsCount(): self
+    {
+        // Reload the count relationship
+        $this->loadCount('proposals');
+
+        // Update search index if model uses Scout
+        if (method_exists($this, 'searchable')) {
+            $this->searchable();
+        }
+
+        return $this;
     }
 
     protected function casts(): array

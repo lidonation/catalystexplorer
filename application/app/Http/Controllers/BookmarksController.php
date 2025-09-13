@@ -194,7 +194,6 @@ class BookmarksController extends Controller
             $allResults = $searchBuilder->get();
             $total = $searchBuilder->raw()['estimatedTotalHits'] ?? $allResults->count();
 
-            $data = $modelType::toDtoCollection($allResults);
         } else {
             $query = $modelType::query();
 
@@ -218,8 +217,8 @@ class BookmarksController extends Controller
             $allResults = $query->get();
             $total = $allResults->count();
 
-            $data = $modelType::toDtoCollection($allResults);
         }
+        $data = $modelType::toDtoCollection($allResults);
 
         $pagination = new LengthAwarePaginator(
             $data,

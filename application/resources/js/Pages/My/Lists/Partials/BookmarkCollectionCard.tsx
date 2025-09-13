@@ -105,7 +105,7 @@ const BookmarkCollectionCard = ({
                         />
 
                         <Paragraph className="lg:text-md text-xs font-semibold">
-                            {truncateMiddle(user?.name || '', 22)}
+                            {truncateMiddle(user?.name || '', 32)}
                         </Paragraph>
                     </div>
 

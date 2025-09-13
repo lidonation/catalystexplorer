@@ -31,14 +31,31 @@ const ProposalPdfView: React.FC<ProposalPdfViewProps> = ({
 
   const itemCount = proposals.data?.length || 0;
 
-  const defaultPdfColumns: ColumnKey[] = ['title', 'budget', 'category', 'openSourced', 'teams', 'viewProposal'];
+  const defaultPdfColumns: string[] = ['title', 'budget', 'category', 'openSourced', 'teams', 'viewProposal'];
 
   const {
     value: selectedColumns,
-  } = useUserSetting<ColumnKey[]>(
+    setValue: setSelectedColumns
+  } = useUserSetting<string[]>(
     userSettingEnums.PROPOSAL_PDF_COLUMNS,
     defaultPdfColumns,
   );
+
+  const handleColumnSelectionChange = (columns: string[]) => {
+    setSelectedColumns(columns);
+  };
+
+  const handleOpenColumnSelector = () => {
+    // Scroll to the column selector and draw user's attention to it
+    const columnSelectorContainer = document.querySelector('[data-testid="column-selector"]')?.parentElement;
+    if (columnSelectorContainer) {
+      columnSelectorContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      columnSelectorContainer.classList.add('ring-2', 'ring-primary', 'ring-offset-2', 'ring-offset-background');
+      setTimeout(() => {
+        columnSelectorContainer.classList.remove('ring-2', 'ring-primary', 'ring-offset-2', 'ring-offset-background');
+      }, 3000);
+    }
+  };
 
   const hasNoColumns = !selectedColumns || selectedColumns.length === 0;
 
@@ -62,11 +79,12 @@ const ProposalPdfView: React.FC<ProposalPdfViewProps> = ({
       >
         {/* Title and Logo Row */}
         <div className="flex items-center justify-between px-8 py-7">
-
           <div className="flex flex-col">
-            <Title level='3' className="font-bold text-content mb-2">
-              {listTitle}
-            </Title>
+            <div className="flex items-start gap-4 mb-2">
+              <Title level='3' className="font-bold text-content">
+                {listTitle}
+              </Title>
+            </div>
             <Paragraph className="text-lg text-gray-persist">
               {t('proposalPdfHeader.votingListExport')}
             </Paragraph>
@@ -80,44 +98,30 @@ const ProposalPdfView: React.FC<ProposalPdfViewProps> = ({
 
         <div className='border-b border-light-gray-persist/60 mx-8'></div>
 
-        {/* Proposal Table or Settings Button */}
+        {/* Proposal Table */}
         <div>
-          {hasNoColumns && onOpenSettings ? (
-            <div className="flex flex-col items-center justify-center py-16 px-8">
-              <Paragraph className="text-lg text-gray-persist mb-4 text-center">
-                {t('workflows.voterList.noColumnsSelected')}
-              </Paragraph>
-              <Button
-                onClick={onOpenSettings}
-                className="bg-primary hover:bg-primary-hover text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200"
-                dataTestId="open-settings-button"
-              >
-                {t('workflows.voterList.editMetrics')}
-              </Button>
-            </div>
-          ) : (
-            <ProposalTableView
-              proposals={proposals}
-              actionType="view"
-              disableSorting={true}
-              columns={selectedColumns || defaultPdfColumns}
-              showPagination={false}
-              iconOnlyActions={showIconActions && isAuthor}
-              iconActionsConfig={['rationale', 'removeBookmark', 'compare']}
-              customStyles={{
-                tableWrapper: '!border-table-header-bg !shadow-none rounded-lg',
-                tableHeader: '!bg-table-header-bg',
-                headerCell: '!text-table-header-text !border-r-0',
-                headerText: 'text-table-header-text'
-              }}
-              headerAlignment="left"
-              {...(!showIconActions && {
-                renderActions: {
-                  view: () => null
-                }
-              })}
-            />
-          )}
+          <ProposalTableView
+            proposals={proposals}
+            actionType="view"
+            disableSorting={true}
+            columns={selectedColumns || defaultPdfColumns}
+            showPagination={false}
+            iconOnlyActions={showIconActions && isAuthor}
+            iconActionsConfig={['rationale', 'removeBookmark', 'compare']}
+            customStyles={{
+              tableWrapper: '!border-table-header-bg !shadow-none rounded-lg',
+              tableHeader: '!bg-table-header-bg',
+              headerCell: '!text-table-header-text !border-r-0',
+              headerText: 'text-table-header-text'
+            }}
+            headerAlignment="left"
+            onColumnSelectorOpen={handleOpenColumnSelector}
+            {...(!showIconActions && {
+              renderActions: {
+                view: () => null
+              }
+            })}
+          />
         </div>
 
         {/* Separator line */}
