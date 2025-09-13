@@ -1,26 +1,28 @@
-import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
 import ManageProposalButton from '@/Pages/My/Proposals/partials/ManageProposalButton';
-import ProposalCardHeader from '@/Pages/Proposals/Partials/ProposalCardHeader';
-import ProposalFundingPercentages from '@/Pages/Proposals/Partials/ProposalFundingPercentages';
-import ProposalFundingStatus from '@/Pages/Proposals/Partials/ProposalFundingStatus';
-import CompareButton from './CompareButton';
-import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import React, { useCallback, useState } from 'react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import YesVoteIcon from '@/Components/svgs/YesVoteIcon';
-import AbstainVoteIcon from '@/Components/svgs/AbstainVoteIcon';
 import TableHeaderCell from './ProposalTableHeaderCell';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import { router } from '@inertiajs/react';
-import { Link } from '@inertiajs/react';
-import { shortNumber } from '@/utils/shortNumber';
 import Paginator from '@/Components/Paginator';
 import { PaginatedData } from '@/types/paginated-data';
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import Paragraph from '@/Components/atoms/Paragraph';
-import { currency } from '@/utils/currency';
+import Button from '@/Components/atoms/Button';
+import VerticalColumnIcon from '@/Components/svgs/VerticalColumnIcon';
+import {
+    proposalColumnRenderers,
+    defaultColumnHeaders,
+    getDynamicColumnHeaders,
+    getNestedValue,
+    generateColumnHeader,
+    builtInRenderers,
+    type TableHelpers,
+    type ColumnRendererConfig
+} from '@/lib/proposalColumnRenderers';
+import { getColumnRendererType } from '@/lib/columnUtils';
 
 interface ColumnConfig {
     key: string;
@@ -33,28 +35,7 @@ interface ColumnConfig {
     ) => React.ReactNode;
 }
 
-interface TableHelpers {
-    selectedUser: IdeascaleProfileData | null;
-    handleUserClick: (user: IdeascaleProfileData) => void;
-    noSelectedUser: () => void;
-}
-
 type ActionType = 'manage' | 'view';
-
-type ColumnKey =
-    | 'title'
-    | 'proposal'
-    | 'fund'
-    | 'status'
-    | 'funding'
-    | 'teams'
-    | 'yesVotes'
-    | 'abstainVotes'
-    | 'action'
-    | 'viewProposal'
-    | 'budget'
-    | 'category'
-    | 'openSourced';
 
 interface CustomActionProps {
     proposal: ProposalData;
@@ -71,9 +52,19 @@ interface TableStyleProps {
     headerText?: string;
 }
 
+// Dynamic column configuration interface
+interface DynamicColumnConfig {
+    key: string;
+    type?: 'text' | 'link' | 'currency' | 'component';
+    label?: string | React.ReactNode;
+    sortable?: boolean;
+    sortKey?: string;
+    component?: React.ComponentType<{ proposal: ProposalData; helpers?: TableHelpers }>;
+}
+
 interface ProposalTableProps {
     proposals: PaginatedData<ProposalData[]> | { data: ProposalData[], total: number, isPdf: boolean };
-    columns?: ColumnKey[];
+    columns?: string[] | DynamicColumnConfig[] | (string | DynamicColumnConfig)[];
     actionType?: ActionType;
     disableSorting?: boolean;
     showPagination?: boolean;
@@ -88,6 +79,7 @@ interface ProposalTableProps {
     };
     customStyles?: TableStyleProps;
     headerAlignment?: 'left' | 'center' | 'right';
+    onColumnSelectorOpen?: () => void; // Callback to open column selector
 }
 
 const ProposalTable: React.FC<ProposalTableProps> = ({
@@ -99,7 +91,8 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                                                          customActions,
                                                          renderActions,
                                                          customStyles,
-                                                         headerAlignment = 'left'
+                                                         headerAlignment = 'left',
+                                                         onColumnSelectorOpen
                                                      }) => {
     const { t } = useLaravelReactI18n();
     const { setFilters, getFilter } = useFilterContext();
@@ -107,13 +100,13 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
         Record<string, IdeascaleProfileData | null>
     >({});
 
-    const defaultColumns: ColumnKey[] = [
+    const defaultColumns: string[] = [
         'proposal',
         'status',
         'funding',
         'teams',
         actionType === 'manage' ? 'action' : 'viewProposal'
-    ].filter(Boolean) as ColumnKey[];
+    ].filter(Boolean) as string[];
 
     const activeColumns = columns || defaultColumns;
 
@@ -157,297 +150,245 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
         }
     };
 
-    const columnDefinitions: Record<ColumnKey, ColumnConfig> = {
-        title: {
-            key: 'title',
-            label: t('proposalComparison.tableHeaders.title'),
-            sortable: !disableSorting,
-            sortKey: 'title',
-            renderCell: (proposal: ProposalData) => (
-                <div className="w-80" data-testid={`proposal-title-${proposal.id}`}>
-                    <Paragraph className="text-md text-content" data-testid={`proposal-title-text-${proposal.id}`}>
-                        <Link
-                            href={proposal.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center"
-                            data-testid={`view-proposal-button-${proposal.id}`}
-                        >
-                            {proposal.title}
-                        </Link>
-                    </Paragraph>
-                </div>
-            )
-        },
-        proposal: {
-            key: 'proposal',
-            label: t('proposal'),
-            sortable: !disableSorting,
-            sortKey: 'title',
-            renderCell: (proposal: ProposalData, { selectedUser, noSelectedUser }: TableHelpers) => (
-                <div className="w-80" data-testid={`proposal-card-header-${proposal.id}`}>
-                    <ProposalCardHeader
-                        proposal={proposal}
-                        userSelected={selectedUser}
-                        noSelectedUser={noSelectedUser}
-                        isHorizontal={false}
-                        data-testid={`proposal-card-${proposal.id}`}
-                    />
-                </div>
-            )
-        },
-        fund: {
-            key: 'fund',
-            label: t('proposalComparison.tableHeaders.fund'),
-            sortable: !disableSorting,
-            sortKey: 'fund_id',
-            renderCell: (proposal: ProposalData) => (
-                <div
-                    className="flex items-center justify-center border border-light-gray-persist bg-light-gray-persist/[10%] px-1 rounded-md"
-                    data-testid={`proposal-fund-${proposal.id}`}
-                >
-                    {proposal.fund?.label && (
-                        <Paragraph className="items-center py-1 rounded-full text-xs font-medium text-content text-nowrap"
-                                  data-testid={`proposal-fund-label-${proposal.id}`}>
-                            {proposal.fund.label}
-                        </Paragraph>
-                    )}
-                </div>
-            )
-        },
-        status: {
-            key: 'status',
-            label: t('proposalComparison.tableHeaders.status'),
-            sortable: !disableSorting,
-            sortKey: 'funding_status',
-            renderCell: (proposal: ProposalData) => (
-                <div className="flex w-32 items-center justify-center" data-testid={`proposal-status-${proposal.id}`}>
-                    <ProposalFundingStatus
-                        funding_status={proposal.funding_status ?? ''}
-                        data-testid={`proposal-funding-status-${proposal.id}`}
-                    />
-                </div>
-            )
-        },
-        funding: {
-            key: 'funding',
-            label: t('funding'),
-            sortable: !disableSorting,
-            sortKey: 'amount_received',
-            renderCell: (proposal: ProposalData) => (
-                <div className="flex w-60" data-testid={`proposal-funding-${proposal.id}`}>
-                    <ProposalFundingPercentages
-                        proposal={proposal}
-                        data-testid={`proposal-funding-percentages-${proposal.id}`}
-                    />
-                </div>
-            )
-        },
-        teams: {
-            key: 'teams',
-            label: t('teams'),
-            sortable: false,
-            sortKey: 'users.proposals_completed',
-            renderCell: (proposal: ProposalData, { handleUserClick }: TableHelpers) => (
-                <div className="w-40" data-testid={`proposal-teams-${proposal.id}`}>
-                    <IdeascaleProfileUsers
-                        users={proposal.users}
-                        onUserClick={handleUserClick}
-                        className="bg-content-light"
-                        toolTipProps={t('proposals.viewTeam')}
-                        data-testid={`proposal-ideascale-users-${proposal.id}`}
-                    />
-                </div>
-            )
-        },
-        yesVotes: {
-            key: 'yesVotes',
-            label: (
-                <div className="flex items-center gap-2" data-testid="yes-votes-header">
-                    <YesVoteIcon
-                        className="size-5 font-medium text-success"
-                        width={20}
-                        height={20}
-                        data-testid="yes-vote-icon"
-                    />
-                    <div className="flex gap-2 text-content/60" data-testid="yes-votes-label">
-                        <Paragraph size="sm">{t('yesVotes')}</Paragraph>
-                    </div>
-                </div>
-            ),
-            sortable: !disableSorting,
-            sortKey: 'yes_votes_count',
-            renderCell: (proposal: ProposalData) => (
-                <div className="text-center" data-testid={`proposal-yes-votes-${proposal.id}`}>
-                    <div className="flex items-center justify-center gap-2"
-                         data-testid={`proposal-yes-votes-content-${proposal.id}`}>
-                        <Paragraph className="text-light-gray-persist"
-                                   data-testid={`proposal-yes-votes-count-${proposal.id}`}>
-                            ({shortNumber(proposal.yes_votes_count) || '0'})
-                        </Paragraph>
-                    </div>
-                </div>
-            )
-        },
-        abstainVotes: {
-            key: 'abstainVotes',
-            label: (
-                <div className="flex items-center gap-2" data-testid="abstain-votes-header">
-                    <AbstainVoteIcon
-                        className="size-4 font-medium"
-                        width={16}
-                        height={16}
-                        data-testid="abstain-vote-icon"
-                    />
-                    <div className="flex gap-2 text-content/60" data-testid="abstain-votes-label">
-                        <Paragraph size="sm">{t('abstainVotes')}</Paragraph>
-                    </div>
-                </div>
-            ),
-            sortable: !disableSorting,
-            sortKey: 'abstain_votes_count',
-            renderCell: (proposal: ProposalData) => (
-                <div className="text-center" data-testid={`proposal-abstain-votes-${proposal.id}`}>
-                    <div className="flex items-center justify-center gap-2"
-                         data-testid={`proposal-abstain-votes-content-${proposal.id}`}>
-                        <Paragraph className="text-light-gray-persist"
-                                   data-testid={`proposal-abstain-votes-count-${proposal.id}`}>
-                            ({shortNumber(proposal.abstain_votes_count) || '0'})
-                        </Paragraph>
-                    </div>
-                </div>
-            )
-        },
-        action: {
-            key: 'action',
-            label: t('proposals.action'),
-            renderCell: (proposal: ProposalData) => {
-                const testId = `proposal-action-${proposal.id}`;
+    const getColumnHeader = (columnKey: string): string | React.ReactNode => {
+        const dynamicHeaders = getDynamicColumnHeaders(t);
+        return dynamicHeaders[columnKey] || defaultColumnHeaders[columnKey] || generateColumnHeader(columnKey);
+    };
 
-                if (renderActions?.manage) {
+    const generateColumnConfig = (columnInput: string | DynamicColumnConfig): ColumnConfig => {
+        if (typeof columnInput === 'object') {
+            const dynamicConfig = columnInput;
+            
+            return {
+                key: dynamicConfig.key,
+                label: dynamicConfig.label || getColumnHeader(dynamicConfig.key),
+                sortable: dynamicConfig.sortable !== false && !disableSorting,
+                sortKey: dynamicConfig.sortKey || dynamicConfig.key,
+                renderCell: (proposal: ProposalData, helpers: TableHelpers) => {
+                
+                    if (dynamicConfig.component) {
+                        const ComponentRenderer = dynamicConfig.component;
+                        return <ComponentRenderer proposal={proposal} helpers={helpers} />;
+                    }
+                    
+                   
+                    const type = dynamicConfig.type || 'text';
+                    
+                    if (type === 'component' && proposalColumnRenderers[dynamicConfig.key]) {
+                        // Check if we have a predefined component renderer
+                        const customRenderer = proposalColumnRenderers[dynamicConfig.key];
+                        if (typeof customRenderer === 'object' && 'component' in customRenderer && customRenderer.component) {
+                            const ComponentRenderer = customRenderer.component;
+                            return <ComponentRenderer proposal={proposal} helpers={helpers} />;
+                        }
+                    }
+                    
+                    // Handle built-in types
+                    if (builtInRenderers[type as keyof typeof builtInRenderers]) {
+                        const renderer = builtInRenderers[type as keyof typeof builtInRenderers];
+                        return renderer({ proposal, path: dynamicConfig.key });
+                    }
+                    
+                    // Default to text rendering
+                    const value = getNestedValue(proposal, dynamicConfig.key);
                     return (
-                        <div data-testid={testId}>
-                            {renderActions.manage(proposal)}
-                        </div>
+                        <Paragraph className="text-md text-content" data-testid={`proposal-${dynamicConfig.key.replace('.', '-')}-${proposal.id}`}>
+                            {value?.toString() || '–'}
+                        </Paragraph>
                     );
                 }
+            };
+        }
 
-                if (customActions?.manage) {
-                    const CustomManageAction = customActions.manage;
+        // Legacy string-based column configuration
+        const columnPath = columnInput;
+        
+        // Handle special action columns
+        if (columnPath === 'action') {
+            return {
+                key: 'action',
+                label: t('proposals.action'),
+                renderCell: (proposal: ProposalData) => {
+                    const testId = `proposal-action-${proposal.id}`;
+
+                    if (renderActions?.manage) {
+                        return (
+                            <div data-testid={testId}>
+                                {renderActions.manage(proposal)}
+                            </div>
+                        );
+                    }
+
+                    if (customActions?.manage) {
+                        const CustomManageAction = customActions.manage;
+                        return (
+                            <div data-testid={testId}>
+                                <CustomManageAction
+                                    proposal={proposal}
+                                    data-testid={`manage-proposal-button-${proposal.id}`}
+                                />
+                            </div>
+                        );
+                    }
+
                     return (
                         <div data-testid={testId}>
-                            <CustomManageAction
+                            <ManageProposalButton
                                 proposal={proposal}
                                 data-testid={`manage-proposal-button-${proposal.id}`}
                             />
                         </div>
                     );
                 }
-
-                return (
-                    <div data-testid={testId}>
-                        <ManageProposalButton
-                            proposal={proposal}
-                            data-testid={`manage-proposal-button-${proposal.id}`}
-                        />
-                    </div>
-                );
-            }
-        },
-        viewProposal: {
-            key: 'viewProposal',
-            label: t('proposals.action'),
-            renderCell: (proposal: ProposalData) => {
-                const testId = `proposal-view-${proposal.id}`;
-
-                if (renderActions?.view) {
-                    return (
-                        <div data-testid={testId}>
-                            {renderActions.view(proposal)}
-                        </div>
-                    );
-                }
-
-                if (customActions?.view) {
-                    const CustomViewAction = customActions.view;
-                    return (
-                        <div data-testid={testId}>
-                            <CustomViewAction
-                                proposal={proposal}
-                                data-testid={`view-proposal-actions-${proposal.id}`}
-                            />
-                        </div>
-                    );
-                }
-
-                return (
-                    <div className="w-32" data-testid={testId}>
-                        <a
-                            href={proposal.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors duration-200 font-medium text-sm"
-                            data-testid={`view-proposal-button-${proposal.id}`}
-                        >
-                            {t('proposalComparison.viewProposal')}
-                        </a>
-                    </div>
-                );
-            }
-        },
-        budget: {
-            key: 'budget',
-            label: t('proposalComparison.tableHeaders.budget'),
-            sortable: !disableSorting,
-            sortKey: 'amount_requested',
-            renderCell: (proposal: ProposalData) => {
-                const currencyCode = proposal.currency || 'USD';
-                const formattedBudget = proposal.amount_requested
-                    ? (currency(parseInt(proposal.amount_requested.toString()), 2, currencyCode) as string)
-                    : 'N/A';
-
-                return (
-                    <div data-testid={`proposal-budget-${proposal.id}`}>
-                        <Paragraph className="text-md font-medium text-content" data-testid={`proposal-budget-amount-${proposal.id}`}>
-                            {formattedBudget}
-                        </Paragraph>
-                    </div>
-                );
-            }
-        },
-        category: {
-            key: 'category',
-            label: t('proposalComparison.tableHeaders.category'),
-            sortable: !disableSorting,
-            sortKey: 'campaign_id',
-            renderCell: (proposal: ProposalData) => (
-                <div data-testid={`proposal-category-${proposal.id}`}>
-                    <div className="flex items-center">
-                        <Paragraph className="text-md" data-testid={`proposal-campaign-label-${proposal.id}`}>
-                            {proposal.campaign?.title || proposal.fund?.label || 'N/A'}
-                        </Paragraph>
-                    </div>
-                </div>
-            )
-        },
-        openSourced: {
-            key: 'openSourced',
-            label: t('proposals.openSourced'),
-            sortable: !disableSorting,
-            sortKey: 'opensourced',
-            renderCell: (proposal: ProposalData) => (
-                <div className="text-center w-24" data-testid={`proposal-opensourced-${proposal.id}`}>
-                    <Paragraph className={`inline-flex items-center px-2 py-1 text-xs font-medium`} data-testid={`proposal-opensourced-status-${proposal.id}`}>
-                        {proposal.opensource ? t('Yes') : t('No')}
-                    </Paragraph>
-                </div>
-            )
+            };
         }
+
+        if (columnPath === 'viewProposal') {
+            return {
+                key: 'viewProposal',
+                label: t('proposals.action'),
+                renderCell: (proposal: ProposalData) => {
+                    const testId = `proposal-view-${proposal.id}`;
+
+                    if (renderActions?.view) {
+                        return (
+                            <div data-testid={testId}>
+                                {renderActions.view(proposal)}
+                            </div>
+                        );
+                    }
+
+                    if (customActions?.view) {
+                        const CustomViewAction = customActions.view;
+                        return (
+                            <div data-testid={testId}>
+                                <CustomViewAction
+                                    proposal={proposal}
+                                    data-testid={`view-proposal-actions-${proposal.id}`}
+                                />
+                            </div>
+                        );
+                    }
+
+                    return (
+                        <div className="w-32" data-testid={testId}>
+                            <a
+                                href={proposal.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors duration-200 font-medium text-sm"
+                                data-testid={`view-proposal-button-${proposal.id}`}
+                            >
+                                {t('proposalComparison.viewProposal')}
+                            </a>
+                        </div>
+                    );
+                }
+            };
+        }
+
+        // Check if we have a custom renderer for this column
+        const customRenderer = proposalColumnRenderers[columnPath];
+        
+        if (customRenderer) {
+            // Handle component-based renderer
+            if (typeof customRenderer === 'function') {
+                return {
+                    key: columnPath,
+                    label: getColumnHeader(columnPath),
+                    sortable: !disableSorting,
+                    sortKey: columnPath,
+                    renderCell: (proposal: ProposalData, helpers: TableHelpers) => {
+                        const ComponentRenderer = customRenderer as React.ComponentType<{ proposal: ProposalData; helpers?: TableHelpers }>;
+                        return <ComponentRenderer proposal={proposal} helpers={helpers} />;
+                    }
+                };
+            }
+            
+            // Handle configuration-based renderer
+            if (typeof customRenderer === 'object' && 'type' in customRenderer && customRenderer.type) {
+                const config = customRenderer as { 
+                    type: string; 
+                    component?: React.ComponentType<{ proposal: ProposalData; helpers?: TableHelpers }>; 
+                    sortKey?: string; 
+                    sortable?: boolean; 
+                };
+                
+                return {
+                    key: columnPath,
+                    label: getColumnHeader(columnPath),
+                    sortable: config.sortable !== false && !disableSorting,
+                    sortKey: config.sortKey || columnPath,
+                    renderCell: (proposal: ProposalData, helpers: TableHelpers) => {
+                        if (config.type === 'component' && config.component) {
+                            const ComponentRenderer = config.component;
+                            return <ComponentRenderer proposal={proposal} helpers={helpers} />;
+                        }
+                        
+                        // Handle built-in type renderers
+                        if (builtInRenderers[config.type as keyof typeof builtInRenderers]) {
+                            const renderer = builtInRenderers[config.type as keyof typeof builtInRenderers];
+                            return renderer({ proposal, path: columnPath });
+                        }
+                        
+                        // Fallback to plain text
+                        const value = getNestedValue(proposal, columnPath);
+                        return <span>{value?.toString() || '–'}</span>;
+                    }
+                };
+            }
+            
+            // Handle empty object or other cases - fallback to plain text
+            if (typeof customRenderer === 'object') {
+                return {
+                    key: columnPath,
+                    label: getColumnHeader(columnPath),
+                    sortable: !disableSorting,
+                    sortKey: columnPath,
+                    renderCell: (proposal: ProposalData) => {
+                        const value = getNestedValue(proposal, columnPath);
+                        return (
+                            <Paragraph className="text-md text-content" data-testid={`proposal-${columnPath.replace('.', '-')}-${proposal.id}`}>
+                                {value?.toString() || '–'}
+                            </Paragraph>
+                        );
+                    }
+                };
+            }
+        }
+
+        // Fallback: use appropriate renderer based on column type
+        const rendererType = getColumnRendererType(columnPath);
+        
+        return {
+            key: columnPath,
+            label: generateColumnHeader(columnPath),
+            sortable: !disableSorting,
+            sortKey: columnPath,
+            renderCell: (proposal: ProposalData) => {
+                // Use the built-in renderer for the determined type
+                if (builtInRenderers[rendererType as keyof typeof builtInRenderers]) {
+                    const renderer = builtInRenderers[rendererType as keyof typeof builtInRenderers];
+                    return renderer({ proposal, path: columnPath });
+                }
+                
+                // Ultimate fallback to plain text
+                const value = getNestedValue(proposal, columnPath);
+                return (
+                    <Paragraph className="text-md text-content" data-testid={`proposal-${columnPath.replace(/\./g, '-')}-${proposal.id}`}>
+                        {value?.toString() || '–'}
+                    </Paragraph>
+                );
+            }
+        };
     };
 
-    const orderedColumns: ColumnConfig[] = activeColumns
-        .map(columnKey => columnDefinitions[columnKey])
+    const orderedColumns: ColumnConfig[] = (activeColumns as (string | DynamicColumnConfig)[])
+        .map(columnInput => generateColumnConfig(columnInput))
         .filter(Boolean);
+
+    // Check if we have no columns to display
+    const hasNoColumns = !orderedColumns || orderedColumns.length === 0;
 
     const getRowHelpers = useCallback(
         (proposalHash: string): TableHelpers => {
@@ -493,58 +434,83 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
 
     return (
         <div className={styles.tableWrapper}>
-            <div className="overflow-x-auto">
-                <table className={styles.table}>
-                    <thead className={styles.tableHeader}
-                           data-testid="proposal-table-header">
-                    <tr data-testid="proposal-table-header-row">
-                        {orderedColumns.map(column => (
-                            <th
-                                key={column.key}
-                                className={styles.headerCell}
-                                data-testid={`proposal-table-header-${column.key}`}
-                            >
-                                <TableHeaderCell
-                                    label={column.label}
-                                    sortable={column.sortable}
-                                    sortDirection={column.sortKey === sortField ? sortDirection as 'asc' | 'desc' | null : null}
-                                    onSort={column.sortable ? () => handleSort(column.sortKey || column.key) : undefined}
-                                    alignment={headerAlignment}
-                                    textColorClass={styles.headerText}
-                                    data-testid={`proposal-table-header-cell-${column.key}`}
-                                />
-                            </th>
-                        ))}
-                    </tr>
-                    </thead>
-                    <tbody data-testid="proposal-table-body">
-                    {proposals.data && proposals.data.map((proposal, index) => {
-                        const proposalHash = proposal.id ?? '';
-                        const helpers = getRowHelpers(proposalHash);
+            {hasNoColumns && onColumnSelectorOpen ? (
+                // Empty state when no columns are selected
+                <div className="flex flex-col items-center justify-center py-16 px-8">
+                    <div className="flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+                        <VerticalColumnIcon className="w-8 h-8" />
+                    </div>
+                    <Paragraph className="text-lg text-gray-persist mb-2 text-center font-medium">
+                        {t('proposalTable.noColumnsSelected')}
+                    </Paragraph>
+                    <Paragraph className="text-sm text-gray-persist mb-6 text-center max-w-md">
+                        {t('proposalTable.selectColumnsToView')}
+                    </Paragraph>
+                    <Button
+                        onClick={onColumnSelectorOpen}
+                        className="bg-primary hover:bg-primary-hover text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2"
+                        dataTestId="open-column-selector-button"
+                    >
+                        <VerticalColumnIcon className="w-4 h-4" />
+                        {t('proposalTable.selectColumns')}
+                    </Button>
+                </div>
+            ) : (
+                // Regular table rendering
+                <div className="overflow-x-auto">
+                    <table className={styles.table}>
+                        <thead className={styles.tableHeader}
+                               data-testid="proposal-table-header">
+                        <tr data-testid="proposal-table-header-row">
+                            {orderedColumns.map(column => (
+                                <th
+                                    key={column.key}
+                                    className={styles.headerCell}
+                                    data-testid={`proposal-table-header-${column.key}`}
+                                >
+                                    <TableHeaderCell
+                                        label={column.label}
+                                        sortable={column.sortable}
+                                        sortDirection={column.sortKey === sortField ? sortDirection as 'asc' | 'desc' | null : null}
+                                        onSort={column.sortable ? () => handleSort(column.sortKey || column.key) : undefined}
+                                        alignment={headerAlignment}
+                                        textColorClass={styles.headerText}
+                                        data-testid={`proposal-table-header-cell-${column.key}`}
+                                    />
+                                </th>
+                            ))}
+                        </tr>
+                        </thead>
+                        <tbody data-testid="proposal-table-body">
+                        {proposals.data && proposals.data.map((proposal, index) => {
+                            const proposalHash = proposal.id ?? '';
+                            const helpers = getRowHelpers(proposalHash);
 
-                        return (
-                            <tr
-                                key={proposalHash}
-                                className={index < proposals.data.length - 1 ? 'border-b border-gray-200' : ''}
-                                data-testid={`proposal-table-row-${proposalHash}`}
-                            >
-                                {orderedColumns.map(column => (
-                                    <td
-                                        key={`${proposalHash}-${column.key}`}
-                                        className={styles.bodyCell}
-                                        data-testid={`proposal-table-cell-${proposalHash}-${column.key}`}
-                                    >
-                                        {column.renderCell(proposal, helpers)}
-                                    </td>
-                                ))}
-                            </tr>
-                        );
-                    })}
-                    </tbody>
-                </table>
-            </div>
+                            return (
+                                <tr
+                                    key={proposalHash}
+                                    className={index < proposals.data.length - 1 ? 'border-b border-gray-200' : ''}
+                                    data-testid={`proposal-table-row-${proposalHash}`}
+                                >
+                                    {orderedColumns.map(column => (
+                                        <td
+                                            key={`${proposalHash}-${column.key}`}
+                                            className={styles.bodyCell}
+                                            data-testid={`proposal-table-cell-${proposalHash}-${column.key}`}
+                                        >
+                                            {column.renderCell(proposal, helpers)}
+                                        </td>
+                                    ))}
+                                </tr>
+                            );
+                        })}
+                        </tbody>
+                    </table>
+                </div>
+            )}
 
-            {showPagination && proposals && proposals.data && proposals.data.length > 0 && 'current_page' in proposals && (
+            {/* Only show pagination if we have columns and data */}
+            {!hasNoColumns && showPagination && proposals && proposals.data && proposals.data.length > 0 && 'current_page' in proposals && (
                 <div className="border-t border-gray-200 px-4 py-4">
                     <Paginator
                         pagination={proposals}
@@ -560,3 +526,4 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
 };
 
 export default ProposalTable;
+export { type DynamicColumnConfig };
