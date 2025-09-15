@@ -69,7 +69,7 @@ class VoterListController extends Controller
     public function step3(Request $request): Response
     {
         $fundSlug = $request->input(QueryParamsEnum::FUNDS()->value);
-        $bookmarkId = $request->input(QueryParamsEnum::BOOKMARK_COLLECTION()->value);
+        $bookmarkId = $request->input('bookmarkCollection');
         $bookmarkCollection = null;
 
         if ($bookmarkId) {
@@ -500,11 +500,12 @@ class VoterListController extends Controller
             $filters[] = "campaign.hash = {$campaignHash}";
         }
 
-        return new GetProposalFromScout(
+        return (new GetProposalFromScout) (
             search: $search,
             filters: $filters,
             sort: $sort,
             limit: $limit,
-            page: $page);
+            page: $page
+        );
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\GuestLanguageController;
 use App\Http\Requests\Auth\RegisteredUserRequest;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -32,10 +33,15 @@ class RegisteredUserController extends Controller
     public function store(RegisteredUserRequest $request): RedirectResponse
     {
 
+        $language = $request->language
+                   ?? GuestLanguageController::getGuestLanguageForRegistration($request)
+                   ?? app()->getLocale();
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'lang' => $language,
         ]);
 
         event(new Registered($user));
