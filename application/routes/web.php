@@ -505,11 +505,18 @@ Route::localized(
 
 );
 
+Route::prefix('language')->as('language.')->group(function () {
+    Route::post('/user', [\App\Http\Controllers\UserLanguageController::class, 'updateLanguage'])
+        ->middleware('auth')
+        ->name('user.update');
+    Route::get('/guest', [\App\Http\Controllers\GuestLanguageController::class, 'getCurrentGuestLanguage'])
+        ->name('guest.current');
+    Route::post('/guest', [\App\Http\Controllers\GuestLanguageController::class, 'updateGuestLanguage'])
+        ->name('guest.update');
+});
 
 require __DIR__ . '/auth.php';
 
 require __DIR__ . '/dashboard.php';
-
-require __DIR__ . '/api.php';
 
 Route::fallback(FallbackController::class);

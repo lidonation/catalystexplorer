@@ -4,9 +4,9 @@ import Paragraph from '@/Components/atoms/Paragraph';
 import TextInput from '@/Components/atoms/TextInput';
 import InputError from '@/Components/InputError';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
-import { router, useForm } from '@inertiajs/react';
+import { router, useForm, usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { FormEventHandler, useState } from 'react';
+import { FormEventHandler, useState, useEffect } from 'react';
 import PrimaryButton from '../../../Components/atoms/PrimaryButton';
 import InputLabel from '../../../Components/InputLabel';
 
@@ -22,12 +22,34 @@ interface RegisterFormProps {
 }
 
 export default function RegisterForm({ closeModal }: RegisterFormProps) {
+    const { t } = useLaravelReactI18n();
+    const { locale } = usePage().props as { locale?: string };
+    const [currentLanguage, setCurrentLanguage] = useState<string>(locale || 'en');
+    
     const { data, setData, processing, post, reset } = useForm({
         name: '',
         email: '',
         password: '',
         password_confirmation: '',
+        language: currentLanguage,
     });
+
+    useEffect(() => {
+        fetch('/language/guest', {
+            method: 'GET',
+            credentials: 'same-origin',
+        })
+        .then(response => response.json())
+        .then(data => {
+            const guestLang = data.language;
+            if (guestLang && guestLang !== currentLanguage) {
+                setCurrentLanguage(guestLang);
+                setData('language', guestLang);
+            }
+        })
+        .catch(() => {
+        });
+    }, []);
 
     const [errors, setErrors] = useState<FormErrors>({});
 
@@ -88,8 +110,6 @@ export default function RegisterForm({ closeModal }: RegisterFormProps) {
             },
         });
     };
-
-    const { t } = useLaravelReactI18n();
 
     const handleLoginClick = () => {
         if (closeModal) closeModal();
