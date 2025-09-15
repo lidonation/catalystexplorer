@@ -606,6 +606,7 @@ export type UserData = {
 id: string | null;
 name: string | null;
 email: string | null;
+lang: string | null;
 hero_img_url: string | null;
 email_verified_at: string | null;
 locations: any | null;

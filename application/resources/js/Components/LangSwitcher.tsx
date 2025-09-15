@@ -2,6 +2,7 @@ import { usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useState } from 'react';
 import Selector from './atoms/Selector';
+import { useLanguagePreference } from '@/hooks/useLanguagePreference';
 
 const LANGS = [
     { value: 'en', label: 'English' },
@@ -32,8 +33,10 @@ const updateDocumentDirection = (locale: string) => {
 export default function LangSwitcher() {
     const { currentLocale, setLocale } = useLaravelReactI18n();
     const { locale } = usePage().props as { locale?: string };
+    const { auth } = usePage().props as { auth?: any };
+    const { updateUserLanguagePreference, getCurrentUserLanguage, isAuthenticated } = useLanguagePreference();
 
-    const initialLang = typeof locale === 'string' ? locale : currentLocale();
+    const initialLang = isAuthenticated ? getCurrentUserLanguage() : (typeof locale === 'string' ? locale : currentLocale());
     const [selectedLang, setSelectedLang] = useState<string>(initialLang);
 
     useEffect(() => {
@@ -57,9 +60,16 @@ export default function LangSwitcher() {
         }
     }, []);
 
-    const handleSelect = (lang: string) => {
+    const handleSelect = async (lang: string) => {
         if (lang === selectedLang) return;
+        
         setSelectedLang(lang);
+        
+        try {
+            await updateUserLanguagePreference(lang);
+        } catch (error) {
+            console.error('Failed to save language preference:', error);
+        }
     };
 
     return (

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Mail\PasswordResetMail;
+use App\Mail\WelcomeEmailMail;
 use App\Traits\HasSignatures;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -16,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Mail;
 use Spatie\Image\Enums\CropPosition;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -35,6 +38,7 @@ class User extends Authenticatable implements HasMedia
         'name',
         'email',
         'password',
+        'lang',
         'bio',
         'short_bio',
         'linkedin',
@@ -222,6 +226,14 @@ class User extends Authenticatable implements HasMedia
 
             return (float) $balance;
         });
+    }
+
+    /**
+     * Get the user's preferred language or default to English
+     */
+    public function getPreferredLanguage(): string
+    {
+        return ! empty($this->lang) ? $this->lang : 'en';
     }
 
     /**

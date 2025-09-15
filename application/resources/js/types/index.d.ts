@@ -1,8 +1,20 @@
 export interface User {
-    hash: string;
-    name: string;
-    email: string;
-    email_verified_at?: string;
+    id: string | null;
+    name: string | null;
+    email: string | null;
+    lang: string | null;
+    hero_img_url: string | null;
+    email_verified_at: string | null;
+    locations: any | null;
+    stake_address: string | null;
+    voting_power: number | null;
+    hash?: string;
+    current_team_id?: Nullable<number>;
+    profile_photo_path?: Nullable<string>;
+    profile_photo_url?: string;
+    two_factor_enabled?: boolean;
+    created_at?: string;
+    updated_at?: string;
 }
 
 export type PageProps<
@@ -41,19 +53,6 @@ export interface Team {
     id: number;
     name: string;
     personal_team: boolean;
-    created_at: DateTime;
-    updated_at: DateTime;
-}
-
-export interface User {
-    id: number;
-    name: string;
-    email: string;
-    current_team_id: Nullable<number>;
-    profile_photo_path: Nullable<string>;
-    profile_photo_url: string;
-    two_factor_enabled: boolean;
-    email_verified_at: Nullable<DateTime>;
     created_at: DateTime;
     updated_at: DateTime;
 }

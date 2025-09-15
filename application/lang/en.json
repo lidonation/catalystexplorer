@@ -131,7 +131,7 @@
     "back": "Back",
     "emails.welcome.title": "Welcome to Catalyst Explorer!",
     "emails.welcome..greeting": "Hello",
-    "emails.welcome.body": "Thank you for signing up with Catalyst Explorer.\n\nWe are pleased to welcome you to Catalyst Explorer, a comprehensive tool designed to help you explore, track, and engage with proposals under Project Catalyst, Cardano's decentralized innovation fund.\n\nWith your new account, you can:\n\n- View and analyze proposals** in real time\n- Bookmark and organize items of interest\n- Submit your own proposals for community consideration\n- Monitor funding progress, categories, and voting trends\n- Manage your preferences and alerts through your personalized dashboard\n\nTo begin, please log in and explore the tools now available to you.",
+    "emails.welcome.body": "Thank you for signing up with Catalyst Explorer.\n\nWe are pleased to welcome you to Catalyst Explorer, a comprehensive tool designed to help you explore, track, and engage with proposals under Project Catalyst, Cardano's decentralized innovation fund.\n\nWith your new account, you can:\n\n- View and analyze proposals in real time\n- Bookmark and organize items of interest\n- Submit your own proposals for community consideration\n- Monitor funding progress, categories, and voting trends\n- Manage your preferences and alerts through your personalized dashboard\n\nTo begin, please log in and explore the tools now available to you.",
     "emails.welcome.button_text": "Go to Dashboard",
     "emails.welcome.signature": "We appreciate your interest and look forward to your participation in shaping the future of decentralized governance.\n\n**Best regards,**\n**The Catalyst Explorer Team**",
     "emails.footer.proposals": "Proposals",
