@@ -36,6 +36,7 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 import GroupData = App.DataTransferObjects.GroupData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ReviewData = App.DataTransferObjects.ReviewData;
+import RichContent from '@/Components/RichContent.tsx';
 
 type BookmarkCollectionListProps =
     | {
@@ -150,9 +151,7 @@ const BookmarkCollectionPage = (props: BookmarkCollectionPageProps) => {
 
             <header className="container mt-4 flex flex-col items-start lg:mt-6">
                 <Title level="1">{bookmarkCollection.title ?? ''}</Title>
-                <p className="text-content">
-                    {t(bookmarkCollection.content ?? '')}
-                </p>
+                <RichContent content={bookmarkCollection.content ?? ''} format={'markdown'} />
             </header>
 
             <BookmarkProvider
