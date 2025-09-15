@@ -14,6 +14,7 @@ import {
     generateLocalizedRoute,
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
+import { useWorkflowUrl } from '@/utils/workflowUrls';
 import { Head, router, usePage } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
@@ -282,34 +283,6 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
         console.log('PDF View setting changed:', isPdfView);
     }, [isPdfView]);
 
-    const getWorkflowUrl = () => {
-        const step = 3;
-
-        switch (bookmarkCollection.list_type) {
-            case 'voter':
-                return useLocalizedRoute('workflows.createVoterList.index', {
-                    step,
-                    bookmarkCollection: bookmarkCollection.id
-                });
-
-            case 'tinder':
-                return useLocalizedRoute('workflows.tinderProposal.index', {
-                    step,
-                    leftBookmarkCollectionHash: bookmarkCollection.workflow_params?.leftBookmarkCollectionHash,
-                    rightBookmarkCollectionHash: bookmarkCollection.workflow_params?.rightBookmarkCollectionHash,
-                    tinderCollectionHash: bookmarkCollection.workflow_params?.tinderCollectionHash
-                });
-
-            case 'normal':
-                return useLocalizedRoute('workflows.bookmarks.index', {
-                    step,
-                    bookmarkCollection: bookmarkCollection.id
-                });
-
-            default:
-                return '';
-        }
-    };
 
     const getDropdownMenuItems = (): DropdownMenuItem[] => {
         const baseItems: DropdownMenuItem[] = [
@@ -329,7 +302,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                 {
                     label: t('workflows.tinderProposal.step4.keepSwiping'),
                     type: 'link' as const,
-                    href: isTinderList ? getWorkflowUrl() : '',
+                    href: isTinderList ? useWorkflowUrl(bookmarkCollection) : '',
                     disabled: !isTinderList,
                     disabledTooltip: !isTinderList ? t('workflows.tinderProposal.onlyTinderLists') : undefined
                 },
@@ -344,7 +317,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                 {
                     label: t('bookmarks.editListItem'),
                     type: 'link' as const,
-                    href: ((isVoterList || isNormalList)) ? getWorkflowUrl() : '',
+                    href: ((isVoterList || isNormalList)) ? useWorkflowUrl(bookmarkCollection) : '',
                     disabled: isTinderList,
                     disabledTooltip: isTinderList ? t('workflows.tinderProposal.cannotEditTinderItems') : undefined
                 },
@@ -366,7 +339,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                     {
                         label: t('workflows.tinderProposal.step4.keepSwiping'),
                         type: 'link' as const,
-                        href: isTinderList ? getWorkflowUrl() : '',
+                        href: isTinderList ? useWorkflowUrl(bookmarkCollection) : '',
                         disabled: !isTinderList,
                         disabledTooltip: !isTinderList ? t('workflows.tinderProposal.onlyTinderLists') : undefined
                     },
@@ -381,7 +354,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                     {
                         label: t('bookmarks.editListItem'),
                         type: 'link' as const,
-                        href: ((isVoterList || isNormalList)) ? getWorkflowUrl() : '',
+                        href: ((isVoterList || isNormalList)) ? useWorkflowUrl(bookmarkCollection) : '',
                         disabled: isTinderList,
                         disabledTooltip: isTinderList ? t('workflows.tinderProposal.cannotEditTinderItems') : undefined
                     },

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Invokables;
+namespace App\Actions;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;

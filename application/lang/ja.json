@@ -1245,6 +1245,8 @@
     "bookmarks.comments": "コメント",
     "bookmarks.lastModified": "最終更新",
     "bookmarks.createList": "リストを作成",
+    "bookmarks.researchList": "リサーチリスト",
+    "bookmarks.voterList": "投票者リスト",
     "comments.comments": "コメント",
     "comments.reply": "返信",
     "voter.catalystVoters": "Catalyst投票者",

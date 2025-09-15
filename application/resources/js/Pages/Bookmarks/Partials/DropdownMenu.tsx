@@ -88,8 +88,8 @@ const DropdownMenu = ({
     const dropdownContent = dropdownOpen && dropdownItems.length > 0 ? (
         <div
             ref={dropdownContentRef}
-            className={useSimpleTrigger ? 
-                'absolute right-0 top-full mt-2 bg-background border border-gray-persist/0.4 rounded-lg shadow-lg z-50 overflow-visible min-w-max max-w-xs' : 
+            className={useSimpleTrigger ?
+                'absolute right-0 top-full mt-2 bg-background border border-gray-persist/0.4 rounded-lg shadow-lg z-50 overflow-visible min-w-max max-w-xs' :
                 `${dropdownClassName}`
             }
             style={{
@@ -97,7 +97,7 @@ const DropdownMenu = ({
                 zIndex: 99999,
                 position: 'fixed',
                 top: buttonContainerRef.current ? `${buttonContainerRef.current.getBoundingClientRect().bottom + 8}px` : 'auto',
-                left: useSimpleTrigger && buttonContainerRef.current 
+                left: useSimpleTrigger && buttonContainerRef.current
                     ? `${buttonContainerRef.current.getBoundingClientRect().right}px`
                     : buttonContainerRef.current ? `${buttonContainerRef.current.getBoundingClientRect().left}px` : 'auto',
                 transform: useSimpleTrigger ? 'translateX(-100%)' : undefined
@@ -238,7 +238,7 @@ const DropdownMenu = ({
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 data-testid="dropdown-menu-trigger"
             >
-                ⋮
+                <span className='font-black text-1'>⋮</span>
             </Button>
         );
 
@@ -264,8 +264,8 @@ const DropdownMenu = ({
                 {/* Main Default Button */}
                 <Button
                     className={`flex items-center justify-center px-5 h-[50px] transition-colors duration-200 ${
-                        defaultItem?.disabled 
-                            ? 'cursor-not-allowed' 
+                        defaultItem?.disabled
+                            ? 'cursor-not-allowed'
                             : buttonStyles
                     } ${
                         !defaultItem?.disabled ? 'hover:bg-secondary/80' : ''

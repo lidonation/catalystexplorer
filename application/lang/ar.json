@@ -246,5 +246,7 @@
     "services.loadingMap": "جاري تحميل الخريطة...",
     "services.noLocationsAvailalble": "لا توجد مواقع متاحة",
     "services.unknownUser": "مستخدم غير معروف",
-    "services.noBioAvailable": "لا توجد سيرة ذاتية متاحة"
+    "services.noBioAvailable": "لا توجد سيرة ذاتية متاحة",
+    "bookmarks.researchList": "قائمة البحث",
+    "bookmarks.voterList": "قائمة المصوتين"
 }

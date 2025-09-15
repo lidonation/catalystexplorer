@@ -4,19 +4,17 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\DataTransferObjects\ProposalData;
+use App\Actions\GetProposalFromScout;
 use App\Enums\ProposalSearchParams;
 use App\Enums\QueryParamsEnum;
 use App\Models\Fund;
 use App\Models\Proposal;
 use App\Models\Signature;
-use App\Repositories\ProposalRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -292,33 +290,7 @@ class VotingWorkflowController extends Controller
 
         $filters[] = "fund.id = {$fund->id}";
 
-        $args = [
-            'filter' => $filters,
-            'limit' => $limit,
-            'offset' => ($page - 1) * $limit,
-        ];
-
-        if (! empty($sort)) {
-            $sortParts = explode(':', $sort);
-            $sortField = $sortParts[0];
-            $sortDirection = $sortParts[1] ?? 'asc';
-            $args['sort'] = ["{$sortField}:{$sortDirection}"];
-        }
-
-        $repository = app(ProposalRepository::class);
-        $searchBuilder = $repository->search($search, $args);
-        $response = new Fluent($searchBuilder->raw());
-
-        return new LengthAwarePaginator(
-            ProposalData::collect(collect($response->hits)->toArray()),
-            $response->estimatedTotalHits,
-            $limit,
-            $page,
-            [
-                'pageName' => 'p',
-                'onEachSide' => 0,
-            ]
-        );
+        return new GetProposalFromScout($search, $filters, $sort, $limit, $page);
     }
 
     private function getSelectedProposals(array $slugs, array $votes): array
