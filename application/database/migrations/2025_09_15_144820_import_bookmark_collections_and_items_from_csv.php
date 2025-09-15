@@ -38,7 +38,7 @@ return new class extends Migration
      */
     private function importBookmarkCollections(): void
     {
-        $csvPath = '/var/www/storage/bookmark_collections.csv';
+        $csvPath = '/var/www/storage/app/bookmark_collections.csv';
 
         if (!file_exists($csvPath)) {
             echo "Warning: CSV file not found at: {$csvPath}\n";
@@ -79,7 +79,7 @@ return new class extends Migration
                     $user = User::where('old_id', $csvData['user_id'])->first();
                 }
                 // If user_id is neither a valid UUID nor numeric, skip this record
-                
+
                 if (!$user) {
                     $skippedCount++;
                     DB::rollBack();
@@ -95,7 +95,7 @@ return new class extends Migration
                 $collection->visibility = $csvData['visibility'] ?? 'unlisted';
                 $collection->status = $csvData['status'] ?? 'published';
                 $collection->type = $csvData['type'] ?? BookmarkCollection::class;
-                
+
                 // Handle fund_id - CSV contains actual Fund UUIDs
                 $fundId = null;
                 if (!empty($csvData['fund_id'])) {
@@ -109,7 +109,7 @@ return new class extends Migration
                     }
                 }
                 $collection->fund_id = $fundId;
-                
+
                 // Map allow_comments values properly
                 $allowComments = false;
 
@@ -157,7 +157,7 @@ return new class extends Migration
      */
     private function importBookmarkItems(): void
     {
-        $csvPath = '/var/www/storage/bookmark_items.csv';
+        $csvPath = '/var/www/storage/app/bookmark_items.csv';
 
         if (!file_exists($csvPath)) {
             echo "Warning: CSV file not found at: {$csvPath}\n";
