@@ -59,4 +59,20 @@ class BookmarkCollectionPolicy extends AppPolicy
     {
         return parent::canRestore($user, $bookmarkCollection) || $user->hasAnyPermission([PermissionEnum::restore_bookmark_items()->value]);
     }
+
+    /**
+     * Determine whether the user can add items to the bookmark collection.
+     */
+    public function addItems(User $user, BookmarkCollection $bookmarkCollection): bool
+    {
+        return parent::canUpdate($user, $bookmarkCollection) || $user->hasAnyPermission([PermissionEnum::create_bookmark_items()->value]);
+    }
+
+    /**
+     * Determine whether the user can remove items from the bookmark collection.
+     */
+    public function removeItems(User $user, BookmarkCollection $bookmarkCollection): bool
+    {
+        return parent::canUpdate($user, $bookmarkCollection) || $user->hasAnyPermission([PermissionEnum::delete_bookmark_items()->value]);
+    }
 }
