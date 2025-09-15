@@ -21,6 +21,7 @@ use App\Http\Controllers\CompletedProjectNftsController;
 use App\Http\Controllers\Api\IdeascaleProfilesController;
 use App\Http\Controllers\CardanoBudgetProposalController;
 use App\Http\Controllers\CatalystDrepController;
+use App\Http\Controllers\UserLanguageController;
 use Inertia\Inertia;
 
 Route::prefix('api')->as('api.')->group(function () {
@@ -177,4 +178,11 @@ Route::prefix('api')->as('api.')->group(function () {
                 ->name('undelegate');
         }
     );
+
+    Route::prefix('user')->as('user.')->middleware('auth')->group(function () {
+        Route::post('language', [UserLanguageController::class, 'updateLanguage'])
+            ->name('language.update');
+        Route::get('language', [UserLanguageController::class, 'getCurrentLanguage'])
+            ->name('language.current');
+    });
 });
