@@ -13,6 +13,9 @@ import DropdownMenu, {
 } from '../../../Bookmarks/Partials/DropdownMenu';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import { truncateMiddle } from '@/utils/truncateMiddle.ts';
+import { useWorkflowUrl } from '@/utils/workflowUrls';
+import ListTypeResearchIconProps from '@/Components/svgs/ListTypeResearchIcon.tsx';
+import ListTypeVoterIcon from '@/Components/svgs/ListTypeVoterIcon.tsx';
 
 const BookmarkCollectionCard = ({
     collection,
@@ -26,6 +29,32 @@ const BookmarkCollectionCard = ({
 
     const isAuthor = auth?.user?.id == user?.id;
 
+    const renderListTypeIcon = () => {
+        switch (collection?.list_type) {
+            case 'normal':
+                return (
+                    <div className='flex gap-2 flex-nowrap items-center'>
+                        <ListTypeResearchIconProps />
+                        <span>{t('bookmarks.researchList')}</span>
+                    </div>
+                );
+            case 'voter':
+                return (
+                    <div className='flex gap-2 flex-nowrap items-center'>
+                        <ListTypeVoterIcon />
+                        <span>{t('bookmarks.voterList')} ({`${collection?.items_count} ${t('proposals.proposals')}`})</span>
+                    </div>
+                );
+            default:
+                return (
+                    <div className='flex gap-2 flex-nowrap items-center'>
+                        <ListTypeResearchIconProps />
+                        <span>{t('bookmarks.researchList')}</span>
+                    </div>
+                );
+        }
+    };
+
     const viewListRoute = useLocalizedRoute('lists.view', {
         bookmarkCollection: collection?.id,
     });
@@ -35,6 +64,7 @@ const BookmarkCollectionCard = ({
         type: 'proposals',
     });
 
+
     const dropdownMenuItems: DropdownMenuItem[] = [
         {
             label: t('workflows.bookmarks.viewList'),
@@ -43,7 +73,11 @@ const BookmarkCollectionCard = ({
                 router.visit(viewListRoute);
             },
         },
-
+        {
+            label: t('bookmarks.editListItem'),
+            type: 'link' as const,
+            href: useWorkflowUrl(collection)
+        },
         {
             label: t('my.manage'),
             type: 'button' as const,
@@ -77,8 +111,8 @@ const BookmarkCollectionCard = ({
                                 {collection.title}
                             </Title>
                         </Link>
-                        <div className="bg-primary-light text-primary border-primary rounded-lg border px-2 py-1 text-sm text-nowrap lg:px-4">
-                            {`${collection?.items_count} ${t('my.items')}`}
+                        <div className="bg-primary-light text-primary border-primary rounded-full  border pr-2 text-sm text-nowrap lg:pr-4">
+                            {renderListTypeIcon()}
                         </div>
                     </div>
                     <Paragraph
@@ -137,20 +171,20 @@ const BookmarkCollectionCard = ({
                 </div>
             </div>
 
-            {/* <div className="py-6"> */}
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-6">
+            {collection?.list_type !== 'voter' && <div className="grid grid-cols-2 gap-4 md:grid-cols-6">
                 {Object.entries(collection?.types_count ?? {})?.map((item) => {
                     const pluralizedModel = capitalizeFirstLetter(item[0]);
                     return (
                         <div className="space-y-1" key={`${pluralizedModel}`}>
-                            <p className="text-4xl font-bold">{item[1]}</p>
-                            <p className="text-muted-foreground">
+                            <Paragraph className="text-4xl font-bold">{item[1]}</Paragraph>
+                            <Paragraph className="text-muted-foreground">
                                 {pluralizedModel}
-                            </p>
+                            </Paragraph>
                         </div>
                     );
                 })}
-            </div>
+            </div>}
+
             <div className="absolute top-4 right-4">
                 <DropdownMenu items={dropdownMenuItems} useSimpleTrigger={true} />
             </div>

@@ -1252,6 +1252,8 @@
     "bookmarks.comments": "评论",
     "bookmarks.lastModified": "最后修改",
     "bookmarks.createList": "创建您的列表",
+    "bookmarks.researchList": "研究列表",
+    "bookmarks.voterList": "投票者列表",
     "comments.comments": "评论",
     "comments.reply": "回复",
     "voter.catalystVoters": "Catalyst 投票者",

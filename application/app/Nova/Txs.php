@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Nova;
 
-use App\Invokables\TruncateValue;
+use App\Actions\TruncateValue;
 use App\Models\Tx;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

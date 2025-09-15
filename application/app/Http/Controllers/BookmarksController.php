@@ -322,9 +322,9 @@ class BookmarksController extends Controller
         $args['offset'] = ($page - 1) * $limit;
         $args['limit'] = $limit;
 
-        $reviews = app(BookmarkCollectionRepository::class);
+        $lists = app(BookmarkCollectionRepository::class);
 
-        $builder = $reviews->search(
+        $builder = $lists->search(
             $this->search ?? '',
             $args
         );

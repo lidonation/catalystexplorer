@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Invokables;
+namespace App\Actions;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Process;
