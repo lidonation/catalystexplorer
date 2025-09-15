@@ -1,3 +1,10 @@
+## [1.26.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.26.0...v1.26.1) (2025-09-15)
+
+
+### Bug Fixes
+
+* resolve bugs on my lists page ([aac2c57](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/aac2c57f17ab37a83ce11dc6949e4496ca9da65c))
+
 # [1.26.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.25.0...v1.26.0) (2025-09-12)
 
 
