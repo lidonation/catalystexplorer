@@ -78,7 +78,7 @@ const BookmarkCollectionCard = ({
             label: t('bookmarks.editListItem'),
             type: 'link' as const,
             href: useWorkflowUrl(collection),
-            // disabled: !isAuthor,
+            disabled: !isAuthor,
         },
         {
             label: t('my.manage'),
