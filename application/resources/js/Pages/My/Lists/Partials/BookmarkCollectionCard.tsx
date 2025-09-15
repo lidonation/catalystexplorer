@@ -16,6 +16,7 @@ import { truncateMiddle } from '@/utils/truncateMiddle.ts';
 import { useWorkflowUrl } from '@/utils/workflowUrls';
 import ListTypeResearchIconProps from '@/Components/svgs/ListTypeResearchIcon.tsx';
 import ListTypeVoterIcon from '@/Components/svgs/ListTypeVoterIcon.tsx';
+import { truncateEnd } from '@/utils/truncateEnd.ts';
 
 const BookmarkCollectionCard = ({
     collection,
@@ -115,11 +116,12 @@ const BookmarkCollectionCard = ({
                             {renderListTypeIcon()}
                         </div>
                     </div>
+
                     <Paragraph
                         size="sm"
                         className="text-muted-foreground lg:text-md w-1/2 break-words whitespace-normal lg:w-5/6"
                     >
-                        {collection?.content || 'No description available.'}
+                        {truncateEnd(collection?.content || 'No description available.', 290)}
                     </Paragraph>
                 </div>
             </div>

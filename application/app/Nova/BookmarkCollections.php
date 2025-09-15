@@ -11,6 +11,7 @@ use App\Models\BookmarkCollection;
 use App\Nova\Actions\EditModel;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\Color;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
@@ -80,12 +81,12 @@ class BookmarkCollections extends Resource
                 ->sortable()
                 ->rules('required', 'max:255'),
 
-            Select::make(__('Allow Comments'), 'allow-comments')
-                ->options([
-                    CommentsAllowance::NO()->value => CommentsAllowance::NO()->value,
-                    CommentsAllowance::ME()->value => CommentsAllowance::ME()->value,
-                    CommentsAllowance::EVERYONE()->value => CommentsAllowance::EVERYONE()->value,
-                ])
+            Boolean::make(__('Allow Comments'), 'allow_comments')
+//                ->options([
+//                    CommentsAllowance::NO()->value => CommentsAllowance::NO()->value,
+//                    CommentsAllowance::ME()->value => CommentsAllowance::ME()->value,
+//                    CommentsAllowance::EVERYONE()->value => CommentsAllowance::EVERYONE()->value,
+//                ])
                 ->nullable()
                 ->rules('nullable')
                 ->sortable(),
@@ -117,6 +118,7 @@ class BookmarkCollections extends Resource
 
             BelongsTo::make(__('Parent'), 'parent', BookmarkCollections::class)
                 ->sortable()
+                ->nullable()
                 ->searchable(),
 
             Text::make(__('Type'), 'type')

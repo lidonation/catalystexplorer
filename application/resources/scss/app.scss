@@ -157,7 +157,7 @@
         --border-secondary-color: #3facd1;
         --bg-light-persist: #ffffff;
         --cx-tooltip-background: #667085;
-        
+
         --cx-table-header-bg: #2a3f50;
         --cx-table-header-text: #b1e2f0;
     }
@@ -213,7 +213,7 @@
         --content-success-darker: #06c710;
         --border-primary-color: #b1e3f1;
         --border-secondary-color: #3facd1;
-        
+
         --cx-table-header-bg: #b1e3f1;
         --cx-table-header-text: #1f2d3d;
     }
@@ -454,7 +454,6 @@
 
     article {
         p~ {
-
             h1,
             h2,
             h3,
@@ -468,6 +467,10 @@
         h3 {
             @apply text-2xl;
         }
+    }
+
+    p {
+        @apply mb-2;
     }
 }
 

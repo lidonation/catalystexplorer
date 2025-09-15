@@ -40,8 +40,6 @@ type BookmarkCollectionListProps =
     filters: SearchParams;
 };
 
-
-
 const View = (props: BookmarkCollectionListProps) => {
     return <BookmarkCollectionPage {...props} mode="view" />;
 };

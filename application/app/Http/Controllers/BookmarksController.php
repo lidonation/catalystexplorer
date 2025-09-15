@@ -179,6 +179,23 @@ class BookmarksController extends Controller
 
     protected function queryModelsUnpaginated(string $modelType, array $constrainToIds = [], array $relationships = [], array $counts = []): array
     {
+        // If no specific IDs are provided, return empty result to avoid querying all records
+        if (empty($constrainToIds)) {
+            $pagination = new LengthAwarePaginator(
+                [],
+                0,
+                $this->perPage,
+                $this->currentPage,
+                [
+                    'pageName' => ProposalSearchParams::PAGE()->value,
+                    'path' => request()->url(),
+                    'query' => request()->query(),
+                ]
+            );
+
+            return $pagination->toArray();
+        }
+
         if ($this->search) {
             $searchBuilder = $modelType::search($this->search);
 
