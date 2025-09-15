@@ -67,8 +67,6 @@ const Step3: React.FC<Step3Props> = ({
     const [selectedIds, setSelectedIds] =
         useState<{ id: string; vote: number | null }[]>(selectedProposals);
 
-    console.log({ bookmarkHash });
-
     const form = useForm({
         proposals: selectedIds,
         bookmarkHash,

@@ -23,6 +23,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -516,6 +517,8 @@ class BookmarksController extends Controller
 
     public function addBookmarkItem(BookmarkCollection $bookmarkCollection, Request $request)
     {
+        Gate::authorize('addItems', $bookmarkCollection);
+
         $validated = $request->validate([
             'modelType' => ['required', 'string'],
             'hash' => ['required', 'string'],
@@ -547,6 +550,8 @@ class BookmarksController extends Controller
 
     public function removeBookmarkItem(BookmarkCollection $bookmarkCollection, Request $request): RedirectResponse
     {
+        Gate::authorize('removeItems', $bookmarkCollection);
+
         $validated = $request->validate([
             'modelType' => ['required', 'string'],
             'hash' => ['required', 'string'],

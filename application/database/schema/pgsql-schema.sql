@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict hDABjSKQFAWUAGQelEWmrPBwWB1eCU9KFvKYVo2irvoeEN3TAz9Lcqf3b3j8zNR
+\restrict sQz4hzEsMHdas37L7Ekg9srxDGCDm29VzcjumGzR8w96BcHq5evjTv9AgSEnl4e
 
 -- Dumped from database version 17.1 (Debian 17.1-1.pgdg120+1)
 -- Dumped by pg_dump version 17.6 (Debian 17.6-1.pgdg13+1)
@@ -173,8 +173,8 @@ CREATE TABLE public.bookmark_collections (
     old_id bigint,
     id uuid NOT NULL,
     parent_id uuid,
-    type_id text,
-    model_id uuid
+    model_id uuid,
+    type_id uuid
 );
 
 
@@ -500,7 +500,7 @@ CREATE TABLE public.comments (
     updated_at timestamp(0) without time zone,
     id uuid NOT NULL,
     commentator_id uuid,
-    commentable_id text,
+    commentable_id uuid,
     parent_id uuid
 );
 
@@ -3203,6 +3203,27 @@ CREATE INDEX ideascale_profile_has_proposal_ideascale_profile_uuid_index ON publ
 
 
 --
+-- Name: idx_proposal_profiles_proposal_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_proposal_profiles_proposal_id ON public.proposal_profiles USING btree (proposal_id);
+
+
+--
+-- Name: idx_proposal_profiles_type_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_proposal_profiles_type_id ON public.proposal_profiles USING btree (profile_type, profile_id);
+
+
+--
+-- Name: idx_proposals_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_proposals_type ON public.proposals USING btree (type);
+
+
+--
 -- Name: jobs_queue_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4025,13 +4046,13 @@ ALTER TABLE ONLY public.voting_powers
 -- PostgreSQL database dump complete
 --
 
-\unrestrict hDABjSKQFAWUAGQelEWmrPBwWB1eCU9KFvKYVo2irvoeEN3TAz9Lcqf3b3j8zNR
+\unrestrict sQz4hzEsMHdas37L7Ekg9srxDGCDm29VzcjumGzR8w96BcHq5evjTv9AgSEnl4e
 
 --
 -- PostgreSQL database dump
 --
 
-\restrict O9cCMpshROfiKNUWAREnRy7eQWaEUnKyKTXoPlzq3Evd6XsizaXVPaIw4hp65Uy
+\restrict aNqBZiExMcIAprcAqWVHAoDriytjfqtGNFpqoaUYqgI6dkMzH8xvaGTUfaMNsmq
 
 -- Dumped from database version 17.1 (Debian 17.1-1.pgdg120+1)
 -- Dumped by pg_dump version 17.6 (Debian 17.6-1.pgdg13+1)
@@ -4288,7 +4309,13 @@ COPY public.migrations (id, migration, batch) FROM stdin;
 335	2025_08_28_194934_update_f-14_proposal	28
 336	2025_08_31_162540_convert_bookmark_collection_model_id_to_uuid_type	29
 337	2025_09_10_123306_update_catalyst_profiles_claimed_by_to_uuid	30
-370	2025_09_10_231747_merge_duplicate_catalyst_profiles	31
+338	2025_09_10_231747_merge_duplicate_catalyst_profiles	31
+339	2025_01_15_000000_merge_duplicate_ideascale_profiles	32
+340	2025_01_15_000001_delete_ideascale_profiles_without_proposals	32
+341	2025_01_15_000004_add_proposal_profiles_indexes_laravel	32
+342	2025_09_15_095314_change_comments_commentable_id_to_uuid	33
+343	2025_09_15_110656_change_bookmark_collections_type_id_to_uuid	34
+344	2025_09_15_144820_import_bookmark_collections_and_items_from_csv	34
 \.
 
 
@@ -4296,12 +4323,12 @@ COPY public.migrations (id, migration, batch) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 370, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 375, true);
 
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict O9cCMpshROfiKNUWAREnRy7eQWaEUnKyKTXoPlzq3Evd6XsizaXVPaIw4hp65Uy
+\unrestrict aNqBZiExMcIAprcAqWVHAoDriytjfqtGNFpqoaUYqgI6dkMzH8xvaGTUfaMNsmq
 
