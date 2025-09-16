@@ -76,7 +76,7 @@ function Modal({
                 tabIndex={0}
             >
                 <div
-                    className={`bg-background fixed z-50 rounded-lg shadow-lg focus:outline-hidden ${!centered ? 'top-0 right-0 h-full' : ''} ${contentClasses}`}
+                    className={`bg-background fixed z-50 rounded-lg shadow-lg focus:outline-hidden overflow-y-auto ${!centered ? 'top-0 right-0 h-full' : ''} ${contentClasses}`}
                 >
                     {!centered && (
                         <header className="border-border-primary flex items-center justify-between border-b px-6 py-4">
