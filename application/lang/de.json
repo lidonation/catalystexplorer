@@ -1353,5 +1353,7 @@
     "widgets.quickPitch.errors.updateFailed": "Fehler beim Aktualisieren der kurzen Präsentation. Bitte versuchen Sie es erneut.",
     "proposals.manageProposal": "Vorschlag verwalten",
     "proposals.managingProposal": "Managing: :title",
-    "proposals.manageDescription": "Verwenden Sie die Widgets unten, um die Einstellungen und Inhalte Ihres Vorschlags zu verwalten."
+    "proposals.manageDescription": "Verwenden Sie die Widgets unten, um die Einstellungen und Inhalte Ihres Vorschlags zu verwalten.",
+    "proposals.actions": "Aktionen",
+    "proposals.manage": "Verwalten"
 }

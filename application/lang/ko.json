@@ -1355,5 +1355,7 @@
     "widgets.quickPitch.errors.updateFailed": "퀴 피치 업데이트에 실패했습니다. 다시 시도해 주세요.",
     "proposals.manageProposal": "제안 관리",
     "proposals.managingProposal": "Managing: :title",
-    "proposals.manageDescription": "아래 위젯을 사용하여 제안의 설정과 콘텐츠를 관리하세요."
+    "proposals.manageDescription": "아래 위젯을 사용하여 제안의 설정과 콘텐츠를 관리하세요.",
+    "proposals.actions": "작업",
+    "proposals.manage": "관리"
 }

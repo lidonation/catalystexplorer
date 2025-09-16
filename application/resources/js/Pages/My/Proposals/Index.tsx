@@ -1,19 +1,20 @@
 import SearchControls from '@/Components/atoms/SearchControls';
 import Title from '@/Components/atoms/Title';
-import ColumnSelector from '@/Components/ColumnSelector';
-import VerticalColumnIcon from '@/Components/svgs/VerticalColumnIcon';
 import { FiltersProvider } from '@/Context/FiltersContext';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import ProposalSortingOptions from '@/lib/ProposalSortOptions';
-import ProposalTable from '@/Pages/Proposals/Partials/ProposalTable';
 import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 import { Head } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { route } from 'ziggy-js';
+import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { useState } from 'react';
 import MyProposalFilters from './partials/MyProposalsFilters';
-import { useUserSetting } from '@/Hooks/useUserSettings';
-import { userSettingEnums } from '@/enums/user-setting-enums';
+import ProposalTableView from '@/Pages/Proposals/Partials/ProposalTableView';
+import ProposalTable, { DynamicColumnConfig } from '@/Pages/Proposals/Partials/ProposalTable';
+import { Link } from '@inertiajs/react';
+import Paragraph from '@/Components/atoms/Paragraph';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface MyProposalsProps {
@@ -25,19 +26,27 @@ export default function MyProposals({ proposals, filters }: MyProposalsProps) {
     const { t } = useLaravelReactI18n();
     const [showFilters, setShowFilters] = useState(false);
 
-    const defaultColumns = ['proposal', 'status', 'funding', 'teams', 'action'];
-    const {
-        value: selectedColumns,
-        setValue: setSelectedColumns,
-        isLoading: isColumnsLoading
-    } = useUserSetting<string[]>(
-        userSettingEnums.PROPOSAL_PDF_COLUMNS,
-        defaultColumns
-    );
-
-    const handleColumnSelectionChange = (columns: string[]) => {
-        setSelectedColumns(columns);
-    };
+    const myProposalsColumns: (string | DynamicColumnConfig)[] = [
+        {
+            key: 'title',
+            type: 'component' as const,
+            component: ({ proposal }: { proposal: ProposalData }) => (
+                <div className="w-80" data-testid={`proposal-title-${proposal.id}`}>
+                    <Paragraph className="text-md text-content" data-testid={`proposal-title-text-${proposal.id}`}>
+                        <Link
+                            href={generateLocalizedRoute('my.proposals.manage', { proposal: proposal.id })}
+                            className="inline-flex items-center hover:text-primary transition-colors duration-200"
+                            data-testid={`manage-proposal-button-${proposal.id}`}
+                        >
+                            {proposal.title}
+                        </Link>
+                    </Paragraph>
+                </div>
+            ),
+            sortable: true,
+            sortKey: 'title'
+        },
+    ];
 
     return (
         <FiltersProvider
@@ -71,31 +80,16 @@ export default function MyProposals({ proposals, filters }: MyProposalsProps) {
                         <MyProposalFilters />
                     </section>
 
-                    {!isColumnsLoading && (
-                        <div className="flex justify-start mb-4">
-                            <ColumnSelector
-                                selectedColumns={selectedColumns || defaultColumns}
-                                onSelectionChange={handleColumnSelectionChange}
-                                icon={<VerticalColumnIcon className="w-4 h-4" />}
-                                className="z-10"
-                            />
-                        </div>
-                    )}
-
-                    <div className="overflow-hidden rounded-lg border border-gray-200">
-                        {proposals?.data && proposals?.data?.length > 0 ? (
-                            <div>
-                                <ProposalTable 
-                                    proposals={proposals} 
-                                    columns={selectedColumns || defaultColumns}
-                                />
-                            </div>
-                        ) : (
-                            <div className="py-8 text-center">
-                                <RecordsNotFound />
-                            </div>
-                        )}
-                    </div>
+                    <ProposalTableView 
+                        proposals={proposals}
+                        actionType="manage"
+                        columns={myProposalsColumns}
+                        showPagination={true}
+                        disableSorting={false}
+                        iconOnlyActions={true}
+                        iconActionsConfig={['compare']}
+                        protectedColumns={['manageProposal']}
+                    />
                 </div>
             </div>
         </FiltersProvider>

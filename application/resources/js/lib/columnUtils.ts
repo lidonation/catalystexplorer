@@ -1,6 +1,7 @@
 import { HierarchicalOption } from '@/Components/atoms/HierarchicalSelector';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { proposalColumnRenderers, generateColumnHeader } from '@/lib/proposalColumnRenderers';
+import labels from '@/Components/atoms/ActiveFilters/FiltersLabel';
 
 export interface ColumnDefinition {
     path: string;
@@ -14,17 +15,22 @@ let globalColumnStructure: Record<string, any> | null = null;
 /**
  * Generates hierarchical column options from proposal data structure
  */
-export function generateHierarchicalColumns(t: (key: string) => string): HierarchicalOption[] {
+export function generateHierarchicalColumns(
+    t: (key: string) => string, 
+    options?: {
+        excludeColumns?: string[];
+        protectedColumns?: string[];
+    }
+): HierarchicalOption[] {
     const columnStructure: Record<string, any> = {
 
         title: { type: 'text' },
         proposal: { type: 'text' },
-        slug: { type: 'text' },
         website: { type: 'link' },
         amount_requested: { type: 'currency' },
         amount_received: { type: 'currency' },
         definition_of_success: { type: 'text' },
-        status: { type: 'text' },
+        status: { type: 'text', label: 'Proposal Status' },
         funding_status: { type: 'text' },
         funded_at: { type: 'date' },
         funding_updated_at: { type: 'date' },
@@ -48,18 +54,16 @@ export function generateHierarchicalColumns(t: (key: string) => string): Hierarc
         users: { type: 'text' },
         opensource: { type: 'boolean' },
         link: { type: 'link' },
-        order: { type: 'number' },
         user_rationale: { type: 'text' },
-        
-        // Custom display properties
-        teams: { type: 'text' },
         yesVotes: { type: 'number' },
         abstainVotes: { type: 'number' },
         budget: { type: 'currency' },
         category: { type: 'text' },
-        openSourced: { type: 'boolean' },
+        openSourced: { type: 'boolean', label: 'Open Sourced' },
         funding: { type: 'text' },
-        viewProposal: { type: 'text' },
+        manageProposal: { type: 'text', label: 'Manage Proposal' },
+        viewProposal: { type: 'text', label: 'View Proposal' },
+        proposalActions: { type: 'text', label: 'Actions' },
         
         // Fund nested object
         fund: {
@@ -73,7 +77,6 @@ export function generateHierarchicalColumns(t: (key: string) => string): Hierarc
                 'fund.unfunded_proposals_count': { type: 'number' },
                 'fund.amount_requested': { type: 'currency' },
                 'fund.amount_awarded': { type: 'currency' },
-                'fund.slug': { type: 'text' },
                 'fund.comment_prompt': { type: 'text' },
                 'fund.hero_img_url': { type: 'link' },
                 'fund.banner_img_url': { type: 'link' },
@@ -90,7 +93,6 @@ export function generateHierarchicalColumns(t: (key: string) => string): Hierarc
         campaign: {
             children: {
                 'campaign.title': { type: 'text' },
-                'campaign.slug': { type: 'text' },
                 'campaign.comment_prompt': { type: 'text' },
                 'campaign.hero_img_url': { type: 'link' },
                 'campaign.amount': { type: 'currency' },
@@ -129,31 +131,46 @@ export function generateHierarchicalColumns(t: (key: string) => string): Hierarc
     const hierarchicalOptions: HierarchicalOption[] = [];
 
     Object.entries(columnStructure).forEach(([key, config]) => {
+        // Skip excluded columns
+        if (options?.excludeColumns?.includes(key)) {
+            return;
+        }
+
         if (config.children) {
             // This is a parent with children
             const children: HierarchicalOption[] = [];
             
             Object.entries(config.children).forEach(([childKey, childConfig]: [string, any]) => {
+                // Skip excluded child columns
+                if (options?.excludeColumns?.includes(childKey)) {
+                    return;
+                }
+
                 children.push({
-                    label: generateColumnHeader(childKey),
+                    label: childConfig.label || generateColumnHeader(childKey),
                     value: childKey,
-                    isParent: false
+                    isParent: false,
+                    isProtected: options?.protectedColumns?.includes(childKey)
                 });
             });
 
-            // Add parent with all its children
-            hierarchicalOptions.push({
-                label: generateColumnHeader(key),
-                value: key,
-                isParent: true,
-                children: children
-            });
+            // Only add parent if it has children after filtering
+            if (children.length > 0) {
+                hierarchicalOptions.push({
+                    label: generateColumnHeader(key),
+                    value: key,
+                    isParent: true,
+                    children: children,
+                    isProtected: options?.protectedColumns?.includes(key)
+                });
+            }
         } else {
             // This is a direct property
             hierarchicalOptions.push({
-                label: generateColumnHeader(key),
+                label: config.label || generateColumnHeader(key),
                 value: key,
-                isParent: false
+                isParent: false,
+                isProtected: options?.protectedColumns?.includes(key)
             });
         }
     });
@@ -195,6 +212,26 @@ export function hasCustomRenderer(columnKey: string): boolean {
     return columnKey in proposalColumnRenderers;
 }
 
+//Gets custom label for a column from the column structure
+export function getCustomColumnLabel(columnKey: string): string | null {
+    if (!globalColumnStructure) {
+        return null;
+    }
+    
+    if (globalColumnStructure[columnKey]?.label) {
+        return globalColumnStructure[columnKey].label;
+    }
+    
+    for (const [parentKey, parentConfig] of Object.entries(globalColumnStructure)) {
+        const typedParentConfig = parentConfig as any;
+        if (typedParentConfig.children && typedParentConfig.children[columnKey]?.label) {
+            return typedParentConfig.children[columnKey].label;
+        }
+    }
+    
+    return null;
+}
+
 // Gets the appropriate renderer type for a column from the column structure
 export function getColumnRendererType(columnKey: string): 'custom' | 'text' | 'link' | 'currency' | 'boolean' | 'date' | 'number' {
     if (hasCustomRenderer(columnKey)) {
@@ -230,7 +267,7 @@ export function getColumnRendererType(columnKey: string): 'custom' | 'text' | 'l
     }
     
     if (columnKey.includes('count') || columnKey.includes('score') || columnKey.includes('total') || 
-        columnKey.includes('length') || columnKey === 'order' || columnKey === 'milestone') {
+        columnKey.includes('length') || columnKey === 'milestone') {
         return 'number';
     }
     
