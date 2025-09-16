@@ -22,7 +22,7 @@ import {
     type TableHelpers,
     type ColumnRendererConfig
 } from '@/lib/proposalColumnRenderers';
-import { getColumnRendererType } from '@/lib/columnUtils';
+import { getColumnRendererType, getCustomColumnLabel } from '@/lib/columnUtils';
 
 interface ColumnConfig {
     key: string;
@@ -56,15 +56,15 @@ interface TableStyleProps {
 interface DynamicColumnConfig {
     key: string;
     type?: 'text' | 'link' | 'currency' | 'component';
-    label?: string | React.ReactNode;
+    label?: string | React.ReactNode; 
     sortable?: boolean;
-    sortKey?: string;
-    component?: React.ComponentType<{ proposal: ProposalData; helpers?: TableHelpers }>;
+    sortKey?: string; 
+    component?: React.ComponentType<{ proposal: ProposalData; helpers?: TableHelpers }>; 
 }
 
 interface ProposalTableProps {
     proposals: PaginatedData<ProposalData[]> | { data: ProposalData[], total: number, isPdf: boolean };
-    columns?: string[] | DynamicColumnConfig[] | (string | DynamicColumnConfig)[];
+    columns?: string[] | DynamicColumnConfig[] | (string | DynamicColumnConfig)[]; 
     actionType?: ActionType;
     disableSorting?: boolean;
     showPagination?: boolean;
@@ -72,15 +72,108 @@ interface ProposalTableProps {
     customActions?: {
         manage?: React.ComponentType<CustomActionProps>;
         view?: React.ComponentType<CustomActionProps>;
+        actions?: React.ComponentType<CustomActionProps>;
     };
     renderActions?: {
         manage?: (proposal: ProposalData) => React.ReactNode;
         view?: (proposal: ProposalData) => React.ReactNode;
+        actions?: (proposal: ProposalData) => React.ReactNode;
     };
     customStyles?: TableStyleProps;
     headerAlignment?: 'left' | 'center' | 'right';
     onColumnSelectorOpen?: () => void; // Callback to open column selector
 }
+
+const generateCustomRendererConfig = (
+    columnPath: string,
+    customRenderer: ColumnRendererConfig,
+    disableSorting: boolean,
+    getColumnHeader: (key: string) => string | React.ReactNode,
+    getCustomColumnLabel: (key: string) => string | null
+): ColumnConfig => {
+    const customLabel = getCustomColumnLabel(columnPath);
+    const label = customLabel || getColumnHeader(columnPath);
+
+    // Handle function-based renderer (React component)
+    if (typeof customRenderer === 'function') {
+        return {
+            key: columnPath,
+            label,
+            sortable: !disableSorting,
+            sortKey: columnPath,
+            renderCell: (proposal: ProposalData, helpers: TableHelpers) => {
+                const ComponentRenderer = customRenderer as React.ComponentType<{ proposal: ProposalData; helpers?: TableHelpers }>;
+                return <ComponentRenderer proposal={proposal} helpers={helpers} />;
+            }
+        };
+    }
+
+    // Handle configuration-based renderer
+    if (typeof customRenderer === 'object' && customRenderer !== null) {
+        if ('type' in customRenderer && customRenderer.type) {
+            const config = customRenderer as { 
+                type: string; 
+                component?: React.ComponentType<{ proposal: ProposalData; helpers?: TableHelpers }>; 
+                sortKey?: string; 
+                sortable?: boolean; 
+            };
+            
+            return {
+                key: columnPath,
+                label,
+                sortable: config.sortable !== false && !disableSorting,
+                sortKey: config.sortKey || columnPath,
+                renderCell: (proposal: ProposalData, helpers: TableHelpers) => {
+                    // Handle custom component
+                    if (config.type === 'component' && config.component) {
+                        const ComponentRenderer = config.component;
+                        return <ComponentRenderer proposal={proposal} helpers={helpers} />;
+                    }
+                    
+                    // Handle built-in type renderers
+                    if (config.type && builtInRenderers[config.type as keyof typeof builtInRenderers]) {
+                        const renderer = builtInRenderers[config.type as keyof typeof builtInRenderers];
+                        return renderer({ proposal, path: columnPath });
+                    }
+                    
+                    // Fallback to consistent text rendering
+                    return renderFallbackText(proposal, columnPath);
+                }
+            };
+        }
+        
+        return {
+            key: columnPath,
+            label,
+            sortable: !disableSorting,
+            sortKey: columnPath,
+            renderCell: (proposal: ProposalData) => renderFallbackText(proposal, columnPath)
+        };
+    }
+
+    return {
+        key: columnPath,
+        label,
+        sortable: !disableSorting,
+        sortKey: columnPath,
+        renderCell: (proposal: ProposalData) => renderFallbackText(proposal, columnPath)
+    };
+};
+
+
+ //Consistent fallback text rendering
+ 
+const renderFallbackText = (proposal: ProposalData, columnPath: string): React.ReactNode => {
+    const value = getNestedValue(proposal, columnPath);
+    return (
+        <Paragraph 
+            className="text-md text-content" 
+            data-testid={`proposal-${columnPath.replace(/\./g, '-')}-${proposal.id}`}
+        >
+            {value?.toString() || '–'}
+        </Paragraph>
+    );
+};
 
 const ProposalTable: React.FC<ProposalTableProps> = ({
                                                          proposals,
@@ -105,7 +198,9 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
         'status',
         'funding',
         'teams',
-        actionType === 'manage' ? 'action' : 'viewProposal'
+        'manageProposal',
+        'viewProposal',
+        'proposalActions'
     ].filter(Boolean) as string[];
 
     const activeColumns = columns || defaultColumns;
@@ -152,10 +247,12 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
 
     const getColumnHeader = (columnKey: string): string | React.ReactNode => {
         const dynamicHeaders = getDynamicColumnHeaders(t);
-        return dynamicHeaders[columnKey] || defaultColumnHeaders[columnKey] || generateColumnHeader(columnKey);
+        const customLabel = getCustomColumnLabel(columnKey);
+        return customLabel || dynamicHeaders[columnKey] || defaultColumnHeaders[columnKey] || generateColumnHeader(columnKey);
     };
 
     const generateColumnConfig = (columnInput: string | DynamicColumnConfig): ColumnConfig => {
+        // Dynamic configs (objects) take precedence and can override existing column renderers
         if (typeof columnInput === 'object') {
             const dynamicConfig = columnInput;
             
@@ -165,37 +262,20 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                 sortable: dynamicConfig.sortable !== false && !disableSorting,
                 sortKey: dynamicConfig.sortKey || dynamicConfig.key,
                 renderCell: (proposal: ProposalData, helpers: TableHelpers) => {
-                
                     if (dynamicConfig.component) {
                         const ComponentRenderer = dynamicConfig.component;
                         return <ComponentRenderer proposal={proposal} helpers={helpers} />;
                     }
                     
-                   
                     const type = dynamicConfig.type || 'text';
-                    
-                    if (type === 'component' && proposalColumnRenderers[dynamicConfig.key]) {
-                        // Check if we have a predefined component renderer
-                        const customRenderer = proposalColumnRenderers[dynamicConfig.key];
-                        if (typeof customRenderer === 'object' && 'component' in customRenderer && customRenderer.component) {
-                            const ComponentRenderer = customRenderer.component;
-                            return <ComponentRenderer proposal={proposal} helpers={helpers} />;
-                        }
-                    }
                     
                     // Handle built-in types
                     if (builtInRenderers[type as keyof typeof builtInRenderers]) {
                         const renderer = builtInRenderers[type as keyof typeof builtInRenderers];
                         return renderer({ proposal, path: dynamicConfig.key });
                     }
-                    
-                    // Default to text rendering
-                    const value = getNestedValue(proposal, dynamicConfig.key);
-                    return (
-                        <Paragraph className="text-md text-content" data-testid={`proposal-${dynamicConfig.key.replace('.', '-')}-${proposal.id}`}>
-                            {value?.toString() || '–'}
-                        </Paragraph>
-                    );
+                 
+                    return renderFallbackText(proposal, dynamicConfig.key);
                 }
             };
         }
@@ -243,10 +323,49 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
             };
         }
 
+        if (columnPath === 'manageProposal') {
+            return {
+                key: 'manageProposal',
+                label: t('proposals.manage'),
+                renderCell: (proposal: ProposalData) => {
+                    const testId = `proposal-manage-${proposal.id}`;
+
+                    if (renderActions?.manage) {
+                        return (
+                            <div data-testid={testId}>
+                                {renderActions.manage(proposal)}
+                            </div>
+                        );
+                    }
+
+                    if (customActions?.manage) {
+                        const CustomManageAction = customActions.manage;
+                        return (
+                            <div data-testid={testId}>
+                                <CustomManageAction
+                                    proposal={proposal}
+                                    data-testid={`manage-proposal-button-${proposal.id}`}
+                                />
+                            </div>
+                        );
+                    }
+
+                    return (
+                        <div data-testid={testId}>
+                            <ManageProposalButton
+                                proposal={proposal}
+                                data-testid={`manage-proposal-button-${proposal.id}`}
+                            />
+                        </div>
+                    );
+                }
+            };
+        }
+
         if (columnPath === 'viewProposal') {
             return {
                 key: 'viewProposal',
-                label: t('proposals.action'),
+                label: t('proposalComparison.viewProposal'),
                 renderCell: (proposal: ProposalData) => {
                     const testId = `proposal-view-${proposal.id}`;
 
@@ -287,82 +406,56 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
             };
         }
 
+        if (columnPath === 'proposalActions') {
+            return {
+                key: 'proposalActions',
+                label: t('proposals.actions'),
+                renderCell: (proposal: ProposalData) => {
+                    const testId = `proposal-actions-${proposal.id}`;
+
+                    if (renderActions?.actions) {
+                        return (
+                            <div data-testid={testId}>
+                                {renderActions.actions(proposal)}
+                            </div>
+                        );
+                    }
+
+                    if (customActions?.actions) {
+                        const CustomActionsComponent = customActions.actions;
+                        return (
+                            <div data-testid={testId}>
+                                <CustomActionsComponent
+                                    proposal={proposal}
+                                    data-testid={`proposal-actions-${proposal.id}`}
+                                />
+                            </div>
+                        );
+                    }
+
+                    return (
+                        <div data-testid={testId}>
+                          
+                        </div>
+                    );
+                }
+            };
+        }
+
         // Check if we have a custom renderer for this column
         const customRenderer = proposalColumnRenderers[columnPath];
         
         if (customRenderer) {
-            // Handle component-based renderer
-            if (typeof customRenderer === 'function') {
-                return {
-                    key: columnPath,
-                    label: getColumnHeader(columnPath),
-                    sortable: !disableSorting,
-                    sortKey: columnPath,
-                    renderCell: (proposal: ProposalData, helpers: TableHelpers) => {
-                        const ComponentRenderer = customRenderer as React.ComponentType<{ proposal: ProposalData; helpers?: TableHelpers }>;
-                        return <ComponentRenderer proposal={proposal} helpers={helpers} />;
-                    }
-                };
-            }
-            
-            // Handle configuration-based renderer
-            if (typeof customRenderer === 'object' && 'type' in customRenderer && customRenderer.type) {
-                const config = customRenderer as { 
-                    type: string; 
-                    component?: React.ComponentType<{ proposal: ProposalData; helpers?: TableHelpers }>; 
-                    sortKey?: string; 
-                    sortable?: boolean; 
-                };
-                
-                return {
-                    key: columnPath,
-                    label: getColumnHeader(columnPath),
-                    sortable: config.sortable !== false && !disableSorting,
-                    sortKey: config.sortKey || columnPath,
-                    renderCell: (proposal: ProposalData, helpers: TableHelpers) => {
-                        if (config.type === 'component' && config.component) {
-                            const ComponentRenderer = config.component;
-                            return <ComponentRenderer proposal={proposal} helpers={helpers} />;
-                        }
-                        
-                        // Handle built-in type renderers
-                        if (builtInRenderers[config.type as keyof typeof builtInRenderers]) {
-                            const renderer = builtInRenderers[config.type as keyof typeof builtInRenderers];
-                            return renderer({ proposal, path: columnPath });
-                        }
-                        
-                        // Fallback to plain text
-                        const value = getNestedValue(proposal, columnPath);
-                        return <span>{value?.toString() || '–'}</span>;
-                    }
-                };
-            }
-            
-            // Handle empty object or other cases - fallback to plain text
-            if (typeof customRenderer === 'object') {
-                return {
-                    key: columnPath,
-                    label: getColumnHeader(columnPath),
-                    sortable: !disableSorting,
-                    sortKey: columnPath,
-                    renderCell: (proposal: ProposalData) => {
-                        const value = getNestedValue(proposal, columnPath);
-                        return (
-                            <Paragraph className="text-md text-content" data-testid={`proposal-${columnPath.replace('.', '-')}-${proposal.id}`}>
-                                {value?.toString() || '–'}
-                            </Paragraph>
-                        );
-                    }
-                };
-            }
+            return generateCustomRendererConfig(columnPath, customRenderer, disableSorting, getColumnHeader, getCustomColumnLabel);
         }
 
         // Fallback: use appropriate renderer based on column type
         const rendererType = getColumnRendererType(columnPath);
+        const customLabel = getCustomColumnLabel(columnPath);
         
         return {
             key: columnPath,
-            label: generateColumnHeader(columnPath),
+            label: customLabel || generateColumnHeader(columnPath),
             sortable: !disableSorting,
             sortKey: columnPath,
             renderCell: (proposal: ProposalData) => {
@@ -372,13 +465,7 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                     return renderer({ proposal, path: columnPath });
                 }
                 
-                // Ultimate fallback to plain text
-                const value = getNestedValue(proposal, columnPath);
-                return (
-                    <Paragraph className="text-md text-content" data-testid={`proposal-${columnPath.replace(/\./g, '-')}-${proposal.id}`}>
-                        {value?.toString() || '–'}
-                    </Paragraph>
-                );
+                return renderFallbackText(proposal, columnPath);
             }
         };
     };
@@ -437,10 +524,10 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
             {hasNoColumns && onColumnSelectorOpen ? (
                 // Empty state when no columns are selected
                 <div className="flex flex-col items-center justify-center py-16 px-8">
-                    <div className="flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
-                        <VerticalColumnIcon className="w-8 h-8" />
+                    <div className="flex items-center justify-center w-16 h-16 bg-light-gray-persist rounded-full mb-4">
+                        <VerticalColumnIcon className="w-8 h-8 text-dark" />
                     </div>
-                    <Paragraph className="text-lg text-gray-persist mb-2 text-center font-medium">
+                    <Paragraph className="text-lg text-gray-persist/[0.5] mb-2 text-center font-medium">
                         {t('proposalTable.noColumnsSelected')}
                     </Paragraph>
                     <Paragraph className="text-sm text-gray-persist mb-6 text-center max-w-md">

@@ -1355,5 +1355,7 @@
     "widgets.quickPitch.errors.updateFailed": "更新快速推介失败。请再试一次。",
     "proposals.manageProposal": "管理提案",
     "proposals.managingProposal": "Managing: :title",
-    "proposals.manageDescription": "使用下方的小部件来管理您提案的设置和内容。"
+    "proposals.manageDescription": "使用下方的小部件来管理您提案的设置和内容。",
+    "proposals.actions": "操作",
+    "proposals.manage": "管理"
 }

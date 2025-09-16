@@ -1355,5 +1355,7 @@
     "widgets.quickPitch.errors.updateFailed": "Falha ao atualizar a apresentação rápida. Tente novamente.",
     "proposals.manageProposal": "Gerenciar Proposta",
     "proposals.managingProposal": "Managing: :title",
-    "proposals.manageDescription": "Use os widgets abaixo para gerenciar as configurações e conteúdo da sua proposta."
+    "proposals.manageDescription": "Use os widgets abaixo para gerenciar as configurações e conteúdo da sua proposta.",
+    "proposals.actions": "Ações",
+    "proposals.manage": "Gerenciar"
 }

@@ -1347,5 +1347,7 @@
     "widgets.quickPitch.errors.updateFailed": "クイックピッチの更新に失敗しました。もう一度お試しください。",
     "proposals.manageProposal": "提案を管理",
     "proposals.managingProposal": "Managing: :title",
-    "proposals.manageDescription": "以下のウィジェットを使用して、提案の設定とコンテンツを管理してください。"
+    "proposals.manageDescription": "以下のウィジェットを使用して、提案の設定とコンテンツを管理してください。",
+    "proposals.actions": "アクション",
+    "proposals.manage": "管理"
 }

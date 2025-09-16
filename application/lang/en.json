@@ -1405,5 +1405,7 @@
     "widgets.quickPitch.errors.invalidUrl": "Please enter a valid YouTube or Vimeo URL",
     "widgets.quickPitch.errors.updateFailed": "Failed to update quick pitch. Please try again.",
     "proposals.managingProposal": "Managing: :title",
+    "proposals.actions": "Actions",
+     "proposals.manage": "Manage",
     "proposals.manageDescription": "Use the widgets below to manage your proposal settings and content."
 }

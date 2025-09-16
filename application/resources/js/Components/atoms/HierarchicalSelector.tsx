@@ -13,6 +13,7 @@ export interface HierarchicalOption {
     disabled?: boolean;
     children?: HierarchicalOption[];
     isParent?: boolean;
+    isProtected?: boolean;
 }
 
 type HierarchicalSelectorProps = {
@@ -26,6 +27,7 @@ type HierarchicalSelectorProps = {
     placeholder?: string;
     disabled?: boolean;
     customTrigger?: React.ReactNode;
+    protectedColumns?: string[];
     'data-testid'?: string;
     'data-testid-button'?: string;
 };
@@ -41,6 +43,7 @@ export default function HierarchicalSelector({
     placeholder = 'Select options',
     disabled = false,
     customTrigger,
+    protectedColumns = [],
     'data-testid': dataTestId = 'hierarchical-selector-container',
     'data-testid-button': dataTestIdButton = 'hierarchical-selector-button',
 }: HierarchicalSelectorProps) {
@@ -64,6 +67,10 @@ export default function HierarchicalSelector({
             return;
         }
 
+        if (protectedColumns.includes(value) && selectedItems.includes(value)) {
+            return;
+        }
+
         const updatedItems = selectedItems.includes(value)
             ? selectedItems.filter(item => item !== value)
             : [...selectedItems, value];
@@ -72,7 +79,8 @@ export default function HierarchicalSelector({
     };
 
     const onClearSelection = () => {
-        setSelectedItems([]);
+        const protectedItems = selectedItems.filter(item => protectedColumns.includes(item));
+        setSelectedItems(protectedItems);
         setOpen(false);
     };
 
@@ -81,19 +89,21 @@ export default function HierarchicalSelector({
         const hasChildren = option.children && option.children.length > 0;
         const isSelected = selectedItems.includes(option.value);
         const isDisabled = option.disabled;
+        const isProtected = option.isProtected || protectedColumns.includes(option.value);
+        const isProtectedAndSelected = isProtected && isSelected;
 
         return (
             <div key={option.value}>
                 <div
                     onClick={() => {
-                        if (!isDisabled) {
+                        if (!isDisabled && !(isProtectedAndSelected)) {
                             handleSelect(option.value, hasChildren);
                         }
                     }}
                     className={cn(
                         'relative flex w-full items-center justify-between rounded-xs py-1.5 text-sm outline-hidden select-none',
                         level === 0 ? 'px-3' : level === 1 ? 'pl-7 pr-3' : level === 2 ? 'pl-11 pr-3' : 'pl-15 pr-3',
-                        isDisabled 
+                        isDisabled || isProtectedAndSelected
                             ? 'text-gray-persist cursor-not-allowed opacity-70' 
                             : 'cursor-default hover:bg-background-lighter focus:bg-background-lighter'
                     )}
@@ -121,7 +131,8 @@ export default function HierarchicalSelector({
                             className={cn(
                                 "flex-1 text-left",
                                 hasChildren && "font-medium",
-                                level > 0 && "text-sm opacity-80"
+                                level > 0 && "text-sm opacity-80",
+                                isProtectedAndSelected && "text-primary font-medium"
                             )}
                         >
                             {option.label}
@@ -136,9 +147,9 @@ export default function HierarchicalSelector({
                             onChange={() => {}}
                             className={cn(
                                 'text-content-accent bg-background checked:bg-primary checked:hover:bg-primary focus:border-primary focus:ring-primary checked:focus:bg-primary ml-2 h-4 w-4 shadow-xs focus:border',
-                                isDisabled && 'text-gray-persist cursor-not-allowed'
+                                (isDisabled || isProtectedAndSelected) && 'text-gray-persist cursor-not-allowed'
                             )}
-                            disabled={isDisabled}
+                            disabled={isDisabled || isProtectedAndSelected}
                             data-testid={`hierarchical-checkbox-${option.value}`}
                         />
                     )}
