@@ -287,9 +287,7 @@ class MyBookmarksController extends Controller
             ->with(['author', 'collaborators'])
             ->orderBy('created_at', 'desc')
             ->paginate($perPage, ['*'], 'page', $page);
-
-        //        dd($bookmarkCollections->toArray());
-
+        
         return Inertia::render('My/Lists/Index', [
             'bookmarkCollections' => BookmarkCollectionData::collect($bookmarkCollections),
         ]);
@@ -297,8 +295,6 @@ class MyBookmarksController extends Controller
 
     public function showCollection(BookmarkCollection $bookmarkCollection): InertiaResponse|JsonResponse
     {
-        // $this->authorize('view', $bookmarkCollection);
-
         return Inertia::render('My/Lists/BookmarkCollection', [
             'bookmarkCollection' => BookmarkCollectionData::from($bookmarkCollection),
         ]);

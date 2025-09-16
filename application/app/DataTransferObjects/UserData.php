@@ -51,19 +51,14 @@ class UserData extends Data
     {
         $instance = parent::from(...$payloads);
 
-        // Get the original user model if it exists
         $user = collect($payloads)->first();
 
-        // Fix ID handling for mixed UUID/integer systems
         if ($user && method_exists($user, 'getKey')) {
-            // Ensure ID is properly converted to string, handling both UUIDs and integers
             $rawId = $user->getKey() ?? $user->id;
 
-            // Fix: Check for null specifically, not just falsy values (0 is valid)
             $instance->id = $rawId !== null ? (string) $rawId : null;
         }
 
-        // Hide email if the current user doesn't have permission to view it
         if ($user && method_exists($user, 'getKey') && auth()->check()) {
             $canViewEmail = Gate::forUser(auth()->user())->allows('viewEmail', $user);
 
@@ -71,7 +66,6 @@ class UserData extends Data
                 $instance->email = Optional::create();
             }
         } elseif (! auth()->check()) {
-            // Always hide email for unauthenticated users
             $instance->email = Optional::create();
         }
 
@@ -80,7 +74,6 @@ class UserData extends Data
 
     public static function collect(mixed $items, ?string $into = null): array|DataCollection|PaginatedDataCollection|CursorPaginatedDataCollection|Enumerable|AbstractPaginator|PaginatorContract|AbstractCursorPaginator|CursorPaginatorContract|LazyCollection|Collection
     {
-        // Use our custom from method for each item in the collection
         $transformedItems = collect($items)->map(function ($item) {
             return static::from($item);
         });
