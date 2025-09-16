@@ -27,7 +27,13 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements HasMedia
 {
-    use HasFactory, HasRoles, HasSignatures, HasUuids, InteractsWithMedia, MustVerifyEmail, Notifiable;
+    use HasFactory,
+        HasRoles,
+        HasSignatures,
+        HasUuids,
+        InteractsWithMedia,
+        MustVerifyEmail,
+        Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -55,9 +61,17 @@ class User extends Authenticatable implements HasMedia
     protected $hidden = [
         'password',
         'remember_token',
+        'old_id',
     ];
 
     protected $appends = ['hero_img_url'];
+
+    protected $with = [];
+
+    public function getKeyType(): string
+    {
+        return 'string';
+    }
 
     /**
      * Get the attributes that should be cast.
@@ -71,6 +85,20 @@ class User extends Authenticatable implements HasMedia
             'password' => 'hashed',
             'password_updated_at' => 'datetime',
         ];
+    }
+
+    public function stakeAddress(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->signatures()?->first()?->stake_address);
+    }
+
+    public function votingPower(): Attribute
+    {
+        return Attribute::make(get: function () {
+            $balance = $this->signatures()?->first()?->wallet_balance ?? 0;
+
+            return (float) $balance;
+        });
     }
 
     public function gravatar(): Attribute
@@ -124,29 +152,6 @@ class User extends Authenticatable implements HasMedia
             'id',
             'stake_key'
         );
-    }
-
-    public function registerMediaConversions(?Media $media = null): void
-    {
-        $this->addMediaConversion('thumbnail')
-            ->width(150)
-            ->height(150)
-            ->withResponsiveImages()
-            ->crop(150, 150, CropPosition::Top)
-            ->performOnCollections('profile');
-
-        $this->addMediaConversion('large')
-            ->width(1080)
-            ->height(1350)
-            ->crop(1080, 1350, CropPosition::Top)
-            ->withResponsiveImages()
-            ->performOnCollections('profile');
-    }
-
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('profile')
-            ->singleFile();
     }
 
     public function location(): BelongsTo
@@ -214,20 +219,6 @@ class User extends Authenticatable implements HasMedia
         });
     }
 
-    public function stakeAddress(): Attribute
-    {
-        return Attribute::make(get: fn () => $this->signatures()?->first()?->stake_address);
-    }
-
-    public function votingPower(): Attribute
-    {
-        return Attribute::make(get: function () {
-            $balance = $this->signatures()?->first()?->wallet_balance ?? 0;
-
-            return (float) $balance;
-        });
-    }
-
     /**
      * Get the user's preferred language or default to English
      */
@@ -252,5 +243,28 @@ class User extends Authenticatable implements HasMedia
     public function sendWelcomeEmail(): void
     {
         Mail::to($this->email)->send(new WelcomeEmailMail($this));
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumbnail')
+            ->width(150)
+            ->height(150)
+            ->withResponsiveImages()
+            ->crop(150, 150, CropPosition::Top)
+            ->performOnCollections('profile');
+
+        $this->addMediaConversion('large')
+            ->width(1080)
+            ->height(1350)
+            ->crop(1080, 1350, CropPosition::Top)
+            ->withResponsiveImages()
+            ->performOnCollections('profile');
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('profile')
+            ->singleFile();
     }
 }

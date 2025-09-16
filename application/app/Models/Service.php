@@ -35,8 +35,6 @@ class Service extends Model implements HasMedia
 
     protected $appends = ['header_image_url', 'effective_contact_details'];
 
-    protected $hidden = [];
-
     protected $casts = [
         'type' => EnumCast::class.':'.ServiceTypeEnum::class,
     ];

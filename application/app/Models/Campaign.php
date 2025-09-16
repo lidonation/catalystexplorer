@@ -27,7 +27,7 @@ class Campaign extends Model implements HasMedia
 
     protected $hidden = [
         'user_id',
-        'fund_id',
+        'old_id',
         'created_at',
         'updated_at',
         'deleted_at',

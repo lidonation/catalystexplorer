@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
+use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Data;
+use Spatie\LaravelData\DataCollection;
 use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
@@ -100,6 +102,9 @@ final class BookmarkCollectionData extends Data
 
         #[TypeScriptOptional]
         public ?string $list_type,
+
+        #[DataCollectionOf(UserData::class)]
+        public ?DataCollection $collaborators,
 
         /**
          * @var array<string, string>|null

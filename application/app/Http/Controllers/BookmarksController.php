@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\DataTransferObjects\BookmarkCollectionData;
+use App\DataTransferObjects\UserData;
 use App\Enums\BookmarkableType;
 use App\Enums\BookmarkStatus;
 use App\Enums\BookmarkVisibility;
 use App\Enums\ProposalSearchParams;
 use App\Enums\QueryParamsEnum;
+use App\Mail\BookmarkCollectionInvitation;
 use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
 use App\Models\Community;
@@ -17,6 +19,7 @@ use App\Models\Group;
 use App\Models\IdeascaleProfile;
 use App\Models\Proposal;
 use App\Models\Review;
+use App\Models\User;
 use App\Repositories\BookmarkCollectionRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,6 +27,8 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -105,9 +110,13 @@ class BookmarksController extends Controller
 
         $typesCounts = $this->getFilteredTypesCounts($bookmarkCollection);
 
+        // Load collaborators and get pending invitations
+        $bookmarkCollection->load(['author', 'collaborators']);
+        $pendingInvitations = $this->getPendingInvitations($bookmarkCollection);
+
         $props = [
             'bookmarkCollection' => array_merge(
-                $bookmarkCollection->load('author')->toArray(),
+                $bookmarkCollection->toArray(),
                 ['types_count' => $typesCounts]
             ),
             'type' => $type,
@@ -118,6 +127,7 @@ class BookmarksController extends Controller
             'filters' => $this->filters,
             'queryParams' => $this->queryParams,
             $type => $pagination,
+            'pendingInvitations' => array_values($pendingInvitations), // Convert to indexed array for frontend
         ];
 
         return Inertia::render('Bookmarks/View', $props);
@@ -284,9 +294,7 @@ class BookmarksController extends Controller
 
     public function manage(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals'): Response
     {
-        if ($request->user()->id != $bookmarkCollection->id) {
-            Inertia::render('Error404');
-        }
+        Gate::authorize('update', $bookmarkCollection);
 
         $this->setFilters($request);
 
@@ -305,7 +313,7 @@ class BookmarksController extends Controller
             Community::class => ['ideascale_profiles', 'proposals'],
         ];
 
-        $relationships = $relationshipsMap[$model_type] ?? [];
+        $relationships = array_merge($relationshipsMap[$model_type] ?? [], []);
         $counts = $countMap[$model_type] ?? [];
 
         $bookmarkItemIds = $bookmarkCollection->items
@@ -322,11 +330,18 @@ class BookmarksController extends Controller
             $pagination = $this->queryModels($model_type, $bookmarkItemIds, $relationships, $counts);
         }
 
+        $bookmarkCollection->load(['author', 'collaborators']);
+
+        // Get pending invitations
+        $pendingInvitations = $this->getPendingInvitations($bookmarkCollection);
+
         return Inertia::render('Bookmarks/Manage', [
-            'bookmarkCollection' => $bookmarkCollection->load('author'),
+            'bookmarkCollection' => $bookmarkCollection,
             'type' => $type,
             'filters' => array_merge([ProposalSearchParams::PAGE()->value => $currentPage]),
             $type => $pagination,
+            'owner' => UserData::from($bookmarkCollection->author),
+            'pendingInvitations' => array_values($pendingInvitations), // Convert to indexed array for frontend
         ]);
     }
 
@@ -451,11 +466,11 @@ class BookmarksController extends Controller
         $collection = BookmarkCollection::find($request->bookmarkCollection ?? $request->input('bookmarkCollectionId'));
 
         $modelMap = [
-            \App\Models\Proposal::class => 'proposals',
-            \App\Models\Review::class => 'reviews',
-            \App\Models\Group::class => 'groups',
-            \App\Models\Community::class => 'communities',
-            \App\Models\IdeascaleProfile::class => 'ideascaleProfiles',
+            Proposal::class => 'proposals',
+            Review::class => 'reviews',
+            Group::class => 'groups',
+            Community::class => 'communities',
+            IdeascaleProfile::class => 'ideascaleProfiles',
         ];
 
         $selectedItemsByType = $collection->items
@@ -489,8 +504,33 @@ class BookmarksController extends Controller
         }
 
         $collection = BookmarkCollection::find($request->bookmarkCollection ?? $request->input('bookmarkCollectionId'));
+        $collection->load(['author', 'collaborators']);
+
+        // Get pending invitations
+        $pendingInvitations = $this->getPendingInvitations($collection);
 
         return Inertia::render('Workflows/CreateBookmark/Step4', [
+            'stepDetails' => $this->getStepDetails(),
+            'activeStep' => intval($request->step),
+            'bookmarkCollection' => $collection,
+            'bookmarkCollectionId' => $collection->id,
+            'contributors' => UserData::collect($collection->collaborators),
+            'owner' => UserData::from($collection->author),
+            'pendingInvitations' => array_values($pendingInvitations), // Convert to indexed array for frontend
+        ]);
+    }
+
+    public function step5(Request $request): RedirectResponse|Response
+    {
+        if (empty($request->bookmarkCollection) && ! $request->filled('bookmarkCollectionId')) {
+            return to_route('workflows.bookmarks.index', [
+                'step' => 2,
+            ]);
+        }
+
+        $collection = BookmarkCollection::find($request->bookmarkCollection ?? $request->input('bookmarkCollectionId'));
+
+        return Inertia::render('Workflows/CreateBookmark/Step5', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
             'rationale' => $collection->meta_info?->rationale,
@@ -545,7 +585,7 @@ class BookmarksController extends Controller
         $bookmarkCollection->searchable();
 
         return to_route('workflows.bookmarks.index', [
-            'step' => 3,
+            'step' => 4,
             'bookmarkCollection' => $bookmarkCollection->id,
             'bookmarkCollectionId' => $bookmarkCollection->id,
         ]);
@@ -639,6 +679,267 @@ class BookmarksController extends Controller
         return to_route('workflows.bookmarks.success');
     }
 
+    public function inviteContributor(BookmarkCollection $bookmarkCollection, Request $request): RedirectResponse
+    {
+        Gate::authorize('update', $bookmarkCollection);
+
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $invitedUser = User::findOrFail($validated['user_id']);
+        $inviter = Auth::user();
+
+        // Check if user is already a contributor
+        if ($bookmarkCollection->contributors()->where('user_id', $validated['user_id'])->exists()) {
+            return back()->withErrors(['message' => 'User is already a contributor to this collection.']);
+        }
+
+        // Get existing invitations from metas
+        $existingInvitations = $this->getPendingInvitations($bookmarkCollection);
+
+        // Check if user already has a pending invitation
+        if (isset($existingInvitations[$validated['user_id']])) {
+            return back()->withErrors(['message' => 'User already has a pending invitation to this collection.']);
+        }
+
+        // Generate invitation token
+        $token = Str::random(60);
+
+        // Add invitation to existing invitations
+        $existingInvitations[$validated['user_id']] = [
+            'user_id' => $validated['user_id'],
+            'user_email' => $invitedUser->email,
+            'user_name' => $invitedUser->name,
+            'inviter_id' => $inviter->id,
+            'inviter_name' => $inviter->name,
+            'token' => $token,
+            'invited_at' => now()->toISOString(),
+            'status' => 'pending',
+        ];
+
+        // Store invitations in metas table
+        $bookmarkCollection->saveMeta('invitations', json_encode($existingInvitations));
+
+        // Send invitation email
+        try {
+
+            // Use raw email attributes to bypass potential policy issues
+            $invitedUserEmail = $invitedUser->getAttributes()['email'] ?? $invitedUser->email;
+
+            Mail::to($invitedUserEmail, $invitedUser->name)->send(
+                new BookmarkCollectionInvitation($inviter, $invitedUser, $bookmarkCollection, $token)
+            );
+
+            return back()->with('success', 'Invitation sent successfully to '.$invitedUser->name.'.');
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            Log::error('Failed to send bookmark invitation email: '.$e->getMessage(), [
+                'inviter_id' => $inviter->id,
+                'invited_user_id' => $invitedUser->id,
+                'invited_user_email' => $invitedUser->email,
+                'collection_id' => $bookmarkCollection->id,
+            ]);
+
+            // Remove the invitation from metas if email failed
+            unset($existingInvitations[$validated['user_id']]);
+            $bookmarkCollection->saveMeta('invitations', json_encode($existingInvitations));
+
+            return back()->withErrors(['message' => 'Failed to send invitation email. Please try again.']);
+        }
+    }
+
+    public function removeContributor(BookmarkCollection $bookmarkCollection, Request $request): RedirectResponse
+    {
+        Gate::authorize('update', $bookmarkCollection);
+
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $bookmarkCollection->contributors()->detach($validated['user_id']);
+
+        return back()->with('success', 'Contributor removed successfully.');
+    }
+
+    public function searchUsers(Request $request)
+    {
+        $validated = $request->validate([
+            'query' => 'required|string|min:2',
+        ]);
+
+        $users = User::where('name', 'ILIKE', '%'.$validated['query'].'%')
+            ->orWhere('email', 'ILIKE', '%'.$validated['query'].'%')
+            ->limit(10)
+            ->with('media')
+            ->get();
+
+        return UserData::collect($users);
+    }
+
+    /**
+     * Get pending invitations for a bookmark collection
+     */
+    protected function getPendingInvitations(BookmarkCollection $bookmarkCollection): array
+    {
+        $invitationsMeta = $bookmarkCollection->metas()->where('key', 'invitations')->first();
+
+        if (! $invitationsMeta || empty($invitationsMeta->content)) {
+            return [];
+        }
+
+        try {
+            return json_decode($invitationsMeta->content, true) ?? [];
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    /**
+     * Accept a bookmark collection invitation
+     */
+    public function acceptInvitation(Request $request): RedirectResponse
+    {
+        $token = $request->query('token');
+        $collectionId = $request->query('collection');
+
+        if (! $token || ! $collectionId) {
+            abort(404);
+        }
+
+        $bookmarkCollection = BookmarkCollection::findOrFail($collectionId);
+        $invitations = $this->getPendingInvitations($bookmarkCollection);
+
+        // Find invitation by token
+        $invitation = null;
+        $userId = null;
+        foreach ($invitations as $uid => $inv) {
+            if ($inv['token'] === $token && $inv['status'] === 'pending') {
+                $invitation = $inv;
+                $userId = $uid;
+                break;
+            }
+        }
+
+        if (! $invitation) {
+            return redirect()->route('lists.index')
+                ->withErrors(['message' => 'Invalid or expired invitation.']);
+        }
+
+        // Check if user is authenticated and matches invitation
+        $currentUser = Auth::user();
+
+        if (! $currentUser) {
+            // User not authenticated - redirect to login
+            session(['invitation_token' => $token, 'invitation_collection' => $collectionId]);
+
+            return redirect()->route('login')
+                ->with('message', 'Please log in to accept the invitation.');
+        }
+
+        if ($currentUser->id !== $userId) {
+            // User mismatch - show error with better explanation
+            $invitedUser = User::find($userId);
+            $invitedUserEmail = $invitedUser ? $invitedUser->getAttributes()['email'] : 'Unknown';
+
+            return redirect()->route('lists.index')
+                ->withErrors([
+                    'message' => "This invitation was sent to {$invitedUserEmail}. Please log in as that user to accept the invitation, or contact the person who invited you.",
+                ]);
+        }
+
+        // Check if user is already a contributor
+        if ($bookmarkCollection->contributors()->where('user_id', $userId)->exists()) {
+            // Mark invitation as accepted and remove it
+            unset($invitations[$userId]);
+            $bookmarkCollection->saveMeta('invitations', json_encode($invitations));
+
+            return redirect()->route('my.lists.manage', ['bookmarkCollection' => $bookmarkCollection->id])
+                ->with('success', 'You are already a contributor to this collection.');
+        }
+
+        // Add user as contributor
+        $bookmarkCollection->contributors()->attach($userId);
+
+        // Mark invitation as accepted and remove it
+        unset($invitations[$userId]);
+        $bookmarkCollection->saveMeta('invitations', json_encode($invitations));
+
+        // Store collection ID in session for success page
+        session(['invitation_accepted_collection' => $bookmarkCollection->id]);
+
+        return redirect()->route('workflows.acceptInvitation.success')
+            ->with('success', 'You have successfully joined the "'.$bookmarkCollection->title.'" collection!');
+    }
+
+    /**
+     * Cancel a pending invitation
+     */
+    public function cancelInvitation(BookmarkCollection $bookmarkCollection, Request $request): RedirectResponse
+    {
+        Gate::authorize('update', $bookmarkCollection);
+
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $invitations = $this->getPendingInvitations($bookmarkCollection);
+
+        if (isset($invitations[$validated['user_id']])) {
+            $userName = $invitations[$validated['user_id']]['user_name'] ?? 'User';
+            unset($invitations[$validated['user_id']]);
+            $bookmarkCollection->saveMeta('invitations', json_encode($invitations));
+
+            return back()->with('success', 'Invitation to '.$userName.' has been cancelled.');
+        }
+
+        return back()->withErrors(['message' => 'No pending invitation found for this user.']);
+    }
+
+    /**
+     * Resend an invitation
+     */
+    public function resendInvitation(BookmarkCollection $bookmarkCollection, Request $request): RedirectResponse
+    {
+        Gate::authorize('update', $bookmarkCollection);
+
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $invitations = $this->getPendingInvitations($bookmarkCollection);
+
+        if (! isset($invitations[$validated['user_id']])) {
+            return back()->withErrors(['message' => 'No pending invitation found for this user.']);
+        }
+
+        $invitation = $invitations[$validated['user_id']];
+        $invitedUser = User::findOrFail($validated['user_id']);
+        $inviter = Auth::user();
+
+        try {
+            $invitedUserEmail = $invitedUser->getAttributes()['email'] ?? $invitedUser->email;
+
+            Mail::to($invitedUserEmail, $invitedUser->name)->send(
+                new BookmarkCollectionInvitation($inviter, $invitedUser, $bookmarkCollection, $invitation['token'])
+            );
+
+            $invitations[$validated['user_id']]['resent_at'] = now()->toISOString();
+            $bookmarkCollection->saveMeta('invitations', json_encode($invitations));
+
+            return back()->with('success', 'Invitation resent successfully to '.$invitedUser->name.'.');
+        } catch (\Exception $e) {
+            Log::error('Failed to resend bookmark invitation email: '.$e->getMessage(), [
+                'inviter_id' => $inviter->id,
+                'invited_user_id' => $invitedUser->id,
+                'invited_user_email' => $invitedUser->email,
+                'collection_id' => $bookmarkCollection->id,
+            ]);
+
+            return back()->withErrors(['message' => 'Failed to resend invitation email. Please try again.']);
+        }
+    }
+
     public function getStepDetails(): Collection
     {
         return collect([
@@ -654,9 +955,104 @@ class BookmarksController extends Controller
                 'info' => 'workflows.bookmarks.listItemsInfo',
             ],
             [
+                'title' => 'workflows.bookmarks.contributors',
+                'info' => 'workflows.bookmarks.contributorsInfo',
+            ],
+            [
                 'title' => 'workflows.bookmarks.rationale',
                 'info' => 'workflows.bookmarks.rationaleInfo',
             ],
+        ]);
+    }
+
+    /**
+     * Handle the invitation acceptance workflow step
+     */
+    public function acceptInvitationStep(Request $request): RedirectResponse
+    {
+        $token = $request->query('token');
+        $collectionId = $request->query('collection');
+
+        if (! $token || ! $collectionId) {
+            abort(404);
+        }
+
+        $bookmarkCollection = BookmarkCollection::findOrFail($collectionId);
+        $invitations = $this->getPendingInvitations($bookmarkCollection);
+
+        $invitation = null;
+        $userId = null;
+        foreach ($invitations as $uid => $inv) {
+            if ($inv['token'] === $token && $inv['status'] === 'pending') {
+                $invitation = $inv;
+                $userId = $uid;
+                break;
+            }
+        }
+
+        if (! $invitation) {
+            abort(404, 'Invalid or expired invitation.');
+        }
+
+        $currentUser = Auth::user();
+
+        if (! $currentUser) {
+            session(['invitation_token' => $token, 'invitation_collection' => $collectionId]);
+            session(['nextstep.route' => 'workflows.acceptInvitation.index']);
+            session(['nextstep.param' => ['token' => $token, 'collection' => $collectionId]]);
+
+            return redirect()->route('workflows.loginForm');
+        }
+
+        if ($currentUser->id !== $userId) {
+            $invitedUser = User::find($userId);
+            $invitedUserEmail = $invitedUser ? $invitedUser->getAttributes()['email'] : 'Unknown';
+
+            abort(403, "This invitation was sent to {$invitedUserEmail}. Please log in as that user to accept the invitation.");
+        }
+
+        if ($bookmarkCollection->contributors()->where('user_id', $userId)->exists()) {
+            unset($invitations[$userId]);
+            $bookmarkCollection->saveMeta('invitations', json_encode($invitations));
+
+            session(['invitation_accepted_collection' => $bookmarkCollection->id]);
+
+            return redirect()->route('workflows.acceptInvitation.success');
+        }
+
+        $bookmarkCollection->contributors()->attach($userId);
+
+        unset($invitations[$userId]);
+        $bookmarkCollection->saveMeta('invitations', json_encode($invitations));
+
+        session(['invitation_accepted_collection' => $bookmarkCollection->id]);
+
+        return redirect()->route('workflows.acceptInvitation.success');
+    }
+
+    /**
+     * Show the invitation acceptance success page
+     */
+    public function acceptInvitationSuccess(Request $request): RedirectResponse|Response
+    {
+        $collectionId = session('invitation_accepted_collection');
+
+        if (! $collectionId) {
+            // No collection in session, redirect to lists
+            return redirect()->route('lists.index');
+        }
+
+        $bookmarkCollection = BookmarkCollection::find($collectionId);
+
+        if (! $bookmarkCollection) {
+            return redirect()->route('lists.index');
+        }
+
+        // Clear the session data
+        session()->forget('invitation_accepted_collection');
+
+        return Inertia::render('Workflows/AcceptInvitation/Success', [
+            'bookmarkCollection' => $bookmarkCollection,
         ]);
     }
 }

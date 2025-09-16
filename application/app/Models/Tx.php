@@ -12,7 +12,7 @@ class Tx extends Model
 {
     use HasAuthor, HasModel;
 
-    protected $hidden = ['user_id', 'deleted_at', 'model_type', 'model_id'];
+    protected $hidden = ['user_id', 'deleted_at', 'model_type', 'model_id', 'old_id'];
 
     protected $guarded = [];
 

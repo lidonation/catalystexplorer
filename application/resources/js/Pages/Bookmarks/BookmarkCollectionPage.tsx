@@ -27,7 +27,7 @@ import ProposalPaginatedList from '../Proposals/Partials/ProposalPaginatedList';
 import ProposalPdfView from '../Proposals/Partials/ProposalPdfView';
 import BookmarkModelSearch from './Partials/BookmarkModelSearch';
 import DropdownMenu, { DropdownMenuItem } from './Partials/DropdownMenu';
-import EditListForm, { ListForm } from './Partials/EditListForm';
+import ListSettingsForm, { ListForm } from './Partials/ListSettingsForm.tsx';
 import { useUserSetting } from '@/Hooks/useUserSettings';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
@@ -72,6 +72,7 @@ type BookmarkCollectionListProps =
 
 type BookmarkCollectionPageProps = BookmarkCollectionListProps & {
     mode: 'manage' | 'view';
+    pendingInvitations?: any[];
 };
 
 const BookmarkCollectionPage = (props: BookmarkCollectionPageProps) => {
@@ -195,10 +196,11 @@ const BookmarkCollectionPage = (props: BookmarkCollectionPageProps) => {
                         onClose={() => setActiveEditModal(false)}
                         logo={false}
                     >
-                        <EditListForm
+                        <ListSettingsForm
                             bookmarkCollection={bookmarkCollection}
                             handleSave={handleUpdate}
                             handleDelete={() => setActiveConfirm(true)}
+                            pendingInvitations={props.pendingInvitations}
                         />
                     </Modal>
 
@@ -244,9 +246,17 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
     const { auth } = usePage().props;
     const user = bookmarkCollection?.author;
     const isAuthor = auth?.user?.id == user?.id;
+    
+    // Check if the current user is a contributor
+    const isContributor = bookmarkCollection?.collaborators?.some(
+        (collaborator: any) => collaborator.id === auth?.user?.id
+    );
+    
+    // User can manage if they are the author or a contributor
+    const canManage = isAuthor || isContributor;
 
-    // For manage mode, always treat as author. For view mode, check actual authorship
-    const showAuthorControls = mode === 'manage' || isAuthor;
+    // For manage mode, always show controls. For view mode, check if user can manage
+    const showAuthorControls = mode === 'manage' || canManage;
 
     // Simple state for QuickPitch view (not persisted to IndexedDB)
     const [quickPitchView, setQuickPitchView] = useState(
@@ -332,8 +342,8 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                 }
             );
         } else {
-            // View mode items (for authors only)
-            if (isAuthor) {
+            // View mode items (for authors and contributors)
+            if (canManage) {
                 baseItems.push(
                     {
                         label: t('workflows.tinderProposal.step4.keepSwiping'),
@@ -485,7 +495,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                 onClose={() => setActiveEditModal(false)}
                 contentClasses="max-w-lg"
             >
-                <EditListForm
+                <ListSettingsForm
                     bookmarkCollection={bookmarkCollection}
                     handleSave={(form: ListForm) => {
                         // Handle form submission
@@ -504,6 +514,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                         // Handle delete if needed
                         setActiveEditModal(false);
                     }}
+                    pendingInvitations={props.pendingInvitations}
                 />
             </Modal>
         </div>
