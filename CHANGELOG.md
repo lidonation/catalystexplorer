@@ -1,3 +1,10 @@
+# [1.27.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.26.1...v1.27.0) (2025-09-16)
+
+
+### Features
+
+* ln-2025 add sharable reasearch lists ([970894d](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/970894da4e8773b720e61de092eb567320defd0e))
+
 ## [1.26.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.26.0...v1.26.1) (2025-09-15)
 
 
