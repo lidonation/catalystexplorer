@@ -154,7 +154,13 @@ Route::localized(
                 ->name('index');
         });
 
-        Route::prefix('/workflows')->as('workflows.')->group(function () {
+            // Bookmark invitation acceptance route (DEPRECATED - kept for backwards compatibility)
+            // New invitations should use the workflow route: workflows.acceptInvitation.index
+            Route::get('/bookmark-invitation/accept', [BookmarksController::class, 'acceptInvitation'])
+                ->middleware('signed')
+                ->name('bookmark.invitation.accept');
+
+            Route::prefix('/workflows')->as('workflows.')->group(function () {
             Route::prefix('/completed-projects-nfts/steps')->as('completedProjectsNft.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
@@ -228,21 +234,44 @@ Route::localized(
             //             ->name('submitVotes');
             //     });
 
-            Route::prefix('/create-bookmarks/steps')->as('bookmarks.')
+            Route::prefix('/create-bookmarks')->as('bookmarks.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
                     Route::get('/success', [BookmarksController::class, 'success'])
                         ->name('success');
-                    Route::get('/{step}', [BookmarksController::class, 'handleStep'])
-                        ->name('index');
+
+                    Route::prefix('/steps')
+                        ->group(function () {
+                            Route::get('/{step}', [BookmarksController::class, 'handleStep'])
+                                ->name('index');
+                        });
+
                     Route::post('/save-list', [BookmarksController::class, 'saveList'])
                         ->name('saveList');
+
                     Route::post('{bookmarkCollection}/add-list-item/', [BookmarksController::class, 'addBookmarkItem'])
                         ->name('addBookmarkItem');
+
                     Route::post('{bookmarkCollection}/remove-list-item/', [BookmarksController::class, 'removeBookmarkItem'])
                         ->name('removeBookmarkItem');
+
                     Route::post('{bookmarkCollection}/save-rationales', [BookmarksController::class, 'saveRationales'])
                         ->name('saveRationales');
+
+                    Route::post('{bookmarkCollection}/invite-contributor', [BookmarksController::class, 'inviteContributor'])
+                        ->name('inviteContributor');
+
+                    Route::post('{bookmarkCollection}/cancel-invitation', [BookmarksController::class, 'cancelInvitation'])
+                        ->name('cancelInvitation');
+
+                    Route::post('{bookmarkCollection}/resend-invitation', [BookmarksController::class, 'resendInvitation'])
+                        ->name('resendInvitation');
+
+                    Route::post('{bookmarkCollection}/remove-contributor', [BookmarksController::class, 'removeContributor'])
+                        ->name('removeContributor');
+
+                    Route::get('/search-users', [BookmarksController::class, 'searchUsers'])
+                        ->name('searchUsers');
                 });
 
             Route::prefix('/drep-sign-up/steps')->as('drepSignUp.')
@@ -291,6 +320,16 @@ Route::localized(
                     Route::get('/fetch-proposals', [TinderProposalWorkflowController::class, 'fetchMoreProposals'])
                         ->name('fetchProposals');
                     Route::get('/{step}', [TinderProposalWorkflowController::class, 'handleStep'])
+                        ->name('index');
+                });
+
+            Route::prefix('/accept-invitation')->as('acceptInvitation.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::get('/success', [BookmarksController::class, 'acceptInvitationSuccess'])
+                        ->name('success');
+                    Route::get('/1', [BookmarksController::class, 'acceptInvitationStep'])
+                        ->middleware('signed')
                         ->name('index');
                 });
 
@@ -434,9 +473,9 @@ Route::localized(
 
                 Route::get('/list', [CatalystDrepController::class, 'list'])
                     ->name('list');
-                
-                 Route::get('/drep/{stake_address}', [CatalystDrepController::class, 'show'])
-                    ->name('show');    
+
+                Route::get('/drep/{stake_address}', [CatalystDrepController::class, 'show'])
+                    ->name('show');
             }
         );
 

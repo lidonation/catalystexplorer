@@ -12,6 +12,7 @@ use App\Traits\HasSignatures;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
@@ -36,8 +37,6 @@ class BookmarkCollection extends Model
     protected $appends = ['types_count', 'tinder_direction', 'list_type', 'workflow_params'];
 
     protected $guarded = [];
-
-    protected $hidden = [];
 
     public static function getFilterableAttributes(): array
     {
@@ -257,6 +256,19 @@ class BookmarkCollection extends Model
     {
         return $this->hasMany(BookmarkItem::class)
             ->where('model_type', Review::class);
+    }
+
+    public function contributors(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'bookmark_collections_users')
+            ->withTimestamps();
+    }
+
+    public function collaborators(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'bookmark_collections_users')
+            ->withTimestamps()
+            ->with('media'); // Include user media for avatars
     }
 
     /*

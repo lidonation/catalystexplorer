@@ -48,4 +48,12 @@ class UserPolicy extends AppPolicy
     {
         return parent::canDelete($user, $model) || $user->hasAnyPermission([PermissionEnum::delete_users()->value]);
     }
+
+    /**
+     * Determine whether the user can view the email of the target user.
+     */
+    public function viewEmail(?User $user, User $model): bool
+    {
+        return $user && (string) $user->id === (string) $model->id;
+    }
 }

@@ -15,8 +15,11 @@ import { useUserSetting } from '@/Hooks/useUserSettings';
 import { InertiaFormProps, useForm } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import lodashPkg from 'lodash';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
+import UserData = App.DataTransferObjects.UserData;
+import Contributors from '@/Pages/My/Bookmarks/Partials/Contributors';
+
 
 export type ListForm = InertiaFormProps<{
     title: string;
@@ -27,22 +30,27 @@ export type ListForm = InertiaFormProps<{
     status: string;
 }>;
 
-export default function EditListForm({
+export default function ListSettingsForm({
     bookmarkCollection,
     handleSave,
     handleDelete,
+    owner,
+    pendingInvitations
 }: {
     bookmarkCollection: BookmarkCollectionData;
     handleSave: (form: ListForm) => void;
     handleDelete: () => void;
+    owner?: UserData;
+    pendingInvitations?: any[];
 }) {
     const { lowerCase } = lodashPkg;
     const { t } = useLaravelReactI18n();
     const colorInputRef = useRef<HTMLInputElement>(null);
 
+    const currentOwner = owner || bookmarkCollection.author;
     // Default PDF columns (same as in ProposalPdfView)
     const defaultPdfColumns: ColumnKey[] = ['title', 'budget', 'category', 'openSourced', 'teams'];
-    
+
     const {
         value: selectedColumns,
         setValue: setSelectedColumns,
@@ -75,8 +83,9 @@ export default function EditListForm({
     const handleStatusChange = (value: string) => {
         form.setData('status', value);
     };
-    
+
     const showColumnSelector = bookmarkCollection?.list_type === 'voter' || bookmarkCollection?.list_type === 'tinder';
+
 
     return (
         <div className="space-y-6 pt-6">
@@ -114,6 +123,13 @@ export default function EditListForm({
                 />
                 <InputError message={form.errors.content} />
             </div>
+
+            {bookmarkCollection && <Contributors
+                owner={currentOwner}
+                contributors={bookmarkCollection.collaborators}
+                bookmarkCollectionId={bookmarkCollection?.id ?? undefined}
+                pendingInvitations={pendingInvitations}
+            />}
 
             {/* Group by categories - only show for voting and tinder lists */}
             {showColumnSelector && (

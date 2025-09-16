@@ -15,8 +15,6 @@ class Location extends Model
 
     protected $fillable = ['city'];
 
-    protected $hidden = [];
-
     /**
      * The roles that belong to the user.
      */

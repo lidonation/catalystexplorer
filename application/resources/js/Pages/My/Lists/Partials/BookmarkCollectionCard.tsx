@@ -27,10 +27,15 @@ const BookmarkCollectionCard = ({
 }) => {
     const { t } = useLaravelReactI18n();
     const { auth } = usePage().props;
-
     const user = collection?.author;
-
     const isAuthor = auth?.user?.id == user?.id;
+
+    const isContributor = collection?.collaborators?.some(
+        (collaborator: any) => collaborator.id === auth?.user?.id
+    );
+
+    const canManage = isAuthor || isContributor;
+    console.log({ canManage, collection });
 
     const renderListTypeIcon = () => {
         switch (collection?.list_type) {
@@ -80,7 +85,7 @@ const BookmarkCollectionCard = ({
             label: t('bookmarks.editListItem'),
             type: 'link' as const,
             href: useWorkflowUrl(collection),
-            disabled: !isAuthor
+            disabled: !canManage
         },
         {
             label: t('my.manage'),
@@ -88,7 +93,7 @@ const BookmarkCollectionCard = ({
             onClick: () => {
                 router.visit(manageListRoute);
             },
-            disabled: !isAuthor
+            disabled: !canManage
         }
 
     ];
