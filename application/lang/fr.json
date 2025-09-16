@@ -1366,5 +1366,7 @@
     "widgets.quickPitch.errors.updateFailed": "Échec de la mise à jour de la présentation. Veuillez réessayer.",
     "proposals.manageProposal": "Gérer la proposition",
     "proposals.managingProposal": "Managing: :title",
-    "proposals.manageDescription": "Utilisez les widgets ci-dessous pour gérer les paramètres et le contenu de votre proposition."
+    "proposals.manageDescription": "Utilisez les widgets ci-dessous pour gérer les paramètres et le contenu de votre proposition.",
+    "proposals.actions": "Actions",
+    "proposals.manage": "Gérer"
 }

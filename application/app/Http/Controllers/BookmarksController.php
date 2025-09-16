@@ -76,12 +76,33 @@ class BookmarksController extends Controller
 
         $model_type = BookmarkableType::from(Str::kebab($type))->getModelClass();
 
+        $relationshipsMap = [
+            Proposal::class => ['users', 'fund', 'campaign', 'schedule'],
+            Group::class => ['ideascale_profiles'],
+            Community::class => ['ideascale_profiles'],
+        ];
+
+        $countMap = [
+            Group::class => ['proposals', 'funded_proposals'],
+            Community::class => ['ideascale_profiles', 'proposals'],
+        ];
+
+        $relationships = $relationshipsMap[$model_type] ?? [];
+        $counts = $countMap[$model_type] ?? [];
+
         $bookmarkItemIds = $bookmarkCollection->items
             ->where('model_type', $model_type)
             ->pluck('model_id')
             ->toArray();
 
-        $pagination = $this->queryModelsUnpaginated($model_type, $bookmarkItemIds);
+        $isVoterList = $bookmarkCollection->list_type === 'voter';
+
+        if ($isVoterList) {
+            $pagination = $this->queryModelsUnpaginated($model_type, $bookmarkItemIds, $relationships, $counts);
+        } else {
+            $pagination = $this->queryModels($model_type, $bookmarkItemIds, $relationships, $counts);
+        }
+
         $typesCounts = $this->getFilteredTypesCounts($bookmarkCollection);
 
         $props = [
@@ -145,7 +166,7 @@ class BookmarksController extends Controller
         return $typesCounts;
     }
 
-    protected function queryModels(string $modelType, array $constrainToIds = []): array
+    protected function queryModels(string $modelType, array $constrainToIds = [], array $relationships = [], array $counts = []): array
     {
         if ($this->search) {
             $searchBuilder = $modelType::search($this->search);
@@ -161,6 +182,14 @@ class BookmarksController extends Controller
             $data = $searchBuilder->paginate($this->perPage, ProposalSearchParams::PAGE()->value);
         } else {
             $query = $modelType::query();
+
+            if (! empty($relationships)) {
+                $query->with($relationships);
+            }
+
+            if (! empty($counts)) {
+                $query->withCount($counts);
+            }
 
             if (! empty($constrainToIds)) {
                 $query->whereIn('id', $constrainToIds);
@@ -266,7 +295,7 @@ class BookmarksController extends Controller
         $model_type = BookmarkableType::from(Str::kebab($type))->getModelClass();
 
         $relationshipsMap = [
-            Proposal::class => ['users', 'fund', 'campaign'],
+            Proposal::class => ['users', 'fund', 'campaign', 'schedule'],
             Group::class => ['ideascale_profiles'],
             Community::class => ['ideascale_profiles'],
         ];
@@ -284,7 +313,14 @@ class BookmarksController extends Controller
             ->pluck('model_id')
             ->toArray();
 
-        $pagination = $this->queryModelsUnpaginated($model_type, $bookmarkItemIds, $relationships, $counts);
+        // Check if this is a voter list (should be unpaginated) or other lists (should be paginated)
+        $isVoterList = $bookmarkCollection->list_type === 'voter';
+
+        if ($isVoterList) {
+            $pagination = $this->queryModelsUnpaginated($model_type, $bookmarkItemIds, $relationships, $counts);
+        } else {
+            $pagination = $this->queryModels($model_type, $bookmarkItemIds, $relationships, $counts);
+        }
 
         return Inertia::render('Bookmarks/Manage', [
             'bookmarkCollection' => $bookmarkCollection->load('author'),

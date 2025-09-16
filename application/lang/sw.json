@@ -1395,5 +1395,7 @@
     "widgets.quickPitch.errors.updateFailed": "Kushindwa kusasisha onyesho la haraka. Tafadhali jaribu tena.",
     "proposals.manageProposal": "Dhibiti Pendekezo",
     "proposals.managingProposal": "Inadhibitiwa: :title",
-    "proposals.manageDescription": "Tumia vifaa hapo chini kudhibiti mipangilio na maudhui ya pendekezo lako."
+    "proposals.manageDescription": "Tumia vifaa hapo chini kudhibiti mipangilio na maudhui ya pendekezo lako.",
+    "proposals.actions": "Vitendo",
+    "proposals.manage": "Dhibiti"
 }

@@ -403,6 +403,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                                 proposals={props.proposals}
                                 isAuthor={showAuthorControls}
                                 listTitle={bookmarkCollection.title ?? 'My List'}
+                                bookmarkCollection={bookmarkCollection}
                                 onOpenSettings={() => setActiveEditModal(true)}
                             />
                         </div>
