@@ -32,13 +32,6 @@ class IdeascaleProfile extends Model implements HasMedia
 
     public int $maxValuesPerFacet = 8000;
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<string>
-     */
-    protected $hidden = [];
-
     protected $fillable = [
         'ideascale_id',
         'username',
