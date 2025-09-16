@@ -45,7 +45,7 @@ const FundCard: React.FC<FundCardProps> = ({
                     <img
                         src={fund.hero_img_url}
                         alt={fund.title || 'Fund'}
-                        className="h-full w-full rounded-full object-cover"
+                        className="h-full w-full rounded-full object-bottom-right"
                     />
                 </div>
             </div>

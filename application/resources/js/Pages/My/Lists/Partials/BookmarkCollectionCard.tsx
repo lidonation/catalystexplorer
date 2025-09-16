@@ -9,7 +9,7 @@ import { Link, router, usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { Clock, MessageCircle } from 'lucide-react';
 import DropdownMenu, {
-    DropdownMenuItem,
+    DropdownMenuItem
 } from '../../../Bookmarks/Partials/DropdownMenu';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import { truncateMiddle } from '@/utils/truncateMiddle.ts';
@@ -17,10 +17,12 @@ import { useWorkflowUrl } from '@/utils/workflowUrls';
 import ListTypeResearchIconProps from '@/Components/svgs/ListTypeResearchIcon.tsx';
 import ListTypeVoterIcon from '@/Components/svgs/ListTypeVoterIcon.tsx';
 import { truncateEnd } from '@/utils/truncateEnd.ts';
+import React from 'react';
+import { Tooltip, TooltipContent, TooltipProvider } from '@/Components/atoms/Tooltip.tsx';
 
 const BookmarkCollectionCard = ({
-    collection,
-}: {
+                                    collection
+                                }: {
     collection: BookmarkCollectionData;
 }) => {
     const { t } = useLaravelReactI18n();
@@ -34,21 +36,21 @@ const BookmarkCollectionCard = ({
         switch (collection?.list_type) {
             case 'normal':
                 return (
-                    <div className='flex gap-2 flex-nowrap items-center'>
+                    <div className="flex gap-2 flex-nowrap items-center">
                         <ListTypeResearchIconProps />
                         <span>{t('bookmarks.researchList')}</span>
                     </div>
                 );
             case 'voter':
                 return (
-                    <div className='flex gap-2 flex-nowrap items-center'>
+                    <div className="flex gap-2 flex-nowrap items-center">
                         <ListTypeVoterIcon />
                         <span>{t('bookmarks.voterList')} ({`${collection?.items_count} ${t('proposals.proposals')}`})</span>
                     </div>
                 );
             default:
                 return (
-                    <div className='flex gap-2 flex-nowrap items-center'>
+                    <div className="flex gap-2 flex-nowrap items-center">
                         <ListTypeResearchIconProps />
                         <span>{t('bookmarks.researchList')}</span>
                     </div>
@@ -57,12 +59,12 @@ const BookmarkCollectionCard = ({
     };
 
     const viewListRoute = useLocalizedRoute('lists.view', {
-        bookmarkCollection: collection?.id,
+        bookmarkCollection: collection?.id
     });
 
     const manageListRoute = useLocalizedRoute('my.lists.manage', {
         bookmarkCollection: collection?.id,
-        type: 'proposals',
+        type: 'proposals'
     });
 
 
@@ -72,13 +74,13 @@ const BookmarkCollectionCard = ({
             type: 'button',
             onClick: () => {
                 router.visit(viewListRoute);
-            },
+            }
         },
         {
             label: t('bookmarks.editListItem'),
             type: 'link' as const,
             href: useWorkflowUrl(collection),
-            disabled: !isAuthor,
+            disabled: !isAuthor
         },
         {
             label: t('my.manage'),
@@ -86,8 +88,8 @@ const BookmarkCollectionCard = ({
             onClick: () => {
                 router.visit(manageListRoute);
             },
-            disabled: !isAuthor,
-        },
+            disabled: !isAuthor
+        }
 
     ];
     return (
@@ -103,7 +105,7 @@ const BookmarkCollectionCard = ({
                         <Link
                             href={useLocalizedRoute('lists.view', {
                                 bookmarkCollection: collection?.id,
-                                type: 'proposals',
+                                type: 'proposals'
                             })}
                         >
                             <Title
@@ -113,9 +115,33 @@ const BookmarkCollectionCard = ({
                                 {collection.title}
                             </Title>
                         </Link>
-                        <div className="bg-primary-light text-primary border-primary rounded-full  border pr-2 text-sm text-nowrap lg:pr-4">
+                        <div
+                            className="bg-primary-light text-primary border-primary rounded-full  border pr-2 text-sm text-nowrap lg:pr-4">
                             {renderListTypeIcon()}
                         </div>
+                        {collection?.fund && <div>
+                            <div
+                                className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-linear-to-r from-gray-100 to-gray-900"
+                                data-testid="fund-card-image"
+                            >
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <img
+                                            src={collection?.fund.hero_img_url}
+                                            alt={collection?.fund.title || 'Fund'}
+                                            title={collection?.fund.title || 'Fund'}
+                                            className="h-full w-full rounded-full object-bottom-right"
+                                        />
+                                        <TooltipContent side="bottom">
+                                            <Paragraph size="sm">
+                                                {collection?.fund.title}
+                                            </Paragraph>
+                                        </TooltipContent>
+
+                                    </Tooltip>
+                                </TooltipProvider>
+                            </div>
+                        </div>}
                     </div>
 
                     <Paragraph

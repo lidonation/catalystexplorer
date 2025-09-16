@@ -43,6 +43,9 @@ class BookmarkCollection extends Model
     {
         return [
             'visibility',
+            'list_type',
+            'fund_id',
+            'user_id',
         ];
     }
 
@@ -67,6 +70,7 @@ class BookmarkCollection extends Model
             'title',
             'updated_at',
             'items_count',
+            'comments_count',
             'amount_requested_USD',
             'amount_received_ADA',
             'amount_requested_ADA',
@@ -280,6 +284,7 @@ class BookmarkCollection extends Model
         $array = $this->load([
             'comments',
             'author',
+            'fund',
         ])->toArray();
 
         $proposals = [];
