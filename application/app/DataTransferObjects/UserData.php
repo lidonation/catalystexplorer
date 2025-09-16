@@ -4,9 +4,20 @@ declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
+use Illuminate\Contracts\Pagination\CursorPaginator as CursorPaginatorContract;
+use Illuminate\Contracts\Pagination\Paginator as PaginatorContract;
+use Illuminate\Pagination\AbstractCursorPaginator;
+use Illuminate\Pagination\AbstractPaginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Enumerable;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\LazyCollection;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
+use Spatie\LaravelData\CursorPaginatedDataCollection;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\DataCollection;
+use Spatie\LaravelData\Optional;
+use Spatie\LaravelData\PaginatedDataCollection;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 #[TypeScript]
@@ -17,7 +28,7 @@ class UserData extends Data
 
         public ?string $name,
 
-        public ?string $email,
+        public null|string|Optional $email,
 
         public ?string $lang,
 
@@ -28,8 +39,52 @@ class UserData extends Data
         #[DataCollectionOf(LocationData::class)]
         public ?DataCollection $locations,
 
+        #[DataCollectionOf(MediaData::class)]
+        public ?DataCollection $media,
+
         public ?string $stake_address,
 
         public ?float $voting_power,
     ) {}
+
+    public static function from(...$payloads): static
+    {
+        $instance = parent::from(...$payloads);
+
+        // Get the original user model if it exists
+        $user = collect($payloads)->first();
+
+        // Fix ID handling for mixed UUID/integer systems
+        if ($user && method_exists($user, 'getKey')) {
+            // Ensure ID is properly converted to string, handling both UUIDs and integers
+            $rawId = $user->getKey() ?? $user->id;
+
+            // Fix: Check for null specifically, not just falsy values (0 is valid)
+            $instance->id = $rawId !== null ? (string) $rawId : null;
+        }
+
+        // Hide email if the current user doesn't have permission to view it
+        if ($user && method_exists($user, 'getKey') && auth()->check()) {
+            $canViewEmail = Gate::forUser(auth()->user())->allows('viewEmail', $user);
+
+            if (! $canViewEmail) {
+                $instance->email = Optional::create();
+            }
+        } elseif (! auth()->check()) {
+            // Always hide email for unauthenticated users
+            $instance->email = Optional::create();
+        }
+
+        return $instance;
+    }
+
+    public static function collect(mixed $items, ?string $into = null): array|DataCollection|PaginatedDataCollection|CursorPaginatedDataCollection|Enumerable|AbstractPaginator|PaginatorContract|AbstractCursorPaginator|CursorPaginatorContract|LazyCollection|Collection
+    {
+        // Use our custom from method for each item in the collection
+        $transformedItems = collect($items)->map(function ($item) {
+            return static::from($item);
+        });
+
+        return parent::collect($transformedItems, $into);
+    }
 }

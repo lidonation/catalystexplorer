@@ -25,7 +25,9 @@ class BookmarkCollectionPolicy extends AppPolicy
      */
     public function view(User $user, BookmarkCollection $bookmarkCollection): bool
     {
-        return parent::canView($user, $bookmarkCollection) || $user->hasAnyPermission([PermissionEnum::read_bookmark_items()->value]);
+        return parent::canView($user, $bookmarkCollection) ||
+               $this->isCollaborator($user, $bookmarkCollection) ||
+               $user->hasAnyPermission([PermissionEnum::read_bookmark_items()->value]);
     }
 
     /**
@@ -41,11 +43,14 @@ class BookmarkCollectionPolicy extends AppPolicy
      */
     public function update(User $user, BookmarkCollection $bookmarkCollection): bool
     {
-        return parent::canUpdate($user, $bookmarkCollection) || $user->hasAnyPermission([PermissionEnum::update_bookmark_items()->value]);
+        return parent::canUpdate($user, $bookmarkCollection) ||
+               $this->isCollaborator($user, $bookmarkCollection) ||
+               $user->hasAnyPermission([PermissionEnum::update_bookmark_items()->value]);
     }
 
     /**
      * Determine whether the user can delete the model.
+     * Note: Only owners can delete collections, not collaborators.
      */
     public function delete(User $user, BookmarkCollection $bookmarkCollection): bool
     {
@@ -65,7 +70,9 @@ class BookmarkCollectionPolicy extends AppPolicy
      */
     public function addItems(User $user, BookmarkCollection $bookmarkCollection): bool
     {
-        return parent::canUpdate($user, $bookmarkCollection) || $user->hasAnyPermission([PermissionEnum::create_bookmark_items()->value]);
+        return parent::canUpdate($user, $bookmarkCollection) ||
+               $this->isCollaborator($user, $bookmarkCollection) ||
+               $user->hasAnyPermission([PermissionEnum::create_bookmark_items()->value]);
     }
 
     /**
@@ -73,6 +80,16 @@ class BookmarkCollectionPolicy extends AppPolicy
      */
     public function removeItems(User $user, BookmarkCollection $bookmarkCollection): bool
     {
-        return parent::canUpdate($user, $bookmarkCollection) || $user->hasAnyPermission([PermissionEnum::delete_bookmark_items()->value]);
+        return parent::canUpdate($user, $bookmarkCollection) ||
+               $this->isCollaborator($user, $bookmarkCollection) ||
+               $user->hasAnyPermission([PermissionEnum::delete_bookmark_items()->value]);
+    }
+
+    /**
+     * Check if the user is a collaborator on the bookmark collection.
+     */
+    private function isCollaborator(User $user, BookmarkCollection $bookmarkCollection): bool
+    {
+        return $bookmarkCollection->contributors()->where('user_id', $user->id)->exists();
     }
 }

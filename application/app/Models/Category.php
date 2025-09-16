@@ -44,8 +44,6 @@ class Category extends Model
 
     protected $appends = [];
 
-    protected $hidden = [];
-
     // Self-referential relationships
     public function parent(): BelongsTo
     {

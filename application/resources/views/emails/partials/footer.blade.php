@@ -61,12 +61,21 @@
             @php
                 $userEmail = 'your email';
                 if (isset($user)) {
-                    if (is_object($user) && method_exists($user, 'getAttribute')) {
-                        $userEmail = $user->getAttribute('email') ?: 'your email';
-                    } elseif (is_object($user) && isset($user->email)) {
-                        $userEmail = $user->email ?: 'your email';
-                    } elseif (is_array($user) && isset($user['email'])) {
-                        $userEmail = $user['email'] ?: 'your email';
+                    try {
+                        if (is_object($user) && method_exists($user, 'getAttributes')) {
+                            // Try to get email directly from attributes to bypass policy
+                            $attributes = $user->getAttributes();
+                            $userEmail = $attributes['email'] ?? 'your email';
+                        } elseif (is_object($user) && method_exists($user, 'getAttribute')) {
+                            $userEmail = $user->getAttribute('email') ?: 'your email';
+                        } elseif (is_object($user) && isset($user->email)) {
+                            $userEmail = $user->email ?: 'your email';
+                        } elseif (is_array($user) && isset($user['email'])) {
+                            $userEmail = $user['email'] ?: 'your email';
+                        }
+                    } catch (Exception $e) {
+                        // If email access fails due to policy or other issues, use fallback
+                        $userEmail = 'your email';
                     }
                 }
             @endphp

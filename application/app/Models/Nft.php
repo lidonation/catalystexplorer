@@ -27,7 +27,7 @@ class Nft extends Model implements CardanoNftInterface, HasMedia
 {
     use HasAuthor, HasLinks, HasMetaData, HasModel, HasTranslations, HasUuids, InteractsWithMedia, NftServiceTrait, SoftDeletes;
 
-    protected $hidden = ['artist_id', 'deleted_at', 'model_type', 'model_id'];
+    protected $hidden = ['artist_id', 'deleted_at', 'model_type', 'model_id', 'old_id'];
 
     protected $guarded = [];
 

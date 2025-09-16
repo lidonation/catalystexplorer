@@ -278,9 +278,17 @@ class MyBookmarksController extends Controller
         $page = $this->queryParams[ProposalSearchParams::PAGE()->value] ?? 1;
         $perPage = $this->queryParams[ProposalSearchParams::LIMIT()->value] ?? 5;
 
-        $bookmarkCollections = BookmarkCollection::where('user_id', $userId)->with('author')
+        $bookmarkCollections = BookmarkCollection::where(function ($query) use ($userId) {
+            $query->where('user_id', $userId)
+                ->orWhereHas('collaborators', function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                });
+        })
+            ->with(['author', 'collaborators'])
             ->orderBy('created_at', 'desc')
             ->paginate($perPage, ['*'], 'page', $page);
+
+        //        dd($bookmarkCollections->toArray());
 
         return Inertia::render('My/Lists/Index', [
             'bookmarkCollections' => BookmarkCollectionData::collect($bookmarkCollections),
@@ -312,13 +320,7 @@ class MyBookmarksController extends Controller
 
             $collection = BookmarkCollection::findOrFail($decoded_collection_id);
 
-            if ($collection->user_id !== Auth::id()) {
-                return response()->json([
-                    'message' => 'Unauthorized',
-                ], SymfonyResponse::HTTP_FORBIDDEN);
-            }
-
-            // $this->authorize('create', $collection);
+            Gate::authorize('addItems', $collection);
 
             $bookmarks = BookmarkItem::whereIn('id', $decoded_bookmark_ids)
                 ->where('user_id', Auth::id())
@@ -369,11 +371,8 @@ class MyBookmarksController extends Controller
 
             $collection = BookmarkCollection::find($data['bookmark_collection_id']);
 
-            if ($collection->user_id !== Auth::id()) {
-                return response()->json([
-                    'message' => 'Unauthorized',
-                ], SymfonyResponse::HTTP_FORBIDDEN);
-            }
+            // Check if user can manage this collection (owner or collaborator)
+            Gate::authorize('removeItems', $collection);
 
             $bookmarks = BookmarkItem::whereIn('id', $decoded_bookmark_ids)
                 ->where('bookmark_collection_id', $collection->id)
@@ -411,11 +410,18 @@ class MyBookmarksController extends Controller
     public function retrieveCollections(): JsonResponse
     {
         try {
+            $userId = Auth::id();
 
             // $this->authorize('viewAny', BookmarkCollection::class);
 
-            $collections = BookmarkCollection::where('user_id', Auth::id())
+            $collections = BookmarkCollection::where(function ($query) use ($userId) {
+                $query->where('user_id', $userId)
+                    ->orWhereHas('contributors', function ($query) use ($userId) {
+                        $query->where('user_id', $userId);
+                    });
+            })
                 ->withCount('items')
+                ->with(['author', 'contributors'])
                 ->get();
 
             return response()->json([
@@ -476,6 +482,9 @@ class MyBookmarksController extends Controller
 
     public function updateCollection(BookmarkCollection $bookmarkCollection, Request $request): mixed
     {
+        // Check if user can manage this collection (owner or collaborator)
+        Gate::authorize('update', $bookmarkCollection);
+
         $data = $request->validate([
             'title' => ['required', 'string', 'min:5'],
             'content' => ['nullable', 'string', 'min:10'],
@@ -523,12 +532,11 @@ class MyBookmarksController extends Controller
 
     public function deleteCollection(BookmarkCollection $bookmarkCollection, Request $request)
     {
-        // try {
-
+        // Only owners can delete collections, not collaborators
         if ($bookmarkCollection->user_id !== Auth::id()) {
             return back()->with(
                 'error',
-                'Unauthorized',
+                'Unauthorized. Only the owner can delete this collection.',
             );
         }
 
