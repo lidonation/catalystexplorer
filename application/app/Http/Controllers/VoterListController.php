@@ -14,8 +14,8 @@ use App\Enums\VoteEnum;
 use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
 use App\Models\Campaign;
+use App\Models\Comment;
 use App\Models\Fund;
-use App\Models\Meta;
 use App\Models\Proposal;
 use App\Models\Signature;
 use Illuminate\Http\RedirectResponse;
@@ -157,14 +157,13 @@ class VoterListController extends Controller
                 ->pluck('model_id')
                 ->toArray();
 
-            $rationaleRecord = Meta::where('model_type', BookmarkCollection::class)
-                ->where('model_id', $bookmarkId)
-                ->where('key', 'rationale')
-                ->first();
+            $bookmarkCollection = BookmarkCollection::find($bookmarkId);
 
-            if ($rationaleRecord) {
-                $rationale = $rationaleRecord->content;
-            }
+            $rationale = $bookmarkCollection->comments()
+                ->where('commentator_id', $bookmarkCollection->user_id)
+                ->whereJsonContains('extra->type', 'rationale')
+                ->latest()
+                ->first()?->original_text;
         }
 
         return Inertia::render('Workflows/CreateVoterList/Step4', [
@@ -416,27 +415,24 @@ class VoterListController extends Controller
         ]);
 
         $bookmarkId = $validated[QueryParamsEnum::BOOKMARK_COLLECTION()->value];
+        $bookmarkCollection = BookmarkCollection::find($bookmarkId);
 
-        Meta::where('model_type', BookmarkCollection::class)
-            ->where('model_id', $bookmarkId)
-            ->where('key', 'rationale')
-            ->delete();
-
-        Meta::create([
-            'model_type' => BookmarkCollection::class,
-            'model_id' => $bookmarkId,
-            'key' => 'rationale',
-            'content' => $validated['rationale'],
+        Comment::create([
+            'commentable_type' => BookmarkCollection::class,
+            'commentable_id' => $bookmarkCollection->id,
+            'text' => $validated['rationale'],
+            'original_text' => $validated['rationale'],
+            'commentator_id' => auth()->user()?->id,
+            'extra' => ['type' => 'rationale'],
         ]);
 
-        $bookmark = BookmarkCollection::find($bookmarkId);
-        if ($bookmark && $bookmark->status === BookmarkStatus::DRAFT()->value) {
-            $bookmark->update(['status' => BookmarkStatus::PUBLISHED()->value]);
+        if ($bookmarkCollection && $bookmarkCollection->status === BookmarkStatus::DRAFT()->value) {
+            $bookmarkCollection->update(['status' => BookmarkStatus::PUBLISHED()->value]);
         }
 
         return to_route('workflows.createVoterList.index', [
             'step' => 5,
-            QueryParamsEnum::BOOKMARK_COLLECTION()->value => $bookmark->id,
+            QueryParamsEnum::BOOKMARK_COLLECTION()->value => $bookmarkCollection->id,
         ]);
     }
 

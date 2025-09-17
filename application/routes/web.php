@@ -16,6 +16,7 @@ use App\Http\Controllers\BookmarksController;
 use App\Http\Controllers\CampaignsController;
 use App\Http\Controllers\MilestoneController;
 use App\Http\Controllers\ProposalsController;
+use App\Http\Controllers\Api\ProposalController;
 use App\Http\Controllers\VoterListController;
 use App\Http\Controllers\VoterToolController;
 use App\Http\Controllers\CommunitiesController;
@@ -70,6 +71,10 @@ Route::localized(
                 Route::get('/team-information', [ProposalsController::class, 'proposal'])
                     ->name('teamInformation');
             });
+
+            Route::post('/{id}/rationale', [ProposalController::class, 'storeRationale'])
+                ->middleware('auth')
+                ->name('rationale.store');
         });
 
 

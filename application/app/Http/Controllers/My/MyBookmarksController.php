@@ -287,7 +287,7 @@ class MyBookmarksController extends Controller
             ->with(['author', 'collaborators'])
             ->orderBy('created_at', 'desc')
             ->paginate($perPage, ['*'], 'page', $page);
-        
+
         return Inertia::render('My/Lists/Index', [
             'bookmarkCollections' => BookmarkCollectionData::collect($bookmarkCollections),
         ]);
