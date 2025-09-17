@@ -374,7 +374,7 @@ class BookmarkCollection extends Model
             'reviews' => $reviews,
             'groups' => $groups,
             'communities' => $communities,
-            'rationale' => $this->meta_info?->rationale,
+            'rationale' => $this->comments()->where('commentator_id', $this->user_id)->whereJsonContains('extra->type', 'rationale')->latest()->first()?->text,
         ]);
     }
 }

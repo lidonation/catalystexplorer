@@ -32,6 +32,10 @@ class CommentController extends Controller
                 'commentable_id' => $model->id,
             ])
             ->whereNull('parent_id')
+            ->where(function ($query) {
+                $query->whereNull('extra')
+                    ->orWhereJsonDoesntContain('extra->type', 'rationale');
+            })
             ->get();
 
         return CommentData::collect($comments);
