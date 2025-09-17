@@ -8,6 +8,7 @@ use App\DataTransferObjects\ProposalData;
 use App\Enums\ProposalSearchParams;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProposalResource;
+use App\Models\Comment;
 use App\Models\Proposal;
 use App\QueryBuilders\Sorts\ProjectLengthSort;
 use App\Repositories\ProposalRepository;
@@ -111,16 +112,16 @@ class ProposalController extends Controller
             return back()->withErrors(['error' => 'Authentication required']);
         }
 
-        $rationaleKey = "rationale_user_{$user->id}";
+        Comment::create([
+            'commentable_type' => Proposal::class,
+            'commentable_id' => $proposal->id,
+            'text' => $request->rationale,
+            'original_text' => $request->rationale,
+            'commentator_id' => $user->id,
+            'extra' => ['type' => 'rationale'],
+        ]);
 
-        $existingRationale = $proposal->metas()->where('key', $rationaleKey)->first();
-        $isUpdate = ! is_null($existingRationale);
-
-        $proposal->saveMeta($rationaleKey, $request->rationale);
-
-        $message = $isUpdate ? 'Rationale updated successfully' : 'Rationale saved successfully';
-
-        return back()->with('success', $message);
+        return back()->with('success', 'Rationale saved successfully');
     }
 
     /**

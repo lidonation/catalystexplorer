@@ -28,12 +28,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Laravel\Scout\Searchable;
+use Spatie\Comments\Models\Concerns\HasComments;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 #[ScopedBy(ProposalTypeScope::class)]
 class Proposal extends Model
 {
     use HasAuthor,
+        HasComments,
         HasConnections,
         HasConnections,
         HasDto,
@@ -574,11 +576,25 @@ class Proposal extends Model
                     return null;
                 }
 
-                $rationaleKey = "rationale_user_{$user->id}";
-
-                return $this->metas()->where('key', $rationaleKey)->first()?->content;
+                return $this->comments()
+                    ->where('commentator_id', $user->id)
+                    ->whereJsonContains('extra->type', 'rationale')
+                    ->latest()
+                    ->first()?->original_text;
             }
         );
+    }
+
+    public function commentableName(): string
+    {
+        return $this->title;
+    }
+
+    public function commentUrl(): string
+    {
+        return route('proposals.show', [
+            'proposal' => $this->slug,
+        ]);
     }
 
     /**
