@@ -4,6 +4,7 @@ import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { route } from 'ziggy-js';
 import Button from '@/Components/atoms/Button';
 import Textarea from '@/Components/atoms/Textarea';
+import { generateLocalizedRoute } from '@/utils/localizedRoute';
 
 interface RationaleButtonProps {
     proposalId: string;
@@ -35,7 +36,7 @@ export default function RationaleButton({
     const handleSave = () => {
         if (!form.data.rationale.trim()) return;
         
-        form.post(route('api.proposals.rationale.store', { id: proposalId }), {
+        form.post(generateLocalizedRoute('proposals.rationale.store', { id: proposalId }), {
             preserveScroll: true,
             onSuccess: () => {
                 setIsOpen(false);
