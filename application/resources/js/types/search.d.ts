@@ -1,6 +1,6 @@
 export interface SearchResultCounts {
     proposals: number;
-    ideascaleprofiles: number;
+    ideascaleProfiles: number;
     groups: number;
     communities: number;
     reviews: number;
@@ -9,7 +9,7 @@ export interface SearchResultCounts {
 
 export interface SearchResultData {
     proposals: any[];
-    ideascaleprofiles: any[];
+    ideascaleProfiles: any[];
     groups: any[];
     communities: any[];
     reviews: any[];
@@ -17,6 +17,6 @@ export interface SearchResultData {
 }
 
 export interface TabConfig {
-    name: keyof SearchResultCounts;
+    name: keyof SearchResultData;
     label: string;
 }
