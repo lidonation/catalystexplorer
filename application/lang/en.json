@@ -1384,5 +1384,10 @@
     "widgets.quickPitch.errors.invalidUrl": "Please enter a valid YouTube or Vimeo URL",
     "widgets.quickPitch.errors.updateFailed": "Failed to update quick pitch. Please try again.",
     "proposals.managingProposal": "Managing: :title",
-    "proposals.manageDescription": "Use the widgets below to manage your proposal settings and content."
+    "proposals.manageDescription": "Use the widgets below to manage your proposal settings and content.",
+    "workflows.claimCatalystProfile.connectWallet": "Connect Wallet",
+    "workflows.claimCatalystProfile.signWallet": "Sign Wallet",
+    "workflows.claimCatalystProfile.noProfilesFound": "No catalyst profile found",
+    "workflows.claimCatalystProfile.error": "Error",
+    "workflows.claimCatalystProfile.confirmAction": "Confirm Action"
 }

@@ -29,6 +29,7 @@ use App\Http\Controllers\SignatureWorkflowController;
 use App\Http\Controllers\TinderProposalWorkflowController;
 use App\Http\Controllers\CompletedProjectNftsController;
 use App\Http\Controllers\CardanoBudgetProposalController;
+use App\Http\Controllers\ClaimCatalystProfileWorkflowController;
 use App\Http\Controllers\ClaimIdeascaleProfileController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\PublishToIpfsController;
@@ -77,8 +78,8 @@ Route::localized(
             ->name('proposals.index');
 
         //routes for demoing routing pages onto modals
-//        Route::get('/proposals/charts', [ProposalsController::class, 'charts'])
-//            ->name('charts');
+        //        Route::get('/proposals/charts', [ProposalsController::class, 'charts'])
+        //            ->name('charts');
 
         Route::prefix('/funds')->as('funds.')->group(function () {
             Route::get('/', [FundsController::class, 'index'])
@@ -294,6 +295,17 @@ Route::localized(
                         ->name('index');
                 });
 
+            Route::prefix('/claim-catalyst-profile/steps')->as('claimCatalystProfile.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::get('/{step}', [ClaimCatalystProfileWorkflowController::class, 'handleStep'])
+                        ->name('index');
+                    Route::post('/validate-wallet', [ClaimCatalystProfileWorkflowController::class, 'validateWallet'])
+                        ->name('validateWallet');
+                    Route::post('/checkUserTransaction', [ClaimCatalystProfileWorkflowController::class, 'checkUserTransaction'])
+                        ->name('checkUserTransaction');
+                });
+
             Route::get('/login', [WorkflowController::class, 'auth'])
                 ->name('loginForm');
             Route::post('/login', [WorkflowController::class, 'login'])
@@ -434,9 +446,9 @@ Route::localized(
 
                 Route::get('/list', [CatalystDrepController::class, 'list'])
                     ->name('list');
-                
-                 Route::get('/drep/{stake_address}', [CatalystDrepController::class, 'show'])
-                    ->name('show');    
+
+                Route::get('/drep/{stake_address}', [CatalystDrepController::class, 'show'])
+                    ->name('show');
             }
         );
 

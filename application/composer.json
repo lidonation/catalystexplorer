@@ -32,6 +32,7 @@
         "mockery/mockery": "^1.6",
         "pestphp/pest": "^3.8",
         "pestphp/pest-plugin-laravel": "^3.2",
+        "phpseclib/phpseclib": "^3.0",
         "saloonphp/laravel-plugin": "^3.6",
         "saloonphp/pagination-plugin": "^2.2",
         "saloonphp/saloon": "^3.14",
@@ -46,6 +47,7 @@
         "spatie/laravel-query-builder": "^6.3",
         "spatie/laravel-translatable": "^6.11",
         "spatie/laravel-typescript-transformer": "^2.5",
+        "spomky-labs/cbor-php": "^3.1",
         "staudenmeir/belongs-to-through": "^2.17",
         "staudenmeir/eloquent-has-many-deep": "^1.21",
         "tightenco/ziggy": "^2.0"

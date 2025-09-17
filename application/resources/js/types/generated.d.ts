@@ -111,6 +111,13 @@ locale: string | null;
 delegators_count: number | null;
 created_at: string | null;
 };
+export type CatalystProfileData = {
+id: string | null;
+name: string | null;
+username: string | null;
+claimed_by: string | null;
+catalyst_id: string | null;
+};
 export type CategoryData = {
 id: string;
 name: string;
@@ -487,7 +494,7 @@ users: any | null;
 reviews: any | null;
 fund: App.DataTransferObjects.FundData | null;
 opensource: boolean | null;
-link: string;
+link: string | null;
 order?: number;
 user_rationale?: string;
 };
@@ -609,8 +616,8 @@ email: string | null;
 hero_img_url: string | null;
 email_verified_at: string | null;
 locations: any | null;
-voting_power?: number | null;
-stake_address?: string | null;
+stake_address: string | null;
+voting_power: number | null;
 };
 export type UserSettingData = {
 language: string;
@@ -657,6 +664,6 @@ deleted_at?: string;
 voting_power?: number;
 snapshot?: App.DataTransferObjects.SnapshotData;
 fund?: App.DataTransferObjects.FundData | string | null;
-proposal_title?: string | null;
+proposal_title?: string;
 };
 }
