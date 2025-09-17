@@ -101,11 +101,6 @@ class ProposalController extends Controller
      */
     public function storeRationale(Request $request, string $id): \Illuminate\Http\RedirectResponse
     {
-        \Log::info('Storing rationale for proposal', [
-            'proposal_id' => $id,
-            'user_id' => $request->user()?->id,
-            'rationale_length' => strlen($request->get('rationale', '')),
-        ]);
         $request->validate([
             'rationale' => 'required|string|max:5000',
         ]);
@@ -124,11 +119,6 @@ class ProposalController extends Controller
             'original_text' => $request->rationale,
             'commentator_id' => $user->id,
             'extra' => ['type' => 'rationale'],
-        ]);
-
-        \Log::info('Rationale saved successfully', [
-            'proposal_id' => $id,
-            'user_id' => $user->id,
         ]);
 
         return back()->with('success', 'Rationale saved successfully');

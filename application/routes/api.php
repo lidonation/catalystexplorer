@@ -40,13 +40,6 @@ Route::prefix('api')->as('api.')->group(function () {
     Route::get('/tags', [TagController::class, 'tags'])->name('tags');
     Route::get('/tags/{tag:id}', [TagController::class, 'tag'])->name('tag');
 
-    // Proposal rationale routes (require authentication)
-    Route::middleware('auth')->group(function () {
-        Route::post('proposals/{id}/rationale', [ProposalController::class, 'storeRationale'])
-            ->name('proposals.rationale.store');
-    });
-
-    // API v1 - RESTful API routes with Spatie Query Builder
     Route::prefix('v1')->as('v1.')->group(function () {
         Route::apiResource('proposals', ProposalController::class)
             ->only(['index', 'show']);
