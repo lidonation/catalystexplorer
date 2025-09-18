@@ -82,7 +82,7 @@ export default function Error({
                                     'workflows.claimCatalystProfile.confirmDetails',
                                 )}
                             </Title>
-                            <Paragraph className="text-content/40 text-center">
+                            <Paragraph className="text-content/50 text-center">
                                 {t(
                                     'workflows.claimCatalystProfile.reviewDetails',
                                 )}
