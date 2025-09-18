@@ -36,7 +36,7 @@ const Step1: React.FC<Step1Props> = ({
 
     const [error, setError] = useState<string>('');
 
-   const prevStep =
+    const prevStep =
         activeStep === 1
             ? ''
             : localizedRoute('workflows.claimCatalystProfile.index', {
@@ -45,9 +45,12 @@ const Step1: React.FC<Step1Props> = ({
 
     const verifyWallet = () => {
         router.post(
-            generateLocalizedRoute('workflows.claimCatalystProfile.validateWallet', {
-                catalystDrep,
-            }),
+            generateLocalizedRoute(
+                'workflows.claimCatalystProfile.validateWallet',
+                {
+                    catalystDrep,
+                },
+            ),
             { stakeAddress },
             {
                 onError: (errors) => setError(errors.message),
@@ -56,10 +59,7 @@ const Step1: React.FC<Step1Props> = ({
     };
 
     return (
-        <WorkflowLayout
-            title="Claim Catalyst Profile"
-            asideInfo={stepDetails[activeStep - 1].info ?? ''}
-        >
+        <WorkflowLayout title="Claim Catalyst Profile">
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>

@@ -83,7 +83,6 @@ const Step2: React.FC<Step3Props> = ({ stepDetails, activeStep }) => {
     return (
         <WorkflowLayout
             title="Claim Catalyst Profile"
-            asideInfo={stepDetails[activeStep - 1]?.info || ''}
         >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
