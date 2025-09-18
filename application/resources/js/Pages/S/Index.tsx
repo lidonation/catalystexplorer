@@ -16,8 +16,6 @@ interface SearchResultsProps extends SearchResultData {
     counts: SearchResultCounts;
 }
 
-export const TAB_CONFIG: TabConfig[] = [];
-
 const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
     const search = window.location.search;
     const { t } = useLaravelReactI18n();
@@ -27,27 +25,43 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
     const [activeTab, setActiveTab] = useState('');
     const observerRef = useRef<IntersectionObserver | null>(null);
 
+    // Add early validation
+    if (!query) {
+        return (
+            <div className="w-full px-4 py-8">
+                <RecordsNotFound context="search" />
+            </div>
+        );
+    }
+
+    // Define all possible tabs explicitly
+    const allTabs = ['proposals', 'ideascaleProfiles', 'groups', 'communities', 'reviews', 'articles'];
+
     const filteredFilters = filters
         ? filters
               .split(',')
               .filter(
                   (filter) => counts[filter as keyof SearchResultCounts] > 0,
               )
-        : Object.keys(t('searchResults.tabs')).filter(
+        : allTabs.filter(
               (filter) => counts[filter as keyof SearchResultCounts] > 0,
           );
 
-    useEffect(() => {
-        TAB_CONFIG.length = 0;
-        filteredFilters.forEach((filter) => {
-            TAB_CONFIG.push({
-                name: filter as keyof SearchResultData,
-                label:
-                    t(`searchResults.tabs.${filter}`).charAt(0).toUpperCase() +
-                    t(`searchResults.tabs.${filter}`).slice(1),
-            });
-        });
-    }, [filteredFilters]);
+    const TAB_CONFIG: TabConfig[] = filteredFilters.map((filter) => ({
+        name: filter as keyof SearchResultData,
+        label:
+            t(`searchResults.tabs.${filter}`).charAt(0).toUpperCase() +
+            t(`searchResults.tabs.${filter}`).slice(1),
+    }));
+
+    // Debug logging
+    console.log('Search Debug Info:', {
+        counts,
+        filteredFilters,
+        TAB_CONFIG,
+        query,
+        filters
+    });
 
     useEffect(() => {
         const observerOptions = {
@@ -97,7 +111,7 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
             }, 100);
             return () => clearTimeout(timeout);
         }
-    }, [TAB_CONFIG]);
+    }, [TAB_CONFIG.length]);
 
     // Scroll to the section when the page loads
     useEffect(() => {
@@ -124,7 +138,6 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
         return (
             <div className="w-full px-4 py-8">
                 <RecordsNotFound context="search" />
-                {/* <EmptyState query={query as string} translation={t} /> */}
             </div>
         );
     }
@@ -166,7 +179,6 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
                                                 tab.name as keyof SearchResultCounts
                                             ] || 0
                                         }
-                                        // count={5}
                                     />
                                 }
                             >
