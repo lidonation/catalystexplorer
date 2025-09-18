@@ -55,6 +55,7 @@ interface ProposalTableViewProps {
     onColumnSelectorOpen?: () => void; // Callback to open column selector
     protectedColumns?: string[];
     excludeColumnsFromSelector?: string[];
+    disableInertiaLoading?: boolean; // Disable WhenVisible loading for streaming data
 }
 
 const renderIconOnlyViewActions = (proposal: ProposalData, actionsConfig: IconAction[] = ['compare', 'bookmark']) => {
@@ -114,7 +115,7 @@ const renderDefaultViewAction = (proposal: ProposalData, t: any) => {
     return (
         <div className='w-32' data-testid={`proposal-view-${proposal.id}`}>
             <a
-                href={proposal.link ?? undefined}
+                href={proposal.link || '#'}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors duration-200 font-medium text-sm"
@@ -140,7 +141,8 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
     headerAlignment = 'left',
     onColumnSelectorOpen,
     protectedColumns = [],
-    excludeColumnsFromSelector = ['manageProposal']
+    excludeColumnsFromSelector = ['manageProposal'],
+    disableInertiaLoading = false
 }) => {
     const { t } = useLaravelReactI18n();
 
@@ -308,11 +310,9 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
                     </div>
                 )}
                 
-                <WhenVisible
-                    fallback={<ProposalTableLoading />}
-                    data="proposals"
-                >
-                    {proposals?.data.length ? (
+                {disableInertiaLoading ? (
+                    // Direct render without WhenVisible for streaming data
+                    proposals?.data.length ? (
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -341,8 +341,45 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
                         >
                             <RecordsNotFound context="proposals" />
                         </motion.div>
-                    )}
-                </WhenVisible>
+                    )
+                ) : (
+                    // Use WhenVisible for normal Inertia loading
+                    <WhenVisible
+                        fallback={<ProposalTableLoading />}
+                        data="proposals"
+                    >
+                        {proposals?.data.length ? (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.4, ease: 'easeIn' }}
+                            >
+                                <ProposalTable
+                                    actionType={actionType}
+                                    disableSorting={disableSorting}
+                                    proposals={proposals}
+                                    columns={activeColumns}
+                                    showPagination={showPagination}
+                                    customActions={actionsConfig.customActions}
+                                    renderActions={actionsConfig.renderActions}
+                                    customStyles={customStyles}
+                                    headerAlignment={headerAlignment}
+                                    onColumnSelectorOpen={onColumnSelectorOpen || handleOpenColumnSelector}
+                                />
+                            </motion.div>
+                        ) : (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.4, ease: 'easeIn' }}
+                            >
+                                <RecordsNotFound context="proposals" />
+                            </motion.div>
+                        )}
+                    </WhenVisible>
+                )}
             </div>
         </>
     );

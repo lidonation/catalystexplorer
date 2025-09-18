@@ -41,7 +41,7 @@ Route::localized(
         Route::get('/', [HomeController::class, 'index'])
             ->name('home');
 
-
+       
         Route::prefix('/proposals')->as('proposals.')->group(function () {
             Route::get('/', [ProposalsController::class, 'index'])
                 ->name('index');
@@ -411,6 +411,8 @@ Route::localized(
                 ->name('index');
             Route::get('/{bookmarkCollection}/{type?}', [BookmarksController::class, 'view'])
                 ->name('view');
+            Route::post('/{bookmarkCollection}/stream/{type?}', [BookmarksController::class, 'streamBookmarkItems'])
+                ->name('stream');
         });
 
         Route::prefix('charts')->as('charts.')->group(function () {
