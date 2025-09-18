@@ -8,6 +8,7 @@
         <style>
             body {
                 font-family: 
+                    'DejaVu Sans' !important, 
                     'Noto Sans', 
                     'Noto Sans CJK SC', 
                     'Noto Sans CJK TC', 
@@ -15,14 +16,13 @@
                     'Noto Sans CJK KR', 
                     'Noto Sans Arabic', 
                     'Noto Sans Ethiopic', 
-                    'DejaVu Sans', 
                     'Arial Unicode MS', 
                     'Microsoft YaHei', 
                     'SimSun', 
                     'Malgun Gothic', 
                     'Hiragino Sans GB', 
                     sans-serif;
-                background-color: #f8fafc;
+                background-color: white;
                 color: #1f2937;
                 font-size: 14px;
                 line-height: 1.5;
