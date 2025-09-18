@@ -1,3 +1,10 @@
+## [1.27.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.27.0...v1.27.1) (2025-09-18)
+
+
+### Bug Fixes
+
+* **voting lists:** streaming voting list as they load ([f31c414](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/f31c41449067523716a5fbe4fae2ca09f1ee169e))
+
 # [1.27.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.26.1...v1.27.0) (2025-09-16)
 
 
