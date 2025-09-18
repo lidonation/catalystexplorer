@@ -29,7 +29,7 @@ class BookmarkCollection extends Model
         'groups',
         'reviews',
         'communities',
-        // Temporarily removed 'comments' due to UUID/text type mismatch
+        'comments',
     ];
 
     public $meiliIndexName = 'cx_bookmark_collections';

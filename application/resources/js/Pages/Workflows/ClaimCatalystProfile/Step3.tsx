@@ -27,7 +27,7 @@ interface Step3Props {
     stakeAddress: string;
 }
 
-export default function Error({
+export default function Step3({
     stepDetails,
     activeStep,
     catalystProfile,
@@ -42,7 +42,7 @@ export default function Error({
     const [isFormValid, setIsFormValid] = useState(false);
     const formRef = useRef<CatalystProfileFormHandles>(null);
 
-    const form = useForm<CatalystProfileFormFields>({
+    const form = useForm({
         name: catalystProfile?.name || '',
         username: catalystProfile?.username || '',
         catalystId: catalystProfile?.catalyst_id || '',
