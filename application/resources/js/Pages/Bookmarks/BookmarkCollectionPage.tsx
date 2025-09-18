@@ -19,6 +19,7 @@ import { Head, router, usePage } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useState } from 'react';
+import { useStream } from '@laravel/stream-react';
 import CommunitiesPaginatedList from '../Communities/Partials/CommunitiesPaginatedList';
 import GroupPaginatedList from '../Groups/Partials/GroupPaginatedList';
 import IdeascaleProfilePaginatedList from '../IdeascaleProfile/Partials/IdeascaleProfilePaginatedList';
@@ -270,10 +271,14 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
 
     const [activeEditModal, setActiveEditModal] = useState<boolean>(false);
 
+    const [streamedProposals, setStreamedProposals] = useState<ProposalData[]>([]);
+
     const hasItems = (bookmarkCollection.items_count ?? 0) > 0;
     const isVoterList = bookmarkCollection.list_type === 'voter';
     const isTinderList = bookmarkCollection.list_type === 'tinder';
     const isNormalList = bookmarkCollection.list_type === 'normal';
+ 
+    const { data, isFetching, isStreaming, send, cancel } = useStream('stream');
 
     const getPublishToIpfsTooltip = () => {
         if (!hasItems && !isVoterList) {
@@ -291,6 +296,33 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
     useEffect(() => {
         console.log('PDF View setting changed:', isPdfView);
     }, [isPdfView]);
+
+    // Stream data for voter lists
+    useEffect(() => {
+        if (isVoterList && type === 'proposals') {
+            send({});
+        }
+    }, [isVoterList, bookmarkCollection.items_count]);
+
+    // Parse streamed data
+    useEffect(() => {
+        if (!data || !isVoterList) {
+            return;
+        }
+        
+        const lines = data.trim().split('\n');
+        const parsed: ProposalData[] = lines.map(line => {
+            try {
+                return JSON.parse(line) as ProposalData;
+            } catch (e) {
+                return null;
+            }
+        }).filter((x): x is ProposalData => x !== null);
+
+        setStreamedProposals(parsed);
+    }, [data, isVoterList]);
+
+  
 
 
     const getDropdownMenuItems = (): DropdownMenuItem[] => {
@@ -406,11 +438,27 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                     ? props.proposals.data.length
                     : 0;
 
+                // Use streamed data for voter lists
+                const proposalsData = isVoterList 
+                    ? {
+                        ...props.proposals,
+                        data: streamedProposals,
+                      }
+                    : props.proposals;
+
+                if (isVoterList && !streamedProposals.length ) {
+                    return (
+                        <div className="container flex justify-center items-center py-8">
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                        </div>
+                    );
+                }
+
                 if (isPdfView) {
                     return (
                         <div className="container">
                             <ProposalPdfView
-                                proposals={props.proposals}
+                                proposals={proposalsData}
                                 isAuthor={showAuthorControls}
                                 listTitle={bookmarkCollection.title ?? 'My List'}
                                 bookmarkCollection={bookmarkCollection}
@@ -421,11 +469,12 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                 }
                 return (
                     <ProposalPaginatedList
-                        proposals={props.proposals as PaginatedData<ProposalData[]>}
+                        proposals={proposalsData as PaginatedData<ProposalData[]>}
                         isHorizontal={isHorizontal ?? false}
                         isMini={isMini ?? false}
                         quickPitchView={quickPitchView}
                         setQuickPitchView={setQuickPitchView}
+                        disableInertiaLoading={isVoterList}
                     />
                 );
             case 'communities':
