@@ -72,7 +72,7 @@ const CatalystProfileForm = forwardRef<
     return (
         <div className="rounded-lg p-4 lg:p-8">
             <form>
-                <div className="mt-3">
+                <div>
                     <label htmlFor="name" className="text-sm">
                         {t('profileWorkflow.name')}
                     </label>

@@ -77,12 +77,12 @@ export default function Error({
                 <div className="bg-background mx-auto my-8 flex h-3/4 w-[calc(100%-4rem)] items-center justify-center rounded-lg p-8 md:w-3/4">
                     {catalystProfile ? (
                         <div className="flex flex-col gap-3">
-                            <Title level="3">
+                            <Title level="3" className='text-center'>
                                 {t(
                                     'workflows.claimCatalystProfile.confirmDetails',
                                 )}
                             </Title>
-                            <Paragraph className="text-content/50">
+                            <Paragraph className="text-content/40 text-center">
                                 {t(
                                     'workflows.claimCatalystProfile.reviewDetails',
                                 )}
