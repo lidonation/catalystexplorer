@@ -25,7 +25,6 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
     const [activeTab, setActiveTab] = useState('');
     const observerRef = useRef<IntersectionObserver | null>(null);
 
-    // Add early validation
     if (!query) {
         return (
             <div className="w-full px-4 py-8">
@@ -34,7 +33,6 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
         );
     }
 
-    // Define all possible tabs explicitly
     const allTabs = ['proposals', 'ideascaleProfiles', 'groups', 'communities', 'reviews', 'articles'];
 
     const filteredFilters = filters
@@ -53,15 +51,6 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
             t(`searchResults.tabs.${filter}`).charAt(0).toUpperCase() +
             t(`searchResults.tabs.${filter}`).slice(1),
     }));
-
-    // Debug logging
-    console.log('Search Debug Info:', {
-        counts,
-        filteredFilters,
-        TAB_CONFIG,
-        query,
-        filters
-    });
 
     useEffect(() => {
         const observerOptions = {
