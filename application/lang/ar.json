@@ -246,5 +246,17 @@
     "services.loadingMap": "جاري تحميل الخريطة...",
     "services.noLocationsAvailalble": "لا توجد مواقع متاحة",
     "services.unknownUser": "مستخدم غير معروف",
-    "services.noBioAvailable": "لا توجد سيرة ذاتية متاحة"
+    "services.noBioAvailable": "لا توجد سيرة ذاتية متاحة",
+    "workflows.claimCatalystProfile.connectWallet": "ربط المحفظة",
+    "workflows.claimCatalystProfile.signWallet": "توقيع بالمحفظة",
+    "workflows.claimCatalystProfile.noProfilesFound": "لم يتم العثور على ملف Catalyst",
+    "workflows.claimCatalystProfile.error": "خطأ",
+    "workflows.claimCatalystProfile.confirmAction": "تأكيد الإجراء",
+    "workflows.claimCatalystProfile.confirmDetails": "تأكيد التفاصيل",
+    "workflows.claimCatalystProfile.catalystId": "معرّف Catalyst",
+    "workflows.claimCatalystProfile.username": "اسم المستخدم",
+    "workflows.claimCatalystProfile.successConfirmation": "لقد أصبحت الآن مالك ملف التقييم هذا. يمكنك تعديل التفاصيل في أي وقت.",
+    "workflows.claimCatalystProfile.viewProfile": "العودة إلى ملفك الشخصي",
+    "workflows.claimCatalystProfile.claim": "المطالبة بملف Catalyst",
+    "workflows.claimCatalystProfile.reviewDetails": "راجع بياناتك المستوردة قبل النشر."
 }

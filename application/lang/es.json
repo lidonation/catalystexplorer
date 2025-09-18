@@ -1339,5 +1339,17 @@
     "widgets.quickPitch.errors.updateFailed": "Error al actualizar la presentación rápida. Inténtalo de nuevo.",
     "proposals.manageProposal": "Gestionar Propuesta",
     "proposals.managingProposal": "Gestionando: :title",
-    "proposals.manageDescription": "Usa los widgets de abajo para gestionar la configuración y contenido de tu propuesta."
+    "proposals.manageDescription": "Usa los widgets de abajo para gestionar la configuración y contenido de tu propuesta.",
+    "workflows.claimCatalystProfile.connectWallet": "Conectar billetera",
+    "workflows.claimCatalystProfile.signWallet": "Firmar con la billetera",
+    "workflows.claimCatalystProfile.noProfilesFound": "No se encontró ningún perfil de Catalyst",
+    "workflows.claimCatalystProfile.error": "Error",
+    "workflows.claimCatalystProfile.confirmAction": "Confirmar acción",
+    "workflows.claimCatalystProfile.confirmDetails": "Confirmar detalles",
+    "workflows.claimCatalystProfile.catalystId": "ID de Catalyst",
+    "workflows.claimCatalystProfile.username": "Nombre de usuario",
+    "workflows.claimCatalystProfile.successConfirmation": "Ahora eres propietario de este perfil de revisor. Puedes editar los detalles en cualquier momento.",
+    "workflows.claimCatalystProfile.viewProfile": "Volver a tu perfil",
+    "workflows.claimCatalystProfile.claim": "Reclamar un perfil de Catalyst",
+    "workflows.claimCatalystProfile.reviewDetails": "Revisa tus datos importados antes de publicarlos."
 }

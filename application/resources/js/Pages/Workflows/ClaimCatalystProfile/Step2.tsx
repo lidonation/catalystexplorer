@@ -2,9 +2,7 @@ import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
-import SecondaryButton from '@/Components/atoms/SecondaryButton';
 import Title from '@/Components/atoms/Title';
-import Image from '@/Components/Image';
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 import {
     generateLocalizedRoute,
@@ -27,7 +25,7 @@ interface Step3Props {
 const Step2: React.FC<Step3Props> = ({ stepDetails, activeStep }) => {
     const { t } = useLaravelReactI18n();
     const localizedRoute = useLocalizedRoute;
-    const prevStep = localizedRoute('workflows.drepSignUp.index', {
+    const prevStep = localizedRoute('workflows.claimCatalystProfile.index', {
         step: activeStep - 1,
     });
     const {
@@ -57,7 +55,7 @@ const Step2: React.FC<Step3Props> = ({ stepDetails, activeStep }) => {
 
             router.post(
                 generateLocalizedRoute(
-                    'workflows.claimCatalystProfile.checkUserTransaction',
+                    'workflows.claimCatalystProfile.signWallet',
                 ),
                 {
                     signature: signatureResult.signature,
@@ -90,30 +88,35 @@ const Step2: React.FC<Step3Props> = ({ stepDetails, activeStep }) => {
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                <div className="bg-background-lighter mx-auto w-full max-w-md rounded-3xl p-6">
-                    <ErrorDisplay />
-                    <div className="space-y-4 text-center">
-                        <Title level="2" className="mb-4 font-bold">
-                            {t('workflows.signature.signWallet')}
-                        </Title>
-                        <Paragraph className="mb-6">
-                            {t('workflows.signature.signAuth')}
-                        </Paragraph>
-                        <PrimaryButton onClick={() => handleSignature()} className="text-base w-full lg:px-8 lg:py-2">
-                            {t('workflows.signature.signWallet')}
-                        </PrimaryButton>  
+                <div className="bg-background mx-auto my-8 flex h-3/4 w-[calc(100%-4rem)] items-center justify-center rounded-lg p-8 md:w-3/4">
+                    <div className="mx-auto flex w-full max-w-md flex-col items-center justify-center rounded-3xl">
+                        <ErrorDisplay />
+                        <div className="space-y-4 text-center">
+                            <Title level="2" className="mb-4 font-bold">
+                                {t('workflows.signature.signWallet')}
+                            </Title>
+                            <Paragraph className="mb-6">
+                                {t('workflows.signature.signAuth')}
+                            </Paragraph>
+                            <PrimaryButton
+                                onClick={() => handleSignature()}
+                                className="w-full text-base lg:px-8 lg:py-2"
+                            >
+                                {t('workflows.signature.signWallet')}
+                            </PrimaryButton>
+                        </div>
                     </div>
-                </div>
-                <div
-                    className={`bg-danger-light mt-6 transform overflow-hidden rounded-xl py-3 text-center transition-all duration-500 ease-in-out ${
-                        error.length
-                            ? 'max-w-full translate-x-0 px-6'
-                            : 'max-w-0 translate-x-full px-0'
-                    }`}
-                >
-                    <p className="inline-block min-w-max whitespace-nowrap text-slate-500">
-                        {t(error)}
-                    </p>
+                    <div
+                        className={`bg-danger-light mt-6 transform overflow-hidden rounded-xl py-3 text-center transition-all duration-500 ease-in-out ${
+                            error.length
+                                ? 'max-w-full translate-x-0 px-6'
+                                : 'max-w-0 translate-x-full px-0'
+                        }`}
+                    >
+                        <p className="inline-block min-w-max whitespace-nowrap text-slate-500">
+                            {t(error)}
+                        </p>
+                    </div>
                 </div>
             </Content>
 
@@ -129,7 +132,6 @@ const Step2: React.FC<Step3Props> = ({ stepDetails, activeStep }) => {
                 <PrimaryButton
                     className="text-sm lg:px-8 lg:py-2"
                     disabled={isSigning || !stakeAddress}
-                    loading={isSigning}
                     onClick={() => handleSignature()}
                 >
                     <span>{t('Next')}</span>

@@ -1334,5 +1334,17 @@
     "widgets.quickPitch.errors.updateFailed": "퀴 피치 업데이트에 실패했습니다. 다시 시도해 주세요.",
     "proposals.manageProposal": "제안 관리",
     "proposals.managingProposal": "Managing: :title",
-    "proposals.manageDescription": "아래 위젯을 사용하여 제안의 설정과 콘텐츠를 관리하세요."
+    "proposals.manageDescription": "아래 위젯을 사용하여 제안의 설정과 콘텐츠를 관리하세요.",
+    "workflows.claimCatalystProfile.connectWallet": "지갑 연결",
+    "workflows.claimCatalystProfile.signWallet": "지갑으로 서명",
+    "workflows.claimCatalystProfile.noProfilesFound": "Catalyst 프로필을 찾을 수 없습니다",
+    "workflows.claimCatalystProfile.error": "오류",
+    "workflows.claimCatalystProfile.confirmAction": "작업 확인",
+    "workflows.claimCatalystProfile.confirmDetails": "세부 정보 확인",
+    "workflows.claimCatalystProfile.catalystId": "Catalyst ID",
+    "workflows.claimCatalystProfile.username": "사용자 이름",
+    "workflows.claimCatalystProfile.successConfirmation": "이제 이 리뷰어 프로필의 소유자가 되었습니다. 언제든지 세부 정보를 수정할 수 있습니다.",
+    "workflows.claimCatalystProfile.viewProfile": "내 프로필로 돌아가기",
+    "workflows.claimCatalystProfile.claim": "Catalyst 프로필 요청",
+    "workflows.claimCatalystProfile.reviewDetails": "게시하기 전에 가져온 데이터를 검토하세요."
 }

@@ -302,8 +302,10 @@ Route::localized(
                         ->name('index');
                     Route::post('/validate-wallet', [ClaimCatalystProfileWorkflowController::class, 'validateWallet'])
                         ->name('validateWallet');
-                    Route::post('/checkUserTransaction', [ClaimCatalystProfileWorkflowController::class, 'checkUserTransaction'])
-                        ->name('checkUserTransaction');
+                    Route::post('/sign-wallet', [ClaimCatalystProfileWorkflowController::class, 'signWallet'])
+                        ->name('signWallet');
+                    Route::post('/{catalystProfile}/claim-catalyst-profile', [ClaimCatalystProfileWorkflowController::class, 'claimCatalystProfile'])
+                        ->name('claimCatalystProfile');
                 });
 
             Route::get('/login', [WorkflowController::class, 'auth'])

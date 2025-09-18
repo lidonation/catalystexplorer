@@ -273,7 +273,7 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                     return (
                         <div className="w-32" data-testid={testId}>
                             <a
-                                href={proposal.link}
+                                href={proposal.link ?? undefined}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors duration-200 font-medium text-sm"

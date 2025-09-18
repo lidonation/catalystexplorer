@@ -1334,5 +1334,17 @@
     "widgets.quickPitch.errors.updateFailed": "ፍጣም ቋብፋን ማዘማኘን አልተሳካም። እንደገና ይሞክራ጑።",
     "proposals.manageProposal": "መንጠር አስተዳድር",
     "proposals.managingProposal": "Managing: :title",
-    "proposals.manageDescription": "የመንጠረዎን ሳጥን እና ይዘት ለማስተዳድር ከታች ያሉትን ዊጀት ይጠቀምቡ።"
+    "proposals.manageDescription": "የመንጠረዎን ሳጥን እና ይዘት ለማስተዳድር ከታች ያሉትን ዊጀት ይጠቀምቡ።",
+    "workflows.claimCatalystProfile.connectWallet": "ኪስ ቦርሳ አገናኝ",
+    "workflows.claimCatalystProfile.signWallet": "በኪስ ቦርሳ ፈርም",
+    "workflows.claimCatalystProfile.noProfilesFound": "የካታሊስት ፕሮፋይል አልተገኘም",
+    "workflows.claimCatalystProfile.error": "ስህተት",
+    "workflows.claimCatalystProfile.confirmAction": "እርምጃ አረጋግጥ",
+    "workflows.claimCatalystProfile.confirmDetails": "ዝርዝሮችን አረጋግጥ",
+    "workflows.claimCatalystProfile.catalystId": "ካታሊስት መለያ",
+    "workflows.claimCatalystProfile.username": "የተጠቃሚ ስም",
+    "workflows.claimCatalystProfile.successConfirmation": "አሁን ይህን የግምገማ ፕሮፋይል በባለቤትነት ይዞታል። በማንኛውም ጊዜ ዝርዝሮችን ማርትዕ ትችላለህ።",
+    "workflows.claimCatalystProfile.viewProfile": "ወደ ፕሮፋይልህ ተመለስ",
+    "workflows.claimCatalystProfile.claim": "የካታሊስት ፕሮፋይል አስመዝግብ",
+    "workflows.claimCatalystProfile.reviewDetails": "ለመለጠፍ በፊት የገቡትን መረጃዎች ያርምጡ።"
 }

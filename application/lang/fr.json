@@ -1345,5 +1345,17 @@
     "widgets.quickPitch.errors.updateFailed": "Échec de la mise à jour de la présentation. Veuillez réessayer.",
     "proposals.manageProposal": "Gérer la proposition",
     "proposals.managingProposal": "Managing: :title",
-    "proposals.manageDescription": "Utilisez les widgets ci-dessous pour gérer les paramètres et le contenu de votre proposition."
+    "proposals.manageDescription": "Utilisez les widgets ci-dessous pour gérer les paramètres et le contenu de votre proposition.",
+    "workflows.claimCatalystProfile.connectWallet": "Connecter le portefeuille",
+    "workflows.claimCatalystProfile.signWallet": "Signer avec le portefeuille",
+    "workflows.claimCatalystProfile.noProfilesFound": "Aucun profil Catalyst trouvé",
+    "workflows.claimCatalystProfile.error": "Erreur",
+    "workflows.claimCatalystProfile.confirmAction": "Confirmer l’action",
+    "workflows.claimCatalystProfile.confirmDetails": "Confirmer les détails",
+    "workflows.claimCatalystProfile.catalystId": "ID Catalyst",
+    "workflows.claimCatalystProfile.username": "Nom d’utilisateur",
+    "workflows.claimCatalystProfile.successConfirmation": "Vous êtes maintenant propriétaire de ce profil d’évaluateur. Vous pouvez modifier les détails à tout moment.",
+    "workflows.claimCatalystProfile.viewProfile": "Retour à votre profil",
+    "workflows.claimCatalystProfile.claim": "Revendiquer un profil Catalyst",
+    "workflows.claimCatalystProfile.reviewDetails": "Vérifiez vos données importées avant de publier."
 }

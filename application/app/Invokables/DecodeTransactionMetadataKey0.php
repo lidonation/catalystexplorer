@@ -11,7 +11,7 @@ final class DecodeTransactionMetadataKey0
     /**
      * Decode Key 0 (catalyst_id) from Cardano transaction metadata
      *
-     * @param array $metadata The transaction metadata array
+     * @param  array  $metadata  The transaction metadata array
      * @return string|null The decoded catalyst_id or null if not found
      */
     public function __invoke(array $metadata): ?string
@@ -22,13 +22,13 @@ final class DecodeTransactionMetadataKey0
         ]);
 
         try {
-            // Look for Key 0 in the metadata structure
             $key0Value = $this->findKey0($metadata);
-            
+
             if ($key0Value === null) {
                 Log::warning('DecodeKey0: Key 0 not found in metadata', [
                     'available_keys' => array_keys($metadata),
                 ]);
+
                 return null;
             }
 
@@ -37,7 +37,6 @@ final class DecodeTransactionMetadataKey0
                 'value_preview' => is_string($key0Value) ? substr($key0Value, 0, 50) : json_encode($key0Value),
             ]);
 
-            // Process the value based on its format
             $catalystId = $this->decodeValue($key0Value);
 
             if ($catalystId !== null) {
@@ -52,73 +51,63 @@ final class DecodeTransactionMetadataKey0
             }
 
             return $catalystId;
-
         } catch (\Exception $e) {
             Log::error('DecodeKey0: Exception during decode', [
                 'error' => $e->getMessage(),
                 'metadata_preview' => json_encode(array_slice($metadata, 0, 3, true)),
             ]);
-            
-            throw new \Exception('Key 0 decoding failed: ' . $e->getMessage());
+
+            throw new \Exception('Key 0 decoding failed: '.$e->getMessage());
         }
     }
 
-    /**
-     * Find Key 0 in the metadata structure
-     */
     private function findKey0(array $metadata)
     {
-        // Check for numeric key 0
         if (array_key_exists(0, $metadata)) {
             Log::debug('DecodeKey0: Found numeric key 0');
+
             return $metadata[0];
         }
-        
-        // Check for string key "0"
+
         if (array_key_exists('0', $metadata)) {
             Log::debug('DecodeKey0: Found string key "0"');
+
             return $metadata['0'];
         }
-        
-        // Search nested arrays
+
         foreach ($metadata as $key => $value) {
             if (is_array($value)) {
                 Log::debug('DecodeKey0: Searching nested array', ['parent_key' => $key]);
                 $result = $this->findKey0($value);
                 if ($result !== null) {
                     Log::debug('DecodeKey0: Found Key 0 in nested structure', ['parent_key' => $key]);
+
                     return $result;
                 }
             }
         }
-        
+
         return null;
     }
 
-    /**
-     * Decode the value from various possible formats
-     */
     private function decodeValue($value): ?string
     {
-        // If it's already a string, validate and return it
         if (is_string($value)) {
             Log::debug('DecodeKey0: Processing string value', ['length' => strlen($value)]);
+
             return trim($value);
         }
-        
-        // If it's an array with 'bytes' key (hex encoded)
         if (is_array($value) && isset($value['bytes'])) {
             Log::debug('DecodeKey0: Processing hex bytes', ['hex' => $value['bytes']]);
+
             return $this->hexToUuid($value['bytes']);
         }
-
-        // If it's an array with hex string directly
         if (is_array($value) && isset($value[0]) && is_string($value[0])) {
             Log::debug('DecodeKey0: Processing array with string element');
+
             return $this->decodeValue($value[0]);
         }
-        
-        // If it's a numeric array, try to convert to hex string
+
         if (is_array($value) && $this->isNumericArray($value)) {
             Log::debug('DecodeKey0: Processing numeric array', ['length' => count($value)]);
             $hexString = $this->numericArrayToHex($value);
@@ -126,34 +115,29 @@ final class DecodeTransactionMetadataKey0
                 return $this->hexToUuid($hexString);
             }
         }
-        
+
         Log::warning('DecodeKey0: Unable to decode value format', [
             'type' => gettype($value),
             'value' => is_scalar($value) ? $value : json_encode($value),
         ]);
-        
+
         return null;
     }
 
-    /**
-     * Convert 32-byte hex string to UUID format
-     */
     private function hexToUuid(string $hex): ?string
     {
-        // Clean hex string (remove spaces, hyphens, etc.)
         $hex = preg_replace('/[^a-fA-F0-9]/', '', $hex);
-        
-        // Must be 32 hex characters (16 bytes) for UUID
+
         if (strlen($hex) !== 32) {
             Log::warning('DecodeKey0: Invalid hex length for UUID', [
                 'expected' => 32,
                 'actual' => strlen($hex),
                 'hex' => $hex,
             ]);
+
             return null;
         }
-        
-        // Format as UUID: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
         $uuid = sprintf(
             '%s-%s-%s-%s-%s',
             substr($hex, 0, 8),
@@ -171,42 +155,35 @@ final class DecodeTransactionMetadataKey0
         return $uuid;
     }
 
-    /**
-     * Check if array contains only numeric values
-     */
     private function isNumericArray(array $array): bool
     {
         foreach ($array as $value) {
-            if (!is_numeric($value)) {
+            if (! is_numeric($value)) {
                 return false;
             }
         }
+
         return true;
     }
 
-    /**
-     * Convert numeric array to hex string
-     */
     private function numericArrayToHex(array $array): ?string
     {
-        if (count($array) !== 16) { // UUID is 16 bytes
+        if (count($array) !== 16) {
             return null;
         }
 
         $hex = '';
         foreach ($array as $byte) {
-            $hex .= sprintf('%02x', (int)$byte);
+            $hex .= sprintf('%02x', (int) $byte);
         }
 
         return $hex;
     }
 
-    /**
-     * Validate UUID format
-     */
     private function isValidUuid(string $uuid): bool
     {
         $pattern = '/^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$/';
+
         return preg_match($pattern, $uuid) === 1;
     }
 }

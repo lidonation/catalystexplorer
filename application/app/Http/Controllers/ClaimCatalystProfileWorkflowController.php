@@ -2,22 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\DataTransferObjects\CatalystProfileData;
-use App\Invokables\DecodeTransactionMetadataKey0;
 use App\Invokables\DecodeTransactionMetadataKey10;
 use App\Models\CatalystProfile;
 use App\Models\Signature;
 use App\Models\Transaction;
 use App\Models\User;
-use Exception;
-use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
-
 
 class ClaimCatalystProfileWorkflowController extends Controller
 {
@@ -49,18 +45,55 @@ class ClaimCatalystProfileWorkflowController extends Controller
         ]);
     }
 
-    public function step3(Request $request): Response
+    public function step3(Request $request): RedirectResponse|Response
     {
+
+        $stakeAddress = $request->stakeAddress;
+        $catalystProfile = null;
+
+        $transaction = Transaction::where('stake_key', $stakeAddress)
+            ->where('type', 'x509_envelope')
+            ->first();
+
+        if (! $transaction) {
+            return Inertia::render('Workflows/ClaimCatalystProfile/Step3', [
+                'stepDetails' => $this->getStepDetails(),
+                'activeStep' => intval($request->step),
+                'catalystProfile' => null,
+                'stakeAddress' => $stakeAddress,
+            ]);
+        }
+
+        $metadataArray = json_decode(json_encode($transaction->raw_metadata), true);
+
+        $decodedData = (new DecodeTransactionMetadataKey10)($metadataArray);
+
+        $catalystId = rtrim($decodedData['catalyst_profile_id'] ?? '', '=');
+
+        $catalystProfile = DB::table('catalyst_profiles')->where('catalyst_id', 'LIKE', "%{$catalystId}%")->first();
+
         return Inertia::render('Workflows/ClaimCatalystProfile/Step3', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
-            'catalystProfile' => $request->catalystProfile,
-            'stakeAddress' => $request->stakeAddress ?? null,
-            'catalystId' => $request->catalystId ?? null,
+            'catalystProfile' => $catalystProfile,
+            'stakeAddress' => $stakeAddress,
         ]);
     }
 
-    public function collectUserSignature(User $user, Request $request): string
+    public function step4(Request $request): Response
+    {
+        return Inertia::render('Workflows/ClaimCatalystProfile/Success', [
+            'stepDetails' => $this->getStepDetails(),
+            'activeStep' => intval($request->step),
+        ]);
+    }
+
+    public function signWallet()
+    {
+        return $this->collectUserSignature(Auth::user(), request());
+    }
+
+    public function collectUserSignature(User $user, Request $request): RedirectResponse|Response
     {
         $stakeAddressPattern = app()->environment('production')
             ? '/^stake1[0-9a-z]{38,}$/'
@@ -87,49 +120,17 @@ class ClaimCatalystProfileWorkflowController extends Controller
 
         $user->modelSignatures()->updateOrCreate(
             [
-                'model_id' => $user->id,
+                'model_id' => Auth::user()->id,
                 'model_type' => User::class,
                 'signature_id' => $signature->id,
             ]
         );
 
-        return $signature->stake_address;
-    }
-
-    public function checkUserTransaction()
-    {
-        $user = Auth::user();
-        $stakeAddress = $this->collectUserSignature($user, request());
-        $catalystProfile = null;
-
-        $transaction = Transaction::where('stake_key', $stakeAddress)
-            ->where('type', 'x509_envelope')
-            ->first();
-
-        if (!$transaction) {
-            return to_route('workflows.claimCatalystProfile.index', [
-                'step' => 3,
-                'catalystProfile' => [],
-            ]);
-        }
-
-        $metadataArray = json_decode(json_encode($transaction->raw_metadata), true);
-
-        $decodedData = (new DecodeTransactionMetadataKey10)($metadataArray);
-
-        $catalystId = rtrim($decodedData['catalyst_profile_id'] ?? '', '=');
-
-        $catalystProfile = CatalystProfileData::from(CatalystProfile::where('catalyst_id', $catalystId)->first());
-
-
         return to_route('workflows.claimCatalystProfile.index', [
             'step' => 3,
-            'catalystProfile' => $catalystProfile,
-            'stakeAddress' => $stakeAddress,
-            'catalystId' => $catalystId,
+            'stakeAddress' => $signature->stake_address,
         ]);
     }
-
 
     public function validateWallet(Request $request)
     {
@@ -147,6 +148,27 @@ class ClaimCatalystProfileWorkflowController extends Controller
         return to_route('workflows.claimCatalystProfile.index', ['step' => 2]);
     }
 
+    public function claimCatalystProfile(Request $request, CatalystProfile $catalystProfile): RedirectResponse|Response
+    {
+        $validated = $request->validate([
+            'name' => 'required|string',
+            'username' => 'required|string',
+            'catalystId' => 'nullable|string',
+            'stakeAddress' => 'nullable|string',
+        ]);
+
+        DB::table('catalyst_profiles')
+            ->where('id', $catalystProfile->id)
+            ->update([
+                'name' => $validated['name'],
+                'username' => $validated['username'],
+                'claimed_by' => Auth::id(),
+                'updated_at' => now(),
+            ]);
+
+        return to_route('workflows.claimCatalystProfile.index', ['step' => 4]);
+    }
+
     public function getStepDetails(): Collection
     {
         return collect([
@@ -158,7 +180,10 @@ class ClaimCatalystProfileWorkflowController extends Controller
             ],
             [
                 'title' => 'workflows.claimCatalystProfile.confirmAction',
-            ]
+            ],
+            [
+                'title' => 'workflows.catalystDrepSignup.success',
+            ],
         ]);
     }
 }
