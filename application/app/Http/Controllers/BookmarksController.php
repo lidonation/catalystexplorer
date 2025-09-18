@@ -22,8 +22,10 @@ use App\Models\Proposal;
 use App\Models\Review;
 use App\Models\User;
 use App\Repositories\BookmarkCollectionRepository;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -1014,94 +1016,268 @@ class BookmarksController extends Controller
     }
 
     /**
-     * Handle the invitation acceptance workflow step
+     * Calculate optimal column configuration based on available space
      */
-    public function acceptInvitationStep(Request $request): RedirectResponse
+    protected function calculateColumnConfiguration(array $columns, string $orientation, string $paperSize): array
     {
-        $token = $request->query('token');
-        $collectionId = $request->query('collection');
+        $availableWidths = [
+            'A4' => [
+                'portrait' => 520,
+                'landscape' => 750,
+            ],
+            'A3' => [
+                'portrait' => 750,
+                'landscape' => 1050,
+            ],
+        ];
 
-        if (! $token || ! $collectionId) {
-            abort(404);
+        $totalWidth = $availableWidths[$paperSize][$orientation];
+        $columnCount = count($columns);
+
+        $columnPriorities = [
+            'title' => ['priority' => 1, 'minWidth' => 200, 'flex' => 3],
+            'budget' => ['priority' => 2, 'minWidth' => 80, 'flex' => 1],
+            'category' => ['priority' => 3, 'minWidth' => 100, 'flex' => 2],
+            'teams' => ['priority' => 4, 'minWidth' => 180, 'flex' => 2],
+            'users' => ['priority' => 4, 'minWidth' => 180, 'flex' => 2],
+            'fund' => ['priority' => 5, 'minWidth' => 80, 'flex' => 1],
+            'status' => ['priority' => 6, 'minWidth' => 80, 'flex' => 1],
+            'funding_status' => ['priority' => 6, 'minWidth' => 80, 'flex' => 1],
+            'yes_votes_count' => ['priority' => 7, 'minWidth' => 70, 'flex' => 1],
+            'yesVotes' => ['priority' => 7, 'minWidth' => 70, 'flex' => 1],
+            'abstain_votes_count' => ['priority' => 8, 'minWidth' => 70, 'flex' => 1],
+            'abstainVotes' => ['priority' => 8, 'minWidth' => 70, 'flex' => 1],
+            'no_votes_count' => ['priority' => 9, 'minWidth' => 70, 'flex' => 1],
+            'openSourced' => ['priority' => 10, 'minWidth' => 60, 'flex' => 1],
+            'opensource' => ['priority' => 10, 'minWidth' => 60, 'flex' => 1],
+        ];
+
+        $config = [];
+        $totalFlex = 0;
+        $totalMinWidth = 0;
+
+        foreach ($columns as $column) {
+            $columnInfo = $columnPriorities[$column] ?? ['priority' => 999, 'minWidth' => 80, 'flex' => 1];
+            $totalFlex += $columnInfo['flex'];
+            $totalMinWidth += $columnInfo['minWidth'];
+
+            $config[$column] = $columnInfo;
         }
 
-        $bookmarkCollection = BookmarkCollection::findOrFail($collectionId);
-        $invitations = $this->getPendingInvitations($bookmarkCollection);
+        if ($totalMinWidth > $totalWidth) {
+            $uniformWidth = floor($totalWidth / $columnCount);
+            foreach ($columns as $column) {
+                $config[$column]['width'] = $uniformWidth;
+                $config[$column]['fontSize'] = $columnCount > 10 ? '10px' : ($columnCount > 7 ? '11px' : '12px');
+                $config[$column]['truncate'] = $uniformWidth < 100;
+            }
+        } else {
+            $remainingWidth = $totalWidth - $totalMinWidth;
 
-        $invitation = null;
-        $userId = null;
-        foreach ($invitations as $uid => $inv) {
-            if ($inv['token'] === $token && $inv['status'] === 'pending') {
-                $invitation = $inv;
-                $userId = $uid;
-                break;
+            foreach ($columns as $column) {
+                $flexRatio = $config[$column]['flex'] / $totalFlex;
+                $additionalWidth = floor($remainingWidth * $flexRatio);
+                $config[$column]['width'] = $config[$column]['minWidth'] + $additionalWidth;
+                $config[$column]['fontSize'] = $columnCount > 8 ? '11px' : '12px';
+                $config[$column]['truncate'] = false;
             }
         }
 
-        if (! $invitation) {
-            abort(404, 'Invalid or expired invitation.');
-        }
-
-        $currentUser = Auth::user();
-
-        if (! $currentUser) {
-            session(['invitation_token' => $token, 'invitation_collection' => $collectionId]);
-            session(['nextstep.route' => 'workflows.acceptInvitation.index']);
-            session(['nextstep.param' => ['token' => $token, 'collection' => $collectionId]]);
-
-            return redirect()->route('workflows.loginForm');
-        }
-
-        if ($currentUser->id !== $userId) {
-            $invitedUser = User::find($userId);
-            $invitedUserEmail = $invitedUser ? $invitedUser->getAttributes()['email'] : 'Unknown';
-
-            abort(403, "This invitation was sent to {$invitedUserEmail}. Please log in as that user to accept the invitation.");
-        }
-
-        if ($bookmarkCollection->contributors()->where('user_id', $userId)->exists()) {
-            unset($invitations[$userId]);
-            $bookmarkCollection->saveMeta('invitations', json_encode($invitations));
-
-            session(['invitation_accepted_collection' => $bookmarkCollection->id]);
-
-            return redirect()->route('workflows.acceptInvitation.success');
-        }
-
-        $bookmarkCollection->contributors()->attach($userId);
-
-        unset($invitations[$userId]);
-        $bookmarkCollection->saveMeta('invitations', json_encode($invitations));
-
-        session(['invitation_accepted_collection' => $bookmarkCollection->id]);
-
-        return redirect()->route('workflows.acceptInvitation.success');
+        return $config;
     }
 
     /**
-     * Show the invitation acceptance success page
+     * Parse PDF configuration options from request
      */
-    public function acceptInvitationSuccess(Request $request): RedirectResponse|Response
+    protected function parsePdfOptions(Request $request): array
     {
-        $collectionId = session('invitation_accepted_collection');
+        $options = [
+            'orientation' => 'auto',
+            'paperSize' => 'auto',
+            'fontSize' => 'auto',
+            'maxColumnsPerPage' => null,
+        ];
 
-        if (! $collectionId) {
-            // No collection in session, redirect to lists
-            return redirect()->route('lists.index');
+        $orientation = $request->input('pdf_orientation');
+        if (in_array($orientation, ['portrait', 'landscape', 'auto'])) {
+            $options['orientation'] = $orientation;
         }
 
-        $bookmarkCollection = BookmarkCollection::find($collectionId);
-
-        if (! $bookmarkCollection) {
-            return redirect()->route('lists.index');
+        $paperSize = $request->input('pdf_paper_size');
+        if (in_array($paperSize, ['A4', 'A3', 'Letter', 'auto'])) {
+            $options['paperSize'] = $paperSize;
         }
 
-        // Clear the session data
-        session()->forget('invitation_accepted_collection');
+        $fontSize = $request->input('pdf_font_size');
+        if (in_array($fontSize, ['small', 'medium', 'large', 'auto'])) {
+            $options['fontSize'] = $fontSize;
+        }
 
-        return Inertia::render('Workflows/AcceptInvitation/Success', [
-            'bookmarkCollection' => $bookmarkCollection,
+        $maxColumns = $request->input('pdf_max_columns_per_page');
+        if (is_numeric($maxColumns) && $maxColumns > 0) {
+            $options['maxColumnsPerPage'] = (int) $maxColumns;
+        }
+
+        return $options;
+    }
+
+    public function downloadPdf(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals'): HttpResponse
+    {
+        // Set the locale for PDF generation from URL or user preference
+        $locale = $request->segment(1) ?? app()->getLocale();
+
+        // Validate locale against available language files
+        $availableLocales = ['en', 'es', 'fr', 'de', 'pt', 'am', 'ar', 'ja', 'ko', 'sw', 'zh'];
+        if (in_array($locale, $availableLocales)) {
+            app()->setLocale($locale);
+        }
+
+        $this->setFilters($request);
+
+        $model_type = BookmarkableType::from(Str::kebab($type))->getModelClass();
+
+        $relationshipsMap = [
+            Proposal::class => ['users', 'fund', 'campaign', 'schedule'],
+            Group::class => ['ideascale_profiles'],
+            Community::class => ['ideascale_profiles'],
+        ];
+
+        $countMap = [
+            Group::class => ['proposals', 'funded_proposals'],
+            Community::class => ['ideascale_profiles', 'proposals'],
+        ];
+
+        $relationships = $relationshipsMap[$model_type] ?? [];
+        $counts = $countMap[$model_type] ?? [];
+
+        $bookmarkItemIds = $bookmarkCollection->items
+            ->where('model_type', $model_type)
+            ->pluck('model_id')
+            ->toArray();
+
+        $proposalData = $this->getProposalsWithFullUserData($model_type, $bookmarkItemIds, $relationships, $counts);
+
+        $defaultPdfColumns = ['title', 'budget', 'category', 'openSourced', 'teams'];
+        $requestedColumns = $request->input('columns');
+
+        $userColumns = $defaultPdfColumns;
+        if ($requestedColumns) {
+            if (is_string($requestedColumns)) {
+                $decodedColumns = json_decode($requestedColumns, true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decodedColumns)) {
+                    $userColumns = $decodedColumns;
+                } else {
+                    $userColumns = array_filter(array_map('trim', explode(',', $requestedColumns)));
+                }
+            } elseif (is_array($requestedColumns)) {
+                $userColumns = $requestedColumns;
+            }
+        }
+
+        $columnsToUse = ! empty($userColumns) ? $userColumns : $defaultPdfColumns;
+
+        $pdfOptions = $this->parsePdfOptions($request);
+
+        $columnCount = count($columnsToUse);
+        $orientation = $pdfOptions['orientation'] ?? 'auto';
+        $paperSize = $pdfOptions['paperSize'] ?? 'auto';
+
+        if ($orientation === 'auto') {
+            $orientation = $columnCount > 5 ? 'landscape' : 'portrait';
+        }
+
+        if ($paperSize === 'auto') {
+            $paperSize = $columnCount > 8 ? 'A3' : 'A4';
+        }
+
+        $columnConfig = $this->calculateColumnConfiguration($columnsToUse, $orientation, $paperSize);
+
+        $catalystHeaderLogo = base64_encode(file_get_contents(public_path('img/catalyst-logo-dark-CZiPVQ7x.png')));
+        $catalystFooterLogo = base64_encode(file_get_contents(public_path('img/catalyst-explorer-icon.png')));
+
+        $pdf = Pdf::loadView('pdf.bookmark-collection', [
+            'bookmarkCollection' => $bookmarkCollection->load('author'),
+            'proposals' => $proposalData,
+            'type' => $type,
+            'itemCount' => count($proposalData),
+            'columns' => $columnsToUse,
+            'columnConfig' => $columnConfig,
+            'orientation' => $orientation,
+            'catalystHeaderLogo' => $catalystHeaderLogo,
+            'catalystFooterLogo' => $catalystFooterLogo,
         ]);
+
+        $pdf->setPaper($paperSize, $orientation)
+            ->setOptions([
+                'defaultFont' => 'sans-serif',
+                'isHtml5ParserEnabled' => true,
+                'isPhpEnabled' => true,
+                'dpi' => 96,
+                'defaultPaperSize' => $paperSize,
+            ]);
+
+        $filename = Str::slug($bookmarkCollection->title ?? 'bookmark-collection').'-'.now()->format('Y-m-d').'.pdf';
+
+        return $pdf->download($filename);
+    }
+
+    /**
+     * Get proposals with full user profile data (including avatar URLs) for PDF export
+     */
+    protected function getProposalsWithFullUserData(string $modelType, array $constrainToIds = [], array $relationships = [], array $counts = []): array
+    {
+        if (empty($constrainToIds) || $modelType !== Proposal::class) {
+            return [];
+        }
+
+        $query = $modelType::query();
+
+        $modifiedRelationships = [];
+        foreach ($relationships as $relationship) {
+            if ($relationship === 'users') {
+                $modifiedRelationships[] = 'users.model';
+            } else {
+                $modifiedRelationships[] = $relationship;
+            }
+        }
+
+        if (! empty($modifiedRelationships)) {
+            $query->with($modifiedRelationships);
+        }
+
+        if (! empty($counts)) {
+            $query->withCount($counts);
+        }
+
+        $query->whereIn('id', $constrainToIds);
+
+        if ($this->sortBy && $this->sortOrder) {
+            $query->orderBy($this->sortBy, $this->sortOrder);
+        }
+
+        $allResults = $query->get();
+
+        $transformedResults = $allResults->map(function ($proposal) {
+            $proposalArray = $proposal->toArray();
+
+            if ($proposal->users && $proposal->users->count() > 0) {
+                $proposalArray['users'] = $proposal->users->map(function ($proposalProfile) {
+                    $profile = $proposalProfile->model;
+
+                    return [
+                        'id' => $profile?->id,
+                        'name' => $profile?->name,
+                        'hero_img_url' => $profile?->hero_img_url,
+                        'username' => $profile?->username,
+                        'bio' => $profile?->bio,
+                    ];
+                })->toArray();
+            }
+
+            return $proposalArray;
+        });
+
+        return $transformedResults->toArray();
     }
 
     /**

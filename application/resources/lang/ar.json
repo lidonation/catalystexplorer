@@ -1,0 +1,22 @@
+{
+    "pdf.header.defaultTitle": "عنوان المستند",
+    "pdf.header.defaultSubtitle": "تصدير قائمة التصويت",
+    "pdf.footer.generatedWith": "تم إنشاؤه بواسطة",
+    "pdf.footer.visit": "زيارة:",
+    "pdf.footer.defaultMessage": "تمكين مجتمع Cardano",
+    "pdf.footer.defaultGeneratorName": "Catalyst Explorer",
+    "pdf.table.columns.title": "العنوان",
+    "pdf.table.columns.budget": "الميزانية",
+    "pdf.table.columns.category": "الفئة",
+    "pdf.table.columns.openSourced": "مفتوح المصدر",
+    "pdf.table.columns.team": "الفريق",
+    "pdf.table.columns.fund": "الصندوق",
+    "pdf.table.columns.yesVotes": "أصوات نعم",
+    "pdf.table.columns.abstainVotes": "أصوات الامتناع",
+    "pdf.table.columns.noVotes": "أصوات لا",
+    "pdf.table.columns.status": "الحالة",
+    "pdf.table.columns.funding": "التمويل",
+    "pdf.table.values.yes": "نعم",
+    "pdf.table.values.no": "لا",
+    "pdf.document.title": "تصدير قائمة التصويت"
+}

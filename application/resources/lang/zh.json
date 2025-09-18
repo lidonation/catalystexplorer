@@ -1,0 +1,22 @@
+{
+    "pdf.header.defaultTitle": "文档标题",
+    "pdf.header.defaultSubtitle": "投票列表导出",
+    "pdf.footer.generatedWith": "生成工具：",
+    "pdf.footer.visit": "访问：",
+    "pdf.footer.defaultMessage": "赋能Cardano社区",
+    "pdf.footer.defaultGeneratorName": "Catalyst Explorer",
+    "pdf.table.columns.title": "标题",
+    "pdf.table.columns.budget": "预算",
+    "pdf.table.columns.category": "类别",
+    "pdf.table.columns.openSourced": "开源",
+    "pdf.table.columns.team": "团队",
+    "pdf.table.columns.fund": "基金",
+    "pdf.table.columns.yesVotes": "支持票",
+    "pdf.table.columns.abstainVotes": "弃权票",
+    "pdf.table.columns.noVotes": "反对票",
+    "pdf.table.columns.status": "状态",
+    "pdf.table.columns.funding": "资金",
+    "pdf.table.values.yes": "是",
+    "pdf.table.values.no": "否",
+    "pdf.document.title": "投票列表导出"
+}

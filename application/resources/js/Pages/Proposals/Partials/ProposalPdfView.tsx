@@ -70,6 +70,8 @@ const ProposalPdfView: React.FC<ProposalPdfViewProps> = ({
       <ProposalPdfHeader
         itemCount={itemCount}
         proposals={proposals.data || []}
+        bookmarkCollection={bookmarkCollection}
+        selectedColumns={selectedColumns || defaultPdfColumns}
       />
 
       {/* PDF View Content */}

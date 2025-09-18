@@ -5,6 +5,7 @@ import Title from '@/Components/atoms/Title';
 import { VerificationBadge } from '@/Components/svgs/VerificationBadge';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { router } from '@inertiajs/react';
 import Content from '../Partials/WorkflowContent';
 import WorkflowLayout from '../WorkflowLayout';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;

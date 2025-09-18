@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.2",
         "aaronfrancis/fast-paginate": "^2.0",
+        "barryvdh/laravel-dompdf": "^3.1",
         "codezero/laravel-12-localized-routes": "dev-main",
         "ebess/advanced-nova-media-library": "^5.1",
         "fakerphp/faker": "^1.23",
