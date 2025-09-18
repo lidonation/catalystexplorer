@@ -136,7 +136,7 @@ export default function ProposalCardHeader({
                 >
                     {!userSelected && (
                         <Link
-                            href={proposal.link ?? undefined}
+                            href={proposal.link ?? "#"}
                             className="hover:text-primary w-full font-medium"
                             data-testid={`single-proposal-card-link-${proposalId}`}
                             style={{ overflow: 'visible' }}

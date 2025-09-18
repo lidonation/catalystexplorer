@@ -15,7 +15,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: ${DOCKER_COMPOSE_MEMORY_LIMIT:-1024M}
+          memory: ${DOCKER_COMPOSE_MEMORY_LIMIT:-8G}
           cpus: "1.0"
     image: catalystexplorer
     container_name: catalystexplorer.com
