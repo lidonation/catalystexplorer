@@ -22,23 +22,6 @@ class BookmarkCollection extends Model
 {
     use HasAuthor, HasComments, HasIpfsFiles, HasMetaData, HasSignatures, HasUuids, Searchable, SoftDeletes;
 
-    /**
-     * Get the route key for the model.
-     */
-    public function getRouteKeyName(): string
-    {
-        return 'id';
-    }
-
-    /**
-     * Retrieve the model for a bound value.
-     */
-    public function resolveRouteBinding($value, $field = null)
-    {
-        // Ensure UUID is treated as a string parameter
-        return $this->where($field ?? $this->getRouteKeyName(), '=', (string) $value)->first();
-    }
-
     protected $withCount = [
         'items',
         'proposals',
@@ -46,22 +29,12 @@ class BookmarkCollection extends Model
         'groups',
         'reviews',
         'communities',
-        // Note: comments count is handled manually to avoid UUID comparison issues
+        'comments',
     ];
 
     public $meiliIndexName = 'cx_bookmark_collections';
 
-    protected $appends = ['types_count', 'tinder_direction', 'list_type', 'workflow_params', 'comments_count'];
-
-    /**
-     * Remove potentially slow accessors for specific operations like PDF generation
-     */
-    public function makeHiddenForPdf(): self
-    {
-        $this->appends = array_diff($this->appends, ['types_count', 'workflow_params', 'comments_count']);
-
-        return $this;
-    }
+    protected $appends = ['types_count', 'tinder_direction', 'list_type', 'workflow_params'];
 
     protected $guarded = [];
 
@@ -117,58 +90,18 @@ class BookmarkCollection extends Model
         );
     }
 
-    public function commentsCount(): Attribute
-    {
-        return Attribute::make(
-            get: function () {
-                // Check if comments relationship is already loaded to avoid N+1 queries
-                if ($this->relationLoaded('comments')) {
-                    return $this->comments->count();
-                }
-
-                // If we have an ID, we can safely query the count
-                if ($this->exists && $this->id) {
-                    return $this->comments()->count();
-                }
-
-                // Default to 0 if model doesn't exist yet
-                return 0;
-            },
-        );
-    }
-
     public function amountRequested(): Attribute
     {
         return Attribute::make(
             get: function () {
-                // Return empty array if the model doesn't exist
-                if (! $this->exists || ! $this->id) {
-                    return [];
-                }
-
-                try {
-                    // Check if proposals relationship is loaded to avoid N+1 queries
-                    if (! $this->relationLoaded('proposals')) {
-                        // Skip loading for performance during PDF generation or similar
-                        if (in_array('amount_requested', $this->appends ?? [])) {
-                            return [];
-                        }
-                        $this->load('proposals');
-                    }
-
-                    return $this->proposals->pluck('model')
-                        ->filter() // Filter out null models
-                        ->groupBy('currency')
-                        ->map(function ($group, $currency) {
-                            return [
-                                "amount_requested_{$currency}" => $group->sum(fn ($p) => intval($p->amount_requested ?? 0)),
-                            ];
-                        })
-                        ->collapse()->toArray();
-                } catch (\Exception $e) {
-                    // Return default empty array if there's an error
-                    return [];
-                }
+                return $this->proposals->pluck('model')
+                    ->groupBy('currency')
+                    ->map(function ($group, $currency) {
+                        return [
+                            "amount_requested_{$currency}" => $group->sum(fn ($p) => intval($p->amount_requested ?? 0)),
+                        ];
+                    })
+                    ->collapse()->toArray();
             }
         );
     }
@@ -177,34 +110,14 @@ class BookmarkCollection extends Model
     {
         return Attribute::make(
             get: function () {
-                // Return empty array if the model doesn't exist
-                if (! $this->exists || ! $this->id) {
-                    return [];
-                }
-
-                try {
-                    // Check if proposals relationship is loaded to avoid N+1 queries
-                    if (! $this->relationLoaded('proposals')) {
-                        // Skip loading for performance during PDF generation or similar
-                        if (in_array('amount_received', $this->appends ?? [])) {
-                            return [];
-                        }
-                        $this->load('proposals');
-                    }
-
-                    return $this->proposals->pluck('model')
-                        ->filter() // Filter out null models
-                        ->groupBy('currency')
-                        ->map(function ($group, $currency) {
-                            return [
-                                "amount_received_{$currency}" => $group->sum(fn ($p) => intval($p->amount_received ?? 0)),
-                            ];
-                        })
-                        ->collapse()->toArray();
-                } catch (\Exception $e) {
-                    // Return default empty array if there's an error
-                    return [];
-                }
+                return $this->proposals->pluck('model')
+                    ->groupBy('currency')
+                    ->map(function ($group, $currency) {
+                        return [
+                            "amount_received_{$currency}" => $group->sum(fn ($p) => intval($p->amount_received ?? 0)),
+                        ];
+                    })
+                    ->collapse()->toArray();
             }
         );
     }
@@ -240,7 +153,7 @@ class BookmarkCollection extends Model
                     return 'normal';
                 }
 
-                if ($this->model_type === \App\Models\TinderCollection::class) {
+                if ($this->model_type === TinderCollection::class) {
                     return 'tinder';
                 }
 
@@ -257,11 +170,11 @@ class BookmarkCollection extends Model
 
                 switch ($listType) {
                     case 'tinder':
-                        if ($this->model_type === \App\Models\TinderCollection::class && $this->model_id) {
+                        if ($this->model_type === TinderCollection::class && $this->model_id) {
 
                             $tinderCollectionHash = $this->model_id;
 
-                            $relatedCollections = static::where('model_type', \App\Models\TinderCollection::class)
+                            $relatedCollections = static::where('model_type', TinderCollection::class)
                                 ->where('model_id', $tinderCollectionHash)
                                 ->get();
 
@@ -313,47 +226,47 @@ class BookmarkCollection extends Model
     public function proposals(): HasMany
     {
         return $this->hasMany(BookmarkItem::class)
-            ->where('model_type', \App\Models\Proposal::class);
+            ->where('model_type', Proposal::class);
     }
 
     public function ideascale_profiles(): HasMany
     {
         return $this->hasMany(BookmarkItem::class)
-            ->where('model_type', \App\Models\IdeascaleProfile::class);
+            ->where('model_type', IdeascaleProfile::class);
     }
 
     public function communities(): HasMany
     {
         return $this->hasMany(BookmarkItem::class)
-            ->where('model_type', \App\Models\Community::class);
+            ->where('model_type', Community::class);
     }
 
     public function fund(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\Fund::class);
+        return $this->belongsTo(Fund::class);
     }
 
     public function groups(): HasMany
     {
         return $this->hasMany(BookmarkItem::class)
-            ->where('model_type', \App\Models\Group::class);
+            ->where('model_type', Group::class);
     }
 
     public function reviews(): HasMany
     {
         return $this->hasMany(BookmarkItem::class)
-            ->where('model_type', \App\Models\Review::class);
+            ->where('model_type', Review::class);
     }
 
     public function contributors(): BelongsToMany
     {
-        return $this->belongsToMany(\App\Models\User::class, 'bookmark_collections_users')
+        return $this->belongsToMany(User::class, 'bookmark_collections_users')
             ->withTimestamps();
     }
 
     public function collaborators(): BelongsToMany
     {
-        return $this->belongsToMany(\App\Models\User::class, 'bookmark_collections_users')
+        return $this->belongsToMany(User::class, 'bookmark_collections_users')
             ->withTimestamps()
             ->with('media'); // Include user media for avatars
     }
