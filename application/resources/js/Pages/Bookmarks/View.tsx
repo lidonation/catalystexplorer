@@ -14,33 +14,36 @@ type BookmarkCollectionListProps =
     proposals: PaginatedData<ProposalData[]>;
     bookmarkCollection: BookmarkCollectionData;
     filters: SearchParams;
+    pendingInvitations?: any[];
 }
     | {
     type: 'communities';
     communities: PaginatedData<CommunityData[]>;
     bookmarkCollection: BookmarkCollectionData;
     filters: SearchParams;
+    pendingInvitations?: any[];
 }
     | {
     type: 'groups';
     groups: PaginatedData<GroupData[]>;
     bookmarkCollection: BookmarkCollectionData;
     filters: SearchParams;
+    pendingInvitations?: any[];
 }
     | {
     type: 'ideascaleProfiles';
     ideascaleProfiles: PaginatedData<IdeascaleProfileData[]>;
     bookmarkCollection: BookmarkCollectionData;
     filters: SearchParams;
+    pendingInvitations?: any[];
 }
     | {
     type: 'reviews';
     reviews: PaginatedData<ReviewData[]>;
     bookmarkCollection: BookmarkCollectionData;
     filters: SearchParams;
+    pendingInvitations?: any[];
 };
-
-
 
 const View = (props: BookmarkCollectionListProps) => {
     return <BookmarkCollectionPage {...props} mode="view" />;

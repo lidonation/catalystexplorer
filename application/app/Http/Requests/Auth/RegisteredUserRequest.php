@@ -15,6 +15,7 @@ class RegisteredUserRequest extends FormRequest
             'name' => 'required|string|max:255|min:3',
             'email' => 'required|string|lowercase|email|max:255|unique:users,email',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'language' => 'nullable|string|in:am,ar,de,en,es,fr,ja,ko,pt,sw,zh',
         ];
     }
 }

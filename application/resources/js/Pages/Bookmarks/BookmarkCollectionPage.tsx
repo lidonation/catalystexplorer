@@ -14,10 +14,12 @@ import {
     generateLocalizedRoute,
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
+import { useWorkflowUrl } from '@/utils/workflowUrls';
 import { Head, router, usePage } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useState } from 'react';
+import { useStream } from '@laravel/stream-react';
 import CommunitiesPaginatedList from '../Communities/Partials/CommunitiesPaginatedList';
 import GroupPaginatedList from '../Groups/Partials/GroupPaginatedList';
 import IdeascaleProfilePaginatedList from '../IdeascaleProfile/Partials/IdeascaleProfilePaginatedList';
@@ -26,7 +28,7 @@ import ProposalPaginatedList from '../Proposals/Partials/ProposalPaginatedList';
 import ProposalPdfView from '../Proposals/Partials/ProposalPdfView';
 import BookmarkModelSearch from './Partials/BookmarkModelSearch';
 import DropdownMenu, { DropdownMenuItem } from './Partials/DropdownMenu';
-import EditListForm, { ListForm } from './Partials/EditListForm';
+import ListSettingsForm, { ListForm } from './Partials/ListSettingsForm.tsx';
 import { useUserSetting } from '@/Hooks/useUserSettings';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
@@ -35,6 +37,7 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 import GroupData = App.DataTransferObjects.GroupData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ReviewData = App.DataTransferObjects.ReviewData;
+import RichContent from '@/Components/RichContent.tsx';
 
 type BookmarkCollectionListProps =
     | {
@@ -70,6 +73,7 @@ type BookmarkCollectionListProps =
 
 type BookmarkCollectionPageProps = BookmarkCollectionListProps & {
     mode: 'manage' | 'view';
+    pendingInvitations?: any[];
 };
 
 const BookmarkCollectionPage = (props: BookmarkCollectionPageProps) => {
@@ -149,9 +153,7 @@ const BookmarkCollectionPage = (props: BookmarkCollectionPageProps) => {
 
             <header className="container mt-4 flex flex-col items-start lg:mt-6">
                 <Title level="1">{bookmarkCollection.title ?? ''}</Title>
-                <p className="text-content">
-                    {t(bookmarkCollection.content ?? '')}
-                </p>
+                <RichContent content={bookmarkCollection.content ?? ''} format={'markdown'} />
             </header>
 
             <BookmarkProvider
@@ -195,10 +197,11 @@ const BookmarkCollectionPage = (props: BookmarkCollectionPageProps) => {
                         onClose={() => setActiveEditModal(false)}
                         logo={false}
                     >
-                        <EditListForm
+                        <ListSettingsForm
                             bookmarkCollection={bookmarkCollection}
                             handleSave={handleUpdate}
                             handleDelete={() => setActiveConfirm(true)}
+                            pendingInvitations={props.pendingInvitations}
                         />
                     </Modal>
 
@@ -244,9 +247,17 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
     const { auth } = usePage().props;
     const user = bookmarkCollection?.author;
     const isAuthor = auth?.user?.id == user?.id;
+    
+    // Check if the current user is a contributor
+    const isContributor = bookmarkCollection?.collaborators?.some(
+        (collaborator: any) => collaborator.id === auth?.user?.id
+    );
+    
+    // User can manage if they are the author or a contributor
+    const canManage = isAuthor || isContributor;
 
-    // For manage mode, always treat as author. For view mode, check actual authorship
-    const showAuthorControls = mode === 'manage' || isAuthor;
+    // For manage mode, always show controls. For view mode, check if user can manage
+    const showAuthorControls = mode === 'manage' || canManage;
 
     // Simple state for QuickPitch view (not persisted to IndexedDB)
     const [quickPitchView, setQuickPitchView] = useState(
@@ -260,10 +271,14 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
 
     const [activeEditModal, setActiveEditModal] = useState<boolean>(false);
 
+    const [streamedProposals, setStreamedProposals] = useState<ProposalData[]>([]);
+
     const hasItems = (bookmarkCollection.items_count ?? 0) > 0;
     const isVoterList = bookmarkCollection.list_type === 'voter';
     const isTinderList = bookmarkCollection.list_type === 'tinder';
     const isNormalList = bookmarkCollection.list_type === 'normal';
+ 
+    const { data, isFetching, isStreaming, send, cancel } = useStream('stream');
 
     const getPublishToIpfsTooltip = () => {
         if (!hasItems && !isVoterList) {
@@ -282,34 +297,33 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
         console.log('PDF View setting changed:', isPdfView);
     }, [isPdfView]);
 
-    const getWorkflowUrl = () => {
-        const step = 3;
-
-        switch (bookmarkCollection.list_type) {
-            case 'voter':
-                return useLocalizedRoute('workflows.createVoterList.index', {
-                    step,
-                    bookmarkCollection: bookmarkCollection.id
-                });
-
-            case 'tinder':
-                return useLocalizedRoute('workflows.tinderProposal.index', {
-                    step,
-                    leftBookmarkCollectionHash: bookmarkCollection.workflow_params?.leftBookmarkCollectionHash,
-                    rightBookmarkCollectionHash: bookmarkCollection.workflow_params?.rightBookmarkCollectionHash,
-                    tinderCollectionHash: bookmarkCollection.workflow_params?.tinderCollectionHash
-                });
-
-            case 'normal':
-                return useLocalizedRoute('workflows.bookmarks.index', {
-                    step,
-                    bookmarkCollection: bookmarkCollection.id
-                });
-
-            default:
-                return '';
+    // Stream data for voter lists
+    useEffect(() => {
+        if (isVoterList && type === 'proposals') {
+            send({});
         }
-    };
+    }, [isVoterList, bookmarkCollection.items_count]);
+
+    // Parse streamed data
+    useEffect(() => {
+        if (!data || !isVoterList) {
+            return;
+        }
+        
+        const lines = data.trim().split('\n');
+        const parsed: ProposalData[] = lines.map(line => {
+            try {
+                return JSON.parse(line) as ProposalData;
+            } catch (e) {
+                return null;
+            }
+        }).filter((x): x is ProposalData => x !== null);
+
+        setStreamedProposals(parsed);
+    }, [data, isVoterList]);
+
+  
+
 
     const getDropdownMenuItems = (): DropdownMenuItem[] => {
         const baseItems: DropdownMenuItem[] = [
@@ -329,7 +343,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                 {
                     label: t('workflows.tinderProposal.step4.keepSwiping'),
                     type: 'link' as const,
-                    href: isTinderList ? getWorkflowUrl() : '',
+                    href: isTinderList ? useWorkflowUrl(bookmarkCollection) : '',
                     disabled: !isTinderList,
                     disabledTooltip: !isTinderList ? t('workflows.tinderProposal.onlyTinderLists') : undefined
                 },
@@ -344,7 +358,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                 {
                     label: t('bookmarks.editListItem'),
                     type: 'link' as const,
-                    href: ((isVoterList || isNormalList)) ? getWorkflowUrl() : '',
+                    href: ((isVoterList || isNormalList)) ? useWorkflowUrl(bookmarkCollection) : '',
                     disabled: isTinderList,
                     disabledTooltip: isTinderList ? t('workflows.tinderProposal.cannotEditTinderItems') : undefined
                 },
@@ -360,13 +374,13 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                 }
             );
         } else {
-            // View mode items (for authors only)
-            if (isAuthor) {
+            // View mode items (for authors and contributors)
+            if (canManage) {
                 baseItems.push(
                     {
                         label: t('workflows.tinderProposal.step4.keepSwiping'),
                         type: 'link' as const,
-                        href: isTinderList ? getWorkflowUrl() : '',
+                        href: isTinderList ? useWorkflowUrl(bookmarkCollection) : '',
                         disabled: !isTinderList,
                         disabledTooltip: !isTinderList ? t('workflows.tinderProposal.onlyTinderLists') : undefined
                     },
@@ -381,7 +395,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                     {
                         label: t('bookmarks.editListItem'),
                         type: 'link' as const,
-                        href: ((isVoterList || isNormalList)) ? getWorkflowUrl() : '',
+                        href: ((isVoterList || isNormalList)) ? useWorkflowUrl(bookmarkCollection) : '',
                         disabled: isTinderList,
                         disabledTooltip: isTinderList ? t('workflows.tinderProposal.cannotEditTinderItems') : undefined
                     },
@@ -424,13 +438,30 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                     ? props.proposals.data.length
                     : 0;
 
+                // Use streamed data for voter lists
+                const proposalsData = isVoterList 
+                    ? {
+                        ...props.proposals,
+                        data: streamedProposals,
+                      }
+                    : props.proposals;
+
+                if (isVoterList && !streamedProposals.length ) {
+                    return (
+                        <div className="container flex justify-center items-center py-8">
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                        </div>
+                    );
+                }
+
                 if (isPdfView) {
                     return (
                         <div className="container">
                             <ProposalPdfView
-                                proposals={props.proposals}
+                                proposals={proposalsData}
                                 isAuthor={showAuthorControls}
                                 listTitle={bookmarkCollection.title ?? 'My List'}
+                                bookmarkCollection={bookmarkCollection}
                                 onOpenSettings={() => setActiveEditModal(true)}
                             />
                         </div>
@@ -438,11 +469,12 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                 }
                 return (
                     <ProposalPaginatedList
-                        proposals={props.proposals as PaginatedData<ProposalData[]>}
+                        proposals={proposalsData as PaginatedData<ProposalData[]>}
                         isHorizontal={isHorizontal ?? false}
                         isMini={isMini ?? false}
                         quickPitchView={quickPitchView}
                         setQuickPitchView={setQuickPitchView}
+                        disableInertiaLoading={isVoterList}
                     />
                 );
             case 'communities':
@@ -512,7 +544,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                 onClose={() => setActiveEditModal(false)}
                 contentClasses="max-w-lg"
             >
-                <EditListForm
+                <ListSettingsForm
                     bookmarkCollection={bookmarkCollection}
                     handleSave={(form: ListForm) => {
                         // Handle form submission
@@ -531,6 +563,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                         // Handle delete if needed
                         setActiveEditModal(false);
                     }}
+                    pendingInvitations={props.pendingInvitations}
                 />
             </Modal>
         </div>

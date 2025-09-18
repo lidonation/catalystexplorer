@@ -5,24 +5,33 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\DataTransferObjects\BookmarkCollectionData;
+use App\DataTransferObjects\UserData;
 use App\Enums\BookmarkableType;
 use App\Enums\BookmarkStatus;
 use App\Enums\BookmarkVisibility;
 use App\Enums\ProposalSearchParams;
 use App\Enums\QueryParamsEnum;
+use App\Mail\BookmarkCollectionInvitation;
 use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
+use App\Models\Comment;
 use App\Models\Community;
 use App\Models\Group;
 use App\Models\IdeascaleProfile;
 use App\Models\Proposal;
 use App\Models\Review;
+use App\Models\User;
 use App\Repositories\BookmarkCollectionRepository;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -73,19 +82,65 @@ class BookmarksController extends Controller
     {
         $this->setFilters($request);
 
+        $isVoterList = $bookmarkCollection->list_type === 'voter';
+
+        if ($isVoterList) {
+            // Load minimal required data
+            $bookmarkCollection->load(['author', 'collaborators']);
+            $pendingInvitations = $this->getPendingInvitations($bookmarkCollection);
+
+            $emptyPagination = [
+                'data' => [],
+            ];
+
+            $props = [
+                'bookmarkCollection' => $bookmarkCollection->toArray(),
+                'type' => $type,
+                'search' => $this->search,
+                'sortBy' => $this->sortBy,
+                'sortOrder' => $this->sortOrder,
+                'sort' => "{$this->sortBy}:{$this->sortOrder}",
+                'filters' => $this->filters,
+                'queryParams' => $this->queryParams,
+                $type => $emptyPagination,
+                'pendingInvitations' => array_values($pendingInvitations),
+            ];
+
+            return Inertia::render('Bookmarks/View', $props);
+        }
+
         $model_type = BookmarkableType::from(Str::kebab($type))->getModelClass();
+
+        $relationshipsMap = [
+            Proposal::class => ['users', 'fund', 'campaign', 'schedule'],
+            Group::class => ['ideascale_profiles'],
+            Community::class => ['ideascale_profiles'],
+        ];
+
+        $countMap = [
+            Group::class => ['proposals', 'funded_proposals'],
+            Community::class => ['ideascale_profiles', 'proposals'],
+        ];
+
+        $relationships = $relationshipsMap[$model_type] ?? [];
+        $counts = $countMap[$model_type] ?? [];
 
         $bookmarkItemIds = $bookmarkCollection->items
             ->where('model_type', $model_type)
             ->pluck('model_id')
             ->toArray();
 
-        $pagination = $this->queryModelsUnpaginated($model_type, $bookmarkItemIds);
+        $pagination = $this->queryModels($model_type, $bookmarkItemIds, $relationships, $counts);
+
         $typesCounts = $this->getFilteredTypesCounts($bookmarkCollection);
+
+        // Load collaborators and get pending invitations
+        $bookmarkCollection->load(['author', 'collaborators']);
+        $pendingInvitations = $this->getPendingInvitations($bookmarkCollection);
 
         $props = [
             'bookmarkCollection' => array_merge(
-                $bookmarkCollection->load('author')->toArray(),
+                $bookmarkCollection->toArray(),
                 ['types_count' => $typesCounts]
             ),
             'type' => $type,
@@ -96,6 +151,7 @@ class BookmarksController extends Controller
             'filters' => $this->filters,
             'queryParams' => $this->queryParams,
             $type => $pagination,
+            'pendingInvitations' => array_values($pendingInvitations),
         ];
 
         return Inertia::render('Bookmarks/View', $props);
@@ -144,7 +200,7 @@ class BookmarksController extends Controller
         return $typesCounts;
     }
 
-    protected function queryModels(string $modelType, array $constrainToIds = []): array
+    protected function queryModels(string $modelType, array $constrainToIds = [], array $relationships = [], array $counts = []): array
     {
         if ($this->search) {
             $searchBuilder = $modelType::search($this->search);
@@ -160,6 +216,14 @@ class BookmarksController extends Controller
             $data = $searchBuilder->paginate($this->perPage, ProposalSearchParams::PAGE()->value);
         } else {
             $query = $modelType::query();
+
+            if (! empty($relationships)) {
+                $query->with($relationships);
+            }
+
+            if (! empty($counts)) {
+                $query->withCount($counts);
+            }
 
             if (! empty($constrainToIds)) {
                 $query->whereIn('id', $constrainToIds);
@@ -179,6 +243,23 @@ class BookmarksController extends Controller
 
     protected function queryModelsUnpaginated(string $modelType, array $constrainToIds = [], array $relationships = [], array $counts = []): array
     {
+        // If no specific IDs are provided, return empty result to avoid querying all records
+        if (empty($constrainToIds)) {
+            $pagination = new LengthAwarePaginator(
+                [],
+                0,
+                $this->perPage,
+                $this->currentPage,
+                [
+                    'pageName' => ProposalSearchParams::PAGE()->value,
+                    'path' => request()->url(),
+                    'query' => request()->query(),
+                ]
+            );
+
+            return $pagination->toArray();
+        }
+
         if ($this->search) {
             $searchBuilder = $modelType::search($this->search);
 
@@ -237,18 +318,36 @@ class BookmarksController extends Controller
 
     public function manage(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals'): Response
     {
-        if ($request->user()->id != $bookmarkCollection->id) {
-            Inertia::render('Error404');
-        }
+        Gate::authorize('update', $bookmarkCollection);
 
         $this->setFilters($request);
 
         $currentPage = request(ProposalSearchParams::PAGE()->value, 1);
 
+        $isVoterList = $bookmarkCollection->list_type === 'voter';
+
+        if ($isVoterList) {
+            $bookmarkCollection->load(['author', 'collaborators']);
+            $pendingInvitations = $this->getPendingInvitations($bookmarkCollection);
+
+            $emptyPagination = [
+                'data' => [],
+            ];
+
+            return Inertia::render('Bookmarks/Manage', [
+                'bookmarkCollection' => $bookmarkCollection,
+                'type' => $type,
+                'filters' => array_merge([ProposalSearchParams::PAGE()->value => $currentPage]),
+                $type => $emptyPagination,
+                'owner' => UserData::from($bookmarkCollection->author),
+                'pendingInvitations' => array_values($pendingInvitations),
+            ]);
+        }
+
         $model_type = BookmarkableType::from(Str::kebab($type))->getModelClass();
 
         $relationshipsMap = [
-            Proposal::class => ['users', 'fund', 'campaign'],
+            Proposal::class => ['users', 'fund', 'campaign', 'schedule'],
             Group::class => ['ideascale_profiles'],
             Community::class => ['ideascale_profiles'],
         ];
@@ -258,7 +357,7 @@ class BookmarksController extends Controller
             Community::class => ['ideascale_profiles', 'proposals'],
         ];
 
-        $relationships = $relationshipsMap[$model_type] ?? [];
+        $relationships = array_merge($relationshipsMap[$model_type] ?? [], []);
         $counts = $countMap[$model_type] ?? [];
 
         $bookmarkItemIds = $bookmarkCollection->items
@@ -266,13 +365,20 @@ class BookmarksController extends Controller
             ->pluck('model_id')
             ->toArray();
 
-        $pagination = $this->queryModelsUnpaginated($model_type, $bookmarkItemIds, $relationships, $counts);
+        $pagination = $this->queryModels($model_type, $bookmarkItemIds, $relationships, $counts);
+
+        $bookmarkCollection->load(['author', 'collaborators']);
+
+        // Get pending invitations
+        $pendingInvitations = $this->getPendingInvitations($bookmarkCollection);
 
         return Inertia::render('Bookmarks/Manage', [
-            'bookmarkCollection' => $bookmarkCollection->load('author'),
+            'bookmarkCollection' => $bookmarkCollection,
             'type' => $type,
             'filters' => array_merge([ProposalSearchParams::PAGE()->value => $currentPage]),
             $type => $pagination,
+            'owner' => UserData::from($bookmarkCollection->author),
+            'pendingInvitations' => array_values($pendingInvitations), // Convert to indexed array for frontend
         ]);
     }
 
@@ -322,9 +428,9 @@ class BookmarksController extends Controller
         $args['offset'] = ($page - 1) * $limit;
         $args['limit'] = $limit;
 
-        $reviews = app(BookmarkCollectionRepository::class);
+        $lists = app(BookmarkCollectionRepository::class);
 
-        $builder = $reviews->search(
+        $builder = $lists->search(
             $this->search ?? '',
             $args
         );
@@ -397,11 +503,11 @@ class BookmarksController extends Controller
         $collection = BookmarkCollection::find($request->bookmarkCollection ?? $request->input('bookmarkCollectionId'));
 
         $modelMap = [
-            \App\Models\Proposal::class => 'proposals',
-            \App\Models\Review::class => 'reviews',
-            \App\Models\Group::class => 'groups',
-            \App\Models\Community::class => 'communities',
-            \App\Models\IdeascaleProfile::class => 'ideascaleProfiles',
+            Proposal::class => 'proposals',
+            Review::class => 'reviews',
+            Group::class => 'groups',
+            Community::class => 'communities',
+            IdeascaleProfile::class => 'ideascaleProfiles',
         ];
 
         $selectedItemsByType = $collection->items
@@ -435,11 +541,42 @@ class BookmarksController extends Controller
         }
 
         $collection = BookmarkCollection::find($request->bookmarkCollection ?? $request->input('bookmarkCollectionId'));
+        $collection->load(['author', 'collaborators']);
+
+        // Get pending invitations
+        $pendingInvitations = $this->getPendingInvitations($collection);
 
         return Inertia::render('Workflows/CreateBookmark/Step4', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
-            'rationale' => $collection->meta_info?->rationale,
+            'bookmarkCollection' => $collection,
+            'bookmarkCollectionId' => $collection->id,
+            'contributors' => UserData::collect($collection->collaborators),
+            'owner' => UserData::from($collection->author),
+            'pendingInvitations' => array_values($pendingInvitations), // Convert to indexed array for frontend
+        ]);
+    }
+
+    public function step5(Request $request): RedirectResponse|Response
+    {
+        if (empty($request->bookmarkCollection) && ! $request->filled('bookmarkCollectionId')) {
+            return to_route('workflows.bookmarks.index', [
+                'step' => 2,
+            ]);
+        }
+
+        $collection = BookmarkCollection::find($request->bookmarkCollection ?? $request->input('bookmarkCollectionId'));
+
+        $rationale = $collection->comments()
+            ->where('commentator_id', $collection->user_id)
+            ->whereJsonContains('extra->type', 'rationale')
+            ->latest()
+            ->first()?->original_text;
+
+        return Inertia::render('Workflows/CreateBookmark/Step5', [
+            'stepDetails' => $this->getStepDetails(),
+            'activeStep' => intval($request->step),
+            'rationale' => $rationale,
             'bookmarkCollection' => $collection->id,
             'bookmarkCollectionId' => $collection->id,
         ]);
@@ -491,7 +628,7 @@ class BookmarksController extends Controller
         $bookmarkCollection->searchable();
 
         return to_route('workflows.bookmarks.index', [
-            'step' => 3,
+            'step' => 4,
             'bookmarkCollection' => $bookmarkCollection->id,
             'bookmarkCollectionId' => $bookmarkCollection->id,
         ]);
@@ -499,6 +636,8 @@ class BookmarksController extends Controller
 
     public function addBookmarkItem(BookmarkCollection $bookmarkCollection, Request $request)
     {
+        Gate::authorize('addItems', $bookmarkCollection);
+
         $validated = $request->validate([
             'modelType' => ['required', 'string'],
             'hash' => ['required', 'string'],
@@ -530,6 +669,8 @@ class BookmarksController extends Controller
 
     public function removeBookmarkItem(BookmarkCollection $bookmarkCollection, Request $request): RedirectResponse
     {
+        Gate::authorize('removeItems', $bookmarkCollection);
+
         $validated = $request->validate([
             'modelType' => ['required', 'string'],
             'hash' => ['required', 'string'],
@@ -570,7 +711,14 @@ class BookmarksController extends Controller
             'rationale' => 'required|string|min:69',
         ]);
 
-        $bookmarkCollection->saveMeta('rationale', $validated['rationale']);
+        Comment::create([
+            'commentable_type' => BookmarkCollection::class,
+            'commentable_id' => $bookmarkCollection->id,
+            'text' => $validated['rationale'],
+            'original_text' => $validated['rationale'],
+            'commentator_id' => auth()->user()?->id,
+            'extra' => ['type' => 'rationale'], // Mark this as a rationale comment
+        ]);
 
         if ($bookmarkCollection && $bookmarkCollection->status === BookmarkStatus::DRAFT()->value) {
             $bookmarkCollection->update(['status' => BookmarkStatus::PUBLISHED()->value]);
@@ -579,6 +727,267 @@ class BookmarksController extends Controller
         $bookmarkCollection->searchable();
 
         return to_route('workflows.bookmarks.success');
+    }
+
+    public function inviteContributor(BookmarkCollection $bookmarkCollection, Request $request): RedirectResponse
+    {
+        Gate::authorize('update', $bookmarkCollection);
+
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $invitedUser = User::findOrFail($validated['user_id']);
+        $inviter = Auth::user();
+
+        // Check if user is already a contributor
+        if ($bookmarkCollection->contributors()->where('user_id', $validated['user_id'])->exists()) {
+            return back()->withErrors(['message' => 'User is already a contributor to this collection.']);
+        }
+
+        // Get existing invitations from metas
+        $existingInvitations = $this->getPendingInvitations($bookmarkCollection);
+
+        // Check if user already has a pending invitation
+        if (isset($existingInvitations[$validated['user_id']])) {
+            return back()->withErrors(['message' => 'User already has a pending invitation to this collection.']);
+        }
+
+        // Generate invitation token
+        $token = Str::random(60);
+
+        // Add invitation to existing invitations
+        $existingInvitations[$validated['user_id']] = [
+            'user_id' => $validated['user_id'],
+            'user_email' => $invitedUser->email,
+            'user_name' => $invitedUser->name,
+            'inviter_id' => $inviter->id,
+            'inviter_name' => $inviter->name,
+            'token' => $token,
+            'invited_at' => now()->toISOString(),
+            'status' => 'pending',
+        ];
+
+        // Store invitations in metas table
+        $bookmarkCollection->saveMeta('invitations', json_encode($existingInvitations));
+
+        // Send invitation email
+        try {
+
+            // Use raw email attributes to bypass potential policy issues
+            $invitedUserEmail = $invitedUser->getAttributes()['email'] ?? $invitedUser->email;
+
+            Mail::to($invitedUserEmail, $invitedUser->name)->send(
+                new BookmarkCollectionInvitation($inviter, $invitedUser, $bookmarkCollection, $token)
+            );
+
+            return back()->with('success', 'Invitation sent successfully to '.$invitedUser->name.'.');
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            Log::error('Failed to send bookmark invitation email: '.$e->getMessage(), [
+                'inviter_id' => $inviter->id,
+                'invited_user_id' => $invitedUser->id,
+                'invited_user_email' => $invitedUser->email,
+                'collection_id' => $bookmarkCollection->id,
+            ]);
+
+            // Remove the invitation from metas if email failed
+            unset($existingInvitations[$validated['user_id']]);
+            $bookmarkCollection->saveMeta('invitations', json_encode($existingInvitations));
+
+            return back()->withErrors(['message' => 'Failed to send invitation email. Please try again.']);
+        }
+    }
+
+    public function removeContributor(BookmarkCollection $bookmarkCollection, Request $request): RedirectResponse
+    {
+        Gate::authorize('update', $bookmarkCollection);
+
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $bookmarkCollection->contributors()->detach($validated['user_id']);
+
+        return back()->with('success', 'Contributor removed successfully.');
+    }
+
+    public function searchUsers(Request $request)
+    {
+        $validated = $request->validate([
+            'query' => 'required|string|min:2',
+        ]);
+
+        $users = User::where('name', 'ILIKE', '%'.$validated['query'].'%')
+            ->orWhere('email', 'ILIKE', '%'.$validated['query'].'%')
+            ->limit(10)
+            ->with('media')
+            ->get();
+
+        return UserData::collect($users);
+    }
+
+    /**
+     * Get pending invitations for a bookmark collection
+     */
+    protected function getPendingInvitations(BookmarkCollection $bookmarkCollection): array
+    {
+        $invitationsMeta = $bookmarkCollection->metas()->where('key', 'invitations')->first();
+
+        if (! $invitationsMeta || empty($invitationsMeta->content)) {
+            return [];
+        }
+
+        try {
+            return json_decode($invitationsMeta->content, true) ?? [];
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    /**
+     * Accept a bookmark collection invitation
+     */
+    public function acceptInvitation(Request $request): RedirectResponse
+    {
+        $token = $request->query('token');
+        $collectionId = $request->query('collection');
+
+        if (! $token || ! $collectionId) {
+            abort(404);
+        }
+
+        $bookmarkCollection = BookmarkCollection::findOrFail($collectionId);
+        $invitations = $this->getPendingInvitations($bookmarkCollection);
+
+        // Find invitation by token
+        $invitation = null;
+        $userId = null;
+        foreach ($invitations as $uid => $inv) {
+            if ($inv['token'] === $token && $inv['status'] === 'pending') {
+                $invitation = $inv;
+                $userId = $uid;
+                break;
+            }
+        }
+
+        if (! $invitation) {
+            return redirect()->route('lists.index')
+                ->withErrors(['message' => 'Invalid or expired invitation.']);
+        }
+
+        // Check if user is authenticated and matches invitation
+        $currentUser = Auth::user();
+
+        if (! $currentUser) {
+            // User not authenticated - redirect to login
+            session(['invitation_token' => $token, 'invitation_collection' => $collectionId]);
+
+            return redirect()->route('login')
+                ->with('message', 'Please log in to accept the invitation.');
+        }
+
+        if ($currentUser->id !== $userId) {
+            // User mismatch - show error with better explanation
+            $invitedUser = User::find($userId);
+            $invitedUserEmail = $invitedUser ? $invitedUser->getAttributes()['email'] : 'Unknown';
+
+            return redirect()->route('lists.index')
+                ->withErrors([
+                    'message' => "This invitation was sent to {$invitedUserEmail}. Please log in as that user to accept the invitation, or contact the person who invited you.",
+                ]);
+        }
+
+        // Check if user is already a contributor
+        if ($bookmarkCollection->contributors()->where('user_id', $userId)->exists()) {
+            // Mark invitation as accepted and remove it
+            unset($invitations[$userId]);
+            $bookmarkCollection->saveMeta('invitations', json_encode($invitations));
+
+            return redirect()->route('my.lists.manage', ['bookmarkCollection' => $bookmarkCollection->id])
+                ->with('success', 'You are already a contributor to this collection.');
+        }
+
+        // Add user as contributor
+        $bookmarkCollection->contributors()->attach($userId);
+
+        // Mark invitation as accepted and remove it
+        unset($invitations[$userId]);
+        $bookmarkCollection->saveMeta('invitations', json_encode($invitations));
+
+        // Store collection ID in session for success page
+        session(['invitation_accepted_collection' => $bookmarkCollection->id]);
+
+        return redirect()->route('workflows.acceptInvitation.success')
+            ->with('success', 'You have successfully joined the "'.$bookmarkCollection->title.'" collection!');
+    }
+
+    /**
+     * Cancel a pending invitation
+     */
+    public function cancelInvitation(BookmarkCollection $bookmarkCollection, Request $request): RedirectResponse
+    {
+        Gate::authorize('update', $bookmarkCollection);
+
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $invitations = $this->getPendingInvitations($bookmarkCollection);
+
+        if (isset($invitations[$validated['user_id']])) {
+            $userName = $invitations[$validated['user_id']]['user_name'] ?? 'User';
+            unset($invitations[$validated['user_id']]);
+            $bookmarkCollection->saveMeta('invitations', json_encode($invitations));
+
+            return back()->with('success', 'Invitation to '.$userName.' has been cancelled.');
+        }
+
+        return back()->withErrors(['message' => 'No pending invitation found for this user.']);
+    }
+
+    /**
+     * Resend an invitation
+     */
+    public function resendInvitation(BookmarkCollection $bookmarkCollection, Request $request): RedirectResponse
+    {
+        Gate::authorize('update', $bookmarkCollection);
+
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $invitations = $this->getPendingInvitations($bookmarkCollection);
+
+        if (! isset($invitations[$validated['user_id']])) {
+            return back()->withErrors(['message' => 'No pending invitation found for this user.']);
+        }
+
+        $invitation = $invitations[$validated['user_id']];
+        $invitedUser = User::findOrFail($validated['user_id']);
+        $inviter = Auth::user();
+
+        try {
+            $invitedUserEmail = $invitedUser->getAttributes()['email'] ?? $invitedUser->email;
+
+            Mail::to($invitedUserEmail, $invitedUser->name)->send(
+                new BookmarkCollectionInvitation($inviter, $invitedUser, $bookmarkCollection, $invitation['token'])
+            );
+
+            $invitations[$validated['user_id']]['resent_at'] = now()->toISOString();
+            $bookmarkCollection->saveMeta('invitations', json_encode($invitations));
+
+            return back()->with('success', 'Invitation resent successfully to '.$invitedUser->name.'.');
+        } catch (\Exception $e) {
+            Log::error('Failed to resend bookmark invitation email: '.$e->getMessage(), [
+                'inviter_id' => $inviter->id,
+                'invited_user_id' => $invitedUser->id,
+                'invited_user_email' => $invitedUser->email,
+                'collection_id' => $bookmarkCollection->id,
+            ]);
+
+            return back()->withErrors(['message' => 'Failed to resend invitation email. Please try again.']);
+        }
     }
 
     public function getStepDetails(): Collection
@@ -596,9 +1005,386 @@ class BookmarksController extends Controller
                 'info' => 'workflows.bookmarks.listItemsInfo',
             ],
             [
+                'title' => 'workflows.bookmarks.contributors',
+                'info' => 'workflows.bookmarks.contributorsInfo',
+            ],
+            [
                 'title' => 'workflows.bookmarks.rationale',
                 'info' => 'workflows.bookmarks.rationaleInfo',
             ],
+        ]);
+    }
+
+    /**
+     * Calculate optimal column configuration based on available space
+     */
+    protected function calculateColumnConfiguration(array $columns, string $orientation, string $paperSize): array
+    {
+        $availableWidths = [
+            'A4' => [
+                'portrait' => 520,
+                'landscape' => 750,
+            ],
+            'A3' => [
+                'portrait' => 750,
+                'landscape' => 1050,
+            ],
+        ];
+
+        $totalWidth = $availableWidths[$paperSize][$orientation];
+        $columnCount = count($columns);
+
+        $columnPriorities = [
+            'title' => ['priority' => 1, 'minWidth' => 200, 'flex' => 3],
+            'budget' => ['priority' => 2, 'minWidth' => 80, 'flex' => 1],
+            'category' => ['priority' => 3, 'minWidth' => 100, 'flex' => 2],
+            'teams' => ['priority' => 4, 'minWidth' => 180, 'flex' => 2],
+            'users' => ['priority' => 4, 'minWidth' => 180, 'flex' => 2],
+            'fund' => ['priority' => 5, 'minWidth' => 80, 'flex' => 1],
+            'status' => ['priority' => 6, 'minWidth' => 80, 'flex' => 1],
+            'funding_status' => ['priority' => 6, 'minWidth' => 80, 'flex' => 1],
+            'yes_votes_count' => ['priority' => 7, 'minWidth' => 70, 'flex' => 1],
+            'yesVotes' => ['priority' => 7, 'minWidth' => 70, 'flex' => 1],
+            'abstain_votes_count' => ['priority' => 8, 'minWidth' => 70, 'flex' => 1],
+            'abstainVotes' => ['priority' => 8, 'minWidth' => 70, 'flex' => 1],
+            'no_votes_count' => ['priority' => 9, 'minWidth' => 70, 'flex' => 1],
+            'openSourced' => ['priority' => 10, 'minWidth' => 60, 'flex' => 1],
+            'opensource' => ['priority' => 10, 'minWidth' => 60, 'flex' => 1],
+        ];
+
+        $config = [];
+        $totalFlex = 0;
+        $totalMinWidth = 0;
+
+        foreach ($columns as $column) {
+            $columnInfo = $columnPriorities[$column] ?? ['priority' => 999, 'minWidth' => 80, 'flex' => 1];
+            $totalFlex += $columnInfo['flex'];
+            $totalMinWidth += $columnInfo['minWidth'];
+
+            $config[$column] = $columnInfo;
+        }
+
+        if ($totalMinWidth > $totalWidth) {
+            $uniformWidth = floor($totalWidth / $columnCount);
+            foreach ($columns as $column) {
+                $config[$column]['width'] = $uniformWidth;
+                $config[$column]['fontSize'] = $columnCount > 10 ? '10px' : ($columnCount > 7 ? '11px' : '12px');
+                $config[$column]['truncate'] = $uniformWidth < 100;
+            }
+        } else {
+            $remainingWidth = $totalWidth - $totalMinWidth;
+
+            foreach ($columns as $column) {
+                $flexRatio = $config[$column]['flex'] / $totalFlex;
+                $additionalWidth = floor($remainingWidth * $flexRatio);
+                $config[$column]['width'] = $config[$column]['minWidth'] + $additionalWidth;
+                $config[$column]['fontSize'] = $columnCount > 8 ? '11px' : '12px';
+                $config[$column]['truncate'] = false;
+            }
+        }
+
+        return $config;
+    }
+
+    /**
+     * Parse PDF configuration options from request
+     */
+    protected function parsePdfOptions(Request $request): array
+    {
+        $options = [
+            'orientation' => 'auto',
+            'paperSize' => 'auto',
+            'fontSize' => 'auto',
+            'maxColumnsPerPage' => null,
+        ];
+
+        $orientation = $request->input('pdf_orientation');
+        if (in_array($orientation, ['portrait', 'landscape', 'auto'])) {
+            $options['orientation'] = $orientation;
+        }
+
+        $paperSize = $request->input('pdf_paper_size');
+        if (in_array($paperSize, ['A4', 'A3', 'Letter', 'auto'])) {
+            $options['paperSize'] = $paperSize;
+        }
+
+        $fontSize = $request->input('pdf_font_size');
+        if (in_array($fontSize, ['small', 'medium', 'large', 'auto'])) {
+            $options['fontSize'] = $fontSize;
+        }
+
+        $maxColumns = $request->input('pdf_max_columns_per_page');
+        if (is_numeric($maxColumns) && $maxColumns > 0) {
+            $options['maxColumnsPerPage'] = (int) $maxColumns;
+        }
+
+        return $options;
+    }
+
+    public function downloadPdf(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals'): HttpResponse
+    {
+        // Set the locale for PDF generation from URL or user preference
+        $locale = $request->segment(1) ?? app()->getLocale();
+
+        // Validate locale against available language files
+        $availableLocales = ['en', 'es', 'fr', 'de', 'pt', 'am', 'ar', 'ja', 'ko', 'sw', 'zh'];
+        if (in_array($locale, $availableLocales)) {
+            app()->setLocale($locale);
+        }
+
+        $this->setFilters($request);
+
+        $model_type = BookmarkableType::from(Str::kebab($type))->getModelClass();
+
+        $relationshipsMap = [
+            Proposal::class => ['users', 'fund', 'campaign', 'schedule'],
+            Group::class => ['ideascale_profiles'],
+            Community::class => ['ideascale_profiles'],
+        ];
+
+        $countMap = [
+            Group::class => ['proposals', 'funded_proposals'],
+            Community::class => ['ideascale_profiles', 'proposals'],
+        ];
+
+        $relationships = $relationshipsMap[$model_type] ?? [];
+        $counts = $countMap[$model_type] ?? [];
+
+        $bookmarkItemIds = $bookmarkCollection->items
+            ->where('model_type', $model_type)
+            ->pluck('model_id')
+            ->toArray();
+
+        $proposalData = $this->getProposalsWithFullUserData($model_type, $bookmarkItemIds, $relationships, $counts);
+
+        $defaultPdfColumns = ['title', 'budget', 'category', 'openSourced', 'teams'];
+        $requestedColumns = $request->input('columns');
+
+        $userColumns = $defaultPdfColumns;
+        if ($requestedColumns) {
+            if (is_string($requestedColumns)) {
+                $decodedColumns = json_decode($requestedColumns, true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decodedColumns)) {
+                    $userColumns = $decodedColumns;
+                } else {
+                    $userColumns = array_filter(array_map('trim', explode(',', $requestedColumns)));
+                }
+            } elseif (is_array($requestedColumns)) {
+                $userColumns = $requestedColumns;
+            }
+        }
+
+        $columnsToUse = ! empty($userColumns) ? $userColumns : $defaultPdfColumns;
+
+        $pdfOptions = $this->parsePdfOptions($request);
+
+        $columnCount = count($columnsToUse);
+        $orientation = $pdfOptions['orientation'] ?? 'auto';
+        $paperSize = $pdfOptions['paperSize'] ?? 'auto';
+
+        if ($orientation === 'auto') {
+            $orientation = $columnCount > 5 ? 'landscape' : 'portrait';
+        }
+
+        if ($paperSize === 'auto') {
+            $paperSize = $columnCount > 8 ? 'A3' : 'A4';
+        }
+
+        $columnConfig = $this->calculateColumnConfiguration($columnsToUse, $orientation, $paperSize);
+
+        $catalystHeaderLogo = base64_encode(file_get_contents(public_path('img/catalyst-logo-dark-CZiPVQ7x.png')));
+        $catalystFooterLogo = base64_encode(file_get_contents(public_path('img/catalyst-explorer-icon.png')));
+
+        $pdf = Pdf::loadView('pdf.bookmark-collection', [
+            'bookmarkCollection' => $bookmarkCollection->load('author'),
+            'proposals' => $proposalData,
+            'type' => $type,
+            'itemCount' => count($proposalData),
+            'columns' => $columnsToUse,
+            'columnConfig' => $columnConfig,
+            'orientation' => $orientation,
+            'catalystHeaderLogo' => $catalystHeaderLogo,
+            'catalystFooterLogo' => $catalystFooterLogo,
+        ]);
+
+        $pdf->setPaper($paperSize, $orientation)
+            ->setOptions([
+                'defaultFont' => 'sans-serif',
+                'isHtml5ParserEnabled' => true,
+                'isPhpEnabled' => true,
+                'dpi' => 96,
+                'defaultPaperSize' => $paperSize,
+            ]);
+
+        $filename = Str::slug($bookmarkCollection->title ?? 'bookmark-collection').'-'.now()->format('Y-m-d').'.pdf';
+
+        return $pdf->download($filename);
+    }
+
+    /**
+     * Get proposals with full user profile data (including avatar URLs) for PDF export
+     */
+    protected function getProposalsWithFullUserData(string $modelType, array $constrainToIds = [], array $relationships = [], array $counts = []): array
+    {
+        if (empty($constrainToIds) || $modelType !== Proposal::class) {
+            return [];
+        }
+
+        $query = $modelType::query();
+
+        $modifiedRelationships = [];
+        foreach ($relationships as $relationship) {
+            if ($relationship === 'users') {
+                $modifiedRelationships[] = 'users.model';
+            } else {
+                $modifiedRelationships[] = $relationship;
+            }
+        }
+
+        if (! empty($modifiedRelationships)) {
+            $query->with($modifiedRelationships);
+        }
+
+        if (! empty($counts)) {
+            $query->withCount($counts);
+        }
+
+        $query->whereIn('id', $constrainToIds);
+
+        if ($this->sortBy && $this->sortOrder) {
+            $query->orderBy($this->sortBy, $this->sortOrder);
+        }
+
+        $allResults = $query->get();
+
+        $transformedResults = $allResults->map(function ($proposal) {
+            $proposalArray = $proposal->toArray();
+
+            if ($proposal->users && $proposal->users->count() > 0) {
+                $proposalArray['users'] = $proposal->users->map(function ($proposalProfile) {
+                    $profile = $proposalProfile->model;
+
+                    return [
+                        'id' => $profile?->id,
+                        'name' => $profile?->name,
+                        'hero_img_url' => $profile?->hero_img_url,
+                        'username' => $profile?->username,
+                        'bio' => $profile?->bio,
+                    ];
+                })->toArray();
+            }
+
+            return $proposalArray;
+        });
+
+        return $transformedResults->toArray();
+    }
+
+    /**
+     * Stream bookmark collection items for voter lists
+     */
+    public function streamBookmarkItems(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals')
+    {
+        $this->setFilters($request);
+
+        $model_type = BookmarkableType::from(Str::kebab($type))->getModelClass();
+
+        $relationshipsMap = [
+            Proposal::class => ['users', 'fund', 'campaign', 'schedule'],
+            Group::class => ['ideascale_profiles'],
+            Community::class => ['ideascale_profiles'],
+        ];
+
+        $countMap = [
+            Group::class => ['proposals', 'funded_proposals'],
+            Community::class => ['ideascale_profiles', 'proposals'],
+        ];
+
+        $relationships = $relationshipsMap[$model_type] ?? [];
+        $counts = $countMap[$model_type] ?? [];
+
+        $bookmarkItemIds = $bookmarkCollection->items
+            ->where('model_type', $model_type)
+            ->pluck('model_id')
+            ->toArray();
+
+        return response()->stream(function () use ($model_type, $bookmarkItemIds, $relationships, $counts) {
+            if (empty($bookmarkItemIds)) {
+                return;
+            }
+
+            if ($this->search) {
+                $searchBuilder = $model_type::search($this->search);
+                $searchBuilder->whereIn('id', $bookmarkItemIds);
+
+                if ($this->sortBy && $this->sortOrder) {
+                    $searchBuilder->orderBy($this->sortBy, $this->sortOrder);
+                }
+
+                $searchResults = $searchBuilder->get();
+                $searchIds = $searchResults->pluck('id')->toArray();
+
+                $query = $model_type::query();
+
+                if (! empty($relationships)) {
+                    $query->with($relationships);
+                }
+
+                if (! empty($counts)) {
+                    $query->withCount($counts);
+                }
+
+                $query->whereIn('id', $searchIds);
+
+                $modelsWithRelationships = $query->get()->keyBy('id');
+
+                // Maintain search order
+                $models = collect($searchIds)->map(function ($id) use ($modelsWithRelationships) {
+                    return $modelsWithRelationships->get($id);
+                })->filter();
+
+            } else {
+                $query = $model_type::query();
+
+                if (! empty($relationships)) {
+                    $query->with($relationships);
+                }
+
+                if (! empty($counts)) {
+                    $query->withCount($counts);
+                }
+
+                $query->whereIn('id', $bookmarkItemIds);
+
+                if ($this->sortBy && $this->sortOrder) {
+                    $query->orderBy($this->sortBy, $this->sortOrder);
+                }
+
+                $models = $query->get();
+            }
+
+            foreach ($models as $model) {
+                $dtoCollection = $model_type::toDtoCollection(collect([$model]));
+                $dto = $dtoCollection->first();
+
+                $json = json_encode($dto->toArray());
+
+                echo $json."\n";
+
+                // Flush buffers so the chunk is sent immediately
+                if (ob_get_level() > 0) {
+                    ob_flush();
+                    flush();
+                }
+
+                // Small delay to prevent overwhelming the client
+                usleep(10000);
+            }
+        }, 200, [
+            'Content-Type' => 'text/plain',
+            'X-Accel-Buffering' => 'no',
+            'Cache-Control' => 'no-cache',
+            'Connection' => 'keep-alive',
         ]);
     }
 }

@@ -35,10 +35,12 @@ interface ProposalTableViewProps {
     customActions?: {
         manage?: React.ComponentType<CustomActionProps>;
         view?: React.ComponentType<CustomActionProps>;
+        actions?: React.ComponentType<CustomActionProps>;
     };
     renderActions?: {
         manage?: (proposal: ProposalData) => React.ReactNode;
         view?: (proposal: ProposalData) => React.ReactNode;
+        actions?: (proposal: ProposalData) => React.ReactNode;
     };
     customStyles?: {
         tableWrapper?: string;
@@ -51,6 +53,9 @@ interface ProposalTableViewProps {
     };
     headerAlignment?: 'left' | 'center' | 'right';
     onColumnSelectorOpen?: () => void; // Callback to open column selector
+    protectedColumns?: string[];
+    excludeColumnsFromSelector?: string[];
+    disableInertiaLoading?: boolean; // Disable WhenVisible loading for streaming data
 }
 
 const renderIconOnlyViewActions = (proposal: ProposalData, actionsConfig: IconAction[] = ['compare', 'bookmark']) => {
@@ -134,7 +139,10 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
     renderActions,
     customStyles,
     headerAlignment = 'left',
-    onColumnSelectorOpen
+    onColumnSelectorOpen,
+    protectedColumns = [],
+    excludeColumnsFromSelector = ['manageProposal'],
+    disableInertiaLoading = false
 }) => {
     const { t } = useLaravelReactI18n();
 
@@ -146,36 +154,129 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
         isLoading: isColumnsLoading
     } = useUserSetting<string[]>(
         userSettingEnums.PROPOSAL_PDF_COLUMNS,
-        columns as string[] || defaultColumns
+        [...new Set([...(columns as string[] || defaultColumns), ...protectedColumns])]
     );
 
-    // Use selected columns if available, otherwise fall back to prop columns
-    const activeColumns = selectedColumns || columns;
+    // Separate dynamic configs from string columns in one pass
+    const dynamicConfigs: DynamicColumnConfig[] = [];
+    const propStringColumns: string[] = [];
+    
+    if (columns && Array.isArray(columns)) {
+        columns.forEach(col => {
+            if (typeof col === 'object') {
+                dynamicConfigs.push(col as DynamicColumnConfig);
+            } else if (typeof col === 'string') {
+                propStringColumns.push(col);
+            }
+        });
+    }
+    
+    const dynamicConfigKeys = new Set(dynamicConfigs.map(config => config.key));
+    const protectedColumnsSet = new Set(protectedColumns);
+    const excludedColumnsSet = new Set(excludeColumnsFromSelector);
+    
+    // Determine selected columns with protected columns included
+    const userSelectedColumns = selectedColumns || [...propStringColumns, ...Array.from(dynamicConfigKeys), ...defaultColumns];
+    const selectedColumnKeys = new Set([...userSelectedColumns, ...protectedColumns]);
+    
+    const activeColumns: (string | DynamicColumnConfig)[] = [];
+    
+    dynamicConfigs.forEach(config => {
+        if (selectedColumnKeys.has(config.key) || protectedColumnsSet.has(config.key)) {
+            if (!excludedColumnsSet.has(config.key) || protectedColumnsSet.has(config.key)) {
+                activeColumns.push(config);
+            }
+        }
+    });
+    
+    propStringColumns.forEach(col => {
+        if ((selectedColumnKeys.has(col) || protectedColumnsSet.has(col)) && !dynamicConfigKeys.has(col)) {
+            if (!excludedColumnsSet.has(col) || protectedColumnsSet.has(col)) {
+                activeColumns.push(col);
+            }
+        }
+    });
+    
+    userSelectedColumns.forEach(col => {
+        if (!propStringColumns.includes(col) && !dynamicConfigKeys.has(col) && !protectedColumnsSet.has(col)) {
+            if (!excludedColumnsSet.has(col)) {
+                activeColumns.push(col);
+            }
+        }
+    });
+
+    protectedColumns.forEach(col => {
+        const existsInActive = activeColumns.some(column => {
+            const columnKey = typeof column === 'string' ? column : column.key;
+            return columnKey === col;
+        });
+        if (!existsInActive) {
+            activeColumns.push(col);
+        }
+    });
+    
+    // Columns for selector (exclude protected columns from display but keep them in activeColumns)
+    const columnsForSelector = Array.from(selectedColumnKeys).filter(col => 
+        !excludedColumnsSet.has(col)
+    );
 
     const getActionsConfig = () => {
-        if (customActions || renderActions) {
-            return { customActions, renderActions };
-        }
-
-        if (iconOnlyActions) {
-            return {
-                renderActions: {
-                    view: (proposal: ProposalData) => renderIconOnlyViewActions(proposal, iconActionsConfig),
-                    manage: undefined
+        const actionRenderers = {
+            manage: customActions?.manage || renderActions?.manage 
+                ? (proposal: ProposalData) => {
+                    if (renderActions?.manage) {
+                        return renderActions.manage(proposal);
+                    }
+                    if (customActions?.manage) {
+                        const CustomManageAction = customActions.manage;
+                        return <CustomManageAction proposal={proposal} data-testid={`manage-proposal-button-${proposal.id}`} />;
+                    }
+                    return null;
                 }
-            };
-        }
-
-        return {
-            renderActions: {
-                view: (proposal: ProposalData) => renderDefaultViewAction(proposal, t),
-                manage: undefined
-            }
+                : undefined,
+            
+            view: customActions?.view || renderActions?.view
+                ? (proposal: ProposalData) => {
+                    if (renderActions?.view && !iconOnlyActions) {
+                        return renderActions.view(proposal);
+                    }
+                    if (customActions?.view) {
+                        const CustomViewAction = customActions.view;
+                        return <CustomViewAction proposal={proposal} data-testid={`view-proposal-button-${proposal.id}`} />;
+                    }
+                    return renderDefaultViewAction(proposal, t);
+                }
+                : (proposal: ProposalData) => renderDefaultViewAction(proposal, t),
+                
+            actions: iconOnlyActions || customActions?.actions || renderActions?.actions
+                ? (proposal: ProposalData) => {
+                    if (renderActions?.actions) {
+                        return renderActions.actions(proposal);
+                    }
+                    if (customActions?.actions) {
+                        const CustomActionsComponent = customActions.actions;
+                        return <CustomActionsComponent proposal={proposal} data-testid={`proposal-actions-${proposal.id}`} />;
+                    }
+                    if (iconOnlyActions) {
+                        return renderIconOnlyViewActions(proposal, iconActionsConfig);
+                    }
+                    return null;
+                }
+                : undefined
         };
+
+        return { renderActions: actionRenderers, customActions };
     };
 
     const handleColumnSelectionChange = (columns: string[]) => {
-        setSelectedColumns(columns);
+        // Save all selected columns to user settings (including dynamic config keys)
+        const columnsWithProtected = [...new Set([...columns, ...protectedColumns])];
+        
+        const filteredColumns = columnsWithProtected.filter(column => 
+            !excludeColumnsFromSelector.includes(column) || protectedColumns.includes(column)
+        );
+        
+        setSelectedColumns(filteredColumns);
     };
 
     const handleOpenColumnSelector = () => {
@@ -199,19 +300,19 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
                 {!isColumnsLoading && (
                     <div className="flex justify-start mb-4">
                         <ColumnSelector
-                            selectedColumns={selectedColumns || defaultColumns}
+                            selectedColumns={columnsForSelector}
                             onSelectionChange={handleColumnSelectionChange}
                             icon={<VerticalColumnIcon className="w-4 h-4" />}
                             className="z-10"
+                            excludeColumns={excludeColumnsFromSelector}
+                            protectedColumns={protectedColumns}
                         />
                     </div>
                 )}
                 
-                <WhenVisible
-                    fallback={<ProposalTableLoading />}
-                    data="proposals"
-                >
-                    {proposals?.data.length ? (
+                {disableInertiaLoading ? (
+                    // Direct render without WhenVisible for streaming data
+                    proposals?.data.length ? (
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -240,8 +341,45 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
                         >
                             <RecordsNotFound context="proposals" />
                         </motion.div>
-                    )}
-                </WhenVisible>
+                    )
+                ) : (
+                    // Use WhenVisible for normal Inertia loading
+                    <WhenVisible
+                        fallback={<ProposalTableLoading />}
+                        data="proposals"
+                    >
+                        {proposals?.data.length ? (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.4, ease: 'easeIn' }}
+                            >
+                                <ProposalTable
+                                    actionType={actionType}
+                                    disableSorting={disableSorting}
+                                    proposals={proposals}
+                                    columns={activeColumns}
+                                    showPagination={showPagination}
+                                    customActions={actionsConfig.customActions}
+                                    renderActions={actionsConfig.renderActions}
+                                    customStyles={customStyles}
+                                    headerAlignment={headerAlignment}
+                                    onColumnSelectorOpen={onColumnSelectorOpen || handleOpenColumnSelector}
+                                />
+                            </motion.div>
+                        ) : (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.4, ease: 'easeIn' }}
+                            >
+                                <RecordsNotFound context="proposals" />
+                            </motion.div>
+                        )}
+                    </WhenVisible>
+                )}
             </div>
         </>
     );

@@ -17,6 +17,7 @@ use App\Policies\BookmarkItemPolicy;
 use App\Policies\LinkPolicy;
 use App\Policies\SignaturePolicy;
 use App\Policies\SnapshotPolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -37,6 +38,7 @@ class AuthServiceProvider extends ServiceProvider
         Signature::class => SignaturePolicy::class,
         Snapshot::class => SnapshotPolicy::class,
         VotingPower::class => VotingPower::class,
+        User::class => UserPolicy::class,
     ];
 
     /**

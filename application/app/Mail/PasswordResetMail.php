@@ -6,30 +6,36 @@ namespace App\Mail;
 
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class PasswordResetMail extends Mailable
+class PasswordResetMail extends LocalizableMailable
 {
     use Queueable, SerializesModels;
 
     public function __construct(
         public User $user,
         public string $resetUrl
-    ) {}
+    ) {
+        $this->user = $user;
+    }
 
-    public function envelope(): Envelope
+    /**
+     * Build the envelope with proper localization
+     */
+    protected function buildEnvelope(): Envelope
     {
         return new Envelope(
-            subject: 'Reset Your Password - Catalyst Explorer',
+            subject: __('emails.password_reset.title'),
         );
     }
 
-    public function content(): Content
+    /**
+     * Build the content with proper localization
+     */
+    protected function buildContent(): Content
     {
-
         return new Content(
             view: 'emails.password-reset',
             with: [

@@ -9,6 +9,7 @@ import { useUserSetting } from '@/Hooks/useUserSettings';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ColumnKey } from '@/Components/ColumnSelector';
 import ProposalData = App.DataTransferObjects.ProposalData;
+import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import CatalystEyeIcon from '@/Components/svgs/CatalystEyeIcon';
@@ -17,6 +18,7 @@ interface ProposalPdfViewProps {
   proposals: PaginatedData<ProposalData[]> | { data: ProposalData[], total: number, isPdf: boolean };
   listTitle: string;
   isAuthor?: boolean;
+  bookmarkCollection: BookmarkCollectionData;
   pageBackgroundColor?: string;
   onOpenSettings?: () => void;
 }
@@ -25,6 +27,7 @@ const ProposalPdfView: React.FC<ProposalPdfViewProps> = ({
   proposals,
   isAuthor,
   listTitle,
+  bookmarkCollection,
   onOpenSettings
 }) => {
   const { t } = useLaravelReactI18n();
@@ -59,8 +62,7 @@ const ProposalPdfView: React.FC<ProposalPdfViewProps> = ({
 
   const hasNoColumns = !selectedColumns || selectedColumns.length === 0;
 
-  // Check if viewProposal column is selected to enable icon actions
-  const showIconActions = selectedColumns?.includes('viewProposal') ?? false;
+  const shouldShowPagination = bookmarkCollection.list_type !== 'voter';
 
   return (
     <div className="w-full">
@@ -68,6 +70,8 @@ const ProposalPdfView: React.FC<ProposalPdfViewProps> = ({
       <ProposalPdfHeader
         itemCount={itemCount}
         proposals={proposals.data || []}
+        bookmarkCollection={bookmarkCollection}
+        selectedColumns={selectedColumns || defaultPdfColumns}
       />
 
       {/* PDF View Content */}
@@ -105,9 +109,9 @@ const ProposalPdfView: React.FC<ProposalPdfViewProps> = ({
             actionType="view"
             disableSorting={true}
             columns={selectedColumns || defaultPdfColumns}
-            showPagination={false}
-            iconOnlyActions={showIconActions && isAuthor}
-            iconActionsConfig={['rationale', 'removeBookmark', 'compare']}
+            showPagination={shouldShowPagination}
+            iconOnlyActions={true}
+            iconActionsConfig={isAuthor ? ['rationale', 'removeBookmark', 'compare'] : ['bookmark', 'compare']}
             customStyles={{
               tableWrapper: '!border-table-header-bg !shadow-none rounded-lg',
               tableHeader: '!bg-table-header-bg',
@@ -116,11 +120,7 @@ const ProposalPdfView: React.FC<ProposalPdfViewProps> = ({
             }}
             headerAlignment="left"
             onColumnSelectorOpen={handleOpenColumnSelector}
-            {...(!showIconActions && {
-              renderActions: {
-                view: () => null
-              }
-            })}
+            disableInertiaLoading={bookmarkCollection.list_type === 'voter'}
           />
         </div>
 

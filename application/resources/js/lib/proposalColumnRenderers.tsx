@@ -97,7 +97,7 @@ export const proposalColumnRenderers: Record<string, ColumnRendererConfig> = {
                             href={proposal.link ?? '#'}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center"
+                            className="inline-flex items-center hover:text-primary transition-colors duration-200"
                             data-testid={`view-proposal-button-${proposal.id}`}
                         >
                             {proposal.title}
@@ -530,8 +530,12 @@ export const proposalColumnRenderers: Record<string, ColumnRendererConfig> = {
 
 // Default column headers for common column types
 export const defaultColumnHeaders: Record<string, string | React.ReactNode> = {
-    yesVotes: 'Yes Votes',
-    abstainVotes: 'Abstain Votes',
+    'yesVotes': 'Yes Votes',
+    'abstainVotes': 'Abstain Votes',
+    'status': 'Proposal Status',
+    'manageProposal': 'Manage Proposal',
+    'viewProposal': 'View Proposal', 
+    'proposalActions': 'Actions'
 };
 
 // Dynamic column headers that require translation context

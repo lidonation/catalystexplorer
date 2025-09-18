@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Auth;
 
-use App\Invokables\DecodeCardanoSignature;
+use App\Actions\DecodeCardanoSignature;
 use App\Models\Signature;
 use App\Models\User;
 use Illuminate\Auth\Events\Lockout;

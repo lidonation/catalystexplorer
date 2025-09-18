@@ -1,0 +1,22 @@
+{
+    "pdf.header.defaultTitle": "文書タイトル",
+    "pdf.header.defaultSubtitle": "投票リストのエクスポート",
+    "pdf.footer.generatedWith": "生成元:",
+    "pdf.footer.visit": "訪問:",
+    "pdf.footer.defaultMessage": "Cardanoコミュニティの支援",
+    "pdf.footer.defaultGeneratorName": "Catalyst Explorer",
+    "pdf.table.columns.title": "タイトル",
+    "pdf.table.columns.budget": "予算",
+    "pdf.table.columns.category": "カテゴリー",
+    "pdf.table.columns.openSourced": "オープンソース",
+    "pdf.table.columns.team": "チーム",
+    "pdf.table.columns.fund": "ファンド",
+    "pdf.table.columns.yesVotes": "賛成票",
+    "pdf.table.columns.abstainVotes": "棄権票",
+    "pdf.table.columns.noVotes": "反対票",
+    "pdf.table.columns.status": "ステータス",
+    "pdf.table.columns.funding": "資金調達",
+    "pdf.table.values.yes": "はい",
+    "pdf.table.values.no": "いいえ",
+    "pdf.document.title": "投票リストのエクスポート"
+}

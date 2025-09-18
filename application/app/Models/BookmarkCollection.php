@@ -12,6 +12,7 @@ use App\Traits\HasSignatures;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
@@ -28,7 +29,7 @@ class BookmarkCollection extends Model
         'groups',
         'reviews',
         'communities',
-        // 'comments', // Temporarily disabled due to polymorphic UUID/text relationship issue
+        'comments',
     ];
 
     public $meiliIndexName = 'cx_bookmark_collections';
@@ -37,12 +38,13 @@ class BookmarkCollection extends Model
 
     protected $guarded = [];
 
-    protected $hidden = [];
-
     public static function getFilterableAttributes(): array
     {
         return [
             'visibility',
+            'list_type',
+            'fund_id',
+            'user_id',
         ];
     }
 
@@ -67,57 +69,12 @@ class BookmarkCollection extends Model
             'title',
             'updated_at',
             'items_count',
+            'comments_count',
             'amount_requested_USD',
             'amount_received_ADA',
             'amount_requested_ADA',
             'amount_received_USD',
         ];
-    }
-
-    public function parent(): BelongsTo
-    {
-        return $this->belongsTo(static::class, 'model_id')
-            ->where('model_type', static::class);
-    }
-
-    public function items(): HasMany
-    {
-        return $this->hasMany(BookmarkItem::class);
-    }
-
-    public function proposals(): HasMany
-    {
-        return $this->hasMany(BookmarkItem::class)
-            ->where('model_type', Proposal::class);
-    }
-
-    public function ideascale_profiles(): HasMany
-    {
-        return $this->hasMany(BookmarkItem::class)
-            ->where('model_type', IdeascaleProfile::class);
-    }
-
-    public function communities(): HasMany
-    {
-        return $this->hasMany(BookmarkItem::class)
-            ->where('model_type', Community::class);
-    }
-
-    public function fund(): BelongsTo
-    {
-        return $this->belongsTo(Fund::class);
-    }
-
-    public function groups(): HasMany
-    {
-        return $this->hasMany(BookmarkItem::class)
-            ->where('model_type', Group::class);
-    }
-
-    public function reviews(): HasMany
-    {
-        return $this->hasMany(BookmarkItem::class)
-            ->where('model_type', Review::class);
     }
 
     public function typesCount(): Attribute
@@ -255,6 +212,65 @@ class BookmarkCollection extends Model
         );
     }
 
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(static::class, 'model_id')
+            ->where('model_type', static::class);
+    }
+
+    public function items(): HasMany
+    {
+        return $this->hasMany(BookmarkItem::class);
+    }
+
+    public function proposals(): HasMany
+    {
+        return $this->hasMany(BookmarkItem::class)
+            ->where('model_type', Proposal::class);
+    }
+
+    public function ideascale_profiles(): HasMany
+    {
+        return $this->hasMany(BookmarkItem::class)
+            ->where('model_type', IdeascaleProfile::class);
+    }
+
+    public function communities(): HasMany
+    {
+        return $this->hasMany(BookmarkItem::class)
+            ->where('model_type', Community::class);
+    }
+
+    public function fund(): BelongsTo
+    {
+        return $this->belongsTo(Fund::class);
+    }
+
+    public function groups(): HasMany
+    {
+        return $this->hasMany(BookmarkItem::class)
+            ->where('model_type', Group::class);
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(BookmarkItem::class)
+            ->where('model_type', Review::class);
+    }
+
+    public function contributors(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'bookmark_collections_users')
+            ->withTimestamps();
+    }
+
+    public function collaborators(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'bookmark_collections_users')
+            ->withTimestamps()
+            ->with('media'); // Include user media for avatars
+    }
+
     /*
     * This string will be used in notifications on what a new comment
     * was made.
@@ -270,29 +286,24 @@ class BookmarkCollection extends Model
     */
     public function commentUrl(): string
     {
-        return '';
+        return route('lists.view', [
+            'bookmarkCollection' => $this->id,
+        ]);
     }
 
     public function toSearchableArray(): array
     {
         $array = $this->load([
-            // 'comments',
+            'comments',
             'author',
+            'fund',
         ])->toArray();
 
-        // Remove hash field from indexing - we only use UUIDs now
-        if (isset($array['hash'])) {
-            unset($array['hash']);
-        }
-
-        // Safely load relationships and handle potential UUID/polymorphic issues
         $proposals = [];
         $ideascale_profiles = [];
         $reviews = [];
         $groups = [];
         $communities = [];
-        $amountReceived = [];
-        $amountRequested = [];
 
         try {
             $proposals = $this->proposals->pluck('model')->toArray();
@@ -363,7 +374,7 @@ class BookmarkCollection extends Model
             'reviews' => $reviews,
             'groups' => $groups,
             'communities' => $communities,
-            'rationale' => $this->meta_info?->rationale,
+            'rationale' => $this->comments()->where('commentator_id', $this->user_id)->whereJsonContains('extra->type', 'rationale')->latest()->first()?->text,
         ]);
     }
 }

@@ -1,0 +1,12 @@
+HTTP/1.1 200 OK
+Cache-Control: no-cache, private
+Content-Type: text/html; charset=UTF-8
+Date: Wed, 17 Sep 2025 19:36:47 GMT
+Phpdebugbar-Id: 01K5CJVX059BM4PSKH0WG95C7T
+Server: Caddy
+Set-Cookie: XSRF-TOKEN=eyJpdiI6Ink0YmFqempoNzZsQzdzcG5KdHIwRGc9PSIsInZhbHVlIjoiZGhrb1daNGFON0EvSW5KbzY5bytleU9obFVxUE41UFdxMHFERlh5Z2hlOEx0M3hxRkpiaDk2WEV4dWJQL3NDR2oweUt4M2NYU3ZzbGR1OCtxWEJWc1RQTVN4cStZQzFjTmtvczFxUzZyMGtpeDN1bjBienRmY2JMeDAycFE1UlAiLCJtYWMiOiI5ZjQ2YzdhMzNkYmU1ZGU4NTlkMGVmOTU5YWZjZjA2ZTkyNWU4NTI1OGY4MzA1Y2I5YTM2MmJiYWQ1ODI5M2ZkIiwidGFnIjoiIn0%3D; expires=Wed, 17 Sep 2025 21:36:47 GMT; Max-Age=7200; path=/; domain=localhost; samesite=lax
+Set-Cookie: catalystexplorer_session=eyJpdiI6IlpRZGQ3eWtVZ3F0UzZFUSswWjlyTUE9PSIsInZhbHVlIjoiTHNJQXR1TmZLY3Z4cmZQUVdjcDVSMm1KSit2WFArSmZrMUs5OHYzWHVIWkZFS2pKNlVyN09vYWJqejZpOFlkZmZERkJhOHBkNE43S1RmcWZ1UlVzWmJITWhBUU02RFpwVlBwYkhRWUhBdC80OEdKdzJBampFU2p4UWlOUDMxaXMiLCJtYWMiOiJiYWY2MDY4M2Q5Njc4Mjg5MDYwZDQ3MzMxZjA4OTc0ZTRkNjgxMTI5MWRkNGYxMzU1N2I2YmFhMjFmZTQ5MDg5IiwidGFnIjoiIn0%3D; expires=Wed, 17 Sep 2025 21:36:47 GMT; Max-Age=7200; path=/; domain=localhost; httponly; samesite=lax
+Set-Cookie: locale=eyJpdiI6IjRuWUh2SXhHc2I0bkhkTExmV01wRWc9PSIsInZhbHVlIjoiQkp0MmdoWjVVYldCNmhmanZvODVCVHJCVFljZXkxcTdKcklibjZ4ZGQzcmhmMDJuemp0dnVxRkRkemJIbG1ySSIsIm1hYyI6ImI4NzljNThhN2M1YWZmMjdjOGQ3YTAzYWZjZDlmMDM1N2VkNGRlYmE2Y2MzYjQxZWRkZWRjZjc4MTAwZTAzY2IiLCJ0YWciOiIifQ%3D%3D; expires=Thu, 17 Sep 2026 19:36:47 GMT; Max-Age=31536000; path=/; domain=localhost; httponly; samesite=lax
+Vary: X-Inertia
+Transfer-Encoding: chunked
+

@@ -19,7 +19,7 @@ import {
     generateLocalizedRoute,
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
-import { router, useForm } from '@inertiajs/react';
+import { Link, router, useForm } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
@@ -66,8 +66,6 @@ const Step3: React.FC<Step3Props> = ({
 
     const [selectedIds, setSelectedIds] =
         useState<{ id: string; vote: number | null }[]>(selectedProposals);
-
-    console.log({ bookmarkHash });
 
     const form = useForm({
         proposals: selectedIds,
@@ -326,21 +324,31 @@ const Step3: React.FC<Step3Props> = ({
                 </Content>
 
                 <Footer>
-                    <PrimaryLink
-                        href={prevStep}
-                        className="text-sm lg:px-8 lg:py-3"
-                    >
-                        <ChevronLeft className="h-4 w-4" />
-                        <span>{t('Previous')}</span>
-                    </PrimaryLink>
-                    <PrimaryButton
-                        className="text-sm lg:px-8 lg:py-3"
-                        disabled={!selectedIds.length}
-                        onClick={submitForm}
-                    >
-                        <span>{t('Next')}</span>
-                        <ChevronRight className="h-4 w-4" />
-                    </PrimaryButton>
+                    {bookmarkHash && (
+                        <Link
+                            href={localizedRoute('my.lists.index')}
+                            className="text-sm lg:px-8 lg:py-3"
+                        >
+                            {t('Close')}
+                        </Link>
+                    )}
+                    <div className="flex gap-2">
+                        <PrimaryLink
+                            href={prevStep}
+                            className="text-sm lg:px-8 lg:py-3"
+                        >
+                            <ChevronLeft className="h-4 w-4" />
+                            <span>{t('Previous')}</span>
+                        </PrimaryLink>
+                        <PrimaryButton
+                            className="text-sm lg:px-8 lg:py-3"
+                            disabled={!selectedIds.length}
+                            onClick={submitForm}
+                        >
+                            <span>{t('Next')}</span>
+                            <ChevronRight className="h-4 w-4" />
+                        </PrimaryButton>
+                    </div>
                 </Footer>
             </WorkflowLayout>
         </FiltersProvider>

@@ -47,12 +47,6 @@ export const BookmarkProvider: React.FC<{
                 ? 'workflows.bookmarks.addBookmarkItem'
                 : 'workflows.bookmarks.removeBookmarkItem';
 
-        console.log({
-            hash,
-            modelType: model,
-            bookmarkCollection: bookmarkCollection.id,
-        });
-
         router.post(
             generateLocalizedRoute(routeName, {
                 hash,

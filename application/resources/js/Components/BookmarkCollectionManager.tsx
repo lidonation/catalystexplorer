@@ -15,9 +15,9 @@ import BookmarkModelSearch from '../Pages/Bookmarks/Partials/BookmarkModelSearch
 import DropdownMenu, {
     DropdownMenuItem,
 } from '../Pages/Bookmarks/Partials/DropdownMenu';
-import EditListForm, {
+import ListSettingsForm, {
     ListForm,
-} from '../Pages/Bookmarks/Partials/EditListForm';
+} from '../Pages/Bookmarks/Partials/ListSettingsForm.tsx';
 import CommunitiesPaginatedList from '../Pages/Communities/Partials/CommunitiesPaginatedList';
 import GroupPaginatedList from '../Pages/Groups/Partials/GroupPaginatedList';
 import IdeascaleProfilePaginatedList from '../Pages/IdeascaleProfile/Partials/IdeascaleProfilePaginatedList';
@@ -29,6 +29,7 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 import GroupData = App.DataTransferObjects.GroupData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ReviewData = App.DataTransferObjects.ReviewData;
+import UserData = App.DataTransferObjects.UserData;
 
 type BookmarkCollectionType =
     | 'proposals'
@@ -46,6 +47,8 @@ interface BookmarkCollectionManagerProps {
     groups?: PaginatedData<GroupData[]>;
     ideascaleProfiles?: PaginatedData<IdeascaleProfileData[]>;
     reviews?: PaginatedData<ReviewData[]>;
+    contributors?: UserData[];
+    owner?: UserData;
 }
 
 interface BookmarkCollectionManagerConfig {
@@ -274,10 +277,12 @@ const BookmarkCollectionManager = (
                 onClose={() => setActiveEditModal(false)}
                 logo={false}
             >
-                <EditListForm
+                <ListSettingsForm
                     bookmarkCollection={bookmarkCollection}
                     handleSave={handleUpdate}
                     handleDelete={() => setActiveConfirm(true)}
+                    owner={props.owner}
+                    pendingInvitations={[]}
                 />
             </Modal>
 

@@ -16,6 +16,7 @@ use App\Http\Controllers\BookmarksController;
 use App\Http\Controllers\CampaignsController;
 use App\Http\Controllers\MilestoneController;
 use App\Http\Controllers\ProposalsController;
+use App\Http\Controllers\Api\ProposalController;
 use App\Http\Controllers\VoterListController;
 use App\Http\Controllers\VoterToolController;
 use App\Http\Controllers\CommunitiesController;
@@ -41,7 +42,7 @@ Route::localized(
         Route::get('/', [HomeController::class, 'index'])
             ->name('home');
 
-
+       
         Route::prefix('/proposals')->as('proposals.')->group(function () {
             Route::get('/', [ProposalsController::class, 'index'])
                 ->name('index');
@@ -71,6 +72,10 @@ Route::localized(
                 Route::get('/team-information', [ProposalsController::class, 'proposal'])
                     ->name('teamInformation');
             });
+
+            Route::post('/{id}/rationale', [ProposalController::class, 'storeRationale'])
+                ->middleware('auth')
+                ->name('rationale.store');
         });
 
 
@@ -155,7 +160,13 @@ Route::localized(
                 ->name('index');
         });
 
-        Route::prefix('/workflows')->as('workflows.')->group(function () {
+            // Bookmark invitation acceptance route (DEPRECATED - kept for backwards compatibility)
+            // New invitations should use the workflow route: workflows.acceptInvitation.index
+            Route::get('/bookmark-invitation/accept', [BookmarksController::class, 'acceptInvitation'])
+                ->middleware('signed')
+                ->name('bookmark.invitation.accept');
+
+            Route::prefix('/workflows')->as('workflows.')->group(function () {
             Route::prefix('/completed-projects-nfts/steps')->as('completedProjectsNft.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
@@ -229,21 +240,44 @@ Route::localized(
             //             ->name('submitVotes');
             //     });
 
-            Route::prefix('/create-bookmarks/steps')->as('bookmarks.')
+            Route::prefix('/create-bookmarks')->as('bookmarks.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
                     Route::get('/success', [BookmarksController::class, 'success'])
                         ->name('success');
-                    Route::get('/{step}', [BookmarksController::class, 'handleStep'])
-                        ->name('index');
+
+                    Route::prefix('/steps')
+                        ->group(function () {
+                            Route::get('/{step}', [BookmarksController::class, 'handleStep'])
+                                ->name('index');
+                        });
+
                     Route::post('/save-list', [BookmarksController::class, 'saveList'])
                         ->name('saveList');
+
                     Route::post('{bookmarkCollection}/add-list-item/', [BookmarksController::class, 'addBookmarkItem'])
                         ->name('addBookmarkItem');
+
                     Route::post('{bookmarkCollection}/remove-list-item/', [BookmarksController::class, 'removeBookmarkItem'])
                         ->name('removeBookmarkItem');
+
                     Route::post('{bookmarkCollection}/save-rationales', [BookmarksController::class, 'saveRationales'])
                         ->name('saveRationales');
+
+                    Route::post('{bookmarkCollection}/invite-contributor', [BookmarksController::class, 'inviteContributor'])
+                        ->name('inviteContributor');
+
+                    Route::post('{bookmarkCollection}/cancel-invitation', [BookmarksController::class, 'cancelInvitation'])
+                        ->name('cancelInvitation');
+
+                    Route::post('{bookmarkCollection}/resend-invitation', [BookmarksController::class, 'resendInvitation'])
+                        ->name('resendInvitation');
+
+                    Route::post('{bookmarkCollection}/remove-contributor', [BookmarksController::class, 'removeContributor'])
+                        ->name('removeContributor');
+
+                    Route::get('/search-users', [BookmarksController::class, 'searchUsers'])
+                        ->name('searchUsers');
                 });
 
             Route::prefix('/drep-sign-up/steps')->as('drepSignUp.')
@@ -381,6 +415,10 @@ Route::localized(
                 ->name('index');
             Route::get('/{bookmarkCollection}/{type?}', [BookmarksController::class, 'view'])
                 ->name('view');
+            Route::post('/{bookmarkCollection}/stream/{type?}', [BookmarksController::class, 'streamBookmarkItems'])
+                ->name('stream');
+            Route::get('/{bookmarkCollection}/{type}/download-pdf', [BookmarksController::class, 'downloadPdf'])
+                ->name('downloadPdf');
         });
 
         Route::prefix('charts')->as('charts.')->group(function () {
@@ -519,11 +557,18 @@ Route::localized(
 
 );
 
+Route::prefix('language')->as('language.')->group(function () {
+    Route::post('/user', [\App\Http\Controllers\UserLanguageController::class, 'updateLanguage'])
+        ->middleware('auth')
+        ->name('user.update');
+    Route::get('/guest', [\App\Http\Controllers\GuestLanguageController::class, 'getCurrentGuestLanguage'])
+        ->name('guest.current');
+    Route::post('/guest', [\App\Http\Controllers\GuestLanguageController::class, 'updateGuestLanguage'])
+        ->name('guest.update');
+});
 
 require __DIR__ . '/auth.php';
 
 require __DIR__ . '/dashboard.php';
-
-require __DIR__ . '/api.php';
 
 Route::fallback(FallbackController::class);

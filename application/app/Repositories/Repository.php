@@ -76,14 +76,16 @@ class Repository implements RepositoryInterface
     public function countSearchResults(string $term, array $args = []): int
     {
         if (in_array(Searchable::class, class_uses_recursive($this->model))) {
-            return $this->model::search($term, function (Indexes $index, string $query, $defaultOptions) use ($args) {
+            $search = $this->model::search($term, function (Indexes $index, string $query, $defaultOptions) use ($args) {
                 $mergedOptions = array_merge($defaultOptions, $args, [
                     'limit' => 0,
                     'attributesToRetrieve' => [],
                 ]);
 
-                return $index->search($query, $mergedOptions)->getEstimatedTotalHits();
-            })->raw();
+                return $index->search($query, $mergedOptions);
+            });
+
+            return $search->raw()['estimatedTotalHits'] ?? 0;
         }
 
         return $this->model::query()->where(function ($query) use ($term, $args) {

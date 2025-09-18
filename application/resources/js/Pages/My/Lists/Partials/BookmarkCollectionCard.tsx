@@ -9,31 +9,69 @@ import { Link, router, usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { Clock, MessageCircle } from 'lucide-react';
 import DropdownMenu, {
-    DropdownMenuItem,
+    DropdownMenuItem
 } from '../../../Bookmarks/Partials/DropdownMenu';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import { truncateMiddle } from '@/utils/truncateMiddle.ts';
+import { useWorkflowUrl } from '@/utils/workflowUrls';
+import ListTypeResearchIconProps from '@/Components/svgs/ListTypeResearchIcon.tsx';
+import ListTypeVoterIcon from '@/Components/svgs/ListTypeVoterIcon.tsx';
+import { truncateEnd } from '@/utils/truncateEnd.ts';
+import React from 'react';
+import { Tooltip, TooltipContent, TooltipProvider } from '@/Components/atoms/Tooltip.tsx';
 
 const BookmarkCollectionCard = ({
-    collection,
-}: {
+                                    collection
+                                }: {
     collection: BookmarkCollectionData;
 }) => {
     const { t } = useLaravelReactI18n();
     const { auth } = usePage().props;
-
     const user = collection?.author;
-
     const isAuthor = auth?.user?.id == user?.id;
 
+    const isContributor = collection?.collaborators?.some(
+        (collaborator: any) => collaborator.id === auth?.user?.id
+    );
+
+    const canManage = isAuthor || isContributor;
+    console.log({ canManage, collection });
+
+    const renderListTypeIcon = () => {
+        switch (collection?.list_type) {
+            case 'normal':
+                return (
+                    <div className="flex gap-2 flex-nowrap items-center">
+                        <ListTypeResearchIconProps />
+                        <span>{t('bookmarks.researchList')}</span>
+                    </div>
+                );
+            case 'voter':
+                return (
+                    <div className="flex gap-2 flex-nowrap items-center">
+                        <ListTypeVoterIcon />
+                        <span>{t('bookmarks.voterList')} ({`${collection?.items_count} ${t('proposals.proposals')}`})</span>
+                    </div>
+                );
+            default:
+                return (
+                    <div className="flex gap-2 flex-nowrap items-center">
+                        <ListTypeResearchIconProps />
+                        <span>{t('bookmarks.researchList')}</span>
+                    </div>
+                );
+        }
+    };
+
     const viewListRoute = useLocalizedRoute('lists.view', {
-        bookmarkCollection: collection?.id,
+        bookmarkCollection: collection?.id
     });
 
     const manageListRoute = useLocalizedRoute('my.lists.manage', {
         bookmarkCollection: collection?.id,
-        type: 'proposals',
+        type: 'proposals'
     });
+
 
     const dropdownMenuItems: DropdownMenuItem[] = [
         {
@@ -41,17 +79,22 @@ const BookmarkCollectionCard = ({
             type: 'button',
             onClick: () => {
                 router.visit(viewListRoute);
-            },
+            }
         },
-
+        {
+            label: t('bookmarks.editListItem'),
+            type: 'link' as const,
+            href: useWorkflowUrl(collection),
+            disabled: !canManage
+        },
         {
             label: t('my.manage'),
             type: 'button' as const,
             onClick: () => {
                 router.visit(manageListRoute);
             },
-            disabled: !isAuthor,
-        },
+            disabled: !canManage
+        }
 
     ];
     return (
@@ -67,7 +110,7 @@ const BookmarkCollectionCard = ({
                         <Link
                             href={useLocalizedRoute('lists.view', {
                                 bookmarkCollection: collection?.id,
-                                type: 'proposals',
+                                type: 'proposals'
                             })}
                         >
                             <Title
@@ -77,15 +120,40 @@ const BookmarkCollectionCard = ({
                                 {collection.title}
                             </Title>
                         </Link>
-                        <div className="bg-primary-light text-primary border-primary rounded-lg border px-2 py-1 text-sm text-nowrap lg:px-4">
-                            {`${collection?.items_count} ${t('my.items')}`}
+                        <div
+                            className="bg-primary-light text-primary border-primary rounded-full  border pr-2 text-sm text-nowrap lg:pr-4">
+                            {renderListTypeIcon()}
                         </div>
+                        {collection?.fund && <div>
+                            <div
+                                className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-linear-to-r from-gray-100 to-gray-900"
+                                data-testid="fund-card-image"
+                            >
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <img
+                                            src={collection?.fund.hero_img_url}
+                                            alt={collection?.fund.title || 'Fund'}
+                                            title={collection?.fund.title || 'Fund'}
+                                            className="h-full w-full rounded-full object-bottom-right"
+                                        />
+                                        <TooltipContent side="bottom">
+                                            <Paragraph size="sm">
+                                                {collection?.fund.title}
+                                            </Paragraph>
+                                        </TooltipContent>
+
+                                    </Tooltip>
+                                </TooltipProvider>
+                            </div>
+                        </div>}
                     </div>
+
                     <Paragraph
                         size="sm"
                         className="text-muted-foreground lg:text-md w-1/2 break-words whitespace-normal lg:w-5/6"
                     >
-                        {collection?.content || 'No description available.'}
+                        {truncateEnd(collection?.content || 'No description available.', 290)}
                     </Paragraph>
                 </div>
             </div>
@@ -137,20 +205,20 @@ const BookmarkCollectionCard = ({
                 </div>
             </div>
 
-            {/* <div className="py-6"> */}
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-6">
+            {collection?.list_type !== 'voter' && <div className="grid grid-cols-2 gap-4 md:grid-cols-6">
                 {Object.entries(collection?.types_count ?? {})?.map((item) => {
                     const pluralizedModel = capitalizeFirstLetter(item[0]);
                     return (
                         <div className="space-y-1" key={`${pluralizedModel}`}>
-                            <p className="text-4xl font-bold">{item[1]}</p>
-                            <p className="text-muted-foreground">
+                            <Paragraph className="text-4xl font-bold">{item[1]}</Paragraph>
+                            <Paragraph className="text-muted-foreground">
                                 {pluralizedModel}
-                            </p>
+                            </Paragraph>
                         </div>
                     );
                 })}
-            </div>
+            </div>}
+
             <div className="absolute top-4 right-4">
                 <DropdownMenu items={dropdownMenuItems} useSimpleTrigger={true} />
             </div>

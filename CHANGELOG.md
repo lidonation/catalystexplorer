@@ -1,3 +1,24 @@
+## [1.27.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.27.0...v1.27.1) (2025-09-18)
+
+
+### Bug Fixes
+
+* **voting lists:** streaming voting list as they load ([f31c414](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/f31c41449067523716a5fbe4fae2ca09f1ee169e))
+
+# [1.27.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.26.1...v1.27.0) (2025-09-16)
+
+
+### Features
+
+* ln-2025 add sharable reasearch lists ([970894d](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/970894da4e8773b720e61de092eb567320defd0e))
+
+## [1.26.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.26.0...v1.26.1) (2025-09-15)
+
+
+### Bug Fixes
+
+* resolve bugs on my lists page ([aac2c57](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/aac2c57f17ab37a83ce11dc6949e4496ca9da65c))
+
 # [1.26.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.25.0...v1.26.0) (2025-09-12)
 
 

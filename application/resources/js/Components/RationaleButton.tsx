@@ -4,6 +4,7 @@ import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { route } from 'ziggy-js';
 import Button from '@/Components/atoms/Button';
 import Textarea from '@/Components/atoms/Textarea';
+import { generateLocalizedRoute } from '@/utils/localizedRoute';
 
 interface RationaleButtonProps {
     proposalId: string;
@@ -25,19 +26,22 @@ export default function RationaleButton({
     const { t } = useLaravelReactI18n();
     const [isOpen, setIsOpen] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
+    const [optimisticRationale, setOptimisticRationale] = useState(initialRationale);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const popoverRef = useRef<HTMLDivElement>(null);
 
     const form = useForm({
-        rationale: initialRationale,
+        rationale: optimisticRationale,
     });
 
     const handleSave = () => {
         if (!form.data.rationale.trim()) return;
         
-        form.post(route('api.proposals.rationale.store', { id: proposalId }), {
+        form.post(generateLocalizedRoute('proposals.rationale.store', { id: proposalId }), {
             preserveScroll: true,
             onSuccess: () => {
+                // Optimistically update the rationale
+                setOptimisticRationale(form.data.rationale);
                 setIsOpen(false);
                 router.reload({ only: ['proposals'] });
             },
@@ -48,10 +52,18 @@ export default function RationaleButton({
     };
 
     const handleCancel = () => {
-        form.setData('rationale', initialRationale);
+        form.setData('rationale', optimisticRationale);
         form.clearErrors();
         setIsOpen(false);
     };
+
+    // Sync optimistic rationale when initialRationale prop changes
+    useEffect(() => {
+        if (initialRationale !== optimisticRationale) {
+            setOptimisticRationale(initialRationale);
+            form.setData('rationale', initialRationale);
+        }
+    }, [initialRationale]);
 
     useEffect(() => {
         const handleClick = (e: MouseEvent) => {
@@ -65,7 +77,7 @@ export default function RationaleButton({
             document.addEventListener('mousedown', handleClick);
             return () => document.removeEventListener('mousedown', handleClick);
         }
-    }, [isOpen, initialRationale]);
+    }, [isOpen, optimisticRationale]);
 
     return (
         <div 
@@ -76,7 +88,7 @@ export default function RationaleButton({
             <Button
                 ref={buttonRef}
                 className={`relative inline-flex gap-1 rounded-full px-0 py-0.5 outline-none ${
-                    initialRationale ? 'text-primary' : buttonTheme
+                    optimisticRationale ? 'text-primary' : buttonTheme
                 }`}
                 ariaLabel="add-rationale"
                 onClick={() => setIsOpen(!isOpen)}
@@ -85,7 +97,7 @@ export default function RationaleButton({
                 {isHovered && (
                     <div className="absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 transform">
                         <div className="bg-gray-800 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
-                            {initialRationale ? t('rationale.editRationale') : t('rationale.addRationale')}
+                            {optimisticRationale ? t('rationale.editRationale') : t('rationale.addRationale')}
                         </div>
                     </div>
                 )}
@@ -117,7 +129,7 @@ export default function RationaleButton({
                     <div className="space-y-3">
                         <div>
                             <label className="block text-sm font-medium text-content mb-1">
-                                {initialRationale ? t('rationale.editYourRationale') : t('rationale.addYourRationale')}
+                                {optimisticRationale ? t('rationale.editYourRationale') : t('rationale.addYourRationale')}
                             </label>
                             <Textarea
                                 value={form.data.rationale}

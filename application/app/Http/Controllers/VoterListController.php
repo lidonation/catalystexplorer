@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\GetProposalFromScout;
 use App\DataTransferObjects\BookmarkCollectionData;
 use App\DataTransferObjects\BookmarkItemData;
-use App\DataTransferObjects\ProposalData;
 use App\Enums\BookmarkStatus;
 use App\Enums\ProposalSearchParams;
 use App\Enums\QueryParamsEnum;
@@ -14,18 +14,16 @@ use App\Enums\VoteEnum;
 use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
 use App\Models\Campaign;
+use App\Models\Comment;
 use App\Models\Fund;
-use App\Models\Meta;
 use App\Models\Proposal;
 use App\Models\Signature;
-use App\Repositories\ProposalRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
 use ReflectionMethod;
@@ -71,11 +69,11 @@ class VoterListController extends Controller
     public function step3(Request $request): Response
     {
         $fundSlug = $request->input(QueryParamsEnum::FUNDS()->value);
-        $bookmarkHash = $request->input(QueryParamsEnum::BOOKMARK_COLLECTION()->value);
+        $bookmarkId = $request->input('bookmarkCollection');
         $bookmarkCollection = null;
 
-        if ($bookmarkHash) {
-            $bookmarkCollection = BookmarkCollection::find($bookmarkHash);
+        if ($bookmarkId) {
+            $bookmarkCollection = BookmarkCollection::find($bookmarkId);
         }
 
         $fund = Fund::find($bookmarkCollection?->fund_id);
@@ -100,49 +98,7 @@ class VoterListController extends Controller
 
         if ($fund) {
             $campaigns = Campaign::where('fund_id', $fund->id)->get();
-            $page = $request->input(ProposalSearchParams::PAGE()->value, default: 1);
-            $limit = $request->input('limit', 24);
-            $search = $request->input(ProposalSearchParams::QUERY()->value, '');
-            $campaignHash = $request->input(ProposalSearchParams::CAMPAIGNS()->value);
-            $sort = $request->input(ProposalSearchParams::SORTS()->value);
-
-            $search = (string) $search;
-
-            $filters = [];
-
-            if (! empty($campaignHash)) {
-                $filters[] = "campaign.hash = {$campaignHash}";
-            }
-
             $filters[] = "fund.id = {$fund->id}";
-
-            $args = [
-                'filter' => $filters,
-                'limit' => $limit,
-                'offset' => ($page - 1) * $limit,
-            ];
-
-            if (! empty($sort)) {
-                $sortParts = explode(':', $sort);
-                $sortField = $sortParts[0];
-                $sortDirection = $sortParts[1] ?? 'asc';
-                $args['sort'] = ["{$sortField}:{$sortDirection}"];
-            }
-
-            $repository = app(ProposalRepository::class);
-            $searchBuilder = $repository->search($search, $args);
-            $response = new Fluent($searchBuilder->raw());
-
-            $proposals = new LengthAwarePaginator(
-                ProposalData::collect(collect($response->hits)->toArray()),
-                $response->estimatedTotalHits,
-                $limit,
-                $page,
-                [
-                    'pageName' => 'p',
-                    'onEachSide' => 0,
-                ]
-            );
         }
 
         $filters = [];
@@ -163,11 +119,12 @@ class VoterListController extends Controller
             $filters[QueryParamsEnum::FUNDS()->value] = $fundSlug;
         }
 
-        if ($bookmarkHash) {
-            $filters[QueryParamsEnum::BOOKMARK_COLLECTION()->value] = $bookmarkHash;
+        if ($bookmarkId) {
+            $filters[QueryParamsEnum::BOOKMARK_COLLECTION()->value] = $bookmarkId;
         }
 
         $filters[ProposalSearchParams::PAGE()->value] = $request->input(ProposalSearchParams::PAGE()->value, 1);
+        $proposals = $this->getProposals($request);
 
         return Inertia::render('Workflows/CreateVoterList/Step3', [
             'stepDetails' => $this->getStepDetails(),
@@ -176,7 +133,7 @@ class VoterListController extends Controller
             'campaigns' => $campaigns,
             'selectedProposals' => $selectedProposals,
             'filters' => $filters,
-            'bookmarkHash' => $bookmarkHash,
+            'bookmarkHash' => $bookmarkId,
             'fundSlug' => $fundSlug,
         ]);
     }
@@ -200,14 +157,13 @@ class VoterListController extends Controller
                 ->pluck('model_id')
                 ->toArray();
 
-            $rationaleRecord = Meta::where('model_type', BookmarkCollection::class)
-                ->where('model_id', $bookmarkId)
-                ->where('key', 'rationale')
-                ->first();
+            $bookmarkCollection = BookmarkCollection::find($bookmarkId);
 
-            if ($rationaleRecord) {
-                $rationale = $rationaleRecord->content;
-            }
+            $rationale = $bookmarkCollection->comments()
+                ->where('commentator_id', $bookmarkCollection->user_id)
+                ->whereJsonContains('extra->type', 'rationale')
+                ->latest()
+                ->first()?->original_text;
         }
 
         return Inertia::render('Workflows/CreateVoterList/Step4', [
@@ -216,7 +172,6 @@ class VoterListController extends Controller
             'selectedProposals' => $selectedProposals,
             'rationale' => $rationale,
             'bookmarkHash' => $bookmarkHash,
-            'bookmarkId' => $bookmarkHash,
             'bookmarkId' => $bookmarkHash,
         ]);
     }
@@ -460,27 +415,24 @@ class VoterListController extends Controller
         ]);
 
         $bookmarkId = $validated[QueryParamsEnum::BOOKMARK_COLLECTION()->value];
+        $bookmarkCollection = BookmarkCollection::find($bookmarkId);
 
-        Meta::where('model_type', BookmarkCollection::class)
-            ->where('model_id', $bookmarkId)
-            ->where('key', 'rationale')
-            ->delete();
-
-        Meta::create([
-            'model_type' => BookmarkCollection::class,
-            'model_id' => $bookmarkId,
-            'key' => 'rationale',
-            'content' => $validated['rationale'],
+        Comment::create([
+            'commentable_type' => BookmarkCollection::class,
+            'commentable_id' => $bookmarkCollection->id,
+            'text' => $validated['rationale'],
+            'original_text' => $validated['rationale'],
+            'commentator_id' => auth()->user()?->id,
+            'extra' => ['type' => 'rationale'],
         ]);
 
-        $bookmark = BookmarkCollection::find($bookmarkId);
-        if ($bookmark && $bookmark->status === BookmarkStatus::DRAFT()->value) {
-            $bookmark->update(['status' => BookmarkStatus::PUBLISHED()->value]);
+        if ($bookmarkCollection && $bookmarkCollection->status === BookmarkStatus::DRAFT()->value) {
+            $bookmarkCollection->update(['status' => BookmarkStatus::PUBLISHED()->value]);
         }
 
         return to_route('workflows.createVoterList.index', [
             'step' => 5,
-            QueryParamsEnum::BOOKMARK_COLLECTION()->value => $bookmark->id,
+            QueryParamsEnum::BOOKMARK_COLLECTION()->value => $bookmarkCollection->id,
         ]);
     }
 
@@ -526,5 +478,30 @@ class VoterListController extends Controller
                 'info' => 'workflows.voterList.success.successInfo',
             ],
         ]);
+    }
+
+    protected function getProposals(Request $request): LengthAwarePaginator
+    {
+        $page = (int) $request->input(ProposalSearchParams::PAGE()->value, default: 1) ?? 1;
+        $limit = (int) $request->input('limit', 24);
+        $search = $request->input(ProposalSearchParams::QUERY()->value, '');
+        $campaignHash = $request->input(ProposalSearchParams::CAMPAIGNS()->value);
+        $sort = $request->input(ProposalSearchParams::SORTS()->value) ?? [];
+
+        $search = (string) $search;
+
+        $filters = [];
+
+        if (! empty($campaignHash)) {
+            $filters[] = "campaign.hash = {$campaignHash}";
+        }
+
+        return (new GetProposalFromScout) (
+            search: $search,
+            filters: $filters,
+            sort: $sort,
+            limit: $limit,
+            page: $page
+        );
     }
 }
