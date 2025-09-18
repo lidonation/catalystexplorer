@@ -80,6 +80,33 @@ class BookmarksController extends Controller
     {
         $this->setFilters($request);
 
+        $isVoterList = $bookmarkCollection->list_type === 'voter';
+
+        if ($isVoterList) {
+            // Load minimal required data
+            $bookmarkCollection->load(['author', 'collaborators']);
+            $pendingInvitations = $this->getPendingInvitations($bookmarkCollection);
+
+            $emptyPagination = [
+                'data' => [],
+            ];
+
+            $props = [
+                'bookmarkCollection' => $bookmarkCollection->toArray(),
+                'type' => $type,
+                'search' => $this->search,
+                'sortBy' => $this->sortBy,
+                'sortOrder' => $this->sortOrder,
+                'sort' => "{$this->sortBy}:{$this->sortOrder}",
+                'filters' => $this->filters,
+                'queryParams' => $this->queryParams,
+                $type => $emptyPagination,
+                'pendingInvitations' => array_values($pendingInvitations),
+            ];
+
+            return Inertia::render('Bookmarks/View', $props);
+        }
+
         $model_type = BookmarkableType::from(Str::kebab($type))->getModelClass();
 
         $relationshipsMap = [
@@ -101,13 +128,7 @@ class BookmarksController extends Controller
             ->pluck('model_id')
             ->toArray();
 
-        $isVoterList = $bookmarkCollection->list_type === 'voter';
-
-        if ($isVoterList) {
-            $pagination = $this->queryModelsUnpaginated($model_type, $bookmarkItemIds, $relationships, $counts);
-        } else {
-            $pagination = $this->queryModels($model_type, $bookmarkItemIds, $relationships, $counts);
-        }
+        $pagination = $this->queryModels($model_type, $bookmarkItemIds, $relationships, $counts);
 
         $typesCounts = $this->getFilteredTypesCounts($bookmarkCollection);
 
@@ -128,7 +149,7 @@ class BookmarksController extends Controller
             'filters' => $this->filters,
             'queryParams' => $this->queryParams,
             $type => $pagination,
-            'pendingInvitations' => array_values($pendingInvitations), // Convert to indexed array for frontend
+            'pendingInvitations' => array_values($pendingInvitations),
         ];
 
         return Inertia::render('Bookmarks/View', $props);
@@ -301,6 +322,26 @@ class BookmarksController extends Controller
 
         $currentPage = request(ProposalSearchParams::PAGE()->value, 1);
 
+        $isVoterList = $bookmarkCollection->list_type === 'voter';
+
+        if ($isVoterList) {
+            $bookmarkCollection->load(['author', 'collaborators']);
+            $pendingInvitations = $this->getPendingInvitations($bookmarkCollection);
+
+            $emptyPagination = [
+                'data' => [],
+            ];
+
+            return Inertia::render('Bookmarks/Manage', [
+                'bookmarkCollection' => $bookmarkCollection,
+                'type' => $type,
+                'filters' => array_merge([ProposalSearchParams::PAGE()->value => $currentPage]),
+                $type => $emptyPagination,
+                'owner' => UserData::from($bookmarkCollection->author),
+                'pendingInvitations' => array_values($pendingInvitations),
+            ]);
+        }
+
         $model_type = BookmarkableType::from(Str::kebab($type))->getModelClass();
 
         $relationshipsMap = [
@@ -322,14 +363,7 @@ class BookmarksController extends Controller
             ->pluck('model_id')
             ->toArray();
 
-        // Check if this is a voter list (should be unpaginated) or other lists (should be paginated)
-        $isVoterList = $bookmarkCollection->list_type === 'voter';
-
-        if ($isVoterList) {
-            $pagination = $this->queryModelsUnpaginated($model_type, $bookmarkItemIds, $relationships, $counts);
-        } else {
-            $pagination = $this->queryModels($model_type, $bookmarkItemIds, $relationships, $counts);
-        }
+        $pagination = $this->queryModels($model_type, $bookmarkItemIds, $relationships, $counts);
 
         $bookmarkCollection->load(['author', 'collaborators']);
 
@@ -1067,6 +1101,114 @@ class BookmarksController extends Controller
 
         return Inertia::render('Workflows/AcceptInvitation/Success', [
             'bookmarkCollection' => $bookmarkCollection,
+        ]);
+    }
+
+    /**
+     * Stream bookmark collection items for voter lists
+     */
+    public function streamBookmarkItems(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals')
+    {
+        $this->setFilters($request);
+
+        $model_type = BookmarkableType::from(Str::kebab($type))->getModelClass();
+
+        $relationshipsMap = [
+            Proposal::class => ['users', 'fund', 'campaign', 'schedule'],
+            Group::class => ['ideascale_profiles'],
+            Community::class => ['ideascale_profiles'],
+        ];
+
+        $countMap = [
+            Group::class => ['proposals', 'funded_proposals'],
+            Community::class => ['ideascale_profiles', 'proposals'],
+        ];
+
+        $relationships = $relationshipsMap[$model_type] ?? [];
+        $counts = $countMap[$model_type] ?? [];
+
+        $bookmarkItemIds = $bookmarkCollection->items
+            ->where('model_type', $model_type)
+            ->pluck('model_id')
+            ->toArray();
+
+        return response()->stream(function () use ($model_type, $bookmarkItemIds, $relationships, $counts) {
+            if (empty($bookmarkItemIds)) {
+                return;
+            }
+
+            if ($this->search) {
+                $searchBuilder = $model_type::search($this->search);
+                $searchBuilder->whereIn('id', $bookmarkItemIds);
+
+                if ($this->sortBy && $this->sortOrder) {
+                    $searchBuilder->orderBy($this->sortBy, $this->sortOrder);
+                }
+
+                $searchResults = $searchBuilder->get();
+                $searchIds = $searchResults->pluck('id')->toArray();
+
+                $query = $model_type::query();
+
+                if (! empty($relationships)) {
+                    $query->with($relationships);
+                }
+
+                if (! empty($counts)) {
+                    $query->withCount($counts);
+                }
+
+                $query->whereIn('id', $searchIds);
+
+                $modelsWithRelationships = $query->get()->keyBy('id');
+
+                // Maintain search order
+                $models = collect($searchIds)->map(function ($id) use ($modelsWithRelationships) {
+                    return $modelsWithRelationships->get($id);
+                })->filter();
+
+            } else {
+                $query = $model_type::query();
+
+                if (! empty($relationships)) {
+                    $query->with($relationships);
+                }
+
+                if (! empty($counts)) {
+                    $query->withCount($counts);
+                }
+
+                $query->whereIn('id', $bookmarkItemIds);
+
+                if ($this->sortBy && $this->sortOrder) {
+                    $query->orderBy($this->sortBy, $this->sortOrder);
+                }
+
+                $models = $query->get();
+            }
+
+            foreach ($models as $model) {
+                $dtoCollection = $model_type::toDtoCollection(collect([$model]));
+                $dto = $dtoCollection->first();
+
+                $json = json_encode($dto->toArray());
+
+                echo $json."\n";
+
+                // Flush buffers so the chunk is sent immediately
+                if (ob_get_level() > 0) {
+                    ob_flush();
+                    flush();
+                }
+
+                // Small delay to prevent overwhelming the client
+                usleep(10000);
+            }
+        }, 200, [
+            'Content-Type' => 'text/plain',
+            'X-Accel-Buffering' => 'no',
+            'Cache-Control' => 'no-cache',
+            'Connection' => 'keep-alive',
         ]);
     }
 }
