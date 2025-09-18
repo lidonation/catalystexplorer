@@ -48,6 +48,13 @@ const DrepPage = ({
             .writeText(text)
             .then(() => {
                 console.log('Copied to clipboard:', text);
+                toast.success(
+                    t('copied'),
+                    {
+                        className: 'bg-background text-content',
+                        toastId: 'copied-to-clipboard',
+                    },
+                );
             })
             .catch((err) => {
                 console.error('Failed to copy:', err);

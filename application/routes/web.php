@@ -30,6 +30,7 @@ use App\Http\Controllers\SignatureWorkflowController;
 use App\Http\Controllers\TinderProposalWorkflowController;
 use App\Http\Controllers\CompletedProjectNftsController;
 use App\Http\Controllers\CardanoBudgetProposalController;
+use App\Http\Controllers\ClaimCatalystProfileWorkflowController;
 use App\Http\Controllers\ClaimIdeascaleProfileController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\PublishToIpfsController;
@@ -82,8 +83,8 @@ Route::localized(
             ->name('proposals.index');
 
         //routes for demoing routing pages onto modals
-//        Route::get('/proposals/charts', [ProposalsController::class, 'charts'])
-//            ->name('charts');
+        //        Route::get('/proposals/charts', [ProposalsController::class, 'charts'])
+        //            ->name('charts');
 
         Route::prefix('/funds')->as('funds.')->group(function () {
             Route::get('/', [FundsController::class, 'index'])
@@ -328,14 +329,17 @@ Route::localized(
                         ->name('index');
                 });
 
-            Route::prefix('/accept-invitation')->as('acceptInvitation.')
+            Route::prefix('/claim-catalyst-profile/steps')->as('claimCatalystProfile.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
-                    Route::get('/success', [BookmarksController::class, 'acceptInvitationSuccess'])
-                        ->name('success');
-                    Route::get('/1', [BookmarksController::class, 'acceptInvitationStep'])
-                        ->middleware('signed')
+                    Route::get('/{step}', [ClaimCatalystProfileWorkflowController::class, 'handleStep'])
                         ->name('index');
+                    Route::post('/validate-wallet', [ClaimCatalystProfileWorkflowController::class, 'validateWallet'])
+                        ->name('validateWallet');
+                    Route::post('/sign-wallet', [ClaimCatalystProfileWorkflowController::class, 'signWallet'])
+                        ->name('signWallet');
+                    Route::post('/{catalystProfile}/claim-catalyst-profile', [ClaimCatalystProfileWorkflowController::class, 'claimCatalystProfile'])
+                        ->name('claimCatalystProfile');
                 });
 
             Route::get('/login', [WorkflowController::class, 'auth'])
