@@ -2,7 +2,7 @@ import { usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useState } from 'react';
 import Selector from './atoms/Selector';
-import { useLanguagePreference } from '@/hooks/useLanguagePreference';
+import { useLanguagePreference } from '@/Hooks/useLanguagePreference';
 
 const LANGS = [
     { value: 'en', label: 'English' },

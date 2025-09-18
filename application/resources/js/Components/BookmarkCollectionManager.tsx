@@ -29,6 +29,7 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 import GroupData = App.DataTransferObjects.GroupData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ReviewData = App.DataTransferObjects.ReviewData;
+import UserData = App.DataTransferObjects.UserData;
 
 type BookmarkCollectionType =
     | 'proposals'

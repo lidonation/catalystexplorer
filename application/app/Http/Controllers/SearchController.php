@@ -100,7 +100,6 @@ class SearchController extends Controller
 
     public function getPosts(PostRepository $postRepository, $searchTerm): array|LengthAwarePaginator
     {
-
         $postRepository->setQuery([
             'tags' => 'project-catalyst',
             'search' => $searchTerm,
