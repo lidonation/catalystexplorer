@@ -51,6 +51,8 @@ Route::localized(
                     Route::get('/{list}', [MyBookmarksController::class, 'showCollection'])->name('show');
                     Route::get('/{bookmarkCollection}/manage/{type?}', [BookmarksController::class, 'manage'])
                         ->name('manage');
+                    Route::post('/{bookmarkCollection}/manage/stream/{type?}', [BookmarksController::class, 'streamBookmarkItems'])
+                        ->name('manage.stream');
                 });
 
                 Route::get('/transactions', [TransactionController::class, 'userTransaction'])->name('transactions');
