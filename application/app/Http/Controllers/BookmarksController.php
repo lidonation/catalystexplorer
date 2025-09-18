@@ -14,6 +14,7 @@ use App\Enums\QueryParamsEnum;
 use App\Mail\BookmarkCollectionInvitation;
 use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
+use App\Models\Comment;
 use App\Models\Community;
 use App\Models\Group;
 use App\Models\IdeascaleProfile;
@@ -530,10 +531,16 @@ class BookmarksController extends Controller
 
         $collection = BookmarkCollection::find($request->bookmarkCollection ?? $request->input('bookmarkCollectionId'));
 
+        $rationale = $collection->comments()
+            ->where('commentator_id', $collection->user_id)
+            ->whereJsonContains('extra->type', 'rationale')
+            ->latest()
+            ->first()?->original_text;
+
         return Inertia::render('Workflows/CreateBookmark/Step5', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
-            'rationale' => $collection->meta_info?->rationale,
+            'rationale' => $rationale,
             'bookmarkCollection' => $collection->id,
             'bookmarkCollectionId' => $collection->id,
         ]);
@@ -668,7 +675,14 @@ class BookmarksController extends Controller
             'rationale' => 'required|string|min:69',
         ]);
 
-        $bookmarkCollection->saveMeta('rationale', $validated['rationale']);
+        Comment::create([
+            'commentable_type' => BookmarkCollection::class,
+            'commentable_id' => $bookmarkCollection->id,
+            'text' => $validated['rationale'],
+            'original_text' => $validated['rationale'],
+            'commentator_id' => auth()->user()?->id,
+            'extra' => ['type' => 'rationale'], // Mark this as a rationale comment
+        ]);
 
         if ($bookmarkCollection && $bookmarkCollection->status === BookmarkStatus::DRAFT()->value) {
             $bookmarkCollection->update(['status' => BookmarkStatus::PUBLISHED()->value]);

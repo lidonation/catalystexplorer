@@ -38,6 +38,17 @@ type BookmarkCollectionType =
     | 'ideascaleProfiles'
     | 'reviews';
 
+interface User {
+    id: string;
+    name: string;
+    email: string;
+    media?: Array<{
+        id: string;
+        original_url: string;
+        name: string;
+    }>;
+}
+
 interface BookmarkCollectionManagerProps {
     type: BookmarkCollectionType;
     bookmarkCollection: BookmarkCollectionData;
@@ -47,8 +58,8 @@ interface BookmarkCollectionManagerProps {
     groups?: PaginatedData<GroupData[]>;
     ideascaleProfiles?: PaginatedData<IdeascaleProfileData[]>;
     reviews?: PaginatedData<ReviewData[]>;
-    contributors?: UserData[];
-    owner?: UserData;
+    contributors?: User[];
+    owner?: User;
 }
 
 interface BookmarkCollectionManagerConfig {
@@ -281,6 +292,7 @@ const BookmarkCollectionManager = (
                     bookmarkCollection={bookmarkCollection}
                     handleSave={handleUpdate}
                     handleDelete={() => setActiveConfirm(true)}
+                    contributors={props.contributors}
                     owner={props.owner}
                 />
             </Modal>
