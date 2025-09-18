@@ -1,0 +1,22 @@
+{
+    "pdf.header.defaultTitle": "Document Title",
+    "pdf.header.defaultSubtitle": "Voting List Export",
+    "pdf.footer.generatedWith": "Generated with",
+    "pdf.footer.visit": "Visit:",
+    "pdf.footer.defaultMessage": "Empowering the Cardano Community",
+    "pdf.footer.defaultGeneratorName": "Catalyst Explorer",
+    "pdf.table.columns.title": "Title",
+    "pdf.table.columns.budget": "Budget",
+    "pdf.table.columns.category": "Category",
+    "pdf.table.columns.openSourced": "Open sourced",
+    "pdf.table.columns.team": "Team",
+    "pdf.table.columns.fund": "Fund",
+    "pdf.table.columns.yesVotes": "Yes Votes",
+    "pdf.table.columns.abstainVotes": "Abstain Votes",
+    "pdf.table.columns.noVotes": "No Votes",
+    "pdf.table.columns.status": "Status",
+    "pdf.table.columns.funding": "Funding",
+    "pdf.table.values.yes": "Yes",
+    "pdf.table.values.no": "No",
+    "pdf.document.title": "Voting List Export"
+}

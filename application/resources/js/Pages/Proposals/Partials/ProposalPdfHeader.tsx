@@ -11,16 +11,21 @@ import { useState, useEffect } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import ProposalData = App.DataTransferObjects.ProposalData;
+import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import PdfIcon from '@/Components/svgs/PdfIcon';
 
 interface ProposalPdfHeaderProps {
   itemCount: number;
   proposals: ProposalData[];
+  bookmarkCollection: BookmarkCollectionData;
+  selectedColumns?: string[];
 }
 
 const ProposalPdfHeader: React.FC<ProposalPdfHeaderProps> = ({ 
   itemCount, 
   proposals,
+  bookmarkCollection,
+  selectedColumns
 }) => {
   const { t } = useLaravelReactI18n();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -196,7 +201,20 @@ const ProposalPdfHeader: React.FC<ProposalPdfHeaderProps> = ({
             {
               label: t('proposalPdfHeader.downloadPdf'),
               onClick: () => {
+                // Construct the URL with selected columns if available
+                let url = `/lists/${bookmarkCollection.id}/proposals/download-pdf`;
                 
+                // Add selected columns as query parameter if available
+                if (selectedColumns && selectedColumns.length > 0) {
+                  // Filter out 'viewProposal' column as it's not needed for PDF
+                  const pdfColumns = selectedColumns.filter(col => col !== 'viewProposal');
+                  if (pdfColumns.length > 0) {
+                    const columnsParam = encodeURIComponent(JSON.stringify(pdfColumns));
+                    url += `?columns=${columnsParam}`;
+                  }
+                }
+                
+                window.open(url, '_blank');
               },
               icon: <PdfIcon className="w-5 h-5" />,
               iconPosition: 'left',

@@ -282,6 +282,7 @@ const BookmarkCollectionManager = (
                     handleSave={handleUpdate}
                     handleDelete={() => setActiveConfirm(true)}
                     owner={props.owner}
+                    pendingInvitations={[]}
                 />
             </Modal>
 
