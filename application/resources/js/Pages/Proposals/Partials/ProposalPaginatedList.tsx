@@ -15,6 +15,7 @@ interface ProposalProps {
     quickPitchView?: boolean;
     setQuickPitchView?: (value: boolean) => void;
     isMini: boolean;
+    disableInertiaLoading?: boolean; // Disable WhenVisible loading for streaming data
 }
 
 const ProposalPaginatedList: React.FC<ProposalProps> = ({
@@ -23,21 +24,14 @@ const ProposalPaginatedList: React.FC<ProposalProps> = ({
     quickPitchView,
     setQuickPitchView,
     isMini,
+    disableInertiaLoading = false,
 }) => {
     return (
         <>
             <section className="proposals-wrapper container mt-3 w-full pb-8">
-                <WhenVisible
-                    fallback={
-                        isHorizontal ? (
-                            <ProposalHorizontalCardLoading />
-                        ) : (
-                            <VerticalCardLoading />
-                        )
-                    }
-                    data="proposals"
-                >
-                    {proposals?.data.length ? (
+                {disableInertiaLoading ? (
+                    // Direct render without WhenVisible for streaming data
+                    proposals?.data.length ? (
                         <div
                             className="py-4"
                             data-testid="proposal-results-container"
@@ -61,8 +55,46 @@ const ProposalPaginatedList: React.FC<ProposalProps> = ({
                                 <RecordsNotFound context="proposals" />
                             </motion.div>
                         </div>
-                    )}
-                </WhenVisible>
+                    )
+                ) : (
+                    // Use WhenVisible for normal Inertia loading
+                    <WhenVisible
+                        fallback={
+                            isHorizontal ? (
+                                <ProposalHorizontalCardLoading />
+                            ) : (
+                                <VerticalCardLoading />
+                            )
+                        }
+                        data="proposals"
+                    >
+                        {proposals?.data.length ? (
+                            <div
+                                className="py-4"
+                                data-testid="proposal-results-container"
+                            >
+                                <ProposalResults
+                                    proposals={proposals?.data}
+                                    isHorizontal={isHorizontal}
+                                    quickPitchView={quickPitchView}
+                                    setGlobalQuickPitchView={setQuickPitchView}
+                                    isMini={isMini}
+                                />
+                            </div>
+                        ) : (
+                            <div className="mb-8">
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.4, ease: 'easeIn' }}
+                                >
+                                    <RecordsNotFound context="proposals" />
+                                </motion.div>
+                            </div>
+                        )}
+                    </WhenVisible>
+                )}
             </section>
             <section
                 className="container"

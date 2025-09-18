@@ -120,6 +120,7 @@ const ProposalPdfView: React.FC<ProposalPdfViewProps> = ({
             }}
             headerAlignment="left"
             onColumnSelectorOpen={handleOpenColumnSelector}
+            disableInertiaLoading={bookmarkCollection.list_type === 'voter'}
           />
         </div>
 
