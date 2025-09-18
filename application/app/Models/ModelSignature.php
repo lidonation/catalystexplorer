@@ -10,7 +10,9 @@ class ModelSignature extends Model
 
     public $incrementing = false;
 
-    protected $primaryKey = null;
+    protected $keyType = 'string'; // or 'int', depending on your signature_id type
+
+    protected $primaryKey = 'signature_id';
 
     public $guarded = [];
 

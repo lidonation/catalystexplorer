@@ -112,6 +112,13 @@ locale: string | null;
 delegators_count: number | null;
 created_at: string | null;
 };
+export type CatalystProfileData = {
+id: string | null;
+name: string | null;
+username: string | null;
+claimed_by: string | null;
+catalyst_id: string | null;
+};
 export type CategoryData = {
 id: string;
 name: string;
@@ -518,6 +525,7 @@ users: any | null;
 reviews: any | null;
 fund: App.DataTransferObjects.FundData | null;
 opensource: boolean | null;
+link: string | null;
 link: string | null;
 order?: number;
 user_rationale?: string;
