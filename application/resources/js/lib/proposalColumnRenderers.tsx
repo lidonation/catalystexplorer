@@ -84,7 +84,7 @@ export const proposalColumnRenderers: Record<string, ColumnRendererConfig> = {
                 <div className="w-80" data-testid={`proposal-title-${proposal.id}`}>
                     <Paragraph className="text-md text-content" data-testid={`proposal-title-text-${proposal.id}`}>
                         <Link
-                            href={proposal.link}
+                            href={proposal.link ?? undefined}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center hover:text-primary transition-colors duration-200"
