@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { usePage, router } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { PageProps, User } from '@/types/index';
+import { PageProps } from '@/types/index';
 
 export const useLanguagePreference = () => {
     const { setLocale } = useLaravelReactI18n();
