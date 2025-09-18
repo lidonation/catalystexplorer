@@ -54,7 +54,7 @@ export default function ColumnHeader({
                     style={{ overflow: 'visible' }}
                 >
                     <a
-                        href={proposal.link}
+                        href={proposal.link || undefined}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={'hover:text-primary font-medium'}

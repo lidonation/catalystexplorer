@@ -3,14 +3,15 @@ import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import SecondaryButton from '@/Components/atoms/SecondaryButton';
 import Title from '@/Components/atoms/Title';
 import { VerificationBadge } from '@/Components/svgs/VerificationBadge';
-import { BookmarkCollection } from '@/types';
+import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { router } from '@inertiajs/react';
 import Content from '../Partials/WorkflowContent';
 import WorkflowLayout from '../WorkflowLayout';
 
 interface SuccessProps {
-    bookmarkCollection: BookmarkCollection;
+    bookmarkCollection: BookmarkCollectionData;
 }
 
 export default function Success({ bookmarkCollection }: SuccessProps) {
@@ -51,7 +52,7 @@ export default function Success({ bookmarkCollection }: SuccessProps) {
                             </PrimaryLink>
                             
                             <SecondaryButton
-                                href={myListsRoute}
+                                onClick={() => router.visit(myListsRoute)}
                                 className="w-full text-sm lg:px-8 lg:py-3"
                             >
                                 <span>See My Lists</span>

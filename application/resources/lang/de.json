@@ -1,0 +1,22 @@
+{
+    "pdf.header.defaultTitle": "Dokumenttitel",
+    "pdf.header.defaultSubtitle": "Stimmzettel-Export",
+    "pdf.footer.generatedWith": "Erstellt mit",
+    "pdf.footer.visit": "Besuchen Sie:",
+    "pdf.footer.defaultMessage": "Die Cardano-Gemeinschaft stärken",
+    "pdf.footer.defaultGeneratorName": "Catalyst Explorer",
+    "pdf.table.columns.title": "Titel",
+    "pdf.table.columns.budget": "Budget",
+    "pdf.table.columns.category": "Kategorie",
+    "pdf.table.columns.openSourced": "Open Source",
+    "pdf.table.columns.team": "Team",
+    "pdf.table.columns.fund": "Fonds",
+    "pdf.table.columns.yesVotes": "Ja-Stimmen",
+    "pdf.table.columns.abstainVotes": "Enthaltungen",
+    "pdf.table.columns.noVotes": "Nein-Stimmen",
+    "pdf.table.columns.status": "Status",
+    "pdf.table.columns.funding": "Finanzierung",
+    "pdf.table.values.yes": "Ja",
+    "pdf.table.values.no": "Nein",
+    "pdf.document.title": "Stimmzettel-Export"
+}

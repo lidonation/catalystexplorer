@@ -411,6 +411,8 @@ Route::localized(
                 ->name('index');
             Route::get('/{bookmarkCollection}/{type?}', [BookmarksController::class, 'view'])
                 ->name('view');
+            Route::get('/{bookmarkCollection}/{type}/download-pdf', [BookmarksController::class, 'downloadPdf'])
+                ->name('downloadPdf');
         });
 
         Route::prefix('charts')->as('charts.')->group(function () {
