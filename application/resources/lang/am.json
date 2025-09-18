@@ -1,0 +1,22 @@
+{
+    "pdf.header.defaultTitle": "የሰነድ ርዕስ",
+    "pdf.header.defaultSubtitle": "የመምረጫ ዝርዝር ወደ ውጭ መላክ",
+    "pdf.footer.generatedWith": "የተፈጠረ በ",
+    "pdf.footer.visit": "ጎብኝ:",
+    "pdf.footer.defaultMessage": "የካርዳኖ ማህበረሰብን ማጠናከር",
+    "pdf.footer.defaultGeneratorName": "Catalyst Explorer",
+    "pdf.table.columns.title": "ርዕስ",
+    "pdf.table.columns.budget": "በጀት",
+    "pdf.table.columns.category": "ምድብ",
+    "pdf.table.columns.openSourced": "ክፍት ምንጭ",
+    "pdf.table.columns.team": "ቡድን",
+    "pdf.table.columns.fund": "ፈንድ",
+    "pdf.table.columns.yesVotes": "አዎ ድምጽ",
+    "pdf.table.columns.abstainVotes": "ከሳ ድምጽ",
+    "pdf.table.columns.noVotes": "አልፈልግም ድምጽ",
+    "pdf.table.columns.status": "ሁኔታ",
+    "pdf.table.columns.funding": "ገንዘብ አሰባሳብ",
+    "pdf.table.values.yes": "አዎ",
+    "pdf.table.values.no": "አይ",
+    "pdf.document.title": "የመምረጫ ዝርዝር ወደ ውጭ መላክ"
+}

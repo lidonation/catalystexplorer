@@ -413,6 +413,8 @@ Route::localized(
                 ->name('view');
             Route::post('/{bookmarkCollection}/stream/{type?}', [BookmarksController::class, 'streamBookmarkItems'])
                 ->name('stream');
+            Route::get('/{bookmarkCollection}/{type}/download-pdf', [BookmarksController::class, 'downloadPdf'])
+                ->name('downloadPdf');
         });
 
         Route::prefix('charts')->as('charts.')->group(function () {
