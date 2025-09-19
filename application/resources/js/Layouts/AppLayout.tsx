@@ -8,6 +8,7 @@ import MobileNavigation from '@/Components/layout/MobileNavigation';
 import Modal from '@/Components/layout/Modal.tsx';
 import CloseIcon from '@/Components/svgs/CloseIcon';
 import MenuIcon from '@/Components/svgs/MenuIcon';
+import GlobalErrorProvider from '@/Components/providers/GlobalErrorProvider';
 import { MetricsProvider } from '@/Context/MetricsContext';
 import { PlayerProvider } from '@/Context/PlayerContext';
 import { UIProvider } from '@/Context/SharedUIContext';
@@ -47,7 +48,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
     return (
         <MainLayout>
-            {/* Sidebar for small screens */}
+            <GlobalErrorProvider>
+                {/* Sidebar for small screens */}
             <Dialog
                 id="mobile-navigation"
                 open={sidebarOpen}
@@ -147,6 +149,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             />
 
             <ModalRoot />
+            </GlobalErrorProvider>
         </MainLayout>
     );
 }

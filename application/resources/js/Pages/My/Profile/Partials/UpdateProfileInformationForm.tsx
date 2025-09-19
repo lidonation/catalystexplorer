@@ -1,6 +1,5 @@
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import TextInput from '@/Components/atoms/TextInput';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { useForm } from '@inertiajs/react';
@@ -68,7 +67,7 @@ export default function ProfileFieldForm({
 
     return (
         <form onSubmit={submit} className="lg:p-4">
-            <ErrorDisplay />
+           
 
             <div className="mb-4">
                 <InputLabel

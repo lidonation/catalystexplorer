@@ -1,6 +1,5 @@
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import TextInput from '@/Components/atoms/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
@@ -24,7 +23,7 @@ export default function ConfirmPassword() {
         <GuestLayout>
             <Head title="Confirm Password" />
 
-            <ErrorDisplay />
+         
 
             <div className="text-4 text-dark mb-4">
                 This is a secure area of the application. Please confirm your

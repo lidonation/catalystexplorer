@@ -1,4 +1,3 @@
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import SecondaryButton from '@/Components/atoms/SecondaryButton';
@@ -108,7 +107,6 @@ const Step3: React.FC<Step3Props> = ({
 
             <Content>
                 <div className="bg-background-lighter mx-auto w-full max-w-md rounded-3xl p-6 shadow-md">
-                    <ErrorDisplay />
                     <div className="space-y-4">
                         <SecondaryButton
                             className={`hover:bg-background-lighter flex w-full items-center justify-center gap-2 rounded-md px-4 py-1.5 text-sm sm:text-base`}

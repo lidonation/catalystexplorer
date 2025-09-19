@@ -1,4 +1,3 @@
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
@@ -93,7 +92,6 @@ const Step2: React.FC<Step3Props> = ({ stepDetails, activeStep, proposal }) => {
             <Content>
                 <div className="bg-background mx-auto my-8 flex h-3/4 w-[calc(100%-4rem)] items-center justify-center rounded-lg p-8 md:w-3/4">
                     <div className="mx-auto flex w-full max-w-md flex-col items-center justify-center rounded-3xl">
-                        <ErrorDisplay />
                         <div className="space-y-4 text-center">
                             <Title level="2" className="mb-4 font-bold">
                                 {t('workflows.signature.signWallet')}

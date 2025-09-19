@@ -1,4 +1,4 @@
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
+
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import { StepDetails } from '@/types';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
@@ -96,8 +96,7 @@ const Step1: React.FC<Step1Props> = ({
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                {/* Error Messages */}
-                <ErrorDisplay />
+               
 
                 <DrepSignupForm
                     form={form}

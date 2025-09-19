@@ -66,7 +66,7 @@ const Step1: React.FC<Step1Props> = ({ stepDetails, activeStep, status }) => {
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
-                <ErrorDisplay />
+              
 
                 {currentState === 'email-form' && (
                     <div className="container p-10">

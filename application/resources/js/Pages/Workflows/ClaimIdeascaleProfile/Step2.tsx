@@ -1,4 +1,4 @@
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
+
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
@@ -82,7 +82,7 @@ const Step2: React.FC<Step1Props> = ({ profile, stepDetails, activeStep }) => {
 
             {profile?.id && (
                 <Content>
-                    <ErrorDisplay />
+                    
 
                     <ClaimProfileForm
                         form={form}

@@ -1,4 +1,3 @@
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
@@ -97,7 +96,7 @@ const Step2: React.FC<Step2Props> = ({
 
             <Content>
                 <div className="bg-background border-gray-light mx-6 mb-12 max-w-3xl space-y-6 rounded-lg border p-6 shadow-sm lg:p-8">
-                    <ErrorDisplay />
+                    
 
                     <div>
                         <ValueLabel className="text-content">

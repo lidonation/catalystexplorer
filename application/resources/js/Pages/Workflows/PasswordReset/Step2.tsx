@@ -72,7 +72,7 @@ const Step2: React.FC<Step2Props> = ({
                             <CatalystLogo />
                         </div>
 
-                        <ErrorDisplay />
+                        
 
                         <Title
                             level="4"
