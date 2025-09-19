@@ -302,17 +302,6 @@ export default function ProfileSettings({
                         >
                             {`+ ${t('my.connectWallet')}`}
                         </PrimaryLink>
-                        <PrimaryLink
-                            className="lg:text-md mb-4 ml-auto w-full px-4 py-2 text-sm text-nowrap text-center"
-                            href={useLocalizedRoute(
-                                'workflows.claimCatalystProfile.index',
-                                {
-                                    step: 1,
-                                },
-                            )}
-                        >
-                            {t('workflows.claimCatalystProfile.claim')}
-                        </PrimaryLink>
                     </div>
 
                     {/* Joined date */}

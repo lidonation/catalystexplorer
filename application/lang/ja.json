@@ -1362,15 +1362,16 @@
     "proposals.managingProposal": "Managing: :title",
     "proposals.manageDescription": "以下のウィジェットを使用して、提案の設定とコンテンツを管理してください。",
     "workflows.claimCatalystProfile.connectWallet": "ウォレットを接続",
-    "workflows.claimCatalystProfile.signWallet": "ウォレットで署名",
-    "workflows.claimCatalystProfile.noProfilesFound": "Catalystプロフィールが見つかりません",
+    "workflows.claimCatalystProfile.signWallet": "ウォレットに署名",
+    "workflows.claimCatalystProfile.noProfileFound": "Catalystプロフィールが見つかりません",
     "workflows.claimCatalystProfile.error": "エラー",
     "workflows.claimCatalystProfile.confirmAction": "操作を確認",
     "workflows.claimCatalystProfile.confirmDetails": "詳細を確認",
     "workflows.claimCatalystProfile.catalystId": "Catalyst ID",
     "workflows.claimCatalystProfile.username": "ユーザー名",
-    "workflows.claimCatalystProfile.successConfirmation": "このレビュアープロフィールの所有者になりました。詳細はいつでも編集できます。",
-    "workflows.claimCatalystProfile.viewProfile": "プロフィールに戻る",
-    "workflows.claimCatalystProfile.claim": "Catalystプロフィールを申請",
-    "workflows.claimCatalystProfile.reviewDetails": "公開する前にインポートしたデータを確認してください。"
+    "workflows.claimCatalystProfile.successConfirmation": "このCatalystプロフィールの所有者になりました。詳細はいつでも編集できます。",
+    "workflows.claimCatalystProfile.viewProposals": "提案ページに戻る",
+    "workflows.claimCatalystProfile.claim": "提案を申請",
+    "workflows.claimCatalystProfile.noProposalFound": "申請しようとしている提案はあなたのプロフィールに属していません",
+    "workflows.claimCatalystProfile.reviewDetails": "公開前にインポートしたデータを確認してください。"
 }

@@ -526,9 +526,9 @@ reviews: any | null;
 fund: App.DataTransferObjects.FundData | null;
 opensource: boolean | null;
 link: string | null;
-link: string | null;
 order?: number;
 user_rationale?: string;
+catalyst_profiles: any | null;
 };
 export type RankingData = {
 id?: string;
@@ -644,7 +644,7 @@ consumed_by_tx: string | null;
 export type UserData = {
 id: string | null;
 name: string | null;
-email: string | null;
+email: any | string | null;
 lang: string | null;
 hero_img_url: string | null;
 email_verified_at: string | null;
