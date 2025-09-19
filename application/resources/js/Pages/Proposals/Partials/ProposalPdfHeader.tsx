@@ -10,6 +10,7 @@ import { IndexedDBService } from '@/Services/IndexDbService';
 import { useState, useEffect } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { usePage } from '@inertiajs/react';
 import ProposalData = App.DataTransferObjects.ProposalData;
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import PdfIcon from '@/Components/svgs/PdfIcon';
@@ -27,7 +28,7 @@ const ProposalPdfHeader: React.FC<ProposalPdfHeaderProps> = ({
   bookmarkCollection,
   selectedColumns
 }) => {
-  const { t } = useLaravelReactI18n();
+  const { t, currentLocale } = useLaravelReactI18n();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [shouldOpenModal, setShouldOpenModal] = useState(false);
@@ -201,20 +202,20 @@ const ProposalPdfHeader: React.FC<ProposalPdfHeaderProps> = ({
             {
               label: t('proposalPdfHeader.downloadPdf'),
               onClick: () => {
-                // Construct the URL with selected columns if available
-                let url = `/lists/${bookmarkCollection.id}/proposals/download-pdf`;
+                const pathParts = window.location.pathname.split('/');
+                const locale = pathParts[1] || currentLocale() || 'en';
                 
-                // Add selected columns as query parameter if available
+                let downloadUrl = `/${locale}/lists/${bookmarkCollection.id}/proposals/download-pdf`;
+                
                 if (selectedColumns && selectedColumns.length > 0) {
-                  // Filter out 'viewProposal' column as it's not needed for PDF
                   const pdfColumns = selectedColumns.filter(col => col !== 'viewProposal');
                   if (pdfColumns.length > 0) {
                     const columnsParam = encodeURIComponent(JSON.stringify(pdfColumns));
-                    url += `?columns=${columnsParam}`;
+                    downloadUrl += `?columns=${columnsParam}`;
                   }
                 }
                 
-                window.open(url, '_blank');
+                window.open(downloadUrl, '_blank');
               },
               icon: <PdfIcon className="w-5 h-5" />,
               iconPosition: 'left',
