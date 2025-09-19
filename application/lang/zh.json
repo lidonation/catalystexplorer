@@ -1380,5 +1380,10 @@
     "workflows.claimCatalystProfile.successConfirmation": "您现在已拥有此审查员个人资料。您可以随时编辑详情。",
     "workflows.claimCatalystProfile.viewProfile": "返回个人资料",
     "workflows.claimCatalystProfile.claim": "认领 Catalyst 个人资料",
-    "workflows.claimCatalystProfile.reviewDetails": "在发布前请检查导入的数据。"
+    "workflows.claimCatalystProfile.reviewDetails": "在发布前请检查导入的数据。",
+    "workflows.createService.stepDetails.success": "成功",
+    "workflows.createService.success.title": "服务创建成功！",
+    "workflows.createService.success.message": "您的服务已创建，现在可供社区发现。",
+    "workflows.createService.success.viewPublicListing": "查看公开列表",
+    "workflows.createService.success.goToMyServices": "前往我的服务"
 }

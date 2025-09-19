@@ -1372,5 +1372,10 @@
     "workflows.claimCatalystProfile.successConfirmation": "このレビュアープロフィールの所有者になりました。詳細はいつでも編集できます。",
     "workflows.claimCatalystProfile.viewProfile": "プロフィールに戻る",
     "workflows.claimCatalystProfile.claim": "Catalystプロフィールを申請",
-    "workflows.claimCatalystProfile.reviewDetails": "公開する前にインポートしたデータを確認してください。"
+    "workflows.claimCatalystProfile.reviewDetails": "公開する前にインポートしたデータを確認してください。",
+    "workflows.createService.stepDetails.success": "成功",
+    "workflows.createService.success.title": "サービスが正常に作成されました！",
+    "workflows.createService.success.message": "あなたのサービスが作成され、コミュニティが発見できるようになりました。",
+    "workflows.createService.success.viewPublicListing": "パブリックリストを表示",
+    "workflows.createService.success.goToMyServices": "マイサービスに移動"
 }

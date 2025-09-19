@@ -1391,5 +1391,10 @@
     "workflows.claimCatalystProfile.successConfirmation": "Vous êtes maintenant propriétaire de ce profil d’évaluateur. Vous pouvez modifier les détails à tout moment.",
     "workflows.claimCatalystProfile.viewProfile": "Retour à votre profil",
     "workflows.claimCatalystProfile.claim": "Revendiquer un profil Catalyst",
-    "workflows.claimCatalystProfile.reviewDetails": "Vérifiez vos données importées avant de publier."
+    "workflows.claimCatalystProfile.reviewDetails": "Vérifiez vos données importées avant de publier.",
+    "workflows.createService.stepDetails.success": "Succès",
+    "workflows.createService.success.title": "Service Créé avec Succès !",
+    "workflows.createService.success.message": "Votre service a été créé et est maintenant disponible pour que la communauté le découvre.",
+    "workflows.createService.success.viewPublicListing": "Voir l'Annonce Publique",
+    "workflows.createService.success.goToMyServices": "Aller à Mes Services"
 }
