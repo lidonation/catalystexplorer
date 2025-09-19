@@ -42,7 +42,7 @@ Route::localized(
         Route::get('/', [HomeController::class, 'index'])
             ->name('home');
 
-       
+
         Route::prefix('/proposals')->as('proposals.')->group(function () {
             Route::get('/', [ProposalsController::class, 'index'])
                 ->name('index');
@@ -160,13 +160,13 @@ Route::localized(
                 ->name('index');
         });
 
-            // Bookmark invitation acceptance route (DEPRECATED - kept for backwards compatibility)
-            // New invitations should use the workflow route: workflows.acceptInvitation.index
-            Route::get('/bookmark-invitation/accept', [BookmarksController::class, 'acceptInvitation'])
-                ->middleware('signed')
-                ->name('bookmark.invitation.accept');
+        // Bookmark invitation acceptance route (DEPRECATED - kept for backwards compatibility)
+        // New invitations should use the workflow route: workflows.acceptInvitation.index
+        Route::get('/bookmark-invitation/accept', [BookmarksController::class, 'acceptInvitation'])
+            ->middleware('signed')
+            ->name('bookmark.invitation.accept');
 
-            Route::prefix('/workflows')->as('workflows.')->group(function () {
+        Route::prefix('/workflows')->as('workflows.')->group(function () {
             Route::prefix('/completed-projects-nfts/steps')->as('completedProjectsNft.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
@@ -334,11 +334,11 @@ Route::localized(
             Route::prefix('/claim-catalyst-profile/steps')->as('claimCatalystProfile.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
-                    Route::get('/{step}', [ClaimCatalystProfileWorkflowController::class, 'handleStep'])
+                    Route::get('/{step}/{proposal?}', [ClaimCatalystProfileWorkflowController::class, 'handleStep'])
                         ->name('index');
-                    Route::post('/validate-wallet', [ClaimCatalystProfileWorkflowController::class, 'validateWallet'])
+                    Route::post('/validate-wallet/{proposal?}', [ClaimCatalystProfileWorkflowController::class, 'validateWallet'])
                         ->name('validateWallet');
-                    Route::post('/sign-wallet', [ClaimCatalystProfileWorkflowController::class, 'signWallet'])
+                    Route::post('/sign-wallet/{proposal?}', [ClaimCatalystProfileWorkflowController::class, 'signWallet'])
                         ->name('signWallet');
                     Route::post('/{catalystProfile}/claim-catalyst-profile', [ClaimCatalystProfileWorkflowController::class, 'claimCatalystProfile'])
                         ->name('claimCatalystProfile');
@@ -415,12 +415,12 @@ Route::localized(
         Route::prefix('lists')->as('lists.')->group(function () {
             Route::get('/', [BookmarksController::class, 'index'])
                 ->name('index');
+            Route::get('/{bookmarkCollection}/{type}/download-pdf', [BookmarksController::class, 'downloadPdf'])
+                ->name('downloadPdf');
             Route::get('/{bookmarkCollection}/{type?}', [BookmarksController::class, 'view'])
                 ->name('view');
             Route::post('/{bookmarkCollection}/stream/{type?}', [BookmarksController::class, 'streamBookmarkItems'])
                 ->name('stream');
-            Route::get('/{bookmarkCollection}/{type}/download-pdf', [BookmarksController::class, 'downloadPdf'])
-                ->name('downloadPdf');
         });
 
         Route::prefix('charts')->as('charts.')->group(function () {

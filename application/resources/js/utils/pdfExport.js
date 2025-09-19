@@ -187,10 +187,16 @@ export function calculateOptimalPdfConfig(selectedColumns, userPreferences = {})
  * @param {string[]} selectedColumns - Array of selected column names
  * @param {Object} pdfConfig - PDF configuration options
  * @param {string} type - Export type (default: 'proposals')
+ * @param {string} locale - Current locale (optional, will be extracted from URL if not provided)
  * @returns {string} PDF export URL
  */
-export function generatePdfExportUrl(bookmarkCollectionId, selectedColumns, pdfConfig = {}, type = 'proposals') {
-    const baseUrl = `/lists/${bookmarkCollectionId}/${type}/pdf`;
+export function generatePdfExportUrl(bookmarkCollectionId, selectedColumns, pdfConfig = {}, type = 'proposals', locale = null) {
+    if (!locale) {
+        const pathParts = window.location.pathname.split('/');
+        locale = pathParts[1] || 'en';
+    }
+    
+    const baseUrl = `/${locale}/lists/${bookmarkCollectionId}/${type}/download-pdf`;
     const params = new URLSearchParams();
     
     // Add columns parameter
@@ -224,14 +230,15 @@ export function generatePdfExportUrl(bookmarkCollectionId, selectedColumns, pdfC
  * @param {string[]} selectedColumns - Array of selected column names
  * @param {Object} userPreferences - User's PDF preferences
  * @param {string} type - Export type
+ * @param {string} locale - Current locale (optional, will be extracted from URL if not provided)
  * @returns {Promise} Download promise
  */
-export async function exportToPdf(bookmarkCollectionId, selectedColumns, userPreferences = {}, type = 'proposals') {
+export async function exportToPdf(bookmarkCollectionId, selectedColumns, userPreferences = {}, type = 'proposals', locale = null) {
     // Calculate optimal configuration
     const pdfConfig = calculateOptimalPdfConfig(selectedColumns, userPreferences);
     
     // Generate export URL
-    const exportUrl = generatePdfExportUrl(bookmarkCollectionId, selectedColumns, pdfConfig, type);
+    const exportUrl = generatePdfExportUrl(bookmarkCollectionId, selectedColumns, pdfConfig, type, locale);
     
     try {
         // Create download link and trigger download

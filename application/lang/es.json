@@ -1376,7 +1376,7 @@
     "proposals.manageDescription": "Usa los widgets de abajo para gestionar la configuración y contenido de tu propuesta.",
     "workflows.claimCatalystProfile.connectWallet": "Conectar billetera",
     "workflows.claimCatalystProfile.signWallet": "Firmar con la billetera",
-    "workflows.claimCatalystProfile.noProfilesFound": "No se encontró ningún perfil de Catalyst",
+    "workflows.claimCatalystProfile.noProfileFound": "No se encontró un perfil de Catalyst",
     "workflows.claimCatalystProfile.error": "Error",
     "workflows.claimCatalystProfile.confirmAction": "Confirmar acción",
     "workflows.claimCatalystProfile.confirmDetails": "Confirmar detalles",
@@ -1390,5 +1390,7 @@
     "workflows.createService.success.title": "¡Servicio Creado Exitosamente!",
     "workflows.createService.success.message": "Tu servicio ha sido creado y ahora está disponible para que la comunidad lo descubra.",
     "workflows.createService.success.viewPublicListing": "Ver Listado Público",
-    "workflows.createService.success.goToMyServices": "Ir a Mis Servicios"
+    "workflows.createService.success.goToMyServices": "Ir a Mis Servicios",
+    "workflows.claimCatalystProfile.viewProposals": "Volver a la página de propuestas",
+    "workflows.claimCatalystProfile.noProposalFound": "La propuesta que intentas reclamar no pertenece a tu perfil"
 }

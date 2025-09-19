@@ -1362,8 +1362,8 @@
     "proposals.managingProposal": "Managing: :title",
     "proposals.manageDescription": "以下のウィジェットを使用して、提案の設定とコンテンツを管理してください。",
     "workflows.claimCatalystProfile.connectWallet": "ウォレットを接続",
-    "workflows.claimCatalystProfile.signWallet": "ウォレットで署名",
-    "workflows.claimCatalystProfile.noProfilesFound": "Catalystプロフィールが見つかりません",
+    "workflows.claimCatalystProfile.signWallet": "ウォレットに署名",
+    "workflows.claimCatalystProfile.noProfileFound": "Catalystプロフィールが見つかりません",
     "workflows.claimCatalystProfile.error": "エラー",
     "workflows.claimCatalystProfile.confirmAction": "操作を確認",
     "workflows.claimCatalystProfile.confirmDetails": "詳細を確認",
@@ -1377,5 +1377,7 @@
     "workflows.createService.success.title": "サービスが正常に作成されました！",
     "workflows.createService.success.message": "あなたのサービスが作成され、コミュニティが発見できるようになりました。",
     "workflows.createService.success.viewPublicListing": "パブリックリストを表示",
-    "workflows.createService.success.goToMyServices": "マイサービスに移動"
+    "workflows.createService.success.goToMyServices": "マイサービスに移動",
+    "workflows.claimCatalystProfile.viewProposals": "提案ページに戻る",
+    "workflows.claimCatalystProfile.noProposalFound": "申請しようとしている提案はあなたのプロフィールに属していません",
 }

@@ -1,3 +1,10 @@
+## [1.27.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.27.1...v1.27.2) (2025-09-18)
+
+
+### Bug Fixes
+
+* **proposal pdfs:** ln-2016 added the pdf.scss file ([6374df5](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/6374df561bd05d3d2136b84d6b1095b02e173f80))
+
 ## [1.27.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.27.0...v1.27.1) (2025-09-18)
 
 

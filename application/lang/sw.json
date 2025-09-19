@@ -1411,7 +1411,7 @@
     "proposals.manageDescription": "Tumia vifaa hapo chini kudhibiti mipangilio na maudhui ya pendekezo lako.",
     "workflows.claimCatalystProfile.connectWallet": "Unganisha pochi",
     "workflows.claimCatalystProfile.signWallet": "Saini kwa pochi",
-    "workflows.claimCatalystProfile.noProfilesFound": "Hakuna wasifu wa Catalyst uliopatikana",
+    "workflows.claimCatalystProfile.noProfileFound": "Hakuna wasifu wa Catalyst ulio patikana",
     "workflows.claimCatalystProfile.error": "Hitilafu",
     "workflows.claimCatalystProfile.confirmAction": "Thibitisha kitendo",
     "workflows.claimCatalystProfile.confirmDetails": "Thibitisha maelezo",
@@ -1425,5 +1425,7 @@
     "workflows.createService.success.title": "Huduma Imeundwa kwa Mafanikio!",
     "workflows.createService.success.message": "Huduma yako imeundwa na sasa inapatikana kwa jamii kugundua.",
     "workflows.createService.success.viewPublicListing": "Ona Orodha ya Umma",
-    "workflows.createService.success.goToMyServices": "Nenda kwa Huduma Zangu"
+    "workflows.createService.success.goToMyServices": "Nenda kwa Huduma Zangu",
+    "workflows.claimCatalystProfile.viewProposals": "Rudi kwenye ukurasa wa mapendekezo",
+    "workflows.claimCatalystProfile.noProposalFound": "Pendekezo unalojaribu kudai halihusiani na wasifu wako"
 }

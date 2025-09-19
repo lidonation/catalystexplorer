@@ -44,6 +44,84 @@
                             @case('funding')
                                 {{ __('pdf.table.columns.funding') }}
                                 @break
+                            @case('amount_requested')
+                                {{ __('pdf.table.columns.amountRequested') }}
+                                @break
+                            @case('amount_received')
+                                {{ __('pdf.table.columns.amountReceived') }}
+                                @break
+                            @case('definition_of_success')
+                                {{ __('pdf.table.columns.definitionOfSuccess') }}
+                                @break
+                            @case('website')
+                                {{ __('pdf.table.columns.website') }}
+                                @break
+                            @case('excerpt')
+                                {{ __('pdf.table.columns.excerpt') }}
+                                @break
+                            @case('content')
+                                {{ __('pdf.table.columns.content') }}
+                                @break
+                            @case('funded_at')
+                                {{ __('pdf.table.columns.fundedAt') }}
+                                @break
+                            @case('funding_updated_at')
+                                {{ __('pdf.table.columns.fundingUpdatedAt') }}
+                                @break
+                            @case('comment_prompt')
+                                {{ __('pdf.table.columns.commentPrompt') }}
+                                @break
+                            @case('social_excerpt')
+                                {{ __('pdf.table.columns.socialExcerpt') }}
+                                @break
+                            @case('ideascale_link')
+                                {{ __('pdf.table.columns.ideascaleLink') }}
+                                @break
+                            @case('projectcatalyst_io_link')
+                                {{ __('pdf.table.columns.projectCatalystLink') }}
+                                @break
+                            @case('type')
+                                {{ __('pdf.table.columns.type') }}
+                                @break
+                            @case('meta_title')
+                                {{ __('pdf.table.columns.metaTitle') }}
+                                @break
+                            @case('problem')
+                                {{ __('pdf.table.columns.problem') }}
+                                @break
+                            @case('solution')
+                                {{ __('pdf.table.columns.solution') }}
+                                @break
+                            @case('experience')
+                                {{ __('pdf.table.columns.experience') }}
+                                @break
+                            @case('currency')
+                                {{ __('pdf.table.columns.currency') }}
+                                @break
+                            @case('ranking_total')
+                                {{ __('pdf.table.columns.rankingTotal') }}
+                                @break
+                            @case('alignment_score')
+                                {{ __('pdf.table.columns.alignmentScore') }}
+                                @break
+                            @case('feasibility_score')
+                                {{ __('pdf.table.columns.feasibilityScore') }}
+                                @break
+                            @case('auditability_score')
+                                {{ __('pdf.table.columns.auditabilityScore') }}
+                                @break
+                            @case('quickpitch')
+                                {{ __('pdf.table.columns.quickpitch') }}
+                                @break
+                            @case('quickpitch_length')
+                                {{ __('pdf.table.columns.quickpitchLength') }}
+                                @break
+                            @case('link')
+                                {{ __('pdf.table.columns.link') }}
+                                @break
+                            @case('user_rationale')
+                                {{ __('pdf.table.columns.userRationale') }}
+                                @break
                             @default
                                 {{ ucwords(str_replace(['_', '.'], ' ', $column)) }}
                         @endswitch

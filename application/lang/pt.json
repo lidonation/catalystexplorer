@@ -1371,11 +1371,11 @@
     "proposals.manageDescription": "Use os widgets abaixo para gerenciar as configurações e conteúdo da sua proposta.",
     "workflows.claimCatalystProfile.connectWallet": "Conectar carteira",
     "workflows.claimCatalystProfile.signWallet": "Assinar com a carteira",
-    "workflows.claimCatalystProfile.noProfilesFound": "Nenhum perfil Catalyst encontrado",
+    "workflows.claimCatalystProfile.noProfileFound": "Nenhum perfil Catalyst encontrado",
     "workflows.claimCatalystProfile.error": "Erro",
     "workflows.claimCatalystProfile.confirmAction": "Confirmar ação",
     "workflows.claimCatalystProfile.confirmDetails": "Confirmar detalhes",
-    "workflows.claimCatalystProfile.catalystId": "ID do Catalyst",
+    "workflows.claimCatalystProfile.catalystId": "ID Catalyst",
     "workflows.claimCatalystProfile.username": "Nome de usuário",
     "workflows.claimCatalystProfile.successConfirmation": "Agora você é o proprietário deste perfil de revisor. Você pode editar os detalhes a qualquer momento.",
     "workflows.claimCatalystProfile.viewProfile": "Voltar ao seu perfil",
@@ -1385,5 +1385,7 @@
     "workflows.createService.success.title": "Serviço Criado com Sucesso!",
     "workflows.createService.success.message": "Seu serviço foi criado e agora está disponível para a comunidade descobrir.",
     "workflows.createService.success.viewPublicListing": "Ver Listagem Pública",
-    "workflows.createService.success.goToMyServices": "Ir para Meus Serviços"
+    "workflows.createService.success.goToMyServices": "Ir para Meus Serviços",
+    "workflows.claimCatalystProfile.viewProposals": "Voltar à página de propostas",
+    "workflows.claimCatalystProfile.noProposalFound": "A proposta que você está tentando reivindicar não pertence ao seu perfil"
 }

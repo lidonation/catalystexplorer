@@ -1,6 +1,10 @@
+import PrimaryLink from '@/Components/atoms/PrimaryLink';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { useEffect } from 'react';
 import ProposalContent from '../Partials/ProposalContent';
 import ProposalLayout from '../ProposalLayout';
+import CatalystProfileData = App.DataTransferObjects.CatalystProfileData;
 
 interface IndexProps {
     proposal: App.DataTransferObjects.ProposalData;
@@ -20,6 +24,10 @@ const Index = ({
     catalystConnectionsCount = 0,
 }: IndexProps) => {
     const { t } = useLaravelReactI18n();
+
+    const isClaimed = proposal?.catalyst_profiles?.some(
+        (profile: CatalystProfileData) => profile.claimed_by !== null,
+    );
 
     return (
         <ProposalLayout
@@ -55,6 +63,18 @@ const Index = ({
                     </div>
                 </div>
             </div>
+            {!isClaimed && (
+                <div className="bg-background shadow-cx-box-shadow mt-4 flex items-center justify-center rounded-xl p-4">
+                    <PrimaryLink
+                        href={useLocalizedRoute(
+                            'workflows.claimCatalystProfile.index',
+                            { step: 1, proposal: proposal.id },
+                        )}
+                    >
+                        {t('workflows.claimCatalystProfile.claim')}
+                    </PrimaryLink>
+                </div>
+            )}
             <ProposalContent content={proposal.content} />
         </ProposalLayout>
     );

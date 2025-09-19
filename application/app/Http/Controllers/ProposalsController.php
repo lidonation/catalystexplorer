@@ -119,6 +119,7 @@ class ProposalsController extends Controller
                 'fund',
                 'groups',
                 'team',
+                'catalyst_profiles',
                 //                'team.proposals',
                 //                'reviews',
                 'author',
@@ -456,7 +457,7 @@ class ProposalsController extends Controller
         $this->setCounts($response->facetDistribution, $response->facetStats);
 
         $pagination = new LengthAwarePaginator(
-            ProposalData::collect($items->toArray()),
+            ProposalData::collect($items),
             $response->estimatedTotalHits,
             $limit,
             $page,
