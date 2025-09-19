@@ -139,5 +139,9 @@ final class ProposalData extends Data
         #[TypeScriptOptional]
         public ?string $user_rationale,
 
+        #[MapOutputName('catalyst_profiles')]
+        #[DataCollectionOf(CatalystProfileData::class)]
+        public ?DataCollection $catalyst_profiles,
+
     ) {}
 }

@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\DecodeTransactionMetadataKey10;
 use App\Models\CatalystProfile;
+use App\Models\Proposal;
 use App\Models\Signature;
 use App\Models\Transaction;
 use App\Models\User;
@@ -19,12 +20,12 @@ use Inertia\Response;
 
 class ClaimCatalystProfileWorkflowController extends Controller
 {
-    public function handleStep(Request $request, $step): mixed
+    public function handleStep(Request $request, $step, ?Proposal $proposal = null): mixed
     {
         $method = "step{$step}";
 
         if (method_exists($this, $method)) {
-            return $this->$method($request);
+            return $this->$method($request, $proposal);
         }
 
         abort(404, "Step '{$step}' not found.");
@@ -32,26 +33,38 @@ class ClaimCatalystProfileWorkflowController extends Controller
 
     public function step1(Request $request): Response
     {
+        $proposal = $request->proposal;
 
         return Inertia::render('Workflows/ClaimCatalystProfile/Step1', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
+            'proposal' => $proposal,
         ]);
     }
 
-    public function step2(Request $request): Response
+    public function step2(Request $request, ?Proposal $proposal = null): Response
     {
+        $proposal = $request->proposal;
+
         return Inertia::render('Workflows/ClaimCatalystProfile/Step2', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
+            'proposal' => $proposal,
         ]);
     }
 
-    public function step3(Request $request): RedirectResponse|Response
+    public function step3(Request $request, ?Proposal $proposal = null): RedirectResponse|Response
     {
+
+        $context = '';
+        if ($request->proposal) {
+            $context = 'Claiming proposal';
+        }
+        $proposal = $request->proposal;
 
         $stakeAddress = $request->stakeAddress;
         $catalystProfile = null;
+        $proposalBelongsToProfile = false;
 
         $transaction = Transaction::where('stake_key', $stakeAddress)
             ->where('type', 'x509_envelope')
@@ -63,6 +76,8 @@ class ClaimCatalystProfileWorkflowController extends Controller
                 'activeStep' => intval($request->step),
                 'catalystProfile' => null,
                 'stakeAddress' => $stakeAddress,
+                'context' => $context,
+                'proposal' => null,
             ]);
         }
 
@@ -74,15 +89,33 @@ class ClaimCatalystProfileWorkflowController extends Controller
 
         $catalystProfile = DB::table('catalyst_profiles')->where('catalyst_id', 'LIKE', "%{$catalystId}%")->first();
 
+        $proposalBelongsToProfile = DB::table('catalyst_profile_has_proposal')
+            ->where('catalyst_profile_id', $catalystProfile->id)
+            ->where('proposal_id', $proposal?->id)
+            ->exists();
+
+        if (! $proposalBelongsToProfile) {
+            return Inertia::render('Workflows/ClaimCatalystProfile/Step3', [
+                'stepDetails' => $this->getStepDetails(),
+                'activeStep' => intval($request->step),
+                'catalystProfile' => $catalystProfile,
+                'stakeAddress' => $stakeAddress,
+                'context' => $context,
+                'proposal' => null,
+            ]);
+        }
+
         return Inertia::render('Workflows/ClaimCatalystProfile/Step3', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
             'catalystProfile' => $catalystProfile,
             'stakeAddress' => $stakeAddress,
+            'context' => $context,
+            'proposal' => $proposal,
         ]);
     }
 
-    public function step4(Request $request): Response
+    public function step4(Request $request, ?Proposal $proposal = null): Response
     {
         return Inertia::render('Workflows/ClaimCatalystProfile/Success', [
             'stepDetails' => $this->getStepDetails(),
@@ -97,6 +130,7 @@ class ClaimCatalystProfileWorkflowController extends Controller
 
     public function collectUserSignature(User $user, Request $request): RedirectResponse|Response
     {
+        $proposal = $request->proposal;
         $stakeAddressPattern = app()->environment('production')
             ? '/^stake1[0-9a-z]{38,}$/'
             : '/^stake_test1[0-9a-z]{38,}$/';
@@ -131,6 +165,7 @@ class ClaimCatalystProfileWorkflowController extends Controller
         return to_route('workflows.claimCatalystProfile.index', [
             'step' => 3,
             'stakeAddress' => $signature->stake_address,
+            'proposal' => $proposal,
         ]);
     }
 
@@ -147,7 +182,12 @@ class ClaimCatalystProfileWorkflowController extends Controller
             ],
         ]);
 
-        return to_route('workflows.claimCatalystProfile.index', ['step' => 2]);
+        $proposalId = $request->proposal;
+
+        return to_route('workflows.claimCatalystProfile.index', [
+            'step' => 2,
+            'proposal' => $proposalId,
+        ]);
     }
 
     public function claimCatalystProfile(Request $request, CatalystProfile $catalystProfile): RedirectResponse|Response

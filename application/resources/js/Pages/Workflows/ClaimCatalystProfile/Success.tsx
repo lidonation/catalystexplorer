@@ -18,11 +18,11 @@ export default function Success({
 }: SuccessProps) {
     const { t } = useLaravelReactI18n();
     const localizedRoute = useLocalizedRoute;
-    const nextStep = localizedRoute('my.profile');
+    const nextStep = localizedRoute('proposals.index');
 
     return (
         <WorkflowLayout
-            title="Create Bookmark"
+            title="Claim Catalyst Profile"
             asideInfo={stepDetails[activeStep - 1]?.info ?? ''}
         >
             <Content>
@@ -43,7 +43,7 @@ export default function Success({
                             href={nextStep}
                             className="w-full text-sm lg:px-8 lg:py-3"
                         >
-                            <span>{t('workflows.claimCatalystProfile.viewProfile')}</span>
+                            <span>{t('workflows.claimCatalystProfile.viewProposals')}</span>
                         </PrimaryLink>
                     </div>
                 </div>

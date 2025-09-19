@@ -1411,14 +1411,15 @@
     "proposals.manageDescription": "Tumia vifaa hapo chini kudhibiti mipangilio na maudhui ya pendekezo lako.",
     "workflows.claimCatalystProfile.connectWallet": "Unganisha pochi",
     "workflows.claimCatalystProfile.signWallet": "Saini kwa pochi",
-    "workflows.claimCatalystProfile.noProfilesFound": "Hakuna wasifu wa Catalyst uliopatikana",
+    "workflows.claimCatalystProfile.noProfileFound": "Hakuna wasifu wa Catalyst ulio patikana",
     "workflows.claimCatalystProfile.error": "Hitilafu",
     "workflows.claimCatalystProfile.confirmAction": "Thibitisha kitendo",
     "workflows.claimCatalystProfile.confirmDetails": "Thibitisha maelezo",
     "workflows.claimCatalystProfile.catalystId": "Kitambulisho cha Catalyst",
     "workflows.claimCatalystProfile.username": "Jina la mtumiaji",
-    "workflows.claimCatalystProfile.successConfirmation": "Sasa wewe ndiye mmiliki wa wasifu huu wa mkaguzi. Unaweza kuhariri maelezo wakati wowote.",
-    "workflows.claimCatalystProfile.viewProfile": "Rudi kwenye wasifu wako",
-    "workflows.claimCatalystProfile.claim": "Dai wasifu wa Catalyst",
-    "workflows.claimCatalystProfile.reviewDetails": "Kagua data zako zilizoingizwa kabla ya kuchapisha."
+    "workflows.claimCatalystProfile.successConfirmation": "Sasa wewe ndiye mmiliki wa wasifu huu wa Catalyst. Unaweza kuhariri maelezo wakati wowote.",
+    "workflows.claimCatalystProfile.viewProposals": "Rudi kwenye ukurasa wa mapendekezo",
+    "workflows.claimCatalystProfile.claim": "Dai pendekezo",
+    "workflows.claimCatalystProfile.noProposalFound": "Pendekezo unalojaribu kudai halihusiani na wasifu wako",
+    "workflows.claimCatalystProfile.reviewDetails": "Kagua data ulizoingiza kabla ya kuchapisha."
 }
