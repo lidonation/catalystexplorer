@@ -1,3 +1,11 @@
+## [1.28.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.28.0...v1.28.1) (2025-09-19)
+
+
+### Bug Fixes
+
+* adding null states ([83ea42a](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/83ea42a6c6f9e2838c5307f91664b2e2a00d9b7a))
+* **service:** ln-2008 added links for my services page and services listing on the last step ([0d931b8](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/0d931b84cc14d75c33541a89cb7340a2b598cc25))
+
 # [1.28.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.27.2...v1.28.0) (2025-09-19)
 
 
