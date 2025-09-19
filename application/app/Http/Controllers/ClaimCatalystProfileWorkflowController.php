@@ -55,7 +55,6 @@ class ClaimCatalystProfileWorkflowController extends Controller
 
     public function step3(Request $request, ?Proposal $proposal = null): RedirectResponse|Response
     {
-
         $context = '';
         if ($request->proposal) {
             $context = 'Claiming proposal';
@@ -100,8 +99,8 @@ class ClaimCatalystProfileWorkflowController extends Controller
             ]);
         }
 
-        $proposalBelongsToProfile = DB::table('catalyst_profile_has_proposal')
-            ->where('catalyst_profile_id', $catalystProfile?->id)
+        $proposalBelongsToProfile = DB::table('proposal_profiles')
+            ->where('profile_id', $catalystProfile->id)
             ->where('proposal_id', $proposal?->id)
             ->exists();
 
