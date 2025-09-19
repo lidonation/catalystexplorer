@@ -1377,9 +1377,15 @@
     "workflows.claimCatalystProfile.confirmDetails": "Confirmar detalhes",
     "workflows.claimCatalystProfile.catalystId": "ID Catalyst",
     "workflows.claimCatalystProfile.username": "Nome de usuário",
-    "workflows.claimCatalystProfile.successConfirmation": "Agora você é o proprietário deste perfil Catalyst. Pode editar os detalhes a qualquer momento.",
+    "workflows.claimCatalystProfile.successConfirmation": "Agora você é o proprietário deste perfil de revisor. Você pode editar os detalhes a qualquer momento.",
+    "workflows.claimCatalystProfile.viewProfile": "Voltar ao seu perfil",
+    "workflows.claimCatalystProfile.claim": "Reivindicar um perfil Catalyst",
+    "workflows.claimCatalystProfile.reviewDetails": "Revise seus dados importados antes de publicar.",
+    "workflows.createService.stepDetails.success": "Sucesso",
+    "workflows.createService.success.title": "Serviço Criado com Sucesso!",
+    "workflows.createService.success.message": "Seu serviço foi criado e agora está disponível para a comunidade descobrir.",
+    "workflows.createService.success.viewPublicListing": "Ver Listagem Pública",
+    "workflows.createService.success.goToMyServices": "Ir para Meus Serviços",
     "workflows.claimCatalystProfile.viewProposals": "Voltar à página de propostas",
-    "workflows.claimCatalystProfile.claim": "Reivindicar proposta",
-    "workflows.claimCatalystProfile.noProposalFound": "A proposta que você está tentando reivindicar não pertence ao seu perfil",
-    "workflows.claimCatalystProfile.reviewDetails": "Revise os dados importados antes de publicar."
+    "workflows.claimCatalystProfile.noProposalFound": "A proposta que você está tentando reivindicar não pertence ao seu perfil"
 }
