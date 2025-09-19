@@ -8,16 +8,23 @@
         <style>
             body {
                 font-family: 
-                    'DejaVu Sans' !important, 
-                    'Noto Sans', 
+                    'Noto Sans CJK KR', 
                     'Noto Sans CJK SC', 
                     'Noto Sans CJK TC', 
                     'Noto Sans CJK JP', 
-                    'Noto Sans CJK KR', 
-                    'Noto Sans Arabic', 
+                    'Noto Sans CJK HK', 
                     'Noto Sans Ethiopic', 
+                    'Noto Serif Ethiopic', 
+                    'Noto Sans Arabic', 
+                    'Noto Sans', 
+                    'WenQuanYi Zen Hei', 
+                    'WenQuanYi Micro Hei', 
+                    'AR PL UMing CN', 
+                    'AR PL UKai CN', 
                     'Arial Unicode MS', 
                     'Microsoft YaHei', 
+                    'DejaVu Sans', 
+                    'Liberation Sans', 
                     'SimSun', 
                     'Malgun Gothic', 
                     'Hiragino Sans GB', 
@@ -79,7 +86,7 @@
             }
 
             .title-section p {
-                font-family: 'DejaVu Sans', 'Noto Sans', 'Noto Sans CJK', 'Noto Sans Arabic', 'Arial Unicode MS', sans-serif;
+                font-family: 'Noto Sans Ethiopic', 'Noto Serif Ethiopic', 'Noto Sans CJK SC', 'Noto Sans CJK TC', 'Noto Sans CJK JP', 'Noto Sans CJK KR', 'Noto Sans CJK HK', 'Noto Sans Arabic', 'DejaVu Sans', 'Noto Sans', 'Arial Unicode MS', sans-serif;
                 font-size: 14px;
                 font-style: normal;
                 font-weight: 400;
@@ -128,7 +135,12 @@
                 font-size: 13px;
                 color: #374151;
                 border-bottom: 1px solid #B1E2F0;
-                white-space: nowrap;
+                white-space: normal;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                hyphens: auto;
+                line-height: 1.2;
+                max-width: 120px;
             }
             
             .proposal-table tbody tr:nth-child(even) {
@@ -284,7 +296,7 @@
             
             .footer-link {
                 color: var(--Blue-500, #2596BE);
-                font-family: 'DejaVu Sans', 'Noto Sans', 'Noto Sans CJK', 'Noto Sans Arabic', 'Arial Unicode MS', sans-serif;
+                font-family: 'Noto Sans Ethiopic', 'Noto Serif Ethiopic', 'Noto Sans CJK SC', 'Noto Sans CJK TC', 'Noto Sans CJK JP', 'Noto Sans CJK KR', 'Noto Sans CJK HK', 'Noto Sans Arabic', 'DejaVu Sans', 'Noto Sans', 'Arial Unicode MS', sans-serif;
                 font-size: 14px;
                 font-style: normal;
                 font-weight: 400;
@@ -305,7 +317,7 @@
             .footer-date {
                 color: #6B6E7E;
                 text-align: center;
-                font-family: 'DejaVu Sans', 'Noto Sans', 'Noto Sans CJK', 'Noto Sans Arabic', 'Arial Unicode MS', sans-serif;
+                font-family: 'Noto Sans Ethiopic', 'Noto Serif Ethiopic', 'Noto Sans CJK SC', 'Noto Sans CJK TC', 'Noto Sans CJK JP', 'Noto Sans CJK KR', 'Noto Sans CJK HK', 'Noto Sans Arabic', 'DejaVu Sans', 'Noto Sans', 'Arial Unicode MS', sans-serif;
                 font-size: 14px;
                 font-style: normal;
                 font-weight: 400;
@@ -314,7 +326,7 @@
 
             .footer-text{
                 color: var(--Blue-500, #2596BE);
-                font-family: 'DejaVu Sans', 'Noto Sans', 'Noto Sans CJK', 'Noto Sans Arabic', 'Arial Unicode MS', sans-serif;
+                font-family: 'Noto Sans Ethiopic', 'Noto Serif Ethiopic', 'Noto Sans CJK SC', 'Noto Sans CJK TC', 'Noto Sans CJK JP', 'Noto Sans CJK KR', 'Noto Sans CJK HK', 'Noto Sans Arabic', 'DejaVu Sans', 'Noto Sans', 'Arial Unicode MS', sans-serif;
                 font-size: 14px;
                 font-style: normal;
                 font-weight: 600;
@@ -377,10 +389,6 @@
                 .title-section h1 {
                     font-size: 20px;
                 }
-                
-                .logo-section img {
-                    height: 32px;
-                }
             @endif
             
             /* Responsive adjustments for PDF */
@@ -412,7 +420,7 @@
 
             @include('pdf.components.footer', [
                 'generatorName' => __('pdf.footer.defaultGeneratorName'),
-                'websiteUrl' => 'https://catalystexplorer.com',
+                'websiteUrl' => 'http://catalystexplorer.com',
                 'footerMessage' => __('pdf.footer.defaultMessage'),
                 'catalystFooterLogo' => $catalystFooterLogo
             ])

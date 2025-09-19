@@ -69,9 +69,43 @@
     }
 }
 
-/* Font fallbacks for PDF generation */
+/* Comprehensive font fallbacks for PDF generation with CJK and international language support */
 body {
-    font-family: 'Figtree', 'DejaVu Sans', 'Helvetica', 'Arial', sans-serif;
+    font-family: 
+        'Figtree', 
+        'DejaVu Sans', 
+        'Noto Sans', 
+        'Noto Sans CJK SC', 
+        'Noto Sans CJK TC', 
+        'Noto Sans CJK JP', 
+        'Noto Sans CJK KR', 
+        'Noto Sans Ethiopic',
+        'Noto Sans Arabic',
+        'Liberation Sans', 
+        'Helvetica', 
+        'Arial', 
+        sans-serif;
+}
+
+/* Specific font families for different language content */
+.chinese, [lang="zh"], [lang="zh-CN"], [lang="zh-TW"] {
+    font-family: 'Noto Sans CJK SC', 'Noto Sans CJK TC', 'Noto Sans', 'DejaVu Sans', sans-serif;
+}
+
+.japanese, [lang="ja"] {
+    font-family: 'Noto Sans CJK JP', 'Noto Sans', 'DejaVu Sans', sans-serif;
+}
+
+.korean, [lang="ko"] {
+    font-family: 'Noto Sans CJK KR', 'Noto Sans', 'DejaVu Sans', sans-serif;
+}
+
+.amharic, [lang="am"] {
+    font-family: 'Noto Sans Ethiopic', 'Noto Sans', 'DejaVu Sans', sans-serif;
+}
+
+.arabic, [lang="ar"] {
+    font-family: 'Noto Sans Arabic', 'Noto Sans', 'DejaVu Sans', sans-serif;
 }
 
 /* Page numbering - requires CSS counter */
