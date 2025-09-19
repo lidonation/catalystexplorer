@@ -1,4 +1,4 @@
-FROM registry.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/web-app-base:2025-09-03
+FROM registry.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/web-app-base:2025-09-19
 
 COPY /application /var/www/
 
