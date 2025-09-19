@@ -1379,5 +1379,5 @@
     "workflows.createService.success.viewPublicListing": "パブリックリストを表示",
     "workflows.createService.success.goToMyServices": "マイサービスに移動",
     "workflows.claimCatalystProfile.viewProposals": "提案ページに戻る",
-    "workflows.claimCatalystProfile.noProposalFound": "申請しようとしている提案はあなたのプロフィールに属していません",
+    "workflows.claimCatalystProfile.noProposalFound": "申請しようとしている提案はあなたのプロフィールに属していません"
 }
