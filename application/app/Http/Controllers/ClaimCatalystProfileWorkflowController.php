@@ -89,8 +89,19 @@ class ClaimCatalystProfileWorkflowController extends Controller
 
         $catalystProfile = DB::table('catalyst_profiles')->where('catalyst_id', 'LIKE', "%{$catalystId}%")->first();
 
+        if (! $catalystProfile) {
+            return Inertia::render('Workflows/ClaimCatalystProfile/Step3', [
+                'stepDetails' => $this->getStepDetails(),
+                'activeStep' => intval($request->step),
+                'catalystProfile' => null,
+                'stakeAddress' => $stakeAddress,
+                'context' => $context,
+                'proposal' => null,
+            ]);
+        }
+
         $proposalBelongsToProfile = DB::table('catalyst_profile_has_proposal')
-            ->where('catalyst_profile_id', $catalystProfile->id)
+            ->where('catalyst_profile_id', $catalystProfile?->id)
             ->where('proposal_id', $proposal?->id)
             ->exists();
 
