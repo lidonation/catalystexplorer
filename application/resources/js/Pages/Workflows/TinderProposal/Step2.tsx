@@ -126,7 +126,7 @@ const Step2: React.FC<Step2Props> = ({
 
             <Content>
                 <div className="bg-background mx-auto max-w-3xl border-black px-12 py-4 sm:py-8 xl:px-20">
-                    <ErrorDisplay />
+                    
 
                     <div className="scrolling-touch max-h-[60vh] space-y-6 overflow-y-auto rounded-lg border border-gray-100 p-6 shadow-sm">
                         <div>

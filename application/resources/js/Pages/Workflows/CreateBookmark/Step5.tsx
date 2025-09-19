@@ -1,5 +1,4 @@
 import InputError from '@/Components/InputError';
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import Textarea from '@/Components/atoms/Textarea';
@@ -87,7 +86,7 @@ const Step5: React.FC<Step5Props> = ({
                 <div className="flex h-full items-center justify-center px-8 py-12">
                     <div className="bg-background border-gray-light mx-6 w-full max-w-3xl space-y-6 rounded-lg border p-6 shadow-sm lg:p-8">
                         <div className="mt-3 flex flex-col gap-2">
-                            <ErrorDisplay />
+                            
 
                             <ValueLabel className="text-content">
                                 {t('workflows.voterList.rationale.label')}

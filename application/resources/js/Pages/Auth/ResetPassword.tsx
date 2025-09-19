@@ -1,6 +1,5 @@
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import TextInput from '@/Components/atoms/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
@@ -32,8 +31,6 @@ export default function ResetPassword({
     return (
         <GuestLayout>
             <Head title="Reset Password" />
-
-            <ErrorDisplay />
 
             <form onSubmit={submit}>
                 <div>

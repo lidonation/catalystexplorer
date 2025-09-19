@@ -1,5 +1,4 @@
 import Button from '@/Components/atoms/Button';
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import Paragraph from '@/Components/atoms/Paragraph';
 import TextInput from '@/Components/atoms/TextInput';
 import InputError from '@/Components/InputError';
@@ -122,7 +121,7 @@ export default function RegisterForm({ closeModal }: RegisterFormProps) {
             className="content-gap flex w-full flex-col p-4"
             data-testid="register-form"
         >
-            <ErrorDisplay />
+          
 
             <div>
                 <InputLabel

@@ -1,4 +1,3 @@
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
@@ -17,7 +16,6 @@ export default function VerifyEmail({ status }: { status?: string }) {
         <GuestLayout>
             <Head title="Email Verification" />
 
-            <ErrorDisplay />
 
             <div className="text-4 text-dark mb-4">
                 Thanks for signing up! Before getting started, could you verify

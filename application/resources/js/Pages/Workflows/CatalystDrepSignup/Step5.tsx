@@ -1,4 +1,3 @@
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
@@ -193,8 +192,7 @@ const step5: React.FC<Step5Props> = ({
 
             <Content>
                 <div className="@container mx-auto mb-6 w-full max-w-2xl px-4">
-                    {/* Error Messages */}
-                    <ErrorDisplay />
+                   
 
                     {/* IPFS Results */}
                     {ipfsData && <IpfsSuccessDisplay ipfsData={ipfsData} />}
