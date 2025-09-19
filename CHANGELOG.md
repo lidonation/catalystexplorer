@@ -1,3 +1,15 @@
+# [1.28.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.27.2...v1.28.0) (2025-09-19)
+
+
+### Bug Fixes
+
+* **proposal pdfs:** ln-2016 fixed the model and docker-compose file ([b64069a](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/b64069aad2157c45b71cb4b254ee743eec63aa31))
+
+
+### Features
+
+* claim proposal ([f354ce0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/f354ce084985f8b729d06c437e29cc604c526a9b))
+
 ## [1.27.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.27.1...v1.27.2) (2025-09-18)
 
 
