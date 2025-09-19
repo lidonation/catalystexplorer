@@ -7,7 +7,6 @@ import { generateLocalizedRoute, useLocalizedRoute } from '@/utils/localizedRout
 import { Link, router, useForm } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { FormEventHandler, useState } from 'react';
-import ErrorDisplay from './atoms/ErrorDisplay';
 import Title from './atoms/Title';
 import ConnectWalletButton from './ConnectWalletButton';
 
@@ -50,8 +49,7 @@ export default function LoginForm({ title, postRoute }: LoginFormProps) {
     return (
         <div className="not-prose flex items-center justify-center py-12">
             <div className="bg-background mx-4 w-full max-w-md rounded-2xl p-6 sm:mx-0 sm:p-8">
-                <ErrorDisplay />
-
+        
                 {/* Conditionally render the title only if it's provided */}
                 {title && (
                     <Title

@@ -1,5 +1,4 @@
 import InputError from '@/Components/InputError';
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import SecondaryButton from '@/Components/atoms/SecondaryButton';
@@ -340,7 +339,7 @@ const Step4: React.FC<Step4Props> = ({
             <Content>
                 <div className="flex h-full items-center justify-center px-8 py-12">
                     <div className="bg-background border-border-color mx-6 w-full max-w-4xl space-y-8 rounded-lg border p-6 shadow-sm lg:p-8">
-                        <ErrorDisplay />
+                       
 
                         <div>
                             <h2 className="text-content title-2 font-semibold">

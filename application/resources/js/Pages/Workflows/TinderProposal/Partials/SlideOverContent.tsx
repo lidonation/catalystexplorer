@@ -40,7 +40,7 @@ const SlideOverContent: React.FC<SlideOverContentProps> = ({
     return (
         <div data-testid="edit-voter-list">
             <div>
-                <ErrorDisplay />
+                
 
                 {!isEditingFields && (
                     <div className="mb-2 flex items-center">

@@ -186,7 +186,7 @@ const Step3: React.FC<Step3Props> = ({
 
                 <Content>
                     <div className="mx-auto w-full max-w-3xl">
-                        <ErrorDisplay />
+                        
 
                         <div className="bg-background top-0 z-10 mb-4 w-full items-center justify-center px-4 pt-4">
                             <ProposalSearchBar

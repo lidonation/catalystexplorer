@@ -1,4 +1,3 @@
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import ConnectWalletList from '@/Components/ConnectWalletList';
@@ -66,7 +65,6 @@ const Step1: React.FC<Step1Props> = ({
 
             <Content>
                 <div className="mx-auto w-full max-w-3xl px-4">
-                    <ErrorDisplay />
                     <ConnectWalletList />
                     <div
                         className={`bg-danger-light container mt-6 transform overflow-hidden rounded-lg py-3 text-center transition-all duration-500 ease-in-out ${

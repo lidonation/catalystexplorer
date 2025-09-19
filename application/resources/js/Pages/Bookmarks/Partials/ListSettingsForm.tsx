@@ -1,5 +1,4 @@
 import Button from '@/Components/atoms/Button';
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import CustomSwitch from '@/Components/atoms/Switch';
@@ -89,7 +88,7 @@ export default function ListSettingsForm({
 
     return (
         <div className="space-y-6 pt-6">
-            <ErrorDisplay />
+           
 
             <div>
                 <ValueLabel className="text-content">

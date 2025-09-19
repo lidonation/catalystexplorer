@@ -2,7 +2,6 @@ import DangerButton from '@/Components/DangerButton';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import Modal from '@/Components/Modal';
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
 import SecondaryButton from '@/Components/atoms/SecondaryButton';
 import TextInput from '@/Components/atoms/TextInput';
 import Title from '@/Components/atoms/Title';
@@ -72,7 +71,7 @@ export default function DeleteUserForm({
 
             <Modal show={confirmingUserDeletion} onClose={closeModal}>
                 <form onSubmit={deleteUser} className="p-6">
-                    <ErrorDisplay />
+                    
 
                     <Title
                         level="3"

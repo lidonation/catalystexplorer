@@ -289,7 +289,7 @@ const Step4Content: React.FC<Step4Props> = ({
         >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
             <div className="mx-auto mt-5 flex w-full flex-col items-center justify-center">
-                <ErrorDisplay />
+                
 
                 <div
                     className="mx-5 mx-auto w-full overflow-y-auto px-8"
