@@ -20,9 +20,10 @@ import WorkflowLayout from '../WorkflowLayout';
 interface Step3Props {
     stepDetails: any[];
     activeStep: number;
+    proposal?: string;
 }
 
-const Step2: React.FC<Step3Props> = ({ stepDetails, activeStep }) => {
+const Step2: React.FC<Step3Props> = ({ stepDetails, activeStep, proposal }) => {
     const { t } = useLaravelReactI18n();
     const localizedRoute = useLocalizedRoute;
     const prevStep = localizedRoute('workflows.claimCatalystProfile.index', {
@@ -56,6 +57,9 @@ const Step2: React.FC<Step3Props> = ({ stepDetails, activeStep }) => {
             router.post(
                 generateLocalizedRoute(
                     'workflows.claimCatalystProfile.signWallet',
+                    {
+                        proposal
+                    }
                 ),
                 {
                     signature: signatureResult.signature,

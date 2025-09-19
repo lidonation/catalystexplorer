@@ -9,7 +9,7 @@ import {
 import { useForm } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronLeft } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
@@ -25,13 +25,17 @@ interface Step3Props {
     activeStep: number;
     catalystProfile: App.DataTransferObjects.CatalystProfileData;
     stakeAddress: string;
+    proposal?: string;
+    context?: string;
 }
 
-export default function Error({
+export default function Step3({
     stepDetails,
     activeStep,
     catalystProfile,
     stakeAddress,
+    proposal,
+    context,
 }: Step3Props) {
     const localizedRoute = useLocalizedRoute;
     const { t } = useLaravelReactI18n();
@@ -42,7 +46,7 @@ export default function Error({
     const [isFormValid, setIsFormValid] = useState(false);
     const formRef = useRef<CatalystProfileFormHandles>(null);
 
-    const form = useForm<CatalystProfileFormFields>({
+    const form = useForm({
         name: catalystProfile?.name || '',
         username: catalystProfile?.username || '',
         catalystId: catalystProfile?.catalyst_id || '',
@@ -69,15 +73,24 @@ export default function Error({
         }
     };
 
+    const errorMessage =
+        !catalystProfile && !proposal
+            ? t('workflows.claimCatalystProfile.noProfileFound')
+            : !proposal
+              ? t('workflows.claimCatalystProfile.noProposalFound')
+              : '';
     return (
         <WorkflowLayout title="Claim Catalyst Profile">
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
 
             <Content>
                 <div className="bg-background mx-auto my-8 flex h-3/4 w-[calc(100%-4rem)] items-center justify-center rounded-lg p-8 md:w-3/4">
-                    {catalystProfile ? (
+                    {!catalystProfile ||
+                    (!proposal && context === 'Claiming proposal') ? (
+                        <ErrorComponent errorMessage={errorMessage} />
+                    ) : (
                         <div className="flex flex-col gap-3">
-                            <Title level="3" className='text-center'>
+                            <Title level="3" className="text-center">
                                 {t(
                                     'workflows.claimCatalystProfile.confirmDetails',
                                 )}
@@ -93,8 +106,6 @@ export default function Error({
                                 ref={formRef}
                             />
                         </div>
-                    ) : (
-                        <ErrorComponent />
                     )}
                 </div>
             </Content>
@@ -107,15 +118,18 @@ export default function Error({
                     <ChevronLeft className="h-4 w-4" />
                     <span>{t('Previous')}</span>
                 </PrimaryLink>
-                {catalystProfile && (
-                    <Button
-                        className="bg-success px-4 py-2 text-sm text-white lg:px-8 lg:py-3"
-                        disabled={!isFormValid || !catalystProfile?.id}
-                        onClick={() => (isFormValid ? submitForm() : '')}
-                    >
-                        <span>{t('profileWorkflow.claimProfile')}</span>
-                    </Button>
-                )}
+                {catalystProfile &&
+                    (context !== 'Claiming proposal' || proposal) && (
+                        <Button
+                            className="bg-success px-4 py-2 text-sm text-white lg:px-8 lg:py-3"
+                            disabled={!isFormValid || !catalystProfile?.id}
+                            onClick={() =>
+                                isFormValid ? submitForm() : undefined
+                            }
+                        >
+                            <span>{t('profileWorkflow.claimProfile')}</span>
+                        </Button>
+                    )}
             </Footer>
         </WorkflowLayout>
     );

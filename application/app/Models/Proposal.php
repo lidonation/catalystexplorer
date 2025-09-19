@@ -482,6 +482,13 @@ class Proposal extends Model
                 'amount' => $this->campaign?->amount,
                 'currency' => $this->campaign?->currency,
             ],
+            'catalyst_profiles' => $this->catalyst_profiles->map(fn ($profile) => [
+                'id' => $profile->id,
+                'name' => $profile->name,
+                'claimed_by' => $profile->claimed_by,
+                'username' => $profile->username,
+                'catalyst_id' => $profile->catalyst_id,
+            ]),
         ]);
     }
 

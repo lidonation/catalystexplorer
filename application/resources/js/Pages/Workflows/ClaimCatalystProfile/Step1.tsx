@@ -18,15 +18,15 @@ import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 
 interface Step1Props {
-    catalystDrep: string;
     stepDetails: StepDetails[];
     activeStep: number;
+    proposal: string;
 }
 
 const Step1: React.FC<Step1Props> = ({
     stepDetails,
     activeStep,
-    catalystDrep,
+    proposal
 }) => {
     const { t } = useLaravelReactI18n();
 
@@ -48,7 +48,7 @@ const Step1: React.FC<Step1Props> = ({
             generateLocalizedRoute(
                 'workflows.claimCatalystProfile.validateWallet',
                 {
-                    catalystDrep,
+                    proposal,
                 },
             ),
             { stakeAddress },
@@ -57,6 +57,8 @@ const Step1: React.FC<Step1Props> = ({
             },
         );
     };
+
+    
 
     return (
         <WorkflowLayout title="Claim Catalyst Profile">

@@ -1368,15 +1368,16 @@
     "proposals.managingProposal": "Managing: :title",
     "proposals.manageDescription": "Verwenden Sie die Widgets unten, um die Einstellungen und Inhalte Ihres Vorschlags zu verwalten.",
     "workflows.claimCatalystProfile.connectWallet": "Wallet verbinden",
-    "workflows.claimCatalystProfile.signWallet": "Mit Wallet signieren",
-    "workflows.claimCatalystProfile.noProfilesFound": "Kein Catalyst-Profil gefunden",
+    "workflows.claimCatalystProfile.signWallet": "Wallet signieren",
+    "workflows.claimCatalystProfile.noProfileFound": "Kein Catalyst-Profil gefunden",
     "workflows.claimCatalystProfile.error": "Fehler",
     "workflows.claimCatalystProfile.confirmAction": "Aktion bestätigen",
     "workflows.claimCatalystProfile.confirmDetails": "Details bestätigen",
     "workflows.claimCatalystProfile.catalystId": "Catalyst-ID",
     "workflows.claimCatalystProfile.username": "Benutzername",
-    "workflows.claimCatalystProfile.successConfirmation": "Sie besitzen nun dieses Reviewer-Profil. Sie können die Details jederzeit bearbeiten.",
-    "workflows.claimCatalystProfile.viewProfile": "Zurück zu Ihrem Profil",
-    "workflows.claimCatalystProfile.claim": "Ein Catalyst-Profil beanspruchen",
-    "workflows.claimCatalystProfile.reviewDetails": "Überprüfen Sie Ihre importierten Daten, bevor Sie sie veröffentlichen."
+    "workflows.claimCatalystProfile.successConfirmation": "Sie besitzen nun dieses Catalyst-Profil. Sie können die Details jederzeit bearbeiten.",
+    "workflows.claimCatalystProfile.viewProposals": "Zurück zur Vorschlagsseite",
+    "workflows.claimCatalystProfile.claim": "Vorschlag beanspruchen",
+    "workflows.claimCatalystProfile.noProposalFound": "Der Vorschlag, den Sie beanspruchen möchten, gehört nicht zu Ihrem Profil",
+    "workflows.claimCatalystProfile.reviewDetails": "Überprüfen Sie Ihre importierten Daten, bevor Sie veröffentlichen."
 }

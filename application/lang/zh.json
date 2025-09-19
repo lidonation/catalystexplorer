@@ -1370,15 +1370,16 @@
     "proposals.managingProposal": "Managing: :title",
     "proposals.manageDescription": "使用下方的小部件来管理您提案的设置和内容。",
     "workflows.claimCatalystProfile.connectWallet": "连接钱包",
-    "workflows.claimCatalystProfile.signWallet": "用钱包签名",
-    "workflows.claimCatalystProfile.noProfilesFound": "未找到 Catalyst 个人资料",
+    "workflows.claimCatalystProfile.signWallet": "钱包签名",
+    "workflows.claimCatalystProfile.noProfileFound": "未找到 Catalyst 个人资料",
     "workflows.claimCatalystProfile.error": "错误",
     "workflows.claimCatalystProfile.confirmAction": "确认操作",
     "workflows.claimCatalystProfile.confirmDetails": "确认详情",
     "workflows.claimCatalystProfile.catalystId": "Catalyst ID",
     "workflows.claimCatalystProfile.username": "用户名",
-    "workflows.claimCatalystProfile.successConfirmation": "您现在已拥有此审查员个人资料。您可以随时编辑详情。",
-    "workflows.claimCatalystProfile.viewProfile": "返回个人资料",
-    "workflows.claimCatalystProfile.claim": "认领 Catalyst 个人资料",
-    "workflows.claimCatalystProfile.reviewDetails": "在发布前请检查导入的数据。"
+    "workflows.claimCatalystProfile.successConfirmation": "您现在已拥有此 Catalyst 个人资料。您可以随时编辑详细信息。",
+    "workflows.claimCatalystProfile.viewProposals": "返回提案页面",
+    "workflows.claimCatalystProfile.claim": "认领提案",
+    "workflows.claimCatalystProfile.noProposalFound": "您尝试认领的提案不属于您的个人资料",
+    "workflows.claimCatalystProfile.reviewDetails": "在发布之前请检查您导入的数据。"
 }

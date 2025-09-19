@@ -22,10 +22,8 @@ use App\Models\Proposal;
 use App\Models\Review;
 use App\Models\User;
 use App\Repositories\BookmarkCollectionRepository;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -37,6 +35,7 @@ use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 use Laravel\Scout\Builder;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class BookmarksController extends Controller
 {
@@ -1121,15 +1120,14 @@ class BookmarksController extends Controller
         return $options;
     }
 
-    public function downloadPdf(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals'): HttpResponse
+    public function downloadPdf(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals')
     {
-        // Set the locale for PDF generation from URL or user preference
         $locale = $request->segment(1) ?? app()->getLocale();
 
-        // Validate locale against available language files
         $availableLocales = ['en', 'es', 'fr', 'de', 'pt', 'am', 'ar', 'ja', 'ko', 'sw', 'zh'];
         if (in_array($locale, $availableLocales)) {
             app()->setLocale($locale);
+            config(['app.locale' => $locale]);
         }
 
         $this->setFilters($request);
@@ -1195,7 +1193,9 @@ class BookmarksController extends Controller
         $catalystHeaderLogo = base64_encode(file_get_contents(public_path('img/catalyst-logo-dark-CZiPVQ7x.png')));
         $catalystFooterLogo = base64_encode(file_get_contents(public_path('img/catalyst-explorer-icon.png')));
 
-        $pdf = Pdf::loadView('pdf.bookmark-collection', [
+        $filename = Str::slug($bookmarkCollection->title ?? 'bookmark-collection').'-'.now()->format('Y-m-d').'.pdf';
+
+        return Pdf::view('pdf.bookmark-collection', [
             'bookmarkCollection' => $bookmarkCollection->load('author'),
             'proposals' => $proposalData,
             'type' => $type,
@@ -1205,20 +1205,40 @@ class BookmarksController extends Controller
             'orientation' => $orientation,
             'catalystHeaderLogo' => $catalystHeaderLogo,
             'catalystFooterLogo' => $catalystFooterLogo,
-        ]);
-
-        $pdf->setPaper($paperSize, $orientation)
-            ->setOptions([
-                'defaultFont' => 'sans-serif',
-                'isHtml5ParserEnabled' => true,
-                'isPhpEnabled' => true,
-                'dpi' => 96,
-                'defaultPaperSize' => $paperSize,
-            ]);
-
-        $filename = Str::slug($bookmarkCollection->title ?? 'bookmark-collection').'-'.now()->format('Y-m-d').'.pdf';
-
-        return $pdf->download($filename);
+        ])
+            ->format($paperSize)
+            ->orientation($orientation)
+            ->margins(30, 30, 40, 30)
+            ->withBrowsershot(function ($browsershot) {
+                $browsershot
+                    ->setChromePath('/usr/bin/chromium')
+                    ->timeout(120)
+                    ->addChromiumArguments([
+                        'no-sandbox',
+                        'disable-dev-shm-usage',
+                        'disable-gpu',
+                        'headless=new',
+                        'disable-extensions',
+                        'disable-plugins',
+                        'disable-default-apps',
+                        'no-default-browser-check',
+                        'disable-background-timer-throttling',
+                        'disable-backgrounding-occluded-windows',
+                        'disable-renderer-backgrounding',
+                        'disable-features=TranslateUI,VizDisplayCompositor',
+                        'font-render-hinting=none',
+                        'disable-font-subpixel-positioning',
+                        'force-color-profile=srgb',
+                        'disable-web-security',
+                        'disable-features=VizDisplayCompositor',
+                        'font-cache-shared-handle',
+                        'no-first-run',
+                        'disable-default-apps',
+                        'allow-file-access-from-files',
+                        'font-config-path=/etc/fonts',
+                    ]);
+            })
+            ->download($filename);
     }
 
     /**
