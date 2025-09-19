@@ -420,7 +420,9 @@ class ServiceController extends Controller
             $service->locations()->detach();
         }
 
-        return back()->with('success', 'Service created successfully!');
+        return redirect()->route('workflows.createService.success', [
+            'serviceHash' => $service->id,
+        ]);
     }
 
     public function saveContactInfo(Request $request): RedirectResponse
@@ -470,6 +472,27 @@ class ServiceController extends Controller
             [
                 'title' => 'workflows.createService.stepDetails.contactDetails',
             ],
+            [
+                'title' => 'workflows.createService.stepDetails.success',
+            ],
+        ]);
+    }
+
+    public function success(Request $request): Response
+    {
+        $validated = $request->validate([
+            'serviceHash' => 'required|string',
+        ]);
+
+        $service = Service::find($validated['serviceHash']);
+
+        if (! $service || $service->user_id !== auth()->id()) {
+            return redirect()->route('services.index')
+                ->with('error', 'Service not found or access denied.');
+        }
+
+        return Inertia::render('Workflows/CreateService/Success', [
+            'service' => ServiceData::fromModel($service),
         ]);
     }
 }

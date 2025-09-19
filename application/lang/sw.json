@@ -1417,9 +1417,15 @@
     "workflows.claimCatalystProfile.confirmDetails": "Thibitisha maelezo",
     "workflows.claimCatalystProfile.catalystId": "Kitambulisho cha Catalyst",
     "workflows.claimCatalystProfile.username": "Jina la mtumiaji",
-    "workflows.claimCatalystProfile.successConfirmation": "Sasa wewe ndiye mmiliki wa wasifu huu wa Catalyst. Unaweza kuhariri maelezo wakati wowote.",
+    "workflows.claimCatalystProfile.successConfirmation": "Sasa wewe ndiye mmiliki wa wasifu huu wa mkaguzi. Unaweza kuhariri maelezo wakati wowote.",
+    "workflows.claimCatalystProfile.viewProfile": "Rudi kwenye wasifu wako",
+    "workflows.claimCatalystProfile.claim": "Dai wasifu wa Catalyst",
+    "workflows.claimCatalystProfile.reviewDetails": "Kagua data zako zilizoingizwa kabla ya kuchapisha.",
+    "workflows.createService.stepDetails.success": "Mafanikio",
+    "workflows.createService.success.title": "Huduma Imeundwa kwa Mafanikio!",
+    "workflows.createService.success.message": "Huduma yako imeundwa na sasa inapatikana kwa jamii kugundua.",
+    "workflows.createService.success.viewPublicListing": "Ona Orodha ya Umma",
+    "workflows.createService.success.goToMyServices": "Nenda kwa Huduma Zangu",
     "workflows.claimCatalystProfile.viewProposals": "Rudi kwenye ukurasa wa mapendekezo",
-    "workflows.claimCatalystProfile.claim": "Dai pendekezo",
-    "workflows.claimCatalystProfile.noProposalFound": "Pendekezo unalojaribu kudai halihusiani na wasifu wako",
-    "workflows.claimCatalystProfile.reviewDetails": "Kagua data ulizoingiza kabla ya kuchapisha."
+    "workflows.claimCatalystProfile.noProposalFound": "Pendekezo unalojaribu kudai halihusiani na wasifu wako"
 }
