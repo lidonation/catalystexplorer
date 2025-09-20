@@ -1421,6 +1421,7 @@
     "workflows.claimCatalystProfile.viewProfile": "Rudi kwenye wasifu wako",
     "workflows.claimCatalystProfile.claim": "Dai wasifu wa Catalyst",
     "workflows.claimCatalystProfile.reviewDetails": "Kagua data zako zilizoingizwa kabla ya kuchapisha.",
+    "workflows.claimCatalystProfile.manageProposals": "Dhibiti Mapendekezo Yangu",
     "workflows.createService.stepDetails.success": "Mafanikio",
     "workflows.createService.success.title": "Huduma Imeundwa kwa Mafanikio!",
     "workflows.createService.success.message": "Huduma yako imeundwa na sasa inapatikana kwa jamii kugundua.",

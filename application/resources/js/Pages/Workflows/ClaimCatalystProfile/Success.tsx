@@ -18,7 +18,7 @@ export default function Success({
 }: SuccessProps) {
     const { t } = useLaravelReactI18n();
     const localizedRoute = useLocalizedRoute;
-    const nextStep = localizedRoute('proposals.index');
+    const nextStep = localizedRoute('my.proposals.index');
 
     return (
         <WorkflowLayout
@@ -43,7 +43,7 @@ export default function Success({
                             href={nextStep}
                             className="w-full text-sm lg:px-8 lg:py-3"
                         >
-                            <span>{t('workflows.claimCatalystProfile.viewProposals')}</span>
+                            <span>{t('workflows.claimCatalystProfile.manageProposals')}</span>
                         </PrimaryLink>
                     </div>
                 </div>

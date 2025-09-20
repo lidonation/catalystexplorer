@@ -291,5 +291,6 @@
     "workflows.claimCatalystProfile.viewProposals": "العودة إلى صفحة المقترحات",
     "workflows.claimCatalystProfile.claim": "مطالبة بالمقترح",
     "workflows.claimCatalystProfile.noProposalFound": "المقترح الذي تحاول المطالبة به لا يخص ملفك الشخصي",
-    "workflows.claimCatalystProfile.reviewDetails": "راجع بياناتك المستوردة قبل النشر."
+    "workflows.claimCatalystProfile.reviewDetails": "راجع بياناتك المستوردة قبل النشر.",
+    "workflows.claimCatalystProfile.manageProposals": "إدارة مقترحاتي"
 }

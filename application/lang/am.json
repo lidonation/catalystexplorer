@@ -1381,5 +1381,6 @@
     "workflows.claimCatalystProfile.viewProposals": "ወደ ዕቅዶች ገፅ ተመለስ",
     "workflows.claimCatalystProfile.claim": "ዕቅድ ተወስድ",
     "workflows.claimCatalystProfile.noProposalFound": "ለመወሰዱ የሚሞከሩት ዕቅድ በፕሮፋይልዎ ውስጥ አይገኝም",
-    "workflows.claimCatalystProfile.reviewDetails": "ለማቅረብ በፊት የገቡትን መረጃ ይገምግሙ።"
+    "workflows.claimCatalystProfile.reviewDetails": "ለማቅረብ በፊት የገቡትን መረጃ ይገምግሙ።",
+    "workflows.claimCatalystProfile.manageProposals": "የእኔ ሐሳቦችን ማስተዳደር"
 }
