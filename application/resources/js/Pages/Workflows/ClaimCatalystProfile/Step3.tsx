@@ -41,6 +41,7 @@ export default function Step3({
     const { t } = useLaravelReactI18n();
     const prevStep = localizedRoute('workflows.claimCatalystProfile.index', {
         step: activeStep - 1,
+        proposal,
     });
 
     const [isFormValid, setIsFormValid] = useState(false);

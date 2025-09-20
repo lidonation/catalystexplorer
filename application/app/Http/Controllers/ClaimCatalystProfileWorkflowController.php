@@ -14,7 +14,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -86,9 +85,7 @@ class ClaimCatalystProfileWorkflowController extends Controller
 
         $catalystId = rtrim($decodedData['catalyst_profile_id'] ?? '', '=');
 
-        $catalystProfile = DB::table('catalyst_profiles')
-            ->where('catalyst_id', 'LIKE', "%{$catalystId}%")
-            ->first();
+        $catalystProfile = CatalystProfile::where('catalyst_id', 'LIKE', "%{$catalystId}%")->first();
 
         if (! $catalystProfile) {
             return Inertia::render('Workflows/ClaimCatalystProfile/Step3', [
@@ -101,12 +98,10 @@ class ClaimCatalystProfileWorkflowController extends Controller
             ]);
         }
 
-        $proposalBelongsToProfile = DB::table('proposal_profiles')
-            ->where('profile_id', $catalystProfile->id)
-            ->where('proposal_id', $proposal?->id)
-            ->exists();
+        $proposalBelongsToProfile = $proposal?->catalyst_profiles
+            ->contains($catalystProfile);
 
-        if (! $proposalBelongsToProfile) {
+        if (! $proposalBelongsToProfile && $proposal) {
             return Inertia::render('Workflows/ClaimCatalystProfile/Step3', [
                 'stepDetails' => $this->getStepDetails(),
                 'activeStep' => intval($request->step),
@@ -211,14 +206,12 @@ class ClaimCatalystProfileWorkflowController extends Controller
             'stakeAddress' => 'nullable|string',
         ]);
 
-        DB::table('catalyst_profiles')
-            ->where('id', $catalystProfile->id)
-            ->update([
-                'name' => $validated['name'],
-                'username' => $validated['username'],
-                'claimed_by' => Auth::id(),
-                'updated_at' => now(),
-            ]);
+        $catalystProfile->update([
+            'name' => $validated['name'],
+            'username' => $validated['username'],
+            'claimed_by' => Auth::id(),
+            'updated_at' => now(),
+        ]);
 
         return to_route('workflows.claimCatalystProfile.index', ['step' => 4]);
     }
