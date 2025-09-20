@@ -1,5 +1,5 @@
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
-import useEscapeKey from '@/Hooks/useEscapeKey';
+import useEscapeKey from '@/useHooks/useEscapeKey';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ReactNode, useEffect, useRef } from 'react';
 import Button from '../atoms/Button';

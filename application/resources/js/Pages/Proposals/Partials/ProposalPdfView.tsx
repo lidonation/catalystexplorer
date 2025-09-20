@@ -5,7 +5,7 @@ import ProposalTableView from './ProposalTableView';
 import ProposalPdfHeader from './ProposalPdfHeader';
 import { PaginatedData } from '@/types/paginated-data';
 import { userSettingEnums } from '@/enums/user-setting-enums';
-import { useUserSetting } from '@/Hooks/useUserSettings';
+import { useUserSetting } from '@/useHooks/useUserSettings';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ColumnKey } from '@/Components/ColumnSelector';
 import ProposalData = App.DataTransferObjects.ProposalData;

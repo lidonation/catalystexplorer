@@ -10,7 +10,7 @@ import RadioGroup from '@/Components/RadioGroup';
 import ColumnSelector, { ColumnKey } from '@/Components/ColumnSelector';
 import { StatusEnum, VisibilityEnum } from '@/enums/votes-enums';
 import { userSettingEnums } from '@/enums/user-setting-enums';
-import { useUserSetting } from '@/Hooks/useUserSettings';
+import { useUserSetting } from '@/useHooks/useUserSettings';
 import { InertiaFormProps, useForm } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import lodashPkg from 'lodash';
@@ -88,7 +88,7 @@ export default function ListSettingsForm({
 
     return (
         <div className="space-y-6 pt-6">
-           
+
 
             <div>
                 <ValueLabel className="text-content">

@@ -2,7 +2,7 @@ import { usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useState } from 'react';
 import Selector from './atoms/Selector';
-import { useLanguagePreference } from '@/Hooks/useLanguagePreference';
+import { useLanguagePreference } from '@/useHooks/useLanguagePreference';
 
 const LANGS = [
     { value: 'en', label: 'English' },
@@ -62,9 +62,9 @@ export default function LangSwitcher() {
 
     const handleSelect = async (lang: string) => {
         if (lang === selectedLang) return;
-        
+
         setSelectedLang(lang);
-        
+
         try {
             await updateUserLanguagePreference(lang);
         } catch (error) {

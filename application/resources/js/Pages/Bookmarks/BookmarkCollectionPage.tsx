@@ -29,7 +29,7 @@ import ProposalPdfView from '../Proposals/Partials/ProposalPdfView';
 import BookmarkModelSearch from './Partials/BookmarkModelSearch';
 import DropdownMenu, { DropdownMenuItem } from './Partials/DropdownMenu';
 import ListSettingsForm, { ListForm } from './Partials/ListSettingsForm.tsx';
-import { useUserSetting } from '@/Hooks/useUserSettings';
+import { useUserSetting } from '@/useHooks/useUserSettings';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import CommunityData = App.DataTransferObjects.CommunityData;
@@ -247,12 +247,12 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
     const { auth } = usePage().props;
     const user = bookmarkCollection?.author;
     const isAuthor = auth?.user?.id == user?.id;
-    
+
     // Check if the current user is a contributor
     const isContributor = bookmarkCollection?.collaborators?.some(
         (collaborator: any) => collaborator.id === auth?.user?.id
     );
-    
+
     // User can manage if they are the author or a contributor
     const canManage = isAuthor || isContributor;
 
@@ -277,7 +277,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
     const isVoterList = bookmarkCollection.list_type === 'voter';
     const isTinderList = bookmarkCollection.list_type === 'tinder';
     const isNormalList = bookmarkCollection.list_type === 'normal';
- 
+
     const { data, isFetching, isStreaming, send, cancel } = useStream('stream');
 
     const getPublishToIpfsTooltip = () => {
@@ -309,7 +309,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
         if (!data || !isVoterList) {
             return;
         }
-        
+
         const lines = data.trim().split('\n');
         const parsed: ProposalData[] = lines.map(line => {
             try {
@@ -322,7 +322,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
         setStreamedProposals(parsed);
     }, [data, isVoterList]);
 
-  
+
 
 
     const getDropdownMenuItems = (): DropdownMenuItem[] => {
@@ -439,7 +439,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                     : 0;
 
                 // Use streamed data for voter lists
-                const proposalsData = isVoterList 
+                const proposalsData = isVoterList
                     ? {
                         ...props.proposals,
                         data: streamedProposals,
