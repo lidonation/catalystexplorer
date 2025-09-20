@@ -5,7 +5,7 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 ## Project Overview
 
 CatalystExplorer is a Laravel-based platform for exploring Project Catalyst proposals and outcomes. It features:
-- **Backend**: Laravel 12+ with PostgreSQL database
+- **Backend**: Laravel 12+ with PostgreSQL database running on PHP 8.4
 - **Frontend**: Inertia.js with React 18+ and TypeScript
 - **Infrastructure**: Docker-based development with Laravel Sail
 - **Search**: Meilisearch integration
@@ -194,6 +194,7 @@ make db-schema
 - Redis: Used for caching, queues, and sessions
 - Meilisearch: Search engine configuration
 - External APIs: Ideascale, NMKR tokens
+- PHP: Version 8.4 with modern array functions (array_any, etc.)
 
 ### Docker Services
 - `catalystexplorer.com` - Main Laravel application
@@ -223,7 +224,7 @@ Examples: `feat(proposals): ln-1343 added search filtering`, `fix(api): ln-1545 
 - Tests run in isolated Docker environment with test database
 
 ### Code Style
-- **PHP**: Laravel Pint for formatting, follows PSR-12
+- **PHP**: Laravel Pint for formatting, follows PSR-12 (running on PHP 8.4)
 - **JavaScript/TypeScript**: ESLint + Prettier with import organization
 - **Database**: Snake_case, explicit foreign keys, proper indexes
 
@@ -247,3 +248,30 @@ Examples: `feat(proposals): ln-1343 added search filtering`, `fix(api): ln-1545 
 - **Translation keys**: Use dot notation for nested translations (e.g., 'workflows.voterList.title')
 - **Testing translations**: Use the provided test script to verify integration
 - **URL structure**: Localized routes follow pattern `/{locale}/path` (e.g., `/sw/proposals`)
+
+### Redirect-After-Login System
+A comprehensive redirect-after-login system has been implemented to ensure users are taken to their intended destination after authentication.
+
+**Backend Components:**
+- **CaptureIntendedUrl Middleware**: Captures intended URLs with priority system (query params → current URL → referer)
+- **AuthenticatedSessionController**: Enhanced with multi-source redirect validation and fallback hierarchy
+- **URL Validation**: Comprehensive security checks prevent redirect loops and malicious redirects
+- **Localized Route Support**: Handles internationalized auth routes (`/en/login`, `/es/register`, etc.)
+
+**Frontend Components:**
+- **LoginForm Component**: Integrated with backend for seamless redirect handling
+- **useIntendedUrl Hook**: Custom React hook for SPA state management with localStorage persistence
+- **Multi-auth Support**: Both traditional and wallet-based login methods include redirect logic
+
+**Security Features:**
+- Host validation ensures redirects stay within the same domain
+- Path filtering blocks auth routes, API endpoints, and admin areas
+- Malicious URL prevention with comprehensive validation
+- Support for localized routes in validation logic
+
+**Key Implementation Details:**
+- Priority order: Form data → Session intended → Referer → Default home
+- Automatic cleanup of redirect state after successful authentication
+- SPA-friendly with localStorage persistence for complex navigation patterns
+- Full integration with both email/password and wallet authentication flows
+- Comprehensive test coverage for edge cases and security scenarios

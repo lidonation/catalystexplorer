@@ -86,7 +86,9 @@ class ClaimCatalystProfileWorkflowController extends Controller
 
         $catalystId = rtrim($decodedData['catalyst_profile_id'] ?? '', '=');
 
-        $catalystProfile = DB::table('catalyst_profiles')->where('catalyst_id', 'LIKE', "%{$catalystId}%")->first();
+        $catalystProfile = DB::table('catalyst_profiles')
+            ->where('catalyst_id', 'LIKE', "%{$catalystId}%")
+            ->first();
 
         if (! $catalystProfile) {
             return Inertia::render('Workflows/ClaimCatalystProfile/Step3', [
