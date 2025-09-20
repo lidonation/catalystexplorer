@@ -1,3 +1,10 @@
+# [1.29.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.28.1...v1.29.0) (2025-09-19)
+
+
+### Features
+
+* **toast:** added a global listener for errors from inertia ([312c985](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/312c985317a3b638046eb0741c246ebad30bc2d0))
+
 ## [1.28.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.28.0...v1.28.1) (2025-09-19)
 
 
