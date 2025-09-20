@@ -529,6 +529,7 @@ link: string | null;
 order?: number;
 user_rationale?: string;
 catalyst_profiles: any | null;
+is_claimed?: boolean;
 };
 export type RankingData = {
 id?: string;

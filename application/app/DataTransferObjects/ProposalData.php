@@ -143,5 +143,8 @@ final class ProposalData extends Data
         #[DataCollectionOf(CatalystProfileData::class)]
         public ?DataCollection $catalyst_profiles,
 
+        #[TypeScriptOptional]
+        public ?bool $is_claimed,
+
     ) {}
 }

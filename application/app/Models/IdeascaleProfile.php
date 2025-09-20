@@ -11,7 +11,6 @@ use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -52,16 +51,14 @@ class IdeascaleProfile extends Model implements HasMedia
     public $appends = ['hero_img_url'];
 
     public $withCount = [
-        // Re-enabled proposals count with proper type casting
         'proposals',
-        // Keep others disabled until type mismatches are resolved
-        // 'completed_proposals',
-        // 'funded_proposals',
-        // 'unfunded_proposals',
-        // 'in_progress_proposals',
-        // 'outstanding_proposals',
-        // 'own_proposals',
-        // 'collaborating_proposals',
+        //         'completed_proposals',
+        //         'funded_proposals',
+        //         'unfunded_proposals',
+        //         'in_progress_proposals',
+        //         'outstanding_proposals',
+        //         'own_proposals',
+        //         'collaborating_proposals',
         // 'reviews', // Temporarily disabled due to bigint/text type mismatch in review->discussion join
     ];
 
@@ -352,9 +349,16 @@ class IdeascaleProfile extends Model implements HasMedia
         );
     }
 
-    public function claimed_by(): BelongsTo
+    /**
+     * Get the users who have claimed this ideascale profile through pivot table
+     * Reverse relationship of User::claimed_ideascale_profiles()
+     */
+    public function claimed_by_users()
     {
-        return $this->belongsTo(User::class, 'claimed_by_uuid', 'id');
+        return $this->belongsToMany(User::class, 'claimed_profiles', 'claimable_id', 'user_id')
+            ->where('claimable_type', static::class)
+            ->withPivot(['claimed_at'])
+            ->withTimestamps();
     }
 
     public function nfts(): HasMany
