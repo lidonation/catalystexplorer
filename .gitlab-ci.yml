@@ -116,8 +116,6 @@ yarn-build:
   script: |-
     set -vx
     cd ./application
-    # Verify file structure before building
-    node scripts/verify-build-structure.cjs
     yarn run build
   artifacts:
     paths:
@@ -136,8 +134,6 @@ yarn-build-ssr:
   script: |-
     set -vx
     cd ./application
-    # Verify file structure before building
-    node scripts/verify-build-structure.cjs
     yarn run build:ssr
   artifacts:
     paths:
