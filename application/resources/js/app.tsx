@@ -7,7 +7,7 @@ import { StrictMode } from 'react';
 import { hydrateRoot } from 'react-dom/client';
 import '../scss/app.scss';
 import './bootstrap';
-import { RouteContext } from './Hooks/useRoute';
+import { RouteContext } from './useHooks/useRoute';
 import AppLayout from './Layouts/AppLayout';
 
 const appName = import.meta.env.VITE_APP_NAME || 'CatalystExplorer';

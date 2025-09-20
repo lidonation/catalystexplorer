@@ -5,7 +5,7 @@ import Title from '@/Components/atoms/Title';
 import { ListProvider } from '@/Context/ListContext';
 import { TinderWorkflowParams } from '@/enums/tinder-workflow-params';
 import { StatusEnum, VisibilityEnum } from '@/enums/votes-enums';
-import useWorkflowSlideOver from '@/Hooks/useWorkflowSlideOver';
+import useWorkflowSlideOver from '@/useHooks/useWorkflowSlideOver';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { router, useForm } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
@@ -289,7 +289,7 @@ const Step4Content: React.FC<Step4Props> = ({
         >
             <Nav stepDetails={stepDetails} activeStep={activeStep} />
             <div className="mx-auto mt-5 flex w-full flex-col items-center justify-center">
-                
+
 
                 <div
                     className="mx-5 mx-auto w-full overflow-y-auto px-8"

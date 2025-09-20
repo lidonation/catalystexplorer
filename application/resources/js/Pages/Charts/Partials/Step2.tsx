@@ -4,7 +4,7 @@ import InformationIcon from '@/Components/svgs/InformationIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import { userSettingEnums } from '@/enums/user-setting-enums';
-import { useUserSetting } from '@/Hooks/useUserSettings';
+import { useUserSetting } from '@/useHooks/useUserSettings';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 

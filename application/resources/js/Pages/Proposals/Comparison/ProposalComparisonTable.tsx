@@ -1,7 +1,7 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import { useProposalComparison } from '@/Context/ProposalComparisonContext';
-import { useUserSetting } from '@/Hooks/useUserSettings';
+import { useUserSetting } from '@/useHooks/useUserSettings';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import {
     closestCenter,

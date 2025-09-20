@@ -1,6 +1,6 @@
 import TextInput from '@/Components/atoms/TextInput';
 import SearchLensIcon from '@/Components/svgs/SearchLensIcon';
-import useEscapeKey from '@/Hooks/useEscapeKey';
+import useEscapeKey from '@/useHooks/useEscapeKey';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useRef, useState } from 'react';
 

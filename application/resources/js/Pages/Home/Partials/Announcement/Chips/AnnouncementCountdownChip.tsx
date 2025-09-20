@@ -5,7 +5,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '@/Components/atoms/Tooltip';
-import { useScreenDimension } from '@/Hooks/useScreenDimension';
+import { useScreenDimension } from '@/useHooks/useScreenDimension';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useState } from 'react';
 

@@ -13,7 +13,7 @@ import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import RationaleButton from '@/Components/RationaleButton';
 import RemoveBookmarkButton from '@/Components/RemoveBookmarkButton';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { useUserSetting } from '@/Hooks/useUserSettings';
+import { useUserSetting } from '@/useHooks/useUserSettings';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
@@ -160,7 +160,7 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
     // Separate dynamic configs from string columns in one pass
     const dynamicConfigs: DynamicColumnConfig[] = [];
     const propStringColumns: string[] = [];
-    
+
     if (columns && Array.isArray(columns)) {
         columns.forEach(col => {
             if (typeof col === 'object') {
@@ -170,17 +170,17 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
             }
         });
     }
-    
+
     const dynamicConfigKeys = new Set(dynamicConfigs.map(config => config.key));
     const protectedColumnsSet = new Set(protectedColumns);
     const excludedColumnsSet = new Set(excludeColumnsFromSelector);
-    
+
     // Determine selected columns with protected columns included
     const userSelectedColumns = selectedColumns || [...propStringColumns, ...Array.from(dynamicConfigKeys), ...defaultColumns];
     const selectedColumnKeys = new Set([...userSelectedColumns, ...protectedColumns]);
-    
+
     const activeColumns: (string | DynamicColumnConfig)[] = [];
-    
+
     dynamicConfigs.forEach(config => {
         if (selectedColumnKeys.has(config.key) || protectedColumnsSet.has(config.key)) {
             if (!excludedColumnsSet.has(config.key) || protectedColumnsSet.has(config.key)) {
@@ -188,7 +188,7 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
             }
         }
     });
-    
+
     propStringColumns.forEach(col => {
         if ((selectedColumnKeys.has(col) || protectedColumnsSet.has(col)) && !dynamicConfigKeys.has(col)) {
             if (!excludedColumnsSet.has(col) || protectedColumnsSet.has(col)) {
@@ -196,7 +196,7 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
             }
         }
     });
-    
+
     userSelectedColumns.forEach(col => {
         if (!propStringColumns.includes(col) && !dynamicConfigKeys.has(col) && !protectedColumnsSet.has(col)) {
             if (!excludedColumnsSet.has(col)) {
@@ -214,15 +214,15 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
             activeColumns.push(col);
         }
     });
-    
+
     // Columns for selector (exclude protected columns from display but keep them in activeColumns)
-    const columnsForSelector = Array.from(selectedColumnKeys).filter(col => 
+    const columnsForSelector = Array.from(selectedColumnKeys).filter(col =>
         !excludedColumnsSet.has(col)
     );
 
     const getActionsConfig = () => {
         const actionRenderers = {
-            manage: customActions?.manage || renderActions?.manage 
+            manage: customActions?.manage || renderActions?.manage
                 ? (proposal: ProposalData) => {
                     if (renderActions?.manage) {
                         return renderActions.manage(proposal);
@@ -234,7 +234,7 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
                     return null;
                 }
                 : undefined,
-            
+
             view: customActions?.view || renderActions?.view
                 ? (proposal: ProposalData) => {
                     if (renderActions?.view && !iconOnlyActions) {
@@ -247,7 +247,7 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
                     return renderDefaultViewAction(proposal, t);
                 }
                 : (proposal: ProposalData) => renderDefaultViewAction(proposal, t),
-                
+
             actions: iconOnlyActions || customActions?.actions || renderActions?.actions
                 ? (proposal: ProposalData) => {
                     if (renderActions?.actions) {
@@ -271,11 +271,11 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
     const handleColumnSelectionChange = (columns: string[]) => {
         // Save all selected columns to user settings (including dynamic config keys)
         const columnsWithProtected = [...new Set([...columns, ...protectedColumns])];
-        
-        const filteredColumns = columnsWithProtected.filter(column => 
+
+        const filteredColumns = columnsWithProtected.filter(column =>
             !excludeColumnsFromSelector.includes(column) || protectedColumns.includes(column)
         );
-        
+
         setSelectedColumns(filteredColumns);
     };
 
@@ -309,7 +309,7 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
                         />
                     </div>
                 )}
-                
+
                 {disableInertiaLoading ? (
                     // Direct render without WhenVisible for streaming data
                     proposals?.data.length ? (

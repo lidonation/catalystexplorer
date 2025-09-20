@@ -1,6 +1,6 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import { userSettingEnums } from '@/enums/user-setting-enums';
-import { useUserSetting } from '@/Hooks/useUserSettings';
+import { useUserSetting } from '@/useHooks/useUserSettings';
 import { ResponsiveTreeMap } from '@nivo/treemap';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useEffect, useState } from 'react';

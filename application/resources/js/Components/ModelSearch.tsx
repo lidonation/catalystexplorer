@@ -1,6 +1,6 @@
 import { useBookmarkContext } from '@/Context/BookmarkContext';
-import useEscapeKey from '@/Hooks/useEscapeKey';
-import { useSearchOptions } from '@/Hooks/useSearchOptions';
+import useEscapeKey from '@/useHooks/useEscapeKey';
+import { useSearchOptions } from '@/useHooks/useSearchOptions';
 import { currency } from '@/utils/currency';
 import { router } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';

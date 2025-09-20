@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import useGlobalErrorHandler, { ErrorToastOptions } from '@/Hooks/useGlobalErrorHandler';
+import useGlobalErrorHandler, { ErrorToastOptions } from '@/useHooks/useGlobalErrorHandler';
 
 interface GlobalErrorProviderProps {
     children: ReactNode;
@@ -10,11 +10,10 @@ interface GlobalErrorProviderProps {
  * Automatically handles Laravel validation errors
  * and displays them as toast notifications.
  */
-const GlobalErrorProvider: React.FC<GlobalErrorProviderProps> = ({ 
-    children, 
-    toastOptions 
+const GlobalErrorProvider: React.FC<GlobalErrorProviderProps> = ({
+    children,
+    toastOptions
 }) => {
-    // Automatically watch for error changes and shows toasts
     useGlobalErrorHandler(toastOptions);
 
     return <>{children}</>;

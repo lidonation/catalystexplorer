@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Button from '@/Components/atoms/Button';
 import ColumnSelector from '@/Components/ColumnSelector';
 import VerticalColumnIcon from '@/Components/svgs/VerticalColumnIcon';
-import { useUserSetting } from '@/Hooks/useUserSettings';
+import { useUserSetting } from '@/useHooks/useUserSettings';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 
@@ -11,7 +11,7 @@ interface ColumnToggleProps {
     defaultColumns?: string[];
 }
 
-const ColumnToggle: React.FC<ColumnToggleProps> = ({ 
+const ColumnToggle: React.FC<ColumnToggleProps> = ({
     className = '',
     defaultColumns = ['title', 'budget', 'category', 'openSourced', 'teams', 'viewProposal']
 }) => {

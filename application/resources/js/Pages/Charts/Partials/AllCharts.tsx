@@ -5,7 +5,7 @@ import RadioSelector from '@/Components/atoms/RadioSelector';
 import Title from '@/Components/atoms/Title';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { userSettingEnums } from '@/enums/user-setting-enums';
-import { useUserSetting } from '@/Hooks/useUserSettings';
+import { useUserSetting } from '@/useHooks/useUserSettings';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { Share2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
