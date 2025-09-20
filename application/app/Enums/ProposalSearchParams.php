@@ -14,6 +14,7 @@ use Spatie\Enum\Enum;
  * @method static self BUDGETS()
  * @method static self CATEGORIES()
  * @method static self CAMPAIGNS()
+ * @method static self CATALYST_PROFILES()
  * @method static self COHORT()
  * @method static self COMMUNITIES()
  * @method static self CHART_OPTIONS()
@@ -65,6 +66,7 @@ final class ProposalSearchParams extends Enum
             'BUDGETS' => 'b',
             'CATEGORIES' => 'cat',
             'CAMPAIGNS' => 'cam',
+            'CATALYST_PROFILES' => 'cp_profiles',
             'COHORT' => 'coh',
             'COMMUNITIES' => 'com',
             'CHART_OPTIONS' => 'co',

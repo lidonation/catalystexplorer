@@ -201,7 +201,7 @@ const Show = ({
                                 {t('proposals.outstanding')}
                             </div>
                             <div className="text-content text-base">
-                                {userOutstandingProposalsCount}
+                                {userOutstandingProposalsCount && userOutstandingProposalsCount > 0 ? userOutstandingProposalsCount : '-'}
                             </div>
                         </div>
                         <div className="flex min-w-[30%] flex-1 flex-col items-start sm:min-w-0 sm:flex-initial">
@@ -209,7 +209,7 @@ const Show = ({
                                 {t('proposals.completed')}
                             </div>
                             <div className="text-content text-base">
-                                {userCompleteProposalsCount}
+                                {userCompleteProposalsCount && userCompleteProposalsCount > 0 ? userCompleteProposalsCount : '-'}
                             </div>
                         </div>
                         <div className="flex min-w-[30%] flex-1 flex-col items-start sm:min-w-0 sm:flex-initial">
@@ -217,7 +217,7 @@ const Show = ({
                                 {t('proposals.catalystConnection')}
                             </div>
                             <div className="text-content text-base">
-                                {catalystConnectionsCount}
+                                {catalystConnectionsCount && catalystConnectionsCount > 0 ? catalystConnectionsCount : '-'}
                             </div>
                         </div>
                     </div>

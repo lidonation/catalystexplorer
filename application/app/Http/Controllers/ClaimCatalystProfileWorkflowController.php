@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -84,8 +85,7 @@ class ClaimCatalystProfileWorkflowController extends Controller
 
         $catalystId = rtrim($decodedData['catalyst_profile_id'] ?? '', '=');
 
-        $catalystProfile = DB::table('catalyst_profiles')
-            ->where('catalyst_id', 'LIKE', "%{$catalystId}%")
+        $catalystProfile = CatalystProfile::where('catalyst_id', 'LIKE', "%{$catalystId}%")
             ->first();
 
         if (! $catalystProfile) {
@@ -99,10 +99,8 @@ class ClaimCatalystProfileWorkflowController extends Controller
             ]);
         }
 
-        $proposalBelongsToProfile = DB::table('proposal_profiles')
-            ->where('profile_id', $catalystProfile->id)
-            ->where('proposal_id', $proposal?->id)
-            ->exists();
+        $proposalBelongsToProfile = $proposal && $catalystProfile &&
+            $catalystProfile->proposals()->where('proposals.id', $proposal->id)->exists();
 
         if (! $proposalBelongsToProfile) {
             return Inertia::render('Workflows/ClaimCatalystProfile/Step3', [
@@ -209,20 +207,53 @@ class ClaimCatalystProfileWorkflowController extends Controller
             'stakeAddress' => 'nullable|string',
         ]);
 
-        DB::table('catalyst_profiles')
-            ->where('id', $catalystProfile->id)
-            ->update([
+        $user = Auth::user();
+
+        // Check if profile can be claimed by this user
+        if (! $this->canClaimProfile($catalystProfile, $user)) {
+            return redirect()->back()->withErrors([
+                'profile' => 'This profile has already been claimed by another user.',
+            ]);
+        }
+
+        DB::transaction(function () use ($catalystProfile, $validated, $user) {
+            // the claimed_by update here is just here for backward compatibility.
+            // do not rely on it
+            $catalystProfile->update([
                 'name' => $validated['name'],
                 'username' => $validated['username'],
-                'claimed_by' => Auth::id(),
-                'updated_at' => now(),
+                'claimed_by' => $user->id,
             ]);
 
-        $relatedProposals = Proposal::whereHas('catalyst_profiles', fn ($query) => $query->where('catalyst_profiles.id', $catalystProfile->id)
-        )->get();
-        $relatedProposals->searchable();
+            // Create claimed profile entry using BelongsToMany attach (like Proposal pattern)
+            if (! $user->claimed_catalyst_profiles()->where('claimable_id', $catalystProfile->id)->exists()) {
+                $user->claimed_catalyst_profiles()->attach($catalystProfile->id, [
+                    'claimable_type' => CatalystProfile::class,
+                    'claimed_at' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        });
 
-        return to_route('workflows.claimCatalystProfile.index', ['step' => 4]);
+        // Update search index for related proposals
+        $relatedProposals = $catalystProfile->proposals;
+        if ($relatedProposals->isNotEmpty()) {
+            $relatedProposals->searchable();
+        }
+
+        Log::info('Catalyst profile claimed', [
+            'user_id' => $user->id,
+            'user_email' => $user->email,
+            'catalyst_profile_id' => $catalystProfile->id,
+            'catalyst_profile_name' => $catalystProfile->name,
+            'catalyst_profile_username' => $catalystProfile->username,
+        ]);
+
+        $user->load('claimed_catalyst_profiles', 'claimed_ideascale_profiles');
+
+        return to_route('workflows.claimCatalystProfile.index', ['step' => 4])
+            ->with('success', 'Catalyst profile successfully claimed!');
     }
 
     public function getStepDetails(): Collection
@@ -241,5 +272,30 @@ class ClaimCatalystProfileWorkflowController extends Controller
                 'title' => 'workflows.catalystDrepSignup.success',
             ],
         ]);
+    }
+
+    /**
+     * Check if a CatalystProfile can be claimed by the given user
+     * Uses BelongsToMany relationship like Proposal pattern
+     */
+    private function canClaimProfile(CatalystProfile $catalystProfile, User $user): bool
+    {
+        // Check if current user already claimed this profile
+        $claimedByCurrentUser = $user->claimed_catalyst_profiles()
+            ->where('claimable_id', $catalystProfile->id)
+            ->exists();
+
+        // Check if profile is claimed by others
+        $claimedByOthers = $catalystProfile->claimed_by_users()->where('user_id', '!=', $user->id)->exists();
+
+        return ! $claimedByOthers || $claimedByCurrentUser;
+    }
+
+    /**
+     * Check if a profile is already claimed using BelongsToMany relationship
+     */
+    private function isProfileClaimed(CatalystProfile $catalystProfile): bool
+    {
+        return $catalystProfile->claimed_by_users()->exists();
     }
 }
