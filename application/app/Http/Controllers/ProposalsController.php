@@ -119,7 +119,8 @@ class ProposalsController extends Controller
                 'fund',
                 'groups',
                 'team',
-                'catalyst_profiles',
+                'catalyst_profiles.model',
+                'users',
                 //                'team.proposals',
                 //                'reviews',
                 'author',
@@ -165,6 +166,9 @@ class ProposalsController extends Controller
         $currentPage = 1;
 
         $teamConnections = $this->generateTeamNetworkData($proposal);
+
+        $isClaimed = $proposal->catalyst_profiles
+            ->contains(fn ($profile) => ! is_null($profile->model?->claimed_by));
 
         $props = [
             'proposal' => ProposalData::from($proposal),
@@ -229,6 +233,7 @@ class ProposalsController extends Controller
             'userCompleteProposalsCount' => $proposalData['userCompleteProposalsCount'] ?? 0,
             'userOutstandingProposalsCount' => $proposalData['userOutstandingProposalsCount'] ?? 0,
             'catalystConnectionsCount' => $proposalData['catalystConnectionsCount'] ?? 0,
+            'isClaimed' => $isClaimed,
         ];
 
         return match (true) {
@@ -326,7 +331,6 @@ class ProposalsController extends Controller
             ]);
 
             return redirect()->back()->with('success', 'Quick pitch updated successfully');
-
         } catch (\Exception $e) {
             Log::error('Failed to update proposal quick pitch', [
                 'proposal_id' => $proposal->id,

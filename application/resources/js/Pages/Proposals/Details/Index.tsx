@@ -13,6 +13,7 @@ interface IndexProps {
     userCompleteProposalsCount?: number;
     userOutstandingProposalsCount?: number;
     catalystConnectionsCount?: number;
+    isClaimed?: boolean;
 }
 
 const Index = ({
@@ -22,12 +23,9 @@ const Index = ({
     userCompleteProposalsCount = 0,
     userOutstandingProposalsCount = 0,
     catalystConnectionsCount = 0,
+    isClaimed = false,
 }: IndexProps) => {
     const { t } = useLaravelReactI18n();
-
-    const isClaimed = proposal?.catalyst_profiles?.some(
-        (profile: CatalystProfileData) => profile.claimed_by !== null,
-    );
 
     return (
         <ProposalLayout
@@ -63,8 +61,7 @@ const Index = ({
                     </div>
                 </div>
             </div>
-            {!isClaimed && (
-                <div className="bg-background shadow-cx-box-shadow mt-4 flex items-center justify-center rounded-xl p-4">
+            <div className="bg-background shadow-cx-box-shadow mt-4 flex items-center justify-center rounded-xl p-4">
                     <PrimaryLink
                         href={useLocalizedRoute(
                             'workflows.claimCatalystProfile.index',
@@ -74,7 +71,6 @@ const Index = ({
                         {t('workflows.claimCatalystProfile.claim')}
                     </PrimaryLink>
                 </div>
-            )}
             <ProposalContent content={proposal.content} />
         </ProposalLayout>
     );

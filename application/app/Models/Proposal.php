@@ -483,11 +483,11 @@ class Proposal extends Model
                 'currency' => $this->campaign?->currency,
             ],
             'catalyst_profiles' => $this->catalyst_profiles->map(fn ($profile) => [
-                'id' => $profile->id,
-                'name' => $profile->name,
-                'claimed_by' => $profile->claimed_by,
-                'username' => $profile->username,
-                'catalyst_id' => $profile->catalyst_id,
+                'id' => $profile->model->id,
+                'name' => $profile->model->name,
+                'claimed_by' => $profile->model->claimed_by,
+                'username' => $profile->model->username,
+                'catalyst_id' => $profile->model->catalyst_id,
             ]),
         ]);
     }
@@ -536,9 +536,10 @@ class Proposal extends Model
         return $this->belongsTo(IdeascaleProfile::class, 'user_id', 'old_id', 'author');
     }
 
-    public function catalyst_profiles(): BelongsToMany
+    public function catalyst_profiles()
     {
-        return $this->belongsToMany(CatalystProfile::class, 'catalyst_profile_has_proposal', 'proposal_id', 'catalyst_profile_id');
+        return $this->hasMany(ProposalProfile::class, 'proposal_id', 'id')
+            ->with('model');
     }
 
     public function ideascale_profiles(): BelongsToMany
