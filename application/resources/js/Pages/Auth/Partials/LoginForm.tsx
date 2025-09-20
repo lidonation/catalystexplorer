@@ -10,10 +10,11 @@ import InputLabel from '@/Components/InputLabel';
 import Modal from '@/Components/layout/Modal.tsx';
 import RichContent from '@/Components/RichContent';
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
+import { useIntendedUrl } from '@/Hooks/useIntendedUrl';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { router, useForm } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { FormEventHandler, useState } from 'react';
+import { FormEventHandler, useState, useEffect } from 'react';
 
 interface FormErrors {
     email?: string;
@@ -22,14 +23,19 @@ interface FormErrors {
 
 interface LoginFormProps {
     closeModal?: () => void;
+    intendedUrl?: string;
 }
 
-export default function LoginForm({ closeModal }: LoginFormProps) {
+export default function LoginForm({ closeModal, intendedUrl }: LoginFormProps) {
+    const { intendedUrl: hookIntendedUrl, clearIntendedUrl } = useIntendedUrl();
+    
+    const finalIntendedUrl = intendedUrl || hookIntendedUrl || '';
+    
     const { data, setData, reset, processing } = useForm({
         email: '',
         password: '',
         remember: false,
-        redirect: window.location.href,
+        redirect: finalIntendedUrl,
     });
 
     const [errors, setErrors] = useState<FormErrors>({});
@@ -70,10 +76,13 @@ export default function LoginForm({ closeModal }: LoginFormProps) {
             {
                 email: data.email,
                 password: data.password,
+                remember: data.remember,
+                redirect: data.redirect,
             },
             {
                 onSuccess: () => {
                     reset('password');
+                    clearIntendedUrl();
                 },
                 onError: (serverErrors) => {
                     console.log('Login error ', serverErrors);
@@ -127,8 +136,12 @@ export default function LoginForm({ closeModal }: LoginFormProps) {
                     stakeAddress: stakeAddress,
                     signature: signatureResult.signature,
                     signature_key: signatureResult.key,
+                    redirect: data.redirect,
                 },
                 {
+                    onSuccess: () => {
+                        clearIntendedUrl();
+                    },
                     onError: (errors) => {
                         console.error('Wallet connection errors:', errors);
                     },
