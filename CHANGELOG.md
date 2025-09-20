@@ -1,3 +1,14 @@
+## [1.29.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.29.0...v1.29.1) (2025-09-20)
+
+
+### Bug Fixes
+
+* add CI build verification and force cache refresh ([97827df](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/97827df0b4035fe604c690407d2d039452b04394))
+* login form does not always redirect to intended url ([8b20e92](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/8b20e92a0cf8a5b209083b3ddefb8a96c0b3b273))
+* reindex related propsals when CatalystProfile is claimed ([56d1c57](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/56d1c57f0eda6734b0242f471eb318406e16e49d))
+* reindex related propsals when CatalystProfile is claimed ([d54b6cc](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/d54b6cc3915945de12270cefc3942200f14419de))
+* use proper alias import for useGlobalErrorHandler ([c106006](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/c106006c698937ad3d2103243d0aed9b7122e093))
+
 # [1.29.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.28.1...v1.29.0) (2025-09-19)
 
 
