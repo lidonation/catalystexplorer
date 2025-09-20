@@ -19,7 +19,7 @@ import FundFiltersContainer from './Partials/FundFiltersContainer';
 import ProposalFilters from './Partials/ProposalFilters';
 import ProposalPaginatedList from './Partials/ProposalPaginatedList';
 import ProposalTableView from './Partials/ProposalTableView';
-import { useUserSetting } from '@/Hooks/useUserSettings';
+import { useUserSetting } from '@/useHooks/useUserSettings';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
@@ -135,13 +135,13 @@ export default function Index({
                                     actionType="view"
                                     disableSorting={true}
                                     columns={[
-                                        'title', 
-                                        'viewProposal', 
-                                        'fund', 
-                                        'status', 
-                                        'funding', 
-                                        'teams', 
-                                        'yesVotes', 
+                                        'title',
+                                        'viewProposal',
+                                        'fund',
+                                        'status',
+                                        'funding',
+                                        'teams',
+                                        'yesVotes',
                                         'abstainVotes'
                                     ]}
                                     iconOnlyActions={true}

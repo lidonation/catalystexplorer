@@ -2,7 +2,7 @@ import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import Selector from '@/Components/atoms/Selector';
 import { userSettingEnums } from '@/enums/user-setting-enums';
-import { useUserSetting } from '@/Hooks/useUserSettings';
+import { useUserSetting } from '@/useHooks/useUserSettings';
 import axios from 'axios';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useCallback, useEffect, useMemo, useState } from 'react';

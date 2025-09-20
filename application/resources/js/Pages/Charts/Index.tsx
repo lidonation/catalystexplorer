@@ -1,6 +1,6 @@
 import { FiltersProvider } from '@/Context/FiltersContext';
 import { userSettingEnums } from '@/enums/user-setting-enums';
-import { useUserSetting } from '@/Hooks/useUserSettings';
+import { useUserSetting } from '@/useHooks/useUserSettings';
 import { SearchParams } from '@/types/search-params';
 import { Head, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';

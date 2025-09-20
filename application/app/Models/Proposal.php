@@ -79,6 +79,8 @@ class Proposal extends Model
             'funded',
             'completed',
             'currency',
+            'claimed_catalyst_profiles.id',
+            'claimed_ideascale_profiles.id',
             'has_quick_pitch',
             'quickpitch',
             'quickpitch_length',
@@ -446,7 +448,7 @@ class Proposal extends Model
     public function toSearchableArray(): array
     {
         $array = $this->toArray();
-        $this->load(['fund', 'communities']);
+        $this->load(['fund', 'communities', 'catalyst_profiles', 'ideascale_profiles']);
 
         return array_merge($array, [
             'funded' => (bool) $this->funded_at ? 1 : 0,
@@ -483,12 +485,43 @@ class Proposal extends Model
                 'currency' => $this->campaign?->currency,
             ],
             'catalyst_profiles' => $this->catalyst_profiles->map(fn ($profile) => [
-                'id' => $profile->model->id,
-                'name' => $profile->model->name,
-                'claimed_by' => $profile->model->claimed_by,
-                'username' => $profile->model->username,
-                'catalyst_id' => $profile->model->catalyst_id,
+                'id' => $profile->id,
+                'name' => $profile->name,
+                'claimed_by' => $profile->claimed_by,
+                'username' => $profile->username,
+                'catalyst_id' => $profile->catalyst_id,
             ]),
+            'claimed_catalyst_profiles' => $this->catalyst_profiles
+                ->filter(fn ($profile) => ! is_null($profile->claimed_by))
+                ->map(fn ($profile) => [
+                    'id' => $profile->id,
+                    'name' => $profile->name,
+                    'claimed_by' => $profile->claimed_by,
+                    'username' => $profile->username,
+                    'catalyst_id' => $profile->catalyst_id,
+                ]),
+            'claimed_ideascale_profiles' => $this->ideascale_profiles
+                ->filter(fn ($profile) => ! is_null($profile->claimed_by_uuid))
+                ->map(fn ($profile) => [
+                    'id' => $profile->id,
+                    'name' => $profile->name,
+                    'claimed_by_uuid' => $profile->claimed_by_uuid,
+                    'username' => $profile->username,
+                    'ideascale_id' => $profile->ideascale_id,
+                ]),
+            // Convenience fields for searching claimed profiles
+            'claimed_profile_ids' => array_merge(
+                $this->catalyst_profiles->filter(fn ($p) => ! is_null($p->claimed_by))->pluck('id')->toArray(),
+                $this->ideascale_profiles->filter(fn ($p) => ! is_null($p->claimed_by_uuid))->pluck('id')->toArray()
+            ),
+            'claimed_catalyst_profile_ids' => $this->catalyst_profiles
+                ->filter(fn ($profile) => ! is_null($profile->claimed_by))
+                ->pluck('id')
+                ->toArray(),
+            'claimed_ideascale_profile_ids' => $this->ideascale_profiles
+                ->filter(fn ($profile) => ! is_null($profile->claimed_by_uuid))
+                ->pluck('id')
+                ->toArray(),
         ]);
     }
 
@@ -538,8 +571,8 @@ class Proposal extends Model
 
     public function catalyst_profiles()
     {
-        return $this->hasMany(ProposalProfile::class, 'proposal_id', 'id')
-            ->with('model');
+        return $this->belongsToMany(CatalystProfile::class, 'proposal_profiles', 'proposal_id', 'profile_id')
+            ->where('profile_type', CatalystProfile::class);
     }
 
     public function ideascale_profiles(): BelongsToMany
@@ -593,6 +626,42 @@ class Proposal extends Model
         );
     }
 
+    /**
+     * //@todo Refactor this to be more efficient using withCount or something.
+     */
+    public function isClaimed(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $teamMembers = $this->team;
+
+                if ($teamMembers->isEmpty()) {
+                    return false;
+                }
+
+                foreach ($teamMembers as $teamMember) {
+                    $profile = $teamMember->model;
+
+                    if (! $profile) {
+                        continue;
+                    }
+
+                    if (method_exists($profile, 'claimed_by_users')) {
+                        $claimedUsersCount = $profile->claimed_by_users()->count();
+
+                        if ($claimedUsersCount === 0) {
+                            return false;
+                        }
+                    } else {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        );
+    }
+
     public function commentableName(): string
     {
         return $this->title;
@@ -610,7 +679,6 @@ class Proposal extends Model
      */
     protected function makeAllSearchableUsing(Builder $query): Builder
     {
-        // Temporarily disable relationship loading to debug UUID issue
         return $query; // Removed ->with(['tags', 'groups'])
     }
 

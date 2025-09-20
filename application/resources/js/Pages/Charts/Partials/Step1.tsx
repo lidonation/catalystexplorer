@@ -2,7 +2,7 @@ import Checkbox from '@/Components/atoms/Checkbox';
 import Paragraph from '@/Components/atoms/Paragraph';
 import InformationIcon from '@/Components/svgs/InformationIcon';
 import { userSettingEnums } from '@/enums/user-setting-enums';
-import { useUserSetting } from '@/Hooks/useUserSettings';
+import { useUserSetting } from '@/useHooks/useUserSettings';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useMemo, useState } from 'react';
 

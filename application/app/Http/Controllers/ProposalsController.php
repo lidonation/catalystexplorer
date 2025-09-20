@@ -166,9 +166,6 @@ class ProposalsController extends Controller
 
         $teamConnections = $this->generateTeamNetworkData($proposal);
 
-        $isClaimed = $proposal->catalyst_profiles
-            ->contains(fn ($profile) => ! is_null($profile->model?->claimed_by));
-
         $props = [
             'proposal' => ProposalData::from($proposal),
             'proposals' => Inertia::optional(
@@ -232,7 +229,6 @@ class ProposalsController extends Controller
             'userCompleteProposalsCount' => $proposalData['userCompleteProposalsCount'] ?? 0,
             'userOutstandingProposalsCount' => $proposalData['userOutstandingProposalsCount'] ?? 0,
             'catalystConnectionsCount' => $proposalData['catalystConnectionsCount'] ?? 0,
-            'isClaimed' => $isClaimed,
         ];
 
         return match (true) {
@@ -259,34 +255,85 @@ class ProposalsController extends Controller
 
     public function myProposals(Request $request): Response
     {
-        $userId = Auth::id();
-        $ideascaleProfile = IdeascaleProfile::where('claimed_by_uuid', $userId)->get()->map(fn ($p) => $p->id);
+        $user = Auth::user();
 
-        if ($ideascaleProfile->isEmpty()) {
+        $user->loadCount('claimed_catalyst_profiles', 'claimed_ideascale_profiles');
+
+        // Get profile counts for summary
+        $catalystCount = $user->claimed_catalyst_profiles_count;
+        $ideascaleCount = $user->claimed_ideascale_profiles_count;
+        $totalProfiles = $catalystCount + $ideascaleCount;
+
+        if ($totalProfiles === 0) {
             return Inertia::render('My/Proposals/Index', [
                 'proposals' => [
                     'data' => [],
-                    'filters' => $this->queryParams,
+                    'current_page' => 1,
+                    'per_page' => 12,
+                    'total' => 0,
+                    'last_page' => 1,
+                ],
+                'profileSummary' => [
+                    'total_profiles' => 0,
+                    'catalyst_profiles' => 0,
+                    'ideascale_profiles' => 0,
+                    'message' => 'No profiles claimed yet. Claim profiles to see associated proposals.',
                 ],
             ]);
         }
 
-        $request->merge([
-            ProposalSearchParams::IDEASCALE_PROFILES()->value => $ideascaleProfile->toArray(),
-        ]);
+        $perPage = min($request->get('per_page', 12), 60); // Max 60 per page
+        $page = $request->get('page', 1);
 
-        $this->getProps(request: $request);
-        $this->queryParams[ProposalSearchParams::LIMIT()->value] = 12;
+        $proposalsQuery = $user->proposals()
+            ->with([
+                'fund',
+                'campaign',
+                'catalyst_profiles',
+                'ideascale_profiles',
+            ])
+            ->orderBy('created_at', 'desc');
 
-        $proposals = null;
-
-        if (! empty($request[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
-            $proposals = $this->query();
+        if ($search = $request->get('search')) {
+            $proposalsQuery->where(function ($query) use ($search) {
+                $query->where('title', 'ilike', "%{$search}%")
+                    ->orWhere('problem', 'ilike', "%{$search}%")
+                    ->orWhere('solution', 'ilike', "%{$search}%");
+            });
         }
 
+        if ($status = $request->get('status')) {
+            $proposalsQuery->where('status', $status);
+        }
+
+        if ($fundId = $request->get('fund_id')) {
+            $proposalsQuery->where('fund_id', $fundId);
+        }
+
+        $proposals = $proposalsQuery->paginate($perPage, ['*'], 'page', $page);
+
+        $proposalData = [
+            'data' => ProposalData::collect($proposals->items()),
+            'current_page' => $proposals->currentPage(),
+            'per_page' => $proposals->perPage(),
+            'total' => $proposals->total(),
+            'last_page' => $proposals->lastPage(),
+        ];
+
         return Inertia::render('My/Proposals/Index', [
-            'proposals' => $proposals,
-            'filters' => $this->queryParams,
+            'proposals' => $proposalData,
+            'profileSummary' => [
+                'total_profiles' => $totalProfiles,
+                'catalyst_profiles' => $catalystCount,
+                'ideascale_profiles' => $ideascaleCount,
+                'message' => 'Showing proposals from all your claimed profiles using direct Eloquent queries.',
+            ],
+            'filters' => [
+                'search' => $request->get('search', ''),
+                'status' => $request->get('status', ''),
+                'fund_id' => $request->get('fund_id', ''),
+                'per_page' => $perPage,
+            ],
         ]);
     }
 
@@ -400,6 +447,7 @@ class ProposalsController extends Controller
             ProposalSearchParams::TAGS()->value => 'array|nullable',
             ProposalSearchParams::GROUPS()->value => 'array|nullable',
             ProposalSearchParams::COMMUNITIES()->value => 'array|nullable',
+            ProposalSearchParams::CATALYST_PROFILES()->value => 'array|nullable',
             ProposalSearchParams::IDEASCALE_PROFILES()->value => 'array|nullable',
             ProposalSearchParams::FUNDS()->value => 'array|nullable',
             ProposalSearchParams::CHART_TYPE()->value => 'string|nullable',
@@ -520,6 +568,11 @@ class ProposalsController extends Controller
         if (! empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
             $ideascaleProfileIds = implode(',', $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value]);
             $filters[] = "users.id IN [{$ideascaleProfileIds}]";
+        }
+
+        if (! empty($this->queryParams[ProposalSearchParams::CATALYST_PROFILES()->value])) {
+            $catalystProfileIds = implode(',', $this->queryParams[ProposalSearchParams::CATALYST_PROFILES()->value]);
+            $filters[] = "claimed_catalyst_profiles.id IN [{$catalystProfileIds}]";
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::GROUPS()->value])) {

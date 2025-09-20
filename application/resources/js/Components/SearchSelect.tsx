@@ -1,6 +1,6 @@
 'use client';
 import Checkbox from '@/Components/atoms/Checkbox';
-import { useSearchOptions } from '@/Hooks/useSearchOptions';
+import { useSearchOptions } from '@/useHooks/useSearchOptions';
 import { cn } from '@/lib/utils';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronDown } from 'lucide-react';

@@ -1,6 +1,6 @@
 import { FilteredItem } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
-import { useSearchOptions } from '@/Hooks/useSearchOptions';
+import { useSearchOptions } from '@/useHooks/useSearchOptions';
 import fromSnakeCase from '@/utils/fromSnakecase';
 import React, { useEffect } from 'react';
 import labels from './FiltersLabel';

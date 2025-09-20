@@ -17,7 +17,10 @@ class CatalystProfileFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->name(),
+            'username' => $this->faker->userName(),
+            'catalyst_id' => $this->faker->uuid(),
+            'claimed_by' => null,
         ];
     }
 }

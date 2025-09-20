@@ -1,14 +1,6 @@
-/* Import Tailwind */
+@use 'rtl';
 
 @use 'tailwindcss';
-
-//@use 'tailwindcss/base';       /* Reference base styles */
-//@use 'tailwindcss/components'; /* Reference component styles */
-
-@use 'tailwindcss/utilities';
-
-/* Import RTL styles */
-@use 'rtl';
 
 @config "../../tailwind.config.js";
 

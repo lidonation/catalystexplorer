@@ -1,5 +1,5 @@
 import Title from '@/Components/atoms/Title';
-import { useUserSetting } from '@/Hooks/useUserSettings';
+import { useUserSetting } from '@/useHooks/useUserSettings';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { PageProps } from '@/types';
 import { Head, WhenVisible } from '@inertiajs/react';

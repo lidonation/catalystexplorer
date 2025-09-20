@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class CatalystProfile extends Model
@@ -29,10 +28,14 @@ class CatalystProfile extends Model
     }
 
     /**
-     * Get the user who claimed this catalyst profile.
+     * Get the users who have claimed this catalyst profile through pivot table
+     * Reverse relationship of User::claimed_catalyst_profiles()
      */
-    public function claimedBy(): BelongsTo
+    public function claimed_by_users()
     {
-        return $this->belongsTo(User::class, 'claimed_by');
+        return $this->belongsToMany(User::class, 'claimed_profiles', 'claimable_id', 'user_id')
+            ->where('claimable_type', static::class)
+            ->withPivot(['claimed_at'])
+            ->withTimestamps();
     }
 }

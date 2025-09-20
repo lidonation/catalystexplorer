@@ -1,6 +1,6 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import { userSettingEnums } from '@/enums/user-setting-enums';
-import { useUserSetting } from '@/Hooks/useUserSettings';
+import { useUserSetting } from '@/useHooks/useUserSettings';
 import { shortNumber } from '@/utils/shortNumber';
 import { ResponsiveBar } from '@nivo/bar';
 import { useLaravelReactI18n } from 'laravel-react-i18n';

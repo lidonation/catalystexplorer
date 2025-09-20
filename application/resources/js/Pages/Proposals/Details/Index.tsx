@@ -13,7 +13,6 @@ interface IndexProps {
     userCompleteProposalsCount?: number;
     userOutstandingProposalsCount?: number;
     catalystConnectionsCount?: number;
-    isClaimed?: boolean;
 }
 
 const Index = ({
@@ -23,9 +22,12 @@ const Index = ({
     userCompleteProposalsCount = 0,
     userOutstandingProposalsCount = 0,
     catalystConnectionsCount = 0,
-    isClaimed = false,
 }: IndexProps) => {
     const { t } = useLaravelReactI18n();
+
+    // Check if ALL team member profiles have been claimed by someone (from claimed_profiles table)
+    // If all profiles are claimed, hide the "Claim Profile" button
+    const isClaimed = proposal?.is_claimed === true;
 
     return (
         <ProposalLayout
@@ -40,7 +42,7 @@ const Index = ({
                             {t('proposals.outstanding')}
                         </div>
                         <div className="text-content text-base">
-                            {userOutstandingProposalsCount}
+                            {userOutstandingProposalsCount && userOutstandingProposalsCount > 0 ? userOutstandingProposalsCount : '-'}
                         </div>
                     </div>
                     <div className="inline-flex flex-1 flex-col items-start justify-start gap-1">
@@ -48,7 +50,7 @@ const Index = ({
                             {t('proposals.completed')}
                         </div>
                         <div className="text-content text-base">
-                            {userCompleteProposalsCount}
+                            {userCompleteProposalsCount && userCompleteProposalsCount > 0 ? userCompleteProposalsCount : '-'}
                         </div>
                     </div>
                     <div className="inline-flex flex-1 flex-col items-start justify-start gap-1">
@@ -56,7 +58,7 @@ const Index = ({
                             {t('proposals.catalystConnection')}
                         </div>
                         <div className="text-content text-base">
-                            {catalystConnectionsCount}
+                            {catalystConnectionsCount && catalystConnectionsCount > 0 ? catalystConnectionsCount : '-'}
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+/* Import RTL styles */
+@import "../scss/rtl.scss";
+
+/* Custom utilities and component styles will be loaded from app.scss */

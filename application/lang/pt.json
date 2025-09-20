@@ -1381,6 +1381,7 @@
     "workflows.claimCatalystProfile.viewProfile": "Voltar ao seu perfil",
     "workflows.claimCatalystProfile.claim": "Reivindicar um perfil Catalyst",
     "workflows.claimCatalystProfile.reviewDetails": "Revise seus dados importados antes de publicar.",
+    "workflows.claimCatalystProfile.manageProposals": "Gerenciar Minhas Propostas",
     "workflows.createService.stepDetails.success": "Sucesso",
     "workflows.createService.success.title": "Serviço Criado com Sucesso!",
     "workflows.createService.success.message": "Seu serviço foi criado e agora está disponível para a comunidade descobrir.",

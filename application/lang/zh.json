@@ -1388,5 +1388,6 @@
     "workflows.claimCatalystProfile.viewProposals": "返回提案页面",
     "workflows.claimCatalystProfile.claim": "认领提案",
     "workflows.claimCatalystProfile.noProposalFound": "您尝试认领的提案不属于您的个人资料",
-    "workflows.claimCatalystProfile.reviewDetails": "在发布之前请检查您导入的数据。"
+    "workflows.claimCatalystProfile.reviewDetails": "在发布之前请检查您导入的数据。",
+    "workflows.claimCatalystProfile.manageProposals": "管理我的提案"
 }

@@ -5,7 +5,7 @@ import Textarea from '@/Components/atoms/Textarea';
 import InputError from '@/Components/InputError';
 import { LOCALE_MAPPING } from '@/constants/locales';
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
-import useLanguageDetection from '@/Hooks/useLanguageDetection.ts';
+import useLanguageDetection from '@/useHooks/useLanguageDetection';
 import { StepDetails } from '@/types';
 import {
     generateLocalizedRoute,
@@ -192,7 +192,7 @@ const step5: React.FC<Step5Props> = ({
 
             <Content>
                 <div className="@container mx-auto mb-6 w-full max-w-2xl px-4">
-                   
+
 
                     {/* IPFS Results */}
                     {ipfsData && <IpfsSuccessDisplay ipfsData={ipfsData} />}

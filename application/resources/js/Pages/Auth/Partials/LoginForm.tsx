@@ -10,7 +10,7 @@ import InputLabel from '@/Components/InputLabel';
 import Modal from '@/Components/layout/Modal.tsx';
 import RichContent from '@/Components/RichContent';
 import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
-import { useIntendedUrl } from '@/Hooks/useIntendedUrl';
+import { useIntendedUrl } from '@/useHooks/useIntendedUrl';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { router, useForm } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
@@ -28,9 +28,9 @@ interface LoginFormProps {
 
 export default function LoginForm({ closeModal, intendedUrl }: LoginFormProps) {
     const { intendedUrl: hookIntendedUrl, clearIntendedUrl } = useIntendedUrl();
-    
+
     const finalIntendedUrl = intendedUrl || hookIntendedUrl || '';
-    
+
     const { data, setData, reset, processing } = useForm({
         email: '',
         password: '',
@@ -154,14 +154,14 @@ export default function LoginForm({ closeModal, intendedUrl }: LoginFormProps) {
 
     return (
         <>
-            
+
 
             <form
                 className="content-gap flex w-full flex-col p-4"
                 data-testid="login-form"
             >
                 <div>
-                    
+
 
                     <InputLabel
                         htmlFor="email"

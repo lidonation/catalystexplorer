@@ -7,7 +7,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Fluent;
 
-if (! function_exists('to_length_aware_paginator')) {
+if (! function_exists('to_review_item')) {
     function to_review_item($items) {}
 }
 

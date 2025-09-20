@@ -7,7 +7,7 @@ import TableIcon from '@/Components/svgs/TableIcon';
 import VideoCameraIcon from '@/Components/svgs/VideoCameraIcon';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
-import { useUserSetting } from '@/Hooks/useUserSettings';
+import { useUserSetting } from '@/useHooks/useUserSettings';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useEffect } from 'react';
 import Paragraph from '@/Components/atoms/Paragraph';
@@ -31,12 +31,12 @@ export default function CardLayoutSwitcher({
     customButtonClassName = '',
 }: CardLayoutSwitcherProps) {
     const { filters, setFilters } = useFilterContext();
-    
+
     // Use IndexedDB for persistent view settings
     const { value: isTableOrPdfView, setValue: setTableOrPdfViewSetting } = useUserSetting<boolean>(userSettingEnums.VIEW_TABLE, false);
     const { value: isHorizontal, setValue: setIsHorizontalSetting } = useUserSetting<boolean>(userSettingEnums.VIEW_HORIZONTAL, false);
     const { value: isMini, setValue: setIsMiniSetting } = useUserSetting<boolean>(userSettingEnums.VIEW_MINI, false);
-    
+
     // Provide defaults for all boolean values
     const currentIsTableOrPdfView = isTableOrPdfView ?? false;
     const currentIsHorizontal = isHorizontal ?? false;
@@ -52,11 +52,11 @@ export default function CardLayoutSwitcher({
     };
 
     const handleQuickPitchClick = () => {
-        
+
         setQuickpitch(true);
 
          setTableOrPdfViewSetting(false);
-        
+
     };
 
 
@@ -103,7 +103,7 @@ export default function CardLayoutSwitcher({
                         if (!currentIsTableOrPdfView && !quickPitchView) {
                             setIsMiniSetting(!currentIsMini);
                         }
-                       
+
                     }}
                     className={`flex flex-1 items-center justify-center w-[60px] h-[50px] ${customButtonClassName} ${
                          !currentIsTableOrPdfView && !quickPitchView

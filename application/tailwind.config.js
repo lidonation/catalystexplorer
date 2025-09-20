@@ -1,5 +1,6 @@
 import forms from '@tailwindcss/forms';
 import defaultTheme from 'tailwindcss/defaultTheme';
+import colors from 'tailwindcss/colors';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -34,6 +35,20 @@ export default {
                 'cx-box-shadow': '0px 1px 4px 0px rgba(16,24,40,0.10)',
             },
             colors: {
+                ...colors,
+                gray: {
+                    50: '#f9fafb',
+                    100: '#f3f4f6',
+                    200: '#e5e7eb',
+                    300: '#d1d5db',
+                    400: '#9ca3af',
+                    500: '#6b7280',
+                    600: '#4b5563',
+                    700: '#374151',
+                    800: '#1f2937',
+                    900: '#111827',
+                    950: '#030712',
+                },
                 // background: {
                 //     default: 'var(--cx-background)',
                 //     'default-darker': 'var(--cx-background-darker)',

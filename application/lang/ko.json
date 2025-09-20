@@ -1381,6 +1381,7 @@
     "workflows.claimCatalystProfile.viewProfile": "내 프로필로 돌아가기",
     "workflows.claimCatalystProfile.claim": "Catalyst 프로필 요청",
     "workflows.claimCatalystProfile.reviewDetails": "게시하기 전에 가져온 데이터를 검토하세요.",
+    "workflows.claimCatalystProfile.manageProposals": "내 제안 관리",
     "workflows.createService.stepDetails.success": "성공",
     "workflows.createService.success.title": "서비스가 성공적으로 생성되었습니다!",
     "workflows.createService.success.message": "귀하의 서비스가 생성되었으며 이제 커뮤니티가 발견할 수 있습니다.",
