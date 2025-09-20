@@ -218,7 +218,7 @@ class ClaimCatalystProfileWorkflowController extends Controller
                 'updated_at' => now(),
             ]);
 
-        $relatedProposals = Proposal::whereHas('catalyst_profiles', fn ($query) => $query->where('catalyst_profiles.profile_id', $catalystProfile->id)
+        $relatedProposals = Proposal::whereHas('catalyst_profiles', fn ($query) => $query->where('catalyst_profiles.id', $catalystProfile->id)
         )->get();
         $relatedProposals->searchable();
 
