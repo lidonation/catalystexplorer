@@ -1398,5 +1398,6 @@
     "workflows.claimCatalystProfile.viewProposals": "Retour à la page des propositions",
     "workflows.claimCatalystProfile.claim": "Revendiquer la proposition",
     "workflows.claimCatalystProfile.noProposalFound": "La proposition que vous essayez de revendiquer n’appartient pas à votre profil",
-    "workflows.claimCatalystProfile.reviewDetails": "Vérifiez vos données importées avant de publier."
+    "workflows.claimCatalystProfile.reviewDetails": "Vérifiez vos données importées avant de publier.",
+    "workflows.claimCatalystProfile.manageProposals": "Gérer Mes Propositions"
 }

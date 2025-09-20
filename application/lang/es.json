@@ -1392,5 +1392,6 @@
     "workflows.createService.success.viewPublicListing": "Ver Listado Público",
     "workflows.createService.success.goToMyServices": "Ir a Mis Servicios",
     "workflows.claimCatalystProfile.viewProposals": "Volver a la página de propuestas",
-    "workflows.claimCatalystProfile.noProposalFound": "La propuesta que intentas reclamar no pertenece a tu perfil"
+    "workflows.claimCatalystProfile.noProposalFound": "La propuesta que intentas reclamar no pertenece a tu perfil",
+    "workflows.claimCatalystProfile.manageProposals": "Gestionar Mis Propuestas"
 }
