@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import useGlobalErrorHandler, { ErrorToastOptions } from '@/Hooks/useGlobalErrorHandler';
+import useGlobalErrorHandler, { ErrorToastOptions } from '../../Hooks/useGlobalErrorHandler';
 
 interface GlobalErrorProviderProps {
     children: ReactNode;
