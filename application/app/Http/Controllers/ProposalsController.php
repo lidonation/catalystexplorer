@@ -119,7 +119,6 @@ class ProposalsController extends Controller
                 'fund',
                 'groups',
                 'team',
-                'catalyst_profiles.model',
                 'users',
                 //                'team.proposals',
                 //                'reviews',

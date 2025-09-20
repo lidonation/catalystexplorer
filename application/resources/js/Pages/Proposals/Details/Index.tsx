@@ -61,7 +61,8 @@ const Index = ({
                     </div>
                 </div>
             </div>
-            <div className="bg-background shadow-cx-box-shadow mt-4 flex items-center justify-center rounded-xl p-4">
+            {!isClaimed && (
+                <div className="bg-background shadow-cx-box-shadow mt-4 flex items-center justify-center rounded-xl p-4">
                     <PrimaryLink
                         href={useLocalizedRoute(
                             'workflows.claimCatalystProfile.index',
@@ -71,6 +72,7 @@ const Index = ({
                         {t('workflows.claimCatalystProfile.claim')}
                     </PrimaryLink>
                 </div>
+            )}
             <ProposalContent content={proposal.content} />
         </ProposalLayout>
     );
