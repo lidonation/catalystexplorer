@@ -1,4 +1,5 @@
 {
+  "_ci_cache_bust": "2025-01-23-import-resolution-fix",
   "private": true,
   "type": "module",
   "version": "1.0.0",
