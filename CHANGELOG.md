@@ -1,3 +1,10 @@
+## [1.29.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.29.1...v1.29.2) (2025-09-20)
+
+
+### Bug Fixes
+
+* cannot claim catalyst profile ([653b27b](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/653b27b7607faaadb4f395ddd25620f2146b43f0))
+
 ## [1.29.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.29.0...v1.29.1) (2025-09-20)
 
 
