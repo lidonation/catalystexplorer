@@ -1,3 +1,10 @@
+## [1.29.3](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.29.2...v1.29.3) (2025-09-20)
+
+
+### Bug Fixes
+
+* claimed proposals not showing up on my dashboard ([b92e09d](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/b92e09d9e8fb8c7423f1ff44cda54afd42558a09))
+
 ## [1.29.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.29.1...v1.29.2) (2025-09-20)
 
 
