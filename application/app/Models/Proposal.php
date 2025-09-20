@@ -538,7 +538,8 @@ class Proposal extends Model
 
     public function catalyst_profiles(): BelongsToMany
     {
-        return $this->belongsToMany(CatalystProfile::class, 'catalyst_profile_has_proposal', 'proposal_id', 'catalyst_profile_id');
+        return $this->belongsToMany(CatalystProfile::class, 'proposal_profiles', 'proposal_id', 'profile_id')
+            ->where('profile_type', CatalystProfile::class);
     }
 
     public function ideascale_profiles(): BelongsToMany

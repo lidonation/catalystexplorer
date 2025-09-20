@@ -62,8 +62,6 @@ class ClaimCatalystProfileWorkflowController extends Controller
         $proposal = $request->proposal;
 
         $stakeAddress = $request->stakeAddress;
-        $catalystProfile = null;
-        $proposalBelongsToProfile = false;
 
         $transaction = Transaction::where('stake_key', $stakeAddress)
             ->where('type', 'x509_envelope')
@@ -219,6 +217,10 @@ class ClaimCatalystProfileWorkflowController extends Controller
                 'claimed_by' => Auth::id(),
                 'updated_at' => now(),
             ]);
+
+        $relatedProposals = Proposal::whereHas('catalyst_profiles', fn ($query) => $query->where('catalyst_profiles.profile_id', $catalystProfile->id)
+        )->get();
+        $relatedProposals->searchable();
 
         return to_route('workflows.claimCatalystProfile.index', ['step' => 4]);
     }
