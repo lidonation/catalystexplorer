@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Models\Pivot\ClaimedProfile;
+use App\Observers\ClaimedProfileObserver;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Vite;
@@ -29,5 +31,8 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('media-update-job', function () {
             return Limit::perMinute(1000);
         });
+
+        // Register model observers
+        ClaimedProfile::observe(ClaimedProfileObserver::class);
     }
 }

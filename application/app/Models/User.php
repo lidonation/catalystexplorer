@@ -264,6 +264,31 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(Signature::class, 'user_id', 'id');
     }
 
+    /**
+     * Claim a profile using the ClaimedProfile pivot model directly.
+     * This ensures that model observers are triggered properly.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $profile
+     */
+    public function claimProfile($profile, array $additionalData = []): ClaimedProfile
+    {
+        $existingClaim = ClaimedProfile::where([
+            'user_id' => $this->id,
+            'claimable_id' => $profile->id,
+            'claimable_type' => get_class($profile),
+        ])->first();
+
+        if ($existingClaim) {
+            return $existingClaim;
+        }
+
+        return ClaimedProfile::create(array_merge([
+            'user_id' => $this->id,
+            'claimable_id' => $profile->id,
+            'claimable_type' => get_class($profile),
+        ], $additionalData));
+    }
+
     public function transactions(): HasManyThrough|User
     {
         return $this->hasManyThrough(
