@@ -80,6 +80,20 @@ class WalletInfoService
 
     private function getBlockfrostData(string $stakeAddress): array
     {
+        // Check if Blockfrost is properly configured
+        if (! $this->connector->isConfigured()) {
+            Log::warning("Blockfrost not configured, returning default data for {$stakeAddress}", [
+                'missing_config' => 'BLOCKFROST_PROJECT_ID',
+            ]);
+
+            return [
+                'balance' => 'N/A',
+                'status' => false,
+                'stakeAddress' => $stakeAddress,
+                'payment_addresses' => [],
+            ];
+        }
+
         try {
             $accountResponse = $this->connector->send(
                 new BlockfrostRequest("/accounts/{$stakeAddress}")
