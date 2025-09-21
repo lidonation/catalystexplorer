@@ -125,9 +125,6 @@ class User extends Authenticatable implements HasMedia
         );
     }
 
-    /**
-     * Check if user has any claimed profiles
-     */
     public function hasClaimedProfiles(): Attribute
     {
         return Attribute::make(
@@ -135,10 +132,12 @@ class User extends Authenticatable implements HasMedia
         );
     }
 
-    public function claimed_profiles(): BelongsToMany
+    public function claimed_profiles(): HasMany
     {
-        return $this->belongsToMany(ClaimedProfile::class, 'claimed_profiles', 'user_id', 'claimable_id')
-            ->where('profile_type', CatalystProfile::class);
+        return $this->hasMany(ClaimedProfile::class, 'user_id', 'id')
+            ->with([
+                'claimable',
+            ]);
     }
 
     public function claimed_catalyst_profiles(): BelongsToMany
@@ -153,10 +152,6 @@ class User extends Authenticatable implements HasMedia
             ->where('claimable_type', IdeascaleProfile::class);
     }
 
-    /**
-     * Get the actual profile models (CatalystProfile and IdeascaleProfile instances)
-     * This method efficiently loads the BelongsToMany relationships and returns the actual models
-     */
     public function claimedProfileModels(): Attribute
     {
         return Attribute::make(
@@ -174,9 +169,6 @@ class User extends Authenticatable implements HasMedia
         );
     }
 
-    /**
-     * Get a summary of claimed profiles with counts and latest claim date
-     */
     public function claimedProfilesSummary(): Attribute
     {
         return Attribute::make(
@@ -218,9 +210,6 @@ class User extends Authenticatable implements HasMedia
         );
     }
 
-    /**
-     * Get actual CatalystProfile model instances
-     */
     public function catalystProfileModels(): Attribute
     {
         return Attribute::make(
@@ -232,9 +221,6 @@ class User extends Authenticatable implements HasMedia
         );
     }
 
-    /**
-     * Get actual IdeascaleProfile model instances
-     */
     public function ideascaleProfileModels(): Attribute
     {
         return Attribute::make(
@@ -246,9 +232,6 @@ class User extends Authenticatable implements HasMedia
         );
     }
 
-    /**
-     * Get the total count of all claimed profiles
-     */
     public function claimedProfilesCount(): Attribute
     {
         return Attribute::make(
@@ -273,12 +256,37 @@ class User extends Authenticatable implements HasMedia
 
     public function communities(): BelongsToMany
     {
-        return $this->belongsToMany(Community::class, 'community_has_users', 'user_id', 'community_id', 'id', 'id');
+        return $this->belongsToMany(Community::class, 'community_has_users', 'user_uuid', 'community_id', 'id', 'id');
     }
 
     public function signatures(): User|HasMany
     {
         return $this->hasMany(Signature::class, 'user_id', 'id');
+    }
+
+    /**
+     * Claim a profile using the ClaimedProfile pivot model directly.
+     * This ensures that model observers are triggered properly.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $profile
+     */
+    public function claimProfile($profile, array $additionalData = []): ClaimedProfile
+    {
+        $existingClaim = ClaimedProfile::where([
+            'user_id' => $this->id,
+            'claimable_id' => $profile->id,
+            'claimable_type' => get_class($profile),
+        ])->first();
+
+        if ($existingClaim) {
+            return $existingClaim;
+        }
+
+        return ClaimedProfile::create(array_merge([
+            'user_id' => $this->id,
+            'claimable_id' => $profile->id,
+            'claimable_type' => get_class($profile),
+        ], $additionalData));
     }
 
     public function transactions(): HasManyThrough|User
@@ -339,7 +347,7 @@ class User extends Authenticatable implements HasMedia
     /**
      * Send the password reset notification.
      */
-    public function sendPasswordResetNotification($token)
+    public function sendPasswordResetNotification($token): void
     {
         $resetUrl = url(route('password.reset', [
             'token' => $token,

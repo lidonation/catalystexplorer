@@ -10,10 +10,10 @@ use App\Nova\Filters\ClaimedStatusFilter;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Card;
 use Laravel\Nova\Exceptions\HelperNotSupported;
-use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Filters\Filter;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -100,9 +100,7 @@ class CatalystProfiles extends Resource
                 ->hideFromIndex()
                 ->readonly(),
 
-            BelongsTo::make(__('Claimed By'), 'claimedBy', Users::class)
-                ->nullable()
-                ->searchable(),
+            HasMany::make(__('Claimed By'), 'claimed_by_users', Users::class),
 
             BelongsToMany::make(__('Proposals'), 'proposals', Proposals::class)
                 ->searchable(),

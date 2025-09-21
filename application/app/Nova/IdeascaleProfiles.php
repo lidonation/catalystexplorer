@@ -8,7 +8,7 @@ use App\Models\IdeascaleProfile;
 use App\Nova\Actions\MakeSearchable;
 use App\Nova\Actions\UpdateModelMedia;
 use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
-use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Exceptions\HelperNotSupported;
 use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
@@ -45,6 +45,8 @@ class IdeascaleProfiles extends Resource
      * Get the fields displayed by the resource.
      *
      * @return array<int, Field>
+     *
+     * @throws HelperNotSupported
      */
     public function fields(NovaRequest $request): array
     {
@@ -93,9 +95,8 @@ class IdeascaleProfiles extends Resource
                 )
                 ->required(),
 
-            BelongsTo::make(__('Claimed By'), 'claimed_by', Users::class)
-                ->nullable()
-                ->searchable(),
+            HasMany::make(__('Claimed By'), 'claimed_by_users', Users::class)
+                ->nullable(),
 
             BelongsToMany::make(__('Groups'), 'groups', Groups::class)
                 ->searchable(),

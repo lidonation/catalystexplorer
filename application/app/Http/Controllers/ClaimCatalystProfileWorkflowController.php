@@ -102,7 +102,7 @@ class ClaimCatalystProfileWorkflowController extends Controller
         $proposalBelongsToProfile = $proposal && $catalystProfile &&
             $catalystProfile->proposals()->where('proposals.id', $proposal->id)->exists();
 
-        if (! $proposalBelongsToProfile) {
+        if (! $proposalBelongsToProfile && $proposal) {
             return Inertia::render('Workflows/ClaimCatalystProfile/Step3', [
                 'stepDetails' => $this->getStepDetails(),
                 'activeStep' => intval($request->step),
@@ -225,15 +225,7 @@ class ClaimCatalystProfileWorkflowController extends Controller
                 'claimed_by' => $user->id,
             ]);
 
-            // Create claimed profile entry using BelongsToMany attach (like Proposal pattern)
-            if (! $user->claimed_catalyst_profiles()->where('claimable_id', $catalystProfile->id)->exists()) {
-                $user->claimed_catalyst_profiles()->attach($catalystProfile->id, [
-                    'claimable_type' => CatalystProfile::class,
-                    'claimed_at' => now(),
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
+            $user->claimProfile($catalystProfile);
         });
 
         // Update search index for related proposals

@@ -569,7 +569,7 @@ class Proposal extends Model
         return $this->belongsTo(IdeascaleProfile::class, 'user_id', 'old_id', 'author');
     }
 
-    public function catalyst_profiles(): BelongsToMany
+    public function catalyst_profiles()
     {
         return $this->belongsToMany(CatalystProfile::class, 'proposal_profiles', 'proposal_id', 'profile_id')
             ->where('profile_type', CatalystProfile::class);

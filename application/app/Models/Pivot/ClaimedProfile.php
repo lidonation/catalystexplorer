@@ -4,27 +4,50 @@ declare(strict_types=1);
 
 namespace App\Models\Pivot;
 
+use App\Models\User;
+use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
-/**
- * ClaimedProfile pivot model with extra columns
- *
- * Follows the same pattern as ProposalProfile - a pivot table with additional columns
- * like 'claimed_at' that need to be preserved in the relationship.
- */
 class ClaimedProfile extends Pivot
 {
+    use HasTimestamps, HasUuids;
+
     protected $table = 'claimed_profiles';
 
-    protected $casts = [
-        'claimed_at' => 'datetime',
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'user_id',
+        'claimable_id',
+        'claimable_type',
+        'claimed_at',
     ];
 
     /**
-     * The claimable profile (CatalystProfile or IdeascaleProfile)
-     * Uses the same morphTo pattern as ProposalProfile
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
      */
+    public $incrementing = false;
+
+    /**
+     * The "type" of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    protected $casts = [
+        'id' => 'string',
+        'claimed_at' => 'datetime',
+    ];
+
     public function claimable(): MorphTo
     {
         return $this->morphTo(
@@ -33,5 +56,13 @@ class ClaimedProfile extends Pivot
             id: 'claimable_id',
             ownerKey: 'id'
         );
+    }
+
+    /**
+     * The user who claimed this profile
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

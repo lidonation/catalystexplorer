@@ -119,7 +119,7 @@ class ProposalsController extends Controller
                 'fund',
                 'groups',
                 'team',
-                'catalyst_profiles',
+                'users',
                 //                'team.proposals',
                 //                'reviews',
                 'author',
@@ -377,7 +377,6 @@ class ProposalsController extends Controller
             ]);
 
             return redirect()->back()->with('success', 'Quick pitch updated successfully');
-
         } catch (\Exception $e) {
             Log::error('Failed to update proposal quick pitch', [
                 'proposal_id' => $proposal->id,

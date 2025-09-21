@@ -40,6 +40,7 @@ const Step1: React.FC<Step1Props> = ({
             ? ''
             : localizedRoute('workflows.claimCatalystProfile.index', {
                   step: activeStep - 1,
+                  proposal,
               });
 
     const verifyWallet = () => {
