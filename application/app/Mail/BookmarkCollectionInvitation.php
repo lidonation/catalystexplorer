@@ -42,7 +42,6 @@ class BookmarkCollectionInvitation extends LocalizableMailable
      */
     protected function buildEnvelope(): Envelope
     {
-        // Temporarily removing replyTo to isolate the issue
         return new Envelope(
             from: new Address(config('mail.from.address'), config('mail.from.name')),
             subject: __('emails.bookmark_invitation.subject', [
@@ -57,10 +56,11 @@ class BookmarkCollectionInvitation extends LocalizableMailable
      */
     protected function buildContent(): Content
     {
-        $acceptUrl = URL::temporarySignedRoute('workflows.acceptInvitation.index', now()->addDays(30), [
+        $acceptUrl = URL::temporarySignedRoute('workflows.acceptInvitation.index', now()
+            ->addDays(30), [
             'token' => $this->token,
             'collection' => $this->bookmarkCollection->id,
-        ]); // Link expires in 30 days
+        ]);
 
         return new Content(
             view: 'emails.bookmark-invitation',

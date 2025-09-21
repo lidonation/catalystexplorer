@@ -35,7 +35,6 @@ const BookmarkCollectionCard = ({
     );
 
     const canManage = isAuthor || isContributor;
-    console.log({ canManage, collection });
 
     const renderListTypeIcon = () => {
         switch (collection?.list_type) {
