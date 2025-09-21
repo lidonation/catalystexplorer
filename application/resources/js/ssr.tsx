@@ -1,4 +1,4 @@
-import { createInertiaApp, usePage } from '@inertiajs/react';
+import { createInertiaApp } from '@inertiajs/react';
 import createServer from '@inertiajs/react/server';
 import { initFromPageProps, ModalStackProvider } from '@inertiaui/modal-react';
 import { LaravelReactI18nProvider } from 'laravel-react-i18n';
@@ -46,7 +46,7 @@ createServer(async (page) => {
                 });
             };
 
-            const { locale } = usePage().props as any;
+            const { locale } = props as any;
 
             return (
                 <RouteContext.Provider value={ssrRoute as any}>
