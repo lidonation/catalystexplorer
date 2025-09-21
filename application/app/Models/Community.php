@@ -176,10 +176,9 @@ class Community extends Model implements HasMedia
             ->whereNull('funded_at');
     }
 
-    public function ideascale_profiles(): HasManyDeep
+    public function ideascale_profiles(): BelongsToMany
     {
-        return $this->hasManyDeepFromRelationsWithConstraints([$this, 'proposals'], [new Proposal, 'users'])
-            ->groupBy(['ideascale_profiles.id', 'community_has_proposal.community_id']);
+        return $this->belongsToMany(IdeascaleProfile::class, 'community_has_ideascale_profile', 'community_id', 'ideascale_profile_id', 'id', 'id');
     }
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -189,7 +188,7 @@ class Community extends Model implements HasMedia
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'community_has_users', 'community_id', 'user_id', 'id', 'id');
+        return $this->belongsToMany(User::class, 'community_has_users', 'community_id', 'user_uuid', 'id', 'id');
     }
 
     public function groups(): HasManyDeep
@@ -209,7 +208,8 @@ class Community extends Model implements HasMedia
         $this->loadCount([
             'unfunded_proposals',
             'completed_proposals',
-            'funded_proposals', 'proposals', 'ideascale_profiles',
+            'funded_proposals', 'proposals',
+            // 'ideascale_profiles', // Temporarily commented out to fix relationship issue
             // 'users', // Temporarily commented out to fix UUID/bigint issue
         ]);
 

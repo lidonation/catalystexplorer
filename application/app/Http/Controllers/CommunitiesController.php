@@ -22,7 +22,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Stringable;
 use Inertia\Inertia;
 use Laravel\Scout\Builder;
-use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 
 class CommunitiesController extends Controller
 {
@@ -85,7 +84,7 @@ class CommunitiesController extends Controller
         $community = Cache::remember("community:{$community->id}:full", now()->addMinutes(10), function () use ($community) {
             return $community
                 ->load([
-                    'ideascale_profiles' => fn (HasManyDeep $q) => $q->limit(5),
+                    'ideascale_profiles' => fn ($q) => $q->limit(5),
                     'ideascale_profiles.media',
                     'users' => fn ($q) => $q->limit(5)->with('media'),
                 ])
@@ -210,7 +209,7 @@ class CommunitiesController extends Controller
                 return Cache::remember("community:{$community->id}:ideascale_profiles:page:{$currentPage}", now()->addMinutes(5), function () use ($community, $currentPage) {
                     return to_length_aware_paginator(
                         IdeascaleProfileData::collect(
-                            $community->ideascaleProfilesUuid()
+                            $community->ideascale_profiles()
                                 ->withCount([
                                     'proposals',
                                     'funded_proposals',
@@ -242,7 +241,7 @@ class CommunitiesController extends Controller
                 });
             }),
 
-            'isMember' => Auth::check() ? $community->users()->where('users.id', Auth::id())->exists() : false,
+            'isMember' => Auth::check() ? $community->users->contains('id', Auth::id()) : false,
         ];
 
         return match (true) {
@@ -258,7 +257,7 @@ class CommunitiesController extends Controller
     public function query(Request $request)
     {
         $query = Community::query()->with([
-            'ideascale_profiles' => fn (HasManyDeep $q) => $q->limit(5),
+            'ideascale_profiles' => fn ($q) => $q->limit(5),
             'ideascale_profiles.media',
             'users' => fn ($q) => $q->limit(5)->with('media'),
         ])
@@ -470,7 +469,7 @@ class CommunitiesController extends Controller
             return redirect()->route('login')->with('error', 'You must be logged in to join a community.');
         }
 
-        if ($community->users()->where('users.id', $user->id)->exists()) {
+        if ($community->users->contains('id', $user->id)) {
             return back()->with('info', 'You are already a member of this community.');
         }
 

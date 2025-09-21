@@ -13,7 +13,6 @@ use Illuminate\Support\Str;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Exceptions\HelperNotSupported;
 use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\Slug;
@@ -98,9 +97,9 @@ class Proposals extends Resource
 
             BelongsTo::make(__('Schedule'), 'schedule', ProjectSchedules::class),
 
-            HasMany::make('Metadata', 'metas', Metas::class),
+            HasMany::make(__('Team'), 'team', ProposalProfiles::class),
 
-            BelongsToMany::make(__('Users'), 'users', Users::class),
+            HasMany::make('Metadata', 'metas', Metas::class),
 
             HasMany::make(__('Discussions'), 'discussions', Discussions::class),
 
