@@ -922,6 +922,33 @@ class BookmarksController extends Controller
     }
 
     /**
+     * Show invitation acceptance success page
+     */
+    public function acceptInvitationSuccess(): Response
+    {
+        $collectionId = session('invitation_accepted_collection');
+        
+        if (!$collectionId) {
+            return redirect()->route('lists.index')
+                ->withErrors(['message' => 'No invitation acceptance found.']);
+        }
+
+        $bookmarkCollection = BookmarkCollection::find($collectionId);
+        
+        if (!$bookmarkCollection) {
+            return redirect()->route('lists.index')
+                ->withErrors(['message' => 'Bookmark collection not found.']);
+        }
+
+        // Clear the session
+        session()->forget('invitation_accepted_collection');
+
+        return Inertia::render('Workflows/AcceptInvitation/Success', [
+            'bookmarkCollection' => BookmarkCollectionData::from($bookmarkCollection),
+        ]);
+    }
+
+    /**
      * Cancel a pending invitation
      */
     public function cancelInvitation(BookmarkCollection $bookmarkCollection, Request $request): RedirectResponse

@@ -34,8 +34,10 @@ abstract class LocalizableMailable extends Mailable
     public function content(): Content
     {
         $this->setUserLocale();
+        $content = $this->buildContent();
+        $this->restoreOriginalLocale();
 
-        return $this->buildContent();
+        return $content;
     }
 
     /**

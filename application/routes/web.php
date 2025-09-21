@@ -278,11 +278,21 @@ Route::localized(
                     Route::post('{bookmarkCollection}/remove-contributor', [BookmarksController::class, 'removeContributor'])
                         ->name('removeContributor');
 
-                    Route::get('/search-users', [BookmarksController::class, 'searchUsers'])
-                        ->name('searchUsers');
-                });
+            Route::get('/search-users', [BookmarksController::class, 'searchUsers'])
+                ->name('searchUsers');
+        });
 
-            Route::prefix('/drep-sign-up/steps')->as('drepSignUp.')
+        // Accept invitation routes for bookmark collections
+        Route::prefix('/accept-invitation')->as('acceptInvitation.')
+            ->group(function () {
+                Route::get('/', [BookmarksController::class, 'acceptInvitation'])
+                    ->middleware('signed')
+                    ->name('index');
+                Route::get('/success', [BookmarksController::class, 'acceptInvitationSuccess'])
+                    ->name('success');
+            });
+
+        Route::prefix('/drep-sign-up/steps')->as('drepSignUp.')
                 ->middleware([WorkflowMiddleware::class])
                 ->group(function () {
                     Route::get('/{step}', [CatalystDrepController::class, 'handleStep'])

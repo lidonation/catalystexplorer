@@ -528,35 +528,77 @@ class MyBookmarksController extends Controller
 
     public function deleteCollection(BookmarkCollection $bookmarkCollection, Request $request)
     {
-        // Only owners can delete collections, not collaborators
-        if ($bookmarkCollection->user_id !== Auth::id()) {
+        try {
+            // Only owners can delete collections, not collaborators
+            if ($bookmarkCollection->user_id !== Auth::id()) {
+                if ($request->wantsJson() || $request->ajax()) {
+                    return response()->json([
+                        'type' => 'error',
+                        'message' => 'Unauthorized. Only the owner can delete this collection.',
+                    ], 403);
+                }
+                return back()->with(
+                    'error',
+                    'Unauthorized. Only the owner can delete this collection.',
+                );
+            }
+
+            // Begin database transaction for data consistency
+            DB::beginTransaction();
+
+            // Delete all bookmark items in this collection
+            $bookmarks = BookmarkItem::where('bookmark_collection_id', $bookmarkCollection->id)
+                ->where('user_id', Auth::id())
+                ->get();
+
+            $bookmarks->each->delete();
+
+            // Delete all comments associated with this collection
+            $bookmarkCollection->comments()->get()->each->delete();
+
+            // Delete the collection itself
+            $bookmarkCollection->delete();
+
+            // Commit the transaction
+            DB::commit();
+
+            // Handle different response types
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'type' => 'success',
+                    'message' => 'Collection deleted successfully',
+                ]);
+            }
+
+            $noRedirect = $request->boolean('no_redirect', false);
+            if ($noRedirect) {
+                return response()->json([
+                    'type' => 'success',
+                    'message' => 'Collection deleted successfully',
+                ]);
+            }
+
+            return to_route('my.lists.index');
+            
+        } catch (\Exception $e) {
+            // Rollback transaction on error
+            DB::rollBack();
+            
+            // Log the error for debugging
+            report($e);
+            
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'type' => 'error',
+                    'message' => 'Failed to delete collection. Please try again.',
+                    'debug' => config('app.debug') ? $e->getMessage() : null,
+                ], 500);
+            }
+            
             return back()->with(
                 'error',
-                'Unauthorized. Only the owner can delete this collection.',
+                'Failed to delete collection. Please try again.',
             );
         }
-
-        $bookmarks = BookmarkItem::where('bookmark_collection_id', $bookmarkCollection->id)
-            ->where('user_id', Auth::id())
-            ->get();
-
-        $bookmarks->each->delete();
-
-        $bookmarkCollection->comments()->get()->each->delete();
-
-        $bookmarkCollection->delete();
-
-        $noRedirect = $request->boolean('no_redirect', false);
-        if ($noRedirect) {
-            return;
-        }
-
-        return to_route('my.lists.index');
-        // } catch (\Exception $e) {
-        //     return back()->with(
-        //         'error',
-        //         'Failed to delete bookmarks',
-        //     );
-        // }
     }
 }

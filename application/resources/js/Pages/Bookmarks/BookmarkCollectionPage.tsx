@@ -270,6 +270,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
     const { value: isMini } = useUserSetting<boolean>(userSettingEnums.VIEW_MINI, false);
 
     const [activeEditModal, setActiveEditModal] = useState<boolean>(false);
+    const [activeConfirm, setActiveConfirm] = useState<boolean>(false);
 
     const [streamedProposals, setStreamedProposals] = useState<ProposalData[]>([]);
 
@@ -279,6 +280,20 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
     const isNormalList = bookmarkCollection.list_type === 'normal';
 
     const { data, isFetching, isStreaming, send, cancel } = useStream('stream');
+
+    const handleDelete = () => {
+        setActiveConfirm(false);
+        router.post(
+            route('api.collections.delete', {
+                bookmarkCollection: bookmarkCollection.id,
+            }),
+            {},
+            {
+                onSuccess: () =>
+                    router.get(generateLocalizedRoute('my.lists.index')),
+            },
+        );
+    };
 
     const getPublishToIpfsTooltip = () => {
         if (!hasItems && !isVoterList) {
@@ -292,10 +307,6 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
         }
         return undefined;
     };
-
-    useEffect(() => {
-        console.log('PDF View setting changed:', isPdfView);
-    }, [isPdfView]);
 
     // Stream data for voter lists
     useEffect(() => {
@@ -560,11 +571,42 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                         );
                     }}
                     handleDelete={() => {
-                        // Handle delete if needed
                         setActiveEditModal(false);
+                        setActiveConfirm(true);
                     }}
                     pendingInvitations={props.pendingInvitations}
                 />
+            </Modal>
+
+            {/* Delete Confirmation Modal */}
+            <Modal
+                title={t('bookmarks.editList')}
+                isOpen={!!activeConfirm}
+                onClose={() => setActiveConfirm(false)}
+                logo={false}
+                centered
+            >
+                <div className="flex flex-col gap-4 p-4 text-center">
+                    <Title level="5">{t('bookmarks.confirmDelete')}</Title>
+
+                    <p>{t('bookmarks.permanentDelete')}</p>
+
+                    <div className="flex justify-between gap-4">
+                        <PrimaryButton
+                            onClick={() => setActiveConfirm(false)}
+                            className="bg-primary flex-1 font-semibold"
+                        >
+                            {t('Cancel')}
+                        </PrimaryButton>
+
+                        <Button
+                            onClick={handleDelete}
+                            className="bg-danger-mid text-content-light flex-1 rounded-md py-1.5 font-semibold"
+                        >
+                            {t('bookmarks.deletesList')}
+                        </Button>
+                    </div>
+                </div>
             </Modal>
         </div>
     );

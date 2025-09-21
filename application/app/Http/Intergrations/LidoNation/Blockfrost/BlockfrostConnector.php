@@ -12,6 +12,8 @@ use Saloon\Contracts\RequestInterface;
 use Saloon\Exceptions\SaloonException;
 use Saloon\Http\Auth\QueryAuthenticator;
 use Saloon\Http\Connector;
+use Saloon\Http\Faking\MockClient;
+use Saloon\Http\Request;
 use Saloon\Http\Response;
 
 class BlockfrostConnector extends Connector
@@ -30,8 +32,6 @@ class BlockfrostConnector extends Connector
                 'config_path' => 'services.blockfrost.project_id',
             ]);
         }
-
-        parent::__construct();
     }
 
     public function isConfigured(): bool
@@ -39,7 +39,7 @@ class BlockfrostConnector extends Connector
         return $this->isConfigured;
     }
 
-    public function send(RequestInterface $request): Response
+    public function send(Request $request, ?MockClient $mockClient = null, ?callable $handleRetry = null): Response
     {
         if (! $this->isConfigured) {
             Log::error('Attempted to use Blockfrost without proper configuration', [
@@ -50,7 +50,7 @@ class BlockfrostConnector extends Connector
             throw new SaloonException('Blockfrost is not configured. Missing BLOCKFROST_PROJECT_ID environment variable.');
         }
 
-        return parent::send($request);
+        return parent::send($request, $mockClient, $handleRetry);
     }
 
     public function resolveBaseUrl(): string
