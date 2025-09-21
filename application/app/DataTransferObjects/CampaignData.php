@@ -65,31 +65,4 @@ class CampaignData extends Data
 
         public ?FundData $fund,
     ) {}
-
-    /**
-     * Create a CampaignData instance with safe null handling
-     * This helps avoid strict type issues when data has null IDs
-     */
-    public static function fromArraySafe(array $data): ?self
-    {
-        // If essential data is missing, return null instead of creating invalid object
-        if (! isset($data['id']) && ! isset($data['title']) && ! isset($data['slug'])) {
-            return null;
-        }
-
-        // Ensure ID is properly handled as nullable
-        $data['id'] = $data['id'] ?? null;
-
-        try {
-            return static::from($data);
-        } catch (\TypeError $e) {
-            // Log the error for debugging but don't crash
-            \Log::warning('CampaignData creation failed with TypeError', [
-                'data' => $data,
-                'error' => $e->getMessage(),
-            ]);
-
-            return null;
-        }
-    }
 }

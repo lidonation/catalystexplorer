@@ -507,8 +507,44 @@ class ProposalsController extends Controller
 
         $this->setCounts($response->facetDistribution, $response->facetStats);
 
+        // Safely collect proposal data with error handling for malformed campaign data
+        try {
+            $proposalCollection = ProposalData::collect($items);
+        } catch (\TypeError $e) {
+            // Log the error and filter out problematic items
+            Log::warning('ProposalData collection failed, filtering problematic items', [
+                'error' => $e->getMessage(),
+                'items_count' => $items->count(),
+            ]);
+
+            // Filter out items that cause issues and try again
+            $filteredItems = $items->map(function ($item) {
+                // Ensure campaign data is safe
+                if (isset($item['campaign']) && is_array($item['campaign'])) {
+                    // If campaign ID is null and no essential data, remove campaign
+                    if (empty($item['campaign']['id']) && empty($item['campaign']['title']) && empty($item['campaign']['slug'])) {
+                        $item['campaign'] = null;
+                    } else {
+                        // Ensure ID is string or null
+                        $item['campaign']['id'] = $item['campaign']['id'] ? (string) $item['campaign']['id'] : null;
+                    }
+                }
+                return $item;
+            });
+
+            try {
+                $proposalCollection = ProposalData::collect($filteredItems);
+            } catch (\TypeError $e2) {
+                // Final fallback: return empty collection
+                Log::error('ProposalData collection failed even after filtering', [
+                    'error' => $e2->getMessage(),
+                ]);
+                $proposalCollection = collect([]);
+            }
+        }
+
         $pagination = new LengthAwarePaginator(
-            ProposalData::collect($items),
+            $proposalCollection,
             $response->estimatedTotalHits,
             $limit,
             $page,
