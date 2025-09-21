@@ -6,38 +6,10 @@ namespace App\DataTransferObjects;
 
 use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Attributes\MapOutputName;
-use Spatie\LaravelData\Attributes\WithCast;
-use Spatie\LaravelData\Casts\Cast;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\DataCollection;
-use Spatie\LaravelData\Support\Creation\CreationContext;
-use Spatie\LaravelData\Support\DataProperty;
 use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
-
-/**
- * Cast to safely handle campaign data with null IDs
- */
-class SafeCampaignCast implements Cast
-{
-    public function cast(DataProperty $property, mixed $value, array $properties, CreationContext $context): mixed
-    {
-        if ($value === null) {
-            return null;
-        }
-
-        if (is_array($value)) {
-            // Use our safe factory method
-            return CampaignData::fromArraySafe($value);
-        }
-
-        if ($value instanceof CampaignData) {
-            return $value;
-        }
-
-        return null;
-    }
-}
 
 #[TypeScript]
 final class ProposalData extends Data
@@ -45,7 +17,6 @@ final class ProposalData extends Data
     public function __construct(
         public string $id,
 
-        #[WithCast(SafeCampaignCast::class)]
         public ?CampaignData $campaign,
 
         #[TypeScript('projectSchedule')]
