@@ -102,7 +102,7 @@ class ClaimCatalystProfileWorkflowController extends Controller
         $proposalBelongsToProfile = $proposal && $catalystProfile &&
             $catalystProfile->proposals()->where('proposals.id', $proposal->id)->exists();
 
-        if (! $proposalBelongsToProfile) {
+        if (! $proposalBelongsToProfile && $proposal) {
             return Inertia::render('Workflows/ClaimCatalystProfile/Step3', [
                 'stepDetails' => $this->getStepDetails(),
                 'activeStep' => intval($request->step),

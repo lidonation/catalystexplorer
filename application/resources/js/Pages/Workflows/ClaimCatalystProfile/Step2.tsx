@@ -27,6 +27,7 @@ const Step2: React.FC<Step3Props> = ({ stepDetails, activeStep, proposal }) => {
     const localizedRoute = useLocalizedRoute;
     const prevStep = localizedRoute('workflows.claimCatalystProfile.index', {
         step: activeStep - 1,
+        proposal
     });
     const {
         connectedWalletProvider,
