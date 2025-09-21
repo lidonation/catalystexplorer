@@ -529,6 +529,7 @@ class ProposalsController extends Controller
                         $item['campaign']['id'] = $item['campaign']['id'] ? (string) $item['campaign']['id'] : null;
                     }
                 }
+
                 return $item;
             });
 

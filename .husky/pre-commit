@@ -1,0 +1,4 @@
+make lint-backend
+git add -A
+make tsc
+make test-backend
