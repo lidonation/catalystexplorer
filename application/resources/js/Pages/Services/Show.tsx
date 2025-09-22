@@ -3,7 +3,10 @@ import Card from '@/Components/Card';
 import ClientOnly from '@/Components/ClientOnly';
 import RichContent from '@/Components/RichContent';
 import VerifyBadge from '@/Components/svgs/VerifyBadge';
-import { Head } from '@inertiajs/react';
+import PrimaryLink from '@/Components/atoms/PrimaryLink';
+import { Head, usePage } from '@inertiajs/react';
+import { generateLocalizedRoute } from '@/utils/localizedRoute';
+import { ServiceWorkflowParams } from '@/enums/service-workflow-params';
 import Markdown from 'marked-react';
 import { Suspense, lazy, useEffect, useState } from 'react';
 import GroupSocials from '../Groups/Partials/GroupSocials';
@@ -42,6 +45,8 @@ type Point = {
 export default function Show({ service }: ShowProps) {
     const [points, setPoints] = useState<Point[]>([]);
     const {t} = useLaravelReactI18n();
+    const page = usePage();
+    const user = page.props?.auth?.user;
 
     const socialGroup = {
         id: service.id ?? 'service-' + Math.random().toString(36).substr(2, 9),
@@ -160,7 +165,23 @@ export default function Show({ service }: ShowProps) {
                 </div>
             </div>
 
-            <Card className="flex min-w-0 flex-1 flex-col">
+            <div className="flex min-w-0 flex-1 flex-col">
+                {user && service.user?.id === user.id && (
+                    <div className="mb-4 flex justify-end">
+                        <PrimaryLink
+                            href={generateLocalizedRoute('workflows.createService.index', {
+                                [ServiceWorkflowParams.STEP]: 1,
+                                [ServiceWorkflowParams.SERVICE_HASH]: service.id,
+                                [ServiceWorkflowParams.EDIT]: true
+                            })}
+                            className="text-xs px-3 py-2 hover:bg-primary/[0.4] text-white rounded-md transition-colors"
+                        >
+                            {t('workflows.createService.editService')}
+                        </PrimaryLink>
+                    </div>
+                )}
+                
+                <Card className="flex min-w-0 flex-1 flex-col">
                 {service.header_image_url && (
                     <img
                         src={service.header_image_url}
@@ -229,6 +250,7 @@ export default function Show({ service }: ShowProps) {
                     </div>
                 </div>
             </Card>
+            </div>
         </div>
     );
 }

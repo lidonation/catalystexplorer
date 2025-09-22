@@ -18,6 +18,7 @@ interface Step2Props {
     stepDetails: StepDetails[];
     activeStep: number;
     serviceHash?: string;
+    isEdit?: boolean;
     serviceData?: {
         name?: string;
         email?: string;
@@ -56,12 +57,14 @@ const Step2: React.FC<Step2Props> = ({
     stepDetails,
     activeStep,
     serviceHash,
+    isEdit = false,
     serviceData,
     locations,
     defaults,
 }) => {
     const form = useForm({
         [ServiceWorkflowParams.SERVICE_HASH]: serviceHash || '',
+        [ServiceWorkflowParams.EDIT]: isEdit,
         [ServiceWorkflowParams.CATEGORIES]:
             serviceData?.categories?.map(String) || [],
         [ServiceWorkflowParams.LOCATION]:
@@ -93,6 +96,7 @@ const Step2: React.FC<Step2Props> = ({
     // Separate form for saving contact info
     const contactForm = useForm({
         [ServiceWorkflowParams.SERVICE_HASH]: serviceHash || '',
+        [ServiceWorkflowParams.EDIT]: isEdit,
         [ServiceWorkflowParams.NAME]:
             serviceData?.name || defaults.contact.name,
         [ServiceWorkflowParams.EMAIL]:
@@ -110,6 +114,7 @@ const Step2: React.FC<Step2Props> = ({
     const prevStep = generateLocalizedRoute('workflows.createService.index', {
         step: activeStep - 1,
         [ServiceWorkflowParams.SERVICE_HASH]: serviceHash,
+        [ServiceWorkflowParams.EDIT]: isEdit,
     });
 
     useEffect(() => {
@@ -118,6 +123,7 @@ const Step2: React.FC<Step2Props> = ({
         contactForm.setData({
             [ServiceWorkflowParams.SERVICE_HASH]:
                 form.data[ServiceWorkflowParams.SERVICE_HASH],
+            [ServiceWorkflowParams.EDIT]: isEdit,
             [ServiceWorkflowParams.NAME]: form.data[ServiceWorkflowParams.NAME],
             [ServiceWorkflowParams.EMAIL]:
                 form.data[ServiceWorkflowParams.EMAIL],

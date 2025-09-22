@@ -31,6 +31,7 @@ interface Step1Props {
         }>;
     }>;
     serviceHash?: string;
+    isEdit?: boolean;
     serviceData?: {
         title?: string;
         description?: string;
@@ -53,10 +54,12 @@ const Step1: React.FC<Step1Props> = ({
     activeStep,
     categories,
     serviceHash,
+    isEdit = false,
     serviceData,
 }) => {
     const form = useForm({
         [ServiceWorkflowParams.SERVICE_HASH]: serviceHash || '',
+        [ServiceWorkflowParams.EDIT]: isEdit,
         [ServiceWorkflowParams.TYPE]: serviceData?.type || 'offered',
         [ServiceWorkflowParams.TITLE]: serviceData?.title || '',
         [ServiceWorkflowParams.DESCRIPTION]: serviceData?.description || '',

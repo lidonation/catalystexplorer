@@ -1470,9 +1470,11 @@
     "workflows.claimCatalystProfile.manageProposals": "Dhibiti Mapendekezo Yangu",
     "workflows.createService.stepDetails.success": "Mafanikio",
     "workflows.createService.success.title": "Huduma Imeundwa kwa Mafanikio!",
-    "workflows.createService.success.message": "Huduma yako imeundwa na sasa inapatikana kwa jamii kugundua.",
+    "workflows.createService.success.titleEdited": "Huduma Imesasishwa kwa Mafanikio!",
+    "workflows.createService.success.message": "Huduma yako imechakatwa na sasa ni hai. Unaweza kuiona kwenye orodha yako ya umma au kuidhibiti kutoka kwenye dashibodi ya huduma zako.",
     "workflows.createService.success.viewPublicListing": "Ona Orodha ya Umma",
     "workflows.createService.success.goToMyServices": "Nenda kwa Huduma Zangu",
+    "workflows.createService.editService": "Hariri Huduma",
     "workflows.claimCatalystProfile.viewProposals": "Rudi kwenye ukurasa wa mapendekezo",
     "workflows.claimCatalystProfile.noProposalFound": "Pendekezo unalojaribu kudai halihusiani na wasifu wako"
 }

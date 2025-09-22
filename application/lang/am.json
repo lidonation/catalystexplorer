@@ -1428,5 +1428,11 @@
     "workflows.claimCatalystProfile.claim": "ዕቅድ ተወስድ",
     "workflows.claimCatalystProfile.noProposalFound": "ለመወሰዱ የሚሞከሩት ዕቅድ በፕሮፋይልዎ ውስጥ አይገኝም",
     "workflows.claimCatalystProfile.reviewDetails": "ለማቅረብ በፊት የገቡትን መረጃ ይገምግሙ።",
-    "workflows.claimCatalystProfile.manageProposals": "የእኔ ሐሳቦችን ማስተዳደር"
+    "workflows.claimCatalystProfile.manageProposals": "የእኔ ሐሳቦችን ማስተዳደር",
+    "workflows.createService.success.title": "አገልግሎት በተሳካ ሁኔታ ተፈጥሯል!",
+    "workflows.createService.success.titleEdited": "አገልግሎት በተሳካ ሁኔታ ታደሠ!",
+    "workflows.createService.success.message": "የእርስዎ አገልግሎት ተቀላቅሏል እና አሁን በህይወት ላይ ነው። በአድላይ ዝርዝርዎ ላይ መመልከት ወይም ከአገልግሎት ዳሽቦርድዎ ማስተዳደር ይችላሉ።",
+    "workflows.createService.success.viewPublicListing": "የድምጽ መዝገብ ይመልከቱ",
+    "workflows.createService.success.goToMyServices": "ወደ የእኔ አገልግሎቶች ሂዱ",
+    "workflows.createService.editService": "አገልግሎት አርትዕ ያድርጉ"
 }
