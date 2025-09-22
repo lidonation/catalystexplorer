@@ -1,3 +1,10 @@
+# [1.30.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.29.4...v1.30.0) (2025-09-22)
+
+
+### Features
+
+* add bookmark items count to the nova resource ([7989e0b](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/7989e0b10e09e45e90215eaf9cf8398282ac8c70))
+
 ## [1.29.4](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.29.3...v1.29.4) (2025-09-22)
 
 
