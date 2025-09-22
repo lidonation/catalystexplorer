@@ -21,6 +21,7 @@ use Spatie\Enum\Laravel\Enum;
  * @method static self WEBSITE()
  * @method static self GITHUB()
  * @method static self LINKEDIN()
+ * @method static self EDIT()
  */
 final class ServiceWorkflowParams extends Enum
 {
@@ -29,6 +30,7 @@ final class ServiceWorkflowParams extends Enum
         return [
             'STEP' => 'step',
             'SERVICE_HASH' => 'serviceHash',
+            'EDIT' => 'edit',
             'TITLE' => 'title',
             'DESCRIPTION' => 'description',
             'TYPE' => 'type',

@@ -1426,5 +1426,11 @@
     "workflows.claimCatalystProfile.claim": "Vorschlag beanspruchen",
     "workflows.claimCatalystProfile.noProposalFound": "Der Vorschlag, den Sie beanspruchen möchten, gehört nicht zu Ihrem Profil",
     "workflows.claimCatalystProfile.reviewDetails": "Überprüfen Sie Ihre importierten Daten, bevor Sie veröffentlichen.",
-    "workflows.claimCatalystProfile.manageProposals": "Meine Vorschläge verwalten"
+    "workflows.claimCatalystProfile.manageProposals": "Meine Vorschläge verwalten",
+    "workflows.createService.success.title": "Service erfolgreich erstellt!",
+    "workflows.createService.success.titleEdited": "Service erfolgreich aktualisiert!",
+    "workflows.createService.success.message": "Ihr Service wurde verarbeitet und ist jetzt live. Sie können ihn in Ihrer öffentlichen Auflistung ansehen oder über Ihr Service-Dashboard verwalten.",
+    "workflows.createService.success.viewPublicListing": "Öffentliche Auflistung anzeigen",
+    "workflows.createService.success.goToMyServices": "Zu meinen Services",
+    "workflows.createService.editService": "Service bearbeiten"
 }

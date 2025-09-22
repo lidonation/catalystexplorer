@@ -9,9 +9,10 @@ import React from 'react';
 
 interface ServiceSuccessProps {
     service: App.DataTransferObjects.ServiceData;
+    isEdited?: boolean;
 }
 
-const Success: React.FC<ServiceSuccessProps> = ({ service }) => {
+const Success: React.FC<ServiceSuccessProps> = ({ service, isEdited }) => {
     const { t } = useLaravelReactI18n();
 
     const handleViewPublicListing = () => {
@@ -58,7 +59,7 @@ const Success: React.FC<ServiceSuccessProps> = ({ service }) => {
                             className="mx-4 mb-7 text-center font-bold"
                             data-testid="service-success-title"
                         >
-                            {t('workflows.createService.success.title')}
+                            {!isEdited ? t('workflows.createService.success.title') : t('workflows.createService.success.titleEdited')}
                         </Title>
                         <VerificationBadge
                             size={80}

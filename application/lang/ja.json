@@ -1422,9 +1422,11 @@
     "workflows.claimCatalystProfile.manageProposals": "私の提案を管理",
     "workflows.createService.stepDetails.success": "成功",
     "workflows.createService.success.title": "サービスが正常に作成されました！",
-    "workflows.createService.success.message": "あなたのサービスが作成され、コミュニティが発見できるようになりました。",
+    "workflows.createService.success.titleEdited": "サービスが正常に更新されました！",
+    "workflows.createService.success.message": "サービスが処理され、現在公開されています。パブリックリストで表示するか、サービスダッシュボードから管理できます。",
     "workflows.createService.success.viewPublicListing": "パブリックリストを表示",
     "workflows.createService.success.goToMyServices": "マイサービスに移動",
+    "workflows.createService.editService": "サービスを編集",
     "workflows.claimCatalystProfile.viewProposals": "提案ページに戻る",
     "workflows.claimCatalystProfile.noProposalFound": "申請しようとしている提案はあなたのプロフィールに属していません"
 }

@@ -1434,9 +1434,11 @@
     "workflows.claimCatalystProfile.reviewDetails": "Revisa tus datos importados antes de publicarlos.",
     "workflows.createService.stepDetails.success": "Éxito",
     "workflows.createService.success.title": "¡Servicio Creado Exitosamente!",
-    "workflows.createService.success.message": "Tu servicio ha sido creado y ahora está disponible para que la comunidad lo descubra.",
+    "workflows.createService.success.titleEdited": "¡Servicio Actualizado Exitosamente!",
+    "workflows.createService.success.message": "Su servicio ha sido procesado y ahora está activo. Puede verlo en su listado público o gestionarlo desde su panel de servicios.",
     "workflows.createService.success.viewPublicListing": "Ver Listado Público",
     "workflows.createService.success.goToMyServices": "Ir a Mis Servicios",
+    "workflows.createService.editService": "Editar Servicio",
     "workflows.claimCatalystProfile.viewProposals": "Volver a la página de propuestas",
     "workflows.claimCatalystProfile.noProposalFound": "La propuesta que intentas reclamar no pertenece a tu perfil",
     "workflows.claimCatalystProfile.manageProposals": "Gestionar Mis Propuestas"
