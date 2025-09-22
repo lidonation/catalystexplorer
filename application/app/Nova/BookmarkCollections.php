@@ -17,6 +17,7 @@ use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
@@ -72,6 +73,11 @@ class BookmarkCollections extends Resource
             Text::make(__('Title'), 'title')
                 ->sortable()
                 ->rules('required', 'max:255'),
+
+            Number::make(__('Items Count'), 'items_count')
+                ->sortable()
+                ->onlyOnIndex()
+                ->displayUsing(fn ($value) => number_format($value ?? 0)),
 
             Textarea::make(__('Content'), 'content')
                 ->alwaysShow()
