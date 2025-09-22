@@ -208,7 +208,6 @@ class ClaimCatalystProfileWorkflowController extends Controller
             'username' => 'required|string',
             'catalystId' => 'nullable|string',
             'stakeAddress' => 'nullable|string',
-            'proposal' => 'nullable|integer|exists:proposals,id', // Changed from string to integer
         ]);
 
         $user = Auth::user();
@@ -229,18 +228,6 @@ class ClaimCatalystProfileWorkflowController extends Controller
             ]);
 
             $user->claimProfile($catalystProfile);
-
-            // Associate with proposal if provided
-            if (! empty($validated['proposal'])) {
-                // Assuming you have a relationship method to associate profile with proposal
-                // You might need to adjust this based on your actual model relationships
-                $catalystProfile->proposals()->syncWithoutDetaching([$validated['proposal']]);
-
-                // Or if it's a direct relationship update:
-                // $proposal = Proposal::find($validated['proposal']);
-                // $proposal->catalyst_profile_id = $catalystProfile->id;
-                // $proposal->save();
-            }
         });
 
         // Update search index for related proposals

@@ -17,7 +17,7 @@ export default function DurationIcon({
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
         >
-            <g clip-path="url(#clip0_19056_116897)">
+            <g clipPath="url(#clip0_19056_116897)">
                 <path
                     d="M8 4V8L10.6667 9.33333"
                     stroke="#78829D"

@@ -83,7 +83,6 @@ export default function QuickPitchWidget({
     const [isPlaying, setIsPlaying] = useState(false);
 
     const getEmbedUrl = (url: string) => {
-        // Handle YouTube
         const ytMatch = url.match(
             /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([^"&?\/\s]{11})/,
         );
@@ -91,7 +90,6 @@ export default function QuickPitchWidget({
             return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;
         }
 
-        // Handle Vimeo
         const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
         if (vimeoMatch && vimeoMatch[1]) {
             return `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`;
