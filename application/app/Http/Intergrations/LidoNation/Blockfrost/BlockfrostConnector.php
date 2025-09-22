@@ -8,7 +8,6 @@ use App\Jobs\CheckBlockfrostHealth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Saloon\Contracts\Authenticator;
-use Saloon\Contracts\RequestInterface;
 use Saloon\Exceptions\SaloonException;
 use Saloon\Http\Auth\QueryAuthenticator;
 use Saloon\Http\Connector;

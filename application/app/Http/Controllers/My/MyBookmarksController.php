@@ -528,20 +528,44 @@ class MyBookmarksController extends Controller
 
     public function deleteCollection(BookmarkCollection $bookmarkCollection, Request $request)
     {
+        // Add comprehensive logging for debugging
+        \Log::info('Starting collection deletion', [
+            'collection_id' => $bookmarkCollection->id,
+            'collection_title' => $bookmarkCollection->title,
+            'user_id' => Auth::id(),
+            'collection_owner_id' => $bookmarkCollection->user_id,
+            'request_method' => $request->method(),
+            'request_ajax' => $request->ajax(),
+            'request_wants_json' => $request->wantsJson(),
+            'request_params' => $request->all(),
+        ]);
+
         try {
             // Only owners can delete collections, not collaborators
             if ($bookmarkCollection->user_id !== Auth::id()) {
+                \Log::warning('Unauthorized deletion attempt', [
+                    'collection_id' => $bookmarkCollection->id,
+                    'attempted_by_user_id' => Auth::id(),
+                    'actual_owner_id' => $bookmarkCollection->user_id,
+                ]);
+
                 if ($request->wantsJson() || $request->ajax()) {
                     return response()->json([
                         'type' => 'error',
                         'message' => 'Unauthorized. Only the owner can delete this collection.',
                     ], 403);
                 }
+
                 return back()->with(
                     'error',
                     'Unauthorized. Only the owner can delete this collection.',
                 );
             }
+
+            \Log::info('Authorization passed, beginning deletion transaction', [
+                'collection_id' => $bookmarkCollection->id,
+                'user_id' => Auth::id(),
+            ]);
 
             // Begin database transaction for data consistency
             DB::beginTransaction();
@@ -551,19 +575,66 @@ class MyBookmarksController extends Controller
                 ->where('user_id', Auth::id())
                 ->get();
 
-            $bookmarks->each->delete();
+            \Log::info('Found bookmark items to delete', [
+                'collection_id' => $bookmarkCollection->id,
+                'bookmark_items_count' => $bookmarks->count(),
+                'bookmark_item_ids' => $bookmarks->pluck('id')->toArray(),
+            ]);
+
+            $bookmarks->each(function ($bookmark) {
+                \Log::debug('Deleting bookmark item', [
+                    'bookmark_id' => $bookmark->id,
+                    'model_type' => $bookmark->model_type,
+                    'model_id' => $bookmark->model_id,
+                ]);
+                $bookmark->delete();
+            });
+
+            \Log::info('Bookmark items deleted, now deleting comments');
 
             // Delete all comments associated with this collection
-            $bookmarkCollection->comments()->get()->each->delete();
+            $comments = $bookmarkCollection->comments()->get();
+            \Log::info('Found comments to delete', [
+                'collection_id' => $bookmarkCollection->id,
+                'comments_count' => $comments->count(),
+                'comment_ids' => $comments->pluck('id')->toArray(),
+            ]);
+
+            $comments->each(function ($comment) {
+                \Log::debug('Deleting comment', [
+                    'comment_id' => $comment->id,
+                    'commentator_id' => $comment->commentator_id,
+                ]);
+                $comment->delete();
+            });
+
+            \Log::info('Comments deleted, now deleting collection itself', [
+                'collection_id' => $bookmarkCollection->id,
+            ]);
 
             // Delete the collection itself
-            $bookmarkCollection->delete();
+            $deleted = $bookmarkCollection->delete();
+
+            \Log::info('Collection delete operation completed', [
+                'collection_id' => $bookmarkCollection->id,
+                'delete_result' => $deleted,
+                'collection_exists_after_delete' => BookmarkCollection::find($bookmarkCollection->id) !== null,
+                'collection_exists_with_trashed' => BookmarkCollection::withTrashed()->find($bookmarkCollection->id) !== null,
+            ]);
 
             // Commit the transaction
             DB::commit();
 
+            \Log::info('Database transaction committed successfully', [
+                'collection_id' => $bookmarkCollection->id,
+            ]);
+
             // Handle different response types
             if ($request->wantsJson() || $request->ajax()) {
+                \Log::info('Returning JSON success response', [
+                    'collection_id' => $bookmarkCollection->id,
+                ]);
+
                 return response()->json([
                     'type' => 'success',
                     'message' => 'Collection deleted successfully',
@@ -572,29 +643,57 @@ class MyBookmarksController extends Controller
 
             $noRedirect = $request->boolean('no_redirect', false);
             if ($noRedirect) {
+                \Log::info('Returning JSON success response (no_redirect=true)', [
+                    'collection_id' => $bookmarkCollection->id,
+                ]);
+
                 return response()->json([
                     'type' => 'success',
                     'message' => 'Collection deleted successfully',
                 ]);
             }
 
+            \Log::info('Redirecting to lists index after successful deletion', [
+                'collection_id' => $bookmarkCollection->id,
+            ]);
+
             return to_route('my.lists.index');
-            
+
         } catch (\Exception $e) {
             // Rollback transaction on error
             DB::rollBack();
-            
+
+            // Enhanced error logging
+            \Log::error('Exception occurred during collection deletion', [
+                'collection_id' => $bookmarkCollection->id,
+                'user_id' => Auth::id(),
+                'exception_message' => $e->getMessage(),
+                'exception_file' => $e->getFile(),
+                'exception_line' => $e->getLine(),
+                'exception_trace' => $e->getTraceAsString(),
+                'request_method' => $request->method(),
+                'request_params' => $request->all(),
+            ]);
+
             // Log the error for debugging
             report($e);
-            
+
             if ($request->wantsJson() || $request->ajax()) {
+                \Log::info('Returning JSON error response due to exception', [
+                    'collection_id' => $bookmarkCollection->id,
+                ]);
+
                 return response()->json([
                     'type' => 'error',
                     'message' => 'Failed to delete collection. Please try again.',
                     'debug' => config('app.debug') ? $e->getMessage() : null,
                 ], 500);
             }
-            
+
+            \Log::info('Returning back with error message due to exception', [
+                'collection_id' => $bookmarkCollection->id,
+            ]);
+
             return back()->with(
                 'error',
                 'Failed to delete collection. Please try again.',

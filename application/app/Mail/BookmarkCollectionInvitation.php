@@ -58,9 +58,9 @@ class BookmarkCollectionInvitation extends LocalizableMailable
     {
         $acceptUrl = URL::temporarySignedRoute('workflows.acceptInvitation.index', now()
             ->addDays(30), [
-            'token' => $this->token,
-            'collection' => $this->bookmarkCollection->id,
-        ]);
+                'token' => $this->token,
+                'collection' => $this->bookmarkCollection->id,
+            ]);
 
         return new Content(
             view: 'emails.bookmark-invitation',

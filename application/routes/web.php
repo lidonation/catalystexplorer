@@ -190,6 +190,7 @@ Route::localized(
                         ->name('success');
                     Route::get('/{step}', [VoterListController::class, 'handleStep'])
                         ->name('index');
+
                     Route::post('/save-list-details', [VoterListController::class, 'saveListDetails'])
                         ->name('saveListDetails');
                     Route::post('/save-proposals', [VoterListController::class, 'saveProposals'])
