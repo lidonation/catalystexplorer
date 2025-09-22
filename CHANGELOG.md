@@ -1,3 +1,10 @@
+## [1.29.4](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.29.3...v1.29.4) (2025-09-22)
+
+
+### Bug Fixes
+
+* adding proposal to bookmark list fails when campaign filter is set ([bd1e6bf](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/bd1e6bfefd14f70a2fade06f4d9aee6ce64cb2f5))
+
 ## [1.29.3](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.29.2...v1.29.3) (2025-09-20)
 
 
