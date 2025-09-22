@@ -125,9 +125,12 @@ class ClaimCatalystProfileWorkflowController extends Controller
 
     public function step4(Request $request, ?Proposal $proposal = null): Response
     {
+        $proposal = $request->proposal;
+
         return Inertia::render('Workflows/ClaimCatalystProfile/Success', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
+            'proposal' => $proposal,
         ]);
     }
 
@@ -209,7 +212,6 @@ class ClaimCatalystProfileWorkflowController extends Controller
 
         $user = Auth::user();
 
-        // Check if profile can be claimed by this user
         if (! $this->canClaimProfile($catalystProfile, $user)) {
             return redirect()->back()->withErrors([
                 'profile' => 'This profile has already been claimed by another user.',
@@ -244,8 +246,10 @@ class ClaimCatalystProfileWorkflowController extends Controller
 
         $user->load('claimed_catalyst_profiles', 'claimed_ideascale_profiles');
 
-        return to_route('workflows.claimCatalystProfile.index', ['step' => 4])
-            ->with('success', 'Catalyst profile successfully claimed!');
+        return to_route('workflows.claimCatalystProfile.index', [
+            'step' => 4,
+            'proposal' => $request->proposal,
+        ])->with('success', 'Catalyst profile successfully claimed!');
     }
 
     public function getStepDetails(): Collection

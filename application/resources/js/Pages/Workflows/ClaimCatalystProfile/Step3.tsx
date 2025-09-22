@@ -63,6 +63,7 @@ export default function Step3({
                     'workflows.claimCatalystProfile.claimCatalystProfile',
                     {
                         catalystProfile: catalystProfile.id,
+                        proposal: proposal,
                     },
                 ),
                 {
