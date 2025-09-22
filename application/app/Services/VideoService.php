@@ -14,8 +14,12 @@ class VideoService
     /**
      * Extract video ID and duration from a YouTube or Vimeo URL
      */
-    public function getVideoMetadata(string $url): array
+    public function getVideoMetadata(?string $url = null): ?array
     {
+        if (! $url) {
+            return null;
+        }
+
         $videoId = $this->extractVideoId($url);
 
         if (! $videoId) {
@@ -37,8 +41,12 @@ class VideoService
     /**
      * Extract video ID from URL
      */
-    private function extractVideoId(string $url): ?string
+    private function extractVideoId(?string $url = null): ?string
     {
+        if ($url === null) {
+            return null;
+        }
+
         // YouTube patterns
         $youtubePatterns = [
             '/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/',
@@ -107,7 +115,11 @@ class VideoService
                 'video_id' => $videoId,
                 'title' => $video['snippet']['title'] ?? null,
                 'duration' => $duration,
-                'thumbnail' => $video['snippet']['thumbnails']['default']['url'] ?? null,
+                'thumbnail' => $video['snippet']['thumbnails']['maxres']['url'] ?? null,
+                'views' => $video['statistics']['viewCount'] ?? 0,
+                'likes' => $video['statistics']['likeCount'] ?? 0,
+                'favoriteCount' => $video['statistics']['favoriteCount'] ?? 0,
+                'comments' => $video['statistics']['commentCount'] ?? 0,
             ];
         } catch (Exception $e) {
             Log::error('Failed to fetch YouTube video metadata', [
@@ -139,7 +151,11 @@ class VideoService
                 'video_id' => $videoId,
                 'title' => $data['name'] ?? null,
                 'duration' => $data['duration'] ?? null,
-                'thumbnail' => null, // Could be added if needed
+                'thumbnail' => $data['pictures']['sizes'][0]['link'] ?? null,
+                'views' => $data['stats']['plays'] ?? 0,
+                'likes' => $data['metadata']['connections']['likes']['total'] ?? 0,
+                'favoriteCount' => 0,
+                'comments' => $data['metadata']['connections']['comments']['total'] ?? 0,
             ];
         } catch (Exception $e) {
             Log::error('Failed to fetch Vimeo video metadata', [

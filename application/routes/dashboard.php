@@ -64,7 +64,8 @@ Route::localized(
                 Route::prefix('proposals')->as('proposals.')->group(function () {
                     Route::get('/', [ProposalsController::class, 'myProposals'])->name('index');
                     Route::get('/{proposal}/manage', [ProposalsController::class, 'manageProposal'])->name('manage');
-                    Route::patch('/{proposal}/quick-pitch', [ProposalsController::class, 'updateQuickPitch'])->name('quickpitch.update');
+                    Route::patch('/{proposal}/update-quick-pitch', [ProposalsController::class, 'updateQuickPitch'])->name('quickpitch.update');
+                    Route::patch('/{proposal}/delete-quick-pitch', [ProposalsController::class, 'deleteQuickPitch'])->name('quickpitch.delete');
                 });
 
                 Route::get('/reviews', [ProfileController::class, 'myReviews'])->name('reviews');

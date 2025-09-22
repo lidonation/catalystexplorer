@@ -1,8 +1,21 @@
-import React, { useState } from 'react';
+import Button from '@/Components/atoms/Button';
+import PrimaryButton from '@/Components/atoms/PrimaryButton.tsx';
+import TextInput from '@/Components/atoms/TextInput';
+import Card from '@/Components/Card';
+import CommentIcon from '@/Components/svgs/CommentIcon';
+import DurationIcon from '@/Components/svgs/DurationIcon';
+import EyeIcon from '@/Components/svgs/EyeIcon';
+import PlayerPlayFilled from '@/Components/svgs/PlayerPlayFilled';
+import ThumbsUpIcon from '@/Components/svgs/ThumbsUpIcon';
+import VideoCameraIcon from '@/Components/svgs/VideoCameraIcon';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { shortNumber } from '@/utils/shortNumber';
 import { router } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { useLocalizedRoute } from '@/utils/localizedRoute';
-import PrimaryButton from '@/Components/atoms/PrimaryButton.tsx';
+import { StarIcon } from 'lucide-react';
+import React, { useState } from 'react';
+import { toast } from 'react-toastify';
+import VideoStatsComponent from './VideoStatsComponent';
 
 interface QuickPitchWidgetProps {
     proposal: {
@@ -10,23 +23,42 @@ interface QuickPitchWidgetProps {
         quickpitch?: string;
         quickpitch_length?: number;
     };
+    quickpitchMetadata: {
+        thumbnail: string;
+        views: number;
+        likes: number;
+        comments: number;
+        favoriteCount: number;
+        duration?: number;
+    } | null;
 }
 
-export default function QuickPitchWidget({ proposal }: QuickPitchWidgetProps) {
+export default function QuickPitchWidget({
+    proposal,
+    quickpitchMetadata,
+}: QuickPitchWidgetProps) {
     const { t } = useLaravelReactI18n();
     const [url, setUrl] = useState(proposal.quickpitch || '');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
+    const successMessage = proposal?.quickpitch
+        ? t('widgets.quickPitch.success')
+        : t('widgets.quickPitch.addSuccess');
 
     const updateRoute = useLocalizedRoute('my.proposals.quickpitch.update', {
+        proposal: proposal.id,
+    });
+
+    const deleteRoute = useLocalizedRoute('my.proposals.quickpitch.delete', {
         proposal: proposal.id,
     });
 
     const validateUrl = (url: string): string | null => {
         if (!url.trim()) return t('widgets.quickPitch.errors.required');
 
-        const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+        const youtubeRegex =
+            /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
         const vimeoRegex = /(?:https?:\/\/)?(?:www\.)?(?:vimeo\.com\/)(\d+)/;
 
         if (!youtubeRegex.test(url) && !vimeoRegex.test(url)) {
@@ -37,14 +69,33 @@ export default function QuickPitchWidget({ proposal }: QuickPitchWidgetProps) {
     };
 
     const normalizeYouTubeUrl = (url: string): string => {
-        const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+        const youtubeRegex =
+            /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
         const match = url.match(youtubeRegex);
 
         if (match && match[1]) {
             return `https://youtu.be/${match[1]}`;
         }
 
-        return url; // Return original URL if not YouTube or if it doesn't match
+        return url;
+    };
+
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    const getEmbedUrl = (url: string) => {
+        const ytMatch = url.match(
+            /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([^"&?\/\s]{11})/,
+        );
+        if (ytMatch && ytMatch[1]) {
+            return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;
+        }
+
+        const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+        if (vimeoMatch && vimeoMatch[1]) {
+            return `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`;
+        }
+
+        return url;
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -63,20 +114,33 @@ export default function QuickPitchWidget({ proposal }: QuickPitchWidgetProps) {
         const normalizedUrl = normalizeYouTubeUrl(url.trim());
 
         try {
-            router.patch(updateRoute, {
-                quickpitch: normalizedUrl,
-            }, {
-                preserveState: true,
-                preserveScroll: true,
-                onSuccess: () => {
-                    setSuccess(true);
-                    setUrl(normalizedUrl);
-                    setTimeout(() => setSuccess(false), 3000);
+            router.patch(
+                updateRoute,
+                {
+                    quickpitch: normalizedUrl,
                 },
-                onError: (errors: any) => {
-                    setError(errors.quickpitch || t('widgets.quickPitch.errors.updateFailed'));
-                }
-            });
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        toast.success(successMessage, {
+                            className: 'bg-background text-content',
+                            toastId: 'copied-to-clipboard',
+                        });
+                        setUrl(normalizedUrl);
+                        setTimeout(() => setSuccess(false), 3000);
+                    },
+                    onError: (errors: any) => {
+                        toast.error(
+                            t('widgets.quickPitch.errors.updateFailed'),
+                            {
+                                className: 'bg-background text-content',
+                                toastId: 'update-failed',
+                            },
+                        );
+                    },
+                },
+            );
         } catch (err) {
             setError(t('widgets.quickPitch.errors.updateFailed'));
         } finally {
@@ -84,45 +148,170 @@ export default function QuickPitchWidget({ proposal }: QuickPitchWidgetProps) {
         }
     };
 
-    const formatDuration = (seconds?: number): string => {
-        if (!seconds) return '';
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
-        return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+    const deleteQuickPitch = async () => {
+        try {
+            router.patch(
+                deleteRoute,
+                {},
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        setSuccess(true);
+                        setUrl('');
+                        toast.success(t('widgets.quickPitch.deleteSuccess'), {
+                            className: 'bg-background text-content',
+                            toastId: 'copied-to-clipboard',
+                        });
+
+                        setTimeout(() => setSuccess(false), 3000);
+                    },
+                    onError: (errors: any) => {
+                        setError(
+                            errors.quickpitch ||
+                                t('widgets.quickPitch.errors.deleteFailed'),
+                        );
+                        toast.error(
+                            t('widgets.quickPitch.errors.deleteFailed'),
+                            {
+                                className: 'bg-background text-content',
+                                toastId: 'update-failed',
+                            },
+                        );
+                    },
+                },
+            );
+        } catch (err) {
+            setError(t('widgets.quickPitch.errors.deleteFailed'));
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const formatDuration = (seconds?: number | string): string => {
+        if (seconds === undefined || seconds === null) return '00:00:00';
+        const numSeconds =
+            typeof seconds === 'string' ? parseInt(seconds, 10) : seconds;
+        if (isNaN(numSeconds) || numSeconds < 0) return '00:00:00';
+
+        const hrs = Math.floor(numSeconds / 3600);
+        const mins = Math.floor((numSeconds % 3600) / 60);
+        const secs = numSeconds % 60;
+
+        return [
+            hrs.toString().padStart(2, '0'),
+            mins.toString().padStart(2, '0'),
+            secs.toString().padStart(2, '0'),
+        ].join(':');
     };
 
     return (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">
+        <Card>
+            <div className="border-gray-persist/80 mb-4 flex items-center justify-between border-b pb-5">
+                <h3 className="text-content text-lg font-semibold">
                     {t('widgets.quickPitch.title')}
                 </h3>
-                {proposal.quickpitch_length && (
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        {formatDuration(proposal.quickpitch_length)}
-                    </span>
+                {quickpitchMetadata?.duration && (
+                    <div className="flex items-center justify-center gap-2">
+                        <span>
+                            <DurationIcon />
+                        </span>
+                        <span className="text-content/50 text-sm">
+                            {formatDuration(
+                                quickpitchMetadata?.duration ??
+                                    proposal.quickpitch_length,
+                            )}
+                        </span>
+                    </div>
                 )}
             </div>
+            {proposal?.quickpitch && quickpitchMetadata ? (
+                <div className="relative my-5 aspect-video h-fit w-full overflow-hidden rounded-2xl">
+                    {isPlaying ? (
+                        <iframe
+                            src={getEmbedUrl(url)}
+                            className="h-full w-full"
+                            allow="autoplay; fullscreen"
+                            allowFullScreen
+                        />
+                    ) : (
+                        <>
+                            <img
+                                src={quickpitchMetadata.thumbnail}
+                                alt="Quickpitch Thumbnail"
+                                className="h-full w-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-black/60"></div>
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsPlaying(true)}
+                                    className='cursor-pointer'
+                                >
+                                    <PlayerPlayFilled />
+                                </button>
+                            </div>
+                        </>
+                    )}
+                </div>
+            ) : (
+                <div className="bg-background-lighter mb-5 flex items-center justify-center rounded-2xl p-24">
+                    <VideoCameraIcon
+                        className="text-primary"
+                        width={85}
+                        height={84}
+                    />
+                </div>
+            )}
 
-            <p className="text-sm text-gray-600 mb-4">
-                {t('widgets.quickPitch.description')}
-            </p>
+            <div className="mt-2 mb-5 flex items-center space-x-2">
+                <VideoStatsComponent
+                    icon={<EyeIcon />}
+                    count={shortNumber(quickpitchMetadata?.views) || 0}
+                />
+                <VideoStatsComponent
+                    icon={<ThumbsUpIcon />}
+                    count={shortNumber(quickpitchMetadata?.likes) || 0}
+                />
+                <VideoStatsComponent
+                    icon={
+                        <StarIcon
+                            width={16}
+                            height={16}
+                            className="text-warning"
+                        />
+                    }
+                    count={quickpitchMetadata?.favoriteCount || 0}
+                />
+                <VideoStatsComponent
+                    icon={
+                        <CommentIcon
+                            width={16}
+                            height={16}
+                            className="text-primary"
+                        />
+                    }
+                    count={quickpitchMetadata?.comments || 0}
+                />
+            </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                    <label htmlFor="quickpitch-url" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label
+                        htmlFor="quickpitch-url"
+                        className="mb-2 block text-sm font-medium text-gray-700"
+                    >
                         {t('widgets.quickPitch.urlLabel')}
                     </label>
                     <div className="mt-1">
-                        <input
+                        <TextInput
+                            id="url"
                             type="url"
-                            id="quickpitch-url"
-                            name="quickpitch"
-                            value={url}
-                            onChange={(e) => setUrl(e.target.value)}
                             placeholder="https://youtu.be/dQw4w9WgXcQ"
-                            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                            disabled={isLoading}
+                            className="mt-1 w-full"
+                            value={url}
+                            required
+                            onChange={(e) => setUrl(e.target.value)}
                         />
                     </div>
                     <p className="mt-1 text-xs text-gray-500">
@@ -130,58 +319,30 @@ export default function QuickPitchWidget({ proposal }: QuickPitchWidgetProps) {
                     </p>
                 </div>
 
-                {error && (
-                    <div className="rounded-md bg-red-50 p-4">
-                        <div className="flex">
-                            <div className="flex-shrink-0">
-                                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                                </svg>
-                            </div>
-                            <div className="ml-3">
-                                <p className="text-sm text-red-800">{error}</p>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {success && (
-                    <div className="rounded-md bg-green-50 p-4">
-                        <div className="flex">
-                            <div className="flex-shrink-0">
-                                <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                </svg>
-                            </div>
-                            <div className="ml-3">
-                                <p className="text-sm text-green-800">
-                                    {t('widgets.quickPitch.success')}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                <div className="flex justify-end">
+                <div
+                    className={`grid w-full ${proposal?.quickpitch ? 'grid-cols-2' : 'grid-cols-1'} gap-4`}
+                >
                     <PrimaryButton
                         type="submit"
                         disabled={isLoading}
                         className="inline-flex items-center px-4 py-2"
+                        loading={isLoading}
                     >
-                        {isLoading ? (
-                            <>
-                                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                {t('widgets.quickPitch.updating')}
-                            </>
-                        ) : (
-                            t('widgets.quickPitch.update')
-                        )}
+                        {proposal?.quickpitch
+                            ? t('widgets.quickPitch.update')
+                            : t('widgets.quickPitch.add')}
                     </PrimaryButton>
+                    {proposal?.quickpitch && (
+                        <Button
+                            className="bg-error text-sm font-medium tracking-widest text-white"
+                            onClick={deleteQuickPitch}
+                            type="button"
+                        >
+                            {t('widgets.quickPitch.deleteVideo')}
+                        </Button>
+                    )}
                 </div>
             </form>
-        </div>
+        </Card>
     );
 }

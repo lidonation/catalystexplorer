@@ -326,7 +326,7 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
         if (columnPath === 'manageProposal') {
             return {
                 key: 'manageProposal',
-                label: t('proposals.manage'),
+                label: t('proposals.manageProposal'),
                 renderCell: (proposal: ProposalData) => {
                     const testId = `proposal-manage-${proposal.id}`;
 
