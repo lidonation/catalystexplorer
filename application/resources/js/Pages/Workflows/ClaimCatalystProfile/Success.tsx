@@ -11,10 +11,12 @@ import WorkflowLayout from '../WorkflowLayout';
 interface SuccessProps {
     stepDetails: StepDetails[];
     activeStep: number;
+    proposal: App.DataTransferObjects.ProposalData;
 }
 export default function Success({
     stepDetails,
     activeStep,
+    proposal,
 }: SuccessProps) {
     const { t } = useLaravelReactI18n();
     const localizedRoute = useLocalizedRoute;
@@ -36,14 +38,30 @@ export default function Success({
                             size="sm"
                             className="text-gray-persist mt-4 text-center"
                         >
-                            {t('workflows.claimCatalystProfile.successConfirmation')}
+                            {t(
+                                'workflows.claimCatalystProfile.successConfirmation',
+                            )}
                         </Paragraph>
 
                         <PrimaryLink
                             href={nextStep}
                             className="w-full text-sm lg:px-8 lg:py-3"
                         >
-                            <span>{t('workflows.claimCatalystProfile.manageProposals')}</span>
+                            <span>
+                                {t(
+                                    'workflows.claimCatalystProfile.manageProposals',
+                                )}
+                            </span>
+                        </PrimaryLink>
+                        <PrimaryLink
+                            href={useLocalizedRoute('my.proposals.manage', {
+                                proposal: proposal.id,
+                            })}
+                            className="w-full text-sm lg:px-8 lg:py-3"
+                        >
+                            <span>
+                                {t('my.manage')}: {proposal.title}
+                            </span>
                         </PrimaryLink>
                     </div>
                 </div>

@@ -10,6 +10,7 @@ use App\DataTransferObjects\ProposalData;
 use App\DataTransferObjects\ReviewData;
 use App\Enums\ProposalSearchParams;
 use App\Http\Requests\UpdateProposalQuickPitchRequest;
+use App\Models\CatalystProfile;
 use App\Models\Connection;
 use App\Models\Fund;
 use App\Models\IdeascaleProfile;
@@ -116,6 +117,18 @@ class ProposalsController extends Controller
         $proposalId = $proposal->id;
 
         $cacheKey = "proposal:{$proposalId}:base_data";
+
+        $userProfileIds = CatalystProfile::where('claimed_by', Auth::id())->pluck('id');
+
+        $userHasProfileInProposal = $proposal->users->contains(function ($user) use ($userProfileIds) {
+            return $userProfileIds->contains($user->profile_id);
+        });
+
+        $activeFund = Fund::latest('launched_at')
+            ->withCount(['funded_proposals', 'completed_proposals', 'unfunded_proposals', 'proposals'])
+            ->first();
+
+        $isInActiveFund = $proposal->fund_id === $activeFund->id;
 
         $proposalData = Cache::remember($cacheKey, now()->addMinutes(0), function () use ($proposal) {
             $proposal->load([
@@ -232,6 +245,8 @@ class ProposalsController extends Controller
             'userCompleteProposalsCount' => $proposalData['userCompleteProposalsCount'] ?? 0,
             'userOutstandingProposalsCount' => $proposalData['userOutstandingProposalsCount'] ?? 0,
             'catalystConnectionsCount' => $proposalData['catalystConnectionsCount'] ?? 0,
+            'userHasProfileInProposal' => $userHasProfileInProposal,
+            'isInActiveFund' => $isInActiveFund,
         ];
 
         return match (true) {
@@ -344,8 +359,11 @@ class ProposalsController extends Controller
     {
         Gate::authorize('manage', $proposal);
 
+        $metadata = app(VideoService::class)->getVideoMetadata($proposal->quickpitch);
+
         return Inertia::render('My/Proposals/ManageProposal', [
             'proposal' => ProposalData::from($proposal),
+            'quickpitchMetadata' => $metadata,
         ]);
     }
 
@@ -356,10 +374,8 @@ class ProposalsController extends Controller
         $url = $request->validated()['quickpitch'];
 
         try {
-            // Normalize YouTube URLs to youtu.be format
             $normalizedUrl = app(VideoService::class)->normalizeYouTubeUrl($url);
 
-            // Try to get video metadata for duration
             $duration = null;
             try {
                 $metadata = app(VideoService::class)->getVideoMetadata($normalizedUrl);
@@ -370,10 +386,8 @@ class ProposalsController extends Controller
                     'url' => $normalizedUrl,
                     'error' => $e->getMessage(),
                 ]);
-                // Continue without duration - we don't want to fail the entire update
             }
 
-            // Update the proposal
             $proposal->update([
                 'quickpitch' => $normalizedUrl,
                 'quickpitch_length' => $duration,
@@ -391,6 +405,18 @@ class ProposalsController extends Controller
                 'quickpitch' => 'Failed to update quick pitch. Please try again.',
             ]);
         }
+    }
+
+    public function deleteQuickPitch(Request $request, Proposal $proposal): RedirectResponse
+    {
+        Gate::authorize('manage', $proposal);
+
+        $proposal->update([
+            'quickpitch' => null,
+            'quickpitch_length' => null,
+        ]);
+
+        return redirect()->back()->with('success', 'Quick pitch deleted successfully');
     }
 
     public function charts(Request $request): Response

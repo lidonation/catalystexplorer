@@ -33,7 +33,7 @@ class GetVideoDetailsRequest extends Request
     public function defaultQuery(): array
     {
         return [
-            'part' => 'contentDetails,snippet',
+            'part' => 'contentDetails,snippet,statistics',
             'id' => $this->videoId,
         ];
     }

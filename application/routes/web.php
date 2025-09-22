@@ -351,7 +351,7 @@ Route::localized(
                         ->name('validateWallet');
                     Route::post('/sign-wallet/{proposal?}', [ClaimCatalystProfileWorkflowController::class, 'signWallet'])
                         ->name('signWallet');
-                    Route::post('/{catalystProfile}/claim-catalyst-profile', [ClaimCatalystProfileWorkflowController::class, 'claimCatalystProfile'])
+                    Route::post('/{catalystProfile}/claim-catalyst-profile/{proposal?}', [ClaimCatalystProfileWorkflowController::class, 'claimCatalystProfile'])
                         ->name('claimCatalystProfile');
                 });
 
