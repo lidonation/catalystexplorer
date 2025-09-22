@@ -244,6 +244,7 @@ class ServiceController extends Controller
     {
         $validated = $request->validate([
             ServiceWorkflowParams::SERVICE_HASH()->value => 'nullable|string',
+            ServiceWorkflowParams::EDIT()->value => 'nullable|boolean',
         ]);
 
         $existingService = null;
@@ -271,6 +272,7 @@ class ServiceController extends Controller
                 ->get(['id', 'name', 'slug']),
             'serviceHash' => $validated[ServiceWorkflowParams::SERVICE_HASH()->value] ?? null,
             'serviceData' => $serviceData,
+            'isEdit' => $validated[ServiceWorkflowParams::EDIT()->value] ?? false,
         ]);
     }
 
@@ -278,6 +280,7 @@ class ServiceController extends Controller
     {
         $validated = $request->validate([
             ServiceWorkflowParams::SERVICE_HASH()->value => 'nullable|string',
+            ServiceWorkflowParams::EDIT()->value => 'nullable|boolean',
         ]);
 
         $existingService = null;
@@ -306,6 +309,7 @@ class ServiceController extends Controller
             'serviceId' => $validated[ServiceWorkflowParams::SERVICE_HASH()->value] ?? null,
             'serviceId' => $validated[ServiceWorkflowParams::SERVICE_HASH()->value] ?? null,
             'serviceData' => $serviceData,
+            'isEdit' => $validated[ServiceWorkflowParams::EDIT()->value] ?? false,
             'defaults' => [
                 'contact' => [
                     'name' => auth()->user()->name,
@@ -329,6 +333,7 @@ class ServiceController extends Controller
             ServiceWorkflowParams::CATEGORIES()->value => 'required|array|min:1',
             ServiceWorkflowParams::CATEGORIES()->value.'.*' => 'exists:categories,slug',
             ServiceWorkflowParams::SERVICE_HASH()->value => 'nullable|string',
+            ServiceWorkflowParams::EDIT()->value => 'nullable|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -371,6 +376,7 @@ class ServiceController extends Controller
         return redirect()->route('workflows.createService.index', [
             ServiceWorkflowParams::STEP()->value => 2,
             ServiceWorkflowParams::SERVICE_HASH()->value => $service->id,
+            ServiceWorkflowParams::EDIT()->value => $validated[ServiceWorkflowParams::EDIT()->value] ?? false,
         ]);
     }
 
@@ -384,6 +390,7 @@ class ServiceController extends Controller
             ServiceWorkflowParams::WEBSITE()->value => 'nullable|url|max:255',
             ServiceWorkflowParams::GITHUB()->value => 'nullable|string|max:255',
             ServiceWorkflowParams::LINKEDIN()->value => 'nullable|string|max:255',
+            ServiceWorkflowParams::EDIT()->value => 'nullable|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -422,6 +429,7 @@ class ServiceController extends Controller
 
         return redirect()->route('workflows.createService.success', [
             'serviceHash' => $service->id,
+            ServiceWorkflowParams::EDIT()->value => $validated[ServiceWorkflowParams::EDIT()->value] ?? false,
         ]);
     }
 
@@ -482,6 +490,7 @@ class ServiceController extends Controller
     {
         $validated = $request->validate([
             'serviceHash' => 'required|string',
+            ServiceWorkflowParams::EDIT()->value => 'nullable|boolean',
         ]);
 
         $service = Service::find($validated['serviceHash']);
@@ -491,8 +500,11 @@ class ServiceController extends Controller
                 ->with('error', 'Service not found or access denied.');
         }
 
+        $isEdit = $validated[ServiceWorkflowParams::EDIT()->value] ?? false;
+
         return Inertia::render('Workflows/CreateService/Success', [
             'service' => ServiceData::fromModel($service),
+            'isEdited' => $isEdit,
         ]);
     }
 }

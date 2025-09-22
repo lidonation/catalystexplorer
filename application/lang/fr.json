@@ -1437,13 +1437,15 @@
     "workflows.claimCatalystProfile.viewProfile": "Retour à votre profil",
     "workflows.createService.stepDetails.success": "Succès",
     "workflows.createService.success.title": "Service Créé avec Succès !",
-    "workflows.createService.success.message": "Votre service a été créé et est maintenant disponible pour que la communauté le découvre.",
-    "workflows.createService.success.viewPublicListing": "Voir l'Annonce Publique",
+    "workflows.createService.success.titleEdited": "Service Mis à Jour avec Succès !",
+    "workflows.createService.success.message": "Votre service a été traité et est maintenant en ligne. Vous pouvez le voir sur votre liste publique ou le gérer depuis votre tableau de bord des services.",
+    "workflows.createService.success.viewPublicListing": "Voir la Liste Publique",
     "workflows.createService.success.goToMyServices": "Aller à Mes Services",
+    "workflows.createService.editService": "Modifier le Service",
     "workflows.claimCatalystProfile.successConfirmation": "Vous êtes maintenant propriétaire de ce profil Catalyst. Vous pouvez modifier les détails à tout moment.",
     "workflows.claimCatalystProfile.viewProposals": "Retour à la page des propositions",
     "workflows.claimCatalystProfile.claim": "Revendiquer la proposition",
     "workflows.claimCatalystProfile.noProposalFound": "La proposition que vous essayez de revendiquer n’appartient pas à votre profil",
     "workflows.claimCatalystProfile.reviewDetails": "Vérifiez vos données importées avant de publier.",
-    "workflows.claimCatalystProfile.manageProposals": "Gérer Mes Propositions"
+    "workflows.claimCatalystProfile.managePropositions": "Gérer Mes Propositions"
 }

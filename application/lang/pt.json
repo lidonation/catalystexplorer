@@ -1430,9 +1430,11 @@
     "workflows.claimCatalystProfile.manageProposals": "Gerenciar Minhas Propostas",
     "workflows.createService.stepDetails.success": "Sucesso",
     "workflows.createService.success.title": "Serviço Criado com Sucesso!",
-    "workflows.createService.success.message": "Seu serviço foi criado e agora está disponível para a comunidade descobrir.",
+    "workflows.createService.success.titleEdited": "Serviço Atualizado com Sucesso!",
+    "workflows.createService.success.message": "Seu serviço foi processado e agora está ativo. Você pode visualizá-lo em sua listagem pública ou gerenciá-lo pelo painel de serviços.",
     "workflows.createService.success.viewPublicListing": "Ver Listagem Pública",
     "workflows.createService.success.goToMyServices": "Ir para Meus Serviços",
+    "workflows.createService.editService": "Editar Serviço",
     "workflows.claimCatalystProfile.viewProposals": "Voltar à página de propostas",
     "workflows.claimCatalystProfile.noProposalFound": "A proposta que você está tentando reivindicar não pertence ao seu perfil"
 }

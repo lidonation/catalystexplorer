@@ -338,5 +338,11 @@
     "workflows.claimCatalystProfile.claim": "مطالبة بالمقترح",
     "workflows.claimCatalystProfile.noProposalFound": "المقترح الذي تحاول المطالبة به لا يخص ملفك الشخصي",
     "workflows.claimCatalystProfile.reviewDetails": "راجع بياناتك المستوردة قبل النشر.",
-    "workflows.claimCatalystProfile.manageProposals": "إدارة مقترحاتي"
+    "workflows.claimCatalystProfile.manageProposals": "إدارة مقترحاتي",
+    "workflows.createService.success.title": "تم إنشاء الخدمة بنجاح!",
+    "workflows.createService.success.titleEdited": "تم تحديث الخدمة بنجاح!",
+    "workflows.createService.success.message": "تم معالجة خدمتك وهي متاحة الآن. يمكنك عرضها في قائمتك العامة أو إدارتها من لوحة تحكم الخدمات.",
+    "workflows.createService.success.viewPublicListing": "عرض القائمة العامة",
+    "workflows.createService.success.goToMyServices": "الانتقال إلى خدماتي",
+    "workflows.createService.editService": "تعديل الخدمة"
 }

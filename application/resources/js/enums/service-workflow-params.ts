@@ -1,6 +1,7 @@
 export enum ServiceWorkflowParams {
     STEP = 'step',
     SERVICE_HASH = 'serviceHash',
+    EDIT = 'edit',
     TITLE = 'title',
     DESCRIPTION = 'description',
     TYPE = 'type',
