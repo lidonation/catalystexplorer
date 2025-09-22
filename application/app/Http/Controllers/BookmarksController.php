@@ -927,15 +927,15 @@ class BookmarksController extends Controller
     public function acceptInvitationSuccess(): Response
     {
         $collectionId = session('invitation_accepted_collection');
-        
-        if (!$collectionId) {
+
+        if (! $collectionId) {
             return redirect()->route('lists.index')
                 ->withErrors(['message' => 'No invitation acceptance found.']);
         }
 
         $bookmarkCollection = BookmarkCollection::find($collectionId);
-        
-        if (!$bookmarkCollection) {
+
+        if (! $bookmarkCollection) {
             return redirect()->route('lists.index')
                 ->withErrors(['message' => 'Bookmark collection not found.']);
         }

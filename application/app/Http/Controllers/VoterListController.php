@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\GetProposalFromScout;
+use App\Actions\GetUserFilters;
 use App\DataTransferObjects\BookmarkCollectionData;
 use App\DataTransferObjects\BookmarkItemData;
 use App\Enums\BookmarkStatus;
@@ -68,18 +69,38 @@ class VoterListController extends Controller
 
     public function step3(Request $request): Response
     {
-        $fundSlug = $request->input(QueryParamsEnum::FUNDS()->value);
-        $bookmarkId = $request->input('bookmarkCollection');
+        $fundParam = $request->input(QueryParamsEnum::FUNDS()->value);
+        $bookmarkId = $request->input('bookmarkCollection') ?? $request->input(QueryParamsEnum::BOOKMARK_COLLECTION()->value);
         $bookmarkCollection = null;
+        $fund = null;
+        $fundSlug = null;
 
         if ($bookmarkId) {
             $bookmarkCollection = BookmarkCollection::find($bookmarkId);
         }
 
-        $fund = Fund::find($bookmarkCollection?->fund_id);
+        // Handle fund parameter - could be ID or slug
+        if ($fundParam) {
+            // Try to find by ID first (if it's numeric)
+            if (is_numeric($fundParam)) {
+                $fund = Fund::find($fundParam);
+                $fundSlug = $fund?->slug;
+            } else {
+                // Otherwise treat as slug
+                $fund = Fund::where('slug', $fundParam)->first();
+                $fundSlug = $fundParam;
+            }
+        }
 
-        $proposals = [];
-        $campaigns = [];
+        // Create a modified request for GetUserFilters that uses fund ID
+        $modifiedRequest = $request->duplicate();
+        if ($fund) {
+            $modifiedRequest->merge([
+                QueryParamsEnum::FUNDS()->value => $fund->id,
+            ]);
+        }
+
+        $filters = app(GetUserFilters::class)($modifiedRequest);
         $selectedProposals = [];
 
         if ($bookmarkCollection) {
@@ -96,41 +117,21 @@ class VoterListController extends Controller
                 )->toArray();
         }
 
-        if ($fund) {
-            $campaigns = Campaign::where('fund_id', $fund->id)->get();
-            $filters[] = "fund.id = {$fund->id}";
+        if ($bookmarkCollection?->fund_id) {
+            $campaigns = Campaign::where('fund_id', $bookmarkCollection?->fund_id)->get();
         }
 
-        $filters = [];
+        //        if ($bookmarkId) {
+        //            $filters[] = "bookmark_collections = [$bookmarkId]";
+        //        }
 
-        if ($request->has(ProposalSearchParams::QUERY()->value)) {
-            $filters[ProposalSearchParams::QUERY()->value] = $request->input(ProposalSearchParams::QUERY()->value);
-        }
-
-        if ($request->has(ProposalSearchParams::CAMPAIGNS()->value)) {
-            $filters[ProposalSearchParams::CAMPAIGNS()->value] = $request->input(ProposalSearchParams::CAMPAIGNS()->value);
-        }
-
-        if ($request->has(ProposalSearchParams::SORTS()->value)) {
-            $filters[ProposalSearchParams::SORTS()->value] = $request->input(ProposalSearchParams::SORTS()->value);
-        }
-
-        if ($fundSlug) {
-            $filters[QueryParamsEnum::FUNDS()->value] = $fundSlug;
-        }
-
-        if ($bookmarkId) {
-            $filters[QueryParamsEnum::BOOKMARK_COLLECTION()->value] = $bookmarkId;
-        }
-
-        $filters[ProposalSearchParams::PAGE()->value] = $request->input(ProposalSearchParams::PAGE()->value, 1);
-        $proposals = $this->getProposals($request);
+        $proposals = $this->getProposals($request, $filters);
 
         return Inertia::render('Workflows/CreateVoterList/Step3', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
             'proposals' => $proposals,
-            'campaigns' => $campaigns,
+            'campaigns' => $campaigns ?? [],
             'selectedProposals' => $selectedProposals,
             'filters' => $filters,
             'bookmarkHash' => $bookmarkId,
@@ -361,7 +362,7 @@ class VoterListController extends Controller
         return to_route('workflows.createVoterList.index', [
             'step' => 3,
             QueryParamsEnum::BOOKMARK_COLLECTION()->value => $bookmarkCollection->id,
-            QueryParamsEnum::FUNDS()->value => $validated['fund_slug'],
+            QueryParamsEnum::FUNDS()->value => $fund?->id,
         ]);
     }
 
@@ -480,21 +481,14 @@ class VoterListController extends Controller
         ]);
     }
 
-    protected function getProposals(Request $request): LengthAwarePaginator
+    protected function getProposals(Request $request, array $filters = []): LengthAwarePaginator
     {
         $page = (int) $request->input(ProposalSearchParams::PAGE()->value, default: 1) ?? 1;
         $limit = (int) $request->input('limit', 24);
         $search = $request->input(ProposalSearchParams::QUERY()->value, '');
-        $campaignHash = $request->input(ProposalSearchParams::CAMPAIGNS()->value);
         $sort = $request->input(ProposalSearchParams::SORTS()->value) ?? [];
 
         $search = (string) $search;
-
-        $filters = [];
-
-        if (! empty($campaignHash)) {
-            $filters[] = "campaign.hash = {$campaignHash}";
-        }
 
         return (new GetProposalFromScout) (
             search: $search,

@@ -285,7 +285,7 @@ class VotingWorkflowController extends Controller
         $filters = [];
 
         if (! empty($campaignHash)) {
-            $filters[] = "campaign.hash = {$campaignHash}";
+            $filters[] = "campaign.id = {$campaignHash}";
         }
 
         $filters[] = "fund.id = {$fund->id}";

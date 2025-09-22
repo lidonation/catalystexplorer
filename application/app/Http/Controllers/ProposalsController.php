@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\GetUserFilters;
 use App\DataTransferObjects\FundData;
 use App\DataTransferObjects\ProposalData;
 use App\DataTransferObjects\ReviewData;
@@ -37,6 +38,8 @@ class ProposalsController extends Controller
     protected int $limit = 32;
 
     protected array $queryParams = [];
+
+    protected ?Request $request = null;
 
     protected ?string $sortBy = 'created_at';
 
@@ -426,6 +429,7 @@ class ProposalsController extends Controller
 
     protected function getProps(Request $request): void
     {
+        $this->request = $request;
         $this->queryParams = $request->validate([
             ProposalSearchParams::FUNDING_STATUS()->value => 'array|nullable',
             ProposalSearchParams::OPENSOURCE_PROPOSALS()->value => 'bool|nullable',
@@ -560,85 +564,7 @@ class ProposalsController extends Controller
 
     protected function getUserFilters(): array
     {
-        $filters = [];
-
-        if (isset($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
-            $fundingStatuses = implode(',', $this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value]);
-            $filters[] = "funding_status IN [{$fundingStatuses}]";
-        }
-
-        if (isset($this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value])) {
-            $projectStatuses = implode(',', $this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value]);
-            $filters[] = "status IN [{$projectStatuses}]";
-        }
-
-        if (isset($this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value])) {
-            $filters[] = 'opensource='.match ($this->queryParams[ProposalSearchParams::OPENSOURCE_PROPOSALS()->value]) {
-                '0' => 'false',
-                '1' => 'true'
-            };
-        }
-
-        $filters[] = 'type='.($this->queryParams[ProposalSearchParams::TYPE()->value] ?? 'proposal');
-
-        if (isset($this->queryParams[ProposalSearchParams::QUICK_PITCHES()->value])) {
-            $filters[] = 'quickpitch IS NOT NULL';
-        }
-
-        // filter by budget range
-        if (! empty($this->queryParams[ProposalSearchParams::BUDGETS()->value])) {
-            $budgetRange = collect((object) $this->queryParams[ProposalSearchParams::BUDGETS()->value]);
-            $filters[] = "(amount_requested  {$budgetRange->first()} TO  {$budgetRange->last()})";
-        }
-
-        // filter by challenge
-        if (! empty($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value])) {
-            $campaignIds = ($this->queryParams[ProposalSearchParams::CAMPAIGNS()->value]);
-            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "campaign.id = {$c}", $campaignIds)).')';
-        }
-
-        if (! empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
-            $tagIds = ($this->queryParams[ProposalSearchParams::TAGS()->value]);
-            $filters[] = '('.implode(' OR ', array_map(fn ($c) => "tags.id = {$c}", $tagIds)).')';
-        }
-
-        if (! empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
-            $ideascaleProfileIds = implode(',', $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value]);
-            $filters[] = "users.id IN [{$ideascaleProfileIds}]";
-        }
-
-        if (! empty($this->queryParams[ProposalSearchParams::CATALYST_PROFILES()->value])) {
-            $catalystProfileIds = implode(',', $this->queryParams[ProposalSearchParams::CATALYST_PROFILES()->value]);
-            $filters[] = "claimed_catalyst_profiles.id IN [{$catalystProfileIds}]";
-        }
-
-        if (! empty($this->queryParams[ProposalSearchParams::GROUPS()->value])) {
-            $groupIds = implode(',', $this->queryParams[ProposalSearchParams::GROUPS()->value]);
-            $filters[] = "groups.id IN [{$groupIds}]";
-        }
-
-        if (! empty($this->queryParams[ProposalSearchParams::COMMUNITIES()->value])) {
-            $communityHashes = implode(',', $this->queryParams[ProposalSearchParams::COMMUNITIES()->value]);
-            $filters[] = "communities.id IN [{$communityHashes}]";
-        }
-
-        if (! empty($this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value])) {
-            $projectLength = collect((object) $this->queryParams[ProposalSearchParams::PROJECT_LENGTH()->value]);
-            $filters[] = "(project_length  {$projectLength->first()} TO  {$projectLength->last()})";
-        }
-
-        if (! empty($this->queryParams[ProposalSearchParams::COHORT()->value])) {
-            $cohortFilters = array_map(fn ($cohort) => "{$cohort} = 1", $this->queryParams[ProposalSearchParams::COHORT()->value]);
-            $filters[] = '('.implode(' OR ', $cohortFilters).')';
-        }
-
-        if (! empty($this->queryParams[ProposalSearchParams::FUNDS()->value])) {
-            $fundIds = (array) $this->queryParams[ProposalSearchParams::FUNDS()->value];
-            $funds = implode("','", $fundIds);
-            $filters[] = "fund.id IN ['{$funds}']";
-        }
-
-        return $filters;
+        return app(GetUserFilters::class)($this->request);
     }
 
     public function setCounts($facets, $facetStats): void
