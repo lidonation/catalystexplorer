@@ -272,24 +272,57 @@ class MyBookmarksController extends Controller
 
         $this->queryParams = $request->validate([
             ProposalSearchParams::PAGE()->value => 'int|nullable',
-            'per_page' => 'int|nullable',
+            ProposalSearchParams::LIMIT()->value => 'int|nullable',
+            ProposalSearchParams::QUERY()->value => 'string|nullable',
+            ProposalSearchParams::SORTS()->value => 'string|nullable',
         ]);
 
         $page = $this->queryParams[ProposalSearchParams::PAGE()->value] ?? 1;
-        $perPage = $this->queryParams[ProposalSearchParams::LIMIT()->value] ?? 5;
+        $perPage = $this->queryParams[ProposalSearchParams::LIMIT()->value] ?? 12;
+        $search = $this->queryParams[ProposalSearchParams::QUERY()->value] ?? null;
+        $sort = $this->queryParams[ProposalSearchParams::SORTS()->value] ?? '-created_at';
 
-        $bookmarkCollections = BookmarkCollection::where(function ($query) use ($userId) {
-            $query->where('user_id', $userId)
-                ->orWhereHas('collaborators', function ($query) use ($userId) {
-                    $query->where('user_id', $userId);
-                });
-        })
-            ->with(['author', 'collaborators'])
-            ->orderBy('created_at', 'desc')
-            ->paginate($perPage, ['*'], 'page', $page);
+        $query = BookmarkCollection::allVisibilities()
+            ->where(function ($query) use ($userId) {
+                $query->where('user_id', $userId)
+                    ->orWhereHas('collaborators', function ($query) use ($userId) {
+                        $query->where('user_id', $userId);
+                    });
+            })
+            ->with(['author', 'collaborators']);
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'ILIKE', "%{$search}%")
+                    ->orWhere('content', 'ILIKE', "%{$search}%");
+            });
+        }
+
+        $sortField = ltrim($sort, '-');
+        $sortDirection = str_starts_with($sort, '-') ? 'desc' : 'asc';
+
+        switch ($sortField) {
+            case 'title':
+                $query->orderBy('title', $sortDirection);
+                break;
+            case 'updated_at':
+                $query->orderBy('updated_at', $sortDirection);
+                break;
+            case 'created_at':
+            default:
+                $query->orderBy('created_at', $sortDirection);
+                break;
+        }
+
+        $bookmarkCollections = $query->paginate($perPage, ['*'], 'page', $page);
 
         return Inertia::render('My/Lists/Index', [
             'bookmarkCollections' => BookmarkCollectionData::collect($bookmarkCollections),
+            'searchParams' => [
+                ProposalSearchParams::QUERY()->value => $search,
+                ProposalSearchParams::SORTS()->value => $sort,
+                ProposalSearchParams::PAGE()->value => $page,
+                ProposalSearchParams::LIMIT()->value => $perPage,
+            ],
         ]);
     }
 
@@ -408,14 +441,13 @@ class MyBookmarksController extends Controller
         try {
             $userId = Auth::id();
 
-            // $this->authorize('viewAny', BookmarkCollection::class);
-
-            $collections = BookmarkCollection::where(function ($query) use ($userId) {
-                $query->where('user_id', $userId)
-                    ->orWhereHas('contributors', function ($query) use ($userId) {
-                        $query->where('user_id', $userId);
-                    });
-            })
+            $collections = BookmarkCollection::allVisibilities()
+                ->where(function ($query) use ($userId) {
+                    $query->where('user_id', $userId)
+                        ->orWhereHas('contributors', function ($query) use ($userId) {
+                            $query->where('user_id', $userId);
+                        });
+                })
                 ->withCount('items')
                 ->with(['author', 'contributors'])
                 ->get();

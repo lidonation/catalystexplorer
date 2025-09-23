@@ -104,6 +104,7 @@ class BookmarkCollections extends Resource
                     BookmarkVisibility::PRIVATE()->value => BookmarkVisibility::PRIVATE()->value,
                 ])
                 ->default(BookmarkVisibility::UNLISTED()->value)
+                ->filterable()
                 ->rules('required')
                 ->sortable(),
 

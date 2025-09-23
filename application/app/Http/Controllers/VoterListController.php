@@ -63,7 +63,7 @@ class VoterListController extends Controller
             'activeStep' => intval($request->step),
             'funds' => $funds,
             'latestFund' => $latestFund,
-            'voterList' => BookmarkCollectionData::from(BookmarkCollection::find($bookmarkHash)?->load('fund')),
+            'voterList' => BookmarkCollectionData::from(BookmarkCollection::allVisibilities()->find($bookmarkHash)?->load('fund')),
         ]);
     }
 
@@ -76,7 +76,7 @@ class VoterListController extends Controller
         $fundSlug = null;
 
         if ($bookmarkId) {
-            $bookmarkCollection = BookmarkCollection::find($bookmarkId);
+            $bookmarkCollection = BookmarkCollection::allVisibilities()->find($bookmarkId);
         }
 
         // Handle fund parameter - could be ID or slug
@@ -158,7 +158,8 @@ class VoterListController extends Controller
                 ->pluck('model_id')
                 ->toArray();
 
-            $bookmarkCollection = BookmarkCollection::find($bookmarkId);
+            $bookmarkCollection = BookmarkCollection::allVisibilities()
+                ->find($bookmarkId);
 
             $rationale = $bookmarkCollection->comments()
                 ->where('commentator_id', $bookmarkCollection->user_id)
@@ -193,7 +194,8 @@ class VoterListController extends Controller
     {
         $bookmarkHash = $request->input(key: QueryParamsEnum::BOOKMARK_COLLECTION()->value) ?? $request->input('bookmarkId');
 
-        $bookmarkCollection = BookmarkCollection::findOrFail($bookmarkHash)->load('fund');
+        $bookmarkCollection = BookmarkCollection::allVisibilities()
+            ->findOrFail($bookmarkHash)->load('fund');
 
         $page = (int) $request->input(ProposalSearchParams::PAGE()->value, 1);
         $limit = (int) $request->input('limit', 8);
@@ -244,7 +246,8 @@ class VoterListController extends Controller
     {
         $bookmarkHash = $request->input(key: QueryParamsEnum::BOOKMARK_COLLECTION()->value);
 
-        $bookmarkCollection = BookmarkCollection::find($bookmarkHash)?->load('fund');
+        $bookmarkCollection = BookmarkCollection::allVisibilities()
+            ->find($bookmarkHash)?->load('fund');
 
         $page = (int) $request->input(ProposalSearchParams::PAGE()->value, 1);
         $limit = (int) $request->input('limit', 5);
@@ -276,7 +279,8 @@ class VoterListController extends Controller
     {
         $bookmarkHash = $request->input(key: QueryParamsEnum::BOOKMARK_COLLECTION()->value);
 
-        $list = BookmarkCollection::find($bookmarkHash);
+        $list = BookmarkCollection::allVisibilities()
+            ->find($bookmarkHash);
 
         $stakeAddressPattern = app()->environment('production')
             ? '/^stake1[0-9a-z]{38,}$/'
@@ -330,7 +334,8 @@ class VoterListController extends Controller
 
         $bookmarkHash = $request->input(QueryParamsEnum::BOOKMARK_COLLECTION()->value);
 
-        $existingList = BookmarkCollection::find($bookmarkHash);
+        $existingList = BookmarkCollection::allVisibilities()
+            ->find($bookmarkHash);
 
         $fund = Fund::where('slug', $validated['fund_slug'])->first();
 
@@ -368,14 +373,14 @@ class VoterListController extends Controller
 
     public function saveProposals(Request $request): RedirectResponse
     {
-
         $validated = $request->validate([
             'proposals' => 'required|array',
             'votes' => 'array',
             'bookmarkHash' => 'required|string',
         ]);
 
-        $collection = BookmarkCollection::find($validated['bookmarkHash']);
+        $collection = BookmarkCollection::allVisibilities()
+            ->find($validated['bookmarkHash']);
 
         $proposals = $validated['proposals'];
 
@@ -416,7 +421,8 @@ class VoterListController extends Controller
         ]);
 
         $bookmarkId = $validated[QueryParamsEnum::BOOKMARK_COLLECTION()->value];
-        $bookmarkCollection = BookmarkCollection::find($bookmarkId);
+        $bookmarkCollection = BookmarkCollection::allVisibilities()
+            ->find($bookmarkId);
 
         Comment::create([
             'commentable_type' => BookmarkCollection::class,

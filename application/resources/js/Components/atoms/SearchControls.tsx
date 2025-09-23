@@ -75,7 +75,7 @@ function SearchControls({
     }, []);
 
     const filtersCount = filters.filter(
-        (filter) => filter.param !== ParamsEnum.PAGE && filter.value.length > 0,
+        (filter) => filter.param !== ParamsEnum.PAGE && (filter?.value && filter?.value?.length > 0),
     ).length;
 
     return (
