@@ -40,7 +40,7 @@ class ProposalPolicy extends AppPolicy
      */
     public function update(User $user, Proposal $proposal): bool
     {
-        return parent::canUpdate($user, $proposal) || $this->ownsProposal($user, $proposal);
+        return parent::canUpdate($user, $proposal) || $this->ownsProposal($user, $proposal) || $this->isTeamMember($user, $proposal);
     }
 
     /**
@@ -56,7 +56,7 @@ class ProposalPolicy extends AppPolicy
      */
     public function delete(User $user, Proposal $proposal): bool
     {
-        return parent::canDelete($user, $proposal) || $this->ownsProposal($user, $proposal);
+        return parent::canDelete($user, $proposal) || $this->ownsProposal($user, $proposal) || $this->isTeamMember($user, $proposal);
     }
 
     /**
@@ -78,6 +78,38 @@ class ProposalPolicy extends AppPolicy
 
         if (! empty($userCatalystProfiles) && ! empty(array_intersect($userCatalystProfiles, $proposalCatalystProfileIds))) {
             return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user is a team member of the proposal through ProposalProfile relationships.
+     */
+    protected function isTeamMember(User $user, Proposal $proposal): bool
+    {
+        // Get all team members for this proposal
+        $teamProfiles = $proposal->team;
+
+        foreach ($teamProfiles as $teamProfile) {
+            $profile = $teamProfile->model;
+
+            if (! $profile) {
+                continue;
+            }
+
+            // Check if user has claimed this CatalystProfile
+            if ($profile instanceof CatalystProfile) {
+                $claimedByUser = $profile->claimed_by_users()->where('user_id', $user->id)->exists();
+                if ($claimedByUser) {
+                    return true;
+                }
+            }
+
+            // Check if user has claimed this IdeascaleProfile
+            if ($profile instanceof IdeascaleProfile && $profile->claimed_by_uuid === $user->id) {
+                return true;
+            }
         }
 
         return false;

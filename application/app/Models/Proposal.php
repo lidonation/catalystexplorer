@@ -375,10 +375,10 @@ class Proposal extends Model
         return $this->hasManyThrough(
             Review::class,
             Discussion::class,
-            'model_id', // Foreign key on discussions table
-            'model_id', // Foreign key on reviews table
-            'id',       // Local key on proposals table
-            'id'        // Local key on discussions table
+            'model_id',
+            'model_id',
+            'id',
+            'id'
         )
             ->where('discussions.model_type', static::class);
     }
