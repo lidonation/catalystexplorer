@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\BookmarkVisibility;
 use App\Enums\VoteEnum;
+use App\Models\Scopes\PublicVisibilityScope;
+use App\Models\Scopes\PublishedScope;
 use App\Traits\HasAuthor;
 use App\Traits\HasIpfsFiles;
 use App\Traits\HasMetaData;
 use App\Traits\HasSignatures;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,6 +22,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Spatie\Comments\Models\Concerns\HasComments;
 
+#[ScopedBy([PublicVisibilityScope::class, PublishedScope::class])]
 class BookmarkCollection extends Model
 {
     use HasAuthor, HasComments, HasIpfsFiles, HasMetaData, HasSignatures, HasUuids, Searchable, SoftDeletes;
@@ -37,6 +42,14 @@ class BookmarkCollection extends Model
     protected $appends = ['types_count', 'tinder_direction', 'list_type', 'workflow_params'];
 
     protected $guarded = [];
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new PublicVisibilityScope);
+    }
 
     public static function getFilterableAttributes(): array
     {
@@ -210,6 +223,53 @@ class BookmarkCollection extends Model
                 }
             }
         );
+    }
+
+    /**
+     * Scope a query to only include collections with public visibility.
+     * Note: This is now redundant as the global scope handles this,
+     * but kept for explicit clarity when needed.
+     */
+    public function scopePublicVisibility($query)
+    {
+        return $query->where('visibility', BookmarkVisibility::PUBLIC()->value);
+    }
+
+    /**
+     * Scope a query to include collections with a specific visibility.
+     * This removes the global scope and applies the specific visibility filter.
+     */
+    public function scopeVisibility($query, $visibility)
+    {
+        return $query->withoutGlobalScope(PublicVisibilityScope::class)
+            ->where('visibility', $visibility);
+    }
+
+    /**
+     * Scope a query to include all collections regardless of visibility.
+     * This removes the global public visibility scope.
+     */
+    public function scopeAllVisibilities($query)
+    {
+        return $query->withoutGlobalScope(PublicVisibilityScope::class);
+    }
+
+    /**
+     * Scope a query to only include private collections.
+     */
+    public function scopePrivateVisibility($query)
+    {
+        return $query->withoutGlobalScope(PublicVisibilityScope::class)
+            ->where('visibility', BookmarkVisibility::PRIVATE()->value);
+    }
+
+    /**
+     * Scope a query to only include unlisted collections.
+     */
+    public function scopeUnlistedVisibility($query)
+    {
+        return $query->withoutGlobalScope(PublicVisibilityScope::class)
+            ->where('visibility', BookmarkVisibility::UNLISTED()->value);
     }
 
     public function parent(): BelongsTo
