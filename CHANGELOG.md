@@ -1,3 +1,10 @@
+# [1.31.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.30.0...v1.31.0) (2025-09-22)
+
+
+### Features
+
+* **services:** added service editing ([60333d2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/60333d21dbe2772c76e7aec2e0adc1a850371e75))
+
 # [1.30.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.29.4...v1.30.0) (2025-09-22)
 
 
