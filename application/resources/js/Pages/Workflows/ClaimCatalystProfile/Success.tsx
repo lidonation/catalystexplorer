@@ -53,16 +53,18 @@ export default function Success({
                                 )}
                             </span>
                         </PrimaryLink>
-                        <PrimaryLink
-                            href={useLocalizedRoute('my.proposals.manage', {
-                                proposal: proposal.id,
-                            })}
-                            className="w-full text-sm lg:px-8 lg:py-3"
-                        >
-                            <span>
-                                {t('my.manage')}: {proposal.title}
-                            </span>
-                        </PrimaryLink>
+                        {proposal && (
+                            <PrimaryLink
+                                href={useLocalizedRoute('my.proposals.manage', {
+                                    proposal: proposal.id,
+                                })}
+                                className="w-full text-sm lg:px-8 lg:py-3"
+                            >
+                                <span>
+                                    {t('my.manage')}: {proposal.title}
+                                </span>
+                            </PrimaryLink>
+                        )}
                     </div>
                 </div>
             </Content>
