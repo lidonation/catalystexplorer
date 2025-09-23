@@ -91,7 +91,7 @@ class VideoService
     /**
      * Get YouTube video metadata
      */
-    private function getYouTubeMetadata(string $videoId): array
+    private function getYouTubeMetadata(?string $videoId): ?array
     {
         try {
             $request = new YouTubeVideoDetailsRequest($videoId);
@@ -104,10 +104,21 @@ class VideoService
             $data = $response->json();
 
             if (empty($data['items'])) {
-                throw new Exception('YouTube video not found');
+                return [
+                    'platform' => 'youtube',
+                    'video_id' => $videoId,
+                    'title' => null,
+                    'duration' => null,
+                    'thumbnail' => null,
+                    'views' => 0,
+                    'likes' => 0,
+                    'favoriteCount' => 0,
+                    'comments' => 0,
+                ];
             }
 
             $video = $data['items'][0];
+
             $duration = $this->parseYouTubeDuration($video['contentDetails']['duration'] ?? null);
 
             return [
@@ -115,7 +126,9 @@ class VideoService
                 'video_id' => $videoId,
                 'title' => $video['snippet']['title'] ?? null,
                 'duration' => $duration,
-                'thumbnail' => $video['snippet']['thumbnails']['maxres']['url'] ?? null,
+                'thumbnail' => $video['snippet']['thumbnails']['maxres']['url']
+                    ?? $video['snippet']['thumbnails']['high']['url']
+                    ?? null,
                 'views' => $video['statistics']['viewCount'] ?? 0,
                 'likes' => $video['statistics']['likeCount'] ?? 0,
                 'favoriteCount' => $video['statistics']['favoriteCount'] ?? 0,
@@ -141,7 +154,19 @@ class VideoService
             $response = $request->send();
 
             if (! $response->successful()) {
-                throw new Exception('Failed to fetch Vimeo video details: '.$response->body());
+                if (empty($data['items'])) {
+                    return [
+                        'platform' => 'vimeo',
+                        'video_id' => $videoId,
+                        'title' => null,
+                        'duration' => null,
+                        'thumbnail' => null,
+                        'views' => 0,
+                        'likes' => 0,
+                        'favoriteCount' => 0,
+                        'comments' => 0,
+                    ];
+                }
             }
 
             $data = $response->json();
