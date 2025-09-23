@@ -1,3 +1,10 @@
+## [1.31.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.31.0...v1.31.1) (2025-09-23)
+
+
+### Bug Fixes
+
+* bookmark pagination issues ([12aec99](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/12aec99f54e72e1759abf38c53cadc3391a571c7))
+
 # [1.31.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.30.0...v1.31.0) (2025-09-22)
 
 
