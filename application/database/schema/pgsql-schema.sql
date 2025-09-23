@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict sQz4hzEsMHdas37L7Ekg9srxDGCDm29VzcjumGzR8w96BcHq5evjTv9AgSEnl4e
+\restrict jKqDJlwUrNVpjArtq674hhLZY5f3m6Y8lZj41yPgAmSqqggWyJzRUuoYTRbGNi6
 
 -- Dumped from database version 17.1 (Debian 17.1-1.pgdg120+1)
 -- Dumped by pg_dump version 17.6 (Debian 17.6-1.pgdg13+1)
@@ -447,6 +447,21 @@ CREATE TABLE public.categories (
     old_id bigint,
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     parent_id uuid
+);
+
+
+--
+-- Name: claimed_profiles; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.claimed_profiles (
+    user_id uuid NOT NULL,
+    claimable_id uuid NOT NULL,
+    claimable_type character varying(255) NOT NULL,
+    claimed_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    created_at timestamp(0) without time zone,
+    updated_at timestamp(0) without time zone,
+    id uuid NOT NULL
 );
 
 
@@ -2506,6 +2521,22 @@ ALTER TABLE ONLY public.categories
 
 
 --
+-- Name: claimed_profiles claimed_profiles_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.claimed_profiles
+    ADD CONSTRAINT claimed_profiles_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: claimed_profiles claimed_profiles_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.claimed_profiles
+    ADD CONSTRAINT claimed_profiles_unique UNIQUE (user_id, claimable_id, claimable_type);
+
+
+--
 -- Name: comment_notification_subscriptions comment_notification_subscriptions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3168,6 +3199,20 @@ CREATE INDEX catalyst_profiles_uuid_index ON public.catalyst_profiles USING btre
 
 
 --
+-- Name: claimed_profiles_claimable_id_claimable_type_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX claimed_profiles_claimable_id_claimable_type_index ON public.claimed_profiles USING btree (claimable_id, claimable_type);
+
+
+--
+-- Name: claimed_profiles_user_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX claimed_profiles_user_id_index ON public.claimed_profiles USING btree (user_id);
+
+
+--
 -- Name: commentator_reactions; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3699,6 +3744,14 @@ ALTER TABLE ONLY public.categories
 
 
 --
+-- Name: claimed_profiles claimed_profiles_user_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.claimed_profiles
+    ADD CONSTRAINT claimed_profiles_user_id_foreign FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
 -- Name: comment_notification_subscriptions comment_notification_subscriptions_subscriber_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4046,13 +4099,13 @@ ALTER TABLE ONLY public.voting_powers
 -- PostgreSQL database dump complete
 --
 
-\unrestrict sQz4hzEsMHdas37L7Ekg9srxDGCDm29VzcjumGzR8w96BcHq5evjTv9AgSEnl4e
+\unrestrict jKqDJlwUrNVpjArtq674hhLZY5f3m6Y8lZj41yPgAmSqqggWyJzRUuoYTRbGNi6
 
 --
 -- PostgreSQL database dump
 --
 
-\restrict aNqBZiExMcIAprcAqWVHAoDriytjfqtGNFpqoaUYqgI6dkMzH8xvaGTUfaMNsmq
+\restrict FIlqYiIMOtlwqBehuwezE0lzUegU2kYCs3Bkpri1bTI1zHWtDLCAy2XDnhmT0bA
 
 -- Dumped from database version 17.1 (Debian 17.1-1.pgdg120+1)
 -- Dumped by pg_dump version 17.6 (Debian 17.6-1.pgdg13+1)
@@ -4316,6 +4369,10 @@ COPY public.migrations (id, migration, batch) FROM stdin;
 342	2025_09_15_095314_change_comments_commentable_id_to_uuid	33
 343	2025_09_15_110656_change_bookmark_collections_type_id_to_uuid	34
 344	2025_09_15_144820_import_bookmark_collections_and_items_from_csv	34
+345	2025_09_18_101350_change_claimed_by_to_uuid_in_catalyst_profiles_table	35
+350	2025_01_20_000000_create_claimed_profiles_table	36
+351	2025_01_20_000001_migrate_existing_claimed_profiles_data	36
+352	2025_01_20_000002_add_uuid_primary_key_to_claimed_profiles_table	37
 \.
 
 
@@ -4323,12 +4380,12 @@ COPY public.migrations (id, migration, batch) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 375, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 352, true);
 
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict aNqBZiExMcIAprcAqWVHAoDriytjfqtGNFpqoaUYqgI6dkMzH8xvaGTUfaMNsmq
+\unrestrict FIlqYiIMOtlwqBehuwezE0lzUegU2kYCs3Bkpri1bTI1zHWtDLCAy2XDnhmT0bA
 

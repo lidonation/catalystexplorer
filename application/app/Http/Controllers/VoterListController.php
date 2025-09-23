@@ -81,18 +81,15 @@ class VoterListController extends Controller
 
         // Handle fund parameter - could be ID or slug
         if ($fundParam) {
-            // Try to find by ID first (if it's numeric)
             if (is_numeric($fundParam)) {
                 $fund = Fund::find($fundParam);
                 $fundSlug = $fund?->slug;
             } else {
-                // Otherwise treat as slug
                 $fund = Fund::where('slug', $fundParam)->first();
                 $fundSlug = $fundParam;
             }
         }
 
-        // Create a modified request for GetUserFilters that uses fund ID
         $modifiedRequest = $request->duplicate();
         if ($fund) {
             $modifiedRequest->merge([
