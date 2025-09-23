@@ -24,7 +24,7 @@ function SearchControls({
     withActiveTags = true,
 }: {
     onFiltersToggle: Dispatch<SetStateAction<boolean>>;
-    sortOptions: Array<any>;
+    sortOptions?: Array<any>;
     searchPlaceholder?: string;
     border?: null | string;
     withFilters?: boolean;

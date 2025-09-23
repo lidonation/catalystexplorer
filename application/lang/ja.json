@@ -1435,5 +1435,15 @@
     "workflows.createService.success.goToMyServices": "マイサービスに移動",
     "workflows.createService.editService": "サービスを編集",
     "workflows.claimCatalystProfile.viewProposals": "提案ページに戻る",
-    "workflows.claimCatalystProfile.noProposalFound": "申請しようとしている提案はあなたのプロフィールに属していません"
+    "workflows.claimCatalystProfile.noProposalFound": "申請しようとしている提案はあなたのプロフィールに属していません",
+    "activeFund.votingStats": "提案ライブ集計",
+    "activeFund.votingStats.title": "投票統計",
+    "activeFund.votingStats.description": "アクティブファンドの投票活動と統計の概要",
+    "activeFund.votingStats.searchPlaceholder": "投票者ID、提案タイトル、またはキャンペーン名で検索",
+    "activeFund.votingStats.votesCast": "投票数",
+    "activeFund.votingStats.proposal": "提案",
+    "activeFund.votingStats.budget": "予算",
+    "activeFund.votingStats.totalVotesCast": "総投票数",
+    "activeFund.votingStats.updatedMonthsAgo": "3ヶ月前に更新",
+    "activeFund.noVotingStatsAvailable": "投票統計は利用できません"
 }
