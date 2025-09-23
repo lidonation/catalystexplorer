@@ -1,11 +1,11 @@
 import Button from '@/Components/atoms/Button';
+import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton.tsx';
 import TextInput from '@/Components/atoms/TextInput';
 import Card from '@/Components/Card';
 import CommentIcon from '@/Components/svgs/CommentIcon';
 import DurationIcon from '@/Components/svgs/DurationIcon';
 import EyeIcon from '@/Components/svgs/EyeIcon';
-import PlayerPlayFilled from '@/Components/svgs/PlayerPlayFilled';
 import ThumbsUpIcon from '@/Components/svgs/ThumbsUpIcon';
 import VideoCameraIcon from '@/Components/svgs/VideoCameraIcon';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
@@ -15,6 +15,7 @@ import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { StarIcon } from 'lucide-react';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
+import QuickpitchVideoPlayer from './QuickPitchVideoPlayer';
 import VideoStatsComponent from './VideoStatsComponent';
 
 interface QuickPitchWidgetProps {
@@ -42,6 +43,7 @@ export default function QuickPitchWidget({
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(false);
     const successMessage = proposal?.quickpitch
         ? t('widgets.quickPitch.success')
         : t('widgets.quickPitch.addSuccess');
@@ -79,8 +81,6 @@ export default function QuickPitchWidget({
 
         return url;
     };
-
-    const [isPlaying, setIsPlaying] = useState(false);
 
     const getEmbedUrl = (url: string) => {
         const ytMatch = url.match(
@@ -226,34 +226,11 @@ export default function QuickPitchWidget({
                 )}
             </div>
             {proposal?.quickpitch && quickpitchMetadata ? (
-                <div className="relative my-5 aspect-video h-fit w-full overflow-hidden rounded-2xl">
-                    {isPlaying ? (
-                        <iframe
-                            src={getEmbedUrl(url)}
-                            className="h-full w-full"
-                            allow="autoplay; fullscreen"
-                            allowFullScreen
-                        />
-                    ) : (
-                        <>
-                            <img
-                                src={quickpitchMetadata.thumbnail}
-                                alt="Quickpitch Thumbnail"
-                                className="h-full w-full object-cover"
-                            />
-                            <div className="absolute inset-0 bg-black/60"></div>
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <button
-                                    type="button"
-                                    onClick={() => setIsPlaying(true)}
-                                    className='cursor-pointer'
-                                >
-                                    <PlayerPlayFilled />
-                                </button>
-                            </div>
-                        </>
-                    )}
-                </div>
+                <QuickpitchVideoPlayer
+                    url={proposal.quickpitch!}
+                    thumbnail={quickpitchMetadata.thumbnail}
+                    aspectRatio="aspect-video"
+                />
             ) : (
                 <div className="bg-background-lighter mb-5 flex items-center justify-center rounded-2xl p-24">
                     <VideoCameraIcon
@@ -275,6 +252,16 @@ export default function QuickPitchWidget({
                 />
                 <VideoStatsComponent
                     icon={
+                        <CommentIcon
+                            width={16}
+                            height={16}
+                            className="text-primary"
+                        />
+                    }
+                    count={shortNumber(quickpitchMetadata?.comments, 2) || 0}
+                />
+                <VideoStatsComponent
+                    icon={
                         <StarIcon
                             width={16}
                             height={16}
@@ -283,23 +270,13 @@ export default function QuickPitchWidget({
                     }
                     count={quickpitchMetadata?.favoriteCount || 0}
                 />
-                <VideoStatsComponent
-                    icon={
-                        <CommentIcon
-                            width={16}
-                            height={16}
-                            className="text-primary"
-                        />
-                    }
-                    count={quickpitchMetadata?.comments || 0}
-                />
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label
                         htmlFor="quickpitch-url"
-                        className="mb-2 block text-sm font-medium text-gray-700"
+                        className="text-content/60 mb-2 block text-sm font-medium"
                     >
                         {t('widgets.quickPitch.urlLabel')}
                     </label>
@@ -314,9 +291,16 @@ export default function QuickPitchWidget({
                             onChange={(e) => setUrl(e.target.value)}
                         />
                     </div>
-                    <p className="mt-1 text-xs text-gray-500">
+                    <p className="text-content/50 mt-1 text-xs">
                         {t('widgets.quickPitch.supportedFormats')}
                     </p>
+                    {error && (
+                        <div>
+                            <Paragraph size="sm" className="text-error">
+                                {error}
+                            </Paragraph>
+                        </div>
+                    )}
                 </div>
 
                 <div
