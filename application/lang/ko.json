@@ -1443,5 +1443,15 @@
     "workflows.createService.success.goToMyServices": "내 서비스로 이동",
     "workflows.createService.editService": "서비스 편집",
     "workflows.claimCatalystProfile.viewProposals": "제안 페이지로 돌아가기",
-    "workflows.claimCatalystProfile.noProposalFound": "소유권을 주장하려는 제안은 귀하의 프로필에 속하지 않습니다"
+    "workflows.claimCatalystProfile.noProposalFound": "소유권을 주장하려는 제안은 귀하의 프로필에 속하지 않습니다",
+    "activeFund.votingStats": "제안 실시간 집계",
+    "activeFund.votingStats.title": "투표 통계",
+    "activeFund.votingStats.description": "활성 펀드의 투표 활동 및 통계 개요",
+    "activeFund.votingStats.searchPlaceholder": "투표자 ID, 제안 제목 또는 캠페인 이름으로 검색",
+    "activeFund.votingStats.votesCast": "투표 수",
+    "activeFund.votingStats.proposal": "제안",
+    "activeFund.votingStats.budget": "예산",
+    "activeFund.votingStats.totalVotesCast": "총 투표 수",
+    "activeFund.votingStats.updatedMonthsAgo": "3개월 전 업데이트됨",
+    "activeFund.noVotingStatsAvailable": "사용 가능한 투표 통계가 없습니다"
 }
