@@ -124,11 +124,12 @@ class ProposalsController extends Controller
             return $userProfileIds->contains($user->profile_id);
         });
 
-        $activeFund = Fund::latest('launched_at')
-            ->withCount(['funded_proposals', 'completed_proposals', 'unfunded_proposals', 'proposals'])
+        $activeFundId = Fund::latest('launched_at')
+            ->pluck('id')
             ->first();
 
-        $isInActiveFund = $proposal->fund_id === $activeFund->id;
+        $isInActiveFund = $proposal->fund_id === $activeFundId;
+        $quickpitchMetadata = app(VideoService::class)->getVideoMetadata($proposal->quickpitch);
 
         $proposalData = Cache::remember($cacheKey, now()->addMinutes(0), function () use ($proposal) {
             $proposal->load([
@@ -206,17 +207,16 @@ class ProposalsController extends Controller
                                 )->onEachSide(0);
                             }
 
-                            // Convert reviews to proper format for ReviewData
                             $reviewsData = $reviews->map(function ($review) {
                                 return [
-                                    'hash' => $review->id, // Use UUID as hash
+                                    'hash' => $review->id,
                                     'parent_id' => $review->parent_id,
                                     'title' => $review->title,
                                     'content' => $review->content,
                                     'status' => $review->status ?? 'published',
-                                    'rating' => null, // TODO: implement rating relationship
+                                    'rating' => null,
                                     'proposal' => null,
-                                    'reviewer' => null, // TODO: implement reviewer relationship
+                                    'reviewer' => null,
                                     'ranking_total' => $review->ranking_total ?? 0,
                                     'positive_rankings' => $review->positive_rankings ?? 0,
                                     'negative_rankings' => $review->negative_rankings ?? 0,
@@ -247,6 +247,7 @@ class ProposalsController extends Controller
             'catalystConnectionsCount' => $proposalData['catalystConnectionsCount'] ?? 0,
             'userHasProfileInProposal' => $userHasProfileInProposal,
             'isInActiveFund' => $isInActiveFund,
+            'quickpitchMetadata' => $quickpitchMetadata,
         ];
 
         return match (true) {
