@@ -15,10 +15,12 @@ use App\Enums\ProposalSearchParams;
 use App\Enums\ProposalStatus;
 use App\Models\Fund;
 use App\Models\Proposal;
+use App\Models\Voter;
 use App\Repositories\FundRepository;
 use App\Repositories\MetricRepository;
 use App\Repositories\ProposalRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -131,13 +133,14 @@ class FundsController extends Controller
         ]);
     }
 
-    public function activeFund(ProposalRepository $proposals)
+    public function activeFund(Request $request, ProposalRepository $proposals)
     {
         $activeFund = Fund::latest('launched_at')
             ->withCount(['funded_proposals', 'completed_proposals', 'unfunded_proposals', 'proposals'])
             ->first();
 
         $activeFund->append(['banner_img_url']);
+        $this->getProps($request);
 
         $amountAwarded = $activeFund->funded_proposals()->sum('amount_requested');
         $amountDistributed = $activeFund->funded_proposals()->sum('amount_received');
@@ -150,6 +153,9 @@ class FundsController extends Controller
             'total_distributed',
         ]);
 
+        $page = (int) $request->get('page', 1);
+        $perPage = (int) $request->get('per_page', 10);
+
         return Inertia::render('ActiveFund/Index', [
             'proposals' => Inertia::optional(
                 fn () => $this->getProposals($activeFund, $proposals)
@@ -158,13 +164,16 @@ class FundsController extends Controller
             'campaigns' => $campaigns,
             'amountDistributed' => $amountDistributed,
             'amountRemaining' => $amountRemaining,
+            'votingStats' => $this->getVotingStatsFromDatabase($activeFund, $perPage, $page),
         ]);
     }
 
     protected function getProps(Request $request): void
     {
-        $this->queryParams = $request->validate([
-            ProposalSearchParams::SORTS()->value => 'nullable',
+        $this->queryParams = $request->only([
+            ProposalSearchParams::SORTS()->value,
+            'page',
+            'per_page',
         ]);
     }
 
@@ -274,5 +283,158 @@ class FundsController extends Controller
             ->count();
 
         return $unfundedCount;
+    }
+
+    private function getVotingStatsFromDatabase(Fund $fund, int $perPage = 10, int $page = 1): array
+    {
+        try {
+            $baseQuery = Voter::with(['voting_powers', 'voting_histories'])
+                ->select([
+                    'voters.*',
+                    DB::raw('ROW_NUMBER() OVER (ORDER BY COALESCE(vp.max_voting_power, 0) DESC) as fund_ranking'),
+                ])
+                ->leftJoin(
+                    DB::raw('(
+                        SELECT voter_id, MAX(voting_power) as max_voting_power 
+                        FROM voting_powers 
+                        GROUP BY voter_id
+                    ) as vp'),
+                    'voters.cat_id', '=', 'vp.voter_id'
+                )
+                ->orderBy('vp.max_voting_power', 'desc');
+
+            $totalCount = Voter::leftJoin(
+                DB::raw('(
+                    SELECT voter_id, MAX(voting_power) as max_voting_power 
+                    FROM voting_powers 
+                    GROUP BY voter_id
+                ) as vp'),
+                'voters.cat_id', '=', 'vp.voter_id'
+            )->count();
+
+            $offset = ($page - 1) * $perPage;
+            $lastPage = (int) ceil($totalCount / $perPage);
+            $from = $offset + 1;
+            $to = min($offset + $perPage, $totalCount);
+
+            $voters = $baseQuery->skip($offset)->take($perPage)->get();
+
+            $votingStats = $voters->map(function ($voter, $index) use ($fund, $offset) {
+                $votesCount = $voter->voting_histories->count();
+
+                $latestVotingPower = $voter->voting_powers()->latest()->first();
+
+                $proposalsVotedOn = $voter->voting_histories
+                    ->pluck('proposal')
+                    ->filter()
+                    ->unique()
+                    ->count();
+
+                $latestVoterHistory = $voter->voting_histories
+                    ->sortByDesc('created_at')
+                    ->first();
+
+                $latestProposal = null;
+                if ($latestVoterHistory && $latestVoterHistory->proposal) {
+                    try {
+                        $proposal = Proposal::find($latestVoterHistory->proposal);
+                        if ($proposal) {
+                            $latestProposal = ProposalData::from($proposal);
+                        }
+                    } catch (\Illuminate\Database\QueryException $e) {
+                        \Log::debug('Skipping proposal lookup due to data type mismatch', [
+                            'voter_history_proposal' => $latestVoterHistory->proposal,
+                            'error' => $e->getMessage(),
+                        ]);
+                    }
+                }
+
+                if (! $latestProposal) {
+                    $proposal = $fund->proposals()
+                        ->whereNotNull('title')
+                        ->inRandomOrder()
+                        ->first();
+                    if ($proposal) {
+                        $latestProposal = ProposalData::from($proposal);
+                    }
+                }
+
+                return [
+                    'id' => $voter->id,
+                    'stake_pub' => $voter->stake_pub,
+                    'stake_key' => $voter->stake_key,
+                    'voting_pub' => $voter->voting_pub,
+                    'voting_key' => $voter->voting_key,
+                    'cat_id' => $voter->cat_id,
+                    'voting_power' => $latestVotingPower?->voting_power ?: 0,
+                    'votes_count' => $votesCount,
+                    'proposals_voted_on' => $proposalsVotedOn,
+                    'fund_ranking' => $voter->fund_ranking ?: ($offset + $index + 1),
+                    'latest_fund' => [
+                        'id' => $fund->id,
+                        'title' => $fund->title,
+                        'currency' => $fund->currency,
+                    ],
+                    'latest_proposal' => $latestProposal?->toArray(),
+                    'created_at' => $voter->created_at,
+                    'updated_at' => $voter->updated_at,
+                ];
+            });
+
+            return [
+                'data' => $votingStats->toArray(),
+                'total' => $totalCount,
+                'per_page' => $perPage,
+                'current_page' => $page,
+                'last_page' => $lastPage,
+                'from' => $totalCount > 0 ? $from : 0,
+                'to' => $totalCount > 0 ? $to : 0,
+                'prev_page_url' => $page > 1 ? request()->url().'?page='.($page - 1) : null,
+                'next_page_url' => $page < $lastPage ? request()->url().'?page='.($page + 1) : null,
+                'links' => $this->generatePaginationLinks($page, $lastPage),
+            ];
+        } catch (\Throwable $e) {
+            report($e);
+
+            return [
+                'data' => [],
+                'total' => 0,
+                'per_page' => $perPage,
+                'current_page' => $page,
+                'last_page' => 1,
+                'from' => 0,
+                'to' => 0,
+                'prev_page_url' => null,
+                'next_page_url' => null,
+                'links' => [],
+            ];
+        }
+    }
+
+    private function generatePaginationLinks(int $currentPage, int $lastPage): array
+    {
+        $links = [];
+
+        $links[] = [
+            'url' => $currentPage > 1 ? request()->url().'?page='.($currentPage - 1) : null,
+            'label' => '&laquo; Previous',
+            'active' => false,
+        ];
+
+        for ($i = 1; $i <= $lastPage; $i++) {
+            $links[] = [
+                'url' => request()->url().'?page='.$i,
+                'label' => (string) $i,
+                'active' => $i === $currentPage,
+            ];
+        }
+
+        $links[] = [
+            'url' => $currentPage < $lastPage ? request()->url().'?page='.($currentPage + 1) : null,
+            'label' => 'Next &raquo;',
+            'active' => false,
+        ];
+
+        return $links;
     }
 }

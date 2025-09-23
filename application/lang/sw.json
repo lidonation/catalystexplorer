@@ -1483,5 +1483,15 @@
     "workflows.createService.success.goToMyServices": "Nenda kwa Huduma Zangu",
     "workflows.createService.editService": "Hariri Huduma",
     "workflows.claimCatalystProfile.viewProposals": "Rudi kwenye ukurasa wa mapendekezo",
-    "workflows.claimCatalystProfile.noProposalFound": "Pendekezo unalojaribu kudai halihusiani na wasifu wako"
+    "workflows.claimCatalystProfile.noProposalFound": "Pendekezo unalojaribu kudai halihusiani na wasifu wako",
+    "activeFund.votingStats": "Uhesabu wa Mapendekezo wa Moja kwa Moja",
+    "activeFund.votingStats.title": "Takwimu za Kupiga Kura",
+    "activeFund.votingStats.description": "Muhtasari wa shughuli za kupiga kura na takwimu za mfuko unaofanya kazi",
+    "activeFund.votingStats.searchPlaceholder": "Tafuta kwa kitambulisho cha mpiga kura, kichwa cha pendekezo au jina la kampeni",
+    "activeFund.votingStats.votesCast": "Kura Zilizopigwa",
+    "activeFund.votingStats.proposal": "Pendekezo",
+    "activeFund.votingStats.budget": "Bajeti",
+    "activeFund.votingStats.totalVotesCast": "Jumla ya Kura Zilizopigwa",
+    "activeFund.votingStats.updatedMonthsAgo": "Imesasishwa miezi 3 iliyopita",
+    "activeFund.noVotingStatsAvailable": "Hakuna takwimu za kupiga kura zinazopatikana"
 }

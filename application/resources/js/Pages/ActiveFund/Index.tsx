@@ -17,7 +17,14 @@ import { useState } from 'react';
 import ActiveFundBanner from './Partials/ActiveFundBanner';
 import CampaignCard from './Partials/CampaignCard';
 import CreateListBanner from './Partials/CreateListBanner';
+import VotingStatsWidget from './Partials/VotingStatsWidget';
 import ProposalData = App.DataTransferObjects.ProposalData;
+import { PaginatedData } from '@/types/paginated-data';
+
+interface VotingStatsItem extends App.DataTransferObjects.VoterData {
+    fund_ranking?: number;
+    latest_proposal?: App.DataTransferObjects.ProposalData;
+}
 
 interface ActiveFundsProp extends Record<string, unknown> {
     search?: string | null;
@@ -26,6 +33,7 @@ interface ActiveFundsProp extends Record<string, unknown> {
     proposals: ProposalData[];
     amountDistributed: number;
     amountRemaining: number;
+    votingStats?: PaginatedData<VotingStatsItem[]>;
 }
 
 const Index: React.FC<ActiveFundsProp> = ({
@@ -35,6 +43,7 @@ const Index: React.FC<ActiveFundsProp> = ({
     proposals,
     amountDistributed,
     amountRemaining,
+    votingStats,
 }) => {
     const { t } = useLaravelReactI18n();
     const [campaignId, setCampaignId] = useState<string | null>('');
@@ -191,6 +200,18 @@ const Index: React.FC<ActiveFundsProp> = ({
 
                 <section className="my-4 mt-8 w-full px-8">
                     <SupportCxBanner />
+                </section>
+
+                <section className="mt-5 w-full px-8">
+                    <VotingStatsWidget
+                        votingStats={votingStats}
+                        showPagination={false}
+                        showFilters={true}
+                        filters={{}}
+                        routerOptions={{ only: ['votingStats'] }}
+                        maxHeight="max-h-80"
+                        customTitle={t('activeFund.votingStats')}
+                    />
                 </section>
 
                 <section className="mt-5 w-full px-8">
