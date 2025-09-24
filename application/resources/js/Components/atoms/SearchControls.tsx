@@ -109,26 +109,28 @@ function SearchControls({
                             <span className="font-medium">{t('filters')}</span>
                         </Button>
                     )}
-                    <Selector
-                        isMultiselect={false}
-                        selectedItems={getFilter(ParamsEnum.SORTS)}
-                        setSelectedItems={(value) =>
-                            setFilters({
-                                param: ParamsEnum.SORTS,
-                                value,
-                                label: 'Sorts',
-                            })
-                        }
-                        options={sortOptions}
-                        hideCheckbox={true}
-                        placeholder={t('proposals.options.sort')}
-                        className={`bg-background ${
-                            getFilter(ParamsEnum.SORTS)
-                                ? 'bg-background-lighter text-primary'
-                                : 'hover:bg-background-lighter text-gray-500'
-                        }`}
-                        data-testid="search-controls-sort-selector"
-                    />
+                    {sortOptions && sortOptions.length > 0 && (
+                        <Selector
+                            isMultiselect={false}
+                            selectedItems={getFilter(ParamsEnum.SORTS)}
+                            setSelectedItems={(value) =>
+                                setFilters({
+                                    param: ParamsEnum.SORTS,
+                                    value,
+                                    label: 'Sorts',
+                                })
+                            }
+                            options={sortOptions}
+                            hideCheckbox={true}
+                            placeholder={t('proposals.options.sort')}
+                            className={`bg-background ${
+                                getFilter(ParamsEnum.SORTS)
+                                    ? 'bg-background-lighter text-primary'
+                                    : 'hover:bg-background-lighter text-gray-500'
+                            }`}
+                            data-testid="search-controls-sort-selector"
+                        />
+                    )}
                 </div>
             </div>
 

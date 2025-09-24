@@ -1496,5 +1496,10 @@
     "activeFund.votingStats.budget": "Bajeti",
     "activeFund.votingStats.totalVotesCast": "Jumla ya Kura Zilizopigwa",
     "activeFund.votingStats.updatedMonthsAgo": "Imesasishwa miezi 3 iliyopita",
-    "activeFund.noVotingStatsAvailable": "Hakuna takwimu za kupiga kura zinazopatikana"
+    "activeFund.votingStats.updated": "Imesasishwa :time",
+    "activeFund.votingStats.liveTally": "Mahesabu ya Moja kwa Moja",
+    "activeFund.votingStats.limitToCampaigns": "Punguza kwenye Kampeni",
+    "activeFund.votingStats.selectCampaigns": "Chagua Kampeni",
+    "activeFund.noVotingStatsAvailable": "Hakuna takwimu za kupiga kura zinazopatikana",
+    "campaigns": "Kampeni"
 }

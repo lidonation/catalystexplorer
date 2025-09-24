@@ -1448,5 +1448,10 @@
     "activeFund.votingStats.budget": "予算",
     "activeFund.votingStats.totalVotesCast": "総投票数",
     "activeFund.votingStats.updatedMonthsAgo": "3ヶ月前に更新",
-    "activeFund.noVotingStatsAvailable": "投票統計は利用できません"
+    "activeFund.votingStats.updated": "更新時刻 :time",
+    "activeFund.votingStats.liveTally": "ライブ集計",
+    "activeFund.votingStats.limitToCampaigns": "キャンペーンに制限",
+    "activeFund.votingStats.selectCampaigns": "キャンペーンを選択",
+    "activeFund.noVotingStatsAvailable": "投票統計が利用できません",
+    "campaigns": "キャンペーン"
 }
