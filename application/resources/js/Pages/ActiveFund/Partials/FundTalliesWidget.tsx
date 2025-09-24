@@ -101,10 +101,13 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
     };
 
     const filteredData = useMemo(() => {
+        // For paginated data, return the server-filtered data as-is
+        // The search filtering is handled server-side via the FiltersContext
         if (showPagination) {
             return tallies?.data || [];
         }
 
+        // For non-paginated data, apply client-side filtering
         let filtered = tallies?.data || [];
 
         if (searchTerm.trim()) {
@@ -172,7 +175,7 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
     }, [tallies?.data, searchTerm, campaignFilter, sortBy, sortOrder, showPagination]);
 
     const displayData = showPagination
-        ? (tallies?.data || [])
+        ? filteredData  // Already server-filtered when showPagination=true
         : filteredData.slice(0, limit);
 
     return (
