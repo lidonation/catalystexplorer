@@ -44,6 +44,7 @@ export function generateHierarchicalColumns(
         link: { type: 'link' },
         manageProposal: { type: 'text', label: 'Manage Proposal' },
         minted_nfts_fingerprint: { type: 'text' },
+        my_vote: { type: 'text', label: 'My Vote' },
         no_votes_count: { type: 'number' },
         abstain_votes_count: { type: 'number' },
         openSourced: { type: 'boolean', label: 'Open Sourced' },

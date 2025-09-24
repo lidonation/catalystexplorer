@@ -1074,6 +1074,7 @@ class BookmarksController extends Controller
             'abstain_votes_count' => ['priority' => 8, 'minWidth' => 70, 'flex' => 1],
             'abstainVotes' => ['priority' => 8, 'minWidth' => 70, 'flex' => 1],
             'no_votes_count' => ['priority' => 9, 'minWidth' => 70, 'flex' => 1],
+            'my_vote' => ['priority' => 11, 'minWidth' => 80, 'flex' => 1],
             'openSourced' => ['priority' => 10, 'minWidth' => 60, 'flex' => 1],
             'opensource' => ['priority' => 10, 'minWidth' => 60, 'flex' => 1],
         ];
@@ -1180,9 +1181,9 @@ class BookmarksController extends Controller
             ->pluck('model_id')
             ->toArray();
 
-        $proposalData = $this->getProposalsWithFullUserData($model_type, $bookmarkItemIds, $relationships, $counts);
+        $proposalData = $this->getProposalsWithFullUserData($model_type, $bookmarkItemIds, $relationships, $counts, $bookmarkCollection);
 
-        $defaultPdfColumns = ['title', 'budget', 'category', 'openSourced', 'teams'];
+        $defaultPdfColumns = ['title', 'budget', 'category', 'openSourced', 'teams', 'my_vote'];
         $requestedColumns = $request->input('columns');
 
         $userColumns = $defaultPdfColumns;
@@ -1271,7 +1272,7 @@ class BookmarksController extends Controller
     /**
      * Get proposals with full user profile data (including avatar URLs) for PDF export
      */
-    protected function getProposalsWithFullUserData(string $modelType, array $constrainToIds = [], array $relationships = [], array $counts = []): array
+    protected function getProposalsWithFullUserData(string $modelType, array $constrainToIds = [], array $relationships = [], array $counts = [], ?BookmarkCollection $bookmarkCollection = null): array
     {
         if (empty($constrainToIds) || $modelType !== Proposal::class) {
             return [];
@@ -1304,8 +1305,27 @@ class BookmarksController extends Controller
 
         $allResults = $query->get();
 
-        $transformedResults = $allResults->map(function ($proposal) {
+        // Get vote data from bookmark items if collection is provided
+        $voteData = [];
+        if ($bookmarkCollection) {
+            $bookmarkItems = $bookmarkCollection->items()
+                ->where('model_type', $modelType)
+                ->whereIn('model_id', $constrainToIds)
+                ->whereNotNull('vote')
+                ->get();
+            
+            foreach ($bookmarkItems as $item) {
+                $voteData[$item->model_id] = $item->vote?->value;
+            }
+        }
+
+        $transformedResults = $allResults->map(function ($proposal) use ($voteData) {
             $proposalArray = $proposal->toArray();
+
+            // Add vote data if available
+            if (isset($voteData[$proposal->id])) {
+                $proposalArray['vote'] = $voteData[$proposal->id];
+            }
 
             if ($proposal->users && $proposal->users->count() > 0) {
                 $proposalArray['users'] = $proposal->users->map(function ($proposalProfile) {
