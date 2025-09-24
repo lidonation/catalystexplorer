@@ -84,6 +84,13 @@
         --cx-table-header-bg: #B1E2F0;
         --cx-table-header-text: #4B5675;
 
+        --cx-gradient-banner: linear-gradient(to left, #e0f2fe, #a5b4fc);
+        --cx-gradient-banner-light: linear-gradient(to left, #f0f9ff, #c7d2fe);
+        
+        --cx-background-card-light: #eef2ff33;
+        --cx-background-card-medium: #eef2ff66;
+        --cx-background-card-strong: #eef2ff99;
+
         --cx-display-xs: 1.5rem;
         --cx-display-sm: 1.875rem;
         --cx-display-md: 2rem;
@@ -152,6 +159,13 @@
 
         --cx-table-header-bg: #2a3f50;
         --cx-table-header-text: #b1e2f0;
+
+        --cx-gradient-banner: linear-gradient(to left, #e0f2fe, #a5b4fc);
+        --cx-gradient-banner-light: linear-gradient(to left, #f0f9ff, #c7d2fe);
+        
+        --cx-background-card-light: #eef2ff33;
+        --cx-background-card-medium: #eef2ff66;
+        --cx-background-card-strong: #eef2ff99;
     }
 
     [data-theme='voltaire'] {
@@ -208,6 +222,13 @@
 
         --cx-table-header-bg: #b1e3f1;
         --cx-table-header-text: #1f2d3d;
+
+        --cx-gradient-banner: linear-gradient(to left, #e0f2fe, #a5b4fc);
+        --cx-gradient-banner-light: linear-gradient(to left, #f0f9ff, #c7d2fe);
+        
+        --cx-background-card-light: #eef2ff33;
+        --cx-background-card-medium: #eef2ff66;
+        --cx-background-card-strong: #eef2ff99;
     }
 
     .bg-background {
@@ -328,6 +349,26 @@
 
     .im-slideover-wrapper {
         max-width: 90vw !important;
+    }
+
+    .bg-gradient-banner {
+        background: var(--cx-gradient-banner);
+    }
+    
+    .bg-gradient-banner-light {
+        background: var(--cx-gradient-banner-light);
+    }
+    
+    .bg-card-light {
+        background-color: var(--cx-background-card-light);
+    }
+    
+    .bg-card-medium {
+        background-color: var(--cx-background-card-medium);
+    }
+    
+    .bg-card-strong {
+        background-color: var(--cx-background-card-strong);
     }
 }
 
