@@ -122,6 +122,9 @@
                             @case('user_rationale')
                                 {{ __('pdf.table.columns.userRationale') }}
                                 @break
+                            @case('my_vote')
+                                {{ __('pdf.table.columns.myVote') }}
+                                @break
                             @default
                                 {{ ucwords(str_replace(['_', '.'], ' ', $column)) }}
                         @endswitch
@@ -252,6 +255,23 @@
                                     @else
                                         –
                                     @endif
+                                    @break
+                                
+                                @case('my_vote')
+                                    @php
+                                        $vote = $proposal['vote'] ?? null;
+                                        if ($vote !== null) {
+                                            $voteText = match((int)$vote) {
+                                                1 => __('pdf.table.values.yes'),
+                                                0 => __('pdf.table.values.abstain'),
+                                                -1 => __('pdf.table.values.no'),
+                                                default => '–'
+                                            };
+                                        } else {
+                                            $voteText = '–';
+                                        }
+                                        echo $voteText;
+                                    @endphp
                                     @break
                                 
                                 @default

@@ -22,154 +22,238 @@ export function generateHierarchicalColumns(
         protectedColumns?: string[];
     }
 ): HierarchicalOption[] {
-    const columnStructure: Record<string, any> = {
-
-        title: { type: 'text' },
-        proposal: { type: 'text' },
-        website: { type: 'link' },
-        amount_requested: { type: 'currency' },
-        amount_received: { type: 'currency' },
-        definition_of_success: { type: 'text' },
-        status: { type: 'text', label: 'Proposal Status' },
-        funding_status: { type: 'text' },
-        funded_at: { type: 'date' },
-        funding_updated_at: { type: 'date' },
-        yes_votes_count: { type: 'number' },
-        no_votes_count: { type: 'number' },
-        abstain_votes_count: { type: 'number' },
-        comment_prompt: { type: 'text' },
-        ideascale_link: { type: 'link' },
-        projectcatalyst_io_link: { type: 'link' },
-        problem: { type: 'text' },
-        solution: { type: 'text' },
-        experience: { type: 'text' },
-        currency: { type: 'text' },
-        minted_nfts_fingerprint: { type: 'text' },
-        ranking_total: { type: 'number' },
-        alignment_score: { type: 'number' },
-        feasibility_score: { type: 'number' },
-        auditability_score: { type: 'number' },
-        quickpitch: { type: 'text' },
-        quickpitch_length: { type: 'number' },
-        users: { type: 'text' },
-        opensource: { type: 'boolean' },
-        link: { type: 'link' },
-        user_rationale: { type: 'text' },
-        yesVotes: { type: 'number' },
+    
+    const rawColumnStructure: Record<string, any> = {
         abstainVotes: { type: 'number' },
+        alignment_score: { type: 'number' },
+        amount_received: { type: 'currency' },
+        amount_requested: { type: 'currency' },
+        auditability_score: { type: 'number' },
         budget: { type: 'currency' },
         category: { type: 'text' },
-        openSourced: { type: 'boolean', label: 'Open Sourced' },
+        comment_prompt: { type: 'text' },
+        currency: { type: 'text' },
+        definition_of_success: { type: 'text' },
+        experience: { type: 'text' },
+        feasibility_score: { type: 'number' },
+        funded_at: { type: 'date' },
         funding: { type: 'text' },
+        funding_status: { type: 'text' },
+        funding_updated_at: { type: 'date' },
+        ideascale_link: { type: 'link' },
+        link: { type: 'link' },
         manageProposal: { type: 'text', label: 'Manage Proposal' },
-        viewProposal: { type: 'text', label: 'View Proposal' },
+        minted_nfts_fingerprint: { type: 'text' },
+        my_vote: { type: 'text', label: 'My Vote' },
+        no_votes_count: { type: 'number' },
+        abstain_votes_count: { type: 'number' },
+        openSourced: { type: 'boolean', label: 'Open Sourced' },
+        opensource: { type: 'boolean' },
+        problem: { type: 'text' },
+        projectcatalyst_io_link: { type: 'link' },
+        proposal: { type: 'text' },
         proposalActions: { type: 'text', label: 'Actions' },
+        quickpitch: { type: 'text' },
+        quickpitch_length: { type: 'number' },
+        ranking_total: { type: 'number' },
+        solution: { type: 'text' },
+        status: { type: 'text', label: 'Proposal Status' },
+        title: { type: 'text' },
+        users: { type: 'text' },
+        user_rationale: { type: 'text' },
+        viewProposal: { type: 'text', label: 'View Proposal' },
+        website: { type: 'link' },
+        yes_votes_count: { type: 'number' },
+        yesVotes: { type: 'number' },
+        
+        // Campaign nested object
+        campaign: {
+            children: {
+                'campaign.amount': { type: 'currency' },
+                'campaign.comment_prompt': { type: 'text' },
+                'campaign.completed_proposals_count': { type: 'number' },
+                'campaign.created_at': { type: 'date' },
+                'campaign.currency': { type: 'text' },
+                'campaign.funded_proposals_count': { type: 'number' },
+                'campaign.hero_img_url': { type: 'link' },
+                'campaign.label': { type: 'text' },
+                'campaign.proposals_count': { type: 'number' },
+                'campaign.title': { type: 'text' },
+                'campaign.total_awarded': { type: 'currency' },
+                'campaign.total_distributed': { type: 'currency' },
+                'campaign.total_requested': { type: 'currency' },
+                'campaign.unfunded_proposals_count': { type: 'number' },
+                'campaign.updated_at': { type: 'date' },
+            }
+        },
         
         // Fund nested object
         fund: {
             children: {
                 'fund.amount': { type: 'currency' },
-                'fund.label': { type: 'text' },
-                'fund.title': { type: 'text' },
-                'fund.proposals_count': { type: 'number' },
-                'fund.funded_proposals_count': { type: 'number' },
-                'fund.completed_proposals_count': { type: 'number' },
-                'fund.unfunded_proposals_count': { type: 'number' },
-                'fund.amount_requested': { type: 'currency' },
                 'fund.amount_awarded': { type: 'currency' },
-                'fund.comment_prompt': { type: 'text' },
-                'fund.hero_img_url': { type: 'link' },
-                'fund.banner_img_url': { type: 'link' },
-                'fund.status': { type: 'text' },
-                'fund.launched_at': { type: 'date' },
+                'fund.amount_requested': { type: 'currency' },
                 'fund.awarded_at': { type: 'date' },
+                'fund.banner_img_url': { type: 'link' },
                 'fund.color': { type: 'text' },
+                'fund.comment_prompt': { type: 'text' },
+                'fund.completed_proposals_count': { type: 'number' },
                 'fund.currency': { type: 'text' },
+                'fund.funded_proposals_count': { type: 'number' },
+                'fund.hero_img_url': { type: 'link' },
+                'fund.label': { type: 'text' },
+                'fund.launched_at': { type: 'date' },
+                'fund.proposals_count': { type: 'number' },
                 'fund.review_started_at': { type: 'date' },
-            }
-        },
-        
-        // Campaign nested object
-        campaign: {
-            children: {
-                'campaign.title': { type: 'text' },
-                'campaign.comment_prompt': { type: 'text' },
-                'campaign.hero_img_url': { type: 'link' },
-                'campaign.amount': { type: 'currency' },
-                'campaign.created_at': { type: 'date' },
-                'campaign.updated_at': { type: 'date' },
-                'campaign.label': { type: 'text' },
-                'campaign.currency': { type: 'text' },
-                'campaign.proposals_count': { type: 'number' },
-                'campaign.unfunded_proposals_count': { type: 'number' },
-                'campaign.funded_proposals_count': { type: 'number' },
-                'campaign.completed_proposals_count': { type: 'number' },
-                'campaign.total_requested': { type: 'currency' },
-                'campaign.total_awarded': { type: 'currency' },
-                'campaign.total_distributed': { type: 'currency' },
+                'fund.status': { type: 'text' },
+                'fund.title': { type: 'text' },
+                'fund.unfunded_proposals_count': { type: 'number' },
             }
         },
         
         // Schedule (ProjectScheduleData) nested object
         schedule: {
             children: {
+                'schedule.budget': { type: 'currency' },
+                'schedule.created_at': { type: 'date' },
+                'schedule.currency': { type: 'text' },
+                'schedule.funds_distributed': { type: 'currency' },
+                'schedule.milestone_count': { type: 'number' },
+                'schedule.milestones': { type: 'text' },
+                'schedule.on_track': { type: 'boolean' },
+                'schedule.starting_date': { type: 'date' },
+                'schedule.status': { type: 'text' },
                 'schedule.title': { type: 'text' },
                 'schedule.url': { type: 'link' },
-                'schedule.created_at': { type: 'date' },
-                'schedule.budget': { type: 'currency' },
-                'schedule.milestone_count': { type: 'number' },
-                'schedule.funds_distributed': { type: 'currency' },
-                'schedule.starting_date': { type: 'date' },
-                'schedule.currency': { type: 'text' },
-                'schedule.status': { type: 'text' },
-                'schedule.on_track': { type: 'boolean' },
-                'schedule.milestones': { type: 'text' },
             }
         }
     };
 
+    const sortObjectKeys = (obj: Record<string, any>): Record<string, any> => {
+        const sorted: Record<string, any> = {};
+        Object.keys(obj)
+            .sort()
+            .forEach(key => {
+                if (obj[key].children) {
+                    sorted[key] = {
+                        ...obj[key],
+                        children: sortObjectKeys(obj[key].children)
+                    };
+                } else {
+                    sorted[key] = obj[key];
+                }
+            });
+        return sorted;
+    };
+
+    const columnStructure = sortObjectKeys(rawColumnStructure);
+
     const hierarchicalOptions: HierarchicalOption[] = [];
 
+    // Always include special columns
+    const specialColumnsConfig = [
+        'my_vote',
+        'title',
+        'fund.title',
+        'campaign.title'
+    ];
+
+    const specialColumns: HierarchicalOption[] = [];
+    
+    specialColumnsConfig
+        .sort()
+        .forEach((value) => {
+            if (!options?.excludeColumns?.includes(value)) {
+                specialColumns.push({
+                    label: t(generateColumnHeader(value)),
+                    value: value,
+                    isParent: false,
+                    isProtected: options?.protectedColumns?.includes(value)
+                });
+            }
+        });
+
+    if (specialColumns.length > 0) {
+        hierarchicalOptions.push({
+            label: t('Special Columns'),
+            value: 'specialColumns',
+            isParent: true,
+            children: specialColumns,
+            isProtected: false
+        });
+    }
+
+    const directProperties: [string, any][] = [];
+    const nestedObjects: [string, any][] = [];
+
     Object.entries(columnStructure).forEach(([key, config]) => {
+        if (config.children) {
+            nestedObjects.push([key, config]);
+        } else {
+            directProperties.push([key, config]);
+        }
+    });
+
+    directProperties.sort(([a], [b]) => a.localeCompare(b));
+    
+    // Sort nested objects alphabetically  
+    nestedObjects.sort(([a], [b]) => a.localeCompare(b));
+
+    const primaryColumns: HierarchicalOption[] = [];
+    directProperties.forEach(([key, config]) => {
         // Skip excluded columns
         if (options?.excludeColumns?.includes(key)) {
             return;
         }
 
-        if (config.children) {
-            // This is a parent with children
-            const children: HierarchicalOption[] = [];
+        primaryColumns.push({
+            label: config.label || generateColumnHeader(key),
+            value: key,
+            isParent: false,
+            isProtected: options?.protectedColumns?.includes(key)
+        });
+    });
+
+    if (primaryColumns.length > 0) {
+        hierarchicalOptions.push({
+            label: t('Primary Columns'),
+            value: 'primaryColumns',
+            isParent: true,
+            children: primaryColumns,
+            isProtected: false
+        });
+    }
+
+    nestedObjects.forEach(([key, config]) => {
+    
+        if (options?.excludeColumns?.includes(key)) {
+            return;
+        }
+
+        const children: HierarchicalOption[] = [];
+        
+        const sortedChildren = Object.entries(config.children).sort(([a], [b]) => a.localeCompare(b));
+        
+        sortedChildren.forEach(([childKey, childConfig]: [string, any]) => {
             
-            Object.entries(config.children).forEach(([childKey, childConfig]: [string, any]) => {
-                // Skip excluded child columns
-                if (options?.excludeColumns?.includes(childKey)) {
-                    return;
-                }
-
-                children.push({
-                    label: childConfig.label || generateColumnHeader(childKey),
-                    value: childKey,
-                    isParent: false,
-                    isProtected: options?.protectedColumns?.includes(childKey)
-                });
-            });
-
-            // Only add parent if it has children after filtering
-            if (children.length > 0) {
-                hierarchicalOptions.push({
-                    label: generateColumnHeader(key),
-                    value: key,
-                    isParent: true,
-                    children: children,
-                    isProtected: options?.protectedColumns?.includes(key)
-                });
+            if (options?.excludeColumns?.includes(childKey)) {
+                return;
             }
-        } else {
-            // This is a direct property
-            hierarchicalOptions.push({
-                label: config.label || generateColumnHeader(key),
-                value: key,
+
+            children.push({
+                label: childConfig.label || generateColumnHeader(childKey),
+                value: childKey,
                 isParent: false,
+                isProtected: options?.protectedColumns?.includes(childKey)
+            });
+        });
+
+        if (children.length > 0) {
+            hierarchicalOptions.push({
+                label: generateColumnHeader(key),
+                value: key,
+                isParent: true,
+                children: children,
                 isProtected: options?.protectedColumns?.includes(key)
             });
         }
