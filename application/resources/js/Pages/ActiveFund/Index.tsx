@@ -34,7 +34,8 @@ interface ActiveFundsProp extends Record<string, unknown> {
     proposals: ProposalData[];
     amountDistributed: number;
     amountRemaining: number;
-    tallies?: PaginatedData<VotingStatsItem[]>;
+    tallies?: PaginatedData<VotingStatsItem[]> & { last_updated?: string };
+    filters?: Record<string, unknown>;
     quickPitches?: {
         featured: ProposalData[];
         regular: ProposalData[];
@@ -50,6 +51,7 @@ const Index: React.FC<ActiveFundsProp> = ({
     amountRemaining,
     tallies,
     quickPitches,
+    filters,
 }) => {
     const { t } = useLaravelReactI18n();
     const [campaignId, setCampaignId] = useState<string | null>('');
@@ -180,15 +182,17 @@ const Index: React.FC<ActiveFundsProp> = ({
                 <section className="mt-5 w-full px-8">
                     <FundTalliesWidget
                         tallies={tallies}
+                        campaigns={campaigns}
                         showPagination={true}
                         showFilters={true}
-                        filters={{}}
+                        filters={filters || {}}
                         routerOptions={{ 
                             only: ['tallies'],
                             preserveState: true,
                             preserveScroll: true 
                         }}
                         customTitle={t('activeFund.votingStats')}
+                        lastUpdated={tallies?.last_updated}
                     />
                 </section>
 

@@ -1465,7 +1465,7 @@
     "activeFund.votingStats.proposal": "Proposition",
     "activeFund.votingStats.budget": "Budget",
     "activeFund.votingStats.totalVotesCast": "Total des Votes Exprimés",
-    "activeFund.votingStats.updatedMonthsAgo": "Mis à jour il y a 3 mois",
+    "activeFund.votingStats.updated": "Mis à jour :time",
     "activeFund.noVotingStatsAvailable": "Aucune statistique de vote disponible",
     "workflows.claimCatalystProfile.managePropositions": "Gérer Mes Propositions"
 }

@@ -166,6 +166,7 @@ class FundsController extends Controller
             'amountRemaining' => $amountRemaining,
             'tallies' => $this->getTallies($activeFund, $perPage, $page),
             'quickPitches' => $this->getActiveFundQuickPitches($activeFund, $proposals),
+            'filters' => $this->queryParams,
         ]);
     }
 
@@ -174,8 +175,9 @@ class FundsController extends Controller
         $this->queryParams = $request->only([
             ProposalSearchParams::SORTS()->value,
             ProposalSearchParams::QUERY()->value,
-            'p',
-            'per_page',
+            ProposalSearchParams::CAMPAIGNS()->value,
+            ProposalSearchParams::PAGE()->value,
+            ProposalSearchParams::PER_PAGE()->value,
         ]);
     }
 
@@ -328,105 +330,140 @@ class FundsController extends Controller
     {
         try {
             $searchQuery = $this->queryParams[ProposalSearchParams::QUERY()->value] ?? null;
+            $sortParam = $this->queryParams[ProposalSearchParams::SORTS()->value] ?? null;
+
+            $sortField = null;
+            $sortDirection = null;
+
+            if ($sortParam) {
+                [$sortField, $sortDirection] = explode(':', $sortParam);
+            }
 
             $totalVotesCast = CatalystTally::where('context_id', $fund->id)->sum('tally');
 
-            $baseQuery = CatalystTally::with(['proposal.campaign', 'proposal.fund'])
+            $baseQuery = CatalystTally::query()
+                ->with([
+                    'proposal:id,title,amount_requested,currency',
+                    'proposal.campaign:id,title',
+                    'proposal.fund:id,title,currency',
+                ])
                 ->where('context_id', $fund->id)
-                ->whereNotNull('model_id');
+                ->whereNotNull('model_id')
+                ->whereHas('proposal');
 
-            // Add search filtering if search query is provided
-            if (! empty($searchQuery)) {
-                $baseQuery->whereHas('proposal', function ($query) use ($searchQuery) {
-                    $query->where('title', 'ILIKE', '%'.$searchQuery.'%')
-                        ->orWhereHas('campaign', function ($campaignQuery) use ($searchQuery) {
-                            $campaignQuery->where('title', 'ILIKE', '%'.$searchQuery.'%');
-                        });
+            $campaignFilter = $this->queryParams[ProposalSearchParams::CAMPAIGNS()->value] ?? null;
+            if (! empty($campaignFilter) && is_array($campaignFilter)) {
+                $baseQuery->whereHas('proposal.campaign', function ($query) use ($campaignFilter) {
+                    $query->whereIn('id', $campaignFilter);
                 });
             }
 
-            $baseQuery->select([
-                'catalyst_tallies.*',
-                DB::raw('ROW_NUMBER() OVER (ORDER BY tally DESC, id ASC) as fund_ranking'),
-            ])
-                ->orderBy('tally', 'desc')
-                ->orderBy('id', 'asc'); // Add secondary sort for consistency
-
-            $totalCountQuery = CatalystTally::where('context_id', $fund->id)
-                ->whereNotNull('model_id');
-
-            // Apply the same search filtering to the count query
             if (! empty($searchQuery)) {
-                $totalCountQuery->whereHas('proposal', function ($query) use ($searchQuery) {
-                    $query->where('title', 'ILIKE', '%'.$searchQuery.'%')
-                        ->orWhereHas('campaign', function ($campaignQuery) use ($searchQuery) {
-                            $campaignQuery->where('title', 'ILIKE', '%'.$searchQuery.'%');
-                        });
+                $searchTerm = trim($searchQuery);
+                $baseQuery->whereHas('proposal', function ($query) use ($searchTerm) {
+                    $query->where(function ($subQuery) use ($searchTerm) {
+                        $subQuery->where('title', 'ILIKE', "%{$searchTerm}%")
+                            ->orWhereHas('campaign', function ($campaignQuery) use ($searchTerm) {
+                                $campaignQuery->where('title', 'ILIKE', "%{$searchTerm}%");
+                            });
+                    });
                 });
             }
 
-            $totalCount = $totalCountQuery->count();
+            $totalCount = (clone $baseQuery)->count();
+
+            if ($totalCount === 0) {
+                return $this->getEmptyTalliesResponse($perPage, $page, $totalVotesCast);
+            }
 
             $offset = ($page - 1) * $perPage;
             $lastPage = (int) ceil($totalCount / $perPage);
-            $from = $totalCount > 0 ? $offset + 1 : 0;
+            $from = $offset + 1;
             $to = min($offset + $perPage, $totalCount);
 
-            $tallies = $baseQuery->skip($offset)->take($perPage)->get();
+            $orderByColumn = 'tally';
+            $orderByDirection = 'desc';
 
-            $tallyStats = $tallies->map(function ($tally, $index) use ($fund, $offset) {
-                $proposal = null;
-                if ($tally->proposal) {
+            if ($sortField && $sortDirection && in_array($sortDirection, ['asc', 'desc'])) {
+                if ($sortField === 'votes_count') {
+                    $orderByColumn = 'tally';
+                    $orderByDirection = $sortDirection;
+                }
+            }
+
+            $talliesWithRanking = $baseQuery
+                ->select([
+                    'catalyst_tallies.*',
+                    DB::raw('ROW_NUMBER() OVER (ORDER BY tally DESC, id ASC) as fund_ranking'),
+                ])
+                ->orderBy($orderByColumn, $orderByDirection)
+                ->orderBy('id', 'asc')
+                ->skip($offset)
+                ->take($perPage)
+                ->get();
+
+            $tallyStats = $talliesWithRanking->map(function ($tally) use ($fund) {
+                $proposal = $tally->proposal;
+                $proposalData = null;
+
+                if ($proposal) {
                     try {
-                        $proposal = ProposalData::from($tally->proposal);
+                        $proposalData = [
+                            'id' => $proposal->id,
+                            'title' => $proposal->title,
+                            'amount_requested' => $proposal->amount_requested,
+                            'currency' => $proposal->currency,
+                            'campaign' => $proposal->campaign ? [
+                                'id' => $proposal->campaign->id,
+                                'title' => $proposal->campaign->title,
+                            ] : null,
+                        ];
                     } catch (\Throwable $e) {
-                        \Log::debug('Error converting proposal to data object', [
-                            'proposal_id' => $tally->model_id,
+                        \Log::warning('Error processing proposal data for tally', [
+                            'tally_id' => $tally->id,
+                            'proposal_id' => $proposal->id,
                             'error' => $e->getMessage(),
                         ]);
                     }
                 }
 
-                if (! $proposal) {
-                    $proposalModel = $fund->proposals()
+                if (! $proposalData) {
+                    $fallbackProposal = $fund->proposals()
+                        ->select(['id', 'title', 'amount_requested', 'currency'])
                         ->whereNotNull('title')
                         ->orderBy('id')
                         ->first();
-                    if ($proposalModel) {
-                        $proposal = ProposalData::from($proposalModel);
+
+                    if ($fallbackProposal) {
+                        $proposalData = [
+                            'id' => $fallbackProposal->id,
+                            'title' => $fallbackProposal->title,
+                            'amount_requested' => $fallbackProposal->amount_requested,
+                            'currency' => $fallbackProposal->currency,
+                            'campaign' => null,
+                        ];
                     }
                 }
 
                 return [
                     'id' => $tally->id,
                     'votes_count' => $tally->tally,
-                    'fund_ranking' => $tally->fund_ranking ?: ($offset + $index + 1),
+                    'fund_ranking' => $tally->fund_ranking,
                     'latest_fund' => [
                         'id' => $fund->id,
                         'title' => $fund->title,
                         'currency' => $fund->currency,
                     ],
-                    'latest_proposal' => $proposal?->toArray(),
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                    'latest_proposal' => $proposalData,
+                    'created_at' => now()->toISOString(),
+                    'updated_at' => now()->toISOString(),
                 ];
             });
 
-            $currentUrl = request()->url();
             $queryParams = request()->query();
+            $links = $this->generatePaginationLinks($page, $lastPage, $queryParams);
 
-            $prevPageUrl = null;
-            $nextPageUrl = null;
-
-            if ($page > 1) {
-                $prevParams = array_merge($queryParams, ['p' => $page - 1]);
-                $prevPageUrl = $currentUrl.'?'.http_build_query($prevParams);
-            }
-
-            if ($page < $lastPage) {
-                $nextParams = array_merge($queryParams, ['p' => $page + 1]);
-                $nextPageUrl = $currentUrl.'?'.http_build_query($nextParams);
-            }
+            $lastUpdated = $talliesWithRanking->max('updated_at') ?? now();
 
             return [
                 'data' => $tallyStats->toArray(),
@@ -436,28 +473,48 @@ class FundsController extends Controller
                 'current_page' => $page,
                 'last_page' => $lastPage,
                 'from' => $from,
-                'to' => $totalCount > 0 ? $to : 0,
-                'prev_page_url' => $prevPageUrl,
-                'next_page_url' => $nextPageUrl,
-                'links' => $this->generatePaginationLinks($page, $lastPage, $queryParams),
+                'to' => $to,
+                'prev_page_url' => $page > 1 ? $this->buildPaginationUrl($page - 1, $queryParams) : null,
+                'next_page_url' => $page < $lastPage ? $this->buildPaginationUrl($page + 1, $queryParams) : null,
+                'links' => $links,
+                'last_updated' => $lastUpdated->toISOString(),
             ];
-        } catch (\Throwable $e) {
-            report($e);
 
-            return [
-                'data' => [],
-                'total' => 0,
-                'total_votes_cast' => 0,
+        } catch (\Throwable $e) {
+            \Log::error('Error fetching tallies', [
+                'fund_id' => $fund->id,
+                'page' => $page,
                 'per_page' => $perPage,
-                'current_page' => $page,
-                'last_page' => 1,
-                'from' => 0,
-                'to' => 0,
-                'prev_page_url' => null,
-                'next_page_url' => null,
-                'links' => [],
-            ];
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return $this->getEmptyTalliesResponse($perPage, $page, 0);
         }
+    }
+
+    private function getEmptyTalliesResponse(int $perPage, int $page, int $totalVotesCast): array
+    {
+        return [
+            'data' => [],
+            'total' => 0,
+            'total_votes_cast' => $totalVotesCast,
+            'per_page' => $perPage,
+            'current_page' => $page,
+            'last_page' => 1,
+            'from' => 0,
+            'to' => 0,
+            'prev_page_url' => null,
+            'next_page_url' => null,
+            'links' => [],
+        ];
+    }
+
+    private function buildPaginationUrl(int $page, array $queryParams): string
+    {
+        $params = array_merge($queryParams, ['p' => $page]);
+
+        return request()->url().'?'.http_build_query($params);
     }
 
     private function generatePaginationLinks(int $currentPage, int $lastPage, array $queryParams = []): array
@@ -465,25 +522,56 @@ class FundsController extends Controller
         $links = [];
         $baseUrl = request()->url();
 
-        $prevParams = $currentPage > 1 ? array_merge($queryParams, ['p' => $currentPage - 1]) : null;
         $links[] = [
-            'url' => $prevParams ? $baseUrl.'?'.http_build_query($prevParams) : null,
+            'url' => $currentPage > 1 ? $this->buildPaginationUrl($currentPage - 1, $queryParams) : null,
             'label' => '&laquo; Previous',
             'active' => false,
         ];
 
-        for ($i = 1; $i <= $lastPage; $i++) {
-            $pageParams = array_merge($queryParams, ['p' => $i]);
+        $start = max(1, $currentPage - 2);
+        $end = min($lastPage, $currentPage + 2);
+
+        if ($start > 1) {
             $links[] = [
-                'url' => $baseUrl.'?'.http_build_query($pageParams),
+                'url' => $this->buildPaginationUrl(1, $queryParams),
+                'label' => '1',
+                'active' => false,
+            ];
+            if ($start > 2) {
+                $links[] = [
+                    'url' => null,
+                    'label' => '...',
+                    'active' => false,
+                ];
+            }
+        }
+
+        for ($i = $start; $i <= $end; $i++) {
+            $links[] = [
+                'url' => $this->buildPaginationUrl($i, $queryParams),
                 'label' => (string) $i,
                 'active' => $i === $currentPage,
             ];
         }
 
-        $nextParams = $currentPage < $lastPage ? array_merge($queryParams, ['p' => $currentPage + 1]) : null;
+        if ($end < $lastPage) {
+            if ($end < $lastPage - 1) {
+                $links[] = [
+                    'url' => null,
+                    'label' => '...',
+                    'active' => false,
+                ];
+            }
+            $links[] = [
+                'url' => $this->buildPaginationUrl($lastPage, $queryParams),
+                'label' => (string) $lastPage,
+                'active' => false,
+            ];
+        }
+
+        // Next link
         $links[] = [
-            'url' => $nextParams ? $baseUrl.'?'.http_build_query($nextParams) : null,
+            'url' => $currentPage < $lastPage ? $this->buildPaginationUrl($currentPage + 1, $queryParams) : null,
             'label' => 'Next &raquo;',
             'active' => false,
         ];
