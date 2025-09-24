@@ -217,19 +217,24 @@ export default function HierarchicalSelector({
                     align="start"
                     data-testid="hierarchical-options-container"
                 >
-                    <div>
-                        <div className="flex justify-end mb-2">
-                            <Button
-                                ariaLabel={t('clear') + ' ' + t('selection')}
-                                onClick={onClearSelection}
-                                className="hover:text-primary px-3 focus:outline-hidden text-xs"
-                                dataTestId="hierarchical-clear-button"
-                            >
-                                {t('hierarchicalSelector.clear')}
-                            </Button>
+                        <div>
+                            <div className="flex justify-end mb-2">
+                                <Button
+                                    ariaLabel={t('clear') + ' ' + t('selection')}
+                                    onClick={onClearSelection}
+                                    className="hover:text-primary px-3 focus:outline-hidden text-xs"
+                                    dataTestId="hierarchical-clear-button"
+                                >
+                                    {t('hierarchicalSelector.clear')}
+                                </Button>
+                            </div>
+                            {options.map((option, index) => (
+                                <div key={option.value}>
+                                    {index > 0 && <div className="border-t border-light-gray-persist my-2" />}
+                                    {renderOption(option)}
+                                </div>
+                            ))}
                         </div>
-                        {options.map(option => renderOption(option))}
-                    </div>
                 </PopoverContent>
             </Popover>
         </div>
