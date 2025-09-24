@@ -1313,7 +1313,7 @@ class BookmarksController extends Controller
                 ->whereIn('model_id', $constrainToIds)
                 ->whereNotNull('vote')
                 ->get();
-            
+
             foreach ($bookmarkItems as $item) {
                 $voteData[$item->model_id] = $item->vote?->value;
             }

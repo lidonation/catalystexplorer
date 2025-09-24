@@ -1456,5 +1456,10 @@
     "activeFund.votingStats.budget": "Orçamento",
     "activeFund.votingStats.totalVotesCast": "Total de Votos Dados",
     "activeFund.votingStats.updatedMonthsAgo": "Atualizado há 3 meses",
-    "activeFund.noVotingStatsAvailable": "Nenhuma estatística de votação disponível"
+    "activeFund.votingStats.updated": "Atualizado :time",
+    "activeFund.votingStats.liveTally": "Contagem ao Vivo",
+    "activeFund.votingStats.limitToCampaigns": "Limitar a Campanhas",
+    "activeFund.votingStats.selectCampaigns": "Selecionar campanhas",
+    "activeFund.noVotingStatsAvailable": "Nenhuma estatística de votação disponível",
+    "campaigns": "Campanhas"
 }

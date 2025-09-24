@@ -1457,5 +1457,10 @@
     "activeFund.votingStats.budget": "预算",
     "activeFund.votingStats.totalVotesCast": "总投票数",
     "activeFund.votingStats.updatedMonthsAgo": "3个月前更新",
-    "activeFund.noVotingStatsAvailable": "没有可用的投票统计数据"
+    "activeFund.votingStats.updated": "更新时间 :time",
+    "activeFund.votingStats.liveTally": "实时统计",
+    "activeFund.votingStats.limitToCampaigns": "限制到活动",
+    "activeFund.votingStats.selectCampaigns": "选择活动",
+    "activeFund.noVotingStatsAvailable": "没有可用的投票统计数据",
+    "campaigns": "活动"
 }

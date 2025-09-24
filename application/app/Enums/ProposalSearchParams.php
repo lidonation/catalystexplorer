@@ -40,6 +40,7 @@ use Spatie\Enum\Enum;
  * @method static self SUBMITTED_PROPOSALS()
  * @method static self PROPOSALS()
  * @method static self PAGE()
+ * @method static self PER_PAGE()
  * @method static self IDEASCALE_PROFILES()
  * @method static self PROJECT_STATUS()
  * @method static self REVIEWER_IDS()
@@ -85,6 +86,7 @@ final class ProposalSearchParams extends Enum
             'SUBMITTED_PROPOSALS' => 'sp',
             'PROPOSALS' => 'pro',
             'PAGE' => 'p',
+            'PER_PAGE' => 'per_page',
             'IDEASCALE_PROFILES' => 'ip',
             'PROJECT_STATUS' => 'ps',
             'REVIEWER_IDS' => 'ri',
