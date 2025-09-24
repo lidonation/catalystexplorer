@@ -9,6 +9,7 @@ import { currency } from '@/utils/currency';
 import { shortNumber } from '@/utils/shortNumber';
 import { Link } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { X } from 'lucide-react';
 import React from 'react';
 import ProposalData = App.DataTransferObjects.ProposalData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
@@ -525,6 +526,72 @@ export const proposalColumnRenderers: Record<string, ColumnRendererConfig> = {
         },
         sortKey: 'schedule.on_track',
         sortable: true,
+    },
+
+    my_vote: {
+        type: 'component',
+        label: 'My Vote',
+        component: ({ proposal, helpers }: { proposal: ProposalData; helpers?: TableHelpers }) => {
+            const { t } = useLaravelReactI18n();
+            
+            const vote = (proposal as any).vote !== undefined ? (proposal as any).vote : (proposal as any).bookmark_vote;
+            
+            if (vote === undefined || vote === null) {
+                return (
+                    <div className="flex w-20 items-center justify-center" data-testid={`my-vote-none-${proposal.id}`}>
+                        <Paragraph className="content text-sm">–</Paragraph>
+                    </div>
+                );
+            }
+
+            const getVoteDisplay = () => {
+        
+                const voteValue = typeof vote === 'string' ? parseInt(vote, 10) : vote;
+                
+                switch (voteValue) {
+                    case 1: 
+                        return {
+                            icon: <YesVoteIcon className="h-5 w-5 text-success" />,
+                            label: t('Yes'),
+                            className: 'text-success'
+                        };
+                    case 0: 
+                        return {
+                            icon: <AbstainVoteIcon className="h-5 w-5 text-warning" />,
+                            label: t('Abstain'),
+                            className: 'text-warning'
+                        };
+                    case -1: // NO
+                        return {
+                            icon: <X className="h-5 w-5 text-danger" />,
+                            label: t('No'),
+                            className: 'text-danger'
+                        };
+                    default:
+                        return {
+                            icon: null,
+                            label: '–',
+                            className: 'text-content'
+                        };
+                }
+            };
+
+            const voteDisplay = getVoteDisplay();
+
+            return (
+                <div 
+                    className="flex w-20 items-center justify-center gap-1" 
+                    data-testid={`my-vote-${vote}-${proposal.id}`}
+                >
+                    {voteDisplay.icon}
+                    <Paragraph className={`text-sm font-medium ${voteDisplay.className}`}>
+                        {voteDisplay.label}
+                    </Paragraph>
+                </div>
+            );
+        },
+        sortKey: 'vote',
+        sortable: false,
     },
 };
 

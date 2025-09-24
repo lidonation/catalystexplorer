@@ -1350,19 +1350,20 @@ class BookmarksController extends Controller
         $relationships = $relationshipsMap[$model_type] ?? [];
         $counts = $countMap[$model_type] ?? [];
 
-        $bookmarkItemIds = $bookmarkCollection->items
-            ->where('model_type', $model_type)
-            ->pluck('model_id')
-            ->toArray();
-
-        return response()->stream(function () use ($model_type, $bookmarkItemIds, $relationships, $counts) {
-            if (empty($bookmarkItemIds)) {
-                return;
-            }
+        return response()->stream(function () use ($bookmarkCollection, $model_type, $relationships, $counts) {
+            $bookmarkItemsQuery = $bookmarkCollection->items()
+                ->where('model_type', $model_type)
+                ->with(['model' => function ($query) use ($relationships, $counts) {
+                    if (! empty($relationships)) {
+                        $query->with($relationships);
+                    }
+                    if (! empty($counts)) {
+                        $query->withCount($counts);
+                    }
+                }]);
 
             if ($this->search) {
                 $searchBuilder = $model_type::search($this->search);
-                $searchBuilder->whereIn('id', $bookmarkItemIds);
 
                 if ($this->sortBy && $this->sortOrder) {
                     $searchBuilder->orderBy($this->sortBy, $this->sortOrder);
@@ -1371,54 +1372,41 @@ class BookmarksController extends Controller
                 $searchResults = $searchBuilder->get();
                 $searchIds = $searchResults->pluck('id')->toArray();
 
-                $query = $model_type::query();
-
-                if (! empty($relationships)) {
-                    $query->with($relationships);
+                if (empty($searchIds)) {
+                    return;
                 }
 
-                if (! empty($counts)) {
-                    $query->withCount($counts);
-                }
+                $bookmarkItemsQuery->whereIn('model_id', $searchIds);
 
-                $query->whereIn('id', $searchIds);
-
-                $modelsWithRelationships = $query->get()->keyBy('id');
-
-                // Maintain search order
-                $models = collect($searchIds)->map(function ($id) use ($modelsWithRelationships) {
-                    return $modelsWithRelationships->get($id);
-                })->filter();
-
+                $bookmarkItems = $bookmarkItemsQuery->get()->sortBy(function ($item) use ($searchIds) {
+                    return array_search($item->model_id, $searchIds);
+                });
             } else {
-                $query = $model_type::query();
-
-                if (! empty($relationships)) {
-                    $query->with($relationships);
-                }
-
-                if (! empty($counts)) {
-                    $query->withCount($counts);
-                }
-
-                $query->whereIn('id', $bookmarkItemIds);
-
                 if ($this->sortBy && $this->sortOrder) {
-                    $query->orderBy($this->sortBy, $this->sortOrder);
+                    $bookmarkItemsQuery->join($model_type::getModel()->getTable(), function ($join) use ($model_type) {
+                        $join->on('bookmark_items.model_id', '=', $model_type::getModel()->getTable().'.id')
+                            ->where('bookmark_items.model_type', '=', $model_type);
+                    })->orderBy($model_type::getModel()->getTable().'.'.$this->sortBy, $this->sortOrder);
                 }
 
-                $models = $query->get();
+                $bookmarkItems = $bookmarkItemsQuery->get();
             }
 
-            foreach ($models as $model) {
-                $dtoCollection = $model_type::toDtoCollection(collect([$model]));
-                $dto = $dtoCollection->first();
+            foreach ($bookmarkItems as $bookmarkItem) {
+                if (! $bookmarkItem->model) {
+                    continue;
+                }
 
-                $json = json_encode($dto->toArray());
+                $proposalData = $bookmarkItem->model->toArray();
+
+                if ($bookmarkItem->vote !== null) {
+                    $proposalData['vote'] = $bookmarkItem->vote;
+                }
+
+                $json = json_encode($proposalData);
 
                 echo $json."\n";
 
-                // Flush buffers so the chunk is sent immediately
                 if (ob_get_level() > 0) {
                     ob_flush();
                     flush();

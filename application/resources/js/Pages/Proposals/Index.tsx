@@ -145,6 +145,7 @@ export default function Index({
                                         'abstainVotes'
                                     ]}
                                     iconOnlyActions={true}
+                                    excludeColumnsFromSelector={['my_vote']}
                                 />
                             ) : (
                                 <ProposalPaginatedList
