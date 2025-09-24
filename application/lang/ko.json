@@ -1456,5 +1456,10 @@
     "activeFund.votingStats.budget": "예산",
     "activeFund.votingStats.totalVotesCast": "총 투표 수",
     "activeFund.votingStats.updatedMonthsAgo": "3개월 전 업데이트됨",
-    "activeFund.noVotingStatsAvailable": "사용 가능한 투표 통계가 없습니다"
+    "activeFund.votingStats.updated": "업데이트 시간 :time",
+    "activeFund.votingStats.liveTally": "실시간 집계",
+    "activeFund.votingStats.limitToCampaigns": "캠페인으로 제한",
+    "activeFund.votingStats.selectCampaigns": "캠페인 선택",
+    "activeFund.noVotingStatsAvailable": "사용 가능한 투표 통계가 없습니다",
+    "campaigns": "캠페인"
 }

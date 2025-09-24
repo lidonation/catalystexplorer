@@ -2,6 +2,7 @@ import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import Paginator from '@/Components/Paginator';
 import SearchControls from '@/Components/atoms/SearchControls';
+import Selector from '@/Components/atoms/Selector';
 import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 import { currency } from '@/utils/currency';
@@ -9,12 +10,18 @@ import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { FiltersProvider, useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
+import { router } from '@inertiajs/react';
+import ArrowDownIcon from '@/Components/svgs/ArrowDownIcon';
+import ArrowUpIcon from '@/Components/svgs/ArrowUpIcon';
+import { formatDistanceToNow } from 'date-fns';
 import VoterData = App.DataTransferObjects.VoterData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import FundData = App.DataTransferObjects.FundData;
 
 interface VotingStatsItem extends VoterData {
     fund_ranking?: number;
+    overall_ranking?: number;
+    category_ranking?: number;
     latest_proposal?: ProposalData;
 }
 
@@ -28,6 +35,7 @@ interface FundTalliesWidgetProps {
     filters?: Partial<SearchParams>;
     routerOptions?: Record<string, any>;
     showFilters?: boolean;
+    campaigns?: any[];
 }
 
 const TableHeader: React.FC<{ label: string; isLastColumn?: boolean }> = ({
@@ -40,6 +48,46 @@ const TableHeader: React.FC<{ label: string; isLastColumn?: boolean }> = ({
         } border-b px-4 py-3 text-left font-medium`}
     >
         {label}
+    </th>
+);
+
+const SortableTableHeader: React.FC<{
+    label: string;
+    isLastColumn?: boolean;
+    sortDirection?: 'asc' | 'desc' | null;
+    onSort?: () => void;
+}> = ({ label, isLastColumn, sortDirection, onSort }) => (
+    <th
+        className={`text-gray-persist bg-background-lighter border-content-light ${
+            isLastColumn ? '' : 'border-r'
+        } border-b px-4 py-3 text-left font-medium`}
+    >
+        <div
+            className="flex cursor-pointer items-center justify-start gap-1"
+            onClick={onSort}
+        >
+            <span>{label}</span>
+            <div className="flex-col gap-2">
+                <ArrowUpIcon
+                    width={10}
+                    height={10}
+                    className={
+                        sortDirection === 'asc'
+                            ? 'text-primary'
+                            : 'text-gray-persist'
+                    }
+                />
+                <ArrowDownIcon
+                    width={10}
+                    height={10}
+                    className={
+                        sortDirection === 'desc'
+                            ? 'text-primary'
+                            : 'text-gray-persist'
+                    }
+                />
+            </div>
+        </div>
     </th>
 );
 
@@ -93,6 +141,8 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
     customTitle,
     limit = 10,
     showFilters = false,
+    campaigns = [],
+    lastUpdated,
 }) => {
     const { t } = useLaravelReactI18n();
     const { setFilters, getFilter } = useFilterContext();
@@ -101,17 +151,88 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
     const [filtersVisible, setFiltersVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     
-    // Refs for scroll anchoring
     const tableContainerRef = useRef<HTMLDivElement>(null);
     const widgetRef = useRef<HTMLDivElement>(null);
     
-    // Track previous data to detect changes
     const prevDataRef = useRef<any>(null);
 
     const searchTerm = (getFilter(ParamsEnum.QUERY) || '') as string;
     const campaignFilter = (getFilter(ParamsEnum.CAMPAIGNS) || []) as string[];
 
-    // Handle loading states and scroll preservation
+    const currentSort = getFilter(ParamsEnum.SORTS) || null;
+    const [sortField, sortDirection] = currentSort ? currentSort.split(':') : [null, null];
+
+    const handleVotesSort = () => {
+        let direction: 'asc' | 'desc' | null = 'asc';
+
+        if (sortField === 'votes_count') {
+            if (sortDirection === 'asc') {
+                direction = 'desc';
+            } else if (sortDirection === 'desc') {
+                direction = null;
+            } else {
+                direction = 'asc';
+            }
+        }
+
+        if (showPagination) {
+            if (!direction) {
+                const url = new URL(window.location.href);
+                url.searchParams.delete(ParamsEnum.SORTS);
+
+                router.get(url.pathname + url.search, {}, {
+                    preserveState: true,
+                    preserveScroll: true,
+                    replace: true
+                });
+
+                setFilters({
+                    param: ParamsEnum.SORTS,
+                    value: null,
+                    label: 'Sort'
+                });
+            } else {
+                setFilters({
+                    param: ParamsEnum.SORTS,
+                    value: `votes_count:${direction}`,
+                    label: 'Sort'
+                });
+            }
+        } else {
+            if (!direction) {
+                setSortBy('ranking');
+                setSortOrder('asc');
+            } else {
+                setSortBy('votes');
+                setSortOrder(direction);
+            }
+        }
+    };
+
+    const getVotesSortDirection = (): 'asc' | 'desc' | null => {
+        if (showPagination) {
+            return sortField === 'votes_count' ? (sortDirection as 'asc' | 'desc' | null) : null;
+        } else {
+            return sortBy === 'votes' ? sortOrder : null;
+        }
+    };
+
+    const ordinal = (num: number): string => {
+        if (num <= 0) return '';
+        const j = num % 10;
+        const k = num % 100;
+        
+        if (j === 1 && k !== 11) {
+            return `${num}st`;
+        } else if (j === 2 && k !== 12) {
+            return `${num}nd`;
+        } else if (j === 3 && k !== 13) {
+            return `${num}rd`;
+        } else {
+            return `${num}th`;
+        }
+    };
+
     useEffect(() => {
         if (tallies && prevDataRef.current) {
             // If data is changing, briefly show loading
@@ -244,25 +365,42 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
     }, [tallies?.data, searchTerm, campaignFilter, sortBy, sortOrder, showPagination]);
 
     const displayData = showPagination
-        ? filteredData  // Already server-filtered when showPagination=true
+        ? filteredData
         : filteredData.slice(0, limit);
+
+    const formatLastUpdated = (): string => {
+        if (!lastUpdated) {
+            return t('activeFund.votingStats.updatedMonthsAgo'); // Fallback
+        }
+        
+        try {
+            const date = new Date(lastUpdated);
+            const timeAgo = formatDistanceToNow(date, { addSuffix: true });
+            return t('activeFund.votingStats.updated', { time: timeAgo });
+        } catch (error) {
+            return t('activeFund.votingStats.updatedMonthsAgo'); // Fallback on error
+        }
+    };
 
     return (
         <div 
             ref={widgetRef}
             className="bg-background w-full rounded-lg border border-content-light shadow-sm"
         >
-            <div className="m-8 border-b border-content-light px-6 py-4">
-                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+            <div className="px-6 py-4 border-b border-content-light">
+                <Title className="text-4xl font-bold text-content mb-1" level="2">
+                    {customTitle || t('activeFund.votingStats.title')}
+                </Title>
+                <div className="mt-5 flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
                     <div className="flex-1">
-                        <Title className="font-bold text-xl" level="2">
-                            {customTitle || t('activeFund.votingStats.title')}
-                        </Title>
-                        <Paragraph className="text-gray-persist text-sm mt-1">
-                            {t('activeFund.votingStats.description')}
+                        <Paragraph className="text-lg text-gray-500 mb-0">
+                            <span className='font-bold text-content'>
+                                {t('activeFund.votingStats.liveTally')}
+                            </span>
+                            ({formatLastUpdated()})
                         </Paragraph>
-                        <Paragraph className="text-gray-400 text-xs mt-2">
-                            ({t('activeFund.votingStats.updatedMonthsAgo')})
+                        <Paragraph className="text-sm text-gray-persist mt-1">
+                            {t('activeFund.votingStats.description')}
                         </Paragraph>
                     </div>
                     <div className="p-4 bg-background rounded-xl shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] outline outline-1 outline-offset-[-1px] outline-content-light inline-flex flex-col justify-start items-start gap-5">
@@ -287,6 +425,7 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
                         searchPlaceholder={t('activeFund.votingStats.searchPlaceholder')}
                         withFilters={true}
                         withActiveTags={true}
+                        sortOptions={[]}
                     />
                 </div>
             )}
@@ -296,8 +435,26 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div className="flex flex-col gap-2">
                             <span className="text-sm font-medium text-content">
-                                {t('proposals.filters.campaigns')}
+                                {t('activeFund.votingStats.limitToCampaigns')}
                             </span>
+                            <Selector
+                                isMultiselect={true}
+                                selectedItems={campaignFilter}
+                                setSelectedItems={(value) =>
+                                    setFilters({
+                                        param: ParamsEnum.CAMPAIGNS,
+                                        value,
+                                        label: t('campaigns'),
+                                    })
+                                }
+                                options={campaigns?.map((campaign) => ({
+                                    value: campaign.id,
+                                    label: campaign.title,
+                                })) || []}
+                                hideCheckbox={false}
+                                placeholder={t('activeFund.votingStats.selectCampaigns')}
+                                className="bg-background"
+                            />
                         </div>
                     </div>
                 </div>
@@ -326,7 +483,11 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
                         <table className="w-max min-w-full">
                             <thead className="bg-background-lighter whitespace-nowrap">
                                 <tr>
-                                    <TableHeader label={t('activeFund.votingStats.votesCast')} />
+                                    <SortableTableHeader 
+                                        label={t('activeFund.votingStats.votesCast')}
+                                        sortDirection={getVotesSortDirection()}
+                                        onSort={handleVotesSort}
+                                    />
                                     <TableHeader label={t('activeFund.votingStats.proposal')} />
                                     <TableHeader label={t('activeFund.votingStats.budget')} isLastColumn />
                                 </tr>
@@ -341,8 +502,15 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
                                                 </span>
                                             </div>
                                         </TableCell>
-                                        <TableCell className="w-auto flex gap-2">
-                                            {stat.latest_proposal?.title}
+                                        <TableCell className="w-auto">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-slate-400 text-sm">
+                                                    ({ordinal(stat.fund_ranking || 0)})
+                                                </span>
+                                                <span className="text-content">
+                                                    {stat.latest_proposal?.title}
+                                                </span>
+                                            </div>
                                         </TableCell>
                                         <TableCell isLastColumn>
                                             <span className="font-normal">
