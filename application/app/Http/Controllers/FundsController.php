@@ -13,12 +13,14 @@ use App\Enums\CatalystCurrencies;
 use App\Enums\ProposalFundingStatus;
 use App\Enums\ProposalSearchParams;
 use App\Enums\ProposalStatus;
+use App\Models\CatalystTally;
 use App\Models\Fund;
 use App\Models\Proposal;
 use App\Repositories\FundRepository;
 use App\Repositories\MetricRepository;
 use App\Repositories\ProposalRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -131,13 +133,14 @@ class FundsController extends Controller
         ]);
     }
 
-    public function activeFund(ProposalRepository $proposals)
+    public function activeFund(Request $request, ProposalRepository $proposals)
     {
         $activeFund = Fund::latest('launched_at')
             ->withCount(['funded_proposals', 'completed_proposals', 'unfunded_proposals', 'proposals'])
             ->first();
 
         $activeFund->append(['banner_img_url']);
+        $this->getProps($request);
 
         $amountAwarded = $activeFund->funded_proposals()->sum('amount_requested');
         $amountDistributed = $activeFund->funded_proposals()->sum('amount_received');
@@ -150,6 +153,9 @@ class FundsController extends Controller
             'total_distributed',
         ]);
 
+        $page = (int) $request->get('p', 1);
+        $perPage = (int) $request->get('per_page', 24);
+
         return Inertia::render('ActiveFund/Index', [
             'proposals' => Inertia::optional(
                 fn () => $this->getProposals($activeFund, $proposals)
@@ -158,13 +164,16 @@ class FundsController extends Controller
             'campaigns' => $campaigns,
             'amountDistributed' => $amountDistributed,
             'amountRemaining' => $amountRemaining,
+            'tallies' => $this->getTallies($activeFund, $perPage, $page),
         ]);
     }
 
     protected function getProps(Request $request): void
     {
-        $this->queryParams = $request->validate([
-            ProposalSearchParams::SORTS()->value => 'nullable',
+        $this->queryParams = $request->only([
+            ProposalSearchParams::SORTS()->value,
+            'p',
+            'per_page',
         ]);
     }
 
@@ -274,5 +283,127 @@ class FundsController extends Controller
             ->count();
 
         return $unfundedCount;
+    }
+
+    private function getTallies(Fund $fund, int $perPage = 10, int $page = 1): array
+    {
+        try {
+            $totalVotesCast = CatalystTally::where('context_id', $fund->id)->sum('tally');
+
+            $baseQuery = CatalystTally::with(['proposal.campaign'])
+                ->where('context_id', $fund->id)
+                ->whereNotNull('model_id')
+                ->select([
+                    'catalyst_tallies.*',
+                    DB::raw('ROW_NUMBER() OVER (ORDER BY tally DESC) as fund_ranking'),
+                ])
+                ->orderBy('tally', 'desc');
+
+            $totalCount = CatalystTally::where('context_id', $fund->id)
+                ->whereNotNull('model_id')
+                ->count();
+
+            $offset = ($page - 1) * $perPage;
+            $lastPage = (int) ceil($totalCount / $perPage);
+            $from = $offset + 1;
+            $to = min($offset + $perPage, $totalCount);
+
+            $tallies = $baseQuery->skip($offset)->take($perPage)->get();
+
+            $tallyStats = $tallies->map(function ($tally, $index) use ($fund, $offset) {
+                $proposal = null;
+                if ($tally->proposal) {
+                    try {
+                        $proposal = ProposalData::from($tally->proposal);
+                    } catch (\Throwable $e) {
+                        \Log::debug('Error converting proposal to data object', [
+                            'proposal_id' => $tally->model_id,
+                            'error' => $e->getMessage(),
+                        ]);
+                    }
+                }
+
+                if (! $proposal) {
+                    $proposalModel = $fund->proposals()
+                        ->whereNotNull('title')
+                        ->inRandomOrder()
+                        ->first();
+                    if ($proposalModel) {
+                        $proposal = ProposalData::from($proposalModel);
+                    }
+                }
+
+                return [
+                    'id' => $tally->id,
+                    'votes_count' => $tally->tally,
+                    'fund_ranking' => $tally->fund_ranking ?: ($offset + $index + 1),
+                    'latest_fund' => [
+                        'id' => $fund->id,
+                        'title' => $fund->title,
+                        'currency' => $fund->currency,
+                    ],
+                    'latest_proposal' => $proposal?->toArray(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            });
+
+            return [
+                'data' => $tallyStats->toArray(),
+                'total' => $totalCount,
+                'total_votes_cast' => $totalVotesCast,
+                'per_page' => $perPage,
+                'current_page' => $page,
+                'last_page' => $lastPage,
+                'from' => $totalCount > 0 ? $from : 0,
+                'to' => $totalCount > 0 ? $to : 0,
+                'prev_page_url' => $page > 1 ? request()->url().'?p='.($page - 1) : null,
+                'next_page_url' => $page < $lastPage ? request()->url().'?p='.($page + 1) : null,
+                'links' => $this->generatePaginationLinks($page, $lastPage),
+            ];
+        } catch (\Throwable $e) {
+            report($e);
+
+            return [
+                'data' => [],
+                'total' => 0,
+                'total_votes_cast' => 0,
+                'per_page' => $perPage,
+                'current_page' => $page,
+                'last_page' => 1,
+                'from' => 0,
+                'to' => 0,
+                'prev_page_url' => null,
+                'next_page_url' => null,
+                'links' => [],
+            ];
+        }
+    }
+
+    private function generatePaginationLinks(int $currentPage, int $lastPage): array
+    {
+        $links = [];
+
+        $links[] = [
+            'url' => $currentPage > 1 ? request()->url().'?p='.($currentPage - 1) : null,
+            'label' => '&laquo; Previous',
+            'active' => false,
+        ];
+
+        for ($i = 1; $i <= $lastPage; $i++) {
+            $links[] = [
+                'url' => request()->url().'?p='.$i,
+                'label' => (string) $i,
+                'active' => $i === $currentPage,
+            ];
+        }
+
+        $links[] = [
+            'url' => $currentPage < $lastPage ? request()->url().'?p='.($currentPage + 1) : null,
+            'label' => 'Next &raquo;',
+            'active' => false,
+        ];
+
+        return $links;
     }
 }

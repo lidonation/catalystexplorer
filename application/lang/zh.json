@@ -1444,5 +1444,15 @@
     "workflows.claimCatalystProfile.claim": "认领提案",
     "workflows.claimCatalystProfile.noProposalFound": "您尝试认领的提案不属于您的个人资料",
     "workflows.claimCatalystProfile.reviewDetails": "在发布之前请检查您导入的数据。",
-    "workflows.claimCatalystProfile.manageProposals": "管理我的提案"
+    "workflows.claimCatalystProfile.manageProposals": "管理我的提案",
+    "activeFund.votingStats": "提案实时统计",
+    "activeFund.votingStats.title": "投票统计",
+    "activeFund.votingStats.description": "活跃基金的投票活动和统计概览",
+    "activeFund.votingStats.searchPlaceholder": "按投票者ID、提案标题或活动名称搜索",
+    "activeFund.votingStats.votesCast": "投票数",
+    "activeFund.votingStats.proposal": "提案",
+    "activeFund.votingStats.budget": "预算",
+    "activeFund.votingStats.totalVotesCast": "总投票数",
+    "activeFund.votingStats.updatedMonthsAgo": "3个月前更新",
+    "activeFund.noVotingStatsAvailable": "没有可用的投票统计数据"
 }

@@ -490,7 +490,6 @@ Route::localized(
             }
         );
 
-
         // Dreps
         Route::prefix('/dreps')->as('dreps.')->group(
             function () {

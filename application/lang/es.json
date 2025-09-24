@@ -1448,5 +1448,15 @@
     "workflows.createService.editService": "Editar Servicio",
     "workflows.claimCatalystProfile.viewProposals": "Volver a la página de propuestas",
     "workflows.claimCatalystProfile.noProposalFound": "La propuesta que intentas reclamar no pertenece a tu perfil",
-    "workflows.claimCatalystProfile.manageProposals": "Gestionar Mis Propuestas"
+    "workflows.claimCatalystProfile.manageProposals": "Gestionar Mis Propuestas",
+    "activeFund.votingStats": "Recuento en Vivo de Propuestas",
+    "activeFund.votingStats.title": "Estadísticas de Votación",
+    "activeFund.votingStats.description": "Resumen de la actividad de votación y estadísticas para el fondo activo",
+    "activeFund.votingStats.searchPlaceholder": "Buscar por ID de votante, título de propuesta o nombre de campaña",
+    "activeFund.votingStats.votesCast": "Votos Emitidos",
+    "activeFund.votingStats.proposal": "Propuesta",
+    "activeFund.votingStats.budget": "Presupuesto",
+    "activeFund.votingStats.totalVotesCast": "Total de Votos Emitidos",
+    "activeFund.votingStats.updatedMonthsAgo": "Actualizado hace 3 meses",
+    "activeFund.noVotingStatsAvailable": "No hay estadísticas de votación disponibles"
 }

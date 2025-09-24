@@ -49,12 +49,13 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                 link.label !== 'Next',
         ) || [];
 
-    const getMobilePageLinks = () => {
-        if (pageLinks.length <= 7) return pageLinks;
+    const getTruncatedPageLinks = (maxVisible: number = 7) => {
+        if (pageLinks.length <= maxVisible) return pageLinks;
 
         const currentIdx = pageLinks.findIndex((link) => link.active);
-        const start = Math.max(0, currentIdx - 2);
-        const end = Math.min(pageLinks.length, currentIdx + 3);
+        const sidePages = Math.floor((maxVisible - 3) / 2);
+        const start = Math.max(0, currentIdx - sidePages);
+        const end = Math.min(pageLinks.length, currentIdx + sidePages + 1);
 
         let result = [];
 
@@ -76,7 +77,9 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
         return result;
     };
 
-    const mobilePageLinks = getMobilePageLinks();
+    const mobilePageLinks = getTruncatedPageLinks(5);
+    const tabletPageLinks = getTruncatedPageLinks(7);
+    const desktopPageLinks = getTruncatedPageLinks(9);
     const renderPageLink = (
         link: any,
         index: number,
@@ -161,7 +164,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
 
     return (
         <div
-            className="flex items-center justify-center py-4"
+            className="flex items-center justify-center w-full py-4"
             data-testid="pagination-component"
         >
             <div className="flex w-full items-center justify-between gap-1 md:hidden">
@@ -182,7 +185,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
 
                 <div className="flex items-center gap-4">
                     <ul className="flex list-none items-center gap-1">
-                        {mobilePageLinks.map((link, index) =>
+                        {tabletPageLinks.map((link, index) =>
                             renderPageLink(link, index, 'md'),
                         )}
                     </ul>
@@ -201,7 +204,7 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
                 <div className="flex items-center gap-8">
                     <div className="flex items-center gap-1">
                         <ul className="flex list-none items-center gap-1">
-                            {pageLinks.map((link, index) =>
+                            {desktopPageLinks.map((link, index) =>
                                 renderPageLink(link, index, 'md'),
                             )}
                         </ul>

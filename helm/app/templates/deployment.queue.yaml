@@ -23,8 +23,8 @@ spec:
         app: "{{ $.Chart.Name }}"
         service: "{{ $.Chart.Name }}-queue"
     spec:
-      imagePullSecrets:
-        - name: {{ .Values.services.app.image.pullSecret }}
+{{/*      imagePullSecrets:*/}}
+{{/*        - name: {{ .Values.services.app.image.pullSecret }}*/}}
       containers:
         - name: queue
           image: "{{ .Values.services.app.image.repository }}:{{ .Values.services.app.image.tag }}"

@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Spatie\Comments\Models\Concerns\HasComments;
 
-//#[ScopedBy([PublicVisibilityScope::class, PublishedScope::class])]
+// #[ScopedBy([PublicVisibilityScope::class, PublishedScope::class])]
 class BookmarkCollection extends Model
 {
     use HasAuthor, HasComments, HasIpfsFiles, HasMetaData, HasSignatures, HasUuids, Searchable, SoftDeletes;
