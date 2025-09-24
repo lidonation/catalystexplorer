@@ -331,7 +331,7 @@ class FundsController extends Controller
 
             $totalVotesCast = CatalystTally::where('context_id', $fund->id)->sum('tally');
 
-            $baseQuery = CatalystTally::with(['proposal.campaign'])
+            $baseQuery = CatalystTally::with(['proposal.campaign', 'proposal.fund'])
                 ->where('context_id', $fund->id)
                 ->whereNotNull('model_id');
 
@@ -347,9 +347,10 @@ class FundsController extends Controller
 
             $baseQuery->select([
                 'catalyst_tallies.*',
-                DB::raw('ROW_NUMBER() OVER (ORDER BY tally DESC) as fund_ranking'),
+                DB::raw('ROW_NUMBER() OVER (ORDER BY tally DESC, id ASC) as fund_ranking'),
             ])
-                ->orderBy('tally', 'desc');
+                ->orderBy('tally', 'desc')
+                ->orderBy('id', 'asc'); // Add secondary sort for consistency
 
             $totalCountQuery = CatalystTally::where('context_id', $fund->id)
                 ->whereNotNull('model_id');
@@ -368,7 +369,7 @@ class FundsController extends Controller
 
             $offset = ($page - 1) * $perPage;
             $lastPage = (int) ceil($totalCount / $perPage);
-            $from = $offset + 1;
+            $from = $totalCount > 0 ? $offset + 1 : 0;
             $to = min($offset + $perPage, $totalCount);
 
             $tallies = $baseQuery->skip($offset)->take($perPage)->get();
@@ -389,7 +390,7 @@ class FundsController extends Controller
                 if (! $proposal) {
                     $proposalModel = $fund->proposals()
                         ->whereNotNull('title')
-                        ->inRandomOrder()
+                        ->orderBy('id')
                         ->first();
                     if ($proposalModel) {
                         $proposal = ProposalData::from($proposalModel);
@@ -411,6 +412,22 @@ class FundsController extends Controller
                 ];
             });
 
+            $currentUrl = request()->url();
+            $queryParams = request()->query();
+
+            $prevPageUrl = null;
+            $nextPageUrl = null;
+
+            if ($page > 1) {
+                $prevParams = array_merge($queryParams, ['p' => $page - 1]);
+                $prevPageUrl = $currentUrl.'?'.http_build_query($prevParams);
+            }
+
+            if ($page < $lastPage) {
+                $nextParams = array_merge($queryParams, ['p' => $page + 1]);
+                $nextPageUrl = $currentUrl.'?'.http_build_query($nextParams);
+            }
+
             return [
                 'data' => $tallyStats->toArray(),
                 'total' => $totalCount,
@@ -418,11 +435,11 @@ class FundsController extends Controller
                 'per_page' => $perPage,
                 'current_page' => $page,
                 'last_page' => $lastPage,
-                'from' => $totalCount > 0 ? $from : 0,
+                'from' => $from,
                 'to' => $totalCount > 0 ? $to : 0,
-                'prev_page_url' => $page > 1 ? request()->url().'?p='.($page - 1) : null,
-                'next_page_url' => $page < $lastPage ? request()->url().'?p='.($page + 1) : null,
-                'links' => $this->generatePaginationLinks($page, $lastPage),
+                'prev_page_url' => $prevPageUrl,
+                'next_page_url' => $nextPageUrl,
+                'links' => $this->generatePaginationLinks($page, $lastPage, $queryParams),
             ];
         } catch (\Throwable $e) {
             report($e);
@@ -443,26 +460,30 @@ class FundsController extends Controller
         }
     }
 
-    private function generatePaginationLinks(int $currentPage, int $lastPage): array
+    private function generatePaginationLinks(int $currentPage, int $lastPage, array $queryParams = []): array
     {
         $links = [];
+        $baseUrl = request()->url();
 
+        $prevParams = $currentPage > 1 ? array_merge($queryParams, ['p' => $currentPage - 1]) : null;
         $links[] = [
-            'url' => $currentPage > 1 ? request()->url().'?p='.($currentPage - 1) : null,
+            'url' => $prevParams ? $baseUrl.'?'.http_build_query($prevParams) : null,
             'label' => '&laquo; Previous',
             'active' => false,
         ];
 
         for ($i = 1; $i <= $lastPage; $i++) {
+            $pageParams = array_merge($queryParams, ['p' => $i]);
             $links[] = [
-                'url' => request()->url().'?p='.$i,
+                'url' => $baseUrl.'?'.http_build_query($pageParams),
                 'label' => (string) $i,
                 'active' => $i === $currentPage,
             ];
         }
 
+        $nextParams = $currentPage < $lastPage ? array_merge($queryParams, ['p' => $currentPage + 1]) : null;
         $links[] = [
-            'url' => $currentPage < $lastPage ? request()->url().'?p='.($currentPage + 1) : null,
+            'url' => $nextParams ? $baseUrl.'?'.http_build_query($nextParams) : null,
             'label' => 'Next &raquo;',
             'active' => false,
         ];
