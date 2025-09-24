@@ -60,8 +60,7 @@ class CatalystTallies extends Resource
         return [
             ID::make('ID', 'id')
                 ->sortable()
-                ->readonly()
-                ->copyable(),
+                ->readonly(),
 
             Text::make(__('Hash'), 'hash')
                 ->rules('required', 'string')

@@ -13,9 +13,9 @@ use App\Enums\CatalystCurrencies;
 use App\Enums\ProposalFundingStatus;
 use App\Enums\ProposalSearchParams;
 use App\Enums\ProposalStatus;
+use App\Models\CatalystTally;
 use App\Models\Fund;
 use App\Models\Proposal;
-use App\Models\Voter;
 use App\Repositories\FundRepository;
 use App\Repositories\MetricRepository;
 use App\Repositories\ProposalRepository;
@@ -153,8 +153,8 @@ class FundsController extends Controller
             'total_distributed',
         ]);
 
-        $page = (int) $request->get('page', 1);
-        $perPage = (int) $request->get('per_page', 10);
+        $page = (int) $request->get('p', 1);
+        $perPage = (int) $request->get('per_page', 24);
 
         return Inertia::render('ActiveFund/Index', [
             'proposals' => Inertia::optional(
@@ -164,7 +164,7 @@ class FundsController extends Controller
             'campaigns' => $campaigns,
             'amountDistributed' => $amountDistributed,
             'amountRemaining' => $amountRemaining,
-            'votingStats' => $this->getVotingStatsFromDatabase($activeFund, $perPage, $page),
+            'tallies' => $this->getTallies($activeFund, $perPage, $page),
         ]);
     }
 
@@ -172,7 +172,7 @@ class FundsController extends Controller
     {
         $this->queryParams = $request->only([
             ProposalSearchParams::SORTS()->value,
-            'page',
+            'p',
             'per_page',
         ]);
     }
@@ -285,112 +285,80 @@ class FundsController extends Controller
         return $unfundedCount;
     }
 
-    private function getVotingStatsFromDatabase(Fund $fund, int $perPage = 10, int $page = 1): array
+    private function getTallies(Fund $fund, int $perPage = 10, int $page = 1): array
     {
         try {
-            $baseQuery = Voter::with(['voting_powers', 'voting_histories'])
-                ->select([
-                    'voters.*',
-                    DB::raw('ROW_NUMBER() OVER (ORDER BY COALESCE(vp.max_voting_power, 0) DESC) as fund_ranking'),
-                ])
-                ->leftJoin(
-                    DB::raw('(
-                        SELECT voter_id, MAX(voting_power) as max_voting_power 
-                        FROM voting_powers 
-                        GROUP BY voter_id
-                    ) as vp'),
-                    'voters.cat_id', '=', 'vp.voter_id'
-                )
-                ->orderBy('vp.max_voting_power', 'desc');
+            $totalVotesCast = CatalystTally::where('context_id', $fund->id)->sum('tally');
 
-            $totalCount = Voter::leftJoin(
-                DB::raw('(
-                    SELECT voter_id, MAX(voting_power) as max_voting_power 
-                    FROM voting_powers 
-                    GROUP BY voter_id
-                ) as vp'),
-                'voters.cat_id', '=', 'vp.voter_id'
-            )->count();
+            $baseQuery = CatalystTally::with(['proposal.campaign'])
+                ->where('context_id', $fund->id)
+                ->whereNotNull('model_id')
+                ->select([
+                    'catalyst_tallies.*',
+                    DB::raw('ROW_NUMBER() OVER (ORDER BY tally DESC) as fund_ranking'),
+                ])
+                ->orderBy('tally', 'desc');
+
+            $totalCount = CatalystTally::where('context_id', $fund->id)
+                ->whereNotNull('model_id')
+                ->count();
 
             $offset = ($page - 1) * $perPage;
             $lastPage = (int) ceil($totalCount / $perPage);
             $from = $offset + 1;
             $to = min($offset + $perPage, $totalCount);
 
-            $voters = $baseQuery->skip($offset)->take($perPage)->get();
+            $tallies = $baseQuery->skip($offset)->take($perPage)->get();
 
-            $votingStats = $voters->map(function ($voter, $index) use ($fund, $offset) {
-                $votesCount = $voter->voting_histories->count();
-
-                $latestVotingPower = $voter->voting_powers()->latest()->first();
-
-                $proposalsVotedOn = $voter->voting_histories
-                    ->pluck('proposal')
-                    ->filter()
-                    ->unique()
-                    ->count();
-
-                $latestVoterHistory = $voter->voting_histories
-                    ->sortByDesc('created_at')
-                    ->first();
-
-                $latestProposal = null;
-                if ($latestVoterHistory && $latestVoterHistory->proposal) {
+            $tallyStats = $tallies->map(function ($tally, $index) use ($fund, $offset) {
+                $proposal = null;
+                if ($tally->proposal) {
                     try {
-                        $proposal = Proposal::find($latestVoterHistory->proposal);
-                        if ($proposal) {
-                            $latestProposal = ProposalData::from($proposal);
-                        }
-                    } catch (\Illuminate\Database\QueryException $e) {
-                        \Log::debug('Skipping proposal lookup due to data type mismatch', [
-                            'voter_history_proposal' => $latestVoterHistory->proposal,
+                        $proposal = ProposalData::from($tally->proposal);
+                    } catch (\Throwable $e) {
+                        \Log::debug('Error converting proposal to data object', [
+                            'proposal_id' => $tally->model_id,
                             'error' => $e->getMessage(),
                         ]);
                     }
                 }
 
-                if (! $latestProposal) {
-                    $proposal = $fund->proposals()
+                if (! $proposal) {
+                    $proposalModel = $fund->proposals()
                         ->whereNotNull('title')
                         ->inRandomOrder()
                         ->first();
-                    if ($proposal) {
-                        $latestProposal = ProposalData::from($proposal);
+                    if ($proposalModel) {
+                        $proposal = ProposalData::from($proposalModel);
                     }
                 }
 
                 return [
-                    'id' => $voter->id,
-                    'stake_pub' => $voter->stake_pub,
-                    'stake_key' => $voter->stake_key,
-                    'voting_pub' => $voter->voting_pub,
-                    'voting_key' => $voter->voting_key,
-                    'cat_id' => $voter->cat_id,
-                    'voting_power' => $latestVotingPower?->voting_power ?: 0,
-                    'votes_count' => $votesCount,
-                    'proposals_voted_on' => $proposalsVotedOn,
-                    'fund_ranking' => $voter->fund_ranking ?: ($offset + $index + 1),
+                    'id' => $tally->id,
+                    'votes_count' => $tally->tally,
+                    'fund_ranking' => $tally->fund_ranking ?: ($offset + $index + 1),
                     'latest_fund' => [
                         'id' => $fund->id,
                         'title' => $fund->title,
                         'currency' => $fund->currency,
                     ],
-                    'latest_proposal' => $latestProposal?->toArray(),
-                    'created_at' => $voter->created_at,
-                    'updated_at' => $voter->updated_at,
+                    'latest_proposal' => $proposal?->toArray(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ];
             });
 
             return [
-                'data' => $votingStats->toArray(),
+                'data' => $tallyStats->toArray(),
                 'total' => $totalCount,
+                'total_votes_cast' => $totalVotesCast,
                 'per_page' => $perPage,
                 'current_page' => $page,
                 'last_page' => $lastPage,
                 'from' => $totalCount > 0 ? $from : 0,
                 'to' => $totalCount > 0 ? $to : 0,
-                'prev_page_url' => $page > 1 ? request()->url().'?page='.($page - 1) : null,
-                'next_page_url' => $page < $lastPage ? request()->url().'?page='.($page + 1) : null,
+                'prev_page_url' => $page > 1 ? request()->url().'?p='.($page - 1) : null,
+                'next_page_url' => $page < $lastPage ? request()->url().'?p='.($page + 1) : null,
                 'links' => $this->generatePaginationLinks($page, $lastPage),
             ];
         } catch (\Throwable $e) {
@@ -399,6 +367,7 @@ class FundsController extends Controller
             return [
                 'data' => [],
                 'total' => 0,
+                'total_votes_cast' => 0,
                 'per_page' => $perPage,
                 'current_page' => $page,
                 'last_page' => 1,
@@ -416,21 +385,21 @@ class FundsController extends Controller
         $links = [];
 
         $links[] = [
-            'url' => $currentPage > 1 ? request()->url().'?page='.($currentPage - 1) : null,
+            'url' => $currentPage > 1 ? request()->url().'?p='.($currentPage - 1) : null,
             'label' => '&laquo; Previous',
             'active' => false,
         ];
 
         for ($i = 1; $i <= $lastPage; $i++) {
             $links[] = [
-                'url' => request()->url().'?page='.$i,
+                'url' => request()->url().'?p='.$i,
                 'label' => (string) $i,
                 'active' => $i === $currentPage,
             ];
         }
 
         $links[] = [
-            'url' => $currentPage < $lastPage ? request()->url().'?page='.($currentPage + 1) : null,
+            'url' => $currentPage < $lastPage ? request()->url().'?p='.($currentPage + 1) : null,
             'label' => 'Next &raquo;',
             'active' => false,
         ];

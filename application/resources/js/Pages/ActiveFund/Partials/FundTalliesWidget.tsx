@@ -19,8 +19,8 @@ interface VotingStatsItem extends VoterData {
     latest_proposal?: ProposalData;
 }
 
-interface VotingStatsWidgetProps {
-    votingStats?: PaginatedData<VotingStatsItem[]>;
+interface FundTalliesWidgetProps {
+    tallies?: PaginatedData<VotingStatsItem[]> & { total_votes_cast?: number };
     showPagination?: boolean;
     maxHeight?: string;
     customTitle?: string;
@@ -58,8 +58,8 @@ const TableCell: React.FC<{
     </td>
 );
 
-const VotingStatsWidgetComponent: React.FC<VotingStatsWidgetProps> = ({
-    votingStats,
+const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
+    tallies,
     showPagination = false,
     customTitle,
     limit = 10,
@@ -70,63 +70,63 @@ const VotingStatsWidgetComponent: React.FC<VotingStatsWidgetProps> = ({
     const [sortBy, setSortBy] = useState<'votes' | 'ranking' | 'proposal' | 'budget'>('ranking');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [filtersVisible, setFiltersVisible] = useState(false);
-    
+
     const searchTerm = (getFilter(ParamsEnum.QUERY) || '') as string;
     const campaignFilter = (getFilter(ParamsEnum.CAMPAIGNS) || []) as string[];
 
     const formatBudget = (proposal?: ProposalData, fund?: FundData): string => {
         if (!proposal || !proposal.amount_requested) return 'N/A';
-        
+
         const preferredCurrency = fund?.currency || proposal.currency;
-        
+
         const amountRequested = Number(proposal.amount_requested);
         if (isNaN(amountRequested)) return 'N/A';
-        
+
         if (preferredCurrency === 'USD') {
             const result = currency(amountRequested, 2, 'USD');
             return String(result);
         }
-        
-        const amount = amountRequested > 1000000 
-            ? amountRequested / 1000000 
+
+        const amount = amountRequested > 1000000
+            ? amountRequested / 1000000
             : amountRequested;
-        
+
         const currencyCode = String(preferredCurrency || 'ADA');
         const result = currency(amount, 2, currencyCode);
         return String(result);
     };
 
     const shouldShowNoRecords = () => {
-        return !votingStats?.data || votingStats.data.length === 0;
+        return !tallies?.data || tallies.data.length === 0;
     };
 
     const filteredData = useMemo(() => {
         if (showPagination) {
-            return votingStats?.data || [];
+            return tallies?.data || [];
         }
-        
-        let filtered = votingStats?.data || [];
-        
+
+        let filtered = tallies?.data || [];
+
         if (searchTerm.trim()) {
             const term = searchTerm.toLowerCase();
-            filtered = filtered.filter(stat => 
+            filtered = filtered.filter(stat =>
                 stat.cat_id?.toLowerCase().includes(term) ||
                 stat.latest_proposal?.title?.toLowerCase().includes(term) ||
                 stat.latest_proposal?.campaign?.title?.toLowerCase().includes(term) ||
                 stat.stake_pub?.toLowerCase().includes(term)
             );
         }
-        
+
         if (campaignFilter.length > 0) {
-            filtered = filtered.filter(stat => 
-                stat.latest_proposal?.campaign?.id && 
+            filtered = filtered.filter(stat =>
+                stat.latest_proposal?.campaign?.id &&
                 campaignFilter.includes(stat.latest_proposal.campaign.id)
             );
         }
-        
+
         filtered = [...filtered].sort((a, b) => {
             let aValue: string | number, bValue: string | number;
-            
+
             switch (sortBy) {
                 case 'votes':
                     aValue = a.votes_count || 0;
@@ -147,34 +147,32 @@ const VotingStatsWidgetComponent: React.FC<VotingStatsWidgetProps> = ({
                 default:
                     return 0;
             }
-            
+
             // Handle string comparisons
             if (typeof aValue === 'string' && typeof bValue === 'string') {
-                return sortOrder === 'asc' 
+                return sortOrder === 'asc'
                     ? aValue.localeCompare(bValue)
                     : bValue.localeCompare(aValue);
             }
-            
-            // Handle number comparisons
+
             if (typeof aValue === 'number' && typeof bValue === 'number') {
-                return sortOrder === 'asc' 
-                    ? aValue - bValue 
+                return sortOrder === 'asc'
+                    ? aValue - bValue
                     : bValue - aValue;
             }
-            
-            // Handle mixed types by converting to strings
+
             const aString = String(aValue);
             const bString = String(bValue);
-            return sortOrder === 'asc' 
+            return sortOrder === 'asc'
                 ? aString.localeCompare(bString)
                 : bString.localeCompare(aString);
         });
-        
+
         return filtered;
-    }, [votingStats?.data, searchTerm, campaignFilter, sortBy, sortOrder, showPagination]);
-    
-    const displayData = showPagination 
-        ? (votingStats?.data || [])
+    }, [tallies?.data, searchTerm, campaignFilter, sortBy, sortOrder, showPagination]);
+
+    const displayData = showPagination
+        ? (tallies?.data || [])
         : filteredData.slice(0, limit);
 
     return (
@@ -195,7 +193,9 @@ const VotingStatsWidgetComponent: React.FC<VotingStatsWidgetProps> = ({
                     <div className="p-4 bg-background rounded-xl shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] outline outline-1 outline-offset-[-1px] outline-content-light inline-flex flex-col justify-start items-start gap-5">
                         <div className="flex flex-col justify-start items-start gap-2">
                             <div className="self-stretch inline-flex justify-between items-center flex-wrap content-center">
-                                <div className="text-center justify-start text-4xl font-bold">292,447</div>
+                                <div className="text-center justify-start text-4xl font-bold">
+                                    {tallies?.total_votes_cast ? tallies.total_votes_cast.toLocaleString() : '0'}
+                                </div>
                             </div>
                             <div className="self-stretch text-center text-gray-persist justify-start text-sm font-normal">
                                 {t('activeFund.votingStats.totalVotesCast')}
@@ -255,7 +255,7 @@ const VotingStatsWidgetComponent: React.FC<VotingStatsWidgetProps> = ({
                                         </div>
                                     </TableCell>
                                     <TableCell className="w-auto flex gap-2">
-                                        ({stat.fund_ranking || index + 1})
+                                        {/*({stat.fund_ranking || index + 1})*/}
                                         {stat.latest_proposal?.title}
                                     </TableCell>
                                     <TableCell isLastColumn>
@@ -267,9 +267,17 @@ const VotingStatsWidgetComponent: React.FC<VotingStatsWidgetProps> = ({
                             ))}
                         </tbody>
                     </table>
-                    {showPagination && votingStats && (
-                        <div className="self-stretch px-5 py-3.5 border-t border-content-light inline-flex justify-center items-center gap-3">
-                            <Paginator pagination={votingStats} />
+                    {showPagination && tallies && tallies.data && tallies.data.length > 0 && (
+                        <div className="border-t w-full px-4 py-4 overflow-x-hidden">
+                            <Paginator
+                                pagination={tallies}
+                                linkProps={{
+                                    preserveState: true,
+                                    preserveScroll: false,
+                                    only: ['tallies', 'filters'],
+                                    replace: true
+                                }}
+                            />
                         </div>
                     )}
                 </div>
@@ -278,23 +286,22 @@ const VotingStatsWidgetComponent: React.FC<VotingStatsWidgetProps> = ({
     );
 };
 
-// Wrapper component that provides FiltersProvider context
-const VotingStatsWidget: React.FC<VotingStatsWidgetProps> = (props) => {
+const FundTalliesWidget: React.FC<FundTalliesWidgetProps> = (props) => {
     const { filters = {}, routerOptions = {} } = props;
-    
+
     return (
         <FiltersProvider
             defaultFilters={filters as SearchParams}
             routerOptions={{
                 preserveState: true,
                 preserveScroll: true,
-                only: ['votingStats'],
+                only: ['tallies'],
                 ...routerOptions
             }}
         >
-            <VotingStatsWidgetComponent {...props} />
+            <FundTalliesWidgetComponent {...props} />
         </FiltersProvider>
     );
 };
 
-export default VotingStatsWidget;
+export default FundTalliesWidget;

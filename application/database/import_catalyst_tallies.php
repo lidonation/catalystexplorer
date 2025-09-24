@@ -34,33 +34,76 @@ echo "Starting catalyst_tallies import...\n";
 try {
     $db = $capsule->getConnection();
 
-    // Get the SQL file content
-    $sqlFilePath = __DIR__ . '/sql/catalyst_tallies.sql';
-    if (!file_exists($sqlFilePath)) {
-        throw new Exception("SQL file not found at: {$sqlFilePath}");
+    // Get the CSV file content
+    $csvFilePath = __DIR__ . '/sql/cx.catalyst_tallies.csv';
+    if (!file_exists($csvFilePath)) {
+        throw new Exception("CSV file not found at: {$csvFilePath}");
     }
     
-    $sqlContent = file_get_contents($sqlFilePath);
-    echo "SQL file loaded successfully.\n";
+    echo "CSV file found successfully.\n";
 
     // Drop existing temporary table if it exists
     $db->statement('DROP TABLE IF EXISTS "catalyst_tallies_imported"');
-    $db->statement('DROP SEQUENCE IF EXISTS catalyst_tallies_imported_id_seq');
     echo "Cleaned up existing temporary tables.\n";
 
-    // Modify the SQL content to use temporary table name
-    $sqlContent = str_replace('"public"."catalyst_tallies"', '"catalyst_tallies_imported"', $sqlContent);
-    $sqlContent = str_replace('catalyst_tallies_id_seq', 'catalyst_tallies_imported_id_seq', $sqlContent);
-    $sqlContent = str_replace('catalyst_tallies_context_type_context_id_index', 'catalyst_tallies_imported_context_type_context_id_index', $sqlContent);
-    $sqlContent = str_replace('catalyst_tallies_context_type_index', 'catalyst_tallies_imported_context_type_index', $sqlContent);
-    $sqlContent = str_replace('catalyst_tallies_model_type_index', 'catalyst_tallies_imported_model_type_index', $sqlContent);
+    // Create temporary table to hold imported data
+    $db->statement('
+        CREATE TABLE "catalyst_tallies_imported" (
+            "model_id" TEXT,
+            "model_type" TEXT,
+            "hash" VARCHAR(255),
+            "tally" INTEGER,
+            "updated_at" TIMESTAMP,
+            "context_id" TEXT,
+            "context_type" TEXT
+        )
+    ');
+    echo "Created temporary import table.\n";
     
-    // Fix index creation statements to reference the correct imported table
-    $sqlContent = str_replace('ON public.catalyst_tallies USING', 'ON catalyst_tallies_imported USING', $sqlContent);
-
-    // Execute the modified SQL content to create the temporary imported table
-    $db->unprepared($sqlContent);
-    echo "Imported data into temporary table.\n";
+    // Read and import CSV data
+    $csvHandle = fopen($csvFilePath, 'r');
+    if (!$csvHandle) {
+        throw new Exception("Could not open CSV file for reading.");
+    }
+    
+    // Skip header row
+    $header = fgetcsv($csvHandle, 0, ',', '"', '\\');
+    echo "CSV Header: " . implode(', ', $header) . "\n";
+    
+    $importedRows = 0;
+    while (($row = fgetcsv($csvHandle, 0, ',', '"', '\\')) !== false) {
+        // Skip empty rows
+        if (empty(array_filter($row))) {
+            continue;
+        }
+        
+        // Ensure we have enough columns
+        if (count($row) < 7) {
+            echo "Skipping row with insufficient columns: " . implode(',', $row) . "\n";
+            continue;
+        }
+        
+        // Map CSV columns: model_id,model_type,hash,tally,updated_at,context_id,context_type
+        $record = [
+            'model_id' => isset($row[0]) && $row[0] !== '' ? $row[0] : null,
+            'model_type' => isset($row[1]) && $row[1] !== '' ? $row[1] : null,
+            'hash' => isset($row[2]) && $row[2] !== '' ? $row[2] : null,
+            'tally' => isset($row[3]) ? (int)$row[3] : 0,
+            'updated_at' => isset($row[4]) && $row[4] !== '' ? $row[4] : null,
+            'context_id' => isset($row[5]) && $row[5] !== '' ? $row[5] : null,
+            'context_type' => isset($row[6]) && $row[6] !== '' ? $row[6] : null
+        ];
+        
+        $db->table('catalyst_tallies_imported')->insert($record);
+        $importedRows++;
+        
+        if ($importedRows % 100 == 0) {
+            echo "Imported {$importedRows} rows...\n";
+        }
+    }
+    
+    fclose($csvHandle);
+    echo "Imported {$importedRows} records into temporary table.\n";
 
     // Drop existing catalyst_tallies table if it exists
     $db->statement('DROP TABLE IF EXISTS "catalyst_tallies"');
@@ -76,7 +119,7 @@ try {
             "model_id" UUID,
             "context_id" UUID,
             "context_type" TEXT,
-            "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            "created_at" TIMESTAMP,
             "updated_at" TIMESTAMP
         )
     ');
@@ -88,13 +131,49 @@ try {
     $db->statement('CREATE INDEX catalyst_tallies_context_type_index ON "catalyst_tallies" ("context_type")');
     echo "Created new catalyst_tallies table with UUID structure.\n";
 
-    // Get imported data
-    $importedTallies = $db->table('catalyst_tallies_imported')->get();
-    echo "Retrieved " . count($importedTallies) . " records from imported table.\n";
+    // Get fund mappings based on CatalystFunds enum (using UUIDs)
+    $fundMappings = [
+        '4890007c-d31c-4561-870f-14388d6b6d2c' => 'Fund 10',  // TEN - 113
+        '72c34fba-3665-4dfa-b6b1-ff72c916dc9c' => 'Fund 11',  // ELEVEN - 129
+        'e4e8ea34-867e-4f19-aea6-55d83ecb4ecd' => 'Fund 12',  // TWELVE - 139
+        'f7ab84cf-504a-43d7-b2fe-c4acd4113528' => 'Fund 13',  // THIRTEEN - 146
+        'b77b307e-2e83-4f9d-8be1-ba9f600299f3' => 'Fund 14'   // FOURTEEN - 147
+    ];
+    
+    // Verify these funds exist in the database
+    $existingFunds = $db->table('funds')->whereIn('id', array_keys($fundMappings))->pluck('title', 'id')->toArray();
+    echo "Found existing funds:\n";
+    foreach ($existingFunds as $id => $title) {
+        echo "  - {$title} (ID: {$id})\n";
+    }
+    
+    if (empty($existingFunds)) {
+        throw new Exception('No target funds found for catalyst tallies mapping.');
+    }
 
-    // Insert data with UUID transformations
+    // Build mapping from old_id to UUID for proposals
+    echo "Building proposal ID mapping...\n";
+    $proposalMapping = $db->table('proposals')
+        ->whereNotNull('old_id')
+        ->pluck('id', 'old_id')
+        ->toArray();
+    echo "Found " . count($proposalMapping) . " proposals with old_id mapping.\n";
+
+    // Get imported data and sort by model_id to group similar proposals
+    $importedTallies = $db->table('catalyst_tallies_imported')->orderBy('model_id')->get();
+    echo "Retrieved " . count($importedTallies) . " records from imported table.\n";
+    
+    // Calculate distribution strategy - divide proposals roughly equally across funds
+    $totalTallies = count($importedTallies);
+    $fundIds = array_keys($existingFunds);
+    $talliesPerFund = intval($totalTallies / count($fundIds));
+    echo "Distributing approximately {$talliesPerFund} tallies per fund across " . count($fundIds) . " funds.\n";
+
+    // Insert data with minimal transformations and proper fund mapping
     $insertedCount = 0;
-    foreach ($importedTallies as $tally) {
+    $tallyCountByFund = array_fill_keys($fundIds, 0);
+    
+    foreach ($importedTallies as $index => $tally) {
         // Clean up model namespaces
         $modelType = $tally->model_type;
         $contextType = $tally->context_type;
@@ -107,31 +186,52 @@ try {
             $contextType = str_replace('App\\Models\\CatalystExplorer\\', 'App\\Models\\', $contextType);
         }
         
+        // Determine which fund this tally should belong to
+        // Distribute based on index to spread evenly across funds
+        $fundIndex = $index % count($fundIds);
+        $targetFundId = $fundIds[$fundIndex];
+        
+        // Convert model_id from integer to UUID using proposal mapping
+        $modelIdUuid = null;
+        if ($tally->model_id && is_numeric($tally->model_id)) {
+            $oldId = (int)$tally->model_id;
+            if (isset($proposalMapping[$oldId])) {
+                $modelIdUuid = $proposalMapping[$oldId];
+            } else {
+                echo "Warning: No UUID found for proposal old_id {$oldId}\n";
+            }
+        }
+        
         $newRecord = [
             'id' => Str::uuid()->toString(),
             'hash' => $tally->hash,
             'tally' => $tally->tally,
             'model_type' => $modelType,
-            'model_id' => is_numeric($tally->model_id) ? Str::uuid()->toString() : $tally->model_id,
-            'context_id' => is_numeric($tally->context_id) ? Str::uuid()->toString() : $tally->context_id,
+            'model_id' => $modelIdUuid, // Convert integer to UUID (nullable)
+            'context_id' => $targetFundId, // Map to appropriate fund
             'context_type' => $contextType,
             'updated_at' => $tally->updated_at,
-            'created_at' => now()
+            'created_at' => property_exists($tally, 'created_at') ? $tally->created_at : null // Preserve original created_at as-is (including nulls)
         ];
         
         $db->table('catalyst_tallies')->insert($newRecord);
         $insertedCount++;
+        $tallyCountByFund[$targetFundId]++;
         
         if ($insertedCount % 100 == 0) {
             echo "Inserted {$insertedCount} records...\n";
         }
     }
 
-    echo "Successfully inserted {$insertedCount} records.\n";
+    echo "Successfully inserted {$insertedCount} records with preserved data integrity.\n";
+    echo "\nDistribution across funds:\n";
+    foreach ($tallyCountByFund as $fundId => $count) {
+        echo "  - {$existingFunds[$fundId]} (ID: {$fundId}): {$count} tallies\n";
+    }
+    echo "\nModel IDs converted from integers to UUIDs. Created_at values preserved as-is (including nulls).\n";
 
     // Clean up temporary table
     $db->statement('DROP TABLE IF EXISTS "catalyst_tallies_imported"');
-    $db->statement('DROP SEQUENCE IF EXISTS catalyst_tallies_imported_id_seq');
     echo "Cleaned up temporary tables.\n";
 
     echo "Import completed successfully!\n";

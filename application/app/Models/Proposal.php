@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Casts\DateFormatCast;
 use App\Enums\CatalystCurrencies;
+use App\Interfaces\IHasMetaData;
 use App\Models\Pivot\ProposalProfile;
 use App\Models\Scopes\ProposalTypeScope;
 use App\Traits\HasAuthor;
@@ -32,7 +33,7 @@ use Spatie\Comments\Models\Concerns\HasComments;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 #[ScopedBy(ProposalTypeScope::class)]
-class Proposal extends Model
+class Proposal extends Model implements IHasMetaData
 {
     use HasAuthor,
         HasComments,
