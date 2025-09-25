@@ -8,6 +8,7 @@ import { ParamsEnum } from '@/enums/proposal-search-params.ts';
 import SupportCxBanner from '@/Pages/ActiveFund/Partials/SupportCxBanner.tsx';
 import ProposalList from '@/Pages/Proposals/Partials/ProposalList.tsx';
 import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading.tsx';
+import QuickPitchList from '../Home/Partials/QuickPitches/QuickPitchList';
 import { Segments } from '@/types/segments';
 import { currency } from '@/utils/currency';
 import { useLocalizedRoute } from '@/utils/localizedRoute.ts';
@@ -34,6 +35,10 @@ interface ActiveFundsProp extends Record<string, unknown> {
     amountDistributed: number;
     amountRemaining: number;
     tallies?: PaginatedData<VotingStatsItem[]>;
+    quickPitches?: {
+        featured: ProposalData[];
+        regular: ProposalData[];
+    };
 }
 
 const Index: React.FC<ActiveFundsProp> = ({
@@ -44,6 +49,7 @@ const Index: React.FC<ActiveFundsProp> = ({
     amountDistributed,
     amountRemaining,
     tallies,
+    quickPitches,
 }) => {
     const { t } = useLaravelReactI18n();
     const [campaignId, setCampaignId] = useState<string | null>('');
@@ -158,44 +164,13 @@ const Index: React.FC<ActiveFundsProp> = ({
                 </section>
 
                 <section
-                    className="proposals-wrapper container"
-                    data-testid="proposals-section"
+                    className="quickpitches-wrapper"
+                    data-testid="quickpitches-section"
                 >
-                    <div className="flex items-center justify-between py-8">
-                        <div data-testid="proposals-header">
-                            <Title level="2">
-                                {t('proposals.proposalQuickPitches')}
-                            </Title>
-                            <Paragraph
-                                size="sm"
-                                className="text-4 text-content-dark opacity-70"
-                            >
-                                {t('proposals.quickPitchesListSubtitle')}
-                            </Paragraph>
-                        </div>
-                        <div>
-                            <SecondaryLink
-                                className="text-content-dark font-bold"
-                                href={useLocalizedRoute('proposals.index', {
-                                    [ParamsEnum.QUICK_PITCHES]: 1,
-                                    [ParamsEnum.FUNDS]:
-                                        CatalystFundsEnums.FOURTEEN,
-                                })}
-                                data-testid="see-more-proposals"
-                            >
-                                {t('proposals.seeMoreQuickPitches')}
-                            </SecondaryLink>
-                        </div>
+                    <div className="container">
+                        <Title level="2" className='mb-6'>{t('home.quickpitchTitle')}</Title>
+                        <QuickPitchList quickPitches={quickPitches} />
                     </div>
-                    <WhenVisible
-                        fallback={<VerticalCardLoading />}
-                        data="proposals"
-                    >
-                        <ProposalList
-                            proposalAttrs={proposalAttrs}
-                            proposals={proposals}
-                        />
-                    </WhenVisible>
                 </section>
 
                 <section className="my-4 mt-8 w-full px-8">

@@ -29,7 +29,10 @@ interface HomePageProps extends Record<string, unknown> {
     metrics: MetricData[];
     announcements: AnnouncementData[];
     specialAnnouncements: AnnouncementData[];
-    quickPitches: ProposalData[];
+    quickPitches: {
+        featured: ProposalData[];
+        regular: ProposalData[];
+    };
 }
 
 export default function Index({
@@ -45,9 +48,8 @@ export default function Index({
     const [activeIndex, setActiveIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(false);
 
-    useEffect(() => {
-        console.log(quickPitches);
-    }, [quickPitches]);
+    console.log({quickPitches});
+
     return (
         <>
             <Head title="Catalyst Explorer" />

@@ -165,6 +165,7 @@ class FundsController extends Controller
             'amountDistributed' => $amountDistributed,
             'amountRemaining' => $amountRemaining,
             'tallies' => $this->getTallies($activeFund, $perPage, $page),
+            'quickPitches' => $this->getActiveFundQuickPitches($activeFund, $proposals),
         ]);
     }
 
@@ -205,6 +206,43 @@ class FundsController extends Controller
         }
 
         return $query->get();
+    }
+
+    private function getActiveFundQuickPitches(Fund $fund, ProposalRepository $proposals)
+    {
+        try {
+            $rawProposals = $proposals
+                ->with(['users', 'campaign', 'fund'])
+                ->whereNotNull('quickpitch')
+                ->where('fund_id', $fund->id)
+                ->limit(15)
+                ->get();
+
+            if ($rawProposals->count() < 3) {
+                return [
+                    'featured' => collect([]),
+                    'regular' => ProposalData::collect($rawProposals),
+                ];
+            }
+
+            $featuredRaw = $rawProposals->random(3);
+
+            $featuredIds = $featuredRaw->pluck('id');
+            $regularRaw = $rawProposals->whereNotIn('id', $featuredIds);
+
+            return [
+                'featured' => ProposalData::collect($featuredRaw),
+                'regular' => ProposalData::collect($regularRaw),
+            ];
+
+        } catch (\Throwable $e) {
+            report($e);
+
+            return [
+                'featured' => collect([]),
+                'regular' => collect([]),
+            ];
+        }
     }
 
     private function getProposals(Fund $activeFund, ProposalRepository $proposals)
@@ -290,42 +328,42 @@ class FundsController extends Controller
     {
         try {
             $searchQuery = $this->queryParams[ProposalSearchParams::QUERY()->value] ?? null;
-            
+
             $totalVotesCast = CatalystTally::where('context_id', $fund->id)->sum('tally');
 
             $baseQuery = CatalystTally::with(['proposal.campaign'])
                 ->where('context_id', $fund->id)
                 ->whereNotNull('model_id');
-                
+
             // Add search filtering if search query is provided
-            if (!empty($searchQuery)) {
+            if (! empty($searchQuery)) {
                 $baseQuery->whereHas('proposal', function ($query) use ($searchQuery) {
-                    $query->where('title', 'ILIKE', '%' . $searchQuery . '%')
-                          ->orWhereHas('campaign', function ($campaignQuery) use ($searchQuery) {
-                              $campaignQuery->where('title', 'ILIKE', '%' . $searchQuery . '%');
-                          });
+                    $query->where('title', 'ILIKE', '%'.$searchQuery.'%')
+                        ->orWhereHas('campaign', function ($campaignQuery) use ($searchQuery) {
+                            $campaignQuery->where('title', 'ILIKE', '%'.$searchQuery.'%');
+                        });
                 });
             }
-            
+
             $baseQuery->select([
                 'catalyst_tallies.*',
                 DB::raw('ROW_NUMBER() OVER (ORDER BY tally DESC) as fund_ranking'),
             ])
-            ->orderBy('tally', 'desc');
+                ->orderBy('tally', 'desc');
 
             $totalCountQuery = CatalystTally::where('context_id', $fund->id)
                 ->whereNotNull('model_id');
-                
+
             // Apply the same search filtering to the count query
-            if (!empty($searchQuery)) {
+            if (! empty($searchQuery)) {
                 $totalCountQuery->whereHas('proposal', function ($query) use ($searchQuery) {
-                    $query->where('title', 'ILIKE', '%' . $searchQuery . '%')
-                          ->orWhereHas('campaign', function ($campaignQuery) use ($searchQuery) {
-                              $campaignQuery->where('title', 'ILIKE', '%' . $searchQuery . '%');
-                          });
+                    $query->where('title', 'ILIKE', '%'.$searchQuery.'%')
+                        ->orWhereHas('campaign', function ($campaignQuery) use ($searchQuery) {
+                            $campaignQuery->where('title', 'ILIKE', '%'.$searchQuery.'%');
+                        });
                 });
             }
-            
+
             $totalCount = $totalCountQuery->count();
 
             $offset = ($page - 1) * $perPage;

@@ -1,13 +1,28 @@
 import QuickPitchCard from "./QuickPitchCard";
 
 interface QuickPitchListProps {
-    quickPitches?: App.DataTransferObjects.ProposalData[];
+    quickPitches?: {
+        featured: App.DataTransferObjects.ProposalData[];
+        regular: App.DataTransferObjects.ProposalData[];
+    };
 }
 export default function QuickPitchList ({ quickPitches }: QuickPitchListProps) {
+    if (!quickPitches) {
+        return <div className="text-center text-gray-persist">No quickpitches available</div>;
+    }
+    
+    const featuredArray = Array.isArray(quickPitches?.featured) ? quickPitches.featured : [];
+    const regularArray = Array.isArray(quickPitches?.regular) ? quickPitches.regular : [];
+    
+    const allQuickPitches = [
+        ...featuredArray,
+        ...regularArray
+    ];
+
     return (
         <div className="grid md:grid-cols-2 grid-cols-1 gap-2">
             {
-                quickPitches?.map((quickPitch) => (
+                allQuickPitches.map((quickPitch) => (
                     <QuickPitchCard key={quickPitch.id} proposal={quickPitch} thumbnail={''} />
                 ))
             }

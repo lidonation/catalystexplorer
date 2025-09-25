@@ -196,27 +196,27 @@ class Proposal extends Model implements IHasMetaData
 
         $query->when(
             $idsFromHash ?? false,
-            fn(Builder $query, $search) => $query->whereIn('id', $idsFromHash)
+            fn (Builder $query, $search) => $query->whereIn('id', $idsFromHash)
         );
 
         $query->when(
             $filters['search'] ?? false,
-            fn(Builder $query, $search) => $query->where('title', 'ILIKE', '%' . $search . '%')
+            fn (Builder $query, $search) => $query->where('title', 'ILIKE', '%'.$search.'%')
         );
 
         $query->when(
             $filters['user_id'] ?? false,
-            fn(Builder $query, $user_id) => $query->where('user_id', $user_id)
+            fn (Builder $query, $user_id) => $query->where('user_id', $user_id)
         );
 
         $query->when(
             $filters['campaign_id'] ?? false,
-            fn(Builder $query, $campaign_id) => $query->where('campaign_id', $campaign_id)
+            fn (Builder $query, $campaign_id) => $query->where('campaign_id', $campaign_id)
         );
 
         $query->when(
             $filters['fund_id'] ?? false,
-            fn(Builder $query, $fund_id) => $query->whereRelation('fund_id', '=', $fund_id)
+            fn (Builder $query, $fund_id) => $query->whereRelation('fund_id', '=', $fund_id)
         );
     }
 
@@ -228,7 +228,7 @@ class Proposal extends Model implements IHasMetaData
     public function currency(): Attribute
     {
         return Attribute::make(
-            get: fn($currency) => $currency ?? $this->campaign?->currency ?? $this->fund?->currency ?? CatalystCurrencies::ADA()->value,
+            get: fn ($currency) => $currency ?? $this->campaign?->currency ?? $this->fund?->currency ?? CatalystCurrencies::ADA()->value,
         );
     }
 
@@ -252,7 +252,7 @@ class Proposal extends Model implements IHasMetaData
     public function amountReceived(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => ($this->schedule?->funds_distributed ?? $value)
+            get: fn ($value) => ($this->schedule?->funds_distributed ?? $value)
         );
     }
 
@@ -280,7 +280,7 @@ class Proposal extends Model implements IHasMetaData
     public function quickPitchId(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->quickpitch ? collect(
+            get: fn () => $this->quickpitch ? collect(
                 explode(
                     '/',
                     $this->quickpitch
@@ -347,7 +347,7 @@ class Proposal extends Model implements IHasMetaData
     {
         return Attribute::make(
             get: function () {
-                return config('app.url') . "/en/proposals/{$this->slug}";
+                return config('app.url')."/en/proposals/{$this->slug}";
             }
         );
     }
@@ -440,7 +440,7 @@ class Proposal extends Model implements IHasMetaData
 
     public function ratingsAverage(): Attribute
     {
-        return Attribute::make(get: fn() => $this->ratings->avg('rating'));
+        return Attribute::make(get: fn () => $this->ratings->avg('rating'));
     }
 
     /**
@@ -481,17 +481,17 @@ class Proposal extends Model implements IHasMetaData
                 'label' => $this->fund?->label,
                 'title' => $this->fund?->title,
             ],
-            'communities' => $this->communities->map(fn($community) => [
+            'communities' => $this->communities->map(fn ($community) => [
                 'id' => $community->id,
                 'name' => $community->title,
                 'amount' => $this->campaign?->amount,
                 'currency' => $this->campaign?->currency,
             ]),
-            'groups' => $this->groups->map(fn($group) => [
+            'groups' => $this->groups->map(fn ($group) => [
                 'id' => $group->id,
                 'name' => $group->title,
             ]),
-            'users' => $this->team->map(fn($profile) => [
+            'users' => $this->team->map(fn ($profile) => [
                 'id' => $profile?->model?->id,
                 'name' => $profile?->model?->name,
             ]),
@@ -502,7 +502,7 @@ class Proposal extends Model implements IHasMetaData
                 'amount' => $this->campaign?->amount,
                 'currency' => $this->campaign?->currency,
             ],
-            'catalyst_profiles' => $this->catalyst_profiles->map(fn($profile) => [
+            'catalyst_profiles' => $this->catalyst_profiles->map(fn ($profile) => [
                 'id' => $profile->id,
                 'name' => $profile->name,
                 'claimed_by' => $profile->claimed_by,
@@ -510,8 +510,8 @@ class Proposal extends Model implements IHasMetaData
                 'catalyst_id' => $profile->catalyst_id,
             ]),
             'claimed_catalyst_profiles' => $this->catalyst_profiles
-                ->filter(fn($profile) => ! is_null($profile->claimed_by))
-                ->map(fn($profile) => [
+                ->filter(fn ($profile) => ! is_null($profile->claimed_by))
+                ->map(fn ($profile) => [
                     'id' => $profile->id,
                     'name' => $profile->name,
                     'claimed_by' => $profile->claimed_by,
@@ -519,8 +519,8 @@ class Proposal extends Model implements IHasMetaData
                     'catalyst_id' => $profile->catalyst_id,
                 ]),
             'claimed_ideascale_profiles' => $this->ideascale_profiles
-                ->filter(fn($profile) => ! is_null($profile->claimed_by_uuid))
-                ->map(fn($profile) => [
+                ->filter(fn ($profile) => ! is_null($profile->claimed_by_uuid))
+                ->map(fn ($profile) => [
                     'id' => $profile->id,
                     'name' => $profile->name,
                     'claimed_by_uuid' => $profile->claimed_by_uuid,
@@ -529,15 +529,15 @@ class Proposal extends Model implements IHasMetaData
                 ]),
             // Convenience fields for searching claimed profiles
             'claimed_profile_ids' => array_merge(
-                $this->catalyst_profiles->filter(fn($p) => ! is_null($p->claimed_by))->pluck('id')->toArray(),
-                $this->ideascale_profiles->filter(fn($p) => ! is_null($p->claimed_by_uuid))->pluck('id')->toArray()
+                $this->catalyst_profiles->filter(fn ($p) => ! is_null($p->claimed_by))->pluck('id')->toArray(),
+                $this->ideascale_profiles->filter(fn ($p) => ! is_null($p->claimed_by_uuid))->pluck('id')->toArray()
             ),
             'claimed_catalyst_profile_ids' => $this->catalyst_profiles
-                ->filter(fn($profile) => ! is_null($profile->claimed_by))
+                ->filter(fn ($profile) => ! is_null($profile->claimed_by))
                 ->pluck('id')
                 ->toArray(),
             'claimed_ideascale_profile_ids' => $this->ideascale_profiles
-                ->filter(fn($profile) => ! is_null($profile->claimed_by_uuid))
+                ->filter(fn ($profile) => ! is_null($profile->claimed_by_uuid))
                 ->pluck('id')
                 ->toArray(),
         ]);
@@ -618,7 +618,7 @@ class Proposal extends Model implements IHasMetaData
 
                 return Nft::whereRelation(
                     'ideascale_profile',
-                    fn($q) => $q->whereIn('ideascale_profiles.id', $this->users->pluck('id')->toArray())
+                    fn ($q) => $q->whereIn('ideascale_profiles.id', $this->users->pluck('id')->toArray())
                 )
                     ->whereJsonContains('metadata->Project Title', $englishTitle)
                     ->get();
@@ -680,7 +680,6 @@ class Proposal extends Model implements IHasMetaData
         );
     }
 
-
     public function commentableName(): string
     {
         return $this->title;
@@ -708,7 +707,7 @@ class Proposal extends Model implements IHasMetaData
             'amount_received' => 'integer',
             'amount_requested' => 'integer',
             'created_at' => DateFormatCast::class,
-            'currency' => CatalystCurrencies::class . ':nullable',
+            'currency' => CatalystCurrencies::class.':nullable',
             'funded_at' => DateFormatCast::class,
             'funding_updated_at' => DateFormatCast::class,
             'offchain_metas' => 'array',
