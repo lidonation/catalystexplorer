@@ -11,6 +11,7 @@ import { useState, useEffect } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { usePage } from '@inertiajs/react';
+import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import ProposalData = App.DataTransferObjects.ProposalData;
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import PdfIcon from '@/Components/svgs/PdfIcon';
@@ -20,13 +21,15 @@ interface ProposalPdfHeaderProps {
   proposals: ProposalData[];
   bookmarkCollection: BookmarkCollectionData;
   selectedColumns?: string[];
+  onOpenShareModal?: () => void;
 }
 
 const ProposalPdfHeader: React.FC<ProposalPdfHeaderProps> = ({ 
   itemCount, 
   proposals,
   bookmarkCollection,
-  selectedColumns
+  selectedColumns,
+  onOpenShareModal
 }) => {
   const { t, currentLocale } = useLaravelReactI18n();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -224,22 +227,36 @@ const ProposalPdfHeader: React.FC<ProposalPdfHeaderProps> = ({
             {
               label: t('proposalPdfHeader.shareOnX'),
               onClick: () => {
-                // Handle share on X
+                onOpenShareModal?.();
               },
               icon: <ShareIcon className="w-5 h-5" />,
               iconPosition: 'left',
               disabled: false,
-              disabledTooltip: t('proposalPdfHeader.comingSoon')
             },
             {
               label: t('proposalPdfHeader.downloadImage'),
               onClick: () => {
-                // Handle image download
+                let downloadUrl = generateLocalizedRoute('lists.downloadPng', {
+                  bookmarkCollection: bookmarkCollection.id,
+                  type: 'proposals'
+                });
+                
+                const params = new URLSearchParams();
+                
+                const userSelectedColumns = selectedColumns;
+                if (userSelectedColumns && userSelectedColumns.length > 0) {
+                  const pngColumns = userSelectedColumns.filter(col => col !== 'viewProposal');
+                  if (pngColumns.length > 0) {
+                    params.set('columns', JSON.stringify(pngColumns));
+                  }
+                }
+                
+                downloadUrl += `?${params.toString()}`;
+                window.open(downloadUrl, '_blank');
               },
               icon: <Image className="w-5 h-5" />,
               iconPosition: 'left',
-              disabled: true,
-              disabledTooltip: t('proposalPdfHeader.comingSoon')
+              disabled: false,
             }
           ]}
           className="relative"

@@ -56,6 +56,7 @@ interface ProposalTableViewProps {
     protectedColumns?: string[];
     excludeColumnsFromSelector?: string[];
     disableInertiaLoading?: boolean; // Disable WhenVisible loading for streaming data
+    containerClassName?: string;
 }
 
 const renderIconOnlyViewActions = (proposal: ProposalData, actionsConfig: IconAction[] = ['compare', 'bookmark']) => {
@@ -142,7 +143,8 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
     onColumnSelectorOpen,
     protectedColumns = [],
     excludeColumnsFromSelector = ['manageProposal'],
-    disableInertiaLoading = false
+    disableInertiaLoading = false,
+    containerClassName = ''
 }) => {
     const { t } = useLaravelReactI18n();
 
@@ -296,7 +298,7 @@ const ProposalTableView: React.FC<ProposalTableViewProps> = ({
 
     return (
         <>
-            <div className="container mt-8">
+            <div className={`container mt-8 ${containerClassName}`.trim()}>
                 {!isColumnsLoading && (
                     <div className="flex justify-start mb-4">
                         <ColumnSelector

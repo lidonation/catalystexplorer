@@ -29,6 +29,7 @@ import ProposalPdfView from '../Proposals/Partials/ProposalPdfView';
 import BookmarkModelSearch from './Partials/BookmarkModelSearch';
 import DropdownMenu, { DropdownMenuItem } from './Partials/DropdownMenu';
 import ListSettingsForm, { ListForm } from './Partials/ListSettingsForm.tsx';
+import ShareOnXModal from './Partials/ShareOnXModal';
 import { useUserSetting } from '@/useHooks/useUserSettings';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
@@ -269,8 +270,14 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
     const { value: isHorizontal } = useUserSetting<boolean>(userSettingEnums.VIEW_HORIZONTAL, false);
     const { value: isMini } = useUserSetting<boolean>(userSettingEnums.VIEW_MINI, false);
 
+
+    const { value: selectedColumns } = useUserSetting<string[]>(
+        userSettingEnums.PROPOSAL_PDF_COLUMNS
+    );
+
     const [activeEditModal, setActiveEditModal] = useState<boolean>(false);
     const [activeConfirm, setActiveConfirm] = useState<boolean>(false);
+    const [activeShareModal, setActiveShareModal] = useState<boolean>(false);
 
     const [streamedProposals, setStreamedProposals] = useState<ProposalData[]>([]);
 
@@ -454,10 +461,10 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                     ? {
                         ...props.proposals,
                         data: streamedProposals,
-                      }
+                    }
                     : props.proposals;
 
-                if (isVoterList && !streamedProposals.length ) {
+                if (isVoterList && !streamedProposals.length) {
                     return (
                         <div className="container flex justify-center items-center py-8">
                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -474,6 +481,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                                 listTitle={bookmarkCollection.title ?? 'My List'}
                                 bookmarkCollection={bookmarkCollection}
                                 onOpenSettings={() => setActiveEditModal(true)}
+                                onOpenShareModal={() => setActiveShareModal(true)}
                             />
                         </div>
                     );
@@ -608,6 +616,20 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                     </div>
                 </div>
             </Modal>
+
+            {/* Share on X Modal */}
+            <ShareOnXModal
+                isOpen={!!activeShareModal}
+                onClose={() => setActiveShareModal(false)}
+                bookmarkCollection={bookmarkCollection}
+                user={user}
+                auth={auth}
+                type={type}
+                selectedColumns={selectedColumns}
+                props={props}
+                streamedProposals={streamedProposals}
+                isVoterList={isVoterList}
+            />
         </div>
     );
 };

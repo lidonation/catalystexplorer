@@ -15,25 +15,25 @@ function Paragraph({
 
     if (size === 'xs') {
         content = (
-            <p {...props} className={`text-xs ${className}`}>
+            <p {...props} className={`text-xs m-0 ${className}`}>
                 {children}
             </p>
         );
     }else if (size === 'sm') {
         content = (
-            <p {...props} className={`text-sm ${className}`}>
+            <p {...props} className={`text-sm m-0 ${className}`}>
                 {children}
             </p>
         );
     } else if (size === 'lg') {
         content = (
-            <p {...props} className={`text-lg ${className}`}>
+            <p {...props} className={`text-lg m-0 ${className}`}>
                 {children}
             </p>
         );
     } else {
         content = (
-            <p {...props} className={`text-md ${className}`}>
+            <p {...props} className={`text-md m-0 ${className}`}>
                 {children}
             </p>
         );
