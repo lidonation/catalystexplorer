@@ -146,5 +146,8 @@ final class ProposalData extends Data
         #[TypeScriptOptional]
         public ?bool $is_claimed,
 
+           #[TypeScriptOptional]
+        public ?string $quickpitch_thumbnail,
+
     ) {}
 }

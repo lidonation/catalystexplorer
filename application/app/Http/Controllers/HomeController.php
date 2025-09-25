@@ -11,6 +11,8 @@ use App\Enums\MetricsContext;
 use App\Enums\ProposalStatus;
 use App\Enums\StatusEnum;
 use App\Models\Announcement;
+use App\Models\Fund;
+use App\Models\Proposal;
 use App\Repositories\AnnouncementRepository;
 use App\Repositories\MetricRepository;
 use App\Repositories\PostRepository;
@@ -29,26 +31,27 @@ class HomeController extends Controller
     ): Response {
         return Inertia::render('Home/Index', [
             'posts' => Inertia::optional(
-                fn () => $this->getPosts($postRepository)
+                fn() => $this->getPosts($postRepository)
             ),
             'proposals' => Inertia::optional(
-                fn () => $this->getProposals($proposals)
+                fn() => $this->getProposals($proposals)
             ),
             'metrics' => Inertia::optional(
-                fn () => collect($this->getHomeMetrics($metrics))
+                fn() => collect($this->getHomeMetrics($metrics))
                     ->filter(
-                        fn (MetricData $metric) => ! empty($metric->chartData) &&
+                        fn(MetricData $metric) => ! empty($metric->chartData) &&
                             ! empty($metric->chartData['data']) &&
-                            collect($metric->chartData['data'])->contains(fn ($point) => ! empty($point['y']))
+                            collect($metric->chartData['data'])->contains(fn($point) => ! empty($point['y']))
                     )
                     ->values()
             ),
             'announcements' => Inertia::optional(
-                fn () => $this->getAnnouncements($announcements)
+                fn() => $this->getAnnouncements($announcements)
             ),
             'specialAnnouncements' => Inertia::optional(
-                fn () => $this->getSpecialAnnouncements()
+                fn() => $this->getSpecialAnnouncements()
             ),
+            'quickPitches' => fn() => $this->getProposalQuickPitches($proposals),
         ]);
     }
 
@@ -120,7 +123,7 @@ class HomeController extends Controller
                     ->latest('event_ends_at')
                     ->limit(6)
                     ->get()
-                    ->map(fn ($announcement) => [
+                    ->map(fn($announcement) => [
                         'id' => $announcement->id,
                         'title' => $announcement->title,
                         'content' => $announcement->content,
@@ -148,4 +151,44 @@ class HomeController extends Controller
                 ->get()
         );
     }
+
+    private function getProposalQuickPitches(ProposalRepository $proposals)
+{
+    $activeFundId = Fund::latest('launched_at')->value('id');
+
+    try {
+        $rawProposals = $proposals
+            ->with(['users', 'campaign', 'fund'])
+            ->whereNotNull('quickpitch')
+            ->where('fund_id', $activeFundId)
+            ->limit(15)
+            ->get();
+
+        if ($rawProposals->count() < 3) {
+            return [
+                'featured' => collect([]),
+                'regular' => ProposalData::collect($rawProposals)
+            ];
+        }
+
+
+        $featuredRaw = $rawProposals->random(3);
+        
+        $featuredIds = $featuredRaw->pluck('id');
+        $regularRaw = $rawProposals->whereNotIn('id', $featuredIds);
+
+        return [
+            'featured' => ProposalData::collect($featuredRaw),
+            'regular' => ProposalData::collect($regularRaw)
+        ];
+
+    } catch (\Throwable $e) {
+        report($e);
+
+        return [
+            'featured' => collect([]),
+            'regular' => collect([])
+        ];
+    }
+}
 }
