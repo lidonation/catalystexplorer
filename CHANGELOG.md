@@ -1,3 +1,10 @@
+# [1.32.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.31.3...v1.32.0) (2025-09-25)
+
+
+### Features
+
+* proposal metadata widget ([cff3cad](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/cff3cad4fb17fe76eadc513548bab06a11063e52))
+
 ## [1.31.3](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.31.2...v1.31.3) (2025-09-25)
 
 
