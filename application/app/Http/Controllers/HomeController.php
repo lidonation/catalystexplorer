@@ -11,6 +11,7 @@ use App\Enums\MetricsContext;
 use App\Enums\ProposalStatus;
 use App\Enums\StatusEnum;
 use App\Models\Announcement;
+use App\Models\Fund;
 use App\Repositories\AnnouncementRepository;
 use App\Repositories\MetricRepository;
 use App\Repositories\PostRepository;
@@ -49,6 +50,7 @@ class HomeController extends Controller
             'specialAnnouncements' => Inertia::optional(
                 fn () => $this->getSpecialAnnouncements()
             ),
+            'quickPitches' => fn () => $this->getProposalQuickPitches($proposals),
         ]);
     }
 
@@ -147,5 +149,44 @@ class HomeController extends Controller
                 ->orderByDesc('order')
                 ->get()
         );
+    }
+
+    private function getProposalQuickPitches(ProposalRepository $proposals)
+    {
+        $activeFundId = Fund::latest('launched_at')->value('id');
+
+        try {
+            $rawProposals = $proposals
+                ->with(['users', 'campaign', 'fund'])
+                ->whereNotNull('quickpitch')
+                ->where('fund_id', $activeFundId)
+                ->limit(15)
+                ->get();
+
+            if ($rawProposals->count() < 3) {
+                return [
+                    'featured' => collect([]),
+                    'regular' => ProposalData::collect($rawProposals),
+                ];
+            }
+
+            $featuredRaw = $rawProposals->random(3);
+
+            $featuredIds = $featuredRaw->pluck('id');
+            $regularRaw = $rawProposals->whereNotIn('id', $featuredIds);
+
+            return [
+                'featured' => ProposalData::collect($featuredRaw),
+                'regular' => ProposalData::collect($regularRaw),
+            ];
+
+        } catch (\Throwable $e) {
+            report($e);
+
+            return [
+                'featured' => collect([]),
+                'regular' => collect([]),
+            ];
+        }
     }
 }
