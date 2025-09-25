@@ -1459,5 +1459,9 @@
     "workflows.createService.success.message": "Ihr Service wurde verarbeitet und ist jetzt live. Sie können ihn in Ihrer öffentlichen Auflistung ansehen oder über Ihr Service-Dashboard verwalten.",
     "workflows.createService.success.viewPublicListing": "Öffentliche Auflistung anzeigen",
     "workflows.createService.success.goToMyServices": "Zu meinen Services",
-    "workflows.createService.editService": "Service bearbeiten"
+    "workflows.createService.editService": "Service bearbeiten",
+    "proposal.metadata.totalVotes": "Gesamtstimmen",
+    "proposal.metadata.viewInExplorer": "Im Explorer anzeigen",
+    "proposal.metadata.title": "Vorschlags-Metadaten",
+    "proposal.metadata.links": "Links"
 }

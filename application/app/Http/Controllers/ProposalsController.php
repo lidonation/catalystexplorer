@@ -358,6 +358,8 @@ class ProposalsController extends Controller
 
     public function manageProposal(Request $request, Proposal $proposal): Response
     {
+        $proposal->load(['fund', 'campaign']);
+
         Gate::authorize('manage', $proposal);
 
         $metadata = app(VideoService::class)->getVideoMetadata($proposal->quickpitch);
