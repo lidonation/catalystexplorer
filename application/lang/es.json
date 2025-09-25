@@ -1427,7 +1427,6 @@
     "widgets.quickPitch.deleteVideo": "Eliminar video",
     "widgets.quickPitch.add": "Agregar presentación rápida",
     "widgets.quickPitch.disclaimer": "Reclama la propuesta para agregar una presentación rápida",
-    "proposals.manageProposal": "Gestionar Propuesta",
     "proposals.managingProposal": "Gestionando: :title",
     "proposals.manageDescription": "Usa los widgets de abajo para gestionar la configuración y contenido de tu propuesta.",
     "workflows.claimCatalystProfile.connectWallet": "Conectar billetera",
@@ -1465,6 +1464,9 @@
     "activeFund.votingStats.liveTally": "Recuento en Vivo",
     "activeFund.votingStats.limitToCampaigns": "Limitar a Campañas",
     "activeFund.votingStats.selectCampaigns": "Seleccionar campañas",
+    "activeFund.votingStats.limitToFunds": "Limitar a Fondos",
+    "activeFund.votingStats.selectFunds": "Seleccionar fondos",
     "activeFund.noVotingStatsAvailable": "No hay estadísticas de votación disponibles",
-    "campaigns": "Campañas"
+    "campaigns": "Campañas",
+    "funds": "Fondos"
 }

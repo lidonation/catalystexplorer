@@ -20,7 +20,6 @@ use App\Repositories\FundRepository;
 use App\Repositories\MetricRepository;
 use App\Repositories\ProposalRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -156,12 +155,15 @@ class FundsController extends Controller
         $page = (int) $request->get('p', 1);
         $perPage = (int) $request->get('per_page', 24);
 
+        $allFunds = Fund::orderBy('launched_at', 'desc')->get();
+
         return Inertia::render('ActiveFund/Index', [
             'proposals' => Inertia::optional(
                 fn () => $this->getProposals($activeFund, $proposals)
             ),
             'fund' => FundData::from($activeFund),
             'campaigns' => $campaigns,
+            'funds' => $allFunds,
             'amountDistributed' => $amountDistributed,
             'amountRemaining' => $amountRemaining,
             'tallies' => $this->getTallies($activeFund, $perPage, $page),
@@ -175,6 +177,7 @@ class FundsController extends Controller
             ProposalSearchParams::SORTS()->value,
             ProposalSearchParams::QUERY()->value,
             ProposalSearchParams::CAMPAIGNS()->value,
+            ProposalSearchParams::FUNDS()->value,
             ProposalSearchParams::PAGE()->value,
             ProposalSearchParams::PER_PAGE()->value,
         ]);
@@ -320,6 +323,13 @@ class FundsController extends Controller
                 });
             }
 
+            $fundFilter = $this->queryParams[ProposalSearchParams::FUNDS()->value] ?? null;
+            if (! empty($fundFilter) && is_array($fundFilter)) {
+                $baseQuery->whereHas('proposal.fund', function ($query) use ($fundFilter) {
+                    $query->whereIn('id', $fundFilter);
+                });
+            }
+
             if (! empty($searchQuery)) {
                 $searchTerm = trim($searchQuery);
                 $baseQuery->whereHas('proposal', function ($query) use ($searchTerm) {
@@ -354,10 +364,7 @@ class FundsController extends Controller
             }
 
             $talliesWithRanking = $baseQuery
-                ->select([
-                    'catalyst_tallies.*',
-                    DB::raw('ROW_NUMBER() OVER (ORDER BY tally DESC, id ASC) as fund_ranking'),
-                ])
+                ->with('metas')
                 ->orderBy($orderByColumn, $orderByDirection)
                 ->orderBy('id', 'asc')
                 ->skip($offset)
@@ -407,10 +414,18 @@ class FundsController extends Controller
                     }
                 }
 
+                $fundRanking = null;
+                if ($tally->metas && $tally->metas->isNotEmpty()) {
+                    $fundRankMeta = $tally->metas->firstWhere('key', 'overall_rank');
+                    if ($fundRankMeta) {
+                        $fundRanking = (int) $fundRankMeta->content;
+                    }
+                }
+
                 return [
                     'id' => $tally->id,
                     'votes_count' => $tally->tally,
-                    'fund_ranking' => $tally->fund_ranking,
+                    'fund_ranking' => $fundRanking,
                     'latest_fund' => [
                         'id' => $fund->id,
                         'title' => $fund->title,

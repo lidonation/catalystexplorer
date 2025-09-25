@@ -156,9 +156,11 @@ export function FiltersProvider({
                 changedParams.includes(ParamsEnum.PAGE) ||
                 changedParams.includes(ParamsEnum.LIMIT);
 
+            const shouldPreserveScroll = !changedParams.includes(ParamsEnum.PAGE);
+
             router.get(currentUrl, formatToParams(), {
                 preserveState: true,
-                preserveScroll: !paginationFiltered,
+                preserveScroll: shouldPreserveScroll,
                 ...routerOptions,
             });
         }, 50);
