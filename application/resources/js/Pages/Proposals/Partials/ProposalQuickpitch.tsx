@@ -29,14 +29,28 @@ export default function ProposalQuickpitch({
         setIsClient(true);
     }, []);
 
-    // Memoize the video data to avoid recalculating it on every render
+    function extractYouTubeId(url: string): string | null {
+        try {
+            const regExp =
+                /^.*(?:youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return match && match[1].length === 11 ? match[1] : null;
+        } catch {
+            return null;
+        }
+    }
+
     const videoData = useMemo<VideoData>(() => {
         if (quickpitch) {
-            return {
-                id: quickpitch,
-                provider: 'youtube',
-                error: null,
-            };
+            const id = extractYouTubeId(quickpitch);
+            if (!id) {
+                return {
+                    id: null,
+                    provider: 'youtube',
+                    error: 'Invalid YouTube URL',
+                };
+            }
+            return { id, provider: 'youtube', error: null };
         }
         return { id: null, provider: 'html5', error: null };
     }, [quickpitch]);

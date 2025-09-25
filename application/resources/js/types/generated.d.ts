@@ -119,6 +119,13 @@ username: string | null;
 claimed_by: string | null;
 catalyst_id: string | null;
 };
+export type CatalystTallyData = {
+tally: number | null;
+overall_rank: number | null;
+fund_rank: number | null;
+category_rank: number | null;
+model: App.DataTransferObjects.ProposalData | null;
+};
 export type CategoryData = {
 id: string;
 name: string;
@@ -530,6 +537,7 @@ order?: number;
 user_rationale?: string;
 catalyst_profiles: any | null;
 is_claimed?: boolean;
+quickpitch_thumbnail?: string;
 };
 export type RankingData = {
 id?: string;
