@@ -1,3 +1,10 @@
+## [1.31.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.31.1...v1.31.2) (2025-09-24)
+
+
+### Bug Fixes
+
+* **proposal live tally:** ln-2031 refactored the proposal live tally ([01fd811](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/01fd811e0021f0ff4cf70578e73821ea5900da37))
+
 ## [1.31.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.31.0...v1.31.1) (2025-09-23)
 
 
