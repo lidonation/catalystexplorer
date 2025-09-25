@@ -155,20 +155,18 @@ class FundsController extends Controller
         $page = (int) $request->get('p', 1);
         $perPage = (int) $request->get('per_page', 24);
 
-        $allFunds = Fund::orderBy('launched_at', 'desc')->get();
-
         return Inertia::render('ActiveFund/Index', [
             'proposals' => Inertia::optional(
                 fn () => $this->getProposals($activeFund, $proposals)
             ),
             'fund' => FundData::from($activeFund),
             'campaigns' => $campaigns,
-            'funds' => $allFunds,
             'amountDistributed' => $amountDistributed,
             'amountRemaining' => $amountRemaining,
             'tallies' => $this->getTallies($activeFund, $perPage, $page),
             'quickPitches' => $this->getActiveFundQuickPitches($activeFund, $proposals),
             'filters' => $this->queryParams,
+            'quickPitches' => $this->getActiveFundQuickPitches($activeFund, $proposals),
         ]);
     }
 
@@ -454,7 +452,7 @@ class FundsController extends Controller
 
                 $fundRanking = null;
                 if ($tally->metas && $tally->metas->isNotEmpty()) {
-                    $fundRankMeta = $tally->metas->firstWhere('key', 'overall_rank');
+                    $fundRankMeta = $tally->metas->firstWhere('key', 'fund_rank');
                     if ($fundRankMeta) {
                         $fundRanking = (int) $fundRankMeta->content;
                     }

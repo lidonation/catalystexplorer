@@ -50,7 +50,7 @@ class HomeController extends Controller
             'specialAnnouncements' => Inertia::optional(
                 fn () => $this->getSpecialAnnouncements()
             ),
-            'quickPitches' => $this->getProposalQuickPitches($proposals),
+            'quickPitches' => fn () => $this->getProposalQuickPitches($proposals),
         ]);
     }
 

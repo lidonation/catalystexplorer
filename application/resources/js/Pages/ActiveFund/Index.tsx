@@ -52,7 +52,6 @@ const Index: React.FC<ActiveFundsProp> = ({
     amountDistributed,
     amountRemaining,
     tallies,
-    quickPitches,
     filters,
     quickPitches,
 }) => {
@@ -172,7 +171,7 @@ const Index: React.FC<ActiveFundsProp> = ({
                     className="quickpitches-wrapper"
                     data-testid="quickpitches-section"
                 >
-                    <div className="container">
+                    <div className="m-8">
                         <Title level="2" className='mb-6'>{t('home.quickpitchTitle')}</Title>
                         <QuickPitchList quickPitches={quickPitches} />
                     </div>
@@ -189,7 +188,7 @@ const Index: React.FC<ActiveFundsProp> = ({
                         funds={funds}
                         showPagination={true}
                         showFilters={true}
-                        filters={filters || {}}
+                        filters={{}}
                         routerOptions={{ 
                             only: ['tallies'],
                             preserveState: true,
