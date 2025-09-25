@@ -21,6 +21,7 @@ interface ProposalPdfViewProps {
   bookmarkCollection: BookmarkCollectionData;
   pageBackgroundColor?: string;
   onOpenSettings?: () => void;
+  onOpenShareModal?: () => void;
 }
 
 const ProposalPdfView: React.FC<ProposalPdfViewProps> = ({
@@ -28,7 +29,8 @@ const ProposalPdfView: React.FC<ProposalPdfViewProps> = ({
   isAuthor,
   listTitle,
   bookmarkCollection,
-  onOpenSettings
+  onOpenSettings,
+  onOpenShareModal
 }) => {
   const { t } = useLaravelReactI18n();
 
@@ -72,6 +74,7 @@ const ProposalPdfView: React.FC<ProposalPdfViewProps> = ({
         proposals={proposals.data || []}
         bookmarkCollection={bookmarkCollection}
         selectedColumns={selectedColumns || defaultPdfColumns}
+        onOpenShareModal={onOpenShareModal}
       />
 
       {/* PDF View Content */}
