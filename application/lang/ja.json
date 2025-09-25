@@ -1465,5 +1465,9 @@
     "shareNoteImageAttachment": "📎 注記：Xに投稿した後、最適な視覚効果を得るために、ダウンロードした画像を手動でツイートに添付する必要があります。",
     "shareXMessage": "こんにちは、Catalyst Explorerで作成した私の投票リスト「{title}」をご覧ください。{url}",
     "votingListExport": "投票リストのエクスポート",
-    "funds": "ファンド"
+    "funds": "ファンド",
+    "proposal.metadata.totalVotes": "総投票数",
+    "proposal.metadata.viewInExplorer": "エクスプローラーで表示",
+    "proposal.metadata.title": "提案メタデータ",
+    "proposal.metadata.links": "リンク"
 }

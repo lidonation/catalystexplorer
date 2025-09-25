@@ -1472,5 +1472,9 @@
     "shareNoteImageAttachment": "📎 Nota: Após postar no X, você precisará anexar manualmente a imagem baixada ao seu tweet para o melhor impacto visual.",
     "shareXMessage": "Ei, dê uma olhada na minha Lista de Votação, \"{title}\", criada no Catalyst Explorer. {url}",
     "votingListExport": "Exportação de Lista de Votação",
-    "funds": "Fundos"
+    "funds": "Fundos",
+    "proposal.metadata.totalVotes": "Total de Votos",
+    "proposal.metadata.viewInExplorer": "Ver no Explorador",
+    "proposal.metadata.title": "Metadados da Proposta",
+    "proposal.metadata.links": "Links"
 }

@@ -1513,5 +1513,9 @@
     "shareNoteImageAttachment": "📎 Kumbuka: Baada ya kuchapisha kwenye X, utahitaji kuambatisha kwa mikono picha uliyopakua kwenye tweet yako kwa athari bora ya kuona.",
     "shareXMessage": "Hujambo, angalia Orodha yangu ya Kupiga Kura, \"{title}\", iliyoundwa kwenye Catalyst Explorer. {url}",
     "votingListExport": "Uhamishaji wa Orodha ya Ura",
-    "funds": "Mifuko"
+    "funds": "Mifuko",
+    "proposal.metadata.totalVotes": "Jumla ya Kura",
+    "proposal.metadata.viewInExplorer": "Tazama kwenye Kichunguzi",
+    "proposal.metadata.title": "Metadata ya Pendekezo",
+    "proposal.metadata.links": "Tovuti"
 }

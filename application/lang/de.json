@@ -1468,5 +1468,9 @@
     "postOnX": "Auf X posten",
     "shareNoteImageAttachment": "📎 Hinweis: Nach dem Posten auf X müssen Sie das heruntergeladene Bild manuell an Ihren Tweet anhängen, um die beste visuelle Wirkung zu erzielen.",
     "shareXMessage": "Hey, schau dir meine Abstimmungsliste \":title\" an, erstellt im Catalyst Explorer. :url",
-    "votingListExport": "Abstimmungslisten-Export"
+    "votingListExport": "Abstimmungslisten-Export",
+    "proposal.metadata.totalVotes": "Gesamtstimmen",
+    "proposal.metadata.viewInExplorer": "Im Explorer anzeigen",
+    "proposal.metadata.title": "Vorschlags-Metadaten",
+    "proposal.metadata.links": "Links"
 }

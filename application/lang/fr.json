@@ -1480,5 +1480,9 @@
     "votingListExport": "Export de Liste de Vote",
     "campaigns": "Campagnes",
     "funds": "Fonds",
-    "workflows.claimCatalystProfile.managePropositions": "Gérer Mes Propositions"
+    "workflows.claimCatalystProfile.managePropositions": "Gérer Mes Propositions",
+    "proposal.metadata.totalVotes": "Nombre total de votes",
+    "proposal.metadata.viewInExplorer": "Voir dans l’explorateur",
+    "proposal.metadata.title": "Métadonnées de la proposition",
+    "proposal.metadata.links": "Liens"
 }

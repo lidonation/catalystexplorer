@@ -1537,5 +1537,9 @@
     "postOnX": "Post on X",
     "shareNoteImageAttachment": "📎 Note: After posting to X, you'll need to manually attach the downloaded image to your tweet for the best visual impact.",
     "shareXMessage": "Hey, have a look at my Voting List, \"{title}\", created on the Catalyst Explorer. {url}",
-    "votingListExport": "Voting List Export"
+    "votingListExport": "Voting List Export",
+    "proposal.metadata.totalVotes": "Total Votes",
+    "proposal.metadata.viewInExplorer": "View in Explorer",
+    "proposal.metadata.title": "Proposal Metadata",
+    "proposal.metadata.links": "Links"
 }
