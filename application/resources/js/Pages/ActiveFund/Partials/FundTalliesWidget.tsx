@@ -36,6 +36,7 @@ interface FundTalliesWidgetProps {
     routerOptions?: Record<string, any>;
     showFilters?: boolean;
     campaigns?: any[];
+    funds?: any[];
 }
 
 const TableHeader: React.FC<{ label: string; isLastColumn?: boolean }> = ({
@@ -142,10 +143,20 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
     limit = 10,
     showFilters = false,
     campaigns = [],
+    funds = [],
     lastUpdated,
 }) => {
     const { t } = useLaravelReactI18n();
     const { setFilters, getFilter } = useFilterContext();
+    
+    const fundOptions = useMemo(() => {
+        const options = funds?.map((fund) => ({
+            value: fund.id,
+            label: fund.title || fund.label,
+        })) || [];
+        return options;
+    }, [funds]);
+
     const [sortBy, setSortBy] = useState<'votes' | 'ranking' | 'proposal' | 'budget'>('ranking');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [filtersVisible, setFiltersVisible] = useState(false);
@@ -158,6 +169,7 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
 
     const searchTerm = (getFilter(ParamsEnum.QUERY) || '') as string;
     const campaignFilter = (getFilter(ParamsEnum.CAMPAIGNS) || []) as string[];
+    const fundFilter = (getFilter(ParamsEnum.FUNDS) || []) as string[];
 
     const currentSort = getFilter(ParamsEnum.SORTS) || null;
     const [sortField, sortDirection] = currentSort ? currentSort.split(':') : [null, null];
@@ -248,21 +260,19 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
         prevDataRef.current = tallies;
     }, [tallies]);
 
-    // Preserve scroll position during updates
     useEffect(() => {
         if (showPagination && widgetRef.current && !isLoading) {
-            // Scroll the widget into view to prevent page jumping
             const rect = widgetRef.current.getBoundingClientRect();
-            const isVisible = rect.top >= 0 && rect.top <= window.innerHeight;
+            const isWidgetAboveViewport = rect.bottom < 0;
             
-            if (!isVisible) {
+            if (isWidgetAboveViewport && tallies?.current_page) {
                 widgetRef.current.scrollIntoView({ 
                     behavior: 'smooth', 
                     block: 'start' 
                 });
             }
         }
-    }, [tallies?.current_page, searchTerm, showPagination, isLoading]);
+    }, [tallies?.current_page, showPagination, isLoading]);
 
     const formatBudget = (proposal?: ProposalData, fund?: FundData): string => {
         if (!proposal || !proposal.amount_requested) return 'N/A';
@@ -291,13 +301,10 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
     };
 
     const filteredData = useMemo(() => {
-        // For paginated data, return the server-filtered data as-is
-        // The search filtering is handled server-side via the FiltersContext
         if (showPagination) {
             return tallies?.data || [];
         }
 
-        // For non-paginated data, apply client-side filtering
         let filtered = tallies?.data || [];
 
         if (searchTerm.trim()) {
@@ -314,6 +321,13 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
             filtered = filtered.filter(stat =>
                 stat.latest_proposal?.campaign?.id &&
                 campaignFilter.includes(stat.latest_proposal.campaign.id)
+            );
+        }
+
+        if (fundFilter.length > 0) {
+            filtered = filtered.filter(stat =>
+                stat.latest_fund?.id &&
+                fundFilter.includes(stat.latest_fund.id)
             );
         }
 
@@ -362,7 +376,7 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
         });
 
         return filtered;
-    }, [tallies?.data, searchTerm, campaignFilter, sortBy, sortOrder, showPagination]);
+    }, [tallies?.data, searchTerm, campaignFilter, fundFilter, sortBy, sortOrder, showPagination]);
 
     const displayData = showPagination
         ? filteredData
@@ -456,6 +470,26 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
                                 className="bg-background"
                             />
                         </div>
+                        <div className="flex flex-col gap-2">
+                            <span className="text-sm font-medium text-content">
+                                {t('activeFund.votingStats.limitToFunds')}
+                            </span>
+                            <Selector
+                                isMultiselect={true}
+                                selectedItems={fundFilter}
+                                setSelectedItems={(value) =>
+                                    setFilters({
+                                        param: ParamsEnum.FUNDS,
+                                        value,
+                                        label: t('funds'),
+                                    })
+                                }
+                                options={fundOptions}
+                                hideCheckbox={false}
+                                placeholder={t('activeFund.votingStats.selectFunds')}
+                                className="bg-background"
+                            />
+                        </div>
                     </div>
                 </div>
             )}
@@ -505,7 +539,7 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
                                         <TableCell className="w-auto">
                                             <div className="flex items-center gap-2">
                                                 <span className="text-slate-400 text-sm">
-                                                    ({ordinal(stat.fund_ranking || 0)})
+                                                    {stat.fund_ranking ? `(${ordinal(stat.fund_ranking)})` : '(_)'}
                                                 </span>
                                                 <span className="text-content">
                                                     {stat.latest_proposal?.title}

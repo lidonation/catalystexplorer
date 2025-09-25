@@ -1460,6 +1460,8 @@
     "activeFund.votingStats.liveTally": "실시간 집계",
     "activeFund.votingStats.limitToCampaigns": "캠페인으로 제한",
     "activeFund.votingStats.selectCampaigns": "캠페인 선택",
+    "activeFund.votingStats.limitToFunds": "펀드로 제한",
+    "activeFund.votingStats.selectFunds": "펀드 선택",
     "activeFund.noVotingStatsAvailable": "사용 가능한 투표 통계가 없습니다",
     "campaigns": "캠페인",
     "shareOnX": "X에 공유",
@@ -1470,5 +1472,6 @@
     "postOnX": "X에 게시",
     "shareNoteImageAttachment": "📎 참고: X에 게시한 후 최상의 시각적 효과를 위해 다운로드한 이미지를 트윗에 수동으로 첨부해야 합니다.",
     "shareXMessage": "안녕하세요, Catalyst Explorer에서 생성한 제 투표 목록 \"{title}\"을 확인해보세요. {url}",
-    "votingListExport": "투표 목록 내보내기"
+    "votingListExport": "투표 목록 내보내기",
+    "funds": "펀드"
 }

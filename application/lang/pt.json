@@ -1422,7 +1422,6 @@
     "widgets.quickPitch.deleteVideo": "Excluir Vídeo",
     "widgets.quickPitch.add": "Adicionar Apresentação Rápida",
     "widgets.quickPitch.disclaimer": "Reivindique a proposta para adicionar uma apresentação rápida",
-    "proposals.manageProposal": "Gerenciar Proposta",
     "proposals.managingProposal": "Managing: :title",
     "proposals.manageDescription": "Use os widgets abaixo para gerenciar as configurações e conteúdo da sua proposta.",
     "workflows.claimCatalystProfile.connectWallet": "Conectar carteira",
@@ -1460,6 +1459,8 @@
     "activeFund.votingStats.liveTally": "Contagem ao Vivo",
     "activeFund.votingStats.limitToCampaigns": "Limitar a Campanhas",
     "activeFund.votingStats.selectCampaigns": "Selecionar campanhas",
+    "activeFund.votingStats.limitToFunds": "Limitar a Fundos",
+    "activeFund.votingStats.selectFunds": "Selecionar fundos",
     "activeFund.noVotingStatsAvailable": "Nenhuma estatística de votação disponível",
     "campaigns": "Campanhas",
     "shareOnX": "Compartilhar no X",
@@ -1470,5 +1471,6 @@
     "postOnX": "Postar no X",
     "shareNoteImageAttachment": "📎 Nota: Após postar no X, você precisará anexar manualmente a imagem baixada ao seu tweet para o melhor impacto visual.",
     "shareXMessage": "Ei, dê uma olhada na minha Lista de Votação, \"{title}\", criada no Catalyst Explorer. {url}",
-    "votingListExport": "Exportação de Lista de Votação"
+    "votingListExport": "Exportação de Lista de Votação",
+    "funds": "Fundos"
 }

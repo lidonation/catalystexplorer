@@ -1452,6 +1452,8 @@
     "activeFund.votingStats.liveTally": "ライブ集計",
     "activeFund.votingStats.limitToCampaigns": "キャンペーンに制限",
     "activeFund.votingStats.selectCampaigns": "キャンペーンを選択",
+    "activeFund.votingStats.limitToFunds": "ファンドに制限",
+    "activeFund.votingStats.selectFunds": "ファンドを選択",
     "activeFund.noVotingStatsAvailable": "投票統計が利用できません",
     "campaigns": "キャンペーン",
     "shareOnX": "Xで共有",
@@ -1462,5 +1464,6 @@
     "postOnX": "Xに投稿",
     "shareNoteImageAttachment": "📎 注記：Xに投稿した後、最適な視覚効果を得るために、ダウンロードした画像を手動でツイートに添付する必要があります。",
     "shareXMessage": "こんにちは、Catalyst Explorerで作成した私の投票リスト「{title}」をご覧ください。{url}",
-    "votingListExport": "投票リストのエクスポート"
+    "votingListExport": "投票リストのエクスポート",
+    "funds": "ファンド"
 }

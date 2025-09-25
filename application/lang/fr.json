@@ -1159,7 +1159,6 @@
     "filterChart": "Filtrer le graphique",
     "distributed": "Distribué",
     "proposal": "Proposition",
-    "distributed": "Distribué",
     "activeFund.supportUsSeeProposal": "Lire la Proposition",
     "proposalComparison.selectMetric": "Sélectionner la Métrique",
     "proposalComparison.tableHeaders.campaign": "Campagne",
@@ -1273,7 +1272,6 @@
     "proposals.filters.numberOfProposals": "Nombre de Propositions",
     "proposals.filters.awardedAda": "Attribué (ADA)",
     "proposals.filters.awardedUsd": "Attribué (USD)",
-    "proposals.filters.fund": "Fonds",
     "proposals.options.fundingStatusAtoZ": "Statut de Financement : A-Z",
     "proposals.options.fundingStatusZtoA": "Statut de Financement : Z-A",
     "proposals.options.titleAtoZ": "Alphabétiquement : A-Z",
@@ -1466,8 +1464,11 @@
     "activeFund.votingStats.budget": "Budget",
     "activeFund.votingStats.totalVotesCast": "Total des Votes Exprimés",
     "activeFund.votingStats.updated": "Mis à jour :time",
+    "activeFund.votingStats.limitToCampaigns": "Limiter aux Campagnes",
+    "activeFund.votingStats.selectCampaigns": "Sélectionner les campagnes",
+    "activeFund.votingStats.limitToFunds": "Limiter aux Fonds",
+    "activeFund.votingStats.selectFunds": "Sélectionner les fonds",
     "activeFund.noVotingStatsAvailable": "Aucune statistique de vote disponible",
-    "workflows.claimCatalystProfile.managePropositions": "Gérer Mes Propositions",
     "shareOnX": "Partager sur X",
     "groupByCategories": "Grouper par catégories",
     "includeProposals": "Inclure les Propositions",
@@ -1476,5 +1477,8 @@
     "postOnX": "Publier sur X",
     "shareNoteImageAttachment": "📎 Note : Après avoir publié sur X, vous devrez joindre manuellement l'image téléchargée à votre tweet pour le meilleur impact visuel.",
     "shareXMessage": "Hey, jetez un œil à ma Liste de Vote, \"{title}\", créée sur le Catalyst Explorer. {url}",
-    "votingListExport": "Export de Liste de Vote"
+    "votingListExport": "Export de Liste de Vote",
+    "campaigns": "Campagnes",
+    "funds": "Fonds",
+    "workflows.claimCatalystProfile.managePropositions": "Gérer Mes Propositions"
 }
