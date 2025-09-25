@@ -1460,6 +1460,9 @@
     "activeFund.votingStats.liveTally": "실시간 집계",
     "activeFund.votingStats.limitToCampaigns": "캠페인으로 제한",
     "activeFund.votingStats.selectCampaigns": "캠페인 선택",
+    "activeFund.votingStats.limitToFunds": "펀드로 제한",
+    "activeFund.votingStats.selectFunds": "펀드 선택",
     "activeFund.noVotingStatsAvailable": "사용 가능한 투표 통계가 없습니다",
-    "campaigns": "캠페인"
+    "campaigns": "캠페인",
+    "funds": "펀드"
 }
