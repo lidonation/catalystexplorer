@@ -57,6 +57,7 @@ class ProposalRepository extends Repository
                     'problem',
                     'project_length',
                     'quickpitch',
+                    'quickpitch_thumbnail',
                     'solution',
                     'status',
                     'website',

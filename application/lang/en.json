@@ -1529,6 +1529,7 @@
     "workflows.claimCatalystProfile.noProposalFound": "The proposal you're trying to claim does not belong to your profile",
     "workflows.claimCatalystProfile.reviewDetails": "Review your imported data before publishing.",
     "workflows.claimCatalystProfile.manageProposals": "Manage My Proposals",
+    "home.quickpitchTitle": "Proposal Quick Pitches on the Current Ballot",
     "shareOnX": "Share on X",
     "groupByCategories": "Group by categories",
     "includeProposals": "Include Proposals",
