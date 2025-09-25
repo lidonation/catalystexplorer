@@ -1528,5 +1528,9 @@
     "workflows.claimCatalystProfile.claim": "Claim proposal",
     "workflows.claimCatalystProfile.noProposalFound": "The proposal you're trying to claim does not belong to your profile",
     "workflows.claimCatalystProfile.reviewDetails": "Review your imported data before publishing.",
-    "workflows.claimCatalystProfile.manageProposals": "Manage My Proposals"
+    "workflows.claimCatalystProfile.manageProposals": "Manage My Proposals",
+    "proposal.metadata.totalVotes": "Total Votes",
+    "proposal.metadata.viewInExplorer": "View in Explorer",
+    "proposal.metadata.title": "Proposal Metadata",
+    "proposal.metadata.links": "Links"
 }

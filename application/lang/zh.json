@@ -1465,5 +1465,9 @@
     "activeFund.votingStats.selectFunds": "选择基金",
     "activeFund.noVotingStatsAvailable": "没有可用的投票统计数据",
     "campaigns": "活动",
-    "funds": "基金"
+    "funds": "基金",
+    "proposal.metadata.totalVotes": "总投票数",
+    "proposal.metadata.viewInExplorer": "在浏览器中查看",
+    "proposal.metadata.title": "提案元数据",
+    "proposal.metadata.links": "网站"
 }

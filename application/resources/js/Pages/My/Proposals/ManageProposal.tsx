@@ -1,14 +1,10 @@
 import { Head } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import QuickPitchWidget from './partials/QuickPitchWidget';
+import ProposalMetadataWidget from './partials/ProposalMetadataWidget';
 
 interface ManageProposalProps {
-    proposal: {
-        id: string;
-        title: string;
-        quickpitch?: string;
-        quickpitch_length?: number;
-    };
+    proposal: App.DataTransferObjects.ProposalData;
     quickpitchMetadata?: {
         thumbnail: string;
         views: number;
@@ -33,7 +29,7 @@ export default function ManageProposal({
                     <div className="mb-8">
                         <h1 className="mb-2 text-2xl font-bold text-content">
                             {t('proposals.managingProposal', {
-                                title: proposal.title,
+                                title: proposal.title ?? '---',
                             })}
                         </h1>
                         <p className="text-content/60">
@@ -42,14 +38,15 @@ export default function ManageProposal({
                     </div>
 
                     <div className="grid md:grid-cols-2 grid-cols-1 gap-6">
-                        <div className="col-span-1">
+                        <div className='w-full'>
+                            <ProposalMetadataWidget proposal={proposal} />
+                        </div>
+                        <div className="w-full">
                             <QuickPitchWidget
                                 proposal={proposal}
                                 quickpitchMetadata={quickpitchMetadata ?? null}
                             />
                         </div>
-
-                        {/* Future widgets will be added here */}
                     </div>
                 </div>
             </div>

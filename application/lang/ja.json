@@ -1456,5 +1456,9 @@
     "activeFund.votingStats.selectFunds": "ファンドを選択",
     "activeFund.noVotingStatsAvailable": "投票統計が利用できません",
     "campaigns": "キャンペーン",
-    "funds": "ファンド"
+    "funds": "ファンド",
+    "proposal.metadata.totalVotes": "総投票数",
+    "proposal.metadata.viewInExplorer": "エクスプローラーで表示",
+    "proposal.metadata.title": "提案メタデータ",
+    "proposal.metadata.links": "リンク"
 }

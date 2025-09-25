@@ -1462,5 +1462,9 @@
     "workflows.createService.success.message": "የእርስዎ አገልግሎት ተቀላቅሏል እና አሁን በህይወት ላይ ነው። በአድላይ ዝርዝርዎ ላይ መመልከት ወይም ከአገልግሎት ዳሽቦርድዎ ማስተዳደር ይችላሉ።",
     "workflows.createService.success.viewPublicListing": "የድምጽ መዝገብ ይመልከቱ",
     "workflows.createService.success.goToMyServices": "ወደ የእኔ አገልግሎቶች ሂዱ",
-    "workflows.createService.editService": "አገልግሎት አርትዕ ያድርጉ"
+    "workflows.createService.editService": "አገልግሎት አርትዕ ያድርጉ",
+    "proposal.metadata.totalVotes": "ጠቅላላ ድምጾች",
+    "proposal.metadata.viewInExplorer": "በኤክስፕሎረር ውስጥ ይመልከቱ",
+    "proposal.metadata.title": "የፕሮፖዛል መረጃ",
+    "proposal.metadata.links": "አገናኞች"
 }
