@@ -41,7 +41,7 @@ class ProposalMetaJob implements ShouldQueue
         $responseData = json_decode($response->body());
 
         foreach ($responseData as $proposal) {
-            if (isset($proposal->proposal_category) && $proposal->proposal_category->category_name === 'Fund14') {
+            if (isset($proposal->proposal_category) && ($proposal->proposal_category->category_name === 'Fund14' || $proposal->proposal_category->category_name === 'Fund 14')) {
                 $this->proposals[] = $proposal;
             }
         }

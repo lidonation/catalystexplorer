@@ -121,7 +121,7 @@ class FundsController extends Controller
                                 'field' => $metric->field,
                                 'count_by' => $metric->count_by,
                                 'value' => collect($chartData['data'] ?? [])
-                                    ->firstWhere('x', $fund->title)['y'] ?? $metric->metric_value,
+                                        ->firstWhere('x', $fund->title)['y'] ?? $metric->metric_value,
                                 'order' => $metric->order,
                             ]);
                         })
