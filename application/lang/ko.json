@@ -1464,5 +1464,9 @@
     "activeFund.votingStats.selectFunds": "펀드 선택",
     "activeFund.noVotingStatsAvailable": "사용 가능한 투표 통계가 없습니다",
     "campaigns": "캠페인",
-    "funds": "펀드"
+    "funds": "펀드",
+    "proposal.metadata.totalVotes": "총 투표 수",
+    "proposal.metadata.viewInExplorer": "탐색기에서 보기",
+    "proposal.metadata.title": "제안 메타데이터",
+    "proposal.metadata.links": "링크"
 }

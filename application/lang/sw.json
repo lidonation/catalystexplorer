@@ -1504,5 +1504,9 @@
     "activeFund.votingStats.selectFunds": "Chagua Mifuko",
     "activeFund.noVotingStatsAvailable": "Hakuna takwimu za kupiga kura zinazopatikana",
     "campaigns": "Kampeni",
-    "funds": "Mifuko"
+    "funds": "Mifuko",
+    "proposal.metadata.totalVotes": "Jumla ya Kura",
+    "proposal.metadata.viewInExplorer": "Tazama kwenye Kichunguzi",
+    "proposal.metadata.title": "Metadata ya Pendekezo",
+    "proposal.metadata.links": "Tovuti"
 }

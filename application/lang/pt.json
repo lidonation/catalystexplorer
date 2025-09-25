@@ -1463,5 +1463,9 @@
     "activeFund.votingStats.selectFunds": "Selecionar fundos",
     "activeFund.noVotingStatsAvailable": "Nenhuma estatística de votação disponível",
     "campaigns": "Campanhas",
-    "funds": "Fundos"
+    "funds": "Fundos",
+    "proposal.metadata.totalVotes": "Total de Votos",
+    "proposal.metadata.viewInExplorer": "Ver no Explorador",
+    "proposal.metadata.title": "Metadados da Proposta",
+    "proposal.metadata.links": "Links"
 }
