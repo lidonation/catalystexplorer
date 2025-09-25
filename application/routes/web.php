@@ -428,6 +428,8 @@ Route::localized(
                 ->name('index');
             Route::get('/{bookmarkCollection}/{type}/download-pdf', [BookmarksController::class, 'downloadPdf'])
                 ->name('downloadPdf');
+            Route::get('/{bookmarkCollection}/{type}/download-png', [BookmarksController::class, 'downloadPng'])
+                ->name('downloadPng');
             Route::get('/{bookmarkCollection}/{type?}', [BookmarksController::class, 'view'])
                 ->name('view');
             Route::post('/{bookmarkCollection}/stream/{type?}', [BookmarksController::class, 'streamBookmarkItems'])
