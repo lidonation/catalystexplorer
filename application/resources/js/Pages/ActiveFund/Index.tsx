@@ -54,6 +54,7 @@ const Index: React.FC<ActiveFundsProp> = ({
     tallies,
     quickPitches,
     filters,
+    quickPitches,
 }) => {
     const { t } = useLaravelReactI18n();
     const [campaignId, setCampaignId] = useState<string | null>('');
