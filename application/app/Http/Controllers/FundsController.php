@@ -121,7 +121,7 @@ class FundsController extends Controller
                                 'field' => $metric->field,
                                 'count_by' => $metric->count_by,
                                 'value' => collect($chartData['data'] ?? [])
-                                    ->firstWhere('x', $fund->title)['y'] ?? $metric->metric_value,
+                                        ->firstWhere('x', $fund->title)['y'] ?? $metric->metric_value,
                                 'order' => $metric->order,
                             ]);
                         })
@@ -167,7 +167,6 @@ class FundsController extends Controller
             'amountDistributed' => $amountDistributed,
             'amountRemaining' => $amountRemaining,
             'tallies' => $this->getTallies($activeFund, $perPage, $page),
-            'quickPitches' => $this->getActiveFundQuickPitches($activeFund, $proposals),
             'filters' => $this->queryParams,
             'quickPitches' => $this->getActiveFundQuickPitches($activeFund, $proposals),
         ]);
@@ -240,7 +239,6 @@ class FundsController extends Controller
                 'featured' => ProposalData::collect($featuredRaw),
                 'regular' => ProposalData::collect($regularRaw),
             ];
-
         } catch (\Throwable $e) {
             report($e);
 

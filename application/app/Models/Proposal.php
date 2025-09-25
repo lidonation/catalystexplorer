@@ -610,6 +610,12 @@ class Proposal extends Model implements IHasMetaData
             ->with('model');
     }
 
+    public function catalyst_tallies(): HasMany
+    {
+        return $this->hasMany(CatalystTally::class, 'model_id', 'id')
+            ->where('model_type', static::class);
+    }
+
     public function completedProjectNft(): Attribute
     {
         return Attribute::make(
