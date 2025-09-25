@@ -1525,5 +1525,14 @@
     "workflows.claimCatalystProfile.claim": "Claim proposal",
     "workflows.claimCatalystProfile.noProposalFound": "The proposal you're trying to claim does not belong to your profile",
     "workflows.claimCatalystProfile.reviewDetails": "Review your imported data before publishing.",
-    "workflows.claimCatalystProfile.manageProposals": "Manage My Proposals"
+    "workflows.claimCatalystProfile.manageProposals": "Manage My Proposals",
+    "shareOnX": "Share on X",
+    "groupByCategories": "Group by categories",
+    "includeProposals": "Include Proposals",
+    "includeImage": "Include Image",
+    "downloadImage": "Download Image",
+    "postOnX": "Post on X",
+    "shareNoteImageAttachment": "📎 Note: After posting to X, you'll need to manually attach the downloaded image to your tweet for the best visual impact.",
+    "shareXMessage": "Hey, have a look at my Voting List, \"{title}\", created on the Catalyst Explorer. {url}",
+    "votingListExport": "Voting List Export"
 }

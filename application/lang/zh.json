@@ -1462,5 +1462,14 @@
     "activeFund.votingStats.limitToCampaigns": "限制到活动",
     "activeFund.votingStats.selectCampaigns": "选择活动",
     "activeFund.noVotingStatsAvailable": "没有可用的投票统计数据",
-    "campaigns": "活动"
+    "campaigns": "活动",
+    "shareOnX": "在X上分享",
+    "groupByCategories": "按类别分组",
+    "includeProposals": "包含提案",
+    "includeImage": "包含图像",
+    "downloadImage": "下载图像",
+    "postOnX": "发布到X",
+    "shareNoteImageAttachment": "📎 注意：发布到X后，您需要手动将下载的图像附加到您的推文以获得最佳视觉效果。",
+    "shareXMessage": "嗨，请查看我在Catalyst Explorer上创建的投票列表\"{title}\"。{url}",
+    "votingListExport": "投票列表导出"
 }

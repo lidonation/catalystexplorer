@@ -35,6 +35,7 @@ use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 use Laravel\Scout\Builder;
+use Spatie\Browsershot\Browsershot;
 use Spatie\LaravelPdf\Facades\Pdf;
 
 class BookmarksController extends Controller
@@ -1148,7 +1149,7 @@ class BookmarksController extends Controller
         return $options;
     }
 
-    public function downloadPdf(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals')
+    protected function prepareDownloadData(BookmarkCollection $bookmarkCollection, Request $request, string $type, array $defaultColumns): array
     {
         $locale = $request->segment(1) ?? app()->getLocale();
 
@@ -1183,10 +1184,9 @@ class BookmarksController extends Controller
 
         $proposalData = $this->getProposalsWithFullUserData($model_type, $bookmarkItemIds, $relationships, $counts, $bookmarkCollection);
 
-        $defaultPdfColumns = ['title', 'budget', 'category', 'openSourced', 'teams', 'my_vote'];
         $requestedColumns = $request->input('columns');
+        $userColumns = $defaultColumns;
 
-        $userColumns = $defaultPdfColumns;
         if ($requestedColumns) {
             if (is_string($requestedColumns)) {
                 $decodedColumns = json_decode($requestedColumns, true);
@@ -1200,11 +1200,30 @@ class BookmarksController extends Controller
             }
         }
 
-        $columnsToUse = ! empty($userColumns) ? $userColumns : $defaultPdfColumns;
+        $columnsToUse = ! empty($userColumns) ? $userColumns : $defaultColumns;
+
+        $catalystHeaderLogo = base64_encode(file_get_contents(public_path('img/catalyst-logo-dark-CZiPVQ7x.png')));
+        $catalystFooterLogo = base64_encode(file_get_contents(public_path('img/catalyst-explorer-icon.png')));
+
+        return [
+            'proposalData' => $proposalData,
+            'columnsToUse' => $columnsToUse,
+            'catalystHeaderLogo' => $catalystHeaderLogo,
+            'catalystFooterLogo' => $catalystFooterLogo,
+            'type' => $type,
+            'itemCount' => count($proposalData),
+        ];
+    }
+
+    public function downloadPdf(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals')
+    {
+        $defaultPdfColumns = ['title', 'budget', 'category', 'openSourced', 'teams', 'my_vote'];
+        $data = $this->prepareDownloadData($bookmarkCollection, $request, $type, $defaultPdfColumns);
+        $data = $this->prepareDownloadData($bookmarkCollection, $request, $type, $defaultPdfColumns);
 
         $pdfOptions = $this->parsePdfOptions($request);
 
-        $columnCount = count($columnsToUse);
+        $columnCount = count($data['columnsToUse']);
         $orientation = $pdfOptions['orientation'] ?? 'auto';
         $paperSize = $pdfOptions['paperSize'] ?? 'auto';
 
@@ -1216,23 +1235,20 @@ class BookmarksController extends Controller
             $paperSize = $columnCount > 8 ? 'A3' : 'A4';
         }
 
-        $columnConfig = $this->calculateColumnConfiguration($columnsToUse, $orientation, $paperSize);
-
-        $catalystHeaderLogo = base64_encode(file_get_contents(public_path('img/catalyst-logo-dark-CZiPVQ7x.png')));
-        $catalystFooterLogo = base64_encode(file_get_contents(public_path('img/catalyst-explorer-icon.png')));
+        $columnConfig = $this->calculateColumnConfiguration($data['columnsToUse'], $orientation, $paperSize);
 
         $filename = Str::slug($bookmarkCollection->title ?? 'bookmark-collection').'-'.now()->format('Y-m-d').'.pdf';
 
         return Pdf::view('pdf.bookmark-collection', [
             'bookmarkCollection' => $bookmarkCollection->load('author'),
-            'proposals' => $proposalData,
-            'type' => $type,
-            'itemCount' => count($proposalData),
-            'columns' => $columnsToUse,
+            'proposals' => $data['proposalData'],
+            'type' => $data['type'],
+            'itemCount' => $data['itemCount'],
+            'columns' => $data['columnsToUse'],
             'columnConfig' => $columnConfig,
             'orientation' => $orientation,
-            'catalystHeaderLogo' => $catalystHeaderLogo,
-            'catalystFooterLogo' => $catalystFooterLogo,
+            'catalystHeaderLogo' => $data['catalystHeaderLogo'],
+            'catalystFooterLogo' => $data['catalystFooterLogo'],
         ])
             ->format($paperSize)
             ->orientation($orientation)
@@ -1267,6 +1283,59 @@ class BookmarksController extends Controller
                     ]);
             })
             ->download($filename);
+    }
+
+    public function downloadPng(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals')
+    {
+        $defaultPngColumns = ['title', 'budget', 'category', 'openSourced', 'teams'];
+        $data = $this->prepareDownloadData($bookmarkCollection, $request, $type, $defaultPngColumns);
+
+        $columnConfig = $this->calculateColumnConfiguration($data['columnsToUse'], 'landscape', 'A4');
+
+        $filename = Str::slug($bookmarkCollection->title ?? 'bookmark-collection').'-'.now()->format('Y-m-d').'.png';
+
+        $html = view('pdf.bookmark-collection', [
+            'bookmarkCollection' => $bookmarkCollection->load('author'),
+            'proposals' => $data['proposalData'],
+            'type' => $data['type'],
+            'itemCount' => $data['itemCount'],
+            'columns' => $data['columnsToUse'],
+            'columnConfig' => $columnConfig,
+            'orientation' => 'landscape',
+            'catalystHeaderLogo' => $data['catalystHeaderLogo'],
+            'catalystFooterLogo' => $data['catalystFooterLogo'],
+        ])->render();
+
+        $png = Browsershot::html($html)
+            ->setChromePath('/usr/bin/chromium')
+            ->deviceScaleFactor(2)
+            ->margins(30, 30, 40, 30)
+            ->format('png')
+            ->timeout(120)
+            ->addChromiumArguments([
+                'no-sandbox',
+                'disable-dev-shm-usage',
+                'disable-gpu',
+                'headless=new',
+                'disable-extensions',
+                'disable-plugins',
+                'disable-default-apps',
+                'no-default-browser-check',
+                'disable-background-timer-throttling',
+                'disable-backgrounding-occluded-windows',
+                'disable-renderer-backgrounding',
+                'disable-features=TranslateUI,VizDisplayCompositor',
+                'font-render-hinting=none',
+                'disable-font-subpixel-positioning',
+                'force-color-profile=srgb',
+                'disable-web-security',
+                'font-config-path=/etc/fonts',
+            ])
+            ->screenshot();
+
+        return response($png)
+            ->header('Content-Type', 'image/png')
+            ->header('Content-Disposition', 'attachment; filename="'.$filename.'"');
     }
 
     /**

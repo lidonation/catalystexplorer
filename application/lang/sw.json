@@ -1501,5 +1501,14 @@
     "activeFund.votingStats.limitToCampaigns": "Punguza kwenye Kampeni",
     "activeFund.votingStats.selectCampaigns": "Chagua Kampeni",
     "activeFund.noVotingStatsAvailable": "Hakuna takwimu za kupiga kura zinazopatikana",
-    "campaigns": "Kampeni"
+    "campaigns": "Kampeni",
+    "shareOnX": "Shiriki kwenye X",
+    "groupByCategories": "Panga kwa vikundi",
+    "includeProposals": "Jumuisha Mapendekezo",
+    "includeImage": "Jumuisha Picha",
+    "downloadImage": "Pakua Picha",
+    "postOnX": "Chapisha kwenye X",
+    "shareNoteImageAttachment": "📎 Kumbuka: Baada ya kuchapisha kwenye X, utahitaji kuambatisha kwa mikono picha uliyopakua kwenye tweet yako kwa athari bora ya kuona.",
+    "shareXMessage": "Hujambo, angalia Orodha yangu ya Kupiga Kura, \"{title}\", iliyoundwa kwenye Catalyst Explorer. {url}",
+    "votingListExport": "Uhamishaji wa Orodha ya Ura"
 }

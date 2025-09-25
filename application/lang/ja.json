@@ -1453,5 +1453,14 @@
     "activeFund.votingStats.limitToCampaigns": "キャンペーンに制限",
     "activeFund.votingStats.selectCampaigns": "キャンペーンを選択",
     "activeFund.noVotingStatsAvailable": "投票統計が利用できません",
-    "campaigns": "キャンペーン"
+    "campaigns": "キャンペーン",
+    "shareOnX": "Xで共有",
+    "groupByCategories": "カテゴリで分類",
+    "includeProposals": "提案を含む",
+    "includeImage": "画像を含む",
+    "downloadImage": "画像をダウンロード",
+    "postOnX": "Xに投稿",
+    "shareNoteImageAttachment": "📎 注記：Xに投稿した後、最適な視覚効果を得るために、ダウンロードした画像を手動でツイートに添付する必要があります。",
+    "shareXMessage": "こんにちは、Catalyst Explorerで作成した私の投票リスト「{title}」をご覧ください。{url}",
+    "votingListExport": "投票リストのエクスポート"
 }

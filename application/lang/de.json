@@ -1457,5 +1457,14 @@
     "workflows.createService.success.message": "Ihr Service wurde verarbeitet und ist jetzt live. Sie können ihn in Ihrer öffentlichen Auflistung ansehen oder über Ihr Service-Dashboard verwalten.",
     "workflows.createService.success.viewPublicListing": "Öffentliche Auflistung anzeigen",
     "workflows.createService.success.goToMyServices": "Zu meinen Services",
-    "workflows.createService.editService": "Service bearbeiten"
+    "workflows.createService.editService": "Service bearbeiten",
+    "shareOnX": "Auf X teilen",
+    "groupByCategories": "Nach Kategorien gruppieren",
+    "includeProposals": "Vorschläge einschließen",
+    "includeImage": "Bild einschließen",
+    "downloadImage": "Bild herunterladen",
+    "postOnX": "Auf X posten",
+    "shareNoteImageAttachment": "📎 Hinweis: Nach dem Posten auf X müssen Sie das heruntergeladene Bild manuell an Ihren Tweet anhängen, um die beste visuelle Wirkung zu erzielen.",
+    "shareXMessage": "Hey, schau dir meine Abstimmungsliste \":title\" an, erstellt im Catalyst Explorer. :url",
+    "votingListExport": "Abstimmungslisten-Export"
 }
