@@ -30,6 +30,7 @@ interface ActiveFundsProp extends Record<string, unknown> {
     search?: string | null;
     fund: App.DataTransferObjects.FundData;
     campaigns: App.DataTransferObjects.CampaignData[];
+    funds?: any[];
     proposals: ProposalData[];
     amountDistributed: number;
     amountRemaining: number;
@@ -41,6 +42,7 @@ const Index: React.FC<ActiveFundsProp> = ({
     search,
     fund,
     campaigns,
+    funds,
     proposals,
     amountDistributed,
     amountRemaining,
@@ -208,6 +210,7 @@ const Index: React.FC<ActiveFundsProp> = ({
                     <FundTalliesWidget
                         tallies={tallies}
                         campaigns={campaigns}
+                        funds={funds}
                         showPagination={true}
                         showFilters={true}
                         filters={filters || {}}

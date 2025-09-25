@@ -1452,6 +1452,9 @@
     "activeFund.votingStats.liveTally": "ライブ集計",
     "activeFund.votingStats.limitToCampaigns": "キャンペーンに制限",
     "activeFund.votingStats.selectCampaigns": "キャンペーンを選択",
+    "activeFund.votingStats.limitToFunds": "ファンドに制限",
+    "activeFund.votingStats.selectFunds": "ファンドを選択",
     "activeFund.noVotingStatsAvailable": "投票統計が利用できません",
-    "campaigns": "キャンペーン"
+    "campaigns": "キャンペーン",
+    "funds": "ファンド"
 }
