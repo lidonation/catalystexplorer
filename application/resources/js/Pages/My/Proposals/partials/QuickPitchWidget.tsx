@@ -19,11 +19,7 @@ import QuickpitchVideoPlayer from './QuickPitchVideoPlayer';
 import VideoStatsComponent from './VideoStatsComponent';
 
 interface QuickPitchWidgetProps {
-    proposal: {
-        id: string;
-        quickpitch?: string;
-        quickpitch_length?: number;
-    };
+    proposal: App.DataTransferObjects.ProposalData;
     quickpitchMetadata: {
         thumbnail: string;
         views: number;

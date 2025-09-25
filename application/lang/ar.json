@@ -372,5 +372,9 @@
     "workflows.createService.success.message": "تم معالجة خدمتك وهي متاحة الآن. يمكنك عرضها في قائمتك العامة أو إدارتها من لوحة تحكم الخدمات.",
     "workflows.createService.success.viewPublicListing": "عرض القائمة العامة",
     "workflows.createService.success.goToMyServices": "الانتقال إلى خدماتي",
-    "workflows.createService.editService": "تعديل الخدمة"
+    "workflows.createService.editService": "تعديل الخدمة",
+    "proposal.metadata.totalVotes": "إجمالي الأصوات",
+    "proposal.metadata.viewInExplorer": "عرض في المستكشف",
+    "proposal.metadata.title": "بيانات المقترح",
+    "proposal.metadata.links": "روابط"
 }
