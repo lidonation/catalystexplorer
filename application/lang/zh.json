@@ -1461,6 +1461,9 @@
     "activeFund.votingStats.liveTally": "实时统计",
     "activeFund.votingStats.limitToCampaigns": "限制到活动",
     "activeFund.votingStats.selectCampaigns": "选择活动",
+    "activeFund.votingStats.limitToFunds": "限制到基金",
+    "activeFund.votingStats.selectFunds": "选择基金",
     "activeFund.noVotingStatsAvailable": "没有可用的投票统计数据",
-    "campaigns": "活动"
+    "campaigns": "活动",
+    "funds": "基金"
 }
