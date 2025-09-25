@@ -188,7 +188,7 @@ const Index: React.FC<ActiveFundsProp> = ({
                         funds={funds}
                         showPagination={true}
                         showFilters={true}
-                        filters={{}}
+                        filters={filters || {}}
                         routerOptions={{ 
                             only: ['tallies'],
                             preserveState: true,

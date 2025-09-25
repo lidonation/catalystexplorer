@@ -155,12 +155,15 @@ class FundsController extends Controller
         $page = (int) $request->get('p', 1);
         $perPage = (int) $request->get('per_page', 24);
 
+        $allFunds = Fund::orderBy('launched_at', 'desc')->get();
+
         return Inertia::render('ActiveFund/Index', [
             'proposals' => Inertia::optional(
                 fn () => $this->getProposals($activeFund, $proposals)
             ),
             'fund' => FundData::from($activeFund),
             'campaigns' => $campaigns,
+            'funds' => $allFunds,
             'amountDistributed' => $amountDistributed,
             'amountRemaining' => $amountRemaining,
             'tallies' => $this->getTallies($activeFund, $perPage, $page),
