@@ -22,6 +22,8 @@ function SearchControls({
     border,
     withFilters = true,
     withActiveTags = true,
+    autoFocus = true,
+    className = '',
 }: {
     onFiltersToggle: Dispatch<SetStateAction<boolean>>;
     sortOptions?: Array<any>;
@@ -29,6 +31,8 @@ function SearchControls({
     border?: null | string;
     withFilters?: boolean;
     withActiveTags?: boolean;
+    autoFocus?: boolean;
+    className?: string;
 }) {
     const { getFilter, setFilters, filters } = useFilterContext();
     const { t } = useLaravelReactI18n();
@@ -80,14 +84,14 @@ function SearchControls({
 
     return (
         <div
-            className="sticky top-0 z-10 mx-auto flex w-full flex-col gap-3 px-0 py-3 backdrop-blur-md"
+            className={`sticky top-0 ${className.includes('z-') ? '' : 'z-10'} mx-auto flex w-full flex-col gap-3 px-0 py-3 backdrop-blur-md ${className}`}
             data-testid="search-controls-container"
         >
             <div className="flex flex-col items-center justify-end gap-2 lg:flex-row">
                 <SearchBar
                     border={'border-gray-300'}
                     handleSearch={handleSearch}
-                    autoFocus
+                    autoFocus={autoFocus}
                     showRingOnFocus
                     initialSearch={searchQuery}
                     placeholder={searchPlaceholder}
