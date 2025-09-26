@@ -1,3 +1,10 @@
+## [1.32.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.32.0...v1.32.1) (2025-09-26)
+
+
+### Bug Fixes
+
+* cache youtube requests to avoice rate limits ([5e32dbc](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/5e32dbc44b6969f268d379fe0f4e2533d4735d94))
+
 # [1.32.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.31.3...v1.32.0) (2025-09-25)
 
 
