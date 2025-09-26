@@ -9,7 +9,7 @@ import { PageProps } from '@/types';
 import { useLocalizedRoute } from '@/utils/localizedRoute.ts';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import MetricCardLoading from '../Metrics/Partials/MetricCardLoading';
 import MetricCardList from '../Metrics/Partials/MetricsCardList';
 import PostListLoader from '../Posts/Partials/PostListLoader';
@@ -17,6 +17,7 @@ import ProposalList from '../Proposals/Partials/ProposalList';
 import AnnouncementCarousel from './Partials/Announcement/AnnouncementCarousel';
 import SpecialAnnouncementLoading from './Partials/Announcement/SpecialAnnouncementLoading';
 import SpecialAnnouncementCarousel from './Partials/Announcement/SpecialAnnouncementsCarousel';
+import QuickPitchList from './Partials/QuickPitches/QuickPitchList';
 import MetricData = App.DataTransferObjects.MetricData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import PostData = App.DataTransferObjects.PostData;
@@ -28,6 +29,10 @@ interface HomePageProps extends Record<string, unknown> {
     metrics: MetricData[];
     announcements: AnnouncementData[];
     specialAnnouncements: AnnouncementData[];
+    quickPitches: {
+        featured: ProposalData[];
+        regular: ProposalData[];
+    };
 }
 
 export default function Index({
@@ -36,11 +41,14 @@ export default function Index({
     metrics,
     announcements,
     specialAnnouncements,
+    quickPitches,
 }: PageProps<HomePageProps>) {
     const { t } = useLaravelReactI18n();
     const [isHorizontal, setIsHorizontal] = useState(false);
     const [activeIndex, setActiveIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(false);
+
+    console.log({quickPitches});
 
     return (
         <>
@@ -48,6 +56,16 @@ export default function Index({
 
             <div className="relative flex w-full flex-col justify-center gap-8">
                 <CatalystIntro />
+
+                <section
+                    className="quickpitches-wrapper"
+                    data-testid="quickpitches-section"
+                >
+                    <div className="container">
+                        <Title level="2" className='mb-6'>{t('home.quickpitchTitle')}</Title>
+                        <QuickPitchList quickPitches={quickPitches} />
+                    </div>
+                </section>
 
                 <section
                     className="annnouncements-wrapper"

@@ -1,3 +1,17 @@
+# [1.32.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.31.3...v1.32.0) (2025-09-25)
+
+
+### Features
+
+* proposal metadata widget ([cff3cad](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/cff3cad4fb17fe76eadc513548bab06a11063e52))
+
+## [1.31.3](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.31.2...v1.31.3) (2025-09-25)
+
+
+### Bug Fixes
+
+* **proposal live tally:** ln-2031 fixed the rankings ([98abec6](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/98abec6a1280ec55b66aa80ff51d8e5b7685bdbd))
+
 ## [1.31.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.31.1...v1.31.2) (2025-09-24)
 
 

@@ -9,6 +9,7 @@ use App\Enums\CatalystCurrencies;
 use App\Interfaces\IHasMetaData;
 use App\Models\Pivot\ProposalProfile;
 use App\Models\Scopes\ProposalTypeScope;
+use App\Services\VideoService;
 use App\Traits\HasAuthor;
 use App\Traits\HasConnections;
 use App\Traits\HasDto;
@@ -28,6 +29,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
 use Spatie\Comments\Models\Concerns\HasComments;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
@@ -284,6 +286,21 @@ class Proposal extends Model implements IHasMetaData
                     $this->quickpitch
                 )
             )?->last() : null
+        );
+    }
+
+    public function quickpitchThumbnail(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $metadata = app(VideoService::class)->getVideoMetadata($this->quickpitch);
+
+                if ($metadata && empty($metadata->thumbnail)) {
+                    Log::debug('Quickpitch video metadata (no thumbnail):', (array) $metadata);
+                }
+
+                return $metadata['thumbnail'] ?? null;
+            }
         );
     }
 
@@ -591,6 +608,12 @@ class Proposal extends Model implements IHasMetaData
     {
         return $this->hasMany(ProposalProfile::class, 'proposal_id', 'id')
             ->with('model');
+    }
+
+    public function catalyst_tallies(): HasMany
+    {
+        return $this->hasMany(CatalystTally::class, 'model_id', 'id')
+            ->where('model_type', static::class);
     }
 
     public function completedProjectNft(): Attribute

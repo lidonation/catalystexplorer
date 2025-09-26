@@ -36,6 +36,7 @@
         "pestphp/pest": "^3.8",
         "pestphp/pest-plugin-laravel": "^3.2",
         "phpseclib/phpseclib": "^3.0",
+        "saloonphp/cache-plugin": "^3.0",
         "saloonphp/laravel-plugin": "^3.6",
         "saloonphp/pagination-plugin": "^2.2",
         "saloonphp/saloon": "^3.14",
