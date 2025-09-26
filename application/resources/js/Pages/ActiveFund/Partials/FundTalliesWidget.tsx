@@ -440,6 +440,8 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
                         withFilters={true}
                         withActiveTags={true}
                         sortOptions={[]}
+                        autoFocus={false}
+                        className="z-0"
                     />
                 </div>
             )}

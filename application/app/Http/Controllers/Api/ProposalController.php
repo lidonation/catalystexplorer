@@ -34,7 +34,7 @@ class ProposalController extends Controller
             $per_page = 60;
         }
 
-        $proposals = QueryBuilder::for(Proposal::class)
+        $queryBuilder = QueryBuilder::for(Proposal::class)
             ->allowedFilters([
                 AllowedFilter::exact('id'),
                 AllowedFilter::partial('title'),
@@ -71,8 +71,18 @@ class ProposalController extends Controller
                 AllowedSort::field('created_at'),
                 AllowedSort::field('updated_at'),
             ])
-            ->defaultSort('-created_at')
-            ->paginate($per_page);
+            ->defaultSort('-created_at');
+
+        $includedRelations = collect(explode(',', $request->get('include', '')))
+            ->filter()
+            ->map(fn($relation) => trim($relation))
+            ->toArray();
+
+        if (!empty($includedRelations)) {
+            $queryBuilder->with($includedRelations);
+        }
+
+        $proposals = $queryBuilder->paginate($per_page);
 
         return ProposalResource::collection($proposals);
     }
@@ -82,7 +92,7 @@ class ProposalController extends Controller
      */
     public function show(Request $request, string $id): ProposalResource
     {
-        $proposal = QueryBuilder::for(Proposal::class)
+        $queryBuilder = QueryBuilder::for(Proposal::class)
             ->allowedIncludes([
                 AllowedInclude::relationship('campaign'),
                 AllowedInclude::relationship('user'),
@@ -90,8 +100,19 @@ class ProposalController extends Controller
                 AllowedInclude::relationship('team'),
                 AllowedInclude::relationship('schedule'),
                 AllowedInclude::relationship('schedule.milestones'),
-            ])
-            ->findOrFail($id);
+            ]);
+
+        // Check if any relations are being included and ensure they're loaded
+        $includedRelations = collect(explode(',', $request->get('include', '')))
+            ->filter()
+            ->map(fn($relation) => trim($relation))
+            ->toArray();
+
+        if (!empty($includedRelations)) {
+            $queryBuilder->with($includedRelations);
+        }
+
+        $proposal = $queryBuilder->findOrFail($id);
 
         return new ProposalResource($proposal);
     }

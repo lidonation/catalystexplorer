@@ -712,13 +712,13 @@ class Proposal extends Model implements IHasMetaData
             //            'id' => HashId::class,
             'amount_received' => 'integer',
             'amount_requested' => 'integer',
-            'created_at' => DateFormatCast::class,
+            'created_at' => 'datetime',
             'currency' => CatalystCurrencies::class.':nullable',
             'funded_at' => DateFormatCast::class,
             'funding_updated_at' => DateFormatCast::class,
             'offchain_metas' => 'array',
             'opensource' => 'boolean',
-            'updated_at' => DateFormatCast::class,
+            'updated_at' => 'datetime',
             'meta_data' => 'array',
         ];
     }

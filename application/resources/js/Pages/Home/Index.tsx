@@ -48,8 +48,6 @@ export default function Index({
     const [activeIndex, setActiveIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(false);
 
-    console.log({quickPitches});
-
     return (
         <>
             <Head title="Catalyst Explorer" />
@@ -57,7 +55,7 @@ export default function Index({
             <div className="relative flex w-full flex-col justify-center gap-8">
                 <CatalystIntro />
 
-                <section
+                {(quickPitches?.regular && quickPitches?.regular?.length > 0) && <section
                     className="quickpitches-wrapper"
                     data-testid="quickpitches-section"
                 >
@@ -65,7 +63,7 @@ export default function Index({
                         <Title level="2" className='mb-6'>{t('home.quickpitchTitle')}</Title>
                         <QuickPitchList quickPitches={quickPitches} />
                     </div>
-                </section>
+                </section>}
 
                 <section
                     className="annnouncements-wrapper"

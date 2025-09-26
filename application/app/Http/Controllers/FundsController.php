@@ -13,8 +13,10 @@ use App\Enums\CatalystCurrencies;
 use App\Enums\ProposalFundingStatus;
 use App\Enums\ProposalSearchParams;
 use App\Enums\ProposalStatus;
+use App\Models\CatalystProfile;
 use App\Models\CatalystTally;
 use App\Models\Fund;
+use App\Models\IdeascaleProfile;
 use App\Models\Proposal;
 use App\Repositories\FundRepository;
 use App\Repositories\MetricRepository;
@@ -374,6 +376,17 @@ class FundsController extends Controller
                         $subQuery->where('title', 'ILIKE', "%{$searchTerm}%")
                             ->orWhereHas('campaign', function ($campaignQuery) use ($searchTerm) {
                                 $campaignQuery->where('title', 'ILIKE', "%{$searchTerm}%");
+                            })
+                            ->orWhereHas('team', function ($teamQuery) use ($searchTerm) {
+                                $teamQuery->whereHasMorph('model', [
+                                    CatalystProfile::class,
+                                    IdeascaleProfile::class
+                                ], function ($profileQuery) use ($searchTerm) {
+                                    $profileQuery->where(function ($nameQuery) use ($searchTerm) {
+                                        $nameQuery->where('name', 'ILIKE', "%{$searchTerm}%")
+                                                  ->orWhere('username', 'ILIKE', "%{$searchTerm}%");
+                                    });
+                                });
                             });
                     });
                 });
