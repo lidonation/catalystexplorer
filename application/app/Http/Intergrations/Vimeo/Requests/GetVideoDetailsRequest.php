@@ -17,7 +17,7 @@ class GetVideoDetailsRequest extends Request
     protected Method $method = Method::GET;
 
     public function __construct(
-        private string $videoId
+        private readonly string $videoId
     ) {}
 
     public function resolveConnector(): Connector
