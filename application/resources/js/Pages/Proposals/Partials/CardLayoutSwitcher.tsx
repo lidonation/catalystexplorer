@@ -52,12 +52,15 @@ export default function CardLayoutSwitcher({
     };
 
     const handleQuickPitchClick = () => {
-
         setQuickpitch(true);
-
-         setTableOrPdfViewSetting(false);
-
+        setTableOrPdfViewSetting(false);
     };
+    
+    useEffect(() => {
+        if (quickPitchView) {
+            setTableOrPdfViewSetting(false);
+        }
+    }, [quickPitchView, setTableOrPdfViewSetting]);
 
 
     return (

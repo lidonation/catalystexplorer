@@ -11,7 +11,10 @@ use App\Enums\MetricsContext;
 use App\Enums\ProposalStatus;
 use App\Enums\StatusEnum;
 use App\Models\Announcement;
+use App\Models\Connection;
 use App\Models\Fund;
+use App\Models\IdeascaleProfile;
+use App\Models\Proposal;
 use App\Repositories\AnnouncementRepository;
 use App\Repositories\MetricRepository;
 use App\Repositories\PostRepository;
@@ -51,6 +54,7 @@ class HomeController extends Controller
                 fn () => $this->getSpecialAnnouncements()
             ),
             'quickPitches' => fn () => $this->getProposalQuickPitches($proposals),
+            'quickPitchesFundId' => Fund::latest('launched_at')->value('id'),
         ]);
     }
 
@@ -156,28 +160,41 @@ class HomeController extends Controller
         $activeFundId = Fund::latest('launched_at')->value('id');
 
         try {
-            $rawProposals = $proposals
-                ->with(['users', 'campaign', 'fund'])
+            $rawProposals = Proposal::with(['users', 'campaign', 'fund', 'ideascale_profiles'])
                 ->whereNotNull('quickpitch')
                 ->where('fund_id', $activeFundId)
                 ->limit(15)
                 ->get();
 
+            // Add all counts to each proposal
+            $rawProposals->each(function ($proposal) {
+                $ideascaleProfileIds = $proposal->ideascale_profiles ? $proposal->ideascale_profiles->pluck('id')->toArray() : [];
+                $counts = $this->getAllCounts($ideascaleProfileIds);
+                $proposal->connections_count = $counts['catalystConnectionCount'];
+                $proposal->completed_proposals_count = $counts['userCompleteProposalsCount'];
+                $proposal->outstanding_proposals_count = $counts['userOutstandingProposalsCount'];
+            });
+
             if ($rawProposals->count() < 3) {
+                // Shuffle the small collection
+                $shuffledProposals = $rawProposals->shuffle();
+
                 return [
                     'featured' => collect([]),
-                    'regular' => ProposalData::collect($rawProposals),
+                    'regular' => ProposalData::collect($shuffledProposals),
                 ];
             }
 
-            $featuredRaw = $rawProposals->random(3);
+            // Shuffle the entire collection first
+            $shuffledProposals = $rawProposals->shuffle();
+            $featuredRaw = $shuffledProposals->take(3);
 
             $featuredIds = $featuredRaw->pluck('id');
-            $regularRaw = $rawProposals->whereNotIn('id', $featuredIds);
+            $regularRaw = $shuffledProposals->skip(3);
 
             return [
-                'featured' => ProposalData::collect($featuredRaw),
-                'regular' => ProposalData::collect($regularRaw),
+                'featured' => ProposalData::collect($featuredRaw->shuffle()),
+                'regular' => ProposalData::collect($regularRaw->shuffle()),
             ];
 
         } catch (\Throwable $e) {
@@ -186,6 +203,48 @@ class HomeController extends Controller
             return [
                 'featured' => collect([]),
                 'regular' => collect([]),
+            ];
+        }
+    }
+
+    private function getAllCounts(array $ideascaleProfileIds): array
+    {
+        if (empty($ideascaleProfileIds)) {
+            return [
+                'userCompleteProposalsCount' => 0,
+                'userOutstandingProposalsCount' => 0,
+                'catalystConnectionCount' => 0,
+            ];
+        }
+
+        try {
+            $userCompleteProposalsCount = Proposal::where('status', 'complete')
+                ->whereHas('ideascaleProfiles', function ($query) use ($ideascaleProfileIds) {
+                    $query->whereIn('ideascale_profiles.id', $ideascaleProfileIds);
+                })
+                ->count();
+
+            $userOutstandingProposalsCount = Proposal::where('status', 'in_progress')
+                ->whereHas('ideascaleProfiles', function ($query) use ($ideascaleProfileIds) {
+                    $query->whereIn('ideascale_profiles.id', $ideascaleProfileIds);
+                })
+                ->count();
+
+            $catalystConnectionCount = Connection::whereIn('previous_model_id', $ideascaleProfileIds)
+                ->where('previous_model_type', IdeascaleProfile::class)
+                ->distinct()
+                ->count();
+
+            return [
+                'userCompleteProposalsCount' => $userCompleteProposalsCount,
+                'userOutstandingProposalsCount' => $userOutstandingProposalsCount,
+                'catalystConnectionCount' => $catalystConnectionCount,
+            ];
+        } catch (\Exception $e) {
+            return [
+                'userCompleteProposalsCount' => 0,
+                'userOutstandingProposalsCount' => 0,
+                'catalystConnectionCount' => 0,
             ];
         }
     }
