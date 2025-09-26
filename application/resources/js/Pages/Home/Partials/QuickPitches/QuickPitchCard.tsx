@@ -55,19 +55,19 @@ export default function QuickPitchCard({
                     <Paragraph size="sm" className="text-content/60">
                         {t('proposals.outstanding')}
                     </Paragraph>
-                    <Paragraph>-</Paragraph>
+                    <Paragraph>{proposal.outstanding_proposals_count ?? 0}</Paragraph>
                 </div>
                 <div>
                     <Paragraph size="sm" className="text-content/60">
                         {t('proposals.completed')}
                     </Paragraph>
-                    <Paragraph>-</Paragraph>
+                    <Paragraph>{proposal.completed_proposals_count ?? 0}</Paragraph>
                 </div>
                 <div>
                     <Paragraph size="sm" className="text-content/60">
                         {t('proposals.catalystConnection')}
                     </Paragraph>
-                    <Paragraph>-</Paragraph>
+                    <Paragraph>{proposal.connections_count ?? 0}</Paragraph>
                 </div>
             </div>
             <div className="mt-4">
