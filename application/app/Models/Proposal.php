@@ -293,13 +293,23 @@ class Proposal extends Model implements IHasMetaData
     {
         return Attribute::make(
             get: function () {
-                $metadata = app(VideoService::class)->getVideoMetadata($this->quickpitch);
+                try {
+                    $metadata = app(VideoService::class)->getVideoMetadata($this->quickpitch);
 
-                if ($metadata && empty($metadata->thumbnail)) {
-                    Log::debug('Quickpitch video metadata (no thumbnail):', (array) $metadata);
+                    if ($metadata && empty($metadata->thumbnail)) {
+                        Log::debug('Quickpitch video metadata (no thumbnail):', (array) $metadata);
+                    }
+
+                    return $metadata['thumbnail'] ?? null;
+                } catch (\Exception $e) {
+                    Log::warning('Failed to fetch quickpitch thumbnail', [
+                        'proposal_id' => $this->id,
+                        'quickpitch_url' => $this->quickpitch,
+                        'error' => $e->getMessage(),
+                    ]);
+
+                    return null;
                 }
-
-                return $metadata['thumbnail'] ?? null;
             }
         );
     }

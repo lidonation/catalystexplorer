@@ -538,6 +538,9 @@ user_rationale?: string;
 catalyst_profiles: any | null;
 is_claimed?: boolean;
 quickpitch_thumbnail?: string;
+connections_count?: number;
+completed_proposals_count?: number;
+outstanding_proposals_count?: number;
 };
 export type RankingData = {
 id?: string;

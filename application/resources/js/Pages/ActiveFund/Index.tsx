@@ -172,8 +172,7 @@ const Index: React.FC<ActiveFundsProp> = ({
                     data-testid="quickpitches-section"
                 >
                     <div className="m-8">
-                        <Title level="2" className='mb-6'>{t('home.quickpitchTitle')}</Title>
-                        <QuickPitchList quickPitches={quickPitches} />
+                        <QuickPitchList quickPitches={quickPitches} activeFundId={fund?.id} />
                     </div>
                 </section>
 

@@ -149,5 +149,14 @@ final class ProposalData extends Data
         #[TypeScriptOptional]
         public ?string $quickpitch_thumbnail,
 
+        #[TypeScriptOptional]
+        public ?int $connections_count,
+
+        #[TypeScriptOptional]
+        public ?int $completed_proposals_count,
+
+        #[TypeScriptOptional]
+        public ?int $outstanding_proposals_count,
+
     ) {}
 }
