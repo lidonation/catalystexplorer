@@ -14,22 +14,21 @@ class GetProposalFromScout
     public function __invoke(
         string $search,
         array &$filters,
-        array &$sort = [],
+        string|array &$sort = [],
         int $limit = 12,
         int $page = 1
     ): LengthAwarePaginator {
-        if (! empty($sort)) {
-            $sortParts = explode(':', $sort);
-            $sortField = $sortParts[0];
-            $sortDirection = $sortParts[1] ?? 'asc';
-            $args['sort'] = ["{$sortField}:{$sortDirection}"];
-        }
-
         $args = [
             'filter' => $filters,
             'limit' => $limit,
             'offset' => ($page - 1) * $limit,
         ];
+
+        if (! empty($sort)) {
+            [$field, $direction] = array_pad(explode(':', $sort), 2, 'asc');
+            $args['sort'] = ["{$field}:{$direction}"];
+        }
+
         $repository = app(ProposalRepository::class);
         $searchBuilder = $repository->search($search, $args);
         $response = new Fluent($searchBuilder->raw());
