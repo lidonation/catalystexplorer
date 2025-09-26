@@ -55,12 +55,12 @@ export default function Index({
             <div className="relative flex w-full flex-col justify-center gap-8">
                 <CatalystIntro />
 
-                {(quickPitches?.regular && quickPitches?.regular?.length > 0) && <section
+                {(quickPitches?.regular && quickPitches?.regular?.length > 0) && 
+                <section
                     className="quickpitches-wrapper"
                     data-testid="quickpitches-section"
                 >
                     <div className="container">
-                        <Title level="2" className='mb-6'>{t('home.quickpitchTitle')}</Title>
                         <QuickPitchList quickPitches={quickPitches} />
                     </div>
                 </section>}
