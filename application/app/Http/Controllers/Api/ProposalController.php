@@ -75,10 +75,10 @@ class ProposalController extends Controller
 
         $includedRelations = collect(explode(',', $request->get('include', '')))
             ->filter()
-            ->map(fn($relation) => trim($relation))
+            ->map(fn ($relation) => trim($relation))
             ->toArray();
 
-        if (!empty($includedRelations)) {
+        if (! empty($includedRelations)) {
             $queryBuilder->with($includedRelations);
         }
 
@@ -105,10 +105,10 @@ class ProposalController extends Controller
         // Check if any relations are being included and ensure they're loaded
         $includedRelations = collect(explode(',', $request->get('include', '')))
             ->filter()
-            ->map(fn($relation) => trim($relation))
+            ->map(fn ($relation) => trim($relation))
             ->toArray();
 
-        if (!empty($includedRelations)) {
+        if (! empty($includedRelations)) {
             $queryBuilder->with($includedRelations);
         }
 
