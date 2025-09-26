@@ -1,9 +1,5 @@
-import ErrorDisplay from '@/Components/atoms/ErrorDisplay';
-import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
-import Selector from '@/Components/atoms/Selector';
-import ValueLabel from '@/Components/atoms/ValueLabel';
 import Paginator from '@/Components/Paginator';
 import ProposalVotingCard from '@/Components/ProposalVotingCard';
 import { FiltersProvider } from '@/Context/FiltersContext';
@@ -11,7 +7,6 @@ import { BookMarkCollectionEnum } from '@/enums/bookmark-collection-enums';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import { VoteEnum } from '@/enums/votes-enums';
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
-import ProposalSortingOptions from '@/lib/ProposalSortOptions';
 import { StepDetails } from '@/types';
 import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
@@ -28,6 +23,7 @@ import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 import ProposalSearchBar from './partials/ProposalSearchBar';
+import VoterListFilters from './partials/VoterListFilters';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface Campaign {
@@ -76,37 +72,6 @@ const Step3: React.FC<Step3Props> = ({
         form.setData('proposals', selectedIds);
     }, [selectedIds]);
 
-    const buildUpdatedFilters = (updates: Partial<SearchParams> = {}) => {
-        const baseFilters: Record<string, any> = { ...filters };
-
-        if (fundSlug) {
-            baseFilters[ParamsEnum.FUNDS] = fundSlug;
-        }
-
-        if (bookmarkHash) {
-            baseFilters[BookMarkCollectionEnum.BOOKMARK_COLLECTION] =
-                bookmarkHash;
-        }
-
-        Object.entries(updates).forEach(([key, value]) => {
-            if (value === null || value === undefined || value === '') {
-                delete baseFilters[key];
-            } else {
-                baseFilters[key] = value;
-            }
-        });
-
-        if (
-            Object.keys(updates).length > 0 &&
-            !updates[ParamsEnum.PAGE] &&
-            baseFilters[ParamsEnum.PAGE]
-        ) {
-            baseFilters[ParamsEnum.PAGE] = 1;
-        }
-
-        return baseFilters;
-    };
-
     const handleVote = (proposalId: string, vote: number | null) => {
         setSelectedIds((prev) => {
             const existing = prev.find((item) => item.id === proposalId);
@@ -152,17 +117,6 @@ const Step3: React.FC<Step3Props> = ({
         });
     };
 
-    const handleFilterChange = (
-        paramName: string,
-        value: string | number | string[] | number[],
-    ) => {
-        router.get(
-            window.location.pathname,
-            buildUpdatedFilters({ [paramName]: value }),
-            { preserveState: true, replace: true },
-        );
-    };
-
     const submitForm = () => {
         form.post(
             generateLocalizedRoute('workflows.createVoterList.saveProposals'),
@@ -186,8 +140,6 @@ const Step3: React.FC<Step3Props> = ({
 
                 <Content>
                     <div className="mx-auto w-full max-w-3xl">
-                        
-
                         <div className="bg-background top-0 z-10 mb-4 w-full items-center justify-center px-4 pt-4">
                             <ProposalSearchBar
                                 handleSearch={handleSearch}
@@ -196,77 +148,13 @@ const Step3: React.FC<Step3Props> = ({
                                 initialSearch={filters[ParamsEnum.QUERY] || ''}
                             />
 
-                            <div className="mt-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                                <div className="flex flex-wrap items-center gap-2">
-                                    <ValueLabel>
-                                        {t(
-                                            'workflows.voterList.selectedProposals',
-                                        )}
-                                    </ValueLabel>
-                                    <Paragraph
-                                        size="sm"
-                                        className="text-gray-persist bg-background rounded-md px-3 py-1 font-medium shadow"
-                                    >
-                                        {
-                                            selectedIds.filter(
-                                                (item) => item.vote !== null,
-                                            ).length
-                                        }
-                                        /{proposals.total}
-                                    </Paragraph>
-                                </div>
-
-                                <div className="flex flex-col gap-2 md:flex-row">
-                                    <div className="self-start text-sm text-gray-600 md:self-center">
-                                        {t(
-                                            'workflows.voterList.selectCampaign',
-                                        )}
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <Selector
-                                            isMultiselect={false}
-                                            selectedItems={
-                                                filters[ParamsEnum.CAMPAIGNS] ||
-                                                ''
-                                            }
-                                            setSelectedItems={(value) =>
-                                                handleFilterChange(
-                                                    ParamsEnum.CAMPAIGNS,
-                                                    value,
-                                                )
-                                            }
-                                            options={campaigns.map(
-                                                (campaign) => ({
-                                                    label: campaign.title,
-                                                    value: String(campaign.id),
-                                                }),
-                                            )}
-                                            hideCheckbox={true}
-                                            placeholder={t(
-                                                'workflows.voterList.allCampaigns',
-                                            )}
-                                            className="w-full shadow md:w-auto"
-                                        />
-                                        <Selector
-                                            isMultiselect={false}
-                                            selectedItems={
-                                                filters[ParamsEnum.SORTS] || ''
-                                            }
-                                            setSelectedItems={(value) =>
-                                                handleFilterChange(
-                                                    ParamsEnum.SORTS,
-                                                    value,
-                                                )
-                                            }
-                                            options={ProposalSortingOptions()}
-                                            hideCheckbox={true}
-                                            placeholder={t(
-                                                'proposals.options.sort',
-                                            )}
-                                            className="w-full shadow md:w-auto"
-                                        />
-                                    </div>
-                                </div>
+                            <div className="mt-4 flex w-full items-end justify-end">
+                                <VoterListFilters
+                                    campaigns={campaigns}
+                                    filters={filters}
+                                    bookmarkHash={bookmarkHash}
+                                    fundSlug={fundSlug}
+                                />
                             </div>
                         </div>
 
