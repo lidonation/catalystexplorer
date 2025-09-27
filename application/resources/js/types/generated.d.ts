@@ -124,7 +124,8 @@ tally: number | null;
 overall_rank: number | null;
 fund_rank: number | null;
 category_rank: number | null;
-model: App.DataTransferObjects.ProposalData | null;
+fund: any | null;
+proposal: App.DataTransferObjects.ProposalData | null;
 };
 export type CategoryData = {
 id: string;

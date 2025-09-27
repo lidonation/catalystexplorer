@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\DataTransferObjects\CampaignData;
+use App\DataTransferObjects\CatalystTallyData;
 use App\DataTransferObjects\FundData;
 use App\DataTransferObjects\MetricData;
 use App\DataTransferObjects\ProposalData;
@@ -226,7 +227,7 @@ class FundsController extends Controller
                 'users',
                 'campaign',
                 'fund',
-                'ideascale_profiles' // @todo williard: ideascale_profiles is no longer, just here for the history.  Query team instead, and get the specific IdeascaleProfile or CatalystProfile instance from the ProposalProfile::model MorphTo relation
+                'ideascale_profiles', // @todo williard: ideascale_profiles is no longer, just here for the history.  Query team instead, and get the specific IdeascaleProfile or CatalystProfile instance from the ProposalProfile::model MorphTo relation
             ])
                 ->whereNotNull('quickpitch')
                 ->where('fund_id', $fund->id)
@@ -423,7 +424,8 @@ class FundsController extends Controller
                 [$sortField, $sortDirection] = explode(':', $sortParam);
             }
 
-            $totalVotesCast = CatalystTally::where('context_id', $fund->id)->sum('tally');
+            $totalVotesCast = CatalystTally::where('context_id', $fund->id)
+                ->sum('tally');
 
             $baseQuery = CatalystTally::query()
                 ->with([
@@ -501,71 +503,64 @@ class FundsController extends Controller
                 ->take($perPage)
                 ->get();
 
-            $tallyStats = $talliesWithRanking->map(function ($tally) use ($fund) {
-                $proposal = $tally->proposal;
-                $proposalData = null;
-
-                if ($proposal) {
-                    try {
-                        $proposalData = [
-                            'id' => $proposal->id,
-                            'title' => $proposal->title,
-                            'amount_requested' => $proposal->amount_requested,
-                            'currency' => $proposal->currency,
-                            'campaign' => $proposal->campaign ? [
-                                'id' => $proposal->campaign->id,
-                                'title' => $proposal->campaign->title,
-                            ] : null,
-                        ];
-                    } catch (\Throwable $e) {
-                        \Log::warning('Error processing proposal data for tally', [
-                            'tally_id' => $tally->id,
-                            'proposal_id' => $proposal->id,
-                            'error' => $e->getMessage(),
-                        ]);
-                    }
-                }
-
-                if (! $proposalData) {
-                    $fallbackProposal = $fund->proposals()
-                        ->select(['id', 'title', 'amount_requested', 'currency'])
-                        ->whereNotNull('title')
-                        ->orderBy('id')
-                        ->first();
-
-                    if ($fallbackProposal) {
-                        $proposalData = [
-                            'id' => $fallbackProposal->id,
-                            'title' => $fallbackProposal->title,
-                            'amount_requested' => $fallbackProposal->amount_requested,
-                            'currency' => $fallbackProposal->currency,
-                            'campaign' => null,
-                        ];
-                    }
-                }
-
-                $fundRanking = null;
-                if ($tally->metas && $tally->metas->isNotEmpty()) {
-                    $fundRankMeta = $tally->metas->firstWhere('key', 'fund_rank');
-                    if ($fundRankMeta) {
-                        $fundRanking = (int) $fundRankMeta->content;
-                    }
-                }
-
-                return [
-                    'id' => $tally->id,
-                    'votes_count' => $tally->tally,
-                    'fund_ranking' => $fundRanking,
-                    'latest_fund' => [
-                        'id' => $fund->id,
-                        'title' => $fund->title,
-                        'currency' => $fund->currency,
-                    ],
-                    'latest_proposal' => $proposalData,
-                    'created_at' => now()->toISOString(),
-                    'updated_at' => now()->toISOString(),
-                ];
-            });
+            //
+            //            $tallyStats = $talliesWithRanking->map(function ($tally) use ($fund) {
+            //                $proposal = $tally->proposal;
+            //                $proposalData = null;
+            //
+            //                if ($proposal) {
+            //                    try {
+            //                        $proposalData = [
+            //                            'id' => $proposal->id,
+            //                            'title' => $proposal->title,
+            //                            'amount_requested' => $proposal->amount_requested,
+            //                            'currency' => $proposal->currency,
+            //                            'campaign' => $proposal->campaign ? [
+            //                                'id' => $proposal->campaign->id,
+            //                                'title' => $proposal->campaign->title,
+            //                            ] : null,
+            //                        ];
+            //                    } catch (\Throwable $e) {
+            //                        \Log::warning('Error processing proposal data for tally', [
+            //                            'tally_id' => $tally->id,
+            //                            'proposal_id' => $proposal->id,
+            //                            'error' => $e->getMessage(),
+            //                        ]);
+            //                    }
+            //                }
+            //
+            //                if (! $proposalData) {
+            //                    $fallbackProposal = $fund->proposals()
+            //                        ->select(['id', 'title', 'amount_requested', 'currency'])
+            //                        ->whereNotNull('title')
+            //                        ->orderBy('id')
+            //                        ->first();
+            //
+            //                    if ($fallbackProposal) {
+            //                        $proposalData = [
+            //                            'id' => $fallbackProposal->id,
+            //                            'title' => $fallbackProposal->title,
+            //                            'amount_requested' => $fallbackProposal->amount_requested,
+            //                            'currency' => $fallbackProposal->currency,
+            //                            'campaign' => null,
+            //                        ];
+            //                    }
+            //                }
+            //
+            //
+            //                return [
+            //                    'id' => $tally->id,
+            //                    'votes_count' => $tally->tally,
+            //                    'latest_fund' => [
+            //                        'id' => $fund->id,
+            //                        'title' => $fund->title,
+            //                        'currency' => $fund->currency,
+            //                    ],
+            //                    'latest_proposal' => $proposalData,
+            //                    'created_at' => now()->toISOString(),
+            //                    'updated_at' => now()->toISOString(),
+            //                ];
+            //            });
 
             $queryParams = request()->query();
             $links = $this->generatePaginationLinks($page, $lastPage, $queryParams);
@@ -573,20 +568,15 @@ class FundsController extends Controller
             $lastUpdated = $talliesWithRanking->max('updated_at') ?? now();
 
             return [
-                'data' => $tallyStats->toArray(),
+                ...(to_length_aware_paginator(
+                    CatalystTallyData::collect($talliesWithRanking),
+                    perPage: $perPage,
+                    currentPage: $page
+                )->onEachSide(0)->toArray()),
                 'total' => $totalCount,
                 'total_votes_cast' => $totalVotesCast,
-                'per_page' => $perPage,
-                'current_page' => $page,
-                'last_page' => $lastPage,
-                'from' => $from,
-                'to' => $to,
-                'prev_page_url' => $page > 1 ? $this->buildPaginationUrl($page - 1, $queryParams) : null,
-                'next_page_url' => $page < $lastPage ? $this->buildPaginationUrl($page + 1, $queryParams) : null,
-                'links' => $links,
                 'last_updated' => $lastUpdated->toISOString(),
             ];
-
         } catch (\Throwable $e) {
             \Log::error('Error fetching tallies', [
                 'fund_id' => $fund->id,
