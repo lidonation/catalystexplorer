@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
+use App\Enums\CatalystFunds;
 use App\Models\CatalystTally;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
@@ -54,7 +55,7 @@ class UpdateTallyRank implements ShouldQueue
     public function updateFundRank(): void
     {
         $tallyCursor = CatalystTally::orderBy('context_id')
-            ->where('context_id', 'b77b307e-2e83-4f9d-8be1-ba9f600299f3')
+            ->where('context_id', CatalystFunds::FOURTEEN)
             ->orderByDesc('tally')
             ->cursor();
         foreach ($tallyCursor as $rank => $tally) {
@@ -67,17 +68,17 @@ class UpdateTallyRank implements ShouldQueue
         $currentChallengeId = null;
         $rank = 0;
         $previousTally = 0;
-
         $tallyCursor = CatalystTally::join('proposals', 'catalyst_tallies.model_id', '=', 'proposals.id')
             ->join('funds', 'proposals.fund_id', '=', 'funds.id')
-            ->orderBy('funds.id')
+            ->where('context_id', CatalystFunds::FOURTEEN)
+            ->orderBy('proposals.campaign_id')
             ->orderByDesc('catalyst_tallies.tally')
             ->select('catalyst_tallies.*', 'proposals.fund_id as proposal_fund_id')
             ->cursor();
 
         foreach ($tallyCursor as $tally) {
-            if ($currentChallengeId !== $tally->proposal?->fund_id) {
-                $currentChallengeId = $tally->proposal?->fund_id;
+            if ($currentChallengeId !== $tally->proposal?->campaign_id) {
+                $currentChallengeId = $tally->proposal?->campaign_id;
                 $rank = 0;
             }
 
