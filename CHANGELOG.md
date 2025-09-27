@@ -1,3 +1,15 @@
+# [1.33.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.32.1...v1.33.0) (2025-09-26)
+
+
+### Bug Fixes
+
+* campaign filter when creating the voter list ([b535acc](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/b535acc540b726a73bcff2a1839a6c2ea32f4fef))
+
+
+### Features
+
+* **quickpitch cards:** ln-2038 refactored quickpitch cards ([32f5ee6](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/32f5ee62ae802953a2036694d79f596029a2d5fc))
+
 ## [1.32.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.32.0...v1.32.1) (2025-09-26)
 
 
