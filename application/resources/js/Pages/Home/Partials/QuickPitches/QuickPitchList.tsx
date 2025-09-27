@@ -35,22 +35,23 @@ export default function QuickPitchList ({ quickPitches, activeFundId }: QuickPit
                 </SecondaryLink>
             </div>
 
-            {featuredArray.length > 0 && (
-                <div className="space-y-4">
-                    <div className="grid grid-cols-1 gap-4">
-                        {featuredArray.map((quickPitch) => (
-                            <QuickPitchCard key={quickPitch.id} proposal={quickPitch} thumbnail={''} />
-                        ))}
-                    </div>
-                </div>
-            )}
+            {/*{featuredArray.length > 0 && (*/}
+            {/*    <div className="space-y-4">*/}
+            {/*        <div className="grid grid-cols-1 gap-4">*/}
+            {/*            {featuredArray.map((quickPitch) => (*/}
+            {/*                <QuickPitchCard key={quickPitch.id} proposal={quickPitch} thumbnail={''} />*/}
+            {/*            ))}*/}
+            {/*        </div>*/}
+            {/*    </div>*/}
+            {/*)}*/}
 
             {regularArray.length > 0 && (
                 <div className="space-y-4">
-                    
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                         {regularArray.map((quickPitch) => (
+                            // check if the current index is in the featured idexes array, then set cols-span-2
                             <QuickPitchCard key={quickPitch.id} proposal={quickPitch} thumbnail={''} />
                         ))}
                     </div>
