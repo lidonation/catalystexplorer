@@ -22,6 +22,7 @@ use App\Models\Proposal;
 use App\Repositories\FundRepository;
 use App\Repositories\MetricRepository;
 use App\Repositories\ProposalRepository;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -219,10 +220,18 @@ class FundsController extends Controller
     private function getActiveFundQuickPitches(Fund $fund, ProposalRepository $proposals)
     {
         try {
-            $rawProposals = Proposal::with(['users', 'campaign', 'fund', 'ideascale_profiles'])
+            // @todo willard: only load data that's explicitly need for your component
+            // including data on the relations
+            $rawProposals = Proposal::with([
+                'users',
+                'campaign',
+                'fund',
+                'ideascale_profiles' // @todo williard: ideascale_profiles is no longer, just here for the history.  Query team instead, and get the specific IdeascaleProfile or CatalystProfile instance from the ProposalProfile::model MorphTo relation
+            ])
                 ->whereNotNull('quickpitch')
                 ->where('fund_id', $fund->id)
                 ->limit(15)
+                ->inRandomOrder()
                 ->get();
 
             $rawProposals->each(function ($proposal) {
@@ -257,6 +266,10 @@ class FundsController extends Controller
                 'regular_count' => $regularRaw->count(),
                 'total_original' => $rawProposals->count(),
             ]);
+
+            // get the length
+            // get 2 indexes that's not next to each other
+            // pass the indexes to the list to manipulate
 
             return [
                 'featured' => ProposalData::collect($featuredRaw->shuffle()),

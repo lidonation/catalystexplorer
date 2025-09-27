@@ -53,24 +53,12 @@ class UpdateTallyRank implements ShouldQueue
 
     public function updateFundRank(): void
     {
-        $currentFundId = null;
-        $rank = 0;
-        $previousTally = 0;
         $tallyCursor = CatalystTally::orderBy('context_id')
+            ->where('context_id', 'b77b307e-2e83-4f9d-8be1-ba9f600299f3')
             ->orderByDesc('tally')
             ->cursor();
-
-        foreach ($tallyCursor as $tally) {
-            if ($currentFundId != $tally->context_id) {
-                $currentFundId = $tally->context_id;
-                $rank = 0;
-            }
-
-            if (($previousTally === 0) || ($previousTally !== $tally->tally)) {
-                $rank++;
-            }
-            $tally->saveMeta('fund_rank', $rank, $tally, true);
-            $previousTally = $tally->tally;
+        foreach ($tallyCursor as $rank => $tally) {
+            $tally->saveMeta('fund_rank', ($rank + 1), $tally, true);
         }
     }
 
