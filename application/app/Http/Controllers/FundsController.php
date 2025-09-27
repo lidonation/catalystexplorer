@@ -570,6 +570,7 @@ class FundsController extends Controller
             return [
                 ...(to_length_aware_paginator(
                     CatalystTallyData::collect($talliesWithRanking),
+                    total: $totalCount,
                     perPage: $perPage,
                     currentPage: $page
                 )->onEachSide(0)->toArray()),
