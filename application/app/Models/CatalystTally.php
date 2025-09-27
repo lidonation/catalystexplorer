@@ -28,6 +28,7 @@ class CatalystTally extends Model implements IHasMetaData
     protected $appends = [
         'category_rank',
         'fund_rank',
+        'chance',
     ];
 
     public function categoryRank(): Attribute
@@ -41,6 +42,13 @@ class CatalystTally extends Model implements IHasMetaData
     {
         return Attribute::make(
             get: fn () => $this->meta_info?->fund_rank
+        );
+    }
+
+    public function chance(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->meta_info?->chance
         );
     }
 
