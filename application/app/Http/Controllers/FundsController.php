@@ -481,10 +481,6 @@ class FundsController extends Controller
             }
 
             $offset = ($page - 1) * $perPage;
-            $lastPage = (int) ceil($totalCount / $perPage);
-            $from = $offset + 1;
-            $to = min($offset + $perPage, $totalCount);
-
             $orderByColumn = 'tally';
             $orderByDirection = 'desc';
 
@@ -503,68 +499,7 @@ class FundsController extends Controller
                 ->take($perPage)
                 ->get();
 
-            //
-            //            $tallyStats = $talliesWithRanking->map(function ($tally) use ($fund) {
-            //                $proposal = $tally->proposal;
-            //                $proposalData = null;
-            //
-            //                if ($proposal) {
-            //                    try {
-            //                        $proposalData = [
-            //                            'id' => $proposal->id,
-            //                            'title' => $proposal->title,
-            //                            'amount_requested' => $proposal->amount_requested,
-            //                            'currency' => $proposal->currency,
-            //                            'campaign' => $proposal->campaign ? [
-            //                                'id' => $proposal->campaign->id,
-            //                                'title' => $proposal->campaign->title,
-            //                            ] : null,
-            //                        ];
-            //                    } catch (\Throwable $e) {
-            //                        \Log::warning('Error processing proposal data for tally', [
-            //                            'tally_id' => $tally->id,
-            //                            'proposal_id' => $proposal->id,
-            //                            'error' => $e->getMessage(),
-            //                        ]);
-            //                    }
-            //                }
-            //
-            //                if (! $proposalData) {
-            //                    $fallbackProposal = $fund->proposals()
-            //                        ->select(['id', 'title', 'amount_requested', 'currency'])
-            //                        ->whereNotNull('title')
-            //                        ->orderBy('id')
-            //                        ->first();
-            //
-            //                    if ($fallbackProposal) {
-            //                        $proposalData = [
-            //                            'id' => $fallbackProposal->id,
-            //                            'title' => $fallbackProposal->title,
-            //                            'amount_requested' => $fallbackProposal->amount_requested,
-            //                            'currency' => $fallbackProposal->currency,
-            //                            'campaign' => null,
-            //                        ];
-            //                    }
-            //                }
-            //
-            //
-            //                return [
-            //                    'id' => $tally->id,
-            //                    'votes_count' => $tally->tally,
-            //                    'latest_fund' => [
-            //                        'id' => $fund->id,
-            //                        'title' => $fund->title,
-            //                        'currency' => $fund->currency,
-            //                    ],
-            //                    'latest_proposal' => $proposalData,
-            //                    'created_at' => now()->toISOString(),
-            //                    'updated_at' => now()->toISOString(),
-            //                ];
-            //            });
-
             $queryParams = request()->query();
-            $links = $this->generatePaginationLinks($page, $lastPage, $queryParams);
-
             $lastUpdated = $talliesWithRanking->max('updated_at') ?? now();
 
             return [
