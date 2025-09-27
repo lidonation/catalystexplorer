@@ -19,6 +19,8 @@ final class CatalystTallyData extends Data
 
         public ?int $category_rank,
 
+        public ?float $chance,
+
         public ?FundDatas $fund,
 
         public ?ProposalData $proposal,

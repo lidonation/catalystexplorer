@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Enums\CatalystFunds;
-use App\Models\CatalystTally;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,80 +12,51 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Bus;
 
+/**
+ * UpdateTallyRank - Parallelized Tally Ranking System
+ *
+ * This job orchestrates the calculation of various rankings and approval chances
+ * for Catalyst proposals using a parallelized batch system for optimal performance.
+ *
+ * Execution Flow:
+ *
+ * Stage 1 (Parallel Execution):
+ * - UpdateOverallRankJob: Calculates overall rankings across all tallies
+ * - UpdateFundRankJob: Calculates rankings within Fund 14
+ * - UpdateCategoryRankJob: Calculates rankings within each campaign/category
+ *
+ * Stage 2 (Sequential Execution):
+ * - UpdateApprovalChanceJob: Calculates approval chances based on historical data
+ *   (Depends on category ranks from Stage 1)
+ */
 class UpdateTallyRank implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * Create a new job instance.
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
-     * Execute the job.
+     * Orchestrates the parallel execution of ranking jobs followed by
+     * approval chance calculation that depends on category rankings.
+     *
+     * @throws \Throwable
      */
     public function handle(): void
     {
-        Bus::batch([
-            $this->updateOverallRank(),
-            $this->updateFundRank(),
-            $this->updateCategoryRank(),
-        ]);
-    }
-
-    public function updateOverallRank(): void
-    {
-        $rank = 0;
-        $previousTally = 0;
-        CatalystTally::orderByDesc('tally')
-            ->each(function ($tally, $index) use (&$rank, &$previousTally) {
-                if (($previousTally === 0) || ($previousTally !== $tally->tally)) {
-                    $rank++;
-                }
-                $tally->saveMeta('overall_rank', $index + 1, null, true);
-                $previousTally = $tally->tally;
+        $firstBatch = Bus::batch([
+            new UpdateOverallRankJob,
+            new UpdateFundRankJob,
+            new UpdateCategoryRankJob,
+        ])
+            ->name('Update Rankings')
+            ->allowFailures()
+            ->then(function () {
+                Bus::batch([
+                    new UpdateApprovalChanceJob,
+                ])
+                    ->name('Update Approval Chances')
+                    ->allowFailures()
+                    ->dispatch();
             });
-    }
 
-    public function updateFundRank(): void
-    {
-        $tallyCursor = CatalystTally::orderBy('context_id')
-            ->where('context_id', CatalystFunds::FOURTEEN)
-            ->orderByDesc('tally')
-            ->cursor();
-        foreach ($tallyCursor as $rank => $tally) {
-            $tally->saveMeta('fund_rank', ($rank + 1), $tally, true);
-        }
-    }
-
-    public function updateCategoryRank(): void
-    {
-        $currentChallengeId = null;
-        $rank = 0;
-        $previousTally = 0;
-        $tallyCursor = CatalystTally::join('proposals', 'catalyst_tallies.model_id', '=', 'proposals.id')
-            ->join('funds', 'proposals.fund_id', '=', 'funds.id')
-            ->where('context_id', CatalystFunds::FOURTEEN)
-            ->orderBy('proposals.campaign_id')
-            ->orderByDesc('catalyst_tallies.tally')
-            ->select('catalyst_tallies.*', 'proposals.fund_id as proposal_fund_id')
-            ->cursor();
-
-        foreach ($tallyCursor as $tally) {
-            if ($currentChallengeId !== $tally->proposal?->campaign_id) {
-                $currentChallengeId = $tally->proposal?->campaign_id;
-                $rank = 0;
-            }
-
-            if (($previousTally === 0) || ($previousTally !== $tally->tally)) {
-                $rank++;
-            }
-
-            $tally->saveMeta('category_rank', $rank, null, true);
-            $previousTally = $tally->tally;
-        }
+        $firstBatch->dispatch();
     }
 }
