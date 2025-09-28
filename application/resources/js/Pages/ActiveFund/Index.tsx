@@ -20,6 +20,7 @@ import CampaignCard from './Partials/CampaignCard';
 import CreateListBanner from './Partials/CreateListBanner';
 import FundTalliesWidget from './Partials/FundTalliesWidget';
 import ProposalData = App.DataTransferObjects.ProposalData;
+import CatalystTallyData = App.DataTransferObjects.CatalystTallyData;
 import { PaginatedData } from '@/types/paginated-data';
 
 interface VotingStatsItem extends App.DataTransferObjects.VoterData {
@@ -35,7 +36,7 @@ interface ActiveFundsProp extends Record<string, unknown> {
     proposals: ProposalData[];
     amountDistributed: number;
     amountRemaining: number;
-    tallies?: PaginatedData<VotingStatsItem[]> & { last_updated?: string };
+    tallies?: PaginatedData<CatalystTallyData[]> & { total_votes_cast?: number; last_updated?: string };
     filters?: Record<string, unknown>;
     quickPitches?: {
         featured: ProposalData[];

@@ -14,6 +14,7 @@ use App\Enums\CatalystCurrencies;
 use App\Enums\ProposalFundingStatus;
 use App\Enums\ProposalSearchParams;
 use App\Enums\ProposalStatus;
+use App\Models\Campaign;
 use App\Models\CatalystProfile;
 use App\Models\CatalystTally;
 use App\Models\Connection;
@@ -160,7 +161,8 @@ class FundsController extends Controller
         $page = (int) $request->get('p', 1);
         $perPage = (int) $request->get('per_page', 24);
 
-        $allFunds = Fund::orderBy('launched_at', 'desc')->get();
+        $allFunds = Fund::orderBy('launched_at', 'desc')
+            ->get(['id', 'title', 'amount']);
 
         return Inertia::render('ActiveFund/Index', [
             'proposals' => Inertia::optional(
@@ -414,160 +416,157 @@ class FundsController extends Controller
     private function getTallies(Fund $fund, int $perPage = 10, int $page = 1): array
     {
         try {
+            $cacheKey = $this->buildTalliesCacheKey($fund->id, $page, $perPage);
+
+            $cached = \Cache::get($cacheKey);
+            if ($cached && ! app()->environment('local')) {
+                return $cached;
+            }
+
             $searchQuery = $this->queryParams[ProposalSearchParams::QUERY()->value] ?? null;
             $sortParam = $this->queryParams[ProposalSearchParams::SORTS()->value] ?? null;
+            $campaignFilter = $this->queryParams[ProposalSearchParams::CAMPAIGNS()->value] ?? null;
+            $fundFilter = $this->queryParams[ProposalSearchParams::FUNDS()->value] ?? null;
 
-            $sortField = null;
-            $sortDirection = null;
-
+            $sortField = 'tally';
+            $sortDirection = 'desc';
             if ($sortParam) {
                 [$sortField, $sortDirection] = explode(':', $sortParam);
+                if ($sortField === 'votes_count') {
+                    $sortField = 'tally';
+                }
             }
 
-            $totalVotesCast = CatalystTally::where('context_id', $fund->id)
-                ->sum('tally');
+            $totalVotesCast = \Cache::remember(
+                "fund_{$fund->id}_total_votes",
+                now()->addHours(2),
+                fn () => CatalystTally::where('context_id', $fund->id)->sum('tally')
+            );
 
             $baseQuery = CatalystTally::query()
-                ->with([
-                    'proposal:id,title,amount_requested,currency',
-                    'proposal.campaign:id,title',
-                    'proposal.fund:id,title,currency',
+                ->select([
+                    'catalyst_tallies.*',
+                    'proposals.id as proposal_id',
+                    'proposals.title as proposal_title',
+                    'proposals.slug as proposal_slug',
+                    'proposals.amount_requested',
+                    'proposals.currency as proposal_currency',
+                    'proposals.campaign_id',
+                    'campaigns.id as campaign_id',
+                    'campaigns.title as campaign_title',
+                    'funds.id as fund_id',
+                    'funds.title as fund_title',
+                    'funds.currency as fund_currency',
                 ])
-                ->where('context_id', $fund->id)
-                ->whereNotNull('model_id')
-                ->whereHas('proposal');
+                ->join('proposals', 'catalyst_tallies.model_id', '=', 'proposals.id')
+                ->join('campaigns', 'proposals.campaign_id', '=', 'campaigns.id')
+                ->join('funds', 'proposals.fund_id', '=', 'funds.id')
+                ->where('catalyst_tallies.context_id', $fund->id)
+                ->whereNotNull('catalyst_tallies.model_id');
 
-            $campaignFilter = $this->queryParams[ProposalSearchParams::CAMPAIGNS()->value] ?? null;
             if (! empty($campaignFilter) && is_array($campaignFilter)) {
-                $baseQuery->whereHas('proposal.campaign', function ($query) use ($campaignFilter) {
-                    $query->whereIn('id', $campaignFilter);
-                });
+                $baseQuery->whereIn('campaigns.id', $campaignFilter);
             }
 
-            $fundFilter = $this->queryParams[ProposalSearchParams::FUNDS()->value] ?? null;
             if (! empty($fundFilter) && is_array($fundFilter)) {
-                $baseQuery->whereHas('proposal.fund', function ($query) use ($fundFilter) {
-                    $query->whereIn('id', $fundFilter);
-                });
+                $baseQuery->whereIn('funds.id', $fundFilter);
             }
 
             if (! empty($searchQuery)) {
                 $searchTerm = trim($searchQuery);
-                $baseQuery->whereHas('proposal', function ($query) use ($searchTerm) {
-                    $query->where(function ($subQuery) use ($searchTerm) {
-                        $subQuery->where('title', 'ILIKE', "%{$searchTerm}%")
-                            ->orWhereHas('campaign', function ($campaignQuery) use ($searchTerm) {
-                                $campaignQuery->where('title', 'ILIKE', "%{$searchTerm}%");
-                            })
-                            ->orWhereHas('team', function ($teamQuery) use ($searchTerm) {
-                                $teamQuery->whereHasMorph('model', [
-                                    CatalystProfile::class,
-                                    IdeascaleProfile::class,
-                                ], function ($profileQuery) use ($searchTerm) {
-                                    $profileQuery->where(function ($nameQuery) use ($searchTerm) {
-                                        $nameQuery->where('name', 'ILIKE', "%{$searchTerm}%")
-                                            ->orWhere('username', 'ILIKE', "%{$searchTerm}%");
-                                    });
+
+                $baseQuery->where(function ($query) use ($searchTerm) {
+                    $query->where('proposals.title', 'ILIKE', "%{$searchTerm}%")
+                        ->orWhere('campaigns.title', 'ILIKE', "%{$searchTerm}%");
+
+                    if (strlen($searchTerm) > 3) {
+                        $query->orWhereExists(function ($subQuery) use ($searchTerm) {
+                            $subQuery->select('*')
+                                ->from('proposal_profiles')
+                                ->join('catalyst_profiles', 'proposal_profiles.profile_id', '=', 'catalyst_profiles.id')
+                                ->whereColumn('proposal_profiles.proposal_id', 'proposals.id')
+                                ->where('proposal_profiles.profile_type', CatalystProfile::class)
+                                ->where(function ($nameQuery) use ($searchTerm) {
+                                    $nameQuery->where('catalyst_profiles.name', 'ILIKE', "%{$searchTerm}%")
+                                        ->orWhere('catalyst_profiles.username', 'ILIKE', "%{$searchTerm}%");
                                 });
+                        })
+                            ->orWhereExists(function ($subQuery) use ($searchTerm) {
+                                $subQuery->select('*')
+                                    ->from('proposal_profiles')
+                                    ->join('ideascale_profiles', 'proposal_profiles.profile_id', '=', 'ideascale_profiles.id')
+                                    ->whereColumn('proposal_profiles.proposal_id', 'proposals.id')
+                                    ->where('proposal_profiles.profile_type', IdeascaleProfile::class)
+                                    ->where(function ($nameQuery) use ($searchTerm) {
+                                        $nameQuery->where('ideascale_profiles.name', 'ILIKE', "%{$searchTerm}%")
+                                            ->orWhere('ideascale_profiles.username', 'ILIKE', "%{$searchTerm}%");
+                                    });
                             });
-                    });
+                    }
                 });
             }
 
-            $totalCount = (clone $baseQuery)->count();
+            $offset = ($page - 1) * $perPage;
+
+            $talliesQuery = (clone $baseQuery)
+                ->orderBy("catalyst_tallies.{$sortField}", $sortDirection)
+                ->orderBy('catalyst_tallies.id', 'asc')
+                ->offset($offset)
+                ->limit($perPage);
+
+            $totalCount = $baseQuery->count('catalyst_tallies.id');
 
             if ($totalCount === 0) {
                 return $this->getEmptyTalliesResponse($perPage, $page, $totalVotesCast);
             }
 
-            $offset = ($page - 1) * $perPage;
-            $lastPage = (int) ceil($totalCount / $perPage);
-            $from = $offset + 1;
-            $to = min($offset + $perPage, $totalCount);
+            $talliesWithRanking = $talliesQuery->get();
 
-            $orderByColumn = 'tally';
-            $orderByDirection = 'desc';
+            $tallyIds = $talliesWithRanking->pluck('id');
+            $metas = \DB::table('metas')
+                ->whereIn('model_id', $tallyIds)
+                ->where('model_type', CatalystTally::class)
+                ->whereIn('key', ['fund_rank', 'category_rank', 'overall_rank', 'chance'])
+                ->get()
+                ->groupBy('model_id');
 
-            if ($sortField && $sortDirection && in_array($sortDirection, ['asc', 'desc'])) {
-                if ($sortField === 'votes_count') {
-                    $orderByColumn = 'tally';
-                    $orderByDirection = $sortDirection;
+            $currentLocale = \App::getLocale();
+
+            $talliesWithRanking->each(function ($tally) use ($metas, $fund, $currentLocale) {
+                $tally->setRelation('metas', collect($metas->get($tally->id, [])));
+
+                if ($tally->proposal_id) {
+                    $proposal = new Proposal;
+                    $proposal->id = $tally->proposal_id;
+
+                    $proposal->title = $this->getTranslatedTitle($tally->proposal_title, $currentLocale);
+                    $proposal->slug = $tally->proposal_slug;
+
+                    $proposal->amount_requested = $tally->amount_requested;
+                    $proposal->currency = $tally->proposal_currency;
+                    $proposal->campaign_id = $tally->campaign_id;
+
+                    if ($tally->campaign_id) {
+                        $campaign = new Campaign;
+                        $campaign->id = $tally->campaign_id;
+                        $campaign->title = $this->getTranslatedTitle($tally->campaign_title, $currentLocale);
+
+                        $proposal->setRelation('campaign', $campaign);
+                    }
+
+                    $tally->setRelation('proposal', $proposal);
                 }
-            }
 
-            $talliesWithRanking = $baseQuery
-                ->with('metas')
-                ->orderBy($orderByColumn, $orderByDirection)
-                ->orderBy('id', 'asc')
-                ->skip($offset)
-                ->take($perPage)
-                ->get();
+                $fundModel = new Fund;
+                $fundModel->id = $fund->id;
+                $fundModel->title = $fund->title;
+                $fundModel->currency = $fund->currency;
+                $tally->setRelation('fund', $fundModel);
+            });
 
-            //
-            //            $tallyStats = $talliesWithRanking->map(function ($tally) use ($fund) {
-            //                $proposal = $tally->proposal;
-            //                $proposalData = null;
-            //
-            //                if ($proposal) {
-            //                    try {
-            //                        $proposalData = [
-            //                            'id' => $proposal->id,
-            //                            'title' => $proposal->title,
-            //                            'amount_requested' => $proposal->amount_requested,
-            //                            'currency' => $proposal->currency,
-            //                            'campaign' => $proposal->campaign ? [
-            //                                'id' => $proposal->campaign->id,
-            //                                'title' => $proposal->campaign->title,
-            //                            ] : null,
-            //                        ];
-            //                    } catch (\Throwable $e) {
-            //                        \Log::warning('Error processing proposal data for tally', [
-            //                            'tally_id' => $tally->id,
-            //                            'proposal_id' => $proposal->id,
-            //                            'error' => $e->getMessage(),
-            //                        ]);
-            //                    }
-            //                }
-            //
-            //                if (! $proposalData) {
-            //                    $fallbackProposal = $fund->proposals()
-            //                        ->select(['id', 'title', 'amount_requested', 'currency'])
-            //                        ->whereNotNull('title')
-            //                        ->orderBy('id')
-            //                        ->first();
-            //
-            //                    if ($fallbackProposal) {
-            //                        $proposalData = [
-            //                            'id' => $fallbackProposal->id,
-            //                            'title' => $fallbackProposal->title,
-            //                            'amount_requested' => $fallbackProposal->amount_requested,
-            //                            'currency' => $fallbackProposal->currency,
-            //                            'campaign' => null,
-            //                        ];
-            //                    }
-            //                }
-            //
-            //
-            //                return [
-            //                    'id' => $tally->id,
-            //                    'votes_count' => $tally->tally,
-            //                    'latest_fund' => [
-            //                        'id' => $fund->id,
-            //                        'title' => $fund->title,
-            //                        'currency' => $fund->currency,
-            //                    ],
-            //                    'latest_proposal' => $proposalData,
-            //                    'created_at' => now()->toISOString(),
-            //                    'updated_at' => now()->toISOString(),
-            //                ];
-            //            });
+            $lastUpdated = $talliesWithRanking->max('updated_at') ?? null;
 
-            $queryParams = request()->query();
-            $links = $this->generatePaginationLinks($page, $lastPage, $queryParams);
-
-            $lastUpdated = $talliesWithRanking->max('updated_at') ?? now();
-
-            return [
+            $result = [
                 ...(to_length_aware_paginator(
                     CatalystTallyData::collect($talliesWithRanking),
                     total: $totalCount,
@@ -578,6 +577,13 @@ class FundsController extends Controller
                 'total_votes_cast' => $totalVotesCast,
                 'last_updated' => $lastUpdated->toISOString(),
             ];
+
+            if (! app()->environment('local')) {
+                \Cache::put($cacheKey, $result, now()->addMinutes(5));
+            }
+
+            return $result;
+
         } catch (\Throwable $e) {
             \Log::error('Error fetching tallies', [
                 'fund_id' => $fund->id,
@@ -667,7 +673,6 @@ class FundsController extends Controller
             ];
         }
 
-        // Next link
         $links[] = [
             'url' => $currentPage < $lastPage ? $this->buildPaginationUrl($currentPage + 1, $queryParams) : null,
             'label' => 'Next &raquo;',
@@ -675,5 +680,180 @@ class FundsController extends Controller
         ];
 
         return $links;
+    }
+
+    /**
+     * Build cache key for tallies query
+     */
+    private function buildTalliesCacheKey(string $fundId, int $page, int $perPage): string
+    {
+        $params = [
+            'fund_id' => $fundId,
+            'page' => $page,
+            'per_page' => $perPage,
+            'query' => $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
+            'sort' => $this->queryParams[ProposalSearchParams::SORTS()->value] ?? '',
+            'campaigns' => $this->queryParams[ProposalSearchParams::CAMPAIGNS()->value] ?? [],
+            'funds' => $this->queryParams[ProposalSearchParams::FUNDS()->value] ?? [],
+        ];
+
+        return 'tallies_'.hash('sha256', serialize($params));
+    }
+
+    /**
+     * Parse JSON translation and get title for current locale
+     * This mimics the behavior of Spatie\Translatable\HasTranslations
+     */
+    private function getTranslatedTitle(?string $jsonTitle, string $locale = 'en'): ?string
+    {
+        if (empty($jsonTitle)) {
+            return null;
+        }
+
+        // If it's not JSON (plain string), return as-is
+        $decodedTitle = json_decode($jsonTitle, true);
+        if (json_last_error() !== JSON_ERROR_NONE || ! is_array($decodedTitle)) {
+            return $jsonTitle;
+        }
+
+        // Try to get title for current locale
+        if (isset($decodedTitle[$locale])) {
+            return $decodedTitle[$locale];
+        }
+
+        // Fallback to English if current locale not found
+        if (isset($decodedTitle['en'])) {
+            return $decodedTitle['en'];
+        }
+
+        // Fallback to first available translation
+        if (! empty($decodedTitle)) {
+            return array_values($decodedTitle)[0];
+        }
+
+        // Ultimate fallback
+        return $jsonTitle;
+    }
+
+    /**
+     * Get tallies using cursor-based pagination for better performance on large datasets
+     * This is more efficient for deep pagination (page 100+)
+     */
+    private function getTalliesWithCursor(Fund $fund, ?string $cursor = null, int $limit = 10): array
+    {
+        try {
+            $searchQuery = $this->queryParams[ProposalSearchParams::QUERY()->value] ?? null;
+            $sortParam = $this->queryParams[ProposalSearchParams::SORTS()->value] ?? null;
+            $campaignFilter = $this->queryParams[ProposalSearchParams::CAMPAIGNS()->value] ?? null;
+
+            // Parse sort parameters
+            $sortField = 'tally';
+            $sortDirection = 'desc';
+            if ($sortParam) {
+                [$sortField, $sortDirection] = explode(':', $sortParam);
+                if ($sortField === 'votes_count') {
+                    $sortField = 'tally';
+                }
+            }
+
+            // Build base query with joins
+            $baseQuery = CatalystTally::query()
+                ->select([
+                    'catalyst_tallies.*',
+                    'proposals.id as proposal_id',
+                    'proposals.title as proposal_title',
+                    'proposals.amount_requested',
+                    'proposals.currency as proposal_currency',
+                    'proposals.campaign_id',
+                    'campaigns.id as campaign_id',
+                    'campaigns.title as campaign_title',
+                ])
+                ->join('proposals', 'catalyst_tallies.model_id', '=', 'proposals.id')
+                ->join('campaigns', 'proposals.campaign_id', '=', 'campaigns.id')
+                ->where('catalyst_tallies.context_id', $fund->id)
+                ->whereNotNull('catalyst_tallies.model_id');
+
+            // Apply filters
+            if (! empty($campaignFilter) && is_array($campaignFilter)) {
+                $baseQuery->whereIn('campaigns.id', $campaignFilter);
+            }
+
+            // Apply search
+            if (! empty($searchQuery)) {
+                $searchTerm = trim($searchQuery);
+                $baseQuery->where(function ($query) use ($searchTerm) {
+                    $query->where('proposals.title', 'ILIKE', "%{$searchTerm}%")
+                        ->orWhere('campaigns.title', 'ILIKE', "%{$searchTerm}%");
+                });
+            }
+
+            // Apply cursor pagination
+            if ($cursor) {
+                $decodedCursor = json_decode(base64_decode($cursor), true);
+                if ($decodedCursor && isset($decodedCursor['id'], $decodedCursor['sort_value'])) {
+                    if ($sortDirection === 'desc') {
+                        $baseQuery->where(function ($query) use ($decodedCursor, $sortField) {
+                            $query->where("catalyst_tallies.{$sortField}", '<', $decodedCursor['sort_value'])
+                                ->orWhere(function ($subQuery) use ($decodedCursor, $sortField) {
+                                    $subQuery->where("catalyst_tallies.{$sortField}", '=', $decodedCursor['sort_value'])
+                                        ->where('catalyst_tallies.id', '>', $decodedCursor['id']);
+                                });
+                        });
+                    } else {
+                        $baseQuery->where(function ($query) use ($decodedCursor, $sortField) {
+                            $query->where("catalyst_tallies.{$sortField}", '>', $decodedCursor['sort_value'])
+                                ->orWhere(function ($subQuery) use ($decodedCursor, $sortField) {
+                                    $subQuery->where("catalyst_tallies.{$sortField}", '=', $decodedCursor['sort_value'])
+                                        ->where('catalyst_tallies.id', '>', $decodedCursor['id']);
+                                });
+                        });
+                    }
+                }
+            }
+
+            // Execute query
+            $tallies = $baseQuery
+                ->orderBy("catalyst_tallies.{$sortField}", $sortDirection)
+                ->orderBy('catalyst_tallies.id', 'asc')
+                ->limit($limit + 1) // Get one extra to determine if there's a next page
+                ->get();
+
+            $hasNextPage = $tallies->count() > $limit;
+            if ($hasNextPage) {
+                $tallies->pop(); // Remove the extra item
+            }
+
+            // Generate next cursor
+            $nextCursor = null;
+            if ($hasNextPage && $tallies->isNotEmpty()) {
+                $lastItem = $tallies->last();
+                $nextCursor = base64_encode(json_encode([
+                    'id' => $lastItem->id,
+                    'sort_value' => $lastItem->{$sortField},
+                ]));
+            }
+
+            return [
+                'data' => CatalystTallyData::collect($tallies)->toArray(),
+                'has_next_page' => $hasNextPage,
+                'next_cursor' => $nextCursor,
+                'limit' => $limit,
+            ];
+
+        } catch (\Throwable $e) {
+            \Log::error('Error fetching tallies with cursor', [
+                'fund_id' => $fund->id,
+                'cursor' => $cursor,
+                'limit' => $limit,
+                'error' => $e->getMessage(),
+            ]);
+
+            return [
+                'data' => [],
+                'has_next_page' => false,
+                'next_cursor' => null,
+                'limit' => $limit,
+            ];
+        }
     }
 }

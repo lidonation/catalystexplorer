@@ -6,11 +6,12 @@ import Selector from '@/Components/atoms/Selector';
 import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 import { currency } from '@/utils/currency';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { FiltersProvider, useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
-import { router } from '@inertiajs/react';
+import { router, Link } from '@inertiajs/react';
 import ArrowDownIcon from '@/Components/svgs/ArrowDownIcon';
 import ArrowUpIcon from '@/Components/svgs/ArrowUpIcon';
 import { formatDistanceToNow } from 'date-fns';
@@ -550,14 +551,28 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
                                                 <span className="text-slate-400 text-sm">
                                                     {stat.fund_rank ? `${ordinal(stat.fund_rank)}` : '-'}
                                                 </span>
-                                                <span className="text-content">
-                                                    {stat.proposal?.title}
-                                                </span>
+                                                {stat.proposal?.slug ? (
+                                                    <Link 
+                                                        href={useLocalizedRoute(
+                                                            'proposals.proposal.details',
+                                                            { slug: stat.proposal.slug }
+                                                        )}
+                                                        target="_blank"
+                                                        className="text-content hover:text-primary underline cursor-pointer"
+                                                        data-preload="hover"
+                                                    >
+                                                        {stat.proposal.title}
+                                                    </Link>
+                                                ) : (
+                                                    <span className="text-content">
+                                                        {stat.proposal?.title}
+                                                    </span>
+                                                )}
                                             </div>
                                         </TableCell>
                                         <TableCell isLastColumn>
                                             <span className="font-normal">
-                                                {formatBudget(stat?.proposal, stat.fund)}
+                                                {formatBudget(stat?.proposal || undefined, stat.fund || undefined)}
                                             </span>
                                         </TableCell>
                                     </tr>

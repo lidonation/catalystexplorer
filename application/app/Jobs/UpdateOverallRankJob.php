@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs;
 
 use App\Models\CatalystTally;
@@ -15,8 +17,10 @@ class UpdateOverallRankJob implements ShouldQueue
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * Execute the job.
+     * The number of seconds the job can run before timing out.
      */
+    public int $timeout = 2700; // 45 minutes
+
     public function handle(): void
     {
         $rank = 0;
