@@ -173,7 +173,9 @@ const Index: React.FC<ActiveFundsProp> = ({
                     data-testid="quickpitches-section"
                 >
                     <div className="m-8">
-                        <QuickPitchList quickPitches={quickPitches} activeFundId={fund?.id} />
+                        <WhenVisible data="quickPitches" fallback={() => <QuickPitchList quickPitches={undefined} activeFundId={fund?.id} />}>
+                            <QuickPitchList quickPitches={quickPitches} activeFundId={fund?.id} />
+                        </WhenVisible>
                     </div>
                 </section>
 
