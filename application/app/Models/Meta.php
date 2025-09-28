@@ -12,7 +12,7 @@ class Meta extends Model
 {
     protected $guarded = [];
 
-    protected $keyType = 'int';
+    protected $keyType = 'string';
 
     public $incrementing = true;
 

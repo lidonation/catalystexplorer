@@ -20,6 +20,7 @@ import CampaignCard from './Partials/CampaignCard';
 import CreateListBanner from './Partials/CreateListBanner';
 import FundTalliesWidget from './Partials/FundTalliesWidget';
 import ProposalData = App.DataTransferObjects.ProposalData;
+import CatalystTallyData = App.DataTransferObjects.CatalystTallyData;
 import { PaginatedData } from '@/types/paginated-data';
 
 interface VotingStatsItem extends App.DataTransferObjects.VoterData {
@@ -35,7 +36,7 @@ interface ActiveFundsProp extends Record<string, unknown> {
     proposals: ProposalData[];
     amountDistributed: number;
     amountRemaining: number;
-    tallies?: PaginatedData<VotingStatsItem[]> & { last_updated?: string };
+    tallies?: PaginatedData<CatalystTallyData[]> & { total_votes_cast?: number; last_updated?: string };
     filters?: Record<string, unknown>;
     quickPitches?: {
         featured: ProposalData[];
@@ -172,8 +173,9 @@ const Index: React.FC<ActiveFundsProp> = ({
                     data-testid="quickpitches-section"
                 >
                     <div className="m-8">
-                        <Title level="2" className='mb-6'>{t('home.quickpitchTitle')}</Title>
-                        <QuickPitchList quickPitches={quickPitches} />
+                        <WhenVisible data="quickPitches" fallback={() => <QuickPitchList quickPitches={undefined} activeFundId={fund?.id} />}>
+                            <QuickPitchList quickPitches={quickPitches} activeFundId={fund?.id} />
+                        </WhenVisible>
                     </div>
                 </section>
 

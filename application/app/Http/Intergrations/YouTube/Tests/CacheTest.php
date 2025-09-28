@@ -89,7 +89,7 @@ class CacheTest
 
         $key1 = $request1->cacheKey();
         $key2 = $request2->cacheKey();
-        
+
         // For connector cache keys, we need to create PendingRequest objects
         $pendingRequest1 = $connector->createPendingRequest($request1);
         $pendingRequest2 = $connector->createPendingRequest($request2);
@@ -100,14 +100,14 @@ class CacheTest
         $results['connector_keys_different'] = $connectorKey1 !== $connectorKey2;
         $results['request_key_format'] = str_starts_with($key1, 'youtube_video_details_');
         $results['connector_key_format'] = str_starts_with($connectorKey1, 'youtube_api:');
-        
+
         // Test that connector keys use SHA-256 (32 char truncated hash after prefix)
         $hashPart1 = substr($connectorKey1, strlen('youtube_api:'));
         $hashPart2 = substr($connectorKey2, strlen('youtube_api:'));
         $results['connector_hash_length'] = strlen($hashPart1) === 32;
         $results['connector_hash_is_hex'] = ctype_xdigit($hashPart1);
         $results['connector_hashes_different'] = $hashPart1 !== $hashPart2;
-        
+
         $results['sample_request_key'] = $key1;
         $results['sample_connector_key'] = $connectorKey1;
 

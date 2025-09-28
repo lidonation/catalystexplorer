@@ -120,11 +120,14 @@ claimed_by: string | null;
 catalyst_id: string | null;
 };
 export type CatalystTallyData = {
+id: string | null;
 tally: number | null;
 overall_rank: number | null;
 fund_rank: number | null;
 category_rank: number | null;
-model: App.DataTransferObjects.ProposalData | null;
+chance: number | null;
+fund: App.DataTransferObjects.FundData | null;
+proposal: App.DataTransferObjects.ProposalData | null;
 };
 export type CategoryData = {
 id: string;
@@ -538,6 +541,9 @@ user_rationale?: string;
 catalyst_profiles: any | null;
 is_claimed?: boolean;
 quickpitch_thumbnail?: string;
+connections_count?: number;
+completed_proposals_count?: number;
+outstanding_proposals_count?: number;
 };
 export type RankingData = {
 id?: string;

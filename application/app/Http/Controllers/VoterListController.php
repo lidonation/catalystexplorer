@@ -57,6 +57,9 @@ class VoterListController extends Controller
         $funds = Fund::orderBy('created_at', 'desc')->get();
         $latestFund = $funds->first();
         $bookmarkHash = $request->input(QueryParamsEnum::BOOKMARK_COLLECTION()->value) ?? $request->input('bookmarkId');
+        $activeFundId = Fund::latest('launched_at')
+            ->pluck('id')
+            ->first();
 
         return Inertia::render('Workflows/CreateVoterList/Step2', [
             'stepDetails' => $this->getStepDetails(),
@@ -74,6 +77,9 @@ class VoterListController extends Controller
         $bookmarkCollection = null;
         $fund = null;
         $fundSlug = null;
+        $activeFundId = Fund::latest('launched_at')
+            ->pluck('id')
+            ->first();
 
         if ($bookmarkId) {
             $bookmarkCollection = BookmarkCollection::allVisibilities()->find($bookmarkId);
@@ -116,11 +122,11 @@ class VoterListController extends Controller
 
         if ($bookmarkCollection?->fund_id) {
             $campaigns = Campaign::where('fund_id', $bookmarkCollection?->fund_id)->get();
+        } elseif ($request->has(QueryParamsEnum::CAMPAIGNS()->value)) {
+            $campaigns = Campaign::where('fund_id', $activeFundId)->get();
+        } else {
+            $campaigns = Campaign::where('fund_id', $fund?->id ?? $activeFundId)->get();
         }
-
-        //        if ($bookmarkId) {
-        //            $filters[] = "bookmark_collections = [$bookmarkId]";
-        //        }
 
         $proposals = $this->getProposals($request, $filters);
 
@@ -489,11 +495,17 @@ class VoterListController extends Controller
         $page = (int) $request->input(ProposalSearchParams::PAGE()->value, default: 1) ?? 1;
         $limit = (int) $request->input('limit', 24);
         $search = $request->input(ProposalSearchParams::QUERY()->value, '');
-        $sort = $request->input(ProposalSearchParams::SORTS()->value) ?? [];
+        $sort = $request->input(ProposalSearchParams::SORTS()->value);
+
+        if (is_array($sort)) {
+            $sort = $sort[0] ?? '';
+        }
+
+        $sort = (string) $sort;
 
         $search = (string) $search;
 
-        return (new GetProposalFromScout) (
+        return (new GetProposalFromScout)(
             search: $search,
             filters: $filters,
             sort: $sort,

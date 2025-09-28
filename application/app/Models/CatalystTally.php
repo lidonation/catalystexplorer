@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Interfaces\IHasMetaData;
 use App\Traits\HasMetaData;
 use App\Traits\HasModel;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -23,6 +24,33 @@ class CatalystTally extends Model implements IHasMetaData
         'model_id',
         'context_id',
     ];
+
+    protected $appends = [
+        'category_rank',
+        'fund_rank',
+        'chance',
+    ];
+
+    public function categoryRank(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->meta_info?->category_rank
+        );
+    }
+
+    public function FundRank(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->meta_info?->fund_rank
+        );
+    }
+
+    public function chance(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->meta_info?->chance
+        );
+    }
 
     protected function casts(): array
     {

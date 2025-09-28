@@ -293,13 +293,23 @@ class Proposal extends Model implements IHasMetaData
     {
         return Attribute::make(
             get: function () {
-                $metadata = app(VideoService::class)->getVideoMetadata($this->quickpitch);
+                try {
+                    $metadata = app(VideoService::class)->getVideoMetadata($this->quickpitch);
 
-                if ($metadata && empty($metadata->thumbnail)) {
-                    Log::debug('Quickpitch video metadata (no thumbnail):', (array) $metadata);
+                    if ($metadata && empty($metadata->thumbnail)) {
+                        Log::debug('Quickpitch video metadata (no thumbnail):', (array) $metadata);
+                    }
+
+                    return $metadata['thumbnail'] ?? null;
+                } catch (\Exception $e) {
+                    Log::warning('Failed to fetch quickpitch thumbnail', [
+                        'proposal_id' => $this->id,
+                        'quickpitch_url' => $this->quickpitch,
+                        'error' => $e->getMessage(),
+                    ]);
+
+                    return null;
                 }
-
-                return $metadata['thumbnail'] ?? null;
             }
         );
     }
@@ -712,13 +722,13 @@ class Proposal extends Model implements IHasMetaData
             //            'id' => HashId::class,
             'amount_received' => 'integer',
             'amount_requested' => 'integer',
-            'created_at' => DateFormatCast::class,
+            'created_at' => 'datetime',
             'currency' => CatalystCurrencies::class.':nullable',
             'funded_at' => DateFormatCast::class,
             'funding_updated_at' => DateFormatCast::class,
             'offchain_metas' => 'array',
             'opensource' => 'boolean',
-            'updated_at' => DateFormatCast::class,
+            'updated_at' => 'datetime',
             'meta_data' => 'array',
         ];
     }

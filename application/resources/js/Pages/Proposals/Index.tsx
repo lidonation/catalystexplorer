@@ -194,7 +194,7 @@ export default function Index({
     const settingsInitialized = !isViewSettingsLoading;
     const currentIsHorizontal = isHorizontal ?? false;
     const currentIsMini = isMini ?? false;
-    const currentIsTableView = isTableView ?? false;
+    const currentIsTableView = quickPitchView ? false : (isTableView ?? false);
 
     useEffect(() => {
         if (metrics) {
