@@ -32,7 +32,6 @@ interface HomePageProps extends Record<string, unknown> {
     metrics: ProposalMetrics;
 }
 
-type ProposalVotesMap = Record<string, number | null>;
 type ProposalPropertyResponse = Record<string, Record<string, unknown>>;
 
 export default function Index({
@@ -45,7 +44,7 @@ export default function Index({
     const { t } = useLaravelReactI18n();
     const { setMetrics } = useMetrics();
 
-    const [proposalVotes, setProposalVotes] = useState<ProposalVotesMap>({});
+    const [proposalProperties, setProposalProperties] = useState<ProposalPropertyResponse>({});
 
     // Read-only state for display purposes - CardLayoutSwitcher manages the actual settings
     const { value: isHorizontal, isLoading: isHorizontalLoading } = useUserSetting<boolean>(userSettingEnums.VIEW_HORIZONTAL, false);
@@ -76,7 +75,6 @@ export default function Index({
             }
 
             try {
-            
                 const proposalsMapUrl = generateLocalizedRoute(
                     'proposals.map',
                 );
@@ -100,43 +98,11 @@ export default function Index({
         [],
     );
 
-    const extractNumericPropertyValue = useCallback((value: unknown): number | null => {
-        if (value === null || value === undefined || value === '') {
-            return null;
-        }
-
-        if (typeof value === 'number') {
-            return Number.isFinite(value) ? value : null;
-        }
-
-        const parsed = Number.parseInt(String(value), 10);
-
-        return Number.isNaN(parsed) ? null : parsed;
-    }, []);
-
-    const mapVotesFromProperties = useCallback(
-        (propertiesResponse: ProposalPropertyResponse): ProposalVotesMap => {
-            const votes: ProposalVotesMap = {};
-
-            Object.entries(propertiesResponse).forEach(([id, properties]) => {
-                const props = properties ?? {};
-
-                if (!Object.prototype.hasOwnProperty.call(props, 'vote')) {
-                    votes[id] = null;
-                    return;
-                }
-
-                votes[id] = extractNumericPropertyValue(props['vote']);
-            });
-
-            return votes;
-        },
-        [extractNumericPropertyValue],
-    );
+    const requestedPropertyKeys = useMemo(() => ['vote'], []);
 
     useEffect(() => {
         if (!auth?.user?.id) {
-            setProposalVotes({});
+            setProposalProperties({});
             return;
         }
 
@@ -145,39 +111,40 @@ export default function Index({
             .filter((id): id is string => Boolean(id));
 
         if (!proposalIds.length) {
-            setProposalVotes({});
+            setProposalProperties({});
             return;
         }
 
         let isMounted = true;
 
         (async () => {
-            const propertiesResponse = await fetchProposalProperties(proposalIds, ['vote']);
+            const propertiesResponse = await fetchProposalProperties(proposalIds, requestedPropertyKeys);
             if (isMounted) {
-                setProposalVotes(mapVotesFromProperties(propertiesResponse));
+                setProposalProperties(propertiesResponse);
             }
         })();
 
         return () => {
             isMounted = false;
         };
-    }, [auth?.user?.id, fetchProposalProperties, mapVotesFromProperties, proposals?.data]);
+    }, [auth?.user?.id, fetchProposalProperties, proposals?.data, requestedPropertyKeys]);
 
-    const proposalsWithVotes = useMemo(() => {
+    const proposalsWithProperties = useMemo(() => {
         if (!proposals?.data) {
             return proposals;
         }
 
         const mappedData = proposals.data.map((proposal) => {
-            const voteValue = proposalVotes?.[String(proposal.id)];
+            const proposalId = String(proposal.id);
+            const properties = proposalProperties?.[proposalId];
 
-            if (voteValue === undefined) {
+            if (!properties || Object.keys(properties).length === 0) {
                 return proposal;
             }
 
             return {
                 ...proposal,
-                vote: voteValue,
+                ...properties,
             } as ProposalData;
         });
 
@@ -185,9 +152,9 @@ export default function Index({
             ...proposals,
             data: mappedData,
         } as PaginatedData<ProposalData[]>;
-    }, [proposals, proposalVotes]);
+    }, [proposals, proposalProperties]);
 
-    const proposalsSource = proposalsWithVotes ?? proposals;
+    const proposalsSource = proposalsWithProperties ?? proposals;
 
     // Derived state for display
     const isViewSettingsLoading = isHorizontalLoading || isMiniLoading || isTableViewLoading;
