@@ -1,3 +1,4 @@
+import axios from 'axios';
 import Paragraph from '@/Components/atoms/Paragraph';
 import SearchControls from '@/Components/atoms/SearchControls';
 import Title from '@/Components/atoms/Title';
@@ -11,7 +12,7 @@ import { PaginatedData } from '@/types/paginated-data';
 import { ProposalMetrics } from '@/types/proposal-metrics';
 import { SearchParams } from '@/types/search-params';
 import { Head, WhenVisible } from '@inertiajs/react';
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLaravelReactI18n } from "laravel-react-i18n";
 import { motion, AnimatePresence } from 'framer-motion';
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
@@ -21,6 +22,7 @@ import ProposalPaginatedList from './Partials/ProposalPaginatedList';
 import ProposalTableView from './Partials/ProposalTableView';
 import { useUserSetting } from '@/useHooks/useUserSettings';
 import { userSettingEnums } from '@/enums/user-setting-enums';
+import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface HomePageProps extends Record<string, unknown> {
@@ -30,14 +32,19 @@ interface HomePageProps extends Record<string, unknown> {
     metrics: ProposalMetrics;
 }
 
+type ProposalPropertyResponse = Record<string, Record<string, unknown>>;
+
 export default function Index({
     proposals,
     funds,
     filters,
     metrics,
+    auth,
 }: PageProps<HomePageProps>) {
     const { t } = useLaravelReactI18n();
     const { setMetrics } = useMetrics();
+
+    const [proposalProperties, setProposalProperties] = useState<ProposalPropertyResponse>({});
 
     // Read-only state for display purposes - CardLayoutSwitcher manages the actual settings
     const { value: isHorizontal, isLoading: isHorizontalLoading } = useUserSetting<boolean>(userSettingEnums.VIEW_HORIZONTAL, false);
@@ -49,6 +56,105 @@ export default function Index({
     const [quickPitchView, setQuickPitchView] = useState(
         !!parseInt(filters[ParamsEnum.QUICK_PITCHES]),
     );
+
+    const fetchProposalProperties = useCallback(
+        async (
+            proposalIds: string[],
+            properties: string[] = ['vote'],
+        ): Promise<ProposalPropertyResponse> => {
+            if (!proposalIds.length) {
+                return {};
+            }
+
+            const normalizedProperties = properties
+                .map((prop) => prop?.trim())
+                .filter((prop): prop is string => Boolean(prop));
+
+            if (!normalizedProperties.length) {
+                return {};
+            }
+
+            try {
+                const proposalsMapUrl = generateLocalizedRoute(
+                    'proposals.map',
+                );
+
+                const response = await axios.get<ProposalPropertyResponse>(
+                    proposalsMapUrl,
+                    {
+                        params: {
+                            proposal_ids: proposalIds,
+                            properties: normalizedProperties,
+                        },
+                    },
+                );
+
+                return response.data ?? {};
+            } catch (error) {
+                console.error('Failed to fetch proposal properties', error);
+                return {};
+            }
+        },
+        [],
+    );
+
+    const requestedPropertyKeys = useMemo(() => ['vote'], []);
+
+    useEffect(() => {
+        if (!auth?.user?.id) {
+            setProposalProperties({});
+            return;
+        }
+
+        const proposalIds = (proposals?.data || [])
+            .map((proposal) => proposal.id)
+            .filter((id): id is string => Boolean(id));
+
+        if (!proposalIds.length) {
+            setProposalProperties({});
+            return;
+        }
+
+        let isMounted = true;
+
+        (async () => {
+            const propertiesResponse = await fetchProposalProperties(proposalIds, requestedPropertyKeys);
+            if (isMounted) {
+                setProposalProperties(propertiesResponse);
+            }
+        })();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [auth?.user?.id, fetchProposalProperties, proposals?.data, requestedPropertyKeys]);
+
+    const proposalsWithProperties = useMemo(() => {
+        if (!proposals?.data) {
+            return proposals;
+        }
+
+        const mappedData = proposals.data.map((proposal) => {
+            const proposalId = String(proposal.id);
+            const properties = proposalProperties?.[proposalId];
+
+            if (!properties || Object.keys(properties).length === 0) {
+                return proposal;
+            }
+
+            return {
+                ...proposal,
+                ...properties,
+            } as ProposalData;
+        });
+
+        return {
+            ...proposals,
+            data: mappedData,
+        } as PaginatedData<ProposalData[]>;
+    }, [proposals, proposalProperties]);
+
+    const proposalsSource = proposalsWithProperties ?? proposals;
 
     // Derived state for display
     const isViewSettingsLoading = isHorizontalLoading || isMiniLoading || isTableViewLoading;
@@ -131,7 +237,7 @@ export default function Index({
                         >
                             {currentIsTableView ? (
                                 <ProposalTableView
-                                    proposals={proposals}
+                                    proposals={proposalsSource}
                                     actionType="view"
                                     disableSorting={true}
                                     columns={[
@@ -145,11 +251,11 @@ export default function Index({
                                         'abstainVotes'
                                     ]}
                                     iconOnlyActions={true}
-                                    excludeColumnsFromSelector={['my_vote']}
+                                    //excludeColumnsFromSelector={['my_vote']}
                                 />
                             ) : (
                                 <ProposalPaginatedList
-                                    proposals={proposals}
+                                    proposals={proposalsSource}
                                     isHorizontal={currentIsHorizontal}
                                     isMini={currentIsMini}
                                     quickPitchView={quickPitchView}
