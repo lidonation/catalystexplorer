@@ -1,3 +1,10 @@
+# [1.34.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.33.0...v1.34.0) (2025-09-27)
+
+
+### Features
+
+* caculate live tally approval statistical chances ([ad7f776](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/ad7f7769f3dcb8b44de9ff3a19483378f92e6d74))
+
 # [1.33.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.32.1...v1.33.0) (2025-09-26)
 
 
