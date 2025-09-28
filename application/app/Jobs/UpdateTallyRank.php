@@ -34,6 +34,11 @@ class UpdateTallyRank implements ShouldQueue
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
+     * The number of seconds the job can run before timing out.
+     */
+    public int $timeout = 2700; // 45 minutes
+
+    /**
      * Orchestrates the parallel execution of ranking jobs followed by
      * approval chance calculation that depends on category rankings.
      *

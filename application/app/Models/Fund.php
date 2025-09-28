@@ -30,6 +30,11 @@ class Fund extends Model implements HasMedia
         InteractsWithMedia,
         SoftDeletes;
 
+    protected $hidden = [
+        'old_id',
+        'old_user_id',
+    ];
+
     protected $with = [
         'media',
     ];

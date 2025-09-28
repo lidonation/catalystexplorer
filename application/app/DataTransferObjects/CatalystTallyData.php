@@ -11,6 +11,8 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 final class CatalystTallyData extends Data
 {
     public function __construct(
+        public ?string $id,
+
         public ?int $tally,
 
         public ?int $overall_rank,
@@ -21,7 +23,7 @@ final class CatalystTallyData extends Data
 
         public ?float $chance,
 
-        public ?FundDatas $fund,
+        public ?FundData $fund,
 
         public ?ProposalData $proposal,
 

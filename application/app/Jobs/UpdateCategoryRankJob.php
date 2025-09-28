@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs;
 
 use App\Enums\CatalystFunds;
@@ -16,16 +18,10 @@ class UpdateCategoryRankJob implements ShouldQueue
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * Create a new job instance.
+     * The number of seconds the job can run before timing out.
      */
-    public function __construct()
-    {
-        //
-    }
+    public int $timeout = 2700; // 45 minutes
 
-    /**
-     * Execute the job.
-     */
     public function handle(): void
     {
         $currentChallengeId = null;
