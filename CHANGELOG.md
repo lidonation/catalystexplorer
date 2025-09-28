@@ -1,3 +1,10 @@
+## [1.34.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.34.0...v1.34.1) (2025-09-28)
+
+
+### Bug Fixes
+
+* optimizing proposal tallies ([76a41cb](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/76a41cb2f599c7b46a6962679fcb0f9c094d26dc))
+
 # [1.34.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.33.0...v1.34.0) (2025-09-27)
 
 
