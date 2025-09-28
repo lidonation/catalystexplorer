@@ -47,6 +47,10 @@ Route::localized(
             Route::get('/', [ProposalsController::class, 'index'])
                 ->name('index');
 
+            Route::get('/map', [ProposalsController::class, 'getProposalPropertyMap'])
+                ->middleware('auth')
+                ->name('map');
+
 
             Route::post('/test-modal', function () {
                 return response()->json(['message' => 'OK', 'time' => now()]);
