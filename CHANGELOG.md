@@ -1,3 +1,10 @@
+## [1.34.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.34.1...v1.34.2) (2025-09-28)
+
+
+### Bug Fixes
+
+* lazy load quickpitches ([ac1fc83](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/ac1fc83ca3beedc15229f76c90242db9f10dd426))
+
 ## [1.34.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.34.0...v1.34.1) (2025-09-28)
 
 
