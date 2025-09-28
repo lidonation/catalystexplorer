@@ -1,5 +1,5 @@
 import QuickPitchCard from "./QuickPitchCard";
-import { Link } from '@inertiajs/react';
+import QuickPitchCardLoader from "./QuickPitchCardLoader";
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
@@ -13,8 +13,39 @@ interface QuickPitchListProps {
     };
     activeFundId?: string | null;
 }
+
+function QuickPitchListLoading({ activeFundId }: { activeFundId?: string | null }) {
+    const { t } = useLaravelReactI18n();
+    
+    return (
+        <div className="space-y-6">
+            <div className="flex items-center justify-between">
+                <Title level="2" className='mb-6'>{t('home.quickpitchTitle')}</Title>
+                <SecondaryLink
+                    href={`${useLocalizedRoute('proposals.index')}?${ParamsEnum.QUICK_PITCHES}=1${activeFundId ? `&${ParamsEnum.FUNDS}[]=${activeFundId}` : ''}`}
+                    className="text-content font-medium hover:underline"
+                    data-testid="see-more-quickpitches"
+                >
+                    {t('proposals.seeMoreQuickPitches')}
+                </SecondaryLink>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                {[...Array(6)].map((_, index) => (
+                    <QuickPitchCardLoader key={index} />
+                ))}
+            </div>
+        </div>
+    );
+}
+
 export default function QuickPitchList ({ quickPitches, activeFundId }: QuickPitchListProps) {
     const { t } = useLaravelReactI18n();
+    
+    // Show loading state when quickPitches is undefined (Inertia lazy loading)
+    if (quickPitches === undefined) {
+        return <QuickPitchListLoading activeFundId={activeFundId} />;
+    }
+    
     if (!quickPitches) {
         return <div className="text-center text-gray-persist">No quickpitches available</div>;
     }

@@ -175,7 +175,9 @@ class FundsController extends Controller
             'amountRemaining' => $amountRemaining,
             'tallies' => $this->getTallies($activeFund, $perPage, $page),
             'filters' => $this->queryParams,
-            'quickPitches' => $this->getActiveFundQuickPitches($activeFund, $proposals),
+            'quickPitches' => Inertia::optional(
+                fn () => $this->getActiveFundQuickPitches($activeFund, $proposals)
+            ),
         ]);
     }
 
