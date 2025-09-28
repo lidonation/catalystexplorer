@@ -10,6 +10,7 @@ use App\DataTransferObjects\ProposalData;
 use App\DataTransferObjects\ReviewData;
 use App\Enums\ProposalSearchParams;
 use App\Http\Requests\UpdateProposalQuickPitchRequest;
+use App\Models\BookmarkItem;
 use App\Models\CatalystProfile;
 use App\Models\Connection;
 use App\Models\Fund;
@@ -18,9 +19,11 @@ use App\Models\Metric;
 use App\Models\Proposal;
 use App\Repositories\ProposalRepository;
 use App\Services\VideoService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
@@ -420,6 +423,76 @@ class ProposalsController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Quick pitch deleted successfully');
+    }
+
+    public function getProposalPropertyMap(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'proposal_ids' => ['required', 'array', 'min:1'],
+            'proposal_ids.*' => ['string'],
+            'properties' => ['array', 'nullable'],
+            'properties.*' => ['string'],
+        ]);
+
+        $user = $request->user();
+
+        if (! $user) {
+            abort(401);
+        }
+
+        $proposalIds = collect($validated['proposal_ids'])
+            ->filter()
+            ->map(static fn ($id) => (string) $id)
+            ->unique()
+            ->values();
+
+        if ($proposalIds->isEmpty()) {
+            return response()->json([]);
+        }
+
+        $propertyResolvers = [
+            'vote' => function (Collection $ids) use ($user): Collection {
+                $votesByProposal = BookmarkItem::query()
+                    ->where('user_id', $user->id)
+                    ->where('model_type', Proposal::class)
+                    ->whereIn('model_id', $ids)
+                    ->orderByDesc('updated_at')
+                    ->get(['model_id', 'vote', 'updated_at'])
+                    ->groupBy('model_id')
+                    ->map(static fn ($items) => $items->first()?->vote?->value);
+
+                return $ids->mapWithKeys(static fn ($id) => [$id => $votesByProposal->get($id)]);
+            },
+        ];
+
+        $properties = collect($validated['properties'] ?? ['vote'])
+            ->map(static fn ($prop) => strtolower($prop))
+            ->filter(static fn ($prop) => isset($propertyResolvers[$prop]))
+            ->unique()
+            ->values();
+
+        if ($properties->isEmpty()) {
+            return response()->json(
+                $proposalIds->mapWithKeys(static fn ($id) => [$id => []])
+            );
+        }
+
+        $results = $proposalIds->mapWithKeys(static fn ($id) => [$id => []]);
+
+        foreach ($properties as $property) {
+            /** @var Collection $values */
+            $values = $propertyResolvers[$property]($proposalIds);
+
+            $results = $results->map(
+                static function (array $payload, string $id) use ($property, $values): array {
+                    $payload[$property] = $values->get($id);
+
+                    return $payload;
+                }
+            );
+        }
+
+        return response()->json($results);
     }
 
     public function charts(Request $request): Response

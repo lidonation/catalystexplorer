@@ -1,3 +1,4 @@
+import axios from 'axios';
 import Paragraph from '@/Components/atoms/Paragraph';
 import SearchControls from '@/Components/atoms/SearchControls';
 import Title from '@/Components/atoms/Title';
@@ -11,7 +12,7 @@ import { PaginatedData } from '@/types/paginated-data';
 import { ProposalMetrics } from '@/types/proposal-metrics';
 import { SearchParams } from '@/types/search-params';
 import { Head, WhenVisible } from '@inertiajs/react';
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLaravelReactI18n } from "laravel-react-i18n";
 import { motion, AnimatePresence } from 'framer-motion';
 import CardLayoutSwitcher from './Partials/CardLayoutSwitcher';
@@ -21,6 +22,7 @@ import ProposalPaginatedList from './Partials/ProposalPaginatedList';
 import ProposalTableView from './Partials/ProposalTableView';
 import { useUserSetting } from '@/useHooks/useUserSettings';
 import { userSettingEnums } from '@/enums/user-setting-enums';
+import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface HomePageProps extends Record<string, unknown> {
@@ -30,14 +32,20 @@ interface HomePageProps extends Record<string, unknown> {
     metrics: ProposalMetrics;
 }
 
+type ProposalVotesMap = Record<string, number | null>;
+type ProposalPropertyResponse = Record<string, Record<string, unknown>>;
+
 export default function Index({
     proposals,
     funds,
     filters,
     metrics,
+    auth,
 }: PageProps<HomePageProps>) {
     const { t } = useLaravelReactI18n();
     const { setMetrics } = useMetrics();
+
+    const [proposalVotes, setProposalVotes] = useState<ProposalVotesMap>({});
 
     // Read-only state for display purposes - CardLayoutSwitcher manages the actual settings
     const { value: isHorizontal, isLoading: isHorizontalLoading } = useUserSetting<boolean>(userSettingEnums.VIEW_HORIZONTAL, false);
@@ -49,6 +57,137 @@ export default function Index({
     const [quickPitchView, setQuickPitchView] = useState(
         !!parseInt(filters[ParamsEnum.QUICK_PITCHES]),
     );
+
+    const fetchProposalProperties = useCallback(
+        async (
+            proposalIds: string[],
+            properties: string[] = ['vote'],
+        ): Promise<ProposalPropertyResponse> => {
+            if (!proposalIds.length) {
+                return {};
+            }
+
+            const normalizedProperties = properties
+                .map((prop) => prop?.trim())
+                .filter((prop): prop is string => Boolean(prop));
+
+            if (!normalizedProperties.length) {
+                return {};
+            }
+
+            try {
+            
+                const proposalsMapUrl = generateLocalizedRoute(
+                    'proposals.map',
+                );
+
+                const response = await axios.get<ProposalPropertyResponse>(
+                    proposalsMapUrl,
+                    {
+                        params: {
+                            proposal_ids: proposalIds,
+                            properties: normalizedProperties,
+                        },
+                    },
+                );
+
+                return response.data ?? {};
+            } catch (error) {
+                console.error('Failed to fetch proposal properties', error);
+                return {};
+            }
+        },
+        [],
+    );
+
+    const extractNumericPropertyValue = useCallback((value: unknown): number | null => {
+        if (value === null || value === undefined || value === '') {
+            return null;
+        }
+
+        if (typeof value === 'number') {
+            return Number.isFinite(value) ? value : null;
+        }
+
+        const parsed = Number.parseInt(String(value), 10);
+
+        return Number.isNaN(parsed) ? null : parsed;
+    }, []);
+
+    const mapVotesFromProperties = useCallback(
+        (propertiesResponse: ProposalPropertyResponse): ProposalVotesMap => {
+            const votes: ProposalVotesMap = {};
+
+            Object.entries(propertiesResponse).forEach(([id, properties]) => {
+                const props = properties ?? {};
+
+                if (!Object.prototype.hasOwnProperty.call(props, 'vote')) {
+                    votes[id] = null;
+                    return;
+                }
+
+                votes[id] = extractNumericPropertyValue(props['vote']);
+            });
+
+            return votes;
+        },
+        [extractNumericPropertyValue],
+    );
+
+    useEffect(() => {
+        if (!auth?.user?.id) {
+            setProposalVotes({});
+            return;
+        }
+
+        const proposalIds = (proposals?.data || [])
+            .map((proposal) => proposal.id)
+            .filter((id): id is string => Boolean(id));
+
+        if (!proposalIds.length) {
+            setProposalVotes({});
+            return;
+        }
+
+        let isMounted = true;
+
+        (async () => {
+            const propertiesResponse = await fetchProposalProperties(proposalIds, ['vote']);
+            if (isMounted) {
+                setProposalVotes(mapVotesFromProperties(propertiesResponse));
+            }
+        })();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [auth?.user?.id, fetchProposalProperties, mapVotesFromProperties, proposals?.data]);
+
+    const proposalsWithVotes = useMemo(() => {
+        if (!proposals?.data) {
+            return proposals;
+        }
+
+        const mappedData = proposals.data.map((proposal) => {
+            const voteValue = proposalVotes?.[String(proposal.id)];
+
+            if (voteValue === undefined) {
+                return proposal;
+            }
+
+            return {
+                ...proposal,
+                vote: voteValue,
+            } as ProposalData;
+        });
+
+        return {
+            ...proposals,
+            data: mappedData,
+        } as PaginatedData<ProposalData[]>;
+    }, [proposals, proposalVotes]);
+
+    const proposalsSource = proposalsWithVotes ?? proposals;
 
     // Derived state for display
     const isViewSettingsLoading = isHorizontalLoading || isMiniLoading || isTableViewLoading;
@@ -131,7 +270,7 @@ export default function Index({
                         >
                             {currentIsTableView ? (
                                 <ProposalTableView
-                                    proposals={proposals}
+                                    proposals={proposalsSource}
                                     actionType="view"
                                     disableSorting={true}
                                     columns={[
@@ -145,11 +284,11 @@ export default function Index({
                                         'abstainVotes'
                                     ]}
                                     iconOnlyActions={true}
-                                    excludeColumnsFromSelector={['my_vote']}
+                                    //excludeColumnsFromSelector={['my_vote']}
                                 />
                             ) : (
                                 <ProposalPaginatedList
-                                    proposals={proposals}
+                                    proposals={proposalsSource}
                                     isHorizontal={currentIsHorizontal}
                                     isMini={currentIsMini}
                                     quickPitchView={quickPitchView}
