@@ -669,6 +669,7 @@ locations: any | null;
 media: any | null;
 stake_address: string | null;
 voting_power: number | null;
+city: string | null;
 };
 export type UserSettingData = {
 language: string;

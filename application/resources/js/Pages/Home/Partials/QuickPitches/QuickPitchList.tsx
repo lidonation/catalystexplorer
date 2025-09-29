@@ -5,7 +5,7 @@ import { ParamsEnum } from '@/enums/proposal-search-params';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import Title from "@/Components/atoms/Title";
 import SecondaryLink from "@/Components/SecondaryLink";
-import { categorizeQuickPitches } from '@/utils/proposalUtils';
+import { categorizeQuickPitches, createMixedQuickPitchLayout, organizeQuickPitchRows } from '@/utils/proposalUtils';
 import { useMemo } from 'react';
 
 interface QuickPitchListProps {
@@ -20,22 +20,30 @@ interface QuickPitchListProps {
 export default function QuickPitchList ({ quickPitches, activeFundId }: QuickPitchListProps) {
     const { t } = useLaravelReactI18n();
     
-    const { featuredArray, regularArray } = useMemo(() => {
+    const { featuredArray, regularArray, mixedLayoutRows } = useMemo(() => {
         if (!quickPitches) {
-            return { featuredArray: [], regularArray: [] };
+            return { featuredArray: [], regularArray: [], mixedLayoutRows: [] };
         }
+
+        let featured: App.DataTransferObjects.ProposalData[];
+        let regular: App.DataTransferObjects.ProposalData[];
 
         if (Array.isArray(quickPitches)) {
             const categorized = categorizeQuickPitches(quickPitches, 3);
-            return {
-                featuredArray: categorized.featured,
-                regularArray: categorized.regular,
-            };
+            featured = categorized.featured;
+            regular = categorized.regular;
+        } else {
+            featured = Array.isArray(quickPitches?.featured) ? quickPitches.featured : [];
+            regular = Array.isArray(quickPitches?.regular) ? quickPitches.regular : [];
         }
 
+        const mixedLayout = createMixedQuickPitchLayout(featured, regular);
+        const rows = organizeQuickPitchRows(mixedLayout);
+
         return {
-            featuredArray: Array.isArray(quickPitches?.featured) ? quickPitches.featured : [],
-            regularArray: Array.isArray(quickPitches?.regular) ? quickPitches.regular : [],
+            featuredArray: featured,
+            regularArray: regular,
+            mixedLayoutRows: rows,
         };
     }, [quickPitches]);
 
@@ -56,25 +64,22 @@ export default function QuickPitchList ({ quickPitches, activeFundId }: QuickPit
                 </SecondaryLink>
             </div>
 
-            {featuredArray.length > 0 && (
+            {mixedLayoutRows.length > 0 && (
                 <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                        {featuredArray.map((quickPitch) => (
-                            <QuickPitchCard key={quickPitch.id} proposal={quickPitch} thumbnail={''} />
-                        ))}
-                    </div>
-                </div>
-            )}
-
-            {regularArray.length > 0 && (
-                <div className="space-y-4">
-                    
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {regularArray.map((quickPitch) => (
-                            <QuickPitchCard key={quickPitch.id} proposal={quickPitch} thumbnail={''} />
-                        ))}
-                    </div>
+                    {mixedLayoutRows.map((row, rowIndex) => (
+                        <div key={rowIndex} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
+                            {row.map((item, itemIndex) => (
+                                <QuickPitchCard
+                                    key={`${rowIndex}-${item.proposal.id}`}
+                                    proposal={item.proposal}
+                                    thumbnail={''}
+                                    type={item.type}
+                                    className={item.type === 'featured' ? 'col-span-1 md:col-span-2' : 'col-span-1'}
+                                    aspectRatio={item.type === 'featured' ? 'aspect-[32/8]' : 'aspect-[16/8]'}
+                                />
+                            ))}
+                        </div>
+                    ))}
                 </div>
             )}
         </div>

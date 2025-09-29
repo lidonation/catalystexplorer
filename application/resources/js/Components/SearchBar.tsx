@@ -63,7 +63,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
             handleSearch('');
 
             if (!reloadOnClear) return;
-            router.get(window.location.pathname, {}, { replace: true });
+            router.get(window.location.pathname, {}, { replace: true, preserveScroll: true });
         }, [handleSearch]);
 
         return (
