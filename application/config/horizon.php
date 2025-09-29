@@ -199,9 +199,9 @@ return [
         'production' => [
             'supervisor-1' => [
                 'maxProcesses' => 10,
-                'memory' => 1024,
-                'balanceMaxShift' => 1,
-                'balanceCooldown' => 3,
+                'memory' => 2048,
+//                'balanceMaxShift' => 1,
+//                'balanceCooldown' => 3,
             ],
         ],
 

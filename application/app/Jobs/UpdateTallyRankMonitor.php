@@ -46,23 +46,56 @@ class UpdateTallyRankMonitor implements ShouldQueue
      */
     public function handle(): void
     {
-        $batch = Bus::findBatch($this->batchId);
+        try {
+            $batch = Bus::findBatch($this->batchId);
 
-        if (! $batch) {
-            UpdateTallyRankSecondStage::dispatch($this->fundId);
+            if (! $batch) {
+                \Log::warning('Batch not found, dispatching second stage anyway', [
+                    'batch_id' => $this->batchId,
+                    'fund_id' => $this->fundId
+                ]);
+                UpdateTallyRankSecondStage::dispatch($this->fundId);
+                return;
+            }
 
-            return;
-        }
-
-        if ($batch->finished()) {
-            UpdateTallyRankSecondStage::dispatch($this->fundId);
-        } elseif ($batch->cancelled()) {
-            \Log::warning('First batch was cancelled, not dispatching second stage', [
+            if ($batch->finished()) {
+                \Log::info('First batch completed, dispatching second stage', [
+                    'batch_id' => $this->batchId,
+                    'fund_id' => $this->fundId
+                ]);
+                UpdateTallyRankSecondStage::dispatch($this->fundId);
+            } elseif ($batch->cancelled()) {
+                \Log::warning('First batch was cancelled, not dispatching second stage', [
+                    'batch_id' => $this->batchId,
+                    'fund_id' => $this->fundId,
+                ]);
+            } else {
+                // Still running, check again later
+                if ($this->attempts() >= $this->tries) {
+                    \Log::warning('Monitor job reached max attempts, dispatching second stage anyway', [
+                        'batch_id' => $this->batchId,
+                        'fund_id' => $this->fundId,
+                        'attempts' => $this->attempts()
+                    ]);
+                    UpdateTallyRankSecondStage::dispatch($this->fundId);
+                } else {
+                    \Log::debug('Batch still running, will check again in 10 seconds', [
+                        'batch_id' => $this->batchId,
+                        'pending_jobs' => $batch->pendingJobs
+                    ]);
+                    self::dispatch($this->batchId, $this->fundId)->delay(now()->addSeconds(10));
+                }
+            }
+        } catch (\Exception $e) {
+            \Log::error('UpdateTallyRankMonitor failed', [
                 'batch_id' => $this->batchId,
                 'fund_id' => $this->fundId,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
-        } else {
-            self::dispatch($this->batchId, $this->fundId)->delay(now()->addSeconds(10));
+
+            // Fallback: dispatch second stage anyway
+            UpdateTallyRankSecondStage::dispatch($this->fundId);
         }
     }
 }
