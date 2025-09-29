@@ -1,3 +1,15 @@
+# [1.35.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.34.2...v1.35.0) (2025-09-29)
+
+
+### Bug Fixes
+
+* **quickpitch list:** ln-2038 added refactored quick pitch list ([43415e4](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/43415e473e7c25f3a64b8bfa9f6b3db090432f85))
+
+
+### Features
+
+* add approval chance and funding chance heuristics to live tally ([1aa836b](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/1aa836bb47f1251036f98c76c5f67d06f444de43))
+
 ## [1.34.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.34.1...v1.34.2) (2025-09-28)
 
 
