@@ -44,12 +44,36 @@ class UpdateTallyRankSecondStage implements ShouldQueue
      */
     public function handle(): void
     {
-        Bus::batch([
-            new UpdateApprovalChanceJob($this->fundId),
-            new UpdateFundingChanceJob($this->fundId),
-        ])
-            ->name('Update Approval & Funding Chances'.($this->fundId ? " (Fund {$this->fundId})" : ' (All Funds)'))
-            ->allowFailures()
-            ->dispatch();
+        try {
+            $jobs = [
+                new UpdateApprovalChanceJob($this->fundId),
+                new UpdateFundingChanceJob($this->fundId),
+            ];
+
+            $batch = Bus::batch($jobs)
+                ->name('Update Approval & Funding Chances'.($this->fundId ? " (Fund {$this->fundId})" : ' (All Funds)'))
+                ->allowFailures();
+
+            if (!$batch) {
+                throw new \Exception('Failed to create second stage batch job');
+            }
+
+            $dispatchedBatch = $batch->dispatch();
+
+            if (!$dispatchedBatch) {
+                throw new \Exception('Failed to dispatch second stage batch job');
+            }
+        } catch (\Exception $e) {
+            \Log::error('UpdateTallyRankSecondStage failed to create or dispatch batch', [
+                'fund_id' => $this->fundId,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            // Fallback: Run jobs sequentially without batching
+            \Log::info('Falling back to sequential job execution for second stage');
+            UpdateApprovalChanceJob::dispatch($this->fundId);
+            UpdateFundingChanceJob::dispatch($this->fundId);
+        }
     }
 }

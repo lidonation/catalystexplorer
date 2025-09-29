@@ -57,17 +57,42 @@ class UpdateTallyRank implements ShouldQueue
      */
     public function handle(): void
     {
-        // Stage 1
-        $firstBatch = Bus::batch([
-            new UpdateCategoryRankJob($this->fundId),
-            new UpdateFundRankJob($this->fundId),
-            //            new UpdateOverallRankJob($this->fundId),
-        ])
-            ->name('Update Rankings'.($this->fundId ? " (Fund {$this->fundId})" : ' (All Funds)'))
-            ->allowFailures();
+        try {
+            // Stage 1 - Create batch with error handling
+            $jobs = [
+                new UpdateCategoryRankJob($this->fundId),
+                new UpdateFundRankJob($this->fundId),
+                //            new UpdateOverallRankJob($this->fundId),
+            ];
 
-        $dispatchedBatch = $firstBatch->dispatch();
+            $firstBatch = Bus::batch($jobs)
+                ->name('Update Rankings'.($this->fundId ? " (Fund {$this->fundId})" : ' (All Funds)'))
+                ->allowFailures();
 
-        UpdateTallyRankMonitor::dispatch($dispatchedBatch->id, $this->fundId)->delay(now()->addSeconds(10));
+            if (!$firstBatch) {
+                throw new \Exception('Failed to create batch job');
+            }
+
+            $dispatchedBatch = $firstBatch->dispatch();
+
+            if (!$dispatchedBatch || !$dispatchedBatch->id) {
+                throw new \Exception('Failed to dispatch batch job or get batch ID');
+            }
+
+            UpdateTallyRankMonitor::dispatch($dispatchedBatch->id, $this->fundId)->delay(now()->addSeconds(10));
+
+        } catch (\Exception $e) {
+            \Log::error('UpdateTallyRank failed to create or dispatch batch', [
+                'fund_id' => $this->fundId,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            // Fallback: Run jobs sequentially without batching
+            \Log::info('Falling back to sequential job execution');
+            UpdateCategoryRankJob::dispatch($this->fundId);
+            UpdateFundRankJob::dispatch($this->fundId);
+            UpdateTallyRankSecondStage::dispatch($this->fundId)->delay(now()->addMinutes(5));
+        }
     }
 }
