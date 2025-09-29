@@ -61,7 +61,7 @@ function SearchControls({
 
         if (search.trim() === '') {
             url.searchParams.delete(ParamsEnum.QUERY);
-            router.get(window.location.pathname, {}, { replace: true });
+            router.get(window.location.pathname, {}, { replace: true, preserveScroll: true });
         } else {
             setFilters({
                 param: ParamsEnum.QUERY,

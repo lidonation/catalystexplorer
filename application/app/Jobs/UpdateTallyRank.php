@@ -69,13 +69,13 @@ class UpdateTallyRank implements ShouldQueue
                 ->name('Update Rankings'.($this->fundId ? " (Fund {$this->fundId})" : ' (All Funds)'))
                 ->allowFailures();
 
-            if (!$firstBatch) {
+            if (! $firstBatch) {
                 throw new \Exception('Failed to create batch job');
             }
 
             $dispatchedBatch = $firstBatch->dispatch();
 
-            if (!$dispatchedBatch || !$dispatchedBatch->id) {
+            if (! $dispatchedBatch || ! $dispatchedBatch->id) {
                 throw new \Exception('Failed to dispatch batch job or get batch ID');
             }
 
@@ -85,7 +85,7 @@ class UpdateTallyRank implements ShouldQueue
             \Log::error('UpdateTallyRank failed to create or dispatch batch', [
                 'fund_id' => $this->fundId,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             // Fallback: Run jobs sequentially without batching

@@ -52,16 +52,17 @@ class UpdateTallyRankMonitor implements ShouldQueue
             if (! $batch) {
                 \Log::warning('Batch not found, dispatching second stage anyway', [
                     'batch_id' => $this->batchId,
-                    'fund_id' => $this->fundId
+                    'fund_id' => $this->fundId,
                 ]);
                 UpdateTallyRankSecondStage::dispatch($this->fundId);
+
                 return;
             }
 
             if ($batch->finished()) {
                 \Log::info('First batch completed, dispatching second stage', [
                     'batch_id' => $this->batchId,
-                    'fund_id' => $this->fundId
+                    'fund_id' => $this->fundId,
                 ]);
                 UpdateTallyRankSecondStage::dispatch($this->fundId);
             } elseif ($batch->cancelled()) {
@@ -75,13 +76,13 @@ class UpdateTallyRankMonitor implements ShouldQueue
                     \Log::warning('Monitor job reached max attempts, dispatching second stage anyway', [
                         'batch_id' => $this->batchId,
                         'fund_id' => $this->fundId,
-                        'attempts' => $this->attempts()
+                        'attempts' => $this->attempts(),
                     ]);
                     UpdateTallyRankSecondStage::dispatch($this->fundId);
                 } else {
                     \Log::debug('Batch still running, will check again in 10 seconds', [
                         'batch_id' => $this->batchId,
-                        'pending_jobs' => $batch->pendingJobs
+                        'pending_jobs' => $batch->pendingJobs,
                     ]);
                     self::dispatch($this->batchId, $this->fundId)->delay(now()->addSeconds(10));
                 }
@@ -91,7 +92,7 @@ class UpdateTallyRankMonitor implements ShouldQueue
                 'batch_id' => $this->batchId,
                 'fund_id' => $this->fundId,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             // Fallback: dispatch second stage anyway
