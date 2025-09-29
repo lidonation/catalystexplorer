@@ -126,6 +126,8 @@ overall_rank: number | null;
 fund_rank: number | null;
 category_rank: number | null;
 chance: number | null;
+chance_approval: number | null;
+chance_funding: number | null;
 fund: App.DataTransferObjects.FundData | null;
 proposal: App.DataTransferObjects.ProposalData | null;
 };

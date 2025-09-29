@@ -22,6 +22,7 @@ use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Scout\Builder;
 
 class BookmarkCollections extends Resource
 {
@@ -59,6 +60,42 @@ class BookmarkCollections extends Resource
      * @deprecated use `$perPageViaRelationshipOptions` instead.
      */
     public static $perPageViaRelationship = 6;
+
+    /**
+     * Build an "index" query for the given resource.
+     */
+    public static function indexQuery(NovaRequest $request, \Illuminate\Contracts\Database\Eloquent\Builder $query): \Illuminate\Contracts\Database\Eloquent\Builder
+    {
+        return $query->withoutGlobalScopes();
+    }
+
+    /**
+     * Build a Scout search query for the given resource.
+     *
+     * @param  Builder  $query
+     */
+    public static function scoutQuery(NovaRequest $request, $query): Builder
+    {
+        return $query;
+    }
+
+    /**
+     * Build a "detail" query for the given resource.
+     */
+    public static function detailQuery(NovaRequest $request, \Illuminate\Contracts\Database\Eloquent\Builder $query): \Illuminate\Contracts\Database\Eloquent\Builder
+    {
+        return $query->withoutGlobalScopes();
+    }
+
+    /**
+     * Build a "relatable" query for the given resource.
+     *
+     * This query determines which instances of the model may be attached to other resources.
+     */
+    public static function relatableQuery(NovaRequest $request, \Illuminate\Contracts\Database\Eloquent\Builder $query): \Illuminate\Contracts\Database\Eloquent\Builder
+    {
+        return $query->withoutGlobalScopes();
+    }
 
     /**
      * Get the fields displayed by the resource.
