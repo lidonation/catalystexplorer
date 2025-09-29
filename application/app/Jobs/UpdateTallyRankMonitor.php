@@ -26,9 +26,6 @@ class UpdateTallyRankMonitor implements ShouldQueue
      */
     public int $timeout = 300;
 
-    /**
-     * The maximum number of times the job may be attempted.
-     */
     public int $tries = 10;
 
     /**
