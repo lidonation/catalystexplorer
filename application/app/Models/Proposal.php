@@ -71,6 +71,7 @@ class Proposal extends Model implements IHasMetaData
     protected $appends = [
         'link',
         'currency',
+        'quickpitch_thumbnail',
     ];
 
     public $meiliIndexName = 'cx_proposals';
@@ -188,6 +189,24 @@ class Proposal extends Model implements IHasMetaData
             'sort',
             'exactness',
         ];
+    }
+
+    /**
+     * Scope for selecting only fields needed for QuickPitch components
+     */
+    public function scopeForQuickPitch($query)
+    {
+        return $query->select([
+            'proposals.id',
+            'proposals.title',
+            'proposals.quickpitch',
+            'proposals.amount_received',
+            'proposals.amount_requested',
+            'proposals.currency',
+            'proposals.slug',
+            'proposals.fund_id',
+            'proposals.campaign_id',
+        ]);
     }
 
     public function scopeFilter($query, array $filters)

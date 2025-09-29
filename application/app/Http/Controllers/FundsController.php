@@ -24,7 +24,6 @@ use App\Models\Proposal;
 use App\Repositories\FundRepository;
 use App\Repositories\MetricRepository;
 use App\Repositories\ProposalRepository;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -225,61 +224,22 @@ class FundsController extends Controller
     private function getActiveFundQuickPitches(Fund $fund, ProposalRepository $proposals)
     {
         try {
-            // @todo willard: only load data that's explicitly need for your component
-            // including data on the relations
-            $rawProposals = Proposal::with([
-                'users',
-                'campaign',
-                'fund',
-                'ideascale_profiles', // @todo williard: ideascale_profiles is no longer, just here for the history.  Query team instead, and get the specific IdeascaleProfile or CatalystProfile instance from the ProposalProfile::model MorphTo relation
-            ])
+            $rawProposals = Proposal::forQuickPitch()
+                ->with([
+                    'campaign:id,title,slug',
+                    'fund:id,title,slug',
+                    'team.model' => function ($query) {
+                        $query->select('id', 'name', 'username');
+                    },
+                ])
                 ->whereNotNull('quickpitch')
                 ->where('fund_id', $fund->id)
-                ->limit(15)
-                ->inRandomOrder()
+                ->limit(9)
                 ->get();
 
-            $rawProposals->each(function ($proposal) {
-                $ideascaleProfileIds = $proposal->ideascale_profiles ? $proposal->ideascale_profiles->pluck('id')->toArray() : [];
-                $counts = $this->getAllCounts($ideascaleProfileIds);
-                $proposal->connections_count = $counts['catalystConnectionCount'];
-                $proposal->completed_proposals_count = $counts['userCompleteProposalsCount'];
-                $proposal->outstanding_proposals_count = $counts['userOutstandingProposalsCount'];
-            });
+            $this->addTeamBasedCounts($rawProposals);
 
-            if ($rawProposals->count() < 3) {
-                $shuffledProposals = $rawProposals->shuffle();
-                \Log::info('FundsController - Less than 3 quickpitches', [
-                    'count' => $rawProposals->count(),
-                    'returning_as_regular' => $shuffledProposals->count(),
-                ]);
-
-                return [
-                    'featured' => collect([]),
-                    'regular' => ProposalData::collect($shuffledProposals),
-                ];
-            }
-
-            $shuffledProposals = $rawProposals->shuffle();
-            $featuredRaw = $shuffledProposals->take(3);
-
-            $featuredIds = $featuredRaw->pluck('id');
-            $regularRaw = $shuffledProposals->skip(3);
-
-            \Log::info('FundsController - Split quickpitches', [
-                'featured_count' => $featuredRaw->count(),
-                'regular_count' => $regularRaw->count(),
-                'total_original' => $rawProposals->count(),
-            ]);
-
-            // get the length
-            // get 2 indexes that's not next to each other
-            // pass the indexes to the list to manipulate
-
-            return [
-                'featured' => ProposalData::collect($featuredRaw->shuffle()),
-                'regular' => ProposalData::collect($regularRaw->shuffle()),
-            ];
+            return ProposalData::collect($rawProposals);
         } catch (\Throwable $e) {
             \Log::error('Error in getActiveFundQuickPitches', [
                 'error' => $e->getMessage(),
@@ -287,10 +247,90 @@ class FundsController extends Controller
             ]);
             report($e);
 
-            return [
-                'featured' => collect([]),
-                'regular' => collect([]),
-            ];
+            return collect([]);
+        }
+    }
+
+    /**
+     * Optimized method to add proposal counts using team relationships and Eloquent
+     */
+    private function addTeamBasedCounts($proposals)
+    {
+        if ($proposals->isEmpty()) {
+            return;
+        }
+
+        $allProfileIds = collect();
+        $proposalProfileMap = [];
+
+        foreach ($proposals as $proposal) {
+            $profileIds = [];
+            if ($proposal->team && $proposal->team->isNotEmpty()) {
+                $profileIds = $proposal->team->pluck('model.id')->filter()->values()->toArray();
+            }
+            $proposalProfileMap[$proposal->id] = $profileIds;
+            $allProfileIds = $allProfileIds->merge($profileIds);
+        }
+
+        $uniqueProfileIds = $allProfileIds->unique()->values()->toArray();
+
+        if (empty($uniqueProfileIds)) {
+            foreach ($proposals as $proposal) {
+                $proposal->connections_count = 0;
+                $proposal->completed_proposals_count = 0;
+                $proposal->outstanding_proposals_count = 0;
+            }
+
+            return;
+        }
+
+        $completedCounts = Proposal::where('status', 'complete')
+            ->whereHas('team', function ($query) use ($uniqueProfileIds) {
+                $query->whereIn('profile_id', $uniqueProfileIds);
+            })
+            ->with(['team' => function ($query) use ($uniqueProfileIds) {
+                $query->whereIn('profile_id', $uniqueProfileIds);
+            }])
+            ->get()
+            ->flatMap(function ($proposal) {
+                return $proposal->team->pluck('profile_id');
+            })
+            ->countBy()
+            ->toArray();
+
+        $outstandingCounts = Proposal::where('status', 'in_progress')
+            ->whereHas('team', function ($query) use ($uniqueProfileIds) {
+                $query->whereIn('profile_id', $uniqueProfileIds);
+            })
+            ->with(['team' => function ($query) use ($uniqueProfileIds) {
+                $query->whereIn('profile_id', $uniqueProfileIds);
+            }])
+            ->get()
+            ->flatMap(function ($proposal) {
+                return $proposal->team->pluck('profile_id');
+            })
+            ->countBy()
+            ->toArray();
+
+        $connectionCounts = Connection::whereIn('previous_model_id', $uniqueProfileIds)
+            ->where('previous_model_type', IdeascaleProfile::class)
+            ->selectRaw('previous_model_id, COUNT(*) as count')
+            ->groupBy('previous_model_id')
+            ->pluck('count', 'previous_model_id')
+            ->toArray();
+
+        foreach ($proposals as $proposal) {
+            $profileIds = $proposalProfileMap[$proposal->id];
+
+            $proposal->completed_proposals_count = 0;
+            $proposal->outstanding_proposals_count = 0;
+            $proposal->connections_count = 0;
+
+            foreach ($profileIds as $profileId) {
+                $proposal->completed_proposals_count += $completedCounts[$profileId] ?? 0;
+                $proposal->outstanding_proposals_count += $outstandingCounts[$profileId] ?? 0;
+                $proposal->connections_count += $connectionCounts[$profileId] ?? 0;
+            }
         }
     }
 
@@ -682,180 +722,5 @@ class FundsController extends Controller
         ];
 
         return $links;
-    }
-
-    /**
-     * Build cache key for tallies query
-     */
-    private function buildTalliesCacheKey(string $fundId, int $page, int $perPage): string
-    {
-        $params = [
-            'fund_id' => $fundId,
-            'page' => $page,
-            'per_page' => $perPage,
-            'query' => $this->queryParams[ProposalSearchParams::QUERY()->value] ?? '',
-            'sort' => $this->queryParams[ProposalSearchParams::SORTS()->value] ?? '',
-            'campaigns' => $this->queryParams[ProposalSearchParams::CAMPAIGNS()->value] ?? [],
-            'funds' => $this->queryParams[ProposalSearchParams::FUNDS()->value] ?? [],
-        ];
-
-        return 'tallies_'.hash('sha256', serialize($params));
-    }
-
-    /**
-     * Parse JSON translation and get title for current locale
-     * This mimics the behavior of Spatie\Translatable\HasTranslations
-     */
-    private function getTranslatedTitle(?string $jsonTitle, string $locale = 'en'): ?string
-    {
-        if (empty($jsonTitle)) {
-            return null;
-        }
-
-        // If it's not JSON (plain string), return as-is
-        $decodedTitle = json_decode($jsonTitle, true);
-        if (json_last_error() !== JSON_ERROR_NONE || ! is_array($decodedTitle)) {
-            return $jsonTitle;
-        }
-
-        // Try to get title for current locale
-        if (isset($decodedTitle[$locale])) {
-            return $decodedTitle[$locale];
-        }
-
-        // Fallback to English if current locale not found
-        if (isset($decodedTitle['en'])) {
-            return $decodedTitle['en'];
-        }
-
-        // Fallback to first available translation
-        if (! empty($decodedTitle)) {
-            return array_values($decodedTitle)[0];
-        }
-
-        // Ultimate fallback
-        return $jsonTitle;
-    }
-
-    /**
-     * Get tallies using cursor-based pagination for better performance on large datasets
-     * This is more efficient for deep pagination (page 100+)
-     */
-    private function getTalliesWithCursor(Fund $fund, ?string $cursor = null, int $limit = 10): array
-    {
-        try {
-            $searchQuery = $this->queryParams[ProposalSearchParams::QUERY()->value] ?? null;
-            $sortParam = $this->queryParams[ProposalSearchParams::SORTS()->value] ?? null;
-            $campaignFilter = $this->queryParams[ProposalSearchParams::CAMPAIGNS()->value] ?? null;
-
-            // Parse sort parameters
-            $sortField = 'tally';
-            $sortDirection = 'desc';
-            if ($sortParam) {
-                [$sortField, $sortDirection] = explode(':', $sortParam);
-                if ($sortField === 'votes_count') {
-                    $sortField = 'tally';
-                }
-            }
-
-            // Build base query with joins
-            $baseQuery = CatalystTally::query()
-                ->select([
-                    'catalyst_tallies.*',
-                    'proposals.id as proposal_id',
-                    'proposals.title as proposal_title',
-                    'proposals.amount_requested',
-                    'proposals.currency as proposal_currency',
-                    'proposals.campaign_id',
-                    'campaigns.id as campaign_id',
-                    'campaigns.title as campaign_title',
-                ])
-                ->join('proposals', 'catalyst_tallies.model_id', '=', 'proposals.id')
-                ->join('campaigns', 'proposals.campaign_id', '=', 'campaigns.id')
-                ->where('catalyst_tallies.context_id', $fund->id)
-                ->whereNotNull('catalyst_tallies.model_id');
-
-            // Apply filters
-            if (! empty($campaignFilter) && is_array($campaignFilter)) {
-                $baseQuery->whereIn('campaigns.id', $campaignFilter);
-            }
-
-            // Apply search
-            if (! empty($searchQuery)) {
-                $searchTerm = trim($searchQuery);
-                $baseQuery->where(function ($query) use ($searchTerm) {
-                    $query->where('proposals.title', 'ILIKE', "%{$searchTerm}%")
-                        ->orWhere('campaigns.title', 'ILIKE', "%{$searchTerm}%");
-                });
-            }
-
-            // Apply cursor pagination
-            if ($cursor) {
-                $decodedCursor = json_decode(base64_decode($cursor), true);
-                if ($decodedCursor && isset($decodedCursor['id'], $decodedCursor['sort_value'])) {
-                    if ($sortDirection === 'desc') {
-                        $baseQuery->where(function ($query) use ($decodedCursor, $sortField) {
-                            $query->where("catalyst_tallies.{$sortField}", '<', $decodedCursor['sort_value'])
-                                ->orWhere(function ($subQuery) use ($decodedCursor, $sortField) {
-                                    $subQuery->where("catalyst_tallies.{$sortField}", '=', $decodedCursor['sort_value'])
-                                        ->where('catalyst_tallies.id', '>', $decodedCursor['id']);
-                                });
-                        });
-                    } else {
-                        $baseQuery->where(function ($query) use ($decodedCursor, $sortField) {
-                            $query->where("catalyst_tallies.{$sortField}", '>', $decodedCursor['sort_value'])
-                                ->orWhere(function ($subQuery) use ($decodedCursor, $sortField) {
-                                    $subQuery->where("catalyst_tallies.{$sortField}", '=', $decodedCursor['sort_value'])
-                                        ->where('catalyst_tallies.id', '>', $decodedCursor['id']);
-                                });
-                        });
-                    }
-                }
-            }
-
-            // Execute query
-            $tallies = $baseQuery
-                ->orderBy("catalyst_tallies.{$sortField}", $sortDirection)
-                ->orderBy('catalyst_tallies.id', 'asc')
-                ->limit($limit + 1) // Get one extra to determine if there's a next page
-                ->get();
-
-            $hasNextPage = $tallies->count() > $limit;
-            if ($hasNextPage) {
-                $tallies->pop(); // Remove the extra item
-            }
-
-            // Generate next cursor
-            $nextCursor = null;
-            if ($hasNextPage && $tallies->isNotEmpty()) {
-                $lastItem = $tallies->last();
-                $nextCursor = base64_encode(json_encode([
-                    'id' => $lastItem->id,
-                    'sort_value' => $lastItem->{$sortField},
-                ]));
-            }
-
-            return [
-                'data' => CatalystTallyData::collect($tallies)->toArray(),
-                'has_next_page' => $hasNextPage,
-                'next_cursor' => $nextCursor,
-                'limit' => $limit,
-            ];
-
-        } catch (\Throwable $e) {
-            \Log::error('Error fetching tallies with cursor', [
-                'fund_id' => $fund->id,
-                'cursor' => $cursor,
-                'limit' => $limit,
-                'error' => $e->getMessage(),
-            ]);
-
-            return [
-                'data' => [],
-                'has_next_page' => false,
-                'next_cursor' => null,
-                'limit' => $limit,
-            ];
-        }
     }
 }

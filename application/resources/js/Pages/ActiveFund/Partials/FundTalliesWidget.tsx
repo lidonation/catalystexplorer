@@ -20,13 +20,6 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 import FundData = App.DataTransferObjects.FundData;
 import CatalystTallyData = App.DataTransferObjects.CatalystTallyData;
 
-interface VotingStatsItem extends VoterData {
-    fund_ranking?: number;
-    overall_ranking?: number;
-    category_ranking?: number;
-    latest_proposal?: ProposalData;
-}
-
 interface FundTalliesWidgetProps {
     tallies?: PaginatedData<CatalystTallyData[]> & { total_votes_cast?: number };
     showPagination?: boolean;
@@ -276,7 +269,7 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
         }
     }, [tallies?.current_page, showPagination, isLoading]);
 
-    const formatBudget = (proposal?: ProposalData, fund?: FundData): string => {
+    const formatBudget = (proposal?: ProposalData | null, fund?: FundData): string => {
         if (!proposal || !proposal.amount_requested) return 'N/A';
 
         const preferredCurrency = fund?.currency || proposal.currency;
@@ -532,7 +525,7 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
                             </thead>
                             <tbody className="whitespace-nowrap">
                                 {displayData.map((stat, index) => (
-                                    <tr key={stat.id || index}>
+                                    <tr key={index}>
                                         <TableCell className="font-medium">
                                             <div className="flex items-center gap-2">
                                                 <span className="text-content font-normal">
