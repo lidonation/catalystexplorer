@@ -729,4 +729,32 @@ class FundsController extends Controller
 
         return $links;
     }
+
+    private function buildTalliesCacheKey($fundId, int $page, int $perPage): string
+    {
+        return "fund_{$fundId}_tallies_page_{$page}_per_{$perPage}";
+    }
+
+    private function getTranslatedTitle(?string $title, string $locale = 'en'): ?string
+    {
+        if (empty($title)) {
+            return $title;
+        }
+
+        // If title contains translation data (JSON), parse it
+        if (str_starts_with($title, '{') && str_ends_with($title, '}')) {
+            try {
+                $translations = json_decode($title, true);
+                if (is_array($translations)) {
+                    // Return the translation for the current locale, fallback to English, then first available
+                    return $translations[$locale] ?? $translations['en'] ?? reset($translations) ?? $title;
+                }
+            } catch (\Throwable $e) {
+                // If JSON parsing fails, return the original title
+                return $title;
+            }
+        }
+
+        return $title;
+    }
 }

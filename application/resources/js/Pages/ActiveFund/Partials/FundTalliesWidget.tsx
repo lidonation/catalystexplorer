@@ -111,6 +111,7 @@ const TableSkeleton: React.FC<{ rows: number }> = ({ rows }) => (
                     <TableHeader label="" />
                     <TableHeader label="" />
                     <TableHeader label="" />
+                    <TableHeader label="" />
                     <TableHeader label="" isLastColumn />
                 </tr>
             </thead>
@@ -122,6 +123,9 @@ const TableSkeleton: React.FC<{ rows: number }> = ({ rows }) => (
                         </TableCell>
                         <TableCell>
                             <div className="h-4 bg-gray-200 rounded w-48"></div>
+                        </TableCell>
+                        <TableCell>
+                            <div className="h-4 bg-gray-200 rounded w-16"></div>
                         </TableCell>
                         <TableCell>
                             <div className="h-4 bg-gray-200 rounded w-16"></div>
@@ -277,7 +281,7 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
         }
     }, [tallies?.current_page, showPagination, isLoading]);
 
-    const formatBudget = (proposal?: ProposalData | null, fund?: FundData): string => {
+    const formatBudget = (proposal?: ProposalData, fund?: FundData): string => {
         if (!proposal || !proposal.amount_requested) return 'N/A';
 
         const preferredCurrency = fund?.currency || proposal.currency;
@@ -547,7 +551,7 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
                             </thead>
                             <tbody className="whitespace-nowrap">
                                 {displayData.map((stat, index) => (
-                                    <tr key={index}>
+                                    <tr key={stat.id || index}>
                                         <TableCell className="font-medium">
                                             <div className="flex items-center gap-2">
                                                 <span className="text-content font-normal">
