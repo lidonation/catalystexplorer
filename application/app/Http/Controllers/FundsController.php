@@ -418,7 +418,14 @@ class FundsController extends Controller
     private function getTallies(Fund $fund, int $perPage = 10, int $page = 1): array
     {
         try {
-            $cacheKey = $this->buildTalliesCacheKey($fund->id, $page, $perPage);
+            // Build cache key including all filters
+            $filterHash = md5(serialize([
+                'search' => $this->queryParams[ProposalSearchParams::QUERY()->value] ?? null,
+                'sort' => $this->queryParams[ProposalSearchParams::SORTS()->value] ?? null,
+                'campaigns' => $this->queryParams[ProposalSearchParams::CAMPAIGNS()->value] ?? null,
+                'funds' => $this->queryParams[ProposalSearchParams::FUNDS()->value] ?? null,
+            ]));
+            $cacheKey = $this->buildTalliesCacheKey($fund->id, $page, $perPage).'_'.$filterHash;
 
             $cached = \Cache::get($cacheKey);
             if ($cached && ! app()->environment('local')) {
@@ -439,15 +446,25 @@ class FundsController extends Controller
                 }
             }
 
+            // Determine which fund(s) to show tallies for
+            $targetFundIds = ! empty($fundFilter) && is_array($fundFilter) ? $fundFilter : [$fund->id];
+
+            // Calculate total votes for the target fund(s)
+            $cacheKeySuffix = count($targetFundIds) === 1 ? $targetFundIds[0] : md5(implode(',', $targetFundIds));
             $totalVotesCast = \Cache::remember(
-                "fund_{$fund->id}_total_votes",
+                "funds_{$cacheKeySuffix}_total_votes",
                 now()->addHours(2),
-                fn () => CatalystTally::where('context_id', $fund->id)->sum('tally')
+                fn () => CatalystTally::whereIn('context_id', $targetFundIds)->sum('tally')
             );
 
             $baseQuery = CatalystTally::query()
                 ->select([
                     'catalyst_tallies.*',
+                    'catalyst_tallies.category_rank',
+                    'catalyst_tallies.fund_rank',
+                    'catalyst_tallies.overall_rank',
+                    'catalyst_tallies.chance_approval',
+                    'catalyst_tallies.chance_funding',
                     'proposals.id as proposal_id',
                     'proposals.title as proposal_title',
                     'proposals.slug as proposal_slug',
@@ -462,16 +479,12 @@ class FundsController extends Controller
                 ])
                 ->join('proposals', 'catalyst_tallies.model_id', '=', 'proposals.id')
                 ->join('campaigns', 'proposals.campaign_id', '=', 'campaigns.id')
-                ->join('funds', 'proposals.fund_id', '=', 'funds.id')
-                ->where('catalyst_tallies.context_id', $fund->id)
+                ->join('funds', 'catalyst_tallies.context_id', '=', 'funds.id')
+                ->whereIn('catalyst_tallies.context_id', $targetFundIds) // Use fund filter or default to current fund
                 ->whereNotNull('catalyst_tallies.model_id');
 
             if (! empty($campaignFilter) && is_array($campaignFilter)) {
                 $baseQuery->whereIn('campaigns.id', $campaignFilter);
-            }
-
-            if (! empty($fundFilter) && is_array($fundFilter)) {
-                $baseQuery->whereIn('funds.id', $fundFilter);
             }
 
             if (! empty($searchQuery)) {
@@ -524,18 +537,11 @@ class FundsController extends Controller
 
             $talliesWithRanking = $talliesQuery->get();
 
-            $tallyIds = $talliesWithRanking->pluck('id');
-            $metas = \DB::table('metas')
-                ->whereIn('model_id', $tallyIds)
-                ->where('model_type', CatalystTally::class)
-                ->whereIn('key', ['fund_rank', 'category_rank', 'overall_rank', 'chance'])
-                ->get()
-                ->groupBy('model_id');
-
             $currentLocale = \App::getLocale();
 
-            $talliesWithRanking->each(function ($tally) use ($metas, $fund, $currentLocale) {
-                $tally->setRelation('metas', collect($metas->get($tally->id, [])));
+            $talliesWithRanking->each(function ($tally) use ($fund, $currentLocale) {
+                // Note: Rankings and chances are now available directly on the tally model
+                // No need to fetch metas for these fields
 
                 if ($tally->proposal_id) {
                     $proposal = new Proposal;

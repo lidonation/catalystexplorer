@@ -19,19 +19,36 @@ class UpdateOverallRankJob implements ShouldQueue
     /**
      * The number of seconds the job can run before timing out.
      */
-    public int $timeout = 2700; // 45 minutes
+    public int $timeout = 3600; // 1hr
+
+    /**
+     * Create a new UpdateOverallRankJob instance.
+     *
+     * @param  string|null  $fundId  Fund ID to process, or null for all funds
+     */
+    public function __construct(
+        private readonly ?string $fundId = null
+    ) {}
 
     public function handle(): void
     {
         $rank = 0;
         $previousTally = 0;
-        CatalystTally::orderByDesc('tally')
-            ->each(function ($tally, $index) use (&$rank, &$previousTally) {
-                if (($previousTally === 0) || ($previousTally !== $tally->tally)) {
-                    $rank++;
-                }
-                $tally->saveMeta('overall_rank', $index + 1, null, true);
-                $previousTally = $tally->tally;
-            });
+
+        $query = CatalystTally::orderByDesc('tally');
+
+        if ($this->fundId) {
+            $query->where('context_id', $this->fundId);
+        }
+
+        $query->each(function ($tally, $index) use (&$rank, &$previousTally) {
+            if (($previousTally === 0) || ($previousTally !== $tally->tally)) {
+                $rank++;
+            }
+            // Save directly to the overall_rank column instead of meta
+            $tally->overall_rank = $index + 1;
+            $tally->save();
+            $previousTally = $tally->tally;
+        });
     }
 }
