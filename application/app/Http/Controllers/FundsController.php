@@ -459,7 +459,7 @@ class FundsController extends Controller
     {
         try {
             // Build cache key including all filters
-            $filterHash = md5(serialize([
+            $filterHash = hash('sha256', serialize([
                 'search' => $this->queryParams[ProposalSearchParams::QUERY()->value] ?? null,
                 'sort' => $this->queryParams[ProposalSearchParams::SORTS()->value] ?? null,
                 'campaigns' => $this->queryParams[ProposalSearchParams::CAMPAIGNS()->value] ?? null,
@@ -490,7 +490,7 @@ class FundsController extends Controller
             $targetFundIds = ! empty($fundFilter) && is_array($fundFilter) ? $fundFilter : [$fund->id];
 
             // Calculate total votes for the target fund(s)
-            $cacheKeySuffix = count($targetFundIds) === 1 ? $targetFundIds[0] : md5(implode(',', $targetFundIds));
+            $cacheKeySuffix = count($targetFundIds) === 1 ? $targetFundIds[0] : hash('sha256', implode(',', $targetFundIds));
             $totalVotesCast = \Cache::remember(
                 "funds_{$cacheKeySuffix}_total_votes",
                 now()->addHours(2),
