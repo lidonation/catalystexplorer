@@ -1476,6 +1476,7 @@
     "includeImage": "包含图像",
     "downloadImage": "下载图像",
     "postOnX": "发布到X",
+    "tweetSeeMore": "点击链接查看更多列表内容",
     "shareNoteImageAttachment": "📎 注意：发布到X后，您需要手动将下载的图像附加到您的推文以获得最佳视觉效果。",
     "shareXMessage": "嗨，请查看我在Catalyst Explorer上创建的投票列表\"{title}\"。{url}",
     "votingListExport": "投票列表导出",
