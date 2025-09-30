@@ -373,6 +373,7 @@
     "workflows.createService.success.viewPublicListing": "عرض القائمة العامة",
     "workflows.createService.success.goToMyServices": "الانتقال إلى خدماتي",
     "workflows.createService.editService": "تعديل الخدمة",
+    "tweetSeeMore": "انقر على الرابط لرؤية المزيد من القائمة",
     "proposal.metadata.totalVotes": "إجمالي الأصوات",
     "proposal.metadata.viewInExplorer": "عرض في المستكشف",
     "proposal.metadata.title": "بيانات المقترح",

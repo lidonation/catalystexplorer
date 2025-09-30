@@ -11,7 +11,6 @@ use Saloon\CachePlugin\Drivers\LaravelCacheDriver;
 use Saloon\CachePlugin\Traits\HasCaching;
 use Saloon\Http\Connector;
 use Saloon\Http\PendingRequest;
-use Saloon\Http\Request;
 use Saloon\Traits\Plugins\AlwaysThrowOnErrors;
 use Saloon\Traits\Plugins\HasTimeout;
 
@@ -62,6 +61,7 @@ class YouTubeConnector extends Connector implements Cacheable
      * Generate cache key for requests at the connector level
      *
      * Uses SHA-256 for secure, collision-resistant hashing
+     *
      * @throws \JsonException
      */
     public function cacheKey(PendingRequest $pendingRequest): string
@@ -82,6 +82,6 @@ class YouTubeConnector extends Connector implements Cacheable
         // truncated to 32 chars for cache efficiency
         $hash = substr(hash('sha256', $cacheData), 0, 32);
 
-        return 'youtube_api:' . $hash;
+        return 'youtube_api:'.$hash;
     }
 }

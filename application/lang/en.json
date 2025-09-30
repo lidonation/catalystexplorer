@@ -1536,6 +1536,7 @@
     "includeImage": "Include Image",
     "downloadImage": "Download Image",
     "postOnX": "Post on X",
+    "tweetSeeMore": "Click link to see more of the list",
     "shareNoteImageAttachment": "📎 Note: After posting to X, you'll need to manually attach the downloaded image to your tweet for the best visual impact.",
     "shareXMessage": "Hey, have a look at my Voting List, \"{title}\", created on the Catalyst Explorer. {url}",
     "votingListExport": "Voting List Export",

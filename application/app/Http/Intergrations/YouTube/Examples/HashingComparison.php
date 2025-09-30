@@ -16,7 +16,8 @@ class HashingComparison
     {
         unset($queryParams['key']); // Remove API key
         ksort($queryParams);
-        return 'youtube_api:' . md5($endpoint . serialize($queryParams));
+
+        return 'youtube_api:'.md5($endpoint.serialize($queryParams));
     }
 
     /**
@@ -26,15 +27,16 @@ class HashingComparison
     {
         unset($queryParams['key']); // Remove API key
         ksort($queryParams);
-        
+
         // Use the same method as the connector
         $cacheData = json_encode([
             'endpoint' => $endpoint,
             'params' => $queryParams,
         ], JSON_THROW_ON_ERROR);
-        
+
         $hash = substr(hash('sha256', $cacheData), 0, 32);
-        return 'youtube_api:' . $hash;
+
+        return 'youtube_api:'.$hash;
     }
 
     /**
@@ -45,16 +47,16 @@ class HashingComparison
         $testCases = [
             [
                 'endpoint' => '/videos',
-                'params' => ['part' => 'contentDetails,snippet,statistics', 'id' => 'abc123']
+                'params' => ['part' => 'contentDetails,snippet,statistics', 'id' => 'abc123'],
             ],
             [
                 'endpoint' => '/search',
-                'params' => ['part' => 'snippet', 'q' => 'laravel tutorial', 'maxResults' => 25]
+                'params' => ['part' => 'snippet', 'q' => 'laravel tutorial', 'maxResults' => 25],
             ],
             [
                 'endpoint' => '/channels',
-                'params' => ['part' => 'snippet,statistics', 'id' => 'UC123456789']
-            ]
+                'params' => ['part' => 'snippet,statistics', 'id' => 'UC123456789'],
+            ],
         ];
 
         $results = [];
@@ -87,7 +89,7 @@ class HashingComparison
             'sha256_entropy_bits' => 128, // 128 bits of entropy (32 hex chars)
             'collision_probability' => '2^-128 (astronomically low)',
             'performance_impact' => 'Negligible - SHA-256 is fast enough for cache keys',
-            'cache_key_compatibility' => 'Same length, compatible with all cache stores'
+            'cache_key_compatibility' => 'Same length, compatible with all cache stores',
         ];
 
         return $results;
@@ -119,7 +121,7 @@ class HashingComparison
             'sha256_keys' => $sha256Keys,
             'md5_all_unique' => count($md5Keys) === count(array_unique($md5Keys)),
             'sha256_all_unique' => count($sha256Keys) === count(array_unique($sha256Keys)),
-            'recommendation' => 'Use SHA-256 for security and future-proofing'
+            'recommendation' => 'Use SHA-256 for security and future-proofing',
         ];
     }
 
@@ -148,12 +150,12 @@ class HashingComparison
 
         return [
             'iterations' => $iterations,
-            'md5_total_time' => round($md5Time * 1000, 3) . 'ms',
-            'sha256_total_time' => round($sha256Time * 1000, 3) . 'ms',
-            'md5_per_operation' => round(($md5Time / $iterations) * 1000000, 3) . 'μs',
-            'sha256_per_operation' => round(($sha256Time / $iterations) * 1000000, 3) . 'μs',
-            'performance_difference' => round((($sha256Time - $md5Time) / $md5Time) * 100, 1) . '%',
-            'conclusion' => 'SHA-256 overhead is negligible for cache key generation'
+            'md5_total_time' => round($md5Time * 1000, 3).'ms',
+            'sha256_total_time' => round($sha256Time * 1000, 3).'ms',
+            'md5_per_operation' => round(($md5Time / $iterations) * 1000000, 3).'μs',
+            'sha256_per_operation' => round(($sha256Time / $iterations) * 1000000, 3).'μs',
+            'performance_difference' => round((($sha256Time - $md5Time) / $md5Time) * 100, 1).'%',
+            'conclusion' => 'SHA-256 overhead is negligible for cache key generation',
         ];
     }
 
@@ -171,8 +173,8 @@ class HashingComparison
                 'security' => 'High - collision resistant',
                 'performance' => 'Excellent - minimal overhead',
                 'cache_compatibility' => 'Perfect - same key length as MD5',
-                'future_proof' => 'Yes - industry standard'
-            ]
+                'future_proof' => 'Yes - industry standard',
+            ],
         ];
     }
 }

@@ -13,6 +13,7 @@ import { X } from 'lucide-react';
 import React from 'react';
 import ProposalData = App.DataTransferObjects.ProposalData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
+import ProposalStatus from '@/Pages/Proposals/Partials/ProposalStatus';
 
 /**
  * Safely gets a nested value from an object using dot notation
@@ -168,9 +169,10 @@ export const proposalColumnRenderers: Record<string, ColumnRendererConfig> = {
                 className="flex w-32 items-center justify-center"
                 data-testid={`proposal-status-${proposal.id}`}
             >
-                <ProposalFundingStatus
+                <ProposalStatus
+                    status={proposal.status}
                     funding_status={proposal.funding_status ?? ''}
-                    data-testid={`proposal-funding-status-${proposal.id}`}
+                    data-testid="proposal-status"
                 />
             </div>
         ),

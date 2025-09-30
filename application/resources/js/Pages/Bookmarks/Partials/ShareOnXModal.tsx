@@ -38,6 +38,7 @@ const EXCLUDED_TWEET_COLUMNS = new Set([
     'actions',
     'action',
 ]);
+const MAX_TWEET_URL_LENGTH = 13000;
 
 export default function ShareOnXModal({
     isOpen,
@@ -107,39 +108,61 @@ export default function ShareOnXModal({
 
     const proposalsData = props?.proposals;
 
-    const columnLabelOverrides = useMemo(() => {
-        const translate = (key: string, fallback: string) => {
-            const translated = t(key as any);
-            return translated && translated !== key ? translated : fallback;
-        };
+    const uncategorizedLabel = useMemo(() => {
+        const campaignTranslation = t('uncategorizedCampaign' as any);
+        if (campaignTranslation && campaignTranslation !== 'uncategorizedCampaign') {
+            return campaignTranslation;
+        }
 
-        return {
-            title: translate('proposalColumns.title', 'Title'),
-            proposal: translate('proposalColumns.title', 'Title'),
-            budget: translate('proposalColumns.budget', 'Budget'),
-            category: translate('proposalColumns.category', 'Category'),
-            openSourced: translate('proposalColumns.openSourced', 'Open Source'),
-            opensource: translate('proposalColumns.openSourced', 'Open Source'),
-            teams: translate('proposalColumns.teams', 'Teams'),
-            yesVotes: translate('proposalColumns.yesVotes', 'Yes Votes'),
-            yes_votes_count: translate('proposalColumns.yesVotes', 'Yes Votes'),
-            abstainVotes: translate('proposalColumns.abstainVotes', 'Abstain Votes'),
-            abstain_votes_count: translate('proposalColumns.abstainVotes', 'Abstain Votes'),
-            noVotes: translate('proposalColumns.noVotes', 'No Votes'),
-            no_votes_count: translate('proposalColumns.noVotes', 'No Votes'),
-            fund: translate('proposalColumns.fund', 'Fund'),
-            'fund.label': translate('proposalColumns.fund', 'Fund'),
-            status: translate('proposalColumns.status', 'Status'),
-            funding_status: translate('proposalColumns.status', 'Status'),
-            'campaign.title': translate('proposalColumns.campaign', 'Campaign'),
-            my_vote: translate('proposalColumns.myVote', 'My Vote'),
-        } as Record<string, string>;
+        const genericTranslation = t('uncategorized' as any);
+        if (genericTranslation && genericTranslation !== 'uncategorized') {
+            return genericTranslation;
+        }
+
+        return 'Uncategorized';
     }, [t]);
+
+    const getCampaignGroupName = useCallback(
+        (proposal: ProposalData): string => {
+            const campaignData = proposal.campaign as Record<string, any> | undefined;
+            const rawGroupName =
+                proposal.campaign?.title ??
+                campaignData?.label ??
+                campaignData?.name ??
+                proposal.fund?.label ??
+                null;
+
+            if (rawGroupName && typeof rawGroupName === 'string' && rawGroupName.trim().length > 0) {
+                return rawGroupName.trim();
+            }
+
+            return uncategorizedLabel;
+        },
+        [uncategorizedLabel],
+    );
 
     const getColumnLabel = useCallback(
         (column: string): string => {
-            if (columnLabelOverrides[column]) {
-                return columnLabelOverrides[column];
+            if (!column) {
+                return '';
+            }
+
+            const translationCandidates = Array.from(
+                new Set([
+                    `proposalColumns.${column}`,
+                    `proposalColumns.${column.replace(/\./g, '')}`,
+                    `proposalColumns.${column.replace(/\./g, '_')}`,
+                    `proposalColumns.${column
+                        .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
+                        .toLowerCase()}`,
+                ]),
+            );
+
+            for (const key of translationCandidates) {
+                const translated = t(key as any);
+                if (translated && translated !== key) {
+                    return translated;
+                }
             }
 
             const normalized = column
@@ -160,7 +183,7 @@ export default function ShareOnXModal({
                 )
                 .join(' ');
         },
-        [columnLabelOverrides],
+        [t],
     );
 
     const proposalsForTweet = useMemo(() => {
@@ -296,6 +319,26 @@ export default function ShareOnXModal({
                 case 'status':
                 case 'funding_status':
                     return proposal.funding_status ?? null;
+                case 'my_vote': {
+                    const rawVote = (proposal as any)?.vote ?? (proposal as any)?.bookmark_vote ?? (proposal as any)?.my_vote;
+
+                    if (rawVote === undefined || rawVote === null) {
+                        return null;
+                    }
+
+                    const voteValue = typeof rawVote === 'string' ? parseInt(rawVote, 10) : rawVote;
+
+                    switch (voteValue) {
+                        case 1:
+                            return t('Yes');
+                        case 0:
+                            return t('Abstain');
+                        case -1:
+                            return t('No');
+                        default:
+                            return null;
+                    }
+                }
                 default: {
                     const nested = getNestedValue(proposal, column);
                     if (nested !== undefined) {
@@ -318,7 +361,11 @@ export default function ShareOnXModal({
             let headline: string | null = null;
             const details: string[] = [];
 
-            tweetColumns.forEach((column) => {
+            const columnsToUse = shareGroupByCategories
+                ? tweetColumns.filter((column) => column !== 'category' && column !== 'campaign.title')
+                : tweetColumns;
+
+            columnsToUse.forEach((column) => {
                 const value = formatColumnValue(proposal, column);
                 if (!value) {
                     return;
@@ -347,18 +394,66 @@ export default function ShareOnXModal({
 
             return headline ? `${headline} — ${details.join(' | ')}` : details.join(' | ');
         },
-        [tweetColumns, formatColumnValue, getColumnLabel],
+        [tweetColumns, formatColumnValue, getColumnLabel, shareGroupByCategories],
     );
 
-    const tweetProposalLines = useMemo(() => {
+    type TweetEntry = {
+        type: 'group' | 'proposal';
+        value: string;
+        groupName?: string;
+    };
+
+    const rawTweetEntries = useMemo(() => {
         if (!shareIncludeProposals || type !== 'proposals') {
-            return [] as string[];
+            return [] as TweetEntry[];
         }
 
-        return proposalsForTweet
-            .map(proposal => formatProposalLine(proposal))
-            .filter((line): line is string => !!line);
-    }, [shareIncludeProposals, type, proposalsForTweet, formatProposalLine]);
+        const proposalsWithEntries: { proposal: ProposalData; entry: TweetEntry }[] = [];
+
+        proposalsForTweet.forEach((proposal) => {
+            const line = formatProposalLine(proposal);
+            if (!line) {
+                return;
+            }
+
+            proposalsWithEntries.push({
+                proposal,
+                entry: {
+                    type: 'proposal',
+                    value: `- ${line}`,
+                },
+            });
+        });
+
+        if (!shareGroupByCategories) {
+            return proposalsWithEntries.map(({ entry }) => entry);
+        }
+
+        const groupedEntries: TweetEntry[] = [];
+        const groupedMap = new Map<string, TweetEntry[]>();
+
+        proposalsWithEntries.forEach(({ proposal, entry }) => {
+            const groupName = getCampaignGroupName(proposal);
+            const entryWithGroup: TweetEntry = { ...entry, groupName };
+
+            if (!groupedMap.has(groupName)) {
+                groupedMap.set(groupName, []);
+            }
+
+            groupedMap.get(groupName)!.push(entryWithGroup);
+        });
+
+        groupedMap.forEach((entries, groupName) => {
+            if (!entries.length) {
+                return;
+            }
+
+            groupedEntries.push({ type: 'group', value: groupName, groupName });
+            groupedEntries.push(...entries);
+        });
+
+        return groupedEntries;
+    }, [shareIncludeProposals, type, proposalsForTweet, formatProposalLine, shareGroupByCategories, getCampaignGroupName]);
 
     const baseTweetText = useMemo(
         () =>
@@ -368,13 +463,103 @@ export default function ShareOnXModal({
         [t, bookmarkCollection.title, listUrl],
     );
 
-    const fullTweetText = useMemo(() => {
-        if (!tweetProposalLines.length) {
-            return baseTweetText;
+    const seeMoreTweetText = useMemo(
+        () => t('tweetSeeMore'),
+        [t],
+    );
+
+    const { limitedEntries, truncated: tweetLinesTruncated } = useMemo(() => {
+        if (!rawTweetEntries.length) {
+            return { limitedEntries: [] as TweetEntry[], truncated: false };
         }
 
-        return `${baseTweetText}\n\n${tweetProposalLines.join('\n')}`;
-    }, [baseTweetText, tweetProposalLines]);
+        let limitedEntries: TweetEntry[] = [];
+        let truncated = false;
+
+        const computeEncodedLength = (entries: TweetEntry[], includeSeeMore: boolean) => {
+            let text = baseTweetText;
+
+            if (entries.length) {
+                const lines = entries.map((entry) => entry.value);
+                text += `\n\n${lines.join('\n\n')}`;
+            }
+
+            if (includeSeeMore) {
+                text += `\n\n${seeMoreTweetText}`;
+            }
+
+            return encodeURIComponent(text).length;
+        };
+
+        rawTweetEntries.forEach((entry, index) => {
+            const candidateEntries = [...limitedEntries, entry];
+            const remaining = rawTweetEntries.length - (index + 1);
+            const includeSeeMore = remaining > 0;
+            const encodedLength = computeEncodedLength(candidateEntries, includeSeeMore);
+
+            if (encodedLength <= MAX_TWEET_URL_LENGTH) {
+                limitedEntries = candidateEntries;
+            } else {
+                truncated = true;
+            }
+        });
+
+        if (!truncated && limitedEntries.length < rawTweetEntries.length) {
+            truncated = true;
+        }
+
+        if (truncated) {
+            while (limitedEntries.length && computeEncodedLength(limitedEntries, true) > MAX_TWEET_URL_LENGTH) {
+                limitedEntries = limitedEntries.slice(0, -1);
+            }
+
+            if (computeEncodedLength(limitedEntries, true) > MAX_TWEET_URL_LENGTH) {
+                return { limitedEntries, truncated: false };
+            }
+        }
+
+        if (shareGroupByCategories && limitedEntries.length) {
+            const filteredEntries: TweetEntry[] = [];
+            let pendingHeading: TweetEntry | null = null;
+
+            limitedEntries.forEach((entry) => {
+                if (entry.type === 'group') {
+                    pendingHeading = entry;
+                    return;
+                }
+
+                if (pendingHeading) {
+                    filteredEntries.push(pendingHeading);
+                    pendingHeading = null;
+                }
+
+                filteredEntries.push(entry);
+            });
+
+            limitedEntries = filteredEntries;
+        }
+
+        return { limitedEntries, truncated };
+    }, [rawTweetEntries, baseTweetText, seeMoreTweetText, shareGroupByCategories]);
+
+    const tweetProposalLines = useMemo(
+        () => limitedEntries.map((entry) => entry.value),
+        [limitedEntries],
+    );
+
+    const fullTweetText = useMemo(() => {
+        let text = baseTweetText;
+
+        if (tweetProposalLines.length) {
+            text += `\n\n${tweetProposalLines.join('\n\n')}`;
+        }
+
+        if (tweetLinesTruncated) {
+            text += `\n\n${seeMoreTweetText}`;
+        }
+
+        return text;
+    }, [baseTweetText, tweetProposalLines, tweetLinesTruncated, seeMoreTweetText]);
 
     return (
         <Modal
@@ -583,7 +768,7 @@ export default function ShareOnXModal({
                                 onClick={() => {
                                     const twitterIntentUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(fullTweetText)}`;
 
-                                    window.open(twitterIntentUrl, '_blank', 'width=600,height=400');
+                                    window.open(twitterIntentUrl, '_blank', 'width=1200,height=800');
                                 }}
                             >
                                 <Paragraph className="flex items-center gap-2 m-0 px-4">
