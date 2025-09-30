@@ -11,7 +11,10 @@ use App\Enums\MetricsContext;
 use App\Enums\ProposalStatus;
 use App\Enums\StatusEnum;
 use App\Models\Announcement;
+use App\Models\Connection;
 use App\Models\Fund;
+use App\Models\IdeascaleProfile;
+use App\Models\Proposal;
 use App\Repositories\AnnouncementRepository;
 use App\Repositories\MetricRepository;
 use App\Repositories\PostRepository;
@@ -51,6 +54,7 @@ class HomeController extends Controller
                 fn () => $this->getSpecialAnnouncements()
             ),
             'quickPitches' => fn () => $this->getProposalQuickPitches($proposals),
+            'quickPitchesFundId' => Fund::latest('launched_at')->value('id'),
         ]);
     }
 
@@ -156,36 +160,164 @@ class HomeController extends Controller
         $activeFundId = Fund::latest('launched_at')->value('id');
 
         try {
-            $rawProposals = $proposals
-                ->with(['users', 'campaign', 'fund'])
+            $rawProposals = Proposal::forQuickPitch()
+                ->with([
+                    'campaign:id,title,slug',
+                    'fund:id,title,slug',
+                    'team.model' => function ($query) {
+                        $query->select('id', 'name', 'username');
+                    },
+                ])
                 ->whereNotNull('quickpitch')
                 ->where('fund_id', $activeFundId)
                 ->limit(15)
                 ->get();
 
-            if ($rawProposals->count() < 3) {
-                return [
-                    'featured' => collect([]),
-                    'regular' => ProposalData::collect($rawProposals),
-                ];
-            }
+            $this->addTeamBasedCounts($rawProposals);
 
-            $featuredRaw = $rawProposals->random(3);
-
-            $featuredIds = $featuredRaw->pluck('id');
-            $regularRaw = $rawProposals->whereNotIn('id', $featuredIds);
-
-            return [
-                'featured' => ProposalData::collect($featuredRaw),
-                'regular' => ProposalData::collect($regularRaw),
-            ];
+            return ProposalData::collect($rawProposals);
 
         } catch (\Throwable $e) {
             report($e);
 
+            return collect([]);
+        }
+    }
+
+    /**
+     * Optimized method to add proposal counts using team relationships and Eloquent
+     */
+    private function addTeamBasedCounts($proposals)
+    {
+        if ($proposals->isEmpty()) {
+            return;
+        }
+
+        $allProfileIds = collect();
+        $proposalProfileMap = [];
+
+        foreach ($proposals as $proposal) {
+            $profileIds = [];
+            if ($proposal->team && $proposal->team->isNotEmpty()) {
+                $profileIds = $proposal->team->pluck('model.id')->filter()->values()->toArray();
+            }
+            $proposalProfileMap[$proposal->id] = $profileIds;
+            $allProfileIds = $allProfileIds->merge($profileIds);
+        }
+
+        $uniqueProfileIds = $allProfileIds->unique()->values()->toArray();
+
+        if (empty($uniqueProfileIds)) {
+            foreach ($proposals as $proposal) {
+                $proposal->connections_count = 0;
+                $proposal->completed_proposals_count = 0;
+                $proposal->outstanding_proposals_count = 0;
+            }
+
+            return;
+        }
+
+        try {
+            $completedCounts = Proposal::where('status', 'complete')
+                ->whereHas('team', function ($query) use ($uniqueProfileIds) {
+                    $query->whereIn('profile_id', $uniqueProfileIds);
+                })
+                ->with(['team' => function ($query) use ($uniqueProfileIds) {
+                    $query->whereIn('profile_id', $uniqueProfileIds);
+                }])
+                ->get()
+                ->flatMap(function ($proposal) {
+                    return $proposal->team->pluck('profile_id');
+                })
+                ->countBy()
+                ->toArray();
+
+            $outstandingCounts = Proposal::where('status', 'in_progress')
+                ->whereHas('team', function ($query) use ($uniqueProfileIds) {
+                    $query->whereIn('profile_id', $uniqueProfileIds);
+                })
+                ->with(['team' => function ($query) use ($uniqueProfileIds) {
+                    $query->whereIn('profile_id', $uniqueProfileIds);
+                }])
+                ->get()
+                ->flatMap(function ($proposal) {
+                    return $proposal->team->pluck('profile_id');
+                })
+                ->countBy()
+                ->toArray();
+
+            $connectionCounts = Connection::whereIn('previous_model_id', $uniqueProfileIds)
+                ->where('previous_model_type', IdeascaleProfile::class)
+                ->selectRaw('previous_model_id, COUNT(*) as count')
+                ->groupBy('previous_model_id')
+                ->pluck('count', 'previous_model_id')
+                ->toArray();
+
+            foreach ($proposals as $proposal) {
+                $profileIds = $proposalProfileMap[$proposal->id];
+
+                $proposal->completed_proposals_count = 0;
+                $proposal->outstanding_proposals_count = 0;
+                $proposal->connections_count = 0;
+
+                foreach ($profileIds as $profileId) {
+                    $proposal->completed_proposals_count += $completedCounts[$profileId] ?? 0;
+                    $proposal->outstanding_proposals_count += $outstandingCounts[$profileId] ?? 0;
+                    $proposal->connections_count += $connectionCounts[$profileId] ?? 0;
+                }
+            }
+        } catch (\Exception $e) {
+            \Log::warning('Error calculating team-based counts', [
+                'error' => $e->getMessage(),
+                'profile_ids_count' => count($uniqueProfileIds),
+            ]);
+
+            foreach ($proposals as $proposal) {
+                $proposal->connections_count = 0;
+                $proposal->completed_proposals_count = 0;
+                $proposal->outstanding_proposals_count = 0;
+            }
+        }
+    }
+
+    private function getAllCounts(array $ideascaleProfileIds): array
+    {
+        if (empty($ideascaleProfileIds)) {
             return [
-                'featured' => collect([]),
-                'regular' => collect([]),
+                'userCompleteProposalsCount' => 0,
+                'userOutstandingProposalsCount' => 0,
+                'catalystConnectionCount' => 0,
+            ];
+        }
+
+        try {
+            $userCompleteProposalsCount = Proposal::where('status', 'complete')
+                ->whereHas('ideascaleProfiles', function ($query) use ($ideascaleProfileIds) {
+                    $query->whereIn('ideascale_profiles.id', $ideascaleProfileIds);
+                })
+                ->count();
+
+            $userOutstandingProposalsCount = Proposal::where('status', 'in_progress')
+                ->whereHas('ideascaleProfiles', function ($query) use ($ideascaleProfileIds) {
+                    $query->whereIn('ideascale_profiles.id', $ideascaleProfileIds);
+                })
+                ->count();
+
+            $catalystConnectionCount = Connection::whereIn('previous_model_id', $ideascaleProfileIds)
+                ->where('previous_model_type', IdeascaleProfile::class)
+                ->distinct()
+                ->count();
+
+            return [
+                'userCompleteProposalsCount' => $userCompleteProposalsCount,
+                'userOutstandingProposalsCount' => $userOutstandingProposalsCount,
+                'catalystConnectionCount' => $catalystConnectionCount,
+            ];
+        } catch (\Exception $e) {
+            return [
+                'userCompleteProposalsCount' => 0,
+                'userOutstandingProposalsCount' => 0,
+                'catalystConnectionCount' => 0,
             ];
         }
     }

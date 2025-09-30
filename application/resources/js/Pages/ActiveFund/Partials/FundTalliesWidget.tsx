@@ -6,27 +6,22 @@ import Selector from '@/Components/atoms/Selector';
 import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 import { currency } from '@/utils/currency';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { FiltersProvider, useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
-import { router } from '@inertiajs/react';
+import { router, Link } from '@inertiajs/react';
 import ArrowDownIcon from '@/Components/svgs/ArrowDownIcon';
 import ArrowUpIcon from '@/Components/svgs/ArrowUpIcon';
 import { formatDistanceToNow } from 'date-fns';
 import VoterData = App.DataTransferObjects.VoterData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import FundData = App.DataTransferObjects.FundData;
-
-interface VotingStatsItem extends VoterData {
-    fund_ranking?: number;
-    overall_ranking?: number;
-    category_ranking?: number;
-    latest_proposal?: ProposalData;
-}
+import CatalystTallyData = App.DataTransferObjects.CatalystTallyData;
 
 interface FundTalliesWidgetProps {
-    tallies?: PaginatedData<VotingStatsItem[]> & { total_votes_cast?: number };
+    tallies?: PaginatedData<CatalystTallyData[]> & { total_votes_cast?: number };
     showPagination?: boolean;
     maxHeight?: string;
     customTitle?: string;
@@ -114,6 +109,9 @@ const TableSkeleton: React.FC<{ rows: number }> = ({ rows }) => (
                 <tr>
                     <TableHeader label="" />
                     <TableHeader label="" />
+                    <TableHeader label="" />
+                    <TableHeader label="" />
+                    <TableHeader label="" />
                     <TableHeader label="" isLastColumn />
                 </tr>
             </thead>
@@ -125,6 +123,15 @@ const TableSkeleton: React.FC<{ rows: number }> = ({ rows }) => (
                         </TableCell>
                         <TableCell>
                             <div className="h-4 bg-gray-200 rounded w-48"></div>
+                        </TableCell>
+                        <TableCell>
+                            <div className="h-4 bg-gray-200 rounded w-16"></div>
+                        </TableCell>
+                        <TableCell>
+                            <div className="h-4 bg-gray-200 rounded w-16"></div>
+                        </TableCell>
+                        <TableCell>
+                            <div className="h-4 bg-gray-200 rounded w-16"></div>
                         </TableCell>
                         <TableCell isLastColumn>
                             <div className="h-4 bg-gray-200 rounded w-24"></div>
@@ -148,7 +155,7 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
 }) => {
     const { t } = useLaravelReactI18n();
     const { setFilters, getFilter } = useFilterContext();
-    
+
     const fundOptions = useMemo(() => {
         const options = funds?.map((fund) => ({
             value: fund.id,
@@ -161,10 +168,10 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [filtersVisible, setFiltersVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    
+
     const tableContainerRef = useRef<HTMLDivElement>(null);
     const widgetRef = useRef<HTMLDivElement>(null);
-    
+
     const prevDataRef = useRef<any>(null);
 
     const searchTerm = (getFilter(ParamsEnum.QUERY) || '') as string;
@@ -233,7 +240,7 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
         if (num <= 0) return '';
         const j = num % 10;
         const k = num % 100;
-        
+
         if (j === 1 && k !== 11) {
             return `${num}st`;
         } else if (j === 2 && k !== 12) {
@@ -250,7 +257,7 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
             // If data is changing, briefly show loading
             if (JSON.stringify(prevDataRef.current) !== JSON.stringify(tallies)) {
                 setIsLoading(true);
-                
+
                 // Use RAF to ensure smooth transition
                 requestAnimationFrame(() => {
                     setIsLoading(false);
@@ -264,11 +271,11 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
         if (showPagination && widgetRef.current && !isLoading) {
             const rect = widgetRef.current.getBoundingClientRect();
             const isWidgetAboveViewport = rect.bottom < 0;
-            
+
             if (isWidgetAboveViewport && tallies?.current_page) {
-                widgetRef.current.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start' 
+                widgetRef.current.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
                 });
             }
         }
@@ -278,22 +285,33 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
         if (!proposal || !proposal.amount_requested) return 'N/A';
 
         const preferredCurrency = fund?.currency || proposal.currency;
-
         const amountRequested = Number(proposal.amount_requested);
         if (isNaN(amountRequested)) return 'N/A';
 
+        const currencyCode = String(preferredCurrency || 'ADA');
+
+        // Handle USD separately (already includes proper formatting)
         if (preferredCurrency === 'USD') {
             const result = currency(amountRequested, 2, 'USD');
             return String(result);
         }
 
-        const amount = amountRequested > 1000000
-            ? amountRequested / 1000000
-            : amountRequested;
-
-        const currencyCode = String(preferredCurrency || 'ADA');
-        const result = currency(amount, 2, currencyCode);
-        return String(result);
+        // Handle ADA and other currencies with K/M suffixes
+        if (amountRequested >= 1000000) {
+            // Millions
+            const amount = amountRequested / 1000000;
+            const result = currency(amount, 2, currencyCode);
+            return String(result) + 'M';
+        } else if (amountRequested >= 1000) {
+            // Thousands
+            const amount = amountRequested / 1000;
+            const result = currency(amount, 2, currencyCode);
+            return String(result) + 'K';
+        } else {
+            // Less than 1000
+            const result = currency(amountRequested, 2, currencyCode);
+            return String(result);
+        }
     };
 
     const shouldShowNoRecords = () => {
@@ -310,24 +328,24 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
         if (searchTerm.trim()) {
             const term = searchTerm.toLowerCase();
             filtered = filtered.filter(stat =>
-                stat.cat_id?.toLowerCase().includes(term) ||
-                stat.latest_proposal?.title?.toLowerCase().includes(term) ||
-                stat.latest_proposal?.campaign?.title?.toLowerCase().includes(term) ||
-                stat.stake_pub?.toLowerCase().includes(term)
+                stat.proposal?.campaign?.id?.toLowerCase().includes(term) ||
+                stat.proposal?.title?.toLowerCase().includes(term) ||
+                stat.proposal?.campaign?.title?.toLowerCase().includes(term) // ||
+                // stat.stake_pub?.toLowerCase().includes(term)
             );
         }
 
         if (campaignFilter.length > 0) {
             filtered = filtered.filter(stat =>
-                stat.latest_proposal?.campaign?.id &&
-                campaignFilter.includes(stat.latest_proposal.campaign.id)
+                stat.proposal?.campaign?.id &&
+                campaignFilter.includes(stat.proposal.campaign.id)
             );
         }
 
         if (fundFilter.length > 0) {
             filtered = filtered.filter(stat =>
-                stat.latest_fund?.id &&
-                fundFilter.includes(stat.latest_fund.id)
+                stat.fund?.id &&
+                fundFilter.includes(stat.fund?.id)
             );
         }
 
@@ -336,20 +354,20 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
 
             switch (sortBy) {
                 case 'votes':
-                    aValue = a.votes_count || 0;
-                    bValue = b.votes_count || 0;
+                    aValue = a.tally || 0;
+                    bValue = b.tally || 0;
                     break;
                 case 'ranking':
-                    aValue = a.fund_ranking || 999999;
-                    bValue = b.fund_ranking || 999999;
+                    aValue = a.fund_rank || 999999;
+                    bValue = b.fund_rank || 999999;
                     break;
                 case 'proposal':
-                    aValue = a.latest_proposal?.title || 'zzz';
-                    bValue = b.latest_proposal?.title || 'zzz';
+                    aValue = a.proposal?.title || 'zzz';
+                    bValue = b.proposal?.title || 'zzz';
                     break;
                 case 'budget':
-                    aValue = a.latest_proposal?.amount_requested || 0;
-                    bValue = b.latest_proposal?.amount_requested || 0;
+                    aValue = a.proposal?.amount_requested || 0;
+                    bValue = b.proposal?.amount_requested || 0;
                     break;
                 default:
                     return 0;
@@ -376,7 +394,7 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
         });
 
         return filtered;
-    }, [tallies?.data, searchTerm, campaignFilter, fundFilter, sortBy, sortOrder, showPagination]);
+    }, [tallies?.data, sortBy, sortOrder, showPagination]);
 
     const displayData = showPagination
         ? filteredData
@@ -386,7 +404,7 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
         if (!lastUpdated) {
             return t('activeFund.votingStats.updatedMonthsAgo'); // Fallback
         }
-        
+
         try {
             const date = new Date(lastUpdated);
             const timeAgo = formatDistanceToNow(date, { addSuffix: true });
@@ -397,7 +415,7 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
     };
 
     return (
-        <div 
+        <div
             ref={widgetRef}
             className="bg-background w-full rounded-lg border border-content-light shadow-sm"
         >
@@ -440,6 +458,8 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
                         withFilters={true}
                         withActiveTags={true}
                         sortOptions={[]}
+                        autoFocus={false}
+                        className="z-0"
                     />
                 </div>
             )}
@@ -501,7 +521,7 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
                     </Paragraph>
                 </div>
             ) : (
-                <div 
+                <div
                     ref={tableContainerRef}
                     className={`m-8 bg-background rounded-xl shadow-[0px_3px_4px_0px_rgba(0,0,0,0.03)] outline outline-1 outline-offset-[-1px] outline-content-light flex flex-col justify-start items-start overflow-x-auto overflow-hidden`}
                     style={{
@@ -517,12 +537,15 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
                         <table className="w-max min-w-full">
                             <thead className="bg-background-lighter whitespace-nowrap">
                                 <tr>
-                                    <SortableTableHeader 
+                                    <SortableTableHeader
                                         label={t('activeFund.votingStats.votesCast')}
                                         sortDirection={getVotesSortDirection()}
                                         onSort={handleVotesSort}
                                     />
                                     <TableHeader label={t('activeFund.votingStats.proposal')} />
+                                    <TableHeader label={t('activeFund.votingStats.categoryFundRank')} />
+                                    <TableHeader label={t('activeFund.votingStats.approvalChance')} />
+                                    <TableHeader label={t('activeFund.votingStats.fundingChance')} />
                                     <TableHeader label={t('activeFund.votingStats.budget')} isLastColumn />
                                 </tr>
                             </thead>
@@ -532,23 +555,94 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
                                         <TableCell className="font-medium">
                                             <div className="flex items-center gap-2">
                                                 <span className="text-content font-normal">
-                                                    {stat.votes_count || 0}
+                                                    {stat.tally || 0}
                                                 </span>
                                             </div>
                                         </TableCell>
-                                        <TableCell className="w-auto">
+                                        <TableCell className="w-auto xl:max-w-xs max-w-md">
+                                            {stat.proposal?.slug ? (
+                                                <Link
+                                                    href={useLocalizedRoute(
+                                                        'proposals.proposal.details',
+                                                        { slug: stat.proposal.slug }
+                                                    )}
+                                                    target="_blank"
+                                                    className="text-content hover:text-primary cursor-pointer line-clamp-2 break-words leading-tight"
+                                                    data-preload="hover"
+                                                    title={stat.proposal.title || undefined} // Show full title on hover
+                                                >
+                                                    {stat.proposal.title}
+                                                </Link>
+                                            ) : (
+                                                <span className="text-content line-clamp-2 break-words leading-tight" title={stat.proposal?.title || undefined}>
+                                                    {stat.proposal?.title}
+                                                </span>
+                                            )}
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center gap-1 flex-wrap">
+                                                {stat.proposal ? (
+                                                    <div>
+                                                        <span className="text-slate-400 text-sm">
+                                                    {stat.category_rank ? `${ordinal(stat.category_rank)}` : '-'}
+                                                    </span>
+                                                            <span className="text-slate-400 text-sm">
+                                                        /
+                                                    </span>
+                                                            <span className="text-slate-400 text-sm">
+                                                        {stat.fund_rank ? `${ordinal(stat.fund_rank)}` : '-'}
+                                                    </span>
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-gray-400 text-sm">-</span>
+                                                )}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
                                             <div className="flex items-center gap-2">
-                                                <span className="text-slate-400 text-sm">
-                                                    {stat.fund_ranking ? `(${ordinal(stat.fund_ranking)})` : '(_)'}
-                                                </span>
-                                                <span className="text-content">
-                                                    {stat.latest_proposal?.title}
-                                                </span>
+                                                {stat.chance_approval !== null && stat.chance_approval !== undefined ? (
+                                                    <>
+                                                        <span className={
+                                                            `font-medium ${
+                                                                stat.chance_approval >= 75 ? 'text-success' :
+                                                                stat.chance_approval >= 50 ? 'text-yellow-600' :
+                                                                stat.chance_approval >= 25 ? 'text-warning' :
+                                                                ''
+                                                            }`
+                                                        }>
+                                                            {stat.chance_approval.toFixed(1)}%
+                                                        </span>
+                                                    </>
+                                                ) : (
+                                                    <span className="text-gray-400 text-sm">-</span>
+                                                )}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center gap-2">
+                                                {stat.chance_funding !== null && stat.chance_funding !== undefined ? (
+                                                    <>
+                                                        <span className={
+                                                            `font-medium ${
+                                                                stat.chance_funding >= 100 ? 'text-success' :
+                                                                stat.chance_funding >= 75 ? 'text-yellow-600' :
+                                                                stat.chance_funding >= 25 ? 'text-warning' :
+                                                                'text-warning'
+                                                            }`
+                                                        }>
+                                                            {stat.chance_funding === 100 ? `✓ ${t('activeFund.votingStats.likelyFunded')}` :
+                                                             stat.chance_funding === 0 ? `✗ ${t('activeFund.votingStats.likelySkipped')}` :
+                                                             `${stat.chance_funding.toFixed(1)}%`}
+                                                        </span>
+                                                    </>
+                                                ) : (
+                                                    <span className="text-gray-400 text-sm">-</span>
+                                                )}
                                             </div>
                                         </TableCell>
                                         <TableCell isLastColumn>
                                             <span className="font-normal">
-                                                {formatBudget(stat.latest_proposal, stat.latest_fund)}
+                                                {formatBudget(stat?.proposal || undefined, stat.fund || undefined)}
                                             </span>
                                         </TableCell>
                                     </tr>

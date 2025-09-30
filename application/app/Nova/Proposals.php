@@ -23,7 +23,6 @@ use Laravel\Nova\Fields\Slug;
 use Laravel\Nova\Fields\Stack;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
-use Laravel\Nova\Fields\Url;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Proposals extends Resource
@@ -186,8 +185,9 @@ class Proposals extends Resource
                 ->hideFromIndex(),
 
             // Links and Media
-            Url::make(__('Website'), 'website')
+            Text::make(__('Website'), 'website')
                 ->displayUsing(fn ($value) => $value ? Str::limit($value, 50) : '')
+                ->rules('nullable', 'url')
                 ->hideFromIndex(),
 
             Text::make(__('Quick Pitch'), 'quickpitch')

@@ -18,6 +18,7 @@ import AnnouncementCarousel from './Partials/Announcement/AnnouncementCarousel';
 import SpecialAnnouncementLoading from './Partials/Announcement/SpecialAnnouncementLoading';
 import SpecialAnnouncementCarousel from './Partials/Announcement/SpecialAnnouncementsCarousel';
 import QuickPitchList from './Partials/QuickPitches/QuickPitchList';
+import QuickPitchListLoading from './Partials/QuickPitches/QuickPitchListLoading';
 import MetricData = App.DataTransferObjects.MetricData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import PostData = App.DataTransferObjects.PostData;
@@ -29,10 +30,13 @@ interface HomePageProps extends Record<string, unknown> {
     metrics: MetricData[];
     announcements: AnnouncementData[];
     specialAnnouncements: AnnouncementData[];
-    quickPitches: {
-        featured: ProposalData[];
-        regular: ProposalData[];
-    };
+    quickPitches: 
+        | ProposalData[] // New flat array structure from backend
+        | {
+            featured: ProposalData[];
+            regular: ProposalData[];
+          }; // Legacy nested structure for backwards compatibility
+    quickPitchesFundId?: string;
 }
 
 export default function Index({
@@ -42,13 +46,12 @@ export default function Index({
     announcements,
     specialAnnouncements,
     quickPitches,
+    quickPitchesFundId,
 }: PageProps<HomePageProps>) {
     const { t } = useLaravelReactI18n();
     const [isHorizontal, setIsHorizontal] = useState(false);
     const [activeIndex, setActiveIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(false);
-
-    console.log({quickPitches});
 
     return (
         <>
@@ -56,16 +59,26 @@ export default function Index({
 
             <div className="relative flex w-full flex-col justify-center gap-8">
                 <CatalystIntro />
-
+                {((
+                    // New flat array structure
+                    Array.isArray(quickPitches) && quickPitches.length > 0
+                ) || (
+                    // Legacy nested structure (ensure it's an object with 'regular')
+                    !Array.isArray(quickPitches) && 'regular' in (quickPitches || {}) && Array.isArray((quickPitches as { regular?: ProposalData[] }).regular) && (quickPitches as { regular?: ProposalData[] }).regular!.length > 0
+                )) && 
                 <section
                     className="quickpitches-wrapper"
                     data-testid="quickpitches-section"
                 >
                     <div className="container">
-                        <Title level="2" className='mb-6'>{t('home.quickpitchTitle')}</Title>
-                        <QuickPitchList quickPitches={quickPitches} />
+                        <WhenVisible
+                            fallback={<QuickPitchListLoading />}
+                            data="quickPitches"
+                        >
+                            <QuickPitchList quickPitches={quickPitches} activeFundId={quickPitchesFundId} />
+                        </WhenVisible>
                     </div>
-                </section>
+                </section>}
 
                 <section
                     className="annnouncements-wrapper"

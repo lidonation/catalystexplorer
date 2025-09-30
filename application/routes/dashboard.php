@@ -57,9 +57,7 @@ Route::localized(
 
                 Route::get('/transactions', [TransactionController::class, 'userTransaction'])->name('transactions');
 
-                Route::get('/profile', function () {
-                    return Inertia::render('My/Profile/Index');
-                })->name('profile');
+                Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
 
                 Route::prefix('proposals')->as('proposals.')->group(function () {
                     Route::get('/', [ProposalsController::class, 'myProposals'])->name('index');

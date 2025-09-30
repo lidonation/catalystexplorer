@@ -9,6 +9,7 @@ import SupportCxBanner from '@/Pages/ActiveFund/Partials/SupportCxBanner.tsx';
 import ProposalList from '@/Pages/Proposals/Partials/ProposalList.tsx';
 import VerticalCardLoading from '@/Pages/Proposals/Partials/ProposalVerticalCardLoading.tsx';
 import QuickPitchList from '../Home/Partials/QuickPitches/QuickPitchList';
+import QuickPitchListLoading from '../Home/Partials/QuickPitches/QuickPitchListLoading';
 import { Segments } from '@/types/segments';
 import { currency } from '@/utils/currency';
 import { useLocalizedRoute } from '@/utils/localizedRoute.ts';
@@ -20,12 +21,8 @@ import CampaignCard from './Partials/CampaignCard';
 import CreateListBanner from './Partials/CreateListBanner';
 import FundTalliesWidget from './Partials/FundTalliesWidget';
 import ProposalData = App.DataTransferObjects.ProposalData;
+import CatalystTallyData = App.DataTransferObjects.CatalystTallyData;
 import { PaginatedData } from '@/types/paginated-data';
-
-interface VotingStatsItem extends App.DataTransferObjects.VoterData {
-    fund_ranking?: number;
-    latest_proposal?: App.DataTransferObjects.ProposalData;
-}
 
 interface ActiveFundsProp extends Record<string, unknown> {
     search?: string | null;
@@ -35,12 +32,14 @@ interface ActiveFundsProp extends Record<string, unknown> {
     proposals: ProposalData[];
     amountDistributed: number;
     amountRemaining: number;
-    tallies?: PaginatedData<VotingStatsItem[]> & { last_updated?: string };
+    tallies?: PaginatedData<CatalystTallyData[]> & { total_votes_cast?: number; last_updated?: string };
     filters?: Record<string, unknown>;
-    quickPitches?: {
-        featured: ProposalData[];
-        regular: ProposalData[];
-    };
+    quickPitches?: 
+        | ProposalData[] // New flat array structure from backend
+        | {
+            featured: ProposalData[];
+            regular: ProposalData[];
+          }; // Legacy nested structure for backwards compatibility
 }
 
 const Index: React.FC<ActiveFundsProp> = ({
@@ -172,8 +171,12 @@ const Index: React.FC<ActiveFundsProp> = ({
                     data-testid="quickpitches-section"
                 >
                     <div className="m-8">
-                        <Title level="2" className='mb-6'>{t('home.quickpitchTitle')}</Title>
-                        <QuickPitchList quickPitches={quickPitches} />
+                         <WhenVisible
+                            fallback={<QuickPitchListLoading />}
+                            data="quickPitches"
+                        >
+                            <QuickPitchList quickPitches={quickPitches} activeFundId={fund?.id} />
+                        </WhenVisible>
                     </div>
                 </section>
 

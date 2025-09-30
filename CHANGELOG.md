@@ -1,3 +1,55 @@
+# [1.35.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.34.2...v1.35.0) (2025-09-29)
+
+
+### Bug Fixes
+
+* **quickpitch list:** ln-2038 added refactored quick pitch list ([43415e4](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/43415e473e7c25f3a64b8bfa9f6b3db090432f85))
+
+
+### Features
+
+* add approval chance and funding chance heuristics to live tally ([1aa836b](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/1aa836bb47f1251036f98c76c5f67d06f444de43))
+
+## [1.34.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.34.1...v1.34.2) (2025-09-28)
+
+
+### Bug Fixes
+
+* lazy load quickpitches ([ac1fc83](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/ac1fc83ca3beedc15229f76c90242db9f10dd426))
+
+## [1.34.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.34.0...v1.34.1) (2025-09-28)
+
+
+### Bug Fixes
+
+* optimizing proposal tallies ([76a41cb](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/76a41cb2f599c7b46a6962679fcb0f9c094d26dc))
+
+# [1.34.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.33.0...v1.34.0) (2025-09-27)
+
+
+### Features
+
+* caculate live tally approval statistical chances ([ad7f776](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/ad7f7769f3dcb8b44de9ff3a19483378f92e6d74))
+
+# [1.33.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.32.1...v1.33.0) (2025-09-26)
+
+
+### Bug Fixes
+
+* campaign filter when creating the voter list ([b535acc](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/b535acc540b726a73bcff2a1839a6c2ea32f4fef))
+
+
+### Features
+
+* **quickpitch cards:** ln-2038 refactored quickpitch cards ([32f5ee6](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/32f5ee62ae802953a2036694d79f596029a2d5fc))
+
+## [1.32.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.32.0...v1.32.1) (2025-09-26)
+
+
+### Bug Fixes
+
+* cache youtube requests to avoice rate limits ([5e32dbc](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/5e32dbc44b6969f268d379fe0f4e2533d4735d94))
+
 # [1.32.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.31.3...v1.32.0) (2025-09-25)
 
 
