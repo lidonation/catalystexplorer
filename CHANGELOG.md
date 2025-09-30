@@ -1,3 +1,10 @@
+## [1.35.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.35.0...v1.35.1) (2025-09-29)
+
+
+### Bug Fixes
+
+* **quikc pitch cards:** ln-2038 refactored quick pitch cards and location in user profile ([8f3f282](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/8f3f2823638ab240d65a4c37811613394d1d2388))
+
 # [1.35.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.34.2...v1.35.0) (2025-09-29)
 
 
