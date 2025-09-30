@@ -1480,6 +1480,7 @@
     "includeImage": "Inclure l'Image",
     "downloadImage": "Télécharger l'Image",
     "postOnX": "Publier sur X",
+    "tweetSeeMore": "Cliquez sur le lien pour voir le reste de la liste",
     "shareNoteImageAttachment": "📎 Note : Après avoir publié sur X, vous devrez joindre manuellement l'image téléchargée à votre tweet pour le meilleur impact visuel.",
     "shareXMessage": "Hey, jetez un œil à ma Liste de Vote, \"{title}\", créée sur le Catalyst Explorer. {url}",
     "votingListExport": "Export de Liste de Vote",
