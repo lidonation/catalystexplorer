@@ -1,3 +1,11 @@
+## [1.35.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.35.1...v1.35.2) (2025-10-01)
+
+
+### Bug Fixes
+
+* charts bug fixes ([061527f](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/061527f95aba6edbb04063a825034aff6f887be0))
+* **proposal:** fixed pagination issue when next button is clicked ([4741768](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/4741768f46a383263114e1512c87c371dbad8a50))
+
 ## [1.35.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.35.0...v1.35.1) (2025-09-29)
 
 
