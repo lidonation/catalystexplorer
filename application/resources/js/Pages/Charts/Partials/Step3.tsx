@@ -1,6 +1,8 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import Selector from '@/Components/atoms/Selector';
+import { useFilterContext } from '@/Context/FiltersContext';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/useHooks/useUserSettings';
 import axios from 'axios';
@@ -15,6 +17,7 @@ interface Step3Props {
     onChartDataReceived?: (chartData: any) => void;
     onLoadingChange?: (loading: boolean) => void;
     rules: string[];
+    disableAutoComplete?: boolean;
 }
 
 export default function Step3({
@@ -25,8 +28,10 @@ export default function Step3({
     onLoadingChange,
     onChartDataReceived,
     rules,
+    disableAutoComplete = false,
 }: Step3Props) {
     const { t } = useLaravelReactI18n();
+    const { setFilters } = useFilterContext();
 
     const { value: selectedChartOptions, setValue: setSelectedChartOptions } =
         useUserSetting<string[]>(userSettingEnums.CHART_OPTIONS, []);
@@ -41,8 +46,27 @@ export default function Step3({
     );
 
     const [trendChartDisabled, setTrendChartDisabled] = useState(false);
+    const [mounted, setMounted] = useState(false);
     const currentParams = new URLSearchParams(window.location.search);
     const paramsObject = Object.fromEntries(currentParams);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    // Handle URL parameters on component mount
+    useEffect(() => {
+        const ctParam = currentParams.get('ct');
+        const coParam = currentParams.get('co');
+        
+        // Set chart options from URL parameter 'co' if present
+        if (coParam && coParam.trim()) {
+            const chartOptions = coParam.split(',').map(option => option.trim()).filter(Boolean);
+            if (chartOptions.length > 0) {
+                setSelectedChartOptions(chartOptions);
+            }
+        }
+    }, []); // Empty dependency array to run only once on mount
 
     useEffect(() => {
         setTrendChartDisabled(false);
@@ -51,6 +75,22 @@ export default function Step3({
     useEffect(() => {
         onCompletionChange?.(isChartsSelected);
     }, [isChartsSelected, onCompletionChange]);
+
+    // Update URL when selectedChartOptions changes (e.g., from URL parameter initialization)
+    useEffect(() => {
+        if (!mounted) return;
+
+        if (selectedChartOptions && selectedChartOptions.length > 0) {
+            const chartOptionsValue = selectedChartOptions.join(',');
+            setTimeout(() => {
+                setFilters({
+                    label: chartOptionsValue,
+                    value: chartOptionsValue,
+                    param: ParamsEnum.CHART_OPTIONS,
+                });
+            }, 0);
+        }
+    }, [selectedChartOptions, setFilters, mounted]);
 
     const chartOptions = useMemo(() => {
         const isDistributionChart = selectedChart === 'distributionChart';
@@ -126,10 +166,29 @@ export default function Step3({
 
     const handleSelectorChange = useCallback(
         (value: string | string[]) => {
+            if (!mounted) return;
+
             const selected = Array.isArray(value) ? value : [value];
             setSelectedChartOptions(selected);
+
+            // Update URL with chart options
+            if (selected && selected.length > 0) {
+                const chartOptionsValue = selected.join(',');
+                setFilters({
+                    label: chartOptionsValue,
+                    value: chartOptionsValue,
+                    param: ParamsEnum.CHART_OPTIONS,
+                });
+            } else {
+                // Remove the chart options parameter if no options are selected
+                setFilters({
+                    label: '',
+                    value: '',
+                    param: ParamsEnum.CHART_OPTIONS,
+                });
+            }
         },
-        [setSelectedChartOptions],
+        [setSelectedChartOptions, setFilters, mounted],
     );
 
     const chartType = selectedChart === 'trendChart' ? 'trend' : 'distribution';
@@ -173,6 +232,21 @@ export default function Step3({
         onExploreCharts,
     ]);
 
+    // Auto-complete and skip step 3 if both ct and co parameters are present (only when not disabled)
+    useEffect(() => {
+        if (disableAutoComplete) return;
+        
+        const ctParam = currentParams.get('ct');
+        const coParam = currentParams.get('co');
+        
+        if (ctParam && coParam && selectedChart && selectedChartOptions && selectedChartOptions.length > 0) {
+            // Small delay to ensure all settings are properly set
+            setTimeout(() => {
+                handleComplete();
+            }, 100);
+        }
+    }, [selectedChart, selectedChartOptions, handleComplete, disableAutoComplete]);
+
     const buttonClassName = useMemo(() => {
         return `mt-4 w-full ${!isChartsSelected || disabled ? 'cursor-not-allowed opacity-50' : ''}`;
     }, [isChartsSelected, disabled]);
@@ -180,7 +254,7 @@ export default function Step3({
     return (
         <div className={disabled ? 'pointer-events-none opacity-50' : ''}>
             <Paragraph className="mb-4">
-                {t('charts.selectChartType')}
+                {t('charts.selectChart')}
             </Paragraph>
             <div>
                 <Selector

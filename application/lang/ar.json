@@ -382,5 +382,8 @@
     "proposal.metadata.totalVotes": "إجمالي الأصوات",
     "proposal.metadata.viewInExplorer": "عرض في المستكشف",
     "proposal.metadata.title": "بيانات المقترح",
-    "proposal.metadata.links": "روابط"
+    "proposal.metadata.links": "روابط",
+    "charts.selectChartType": "اختيار نوع الرسم البياني (اختر كل ما ينطبق)",
+    "charts.selectChart": "اختيار الرسم البياني (اختر كل ما ينطبق)",
+    "editMetrics": "تحرير المقاييس"
 }

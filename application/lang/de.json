@@ -614,6 +614,7 @@
     "charts.viewCharts": "Diagramme anzeigen",
     "charts.selectProposals": "Welche Arten von Vorschlägen interessieren Sie am meisten?",
     "charts.selectChartType": "Diagrammtyp auswählen (Alle auswählen, die zutreffen)",
+    "charts.selectChart": "Diagramm auswählen (Alle auswählen, die zutreffen)",
     "charts.selectAllThatApply": "(Alle auswählen, die zutreffen)",
     "charts.submittedProposals": "Eingereichte Vorschläge",
     "charts.approvedProposals": "Genehmigte Vorschläge",
@@ -1478,5 +1479,6 @@
     "proposal.metadata.totalVotes": "Gesamtstimmen",
     "proposal.metadata.viewInExplorer": "Im Explorer anzeigen",
     "proposal.metadata.title": "Vorschlags-Metadaten",
-    "proposal.metadata.links": "Links"
+    "proposal.metadata.links": "Links",
+    "editMetrics": "Metriken bearbeiten"
 }

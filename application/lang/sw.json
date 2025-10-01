@@ -581,6 +581,7 @@
     "charts.viewCharts": "Angalia Chati",
     "charts.selectProposals": "Ni aina gani za mapendekezo zinazokuvutia zaidi?",
     "charts.selectChartType": "Chagua Aina ya Chati (Chagua vyote vinavyohusika)",
+    "charts.selectChart": "Chagua Chati (Chagua vyote vinavyohusika)",
     "charts.selectAllThatApply": "(Chagua vyote vinavyohusika)",
     "charts.submittedProposals": "Mapendekezo Yaliyowasilishwa",
     "charts.approvedProposals": "Mapendekezo Yaliyoidhinishwa",
@@ -1523,5 +1524,6 @@
     "proposal.metadata.totalVotes": "Jumla ya Kura",
     "proposal.metadata.viewInExplorer": "Tazama kwenye Kichunguzi",
     "proposal.metadata.title": "Metadata ya Pendekezo",
-    "proposal.metadata.links": "Tovuti"
+    "proposal.metadata.links": "Tovuti",
+    "editMetrics": "Hariri Viashiria"
 }
