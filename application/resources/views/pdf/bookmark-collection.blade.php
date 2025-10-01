@@ -33,6 +33,7 @@
                 color: #1f2937;
                 font-size: 14px;
                 line-height: 1.5;
+                margin: 0;
             }
             
             /* Orientation specific styles */
@@ -50,6 +51,25 @@
                 box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
                 overflow: hidden;
             }
+
+            @if(($exportFormat ?? null) === 'png')
+                html, body {
+                    width: 100%;
+                }
+
+                .document-container {
+                    max-width: 100%;
+                    width: 100%;
+                    border-radius: 0;
+                    box-shadow: none;
+                }
+
+                .table-container {
+                    border-left: 0;
+                    border-right: 0;
+                    border-radius: 0;
+                }
+            @endif
             
             /* Header Section */
             .document-header {

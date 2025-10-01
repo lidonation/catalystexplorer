@@ -45,6 +45,8 @@ class UserData extends Data
         public ?string $stake_address,
 
         public ?float $voting_power,
+
+        public ?string $city,
     ) {}
 
     public static function from(...$payloads): static

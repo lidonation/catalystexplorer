@@ -27,7 +27,10 @@ const PaginationComponent: React.FC<PaginationComponentProps<any>> = ({
     };
 
     const buildUrl = (param: string, value: number, label: string) => {
-        return getFilters({ param, value, label });
+        // Use current URL parameters to preserve all filters including fund filter
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set(param, value.toString());
+        return `${currentUrl.pathname}${currentUrl.search}`;
     };
 
     const {

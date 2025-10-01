@@ -1247,6 +1247,7 @@ class BookmarksController extends Controller
             'columns' => $data['columnsToUse'],
             'columnConfig' => $columnConfig,
             'orientation' => $orientation,
+            'exportFormat' => 'pdf',
             'catalystHeaderLogo' => $data['catalystHeaderLogo'],
             'catalystFooterLogo' => $data['catalystFooterLogo'],
         ])
@@ -1302,6 +1303,7 @@ class BookmarksController extends Controller
             'columns' => $data['columnsToUse'],
             'columnConfig' => $columnConfig,
             'orientation' => 'landscape',
+            'exportFormat' => 'png',
             'catalystHeaderLogo' => $data['catalystHeaderLogo'],
             'catalystFooterLogo' => $data['catalystFooterLogo'],
         ])->render();
@@ -1309,7 +1311,9 @@ class BookmarksController extends Controller
         $png = Browsershot::html($html)
             ->setChromePath('/usr/bin/chromium')
             ->deviceScaleFactor(2)
-            ->margins(30, 30, 40, 30)
+            ->windowSize(1920, 1080)
+            ->fullPage()
+            ->margins(0, 0, 0, 0)
             ->format('png')
             ->timeout(120)
             ->addChromiumArguments([

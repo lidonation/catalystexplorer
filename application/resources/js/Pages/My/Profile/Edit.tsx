@@ -13,7 +13,7 @@ import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { truncateMiddle } from '@/utils/truncateMiddle';
 import { useForm } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { useEffect } from 'react';
+import { useEffect, forwardRef, useImperativeHandle } from 'react';
 import SocialProfilesForm from './Partials/EditSocialsForm';
 import ProfileField from './Partials/ProfileField';
 import ProfilePhotoUploader from './Partials/ProfilePhotoUploader';
@@ -73,10 +73,10 @@ const generateSocialLinks = (user: User) => {
     };
 };
 
-export default function ProfileSettings({
-    auth,
-    user: directUser,
-}: ProfileSettingsProps) {
+const ProfileSettings = forwardRef<
+    { openCityModal: () => void },
+    ProfileSettingsProps
+>(({ auth, user: directUser }, ref) => {
     const { t } = useLaravelReactI18n();
     const authUser = auth.user;
     const user = directUser || authUser;
@@ -126,6 +126,19 @@ export default function ProfileSettings({
             });
         }
     }, [user, setData]);
+
+    useImperativeHandle(ref, () => ({
+        openCityModal: () => {
+            openProfileFieldModal({
+                title: user.city ? t('users.updateCity') : t('users.addCity'),
+                fieldName: 'city',
+                fieldLabel: t('users.city'),
+                currentValue: user.city || data.city || '',
+                updateRoute: 'profile.update.field',
+                inputType: 'text',
+            });
+        },
+    }));
 
     const handleCopyUrl = () => {
         const urlElement = document.querySelector('.profile-url-text');
@@ -508,4 +521,6 @@ export default function ProfileSettings({
             {renderModals()}
         </div>
     );
-}
+});
+
+export default ProfileSettings;

@@ -139,7 +139,7 @@ const SearchResults = ({ counts, ...results }: SearchResultsProps) => {
                     <div className="w-full px-4 py-4">
                         <div className="mb-4 flex w-full flex-col">
                             <Title level="3">
-                                {t('searchResults.results.title')}
+                                {t('searchResults.results.title', { query })}
                             </Title>
                         </div>
                         <ResultTabs

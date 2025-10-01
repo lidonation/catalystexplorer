@@ -40,11 +40,13 @@ const LineChart: React.FC<LineChartProps> = ({
         const tempData: Record<string, any> = {};
 
         chartData.forEach((series: any) => {
-            series.data.forEach((point: any) => {
-                const index = point.x;
-                if (!tempData[index]) tempData[index] = { [viewBy]: index };
-                tempData[index][series.id] = point.y;
-            });
+            if (series.data && Array.isArray(series.data)) {
+                series.data.forEach((point: any) => {
+                    const index = point.x;
+                    if (!tempData[index]) tempData[index] = { [viewBy]: index };
+                    tempData[index][series.id] = point.y;
+                });
+            }
         });
 
         const finalData = Object.values(tempData);

@@ -8,9 +8,10 @@ import User = App.DataTransferObjects.UserData;
 
 interface UserSectionProps {
     user: User;
+    onAddCity?: () => void;
 }
 
-const UserSection = ({ user }: UserSectionProps) => {
+const UserSection = ({ user, onAddCity }: UserSectionProps) => {
     const { t } = useLaravelReactI18n();
     const { url } = usePage().props;
 
@@ -63,17 +64,17 @@ const UserSection = ({ user }: UserSectionProps) => {
                     >
                         <div className="flex items-center justify-center gap-1.5">
                             <MapPin className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                            {user?.locations ? (
+                            {user?.city ? (
                                 <span className="max-w-[200px] break-words md:max-w-none">
-                                    {user.locations}
+                                    {user.city}
                                 </span>
                             ) : (
-                                <Link
-                                    href="#"
-                                    className="text-primary underline"
+                                <button
+                                    onClick={onAddCity}
+                                    className="text-primary underline cursor-pointer"
                                 >
                                     {t('addYourCity')}
-                                </Link>
+                                </button>
                             )}
                         </div>
                         <div className="flex items-center justify-center gap-1.5">

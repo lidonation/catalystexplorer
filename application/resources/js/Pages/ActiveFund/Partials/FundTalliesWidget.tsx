@@ -20,13 +20,6 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 import FundData = App.DataTransferObjects.FundData;
 import CatalystTallyData = App.DataTransferObjects.CatalystTallyData;
 
-interface VotingStatsItem extends VoterData {
-    fund_ranking?: number;
-    overall_ranking?: number;
-    category_ranking?: number;
-    latest_proposal?: ProposalData;
-}
-
 interface FundTalliesWidgetProps {
     tallies?: PaginatedData<CatalystTallyData[]> & { total_votes_cast?: number };
     showPagination?: boolean;
@@ -116,6 +109,9 @@ const TableSkeleton: React.FC<{ rows: number }> = ({ rows }) => (
                 <tr>
                     <TableHeader label="" />
                     <TableHeader label="" />
+                    <TableHeader label="" />
+                    <TableHeader label="" />
+                    <TableHeader label="" />
                     <TableHeader label="" isLastColumn />
                 </tr>
             </thead>
@@ -127,6 +123,15 @@ const TableSkeleton: React.FC<{ rows: number }> = ({ rows }) => (
                         </TableCell>
                         <TableCell>
                             <div className="h-4 bg-gray-200 rounded w-48"></div>
+                        </TableCell>
+                        <TableCell>
+                            <div className="h-4 bg-gray-200 rounded w-16"></div>
+                        </TableCell>
+                        <TableCell>
+                            <div className="h-4 bg-gray-200 rounded w-16"></div>
+                        </TableCell>
+                        <TableCell>
+                            <div className="h-4 bg-gray-200 rounded w-16"></div>
                         </TableCell>
                         <TableCell isLastColumn>
                             <div className="h-4 bg-gray-200 rounded w-24"></div>
@@ -280,22 +285,33 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
         if (!proposal || !proposal.amount_requested) return 'N/A';
 
         const preferredCurrency = fund?.currency || proposal.currency;
-
         const amountRequested = Number(proposal.amount_requested);
         if (isNaN(amountRequested)) return 'N/A';
 
+        const currencyCode = String(preferredCurrency || 'ADA');
+
+        // Handle USD separately (already includes proper formatting)
         if (preferredCurrency === 'USD') {
             const result = currency(amountRequested, 2, 'USD');
             return String(result);
         }
 
-        const amount = amountRequested > 1000000
-            ? amountRequested / 1000000
-            : amountRequested;
-
-        const currencyCode = String(preferredCurrency || 'ADA');
-        const result = currency(amount, 2, currencyCode);
-        return String(result);
+        // Handle ADA and other currencies with K/M suffixes
+        if (amountRequested >= 1000000) {
+            // Millions
+            const amount = amountRequested / 1000000;
+            const result = currency(amount, 2, currencyCode);
+            return String(result) + 'M';
+        } else if (amountRequested >= 1000) {
+            // Thousands
+            const amount = amountRequested / 1000;
+            const result = currency(amount, 2, currencyCode);
+            return String(result) + 'K';
+        } else {
+            // Less than 1000
+            const result = currency(amountRequested, 2, currencyCode);
+            return String(result);
+        }
     };
 
     const shouldShowNoRecords = () => {
@@ -527,6 +543,9 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
                                         onSort={handleVotesSort}
                                     />
                                     <TableHeader label={t('activeFund.votingStats.proposal')} />
+                                    <TableHeader label={t('activeFund.votingStats.categoryFundRank')} />
+                                    <TableHeader label={t('activeFund.votingStats.approvalChance')} />
+                                    <TableHeader label={t('activeFund.votingStats.fundingChance')} />
                                     <TableHeader label={t('activeFund.votingStats.budget')} isLastColumn />
                                 </tr>
                             </thead>
@@ -540,33 +559,84 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
                                                 </span>
                                             </div>
                                         </TableCell>
-                                        <TableCell className="w-auto">
-                                            <div className="flex items-center gap-1">
-                                                <span className="text-slate-400 text-sm">
+                                        <TableCell className="w-auto xl:max-w-xs max-w-md">
+                                            {stat.proposal?.slug ? (
+                                                <Link
+                                                    href={useLocalizedRoute(
+                                                        'proposals.proposal.details',
+                                                        { slug: stat.proposal.slug }
+                                                    )}
+                                                    target="_blank"
+                                                    className="text-content hover:text-primary cursor-pointer line-clamp-2 break-words leading-tight"
+                                                    data-preload="hover"
+                                                    title={stat.proposal.title || undefined} // Show full title on hover
+                                                >
+                                                    {stat.proposal.title}
+                                                </Link>
+                                            ) : (
+                                                <span className="text-content line-clamp-2 break-words leading-tight" title={stat.proposal?.title || undefined}>
+                                                    {stat.proposal?.title}
+                                                </span>
+                                            )}
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center gap-1 flex-wrap">
+                                                {stat.proposal ? (
+                                                    <div>
+                                                        <span className="text-slate-400 text-sm">
                                                     {stat.category_rank ? `${ordinal(stat.category_rank)}` : '-'}
-                                                </span>
-                                                <span className="text-slate-400 text-sm">
-                                                    /
-                                                </span>
-                                                <span className="text-slate-400 text-sm">
-                                                    {stat.fund_rank ? `${ordinal(stat.fund_rank)}` : '-'}
-                                                </span>
-                                                {stat.proposal?.slug ? (
-                                                    <Link 
-                                                        href={useLocalizedRoute(
-                                                            'proposals.proposal.details',
-                                                            { slug: stat.proposal.slug }
-                                                        )}
-                                                        target="_blank"
-                                                        className="text-content hover:text-primary underline cursor-pointer"
-                                                        data-preload="hover"
-                                                    >
-                                                        {stat.proposal.title}
-                                                    </Link>
-                                                ) : (
-                                                    <span className="text-content">
-                                                        {stat.proposal?.title}
                                                     </span>
+                                                            <span className="text-slate-400 text-sm">
+                                                        /
+                                                    </span>
+                                                            <span className="text-slate-400 text-sm">
+                                                        {stat.fund_rank ? `${ordinal(stat.fund_rank)}` : '-'}
+                                                    </span>
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-gray-400 text-sm">-</span>
+                                                )}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center gap-2">
+                                                {stat.chance_approval !== null && stat.chance_approval !== undefined ? (
+                                                    <>
+                                                        <span className={
+                                                            `font-medium ${
+                                                                stat.chance_approval >= 75 ? 'text-success' :
+                                                                stat.chance_approval >= 50 ? 'text-yellow-600' :
+                                                                stat.chance_approval >= 25 ? 'text-warning' :
+                                                                ''
+                                                            }`
+                                                        }>
+                                                            {stat.chance_approval.toFixed(1)}%
+                                                        </span>
+                                                    </>
+                                                ) : (
+                                                    <span className="text-gray-400 text-sm">-</span>
+                                                )}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center gap-2">
+                                                {stat.chance_funding !== null && stat.chance_funding !== undefined ? (
+                                                    <>
+                                                        <span className={
+                                                            `font-medium ${
+                                                                stat.chance_funding >= 100 ? 'text-success' :
+                                                                stat.chance_funding >= 75 ? 'text-yellow-600' :
+                                                                stat.chance_funding >= 25 ? 'text-warning' :
+                                                                'text-warning'
+                                                            }`
+                                                        }>
+                                                            {stat.chance_funding === 100 ? `✓ ${t('activeFund.votingStats.likelyFunded')}` :
+                                                             stat.chance_funding === 0 ? `✗ ${t('activeFund.votingStats.likelySkipped')}` :
+                                                             `${stat.chance_funding.toFixed(1)}%`}
+                                                        </span>
+                                                    </>
+                                                ) : (
+                                                    <span className="text-gray-400 text-sm">-</span>
                                                 )}
                                             </div>
                                         </TableCell>

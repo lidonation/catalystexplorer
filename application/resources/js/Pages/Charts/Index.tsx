@@ -3,7 +3,8 @@ import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/useHooks/useUserSettings';
 import { SearchParams } from '@/types/search-params';
 import { Head, router } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useCallback, useEffect, useState } from 'react';
 import AllCharts from './Partials/AllCharts';
 import SetChartMetrics from './Partials/SetChartMetrics';
 
@@ -14,7 +15,13 @@ interface ChartsIndexProps {
 
 const Index = ({ filters, rules }: ChartsIndexProps) => {
     const [showCharts, setShowCharts] = useState<boolean>(() => {
-        return localStorage.getItem('metricsSet') === 'true';
+        // Check if both ct and co URL parameters are present to auto-skip metrics setup
+        const urlParams = new URLSearchParams(window.location.search);
+        const hasCtParam = !!urlParams.get('ct');
+        const hasCoParam = !!urlParams.get('co');
+        
+        // Auto-skip metrics setup if both URL params are present, otherwise check localStorage
+        return (hasCtParam && hasCoParam) || localStorage.getItem('metricsSet') === 'true';
     });
 
     const { value: viewByPreference, setValue: setViewByPreference } =
@@ -30,15 +37,23 @@ const Index = ({ filters, rules }: ChartsIndexProps) => {
         localStorage.setItem('metricsSet', 'true');
     };
 
-    const handleEditMetrics = () => {
-        setShowCharts(false);
-        localStorage.removeItem('metricsSet');
-    };
 
     const handleViewByChange = (value: string | null) => {
         const newValue = value as 'fund' | 'year';
         setViewByPreference([newValue]);
     };
+
+    useEffect(() => {
+        // Check URL parameters on mount to auto-skip metrics if both ct and co are present
+        const urlParams = new URLSearchParams(window.location.search);
+        const hasCtParam = !!urlParams.get('ct');
+        const hasCoParam = !!urlParams.get('co');
+        
+        if (hasCtParam && hasCoParam && !showCharts) {
+            setShowCharts(true);
+            localStorage.setItem('metricsSet', 'true');
+        }
+    }, [showCharts]);
 
     useEffect(() => {
         const handleNavigation = () => {
@@ -68,8 +83,50 @@ const Index = ({ filters, rules }: ChartsIndexProps) => {
         setLoading(loading);
     };
 
-    const filteredAllChartData = allChartData?.find(
-        (group) => group?.[0]?.count_by === viewBy,
+    // Function to fetch chart data automatically when URL params are present
+    const fetchChartDataFromUrl = useCallback(
+        async (rules: Array<string>, chartType: string) => {
+            const currentQueryString = window.location.search;
+            const urlParams = new URLSearchParams(currentQueryString);
+
+            setLoading(true);
+            try {
+                const response = await axios.get(
+                    `${route('api.proposalChartsMetrics')}?${urlParams.toString()}`,
+                    {
+                        params: { rules, chartType },
+                    },
+                );
+                setAllChartData(response?.data);
+            } catch (error: any) {
+                console.error(
+                    'Error fetching proposal metrics:',
+                    error.response?.data || error.message,
+                );
+            } finally {
+                setLoading(false);
+            }
+        },
+        [],
+    );
+
+    // Fetch chart data automatically when both URL parameters are present and charts are shown
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const ctParam = urlParams.get('ct');
+        const coParam = urlParams.get('co');
+        
+        if (showCharts && ctParam && coParam && allChartData.length === 0) {
+            const chartType = ctParam === 'trendChart' ? 'trend' : 'distribution';
+            fetchChartDataFromUrl(rules ?? [], chartType);
+        }
+    }, [showCharts, allChartData.length, fetchChartDataFromUrl, rules]);
+
+    // Flatten the nested array structure and filter by viewBy
+    const flattedChartData = allChartData?.flat() || [];
+    
+    const filteredAllChartData = flattedChartData.filter(
+        (item) => item?.count_by === viewBy && item?.data && item.data.length > 0
     );
 
     return (
@@ -90,10 +147,11 @@ const Index = ({ filters, rules }: ChartsIndexProps) => {
                 <div>
                     <AllCharts
                         chartData={filteredAllChartData}
-                        onEditMetrics={handleEditMetrics}
                         viewBy={viewBy}
                         onViewByChange={handleViewByChange}
                         loading={loading}
+                        onChartDataReceived={handleChartDataFromMetrics}
+                        onLoadingChange={handleLoadingChange}
                     />
                 </div>
             )}
