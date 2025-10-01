@@ -120,7 +120,6 @@ const WalletCard: React.FC<WalletCardProps> = ({
         }
     };
 
-    // Focus input when editing starts
     useEffect(() => {
         if (isEditingName && inputRef.current) {
             inputRef.current.focus();
