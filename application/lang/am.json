@@ -1466,5 +1466,12 @@
     "proposal.metadata.totalVotes": "ጠቅላላ ድምጾች",
     "proposal.metadata.viewInExplorer": "በኤክስፕሎረር ውስጥ ይመልከቱ",
     "proposal.metadata.title": "የፕሮፖዛል መረጃ",
-    "proposal.metadata.links": "አገናኞች"
+    "proposal.metadata.links": "አገናኞች",
+    "workflows.linkWallet.linkWallet": "ቦርሳ አያይዝ",
+    "workflows.linkWallet.walletDetails": "የቦርሳ መረጃ",
+    "workflows.linkWallet.info": "እቅድህን ለማያዝ ቦርሳ ምረጥ።",
+    "workflows.linkWallet.successfullyLink": "ቦርሳውን በትክክል አያይዝክ።",
+    "workflows.linkWallet.toProposal": "ከእቅድህ ጋር",
+    "workflows.linkWallet.backToMyProposals": "ወደ እቅዶቼ ተመለስ",
+    "workflows.linkWallet.alreadyLinked": "እቅድህ ከዚህ ቦርሳ ጋር አስቀድሞ ተያይዞአል።"
 }

@@ -376,5 +376,12 @@
     "proposal.metadata.totalVotes": "إجمالي الأصوات",
     "proposal.metadata.viewInExplorer": "عرض في المستكشف",
     "proposal.metadata.title": "بيانات المقترح",
-    "proposal.metadata.links": "روابط"
+    "proposal.metadata.links": "روابط",
+    "workflows.linkWallet.linkWallet": "ربط المحفظة",
+    "workflows.linkWallet.walletDetails": "تفاصيل المحفظة",
+    "workflows.linkWallet.info": "اختر محفظة لربطها باقتراحك.",
+    "workflows.linkWallet.successfullyLink": "تم ربط المحفظة بنجاح",
+    "workflows.linkWallet.toProposal": "باقتراحك",
+    "workflows.linkWallet.backToMyProposals": "العودة إلى اقتراحاتي",
+    "workflows.linkWallet.alreadyLinked": "اقتراحك مرتبط بالفعل بهذه المحفظة"
 }

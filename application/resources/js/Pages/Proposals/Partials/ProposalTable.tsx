@@ -357,6 +357,7 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                                 data-testid={`manage-proposal-button-${proposal.id}`}
                             />
                         </div>
+                        
                     );
                 }
             };

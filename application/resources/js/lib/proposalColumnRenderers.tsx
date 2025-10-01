@@ -1,4 +1,5 @@
 import Paragraph from '@/Components/atoms/Paragraph';
+import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import AbstainVoteIcon from '@/Components/svgs/AbstainVoteIcon';
 import YesVoteIcon from '@/Components/svgs/YesVoteIcon';
 import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
@@ -6,6 +7,7 @@ import ProposalCardHeader from '@/Pages/Proposals/Partials/ProposalCardHeader';
 import ProposalFundingPercentages from '@/Pages/Proposals/Partials/ProposalFundingPercentages';
 import ProposalFundingStatus from '@/Pages/Proposals/Partials/ProposalFundingStatus';
 import { currency } from '@/utils/currency';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { shortNumber } from '@/utils/shortNumber';
 import { Link } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
@@ -98,7 +100,7 @@ export const proposalColumnRenderers: Record<string, ColumnRendererConfig> = {
                             href={proposal.link ?? '#'}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center hover:text-primary transition-colors duration-200"
+                            className="hover:text-primary inline-flex items-center transition-colors duration-200"
                             data-testid={`view-proposal-button-${proposal.id}`}
                         >
                             {proposal.title}
@@ -531,47 +533,63 @@ export const proposalColumnRenderers: Record<string, ColumnRendererConfig> = {
     my_vote: {
         type: 'component',
         label: 'My Vote',
-        component: ({ proposal, helpers }: { proposal: ProposalData; helpers?: TableHelpers }) => {
+        component: ({
+            proposal,
+            helpers,
+        }: {
+            proposal: ProposalData;
+            helpers?: TableHelpers;
+        }) => {
             const { t } = useLaravelReactI18n();
-            
-            const vote = (proposal as any).vote !== undefined ? (proposal as any).vote : (proposal as any).bookmark_vote;
-            
+
+            const vote =
+                (proposal as any).vote !== undefined
+                    ? (proposal as any).vote
+                    : (proposal as any).bookmark_vote;
+
             if (vote === undefined || vote === null) {
                 return (
-                    <div className="flex w-20 items-center justify-center" data-testid={`my-vote-none-${proposal.id}`}>
+                    <div
+                        className="flex w-20 items-center justify-center"
+                        data-testid={`my-vote-none-${proposal.id}`}
+                    >
                         <Paragraph className="content text-sm">–</Paragraph>
                     </div>
                 );
             }
 
             const getVoteDisplay = () => {
-        
-                const voteValue = typeof vote === 'string' ? parseInt(vote, 10) : vote;
-                
+                const voteValue =
+                    typeof vote === 'string' ? parseInt(vote, 10) : vote;
+
                 switch (voteValue) {
-                    case 1: 
+                    case 1:
                         return {
-                            icon: <YesVoteIcon className="h-5 w-5 text-success" />,
+                            icon: (
+                                <YesVoteIcon className="text-success h-5 w-5" />
+                            ),
                             label: t('Yes'),
-                            className: 'text-success'
+                            className: 'text-success',
                         };
-                    case 0: 
+                    case 0:
                         return {
-                            icon: <AbstainVoteIcon className="h-5 w-5 text-warning" />,
+                            icon: (
+                                <AbstainVoteIcon className="text-warning h-5 w-5" />
+                            ),
                             label: t('Abstain'),
-                            className: 'text-warning'
+                            className: 'text-warning',
                         };
                     case -1: // NO
                         return {
-                            icon: <X className="h-5 w-5 text-danger" />,
+                            icon: <X className="text-danger h-5 w-5" />,
                             label: t('No'),
-                            className: 'text-danger'
+                            className: 'text-danger',
                         };
                     default:
                         return {
                             icon: null,
                             label: '–',
-                            className: 'text-content'
+                            className: 'text-content',
                         };
                 }
             };
@@ -579,12 +597,14 @@ export const proposalColumnRenderers: Record<string, ColumnRendererConfig> = {
             const voteDisplay = getVoteDisplay();
 
             return (
-                <div 
-                    className="flex w-20 items-center justify-center gap-1" 
+                <div
+                    className="flex w-20 items-center justify-center gap-1"
                     data-testid={`my-vote-${vote}-${proposal.id}`}
                 >
                     {voteDisplay.icon}
-                    <Paragraph className={`text-sm font-medium ${voteDisplay.className}`}>
+                    <Paragraph
+                        className={`text-sm font-medium ${voteDisplay.className}`}
+                    >
                         {voteDisplay.label}
                     </Paragraph>
                 </div>
@@ -593,16 +613,36 @@ export const proposalColumnRenderers: Record<string, ColumnRendererConfig> = {
         sortKey: 'vote',
         sortable: false,
     },
+    link_wallet: {
+        type: 'component',
+        label: 'Link Wallet',
+        component: ({ proposal }: { proposal: ProposalData }) => {
+            const { t } = useLaravelReactI18n();
+
+            return (
+                <div>
+                    <PrimaryLink
+                        href={useLocalizedRoute('workflows.linkWallet.index', {
+                            step: 1,
+                            proposal: proposal?.id,
+                        })}
+                    >
+                        {t('Link wallet')}
+                    </PrimaryLink>
+                </div>
+            );
+        },
+    },
 };
 
 // Default column headers for common column types
 export const defaultColumnHeaders: Record<string, string | React.ReactNode> = {
-    'yesVotes': 'Yes Votes',
-    'abstainVotes': 'Abstain Votes',
-    'status': 'Proposal Status',
-    'manageProposal': 'Manage Proposal',
-    'viewProposal': 'View Proposal', 
-    'proposalActions': 'Actions'
+    yesVotes: 'Yes Votes',
+    abstainVotes: 'Abstain Votes',
+    status: 'Proposal Status',
+    manageProposal: 'Manage Proposal',
+    viewProposal: 'View Proposal',
+    proposalActions: 'Actions',
 };
 
 // Dynamic column headers that require translation context

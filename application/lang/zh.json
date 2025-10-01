@@ -1478,5 +1478,12 @@
     "proposal.metadata.totalVotes": "总投票数",
     "proposal.metadata.viewInExplorer": "在浏览器中查看",
     "proposal.metadata.title": "提案元数据",
-    "proposal.metadata.links": "网站"
+    "proposal.metadata.links": "网站",
+    "workflows.linkWallet.linkWallet": "链接钱包",
+    "workflows.linkWallet.walletDetails": "钱包详情",
+    "workflows.linkWallet.info": "请选择一个钱包链接到您的提案。",
+    "workflows.linkWallet.successfullyLink": "已成功链接",
+    "workflows.linkWallet.toProposal": "到您的提案",
+    "workflows.linkWallet.backToMyProposals": "返回我的提案",
+    "workflows.linkWallet.alreadyLinked": "您的提案已链接到此钱包"
 }
