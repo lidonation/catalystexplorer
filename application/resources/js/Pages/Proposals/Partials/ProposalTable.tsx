@@ -602,8 +602,8 @@ const ProposalTable: React.FC<ProposalTableProps> = ({
                     <Paginator
                         pagination={proposals}
                         linkProps={{
-                            preserveState: true,
-                            preserveScroll: false
+                            //preserveState: true,
+                            //preserveScroll: false
                         }}
                     />
                 </div>
