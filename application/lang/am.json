@@ -649,7 +649,8 @@
     "charts.setMetrics": "የቻርት መለኪያዎች ምረጥ",
     "charts.viewCharts": "ቻርቶችን ተመልከት",
     "charts.selectProposals": "ከሀሳቦች ውስጥ ምን ዓይነቶች በጣም ያስደስቱዎታል?",
-    "charts.selectChartType": "የቻርት አይነት ምረጥ (ሁሉንም የሚመለከቱትን ይምረጡ)",
+    "charts.selectChartType": "የቻርት አይነት ምረጥ (ሁሉንም የሚምለከቱትን ይምረጡ)",
+    "charts.selectChart": "ቻርት ምረጥ (ሁሉንም የሚምለከቱትን ይምረጡ)",
     "charts.selectAllThatApply": "(ሁሉንም የሚመለከቱትን ይምረጡ)",
     "charts.submittedProposals": "የቀረቡ ሀሳቦች",
     "charts.approvedProposals": "የተፈቀዱ ሀሳቦች",
@@ -1472,5 +1473,6 @@
     "proposal.metadata.totalVotes": "ጠቅላላ ድምጾች",
     "proposal.metadata.viewInExplorer": "በኤክስፕሎረር ውስጥ ይመልከቱ",
     "proposal.metadata.title": "የፕሮፖዛል መረጃ",
-    "proposal.metadata.links": "አገናኞች"
+    "proposal.metadata.links": "አግናኘች",
+    "editMetrics": "ሜትሪክስን አስቻዋውር"
 }

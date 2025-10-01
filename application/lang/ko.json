@@ -617,6 +617,7 @@
     "charts.viewCharts": "차트 보기",
     "charts.selectProposals": "가장 관심 있는 제안 유형은 무엇인가요?",
     "charts.selectChartType": "차트 유형 선택 (해당하는 모든 것 선택)",
+    "charts.selectChart": "차트 선택 (해당하는 모든 것 선택)",
     "charts.selectAllThatApply": "(해당하는 모든 것 선택)",
     "charts.submittedProposals": "제출된 제안",
     "charts.approvedProposals": "승인된 제안",
@@ -1483,5 +1484,6 @@
     "proposal.metadata.totalVotes": "총 투표 수",
     "proposal.metadata.viewInExplorer": "탐색기에서 보기",
     "proposal.metadata.title": "제안 메타데이터",
-    "proposal.metadata.links": "링크"
+    "proposal.metadata.links": "링크",
+    "editMetrics": "메트릭 편집"
 }

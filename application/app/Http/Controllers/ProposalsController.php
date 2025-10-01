@@ -1035,6 +1035,7 @@ class ProposalsController extends Controller
         $proposalRuleTitlesKey = implode(',', $proposalRuleTitles);
 
         $metrics = $this->findMatchingMetrics($chartType, $proposalRuleTitles, $proposalRuleTitlesKey);
+
         if ($metrics->isEmpty()) {
             return [];
         }
@@ -1050,24 +1051,28 @@ class ProposalsController extends Controller
      */
     private function findMatchingMetrics(string $chartType, array $proposalRuleTitles, string $proposalRuleTitlesKey)
     {
-
-        return Metric::with([
-            'rules' => fn ($query) => $query->whereIn('title', $proposalRuleTitles),
-        ])
+        // Get all metrics of the given chart type with all their rules
+        $allMetrics = Metric::with('rules')
             ->where('type', $chartType)
             ->get();
-        //            ->filter(function ($metric) use ($proposalRuleTitles, $proposalRuleTitlesKey) {
-        //                $metricRuleTitles = $metric->rules->pluck('title')->toArray();
-        //
-        //                if (count($metricRuleTitles) !== count($proposalRuleTitles)) {
-        //                    return false;
-        //                }
-        //
-        //                sort($metricRuleTitles);
-        //                $metricRuleTitlesKey = implode(',', $metricRuleTitles);
-        //
-        //                return $metricRuleTitlesKey === $proposalRuleTitlesKey;
-        //            });
+
+        // Find metrics that have at least some of the requested rules
+        $matchingMetrics = $allMetrics->filter(function ($metric) use ($proposalRuleTitles) {
+            $metricRuleTitles = $metric->rules->pluck('title')->toArray();
+            $intersection = array_intersect($metricRuleTitles, $proposalRuleTitles);
+
+            // Return metrics that have at least one matching rule
+            return count($intersection) > 0;
+        });
+
+        // Filter the rules to only include requested ones
+        $matchingMetrics->each(function ($metric) use ($proposalRuleTitles) {
+            $metric->setRelation('rules', $metric->rules->filter(function ($rule) use ($proposalRuleTitles) {
+                return in_array($rule->title, $proposalRuleTitles);
+            }));
+        });
+
+        return $matchingMetrics;
     }
 
     /**

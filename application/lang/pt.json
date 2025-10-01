@@ -624,6 +624,7 @@
     "charts.viewCharts": "Ver Gráficos",
     "charts.selectProposals": "Que tipos de propostas mais te interessam?",
     "charts.selectChartType": "Selecionar Tipo de Gráfico (Selecione todos que se aplicam)",
+    "charts.selectChart": "Selecionar Gráfico (Selecione todos que se aplicam)",
     "charts.selectAllThatApply": "(Selecione todos que se aplicam)",
     "charts.submittedProposals": "Propostas Submetidas",
     "charts.approvedProposals": "Propostas Aprovadas",
@@ -1482,5 +1483,6 @@
     "proposal.metadata.totalVotes": "Total de Votos",
     "proposal.metadata.viewInExplorer": "Ver no Explorador",
     "proposal.metadata.title": "Metadados da Proposta",
-    "proposal.metadata.links": "Links"
+    "proposal.metadata.links": "Links",
+    "editMetrics": "Editar métricas"
 }

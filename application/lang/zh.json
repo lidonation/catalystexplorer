@@ -624,6 +624,7 @@
     "charts.viewCharts": "查看图表",
     "charts.selectProposals": "哪些类型的提案最让您感兴趣？",
     "charts.selectChartType": "选择图表类型（选择所有适用的）",
+    "charts.selectChart": "选择图表（选择所有适用的）",
     "charts.selectAllThatApply": "（选择所有适用的）",
     "charts.submittedProposals": "已提交的提案",
     "charts.approvedProposals": "已批准的提案",
@@ -1484,5 +1485,6 @@
     "proposal.metadata.totalVotes": "总投票数",
     "proposal.metadata.viewInExplorer": "在浏览器中查看",
     "proposal.metadata.title": "提案元数据",
-    "proposal.metadata.links": "网站"
+    "proposal.metadata.links": "网站",
+    "editMetrics": "编辑指标"
 }

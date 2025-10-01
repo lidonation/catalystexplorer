@@ -617,6 +617,7 @@
     "charts.viewCharts": "チャート表示",
     "charts.selectProposals": "最も興味のある提案のタイプは何ですか？",
     "charts.selectChartType": "チャートタイプ選択（該当するものをすべて選択）",
+    "charts.selectChart": "チャート選択（該当するものをすべて選択）",
     "charts.selectAllThatApply": "（該当するものをすべて選択）",
     "charts.submittedProposals": "提出済み提案",
     "charts.approvedProposals": "承認済み提案",
@@ -1475,5 +1476,6 @@
     "proposal.metadata.totalVotes": "総投票数",
     "proposal.metadata.viewInExplorer": "エクスプローラーで表示",
     "proposal.metadata.title": "提案メタデータ",
-    "proposal.metadata.links": "リンク"
+    "proposal.metadata.links": "リンク",
+    "editMetrics": "メトリクスを編集"
 }

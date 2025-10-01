@@ -3,9 +3,11 @@ import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import RadioSelector from '@/Components/atoms/RadioSelector';
 import Title from '@/Components/atoms/Title';
+import WorkflowSlideOver from '@/Components/WorkflowSlideOver';
 import { useFilterContext } from '@/Context/FiltersContext';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { useUserSetting } from '@/useHooks/useUserSettings';
+import useEditMetricsSlideOver from '@/useHooks/useEditMetricsSlideOver';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { Share2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -15,25 +17,29 @@ import { ChartLoading } from './ChartLoading';
 import FunnelChart from './FunnelChart';
 import LineChart from './LineChart';
 import PieChart from './PieChart';
+import SetChartMetrics from './SetChartMetrics';
 import StackedBarChart from './StackedBarChart';
 import TreeMap from './TreeMap';
 
 interface AllChartsProps {
     chartData: any;
-    onEditMetrics: () => void;
     viewBy: 'fund' | 'year';
     onViewByChange: (value: string | null) => void;
     loading?: boolean;
+    onChartDataReceived?: (chartData: any) => void;
+    onLoadingChange?: (loading: boolean) => void;
 }
 
 export default function AllCharts({
     chartData,
-    onEditMetrics,
     viewBy,
     onViewByChange,
     loading,
+    onChartDataReceived,
+    onLoadingChange,
 }: AllChartsProps) {
     const { filters, setFilters } = useFilterContext();
+    const { isOpen, openSlideOver, closeSlideOver } = useEditMetricsSlideOver();
     const { value: selectedChartTypes } = useUserSetting<string[]>(
         userSettingEnums.CHART_OPTIONS,
         [],
@@ -182,7 +188,7 @@ export default function AllCharts({
                     </div>
                     <div className="block md:hidden">
                         <PrimaryButton
-                            onClick={onEditMetrics}
+                            onClick={openSlideOver}
                             className="px-6 py-3"
                             data-testid="charts-edit-button-mobile"
                         >
@@ -198,7 +204,7 @@ export default function AllCharts({
                 </div>
                 <div className="hidden md:block">
                     <PrimaryButton
-                        onClick={onEditMetrics}
+                        onClick={openSlideOver}
                         className="px-6 py-3"
                         data-testid="charts-edit-button-desktop"
                     >
@@ -239,6 +245,21 @@ export default function AllCharts({
                     <Paragraph>{t('charts.noOptions')}</Paragraph>
                 </div>
             )}
+
+            {/* Edit Metrics Slideover */}
+            <WorkflowSlideOver
+                isOpen={isOpen}
+                onClose={closeSlideOver}
+                title={t('editMetrics')}
+                size="lg"
+            >
+                <SetChartMetrics
+                    onExploreCharts={closeSlideOver}
+                    onChartDataReceived={onChartDataReceived}
+                    onLoadingChange={onLoadingChange}
+                    disableAutoComplete={true}
+                />
+            </WorkflowSlideOver>
         </div>
     );
 }
