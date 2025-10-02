@@ -1,3 +1,11 @@
+# [1.36.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.35.2...v1.36.0) (2025-10-02)
+
+
+### Features
+
+* link wallet to proposal ([18e1355](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/18e135537997076a41cba2f1e63967d6c33f34ae))
+* **lists:** added copy tweet button on the sharing tweet modal ([c0a3a53](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/c0a3a53e20a8ccdfeaa2feba2cf551aae83cc45e))
+
 ## [1.35.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.35.1...v1.35.2) (2025-10-01)
 
 
