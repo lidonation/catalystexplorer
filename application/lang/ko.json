@@ -1477,6 +1477,7 @@
     "downloadImage": "이미지 다운로드",
     "postOnX": "X에 게시",
     "tweetSeeMore": "목록의 더 많은 내용을 보려면 링크를 클릭하세요",
+    "copyTweetContent": "트윗 내용 복사",
     "shareNoteImageAttachment": "📎 참고: X에 게시한 후 최상의 시각적 효과를 위해 다운로드한 이미지를 트윗에 수동으로 첨부해야 합니다.",
     "shareXMessage": "안녕하세요, Catalyst Explorer에서 생성한 제 투표 목록 \"{title}\"을 확인해보세요. {url}",
     "votingListExport": "투표 목록 내보내기",

@@ -1469,6 +1469,7 @@
     "downloadImage": "画像をダウンロード",
     "postOnX": "Xに投稿",
     "tweetSeeMore": "リストの詳細を見るにはリンクをクリックしてください。",
+    "copyTweetContent": "ツイート内容をコピー",
     "shareNoteImageAttachment": "📎 注記：Xに投稿した後、最適な視覚効果を得るために、ダウンロードした画像を手動でツイートに添付する必要があります。",
     "shareXMessage": "こんにちは、Catalyst Explorerで作成した私の投票リスト「{title}」をご覧ください。{url}",
     "votingListExport": "投票リストのエクスポート",
