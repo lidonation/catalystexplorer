@@ -497,13 +497,19 @@ Route::localized(
                     ->name('index');
             });
         });
-
-        Route::prefix('/active-fund')->as('activeFund.')->group(
-            function () {
-                Route::get('/', [FundsController::class, 'activeFund'])
-                    ->name('index');
-            }
-        );
+        Route::prefix('/active-fund')->as('activeFund.')
+            ->group(
+                function () {
+                    Route::get('/', [FundsController::class, 'activeFund'])
+                        ->name('index');
+                    Route::prefix('/campaigns/{campaign}')->as('campaigns.')->group(function () {
+                        Route::get('/', [FundsController::class, 'campaign'])
+                            ->name('index');
+                        Route::get('/proposals', [FundsController::class, 'campaign'])
+                            ->name('proposals');
+                    });
+                }
+            );
 
         // Dreps
         Route::prefix('/dreps')->as('dreps.')->group(

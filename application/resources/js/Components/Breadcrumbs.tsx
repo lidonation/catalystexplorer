@@ -103,7 +103,8 @@ const Breadcrumbs = ({
 
 export const generateBreadcrumbs = (currentRoute: string, locale: string) => {
     const { t } = useLaravelReactI18n();
-    const routeWithoutLocale = currentRoute.replace(
+    const cleanRoute = currentRoute.split('?')[0].split('#')[0];
+    const routeWithoutLocale = cleanRoute.replace(
         new RegExp(`^/${locale}`),
         '',
     );
