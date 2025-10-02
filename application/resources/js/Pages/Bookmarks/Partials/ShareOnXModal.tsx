@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import Modal from '@/Components/layout/Modal.tsx';
 import Paragraph from '@/Components/atoms/Paragraph';
@@ -58,6 +58,8 @@ export default function ShareOnXModal({
     const [shareGroupByCategories, setShareGroupByCategories] = useState<boolean>(false);
     const [shareIncludeProposals, setShareIncludeProposals] = useState<boolean>(true);
     const [shareIncludeImage, setShareIncludeImage] = useState<boolean>(true);
+    const [copyStatus, setCopyStatus] = useState<'idle' | 'success' | 'error'>('idle');
+    const copyResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // Generate username from name
     const generateUsername = (name: string) => {
@@ -455,7 +457,7 @@ export default function ShareOnXModal({
         return groupedEntries;
     }, [shareIncludeProposals, type, proposalsForTweet, formatProposalLine, shareGroupByCategories, getCampaignGroupName]);
 
-    const baseTweetText = useMemo(
+    const baseTweetTextWithUrl = useMemo(
         () =>
             t('shareXMessage')
                 .replace('{title}', bookmarkCollection.title || '')
@@ -463,9 +465,22 @@ export default function ShareOnXModal({
         [t, bookmarkCollection.title, listUrl],
     );
 
+    const baseTweetTextWithoutUrl = useMemo(() => {
+        if (!listUrl || !baseTweetTextWithUrl.includes(listUrl)) {
+            return baseTweetTextWithUrl;
+        }
+
+        return baseTweetTextWithUrl.split(listUrl).join('').trim();
+    }, [baseTweetTextWithUrl, listUrl]);
+
     const seeMoreTweetText = useMemo(
         () => t('tweetSeeMore'),
         [t],
+    );
+
+    const seeMoreTweetLine = useMemo(
+        () => `${seeMoreTweetText}: ${listUrl}`,
+        [seeMoreTweetText, listUrl],
     );
 
     const { limitedEntries, truncated: tweetLinesTruncated } = useMemo(() => {
@@ -477,15 +492,18 @@ export default function ShareOnXModal({
         let truncated = false;
 
         const computeEncodedLength = (entries: TweetEntry[], includeSeeMore: boolean) => {
-            let text = baseTweetText;
+            const baseText = includeSeeMore ? baseTweetTextWithoutUrl : baseTweetTextWithUrl;
+            let text = baseText;
 
             if (entries.length) {
-                const lines = entries.map((entry) => entry.value);
-                text += `\n\n${lines.join('\n\n')}`;
+                const linesText = entries.map((entry) => entry.value).join('\n\n');
+                text = text
+                    ? `${text}\n\n${linesText}`
+                    : linesText;
             }
 
             if (includeSeeMore) {
-                text += `\n\n${seeMoreTweetText}`;
+                text = text ? `${text}\n\n${seeMoreTweetLine}` : seeMoreTweetLine;
             }
 
             return encodeURIComponent(text).length;
@@ -540,7 +558,7 @@ export default function ShareOnXModal({
         }
 
         return { limitedEntries, truncated };
-    }, [rawTweetEntries, baseTweetText, seeMoreTweetText, shareGroupByCategories]);
+    }, [rawTweetEntries, baseTweetTextWithUrl, baseTweetTextWithoutUrl, seeMoreTweetLine, shareGroupByCategories]);
 
     const tweetProposalLines = useMemo(
         () => limitedEntries.map((entry) => entry.value),
@@ -548,18 +566,91 @@ export default function ShareOnXModal({
     );
 
     const fullTweetText = useMemo(() => {
-        let text = baseTweetText;
+        const introText = tweetLinesTruncated ? baseTweetTextWithoutUrl : baseTweetTextWithUrl;
+        const segments: string[] = [];
+
+        if (introText) {
+            segments.push(introText);
+        }
 
         if (tweetProposalLines.length) {
-            text += `\n\n${tweetProposalLines.join('\n\n')}`;
+            segments.push(tweetProposalLines.join('\n\n'));
         }
 
         if (tweetLinesTruncated) {
-            text += `\n\n${seeMoreTweetText}`;
+            segments.push(seeMoreTweetLine);
         }
 
-        return text;
-    }, [baseTweetText, tweetProposalLines, tweetLinesTruncated, seeMoreTweetText]);
+        return segments.join('\n\n');
+    }, [tweetLinesTruncated, baseTweetTextWithoutUrl, baseTweetTextWithUrl, tweetProposalLines, seeMoreTweetLine]);
+
+    const seeMorePreviewData = useMemo(() => {
+        if (!tweetLinesTruncated) {
+            return null;
+        }
+
+        const delimiter = `\n\n${seeMoreTweetLine}`;
+        const [before = ''] = fullTweetText.split(delimiter);
+
+        return {
+            beforeText: before,
+        };
+    }, [tweetLinesTruncated, fullTweetText, seeMoreTweetLine]);
+
+    const renderTextWithLineBreaks = useCallback((text: string) => {
+        if (!text) {
+            return null;
+        }
+
+        const lines = text.split('\n');
+
+        return lines.map((line, index) => (
+            <span key={`tweet-line-${index}`}>
+                {line}
+                {index < lines.length - 1 && <br />}
+            </span>
+        ));
+    }, []);
+
+    const copyTweetToClipboard = useCallback(async () => {
+        if (typeof window === 'undefined') {
+            return;
+        }
+
+        try {
+            if (typeof navigator === 'undefined' || !navigator.clipboard?.writeText) {
+                throw new Error('Clipboard API not supported');
+            }
+
+            await navigator.clipboard.writeText(fullTweetText);
+            setCopyStatus('success');
+
+            if (copyResetTimeoutRef.current) {
+                clearTimeout(copyResetTimeoutRef.current);
+            }
+
+            copyResetTimeoutRef.current = setTimeout(() => setCopyStatus('idle'), 2000);
+        } catch (error) {
+            console.error('Failed to copy tweet content', error);
+            setCopyStatus('error');
+            if (copyResetTimeoutRef.current) {
+                clearTimeout(copyResetTimeoutRef.current);
+            }
+            copyResetTimeoutRef.current = setTimeout(() => setCopyStatus('idle'), 2000);
+        }
+    }, [fullTweetText]);
+
+    useEffect(() => {
+        return () => {
+            if (copyResetTimeoutRef.current) {
+                clearTimeout(copyResetTimeoutRef.current);
+            }
+        };
+    }, []);
+
+    useEffect(() => {
+        setCopyStatus('idle');
+    }, [fullTweetText]);
 
     return (
         <Modal
@@ -640,21 +731,42 @@ export default function ShareOnXModal({
                     {/* Preview Text */}
                     <div className="rounded-lg">
                         <Paragraph className="text-content whitespace-pre-wrap">
-                            {fullTweetText.split(listUrl).map((part, index, array) =>
-                                index < array.length - 1 ? (
-                                    <span key={index}>
-                                        {part}
-                                        <a
-                                            href={listUrl}
-                                            className="!text-primary underline"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            {listUrl}
-                                        </a>
-                                    </span>
-                                ) : (
-                                    <span key={index}>{part}</span>
+                            {tweetLinesTruncated && seeMorePreviewData ? (
+                                <>
+                                    {renderTextWithLineBreaks(seeMorePreviewData.beforeText)}
+                                    {seeMorePreviewData.beforeText && (
+                                        <>
+                                            <br />
+                                            <br />
+                                        </>
+                                    )}
+                                    <span>{seeMoreTweetText}: </span>
+                                    <a
+                                        href={listUrl}
+                                        className="!text-primary underline"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        {listUrl}
+                                    </a>
+                                </>
+                            ) : (
+                                fullTweetText.split(listUrl).map((part, index, array) =>
+                                    index < array.length - 1 ? (
+                                        <span key={index}>
+                                            {part}
+                                            <a
+                                                href={listUrl}
+                                                className="!text-primary underline"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                {listUrl}
+                                            </a>
+                                        </span>
+                                    ) : (
+                                        <span key={index}>{part}</span>
+                                    )
                                 )
                             )}
                         </Paragraph>
@@ -738,6 +850,14 @@ export default function ShareOnXModal({
                         )}
                         
                         <div className="flex justify-end gap-4">
+                            <PrimaryButton
+                                className='rounded-xl p-4 hover:bg-primary/[0.6] transition-shadow duration-200'
+                                onClick={copyTweetToClipboard}
+                            >
+                                <Paragraph className="flex items-center gap-2 m-0 px-4" aria-live="polite">
+                                    {copyStatus === 'success' ? t('copied') : t('copyTweetContent')}
+                                </Paragraph>
+                            </PrimaryButton>
                             {(shareIncludeImage && shareIncludeProposals) && (
                                 <PrimaryButton
                                     className='rounded-xl p-4 hover:bg-primary/[0.6] transition-shadow duration-200'

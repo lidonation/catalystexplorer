@@ -1470,6 +1470,7 @@
     "workflows.createService.success.goToMyServices": "ወደ የእኔ አገልግሎቶች ሂዱ",
     "workflows.createService.editService": "አገልግሎት አርትዕ ያድርጉ",
     "tweetSeeMore": "የዝርዝሩን ተጨማሪ ክፍል ለማየት አገናኙን ጠቅ ያድርጉ",
+    "copyTweetContent": "የትዊት ይዘትን ኮፒ አድርግ",
     "proposal.metadata.totalVotes": "ጠቅላላ ድምጾች",
     "proposal.metadata.viewInExplorer": "በኤክስፕሎረር ውስጥ ይመልከቱ",
     "proposal.metadata.title": "የፕሮፖዛል መረጃ",
