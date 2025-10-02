@@ -1488,5 +1488,12 @@
     "proposal.metadata.totalVotes": "Votos Totales",
     "proposal.metadata.viewInExplorer": "Ver en el Explorador",
     "proposal.metadata.title": "Metadatos de la Propuesta",
-    "proposal.metadata.links": "Enlaces"
+    "proposal.metadata.links": "Enlaces",
+    "workflows.linkWallet.linkWallet": "Vincular billetera",
+    "workflows.linkWallet.walletDetails": "Detalles de la billetera",
+    "workflows.linkWallet.info": "Selecciona una billetera para vincularla a tu propuesta.",
+    "workflows.linkWallet.successfullyLink": "Has vinculado correctamente",
+    "workflows.linkWallet.toProposal": "a tu propuesta",
+    "workflows.linkWallet.backToMyProposals": "Volver a mis propuestas",
+    "workflows.linkWallet.alreadyLinked": "Tu propuesta ya está vinculada a esta billetera"
 }

@@ -1492,5 +1492,11 @@
     "proposal.metadata.viewInExplorer": "Voir dans l’explorateur",
     "proposal.metadata.title": "Métadonnées de la proposition",
     "proposal.metadata.links": "Liens",
-    "editMetrics": "Modifier les métriques"
+    "workflows.linkWallet.linkWallet": "Lier le portefeuille",
+    "workflows.linkWallet.walletDetails": "Détails du portefeuille",
+    "workflows.linkWallet.info": "Sélectionnez un portefeuille à lier à votre proposition.",
+    "workflows.linkWallet.successfullyLink": "Vous avez lié avec succès",
+    "workflows.linkWallet.toProposal": "à votre proposition",
+    "workflows.linkWallet.backToMyProposals": "Retour à mes propositions",
+    "workflows.linkWallet.alreadyLinked": "Votre proposition est déjà liée à ce portefeuille"
 }

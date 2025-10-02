@@ -14,6 +14,7 @@ use App\Traits\HasAuthor;
 use App\Traits\HasConnections;
 use App\Traits\HasDto;
 use App\Traits\HasMetaData;
+use App\Traits\HasSignatures;
 use App\Traits\HasTaxonomies;
 use App\Traits\HasTranslations;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
@@ -44,6 +45,7 @@ class Proposal extends Model implements IHasMetaData
         HasDto,
         HasMetaData,
         HasRelationships,
+        HasSignatures,
         HasTaxonomies,
         HasTimestamps,
         HasTranslations,

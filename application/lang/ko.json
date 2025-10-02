@@ -1485,5 +1485,11 @@
     "proposal.metadata.viewInExplorer": "탐색기에서 보기",
     "proposal.metadata.title": "제안 메타데이터",
     "proposal.metadata.links": "링크",
-    "editMetrics": "메트릭 편집"
+    "workflows.linkWallet.linkWallet": "지갑 연결",
+    "workflows.linkWallet.walletDetails": "지갑 세부정보",
+    "workflows.linkWallet.info": "제안에 연결할 지갑을 선택하세요.",
+    "workflows.linkWallet.successfullyLink": "성공적으로 연결되었습니다",
+    "workflows.linkWallet.toProposal": "제안에",
+    "workflows.linkWallet.backToMyProposals": "내 제안으로 돌아가기",
+    "workflows.linkWallet.alreadyLinked": "해당 제안은 이미 이 지갑에 연결되어 있습니다"
 }

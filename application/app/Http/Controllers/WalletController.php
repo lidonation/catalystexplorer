@@ -6,7 +6,9 @@ namespace App\Http\Controllers;
 
 use App\DataTransferObjects\TransactionData;
 use App\DataTransferObjects\VoterHistoryData;
+use App\DataTransferObjects\WalletDTO;
 use App\Enums\TransactionSearchParams;
+use App\Models\Proposal;
 use App\Models\Signature;
 use App\Models\Transaction;
 use App\Models\Voter;
@@ -16,6 +18,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -334,7 +337,6 @@ class WalletController extends Controller
 
             return redirect()->route('my.wallets')
                 ->with('success', 'Wallet name updated successfully');
-
         } catch (\Exception $e) {
             Log::error("💥 Error updating wallet name for ID {$walletId}: ".$e->getMessage());
 
@@ -360,5 +362,145 @@ class WalletController extends Controller
         }
 
         return Inertia::render('My/Wallets/Index', $data);
+    }
+
+    public function handleStep(Request $request, $step, ?Proposal $proposal = null): mixed
+    {
+        $method = "step{$step}";
+
+        if (method_exists($this, $method)) {
+            return $this->$method($request, $proposal);
+        }
+
+        abort(404, "Step '{$step}' not found.");
+    }
+
+    public function step1(Request $request): Response
+    {
+        $proposal = $request->proposal;
+        $user = Auth::user();
+
+        if (! $user) {
+            return $this->emptyPagination($request);
+        }
+
+        Gate::authorize('viewAny', Signature::class);
+
+        $page = $request->get('page', 1);
+        $limit = $request->get('limit', 4);
+
+        $walletsPaginator = $this->walletInfoService->getUserWallets(
+            $user->getAuthIdentifier(),
+            $page,
+            $limit
+        );
+
+        if ($proposal) {
+
+            $linkedStakeAddresses = $proposal->signatures()->pluck('stake_address');
+
+            $walletsPaginator->getCollection()->transform(function ($wallet) use ($linkedStakeAddresses) {
+                return $wallet->withLinked(
+                    $linkedStakeAddresses->contains($wallet->stakeAddress)
+                );
+            });
+        }
+
+        $walletsPaginator->withPath($request->url())
+            ->appends($request->query());
+
+        return Inertia::render('Workflows/LinkWallet/Step1', [
+            'stepDetails' => $this->getStepDetails(),
+            'activeStep' => intval($request->step),
+            'proposal' => $proposal,
+            'wallets' => $walletsPaginator,
+        ]);
+    }
+
+    public function step2(Request $request): Response
+    {
+        $proposal = $request->proposal;
+        $stakeAddress = $request->stakeAddress;
+
+        $signature = Signature::where('stake_address', $stakeAddress)->first();
+
+        if (! $signature) {
+            abort(404, 'Wallet not found');
+        }
+
+        $walletDetails = WalletDTO::fromSignature(
+            $signature,
+            $signature->wallet_stats,
+            $signature->latest_wallet_info
+        );
+
+        return Inertia::render('Workflows/LinkWallet/Step2', [
+            'stepDetails' => $this->getStepDetails(),
+            'activeStep' => intval($request->step),
+            'proposal' => $proposal,
+            'wallet' => $walletDetails,
+        ]);
+    }
+
+    public function step3(Request $request, ?Proposal $proposal = null): Response
+    {
+        $proposal = $request->proposal;
+
+        $stakeAddress = $request->stakeAddress;
+
+        $signature = Signature::where('stake_address', $stakeAddress)->first();
+
+        if (! $signature) {
+            abort(404, 'Wallet not found');
+        }
+
+        $walletDetails = WalletDTO::fromSignature(
+            $signature,
+            $signature->wallet_stats,
+            $signature->latest_wallet_info
+        );
+
+        return Inertia::render('Workflows/LinkWallet/Success', [
+            'stepDetails' => $this->getStepDetails(),
+            'activeStep' => intval($request->step),
+            'proposal' => $proposal,
+            'walletName' => $walletDetails->name,
+        ]);
+    }
+
+    public function connectWalletToProposal(Request $request): RedirectResponse
+    {
+        $stakeAddress = $request->stakeAddress;
+        $proposalId = $request->proposal;
+
+        $proposal = Proposal::findOrFail($proposalId);
+
+        $signature = Signature::where('stake_address', $stakeAddress)->first();
+
+        $proposal->modelSignatures()->firstOrCreate([
+            'model_id' => $proposalId,
+            'model_type' => Proposal::class,
+            'signature_id' => $signature->id,
+        ]);
+
+        return to_route('workflows.linkWallet.index', [
+            'step' => 3,
+            'proposal' => $proposal,
+            'stakeAddress' => $stakeAddress,
+        ])->with('success', 'Wallet successfully connected to proposal.');
+    }
+
+    public function getStepDetails(): Collection
+    {
+        return collect([
+            [
+                'title' => 'workflows.linkWallet.linkWallet',
+                'info' => 'workflows.linkWallet.info',
+            ],
+            [
+                'title' => 'workflows.linkWallet.walletDetails',
+                'info' => 'workflows.linkWallet.info',
+            ],
+        ]);
     }
 }

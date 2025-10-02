@@ -6,10 +6,12 @@ use App\Http\Controllers\ProposalsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\GroupsController;
+use App\Http\Controllers\LinkWalletController;
 use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\VoterHistoriesController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Middleware\WorkflowMiddleware;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -68,15 +70,15 @@ Route::localized(
 
                 Route::get('/reviews', [ProfileController::class, 'myReviews'])->name('reviews');
                 Route::get('/wallets', [WalletController::class, 'index'])
-                            ->name('wallets');
+                    ->name('wallets');
                 Route::get('/services', [ServiceController::class, 'myServices'])
-                            ->name('services');
+                    ->name('services');
                 Route::get('/wallets/{stakeKey}', [WalletController::class, 'show'])
-                        ->name('wallets.show');
+                    ->name('wallets.show');
                 Route::patch('/wallets/{walletId}', [WalletController::class, 'update'])
-                        ->name('wallets.update');
+                    ->name('wallets.update');
                 Route::delete('/wallets/{stakeAddress}', [WalletController::class, 'destroy'])
-                        ->name('wallets.destroy');
+                    ->name('wallets.destroy');
             });
     }
 );

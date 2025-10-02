@@ -129,7 +129,7 @@ const WalletsComponent: React.FC<WalletsPageProps> = ({
 
 
     const hasWallets = connectedWallets?.data?.length > 0;
-    console.log({ connectedWallets });
+    
     return (
         <div className="w-full max-w-full px-4 py-4">
             <Head title={t('my.myWallets')} />

@@ -383,7 +383,11 @@
     "proposal.metadata.viewInExplorer": "عرض في المستكشف",
     "proposal.metadata.title": "بيانات المقترح",
     "proposal.metadata.links": "روابط",
-    "charts.selectChartType": "اختيار نوع الرسم البياني (اختر كل ما ينطبق)",
-    "charts.selectChart": "اختيار الرسم البياني (اختر كل ما ينطبق)",
-    "editMetrics": "تحرير المقاييس"
+    "workflows.linkWallet.linkWallet": "ربط المحفظة",
+    "workflows.linkWallet.walletDetails": "تفاصيل المحفظة",
+    "workflows.linkWallet.info": "اختر محفظة لربطها باقتراحك.",
+    "workflows.linkWallet.successfullyLink": "تم ربط المحفظة بنجاح",
+    "workflows.linkWallet.toProposal": "باقتراحك",
+    "workflows.linkWallet.backToMyProposals": "العودة إلى اقتراحاتي",
+    "workflows.linkWallet.alreadyLinked": "اقتراحك مرتبط بالفعل بهذه المحفظة"
 }
