@@ -1459,6 +1459,8 @@
     "activeFund.votingStats.likelySkipped": "Wahrscheinlich übersprungen",
     "activeFund.noVotingStatsAvailable": "Keine Abstimmungsstatistiken verfügbar",
     "campaigns": "Kampagnen",
+    "campaigns.tabs.overview": "Kampagnen-Übersicht",
+    "campaigns.tabs.proposals": "Vorschläge",
     "campaigns.status.completed": "Abgeschlossen",
     "campaigns.status.funded": "Finanziert",
     "campaigns.status.unfunded": "Nicht finanziert",
