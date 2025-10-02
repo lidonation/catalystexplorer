@@ -136,6 +136,7 @@ services:
       CONTAINER_ROLE: "queue"
       DB_CONNECTION: pgsql
       MEDIA_DISK: public
+      REVERB_HOST: reverb.catalystexplorer.com
       MEILISEARCH_KEY: v8hlDV0yMAHHlIurYupj
       MEILISEARCH_HOST: "http://catalystexplorer-search:7700"
       PHP_OPCACHE_ENABLE: 0
@@ -161,7 +162,30 @@ services:
         target: /ipc
         volume:
           nocopy: true
-      - ./application:/var/www:cached
+      - ./application:/var/www
+    networks:
+      - catalystexplorer-net
+      - shared-network
+
+  reverb.catalystexplorer.com:
+    image: catalystexplorer
+    container_name: reverb.catalystexplorer.com
+    tty: true
+    depends_on:
+      - catalystexplorer.redis
+    env_file:
+      - ./application/.env
+    ports:
+      - "8082:8082"
+    environment:
+      CONTAINER_ROLE: "reverb"
+      PHP_MEMORY_LIMIT: 2048M
+    build:
+      context: ./docker
+      args: {}
+      dockerfile: ./Dockerfile.dev
+    volumes:
+      - ./application:/var/www
     networks:
       - catalystexplorer-net
       - shared-network

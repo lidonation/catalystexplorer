@@ -1,6 +1,6 @@
 // import '../../node_modules/plyr/dist/plyr.css';
 import { createInertiaApp } from '@inertiajs/react';
-import { ModalStackProvider, initFromPageProps } from '@inertiaui/modal-react';
+import { initFromPageProps, ModalStackProvider } from '@inertiaui/modal-react';
 import { LaravelReactI18nProvider } from 'laravel-react-i18n';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { StrictMode } from 'react';

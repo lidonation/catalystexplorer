@@ -735,6 +735,11 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
+"@laravel/echo-react@^2.2.4":
+  version "2.2.4"
+  resolved "https://registry.npmjs.org/@laravel/echo-react/-/echo-react-2.2.4.tgz"
+  integrity sha512-odXPnAz3tTmi0aKRqJwLFRRV0xLbHjDhWO4iY0/YFPA/YLEA8JZGhRxolTAHqKqTUKfI260Qzz4v2yoCTTe4yQ==
+
 "@laravel/stream-react@^0.3.5":
   version "0.3.5"
   resolved "https://registry.npmjs.org/@laravel/stream-react/-/stream-react-0.3.5.tgz"
@@ -4626,6 +4631,11 @@ keyv@^4.5.4:
   dependencies:
     json-buffer "3.0.1"
 
+laravel-echo@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.npmjs.org/laravel-echo/-/laravel-echo-2.2.4.tgz"
+  integrity sha512-CagAL5AlG6W0WhClcIYBSU6fm5Bt7msgJ3fqu+Y6VQ+UxLPWhSllWkWoV7mteKhvV660T5cwUeFNUc1zTVwDBg==
+
 laravel-react-i18n@^2.0.5:
   version "2.0.5"
   resolved "https://registry.npmjs.org/laravel-react-i18n/-/laravel-react-i18n-2.0.5.tgz"
@@ -5815,6 +5825,13 @@ punycode@^2.1.0:
   resolved "https://registry.npmjs.org/punycode/-/punycode-2.3.1.tgz"
   integrity sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==
 
+pusher-js@^8.4.0:
+  version "8.4.0"
+  resolved "https://registry.npmjs.org/pusher-js/-/pusher-js-8.4.0.tgz"
+  integrity sha512-wp3HqIIUc1GRyu1XrP6m2dgyE9MoCsXVsWNlohj0rjSkLf+a0jLvEyVubdg58oMk7bhjBWnFClgp8jfAa6Ak4Q==
+  dependencies:
+    tweetnacl "^1.0.3"
+
 qs@^6.9.0:
   version "6.14.0"
   resolved "https://registry.npmjs.org/qs/-/qs-6.14.0.tgz"
@@ -6652,6 +6669,11 @@ tslib@^2.0.0, tslib@^2.1.0, tslib@^2.4.0, tslib@^2.8.0:
   version "2.8.1"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.8.1.tgz"
   integrity sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==
+
+tweetnacl@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.npmjs.org/tweetnacl/-/tweetnacl-1.0.3.tgz"
+  integrity sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==
 
 type-check@^0.4.0, type-check@~0.4.0:
   version "0.4.0"

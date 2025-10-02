@@ -32,5 +32,24 @@ class RouteServiceProvider extends ServiceProvider
     /**
      * Bootstrap services.
      */
-    public function boot(Router $router): void {}
+    public function boot(Router $router): void
+    {
+        // Custom binding for bookmarkCollection to handle authorization manually
+        Route::bind('bookmarkCollection', function (string $value) {
+            // First try to find with global scopes (for public collections)
+            $bookmarkCollection = \App\Models\BookmarkCollection::find($value);
+
+            // If not found with public scope, try without scopes (for private collections that will be authorized later)
+            if (! $bookmarkCollection) {
+                $bookmarkCollection = \App\Models\BookmarkCollection::withoutGlobalScopes()->find($value);
+            }
+
+            // If still not found, return 404
+            if (! $bookmarkCollection) {
+                abort(404, 'Bookmark collection not found');
+            }
+
+            return $bookmarkCollection;
+        });
+    }
 }

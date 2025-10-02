@@ -8,6 +8,9 @@ else
   queue | q)
     php -d variables_order=EGPCS /var/www/artisan horizon
     ;;
+  reverb | r)
+    php -d variables_order=EGPCS /var/www/artisan reverb:start --host="$REVERB_SERVER_HOST" --port="$REVERB_PORT" --hostname="$REVERB_HOST" --debug
+    ;;
   app | a)
     if [ "$OCTANE_WATCH" = "true" ]; then
       # Enable watch mode for Octane

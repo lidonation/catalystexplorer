@@ -23,8 +23,18 @@ class BookmarkCollectionPolicy extends AppPolicy
      *
      * @throws \Exception
      */
-    public function view(User $user, BookmarkCollection $bookmarkCollection): bool
+    public function view(?User $user, BookmarkCollection $bookmarkCollection): bool
     {
+        // Allow anonymous access to public collections
+        if ($bookmarkCollection->visibility === 'public') {
+            return true;
+        }
+
+        // For non-public collections, require authentication
+        if (! $user) {
+            return false;
+        }
+
         return parent::canView($user, $bookmarkCollection) ||
                $this->isCollaborator($user, $bookmarkCollection) ||
                $user->hasAnyPermission([PermissionEnum::read_bookmark_items()->value]);
@@ -88,8 +98,12 @@ class BookmarkCollectionPolicy extends AppPolicy
     /**
      * Check if the user is a collaborator on the bookmark collection.
      */
-    private function isCollaborator(User $user, BookmarkCollection $bookmarkCollection): bool
+    private function isCollaborator(?User $user, BookmarkCollection $bookmarkCollection): bool
     {
+        if (! $user) {
+            return false;
+        }
+
         return $bookmarkCollection->contributors()->where('user_id', $user->id)->exists();
     }
 }

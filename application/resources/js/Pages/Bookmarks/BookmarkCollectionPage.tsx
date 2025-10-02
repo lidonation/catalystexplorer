@@ -19,7 +19,7 @@ import { Head, router, usePage } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useEffect, useState } from 'react';
-import { useStream } from '@laravel/stream-react';
+import { useBookmarkStream } from '@/useHooks/useBookmarkStream';
 import CommunitiesPaginatedList from '../Communities/Partials/CommunitiesPaginatedList';
 import GroupPaginatedList from '../Groups/Partials/GroupPaginatedList';
 import IdeascaleProfilePaginatedList from '../IdeascaleProfile/Partials/IdeascaleProfilePaginatedList';
@@ -279,14 +279,22 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
     const [activeConfirm, setActiveConfirm] = useState<boolean>(false);
     const [activeShareModal, setActiveShareModal] = useState<boolean>(false);
 
-    const [streamedProposals, setStreamedProposals] = useState<ProposalData[]>([]);
-
     const hasItems = (bookmarkCollection.items_count ?? 0) > 0;
     const isVoterList = bookmarkCollection.list_type === 'voter';
     const isTinderList = bookmarkCollection.list_type === 'tinder';
     const isNormalList = bookmarkCollection.list_type === 'normal';
 
-    const { data, isFetching, isStreaming, send, cancel } = useStream('stream');
+    // Stream is enabled for voter lists viewing proposals
+    
+    const {
+        items: streamedProposals,
+        isStreaming,
+        isConnected,
+        totalItems,
+        streamedCount,
+        error: streamError,
+        startStream,
+    } = useBookmarkStream(bookmarkCollection.id, isVoterList && type === 'proposals');
 
     const handleDelete = () => {
         setActiveConfirm(false);
@@ -315,32 +323,13 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
         return undefined;
     };
 
-    // Stream data for voter lists
+    // Stream data for voter lists - only call startStream once when conditions are met
     useEffect(() => {
-        if (isVoterList && type === 'proposals') {
-            send({});
+        if (isVoterList && type === 'proposals' && hasItems && !isStreaming) {
+            console.log('🎯 Starting stream for voter list with proposals');
+            startStream();
         }
-    }, [isVoterList, bookmarkCollection.items_count]);
-
-    // Parse streamed data
-    useEffect(() => {
-        if (!data || !isVoterList) {
-            return;
-        }
-
-        const lines = data.trim().split('\n');
-        const parsed: ProposalData[] = lines.map(line => {
-            try {
-                return JSON.parse(line) as ProposalData;
-            } catch (e) {
-                return null;
-            }
-        }).filter((x): x is ProposalData => x !== null);
-
-        setStreamedProposals(parsed);
-    }, [data, isVoterList]);
-
-
+    }, [isVoterList, type, hasItems, isStreaming]); // Remove startStream from deps to prevent recreation loop
 
 
     const getDropdownMenuItems = (): DropdownMenuItem[] => {
@@ -464,10 +453,20 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                     }
                     : props.proposals;
 
-                if (isVoterList && !streamedProposals.length) {
+                if (isVoterList && (isStreaming || (!streamedProposals.length && !streamError))) {
                     return (
-                        <div className="container flex justify-center items-center py-8">
+                        <div className="container flex flex-col justify-center items-center py-8">
                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                            {isStreaming && totalItems > 0 && (
+                                <p className="mt-2 text-sm text-gray-600">
+                                    Loading {streamedCount} of {totalItems} items...
+                                </p>
+                            )}
+                            {streamError && (
+                                <p className="mt-2 text-sm text-red-600">
+                                    Error: {streamError}
+                                </p>
+                            )}
                         </div>
                     );
                 }

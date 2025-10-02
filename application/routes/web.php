@@ -39,6 +39,70 @@ use CodeZero\LocalizedRoutes\Controllers\FallbackController;
 
 Route::localized(
     function () {
+        // Test route for debugging
+        Route::post('/broadcasting/test', function (\Illuminate\Http\Request $request) {
+            return response()->json([
+                'status' => 'success',
+                'method' => $request->method(),
+                'headers' => $request->headers->all(),
+                'input' => $request->all(),
+            ]);
+        })->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class);
+        
+        // Custom broadcasting auth route for public channels
+    Route::post('/broadcasting/auth', function (\Illuminate\Http\Request $request) {
+        $channelName = $request->input('channel_name');
+        $socketId = $request->input('socket_id');
+        
+        // Enhanced logging with detailed analysis
+        \Log::info('Broadcasting auth request - DETAILED', [
+            'channel_name' => $channelName,
+            'channel_name_type' => gettype($channelName),
+            'channel_name_length' => strlen($channelName ?? ''),
+            'socket_id' => $socketId,
+            'user_authenticated' => !!$request->user(),
+            'user_id' => $request->user()?->id,
+            'session_exists' => $request->hasSession(),
+            'request_method' => $request->method(),
+            'request_url' => $request->url(),
+            'all_input' => $request->all(),
+            'referer' => $request->header('referer'),
+            'user_agent' => $request->header('user-agent'),
+        ]);
+        
+        // Additional channel name analysis
+        if ($channelName) {
+            $channelParts = explode('.', $channelName);
+            \Log::info('Channel name analysis', [
+                'original_channel' => $channelName,
+                'channel_parts' => $channelParts,
+                'parts_count' => count($channelParts),
+                'starts_with_bookmark_collection' => str_starts_with($channelName, 'bookmark-collection.'),
+                'ends_with_stream' => str_ends_with($channelName, '.stream'),
+                'contains_undefined' => str_contains($channelName, 'undefined'),
+            ]);
+        }
+            
+            // Allow all bookmark collection streaming channels
+            if (str_starts_with($channelName, 'bookmark-collection.') && str_ends_with($channelName, '.stream')) {
+                // Generate a simple auth signature for public channels
+                $authString = $socketId . ':' . $channelName;
+                $authSignature = hash_hmac('sha256', $authString, config('broadcasting.connections.reverb.secret'));
+                
+                $response = [
+                    'auth' => config('broadcasting.connections.reverb.key') . ':' . $authSignature,
+                    'debug' => 'bookmark-collection-channel',
+                ];
+                
+                \Log::info('Broadcasting auth success', $response);
+                return response()->json($response);
+            }
+            
+            \Log::info('Broadcasting auth fallback', ['channel' => $channelName]);
+            // Fallback to default auth for other channels
+            return app(\Illuminate\Broadcasting\BroadcastController::class)->authenticate($request);
+        })->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class);
+        
         Route::get('/', [HomeController::class, 'index'])
             ->name('home');
 

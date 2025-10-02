@@ -121,6 +121,7 @@ RUN apt-get update; \
     zip \
     intl \
     gd \
+    uv \
     redis \
     rdkafka \
     igbinary \
@@ -179,7 +180,7 @@ USER ${USER}
 
 ENV WITH_HORIZON=false \
     WITH_SCHEDULER=false \
-    WITH_REVERB=false
+    WITH_REVERB=true
 
 RUN mkdir -p \
     storage/framework/{sessions,views,cache,testing} \

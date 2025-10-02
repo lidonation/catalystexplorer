@@ -11,6 +11,7 @@ use App\Enums\BookmarkStatus;
 use App\Enums\BookmarkVisibility;
 use App\Enums\ProposalSearchParams;
 use App\Enums\QueryParamsEnum;
+use App\Jobs\StreamBookmarkItems;
 use App\Mail\BookmarkCollectionInvitation;
 use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
@@ -78,8 +79,26 @@ class BookmarksController extends Controller
         return Inertia::render('Bookmarks/Index', $props);
     }
 
-    public function view(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals')
+    public function view(Request $request, BookmarkCollection $bookmarkCollection, ?string $type = 'proposals')
     {
+
+        // Authorize the user can view this specific collection
+        $user = Auth::user();
+
+        // Allow access if collection is public, or if user is authenticated and authorized
+        if ($bookmarkCollection->visibility !== 'public') {
+            // For non-public collections, require authentication and proper authorization
+            if (! $user) {
+                abort(403, 'This action is unauthorized.');
+            }
+
+            // Use the policy for non-public collections
+            if (! Gate::allows('view', $bookmarkCollection)) {
+                abort(403, 'This action is unauthorized.');
+            }
+        }
+        // For public collections, no authorization check needed
+
         $this->setFilters($request);
 
         $isVoterList = $bookmarkCollection->list_type === 'voter';
@@ -316,8 +335,12 @@ class BookmarksController extends Controller
         return $pagination->toArray();
     }
 
-    public function manage(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals'): Response
+    public function manage(Request $request, ?string $type = 'proposals'): Response
     {
+        // Resolve the bookmark collection (handling both public and private)
+        $collectionId = $request->route('bookmarkCollection');
+        $bookmarkCollection = $this->resolveBookmarkCollection($collectionId);
+
         Gate::authorize('update', $bookmarkCollection);
 
         $this->setFilters($request);
@@ -482,7 +505,12 @@ class BookmarksController extends Controller
         $collection = null;
 
         if ($hash = ($request->bookmarkCollection ?? $request->input('bookmarkCollectionId'))) {
-            $collection = BookmarkCollection::find($hash);
+            try {
+                $collection = $this->resolveBookmarkCollection($hash);
+            } catch (\Exception $e) {
+                // Collection not found or not accessible, continue with null
+                $collection = null;
+            }
         }
 
         return Inertia::render('Workflows/CreateBookmark/Step2', [
@@ -500,7 +528,12 @@ class BookmarksController extends Controller
             ]);
         }
 
-        $collection = BookmarkCollection::find($request->bookmarkCollection ?? $request->input('bookmarkCollectionId'));
+        try {
+            $collection = $this->resolveBookmarkCollection($request->bookmarkCollection ?? $request->input('bookmarkCollectionId'));
+        } catch (\Exception $e) {
+            // Collection not found or not accessible, redirect to step 2
+            return to_route('workflows.bookmarks.index', ['step' => 2]);
+        }
 
         $modelMap = [
             Proposal::class => 'proposals',
@@ -540,7 +573,12 @@ class BookmarksController extends Controller
             ]);
         }
 
-        $collection = BookmarkCollection::find($request->bookmarkCollection ?? $request->input('bookmarkCollectionId'));
+        try {
+            $collection = $this->resolveBookmarkCollection($request->bookmarkCollection ?? $request->input('bookmarkCollectionId'));
+        } catch (\Exception $e) {
+            // Collection not found or not accessible, redirect to step 2
+            return to_route('workflows.bookmarks.index', ['step' => 2]);
+        }
         $collection->load(['author', 'collaborators']);
 
         // Get pending invitations
@@ -565,7 +603,12 @@ class BookmarksController extends Controller
             ]);
         }
 
-        $collection = BookmarkCollection::find($request->bookmarkCollection ?? $request->input('bookmarkCollectionId'));
+        try {
+            $collection = $this->resolveBookmarkCollection($request->bookmarkCollection ?? $request->input('bookmarkCollectionId'));
+        } catch (\Exception $e) {
+            // Collection not found or not accessible, redirect to step 2
+            return to_route('workflows.bookmarks.index', ['step' => 2]);
+        }
 
         $rationale = $collection->comments()
             ->where('commentator_id', $collection->user_id)
@@ -601,7 +644,15 @@ class BookmarksController extends Controller
             'bookmarkCollection' => 'nullable|string',
         ]);
 
-        $existingList = BookmarkCollection::find($request->bookmarkCollection);
+        $existingList = null;
+        if ($request->bookmarkCollection) {
+            try {
+                $existingList = $this->resolveBookmarkCollection($request->bookmarkCollection);
+            } catch (\Exception $e) {
+                // Collection not found or not accessible, treat as new list
+                $existingList = null;
+            }
+        }
 
         if ($existingList) {
             $existingList->update([
@@ -634,8 +685,12 @@ class BookmarksController extends Controller
         ]);
     }
 
-    public function addBookmarkItem(BookmarkCollection $bookmarkCollection, Request $request)
+    public function addBookmarkItem(Request $request)
     {
+        // Resolve the bookmark collection (handling both public and private)
+        $collectionId = $request->route('bookmarkCollection');
+        $bookmarkCollection = $this->resolveBookmarkCollection($collectionId);
+
         Gate::authorize('addItems', $bookmarkCollection);
 
         $validated = $request->validate([
@@ -667,8 +722,12 @@ class BookmarksController extends Controller
         return back()->with('success', 'Bookmark added!.');
     }
 
-    public function removeBookmarkItem(BookmarkCollection $bookmarkCollection, Request $request): RedirectResponse
+    public function removeBookmarkItem(Request $request): RedirectResponse
     {
+        // Resolve the bookmark collection (handling both public and private)
+        $collectionId = $request->route('bookmarkCollection');
+        $bookmarkCollection = $this->resolveBookmarkCollection($collectionId);
+
         Gate::authorize('removeItems', $bookmarkCollection);
 
         $validated = $request->validate([
@@ -705,8 +764,13 @@ class BookmarksController extends Controller
         return back()->with('success', 'Bookmark removed.');
     }
 
-    public function saveRationales(BookmarkCollection $bookmarkCollection, Request $request): RedirectResponse
+    public function saveRationales(Request $request): RedirectResponse
     {
+        // Resolve the bookmark collection (handling both public and private)
+        $collectionId = $request->route('bookmarkCollection');
+        $bookmarkCollection = $this->resolveBookmarkCollection($collectionId);
+
+        Gate::authorize('update', $bookmarkCollection);
         $validated = $request->validate([
             'rationale' => 'required|string|min:69',
         ]);
@@ -729,8 +793,12 @@ class BookmarksController extends Controller
         return to_route('workflows.bookmarks.success');
     }
 
-    public function inviteContributor(BookmarkCollection $bookmarkCollection, Request $request): RedirectResponse
+    public function inviteContributor(Request $request): RedirectResponse
     {
+        // Resolve the bookmark collection (handling both public and private)
+        $collectionId = $request->route('bookmarkCollection');
+        $bookmarkCollection = $this->resolveBookmarkCollection($collectionId);
+
         Gate::authorize('update', $bookmarkCollection);
 
         $validated = $request->validate([
@@ -799,8 +867,12 @@ class BookmarksController extends Controller
         }
     }
 
-    public function removeContributor(BookmarkCollection $bookmarkCollection, Request $request): RedirectResponse
+    public function removeContributor(Request $request): RedirectResponse
     {
+        // Resolve the bookmark collection (handling both public and private)
+        $collectionId = $request->route('bookmarkCollection');
+        $bookmarkCollection = $this->resolveBookmarkCollection($collectionId);
+
         Gate::authorize('update', $bookmarkCollection);
 
         $validated = $request->validate([
@@ -857,7 +929,7 @@ class BookmarksController extends Controller
             abort(404);
         }
 
-        $bookmarkCollection = BookmarkCollection::findOrFail($collectionId);
+        $bookmarkCollection = $this->resolveBookmarkCollection($collectionId);
         $invitations = $this->getPendingInvitations($bookmarkCollection);
 
         // Find invitation by token
@@ -934,9 +1006,9 @@ class BookmarksController extends Controller
                 ->withErrors(['message' => 'No invitation acceptance found.']);
         }
 
-        $bookmarkCollection = BookmarkCollection::find($collectionId);
-
-        if (! $bookmarkCollection) {
+        try {
+            $bookmarkCollection = $this->resolveBookmarkCollection($collectionId);
+        } catch (\Exception $e) {
             return redirect()->route('lists.index')
                 ->withErrors(['message' => 'Bookmark collection not found.']);
         }
@@ -952,8 +1024,12 @@ class BookmarksController extends Controller
     /**
      * Cancel a pending invitation
      */
-    public function cancelInvitation(BookmarkCollection $bookmarkCollection, Request $request): RedirectResponse
+    public function cancelInvitation(Request $request): RedirectResponse
     {
+        // Resolve the bookmark collection (handling both public and private)
+        $collectionId = $request->route('bookmarkCollection');
+        $bookmarkCollection = $this->resolveBookmarkCollection($collectionId);
+
         Gate::authorize('update', $bookmarkCollection);
 
         $validated = $request->validate([
@@ -976,8 +1052,12 @@ class BookmarksController extends Controller
     /**
      * Resend an invitation
      */
-    public function resendInvitation(BookmarkCollection $bookmarkCollection, Request $request): RedirectResponse
+    public function resendInvitation(Request $request): RedirectResponse
     {
+        // Resolve the bookmark collection (handling both public and private)
+        $collectionId = $request->route('bookmarkCollection');
+        $bookmarkCollection = $this->resolveBookmarkCollection($collectionId);
+
         Gate::authorize('update', $bookmarkCollection);
 
         $validated = $request->validate([
@@ -1215,8 +1295,13 @@ class BookmarksController extends Controller
         ];
     }
 
-    public function downloadPdf(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals')
+    public function downloadPdf(Request $request, ?string $type = 'proposals')
     {
+        // Resolve the bookmark collection (handling both public and private)
+        $collectionId = $request->route('bookmarkCollection');
+        $bookmarkCollection = $this->resolveBookmarkCollection($collectionId);
+
+        Gate::authorize('view', $bookmarkCollection);
         $defaultPdfColumns = ['title', 'budget', 'category', 'openSourced', 'teams', 'my_vote'];
         $data = $this->prepareDownloadData($bookmarkCollection, $request, $type, $defaultPdfColumns);
         $data = $this->prepareDownloadData($bookmarkCollection, $request, $type, $defaultPdfColumns);
@@ -1286,8 +1371,13 @@ class BookmarksController extends Controller
             ->download($filename);
     }
 
-    public function downloadPng(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals')
+    public function downloadPng(Request $request, ?string $type = 'proposals')
     {
+        // Resolve the bookmark collection (handling both public and private)
+        $collectionId = $request->route('bookmarkCollection');
+        $bookmarkCollection = $this->resolveBookmarkCollection($collectionId);
+
+        Gate::authorize('view', $bookmarkCollection);
         $defaultPngColumns = ['title', 'budget', 'category', 'openSourced', 'teams'];
         $data = $this->prepareDownloadData($bookmarkCollection, $request, $type, $defaultPngColumns);
 
@@ -1421,98 +1511,61 @@ class BookmarksController extends Controller
     }
 
     /**
-     * Stream bookmark collection items for voter lists
+     * Resolve bookmark collection from ID, handling both public and private access
      */
-    public function streamBookmarkItems(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals')
+    protected function resolveBookmarkCollection(string $collectionId): BookmarkCollection
     {
+        // Try to find public collection first
+        $bookmarkCollection = BookmarkCollection::where('id', $collectionId)
+            ->where('visibility', 'public')
+            ->first();
+
+        if ($bookmarkCollection) {
+            return $bookmarkCollection;
+        }
+
+        // If not found as public, try with auth (for private collections)
+        if (auth()->check()) {
+            $bookmarkCollection = BookmarkCollection::where('id', $collectionId)
+                ->where(function ($query) {
+                    $query->where('user_id', auth()->id())
+                        ->orWhereHas('contributors', function ($q) {
+                            $q->where('user_id', auth()->id());
+                        });
+                })
+                ->first();
+        }
+
+        if (! $bookmarkCollection) {
+            abort(404, 'Bookmark collection not found');
+        }
+
+        return $bookmarkCollection;
+    }
+
+    /**
+     * Start streaming bookmark collection items (now using Laravel Events/Broadcasting)
+     */
+    public function streamBookmarkItems(Request $request, BookmarkCollection $bookmarkCollection, ?string $type = 'proposals')
+    {
+        Gate::authorize('view', $bookmarkCollection);
+
         $this->setFilters($request);
 
-        $model_type = BookmarkableType::from(Str::kebab($type))->getModelClass();
+        // Execute the streaming job immediately (not queued)
+        // This ensures immediate execution and avoids queue processing issues
+        dispatch_sync(new StreamBookmarkItems(
+            $bookmarkCollection,
+            $type,
+            $this->search,
+            $this->sortBy,
+            $this->sortOrder
+        ));
 
-        $relationshipsMap = [
-            Proposal::class => ['users', 'fund', 'campaign', 'schedule'],
-            Group::class => ['ideascale_profiles'],
-            Community::class => ['ideascale_profiles'],
-        ];
-
-        $countMap = [
-            Group::class => ['proposals', 'funded_proposals'],
-            Community::class => ['ideascale_profiles', 'proposals'],
-        ];
-
-        $relationships = $relationshipsMap[$model_type] ?? [];
-        $counts = $countMap[$model_type] ?? [];
-
-        return response()->stream(function () use ($bookmarkCollection, $model_type, $relationships, $counts) {
-            $bookmarkItemsQuery = $bookmarkCollection->items()
-                ->where('model_type', $model_type)
-                ->with(['model' => function ($query) use ($relationships, $counts) {
-                    if (! empty($relationships)) {
-                        $query->with($relationships);
-                    }
-                    if (! empty($counts)) {
-                        $query->withCount($counts);
-                    }
-                }]);
-
-            if ($this->search) {
-                $searchBuilder = $model_type::search($this->search);
-
-                if ($this->sortBy && $this->sortOrder) {
-                    $searchBuilder->orderBy($this->sortBy, $this->sortOrder);
-                }
-
-                $searchResults = $searchBuilder->get();
-                $searchIds = $searchResults->pluck('id')->toArray();
-
-                if (empty($searchIds)) {
-                    return;
-                }
-
-                $bookmarkItemsQuery->whereIn('model_id', $searchIds);
-
-                $bookmarkItems = $bookmarkItemsQuery->get()->sortBy(function ($item) use ($searchIds) {
-                    return array_search($item->model_id, $searchIds);
-                });
-            } else {
-                if ($this->sortBy && $this->sortOrder) {
-                    $bookmarkItemsQuery->join($model_type::getModel()->getTable(), function ($join) use ($model_type) {
-                        $join->on('bookmark_items.model_id', '=', $model_type::getModel()->getTable().'.id')
-                            ->where('bookmark_items.model_type', '=', $model_type);
-                    })->orderBy($model_type::getModel()->getTable().'.'.$this->sortBy, $this->sortOrder);
-                }
-
-                $bookmarkItems = $bookmarkItemsQuery->get();
-            }
-
-            foreach ($bookmarkItems as $bookmarkItem) {
-                if (! $bookmarkItem->model) {
-                    continue;
-                }
-
-                $proposalData = $bookmarkItem->model->toArray();
-
-                if ($bookmarkItem->vote !== null) {
-                    $proposalData['vote'] = $bookmarkItem->vote;
-                }
-
-                $json = json_encode($proposalData);
-
-                echo $json."\n";
-
-                if (ob_get_level() > 0) {
-                    ob_flush();
-                    flush();
-                }
-
-                // Small delay to prevent overwhelming the client
-                usleep(10000);
-            }
-        }, 200, [
-            'Content-Type' => 'text/plain',
-            'X-Accel-Buffering' => 'no',
-            'Cache-Control' => 'no-cache',
-            'Connection' => 'keep-alive',
+        return response()->json([
+            'message' => 'Streaming started',
+            'collectionId' => $bookmarkCollection->id,
+            'channel' => "bookmark-collection.{$bookmarkCollection->id}.stream",
         ]);
     }
 }

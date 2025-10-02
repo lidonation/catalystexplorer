@@ -24,6 +24,14 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\View\Middleware\ShareErrorsFromSession::class
         ]);
         $middleware->trustProxies(at: '*');
+        
+        // Use custom CSRF middleware that excludes streaming routes and broadcasting auth
+        $middleware->validateCsrfTokens(except: [
+            '*/lists/*/stream/*',
+            '*/my/lists/*/manage/stream/*',
+            'broadcasting/auth',
+            '*/broadcasting/auth',  // For localized routes
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (NotFoundHttpException $e, Request $request) {

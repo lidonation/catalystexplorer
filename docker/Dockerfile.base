@@ -122,6 +122,7 @@ RUN install-php-extensions \
     zip \
     intl \
     gd \
+    uv \
     redis \
     rdkafka \
     igbinary \
