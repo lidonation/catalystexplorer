@@ -48,7 +48,7 @@ export default function ProposalVerticalCard({
     return (
         <article
             ref={cardRef as React.RefObject<HTMLElement>}
-            className="bg-background proposal-card proposal-card-vertical relative flex h-full flex-col justify-between gap-3 rounded-xl p-2 shadow-lg"
+            className="bg-background proposal-card proposal-card-vertical relative flex h-full flex-col justify-between gap-3 rounded-xl p-2 shadow-lg border border-light-gray-persist"
             style={
                 cardHeight && userSelected ? { height: `${cardHeight}px` } : {}
             }

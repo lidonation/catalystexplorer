@@ -745,6 +745,7 @@
     "proposals.viewTeam": "チームを表示",
     "proposals.action": "アクション",
     "proposals.status": "ステータス",
+    "proposals.status.proposalStatus": "提案ステータス",
     "proposals.owner": "所有者",
     "proposals.outstanding": "未処理提案",
     "proposals.completed": "完了済み提案",

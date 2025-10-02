@@ -23,12 +23,15 @@ export function generateTabs(
     config: TabConfig,
 ): Tab[] {
     return config.tabs.map((tab) => {
-        const routeName = `${config.routePrefix}.${tab.routeName || tab.key}`;
+        const routeSuffix = tab.routeName !== undefined ? tab.routeName : tab.key;
+        const routeName = routeSuffix ? `${config.routePrefix}.${routeSuffix}` : config.routePrefix;
+        const href = routeSuffix ? `/${config.routePrefix}/${routeSuffix}` : `/${config.routePrefix}`;
+        
         return {
             name: t(
                 `${config.translationPrefix}.${tab.translationKey || tab.key}`,
             ),
-            href: `/${config.routePrefix}/${tab.routeName || tab.key}`,
+            href,
             routeName,
             ...(tab.only && { only: tab.only }),
         };
@@ -103,5 +106,14 @@ export const proposalTabs: TabConfig = {
         { key: 'schedule', routeName: 'schedule' },
         { key: 'community', routeName: 'community-review' },
         { key: 'team', routeName: 'team-information' },
+    ],
+};
+
+export const campaignTabs: TabConfig = {
+    translationPrefix: 'campaigns.tabs',
+    routePrefix: 'active-fund/campaigns/{id}',
+    tabs: [
+        { key: 'overview', routeName: '' },
+        { key: 'proposals', routeName: 'proposals' },
     ],
 };

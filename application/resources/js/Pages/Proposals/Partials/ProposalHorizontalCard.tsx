@@ -63,7 +63,7 @@ export default function ProposalHorizontalCard({
     return (
         <article
             ref={cardRef as React.RefObject<HTMLElement>}
-            className="bg-background proposal-card proposal-card-horizontal relative flex min-h-[400px] flex-col space-y-4 overflow-auto rounded-xl p-4 shadow-lg md:flex-row md:space-y-0 md:space-x-4"
+            className="bg-background proposal-card proposal-card-horizontal relative flex min-h-[400px] flex-col space-y-4 overflow-auto rounded-xl p-4 shadow-lg md:flex-row md:space-y-0 md:space-x-4 border border-light-gray-persist"
             style={
                 cardHeight && userSelected
                     ? {

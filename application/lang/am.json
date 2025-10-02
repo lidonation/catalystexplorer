@@ -778,6 +778,8 @@
     "proposals.viewTeam": "ቡድን ተመልከት",
     "proposals.action": "እርምጃዎች",
     "proposals.status": "ሁኔታ",
+    "proposals.status.proposalStatus": "የሀሳብ ሁኔታ",
+    "proposals.status.proposalStatus": "የሀሳብ ሁኔታ",
     "proposals.owner": "ባለቤት",
     "proposals.outstanding": "የተቀሩ ሀሳቦች",
     "proposals.completed": "የተጠናቀቁ ሀሳቦች",

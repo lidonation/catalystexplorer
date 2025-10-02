@@ -327,6 +327,8 @@
     "proposals.manageProposal": "إدارة الاقتراح",
     "proposals.managingProposal": "إدارة: :title",
     "proposals.manageDescription": "استخدم الوحدات أدناه لإدارة إعدادات ومحتوى اقتراحك.",
+    "proposals.status": "الحالة",
+    "proposals.status.proposalStatus": "حالة المقترح",
     "services.services": "الخدمات",
     "services.networks": "الشبكات",
     "services.getInTouch": "تواصل معنا",

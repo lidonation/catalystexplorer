@@ -752,6 +752,7 @@
     "proposals.viewTeam": "查看团队",
     "proposals.action": "行动",
     "proposals.status": "状态",
+    "proposals.status.proposalStatus": "提案状态",
     "proposals.owner": "所有者",
     "proposals.outstanding": "未完成的提案",
     "proposals.completed": "已完成的提案",
