@@ -18,9 +18,10 @@ class WalletDTO
         public readonly string $balance,
         public readonly int $allTimeVotes,
         public readonly array $fundsParticipated,
+        public readonly bool $linked = false,
     ) {}
 
-    public static function fromSignature(object $signature, array $walletStats, ?object $latestInfo = null): self
+    public static function fromSignature(object $signature, array $walletStats, ?object $latestInfo = null, bool $linked = false): self
     {
         $userAddress = ! empty($walletStats['payment_addresses'])
             ? $walletStats['payment_addresses'][0]
@@ -38,6 +39,25 @@ class WalletDTO
             balance: $walletStats['balance'] ?? 'N/A',
             allTimeVotes: $walletStats['all_time_votes'] ?? 0,
             fundsParticipated: $walletStats['funds_participated'] ?? [],
+            linked: $linked,
+        );
+    }
+
+    public function withLinked(bool $linked): self
+    {
+        return new self(
+            id: $this->id,
+            name: $this->name,
+            walletName: $this->walletName,
+            walletProvider: $this->walletProvider,
+            stakeAddress: $this->stakeAddress,
+            paymentAddresses: $this->paymentAddresses,
+            signatureCount: $this->signatureCount,
+            walletDetails: $this->walletDetails,
+            balance: $this->balance,
+            allTimeVotes: $this->allTimeVotes,
+            fundsParticipated: $this->fundsParticipated,
+            linked: $linked,
         );
     }
 
@@ -55,6 +75,7 @@ class WalletDTO
             'balance' => $this->balance,
             'all_time_votes' => $this->allTimeVotes,
             'funds_participated' => $this->fundsParticipated,
+            'linked' => $this->linked,
         ];
     }
 }

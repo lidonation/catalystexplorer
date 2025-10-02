@@ -1480,5 +1480,11 @@
     "proposal.metadata.viewInExplorer": "Im Explorer anzeigen",
     "proposal.metadata.title": "Vorschlags-Metadaten",
     "proposal.metadata.links": "Links",
-    "editMetrics": "Metriken bearbeiten"
+    "workflows.linkWallet.linkWallet": "Wallet verknüpfen",
+    "workflows.linkWallet.walletDetails": "Wallet-Details",
+    "workflows.linkWallet.info": "Wähle ein Wallet aus, um es mit deinem Vorschlag zu verknüpfen.",
+    "workflows.linkWallet.successfullyLink": "Erfolgreich verknüpft",
+    "workflows.linkWallet.toProposal": "mit deinem Vorschlag",
+    "workflows.linkWallet.backToMyProposals": "Zurück zu meinen Vorschlägen",
+    "workflows.linkWallet.alreadyLinked": "Dein Vorschlag ist bereits mit diesem Wallet verknüpft"
 }

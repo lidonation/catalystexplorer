@@ -23,7 +23,7 @@ const ManageProposalButton: React.FC<ManageProposalButtonProps> = ({
 
     return (
         <Button onClick={handleClick} ariaLabel={t('proposals.manageProposal')}>
-            <div className="bg-success hover:bg-success-light rounded-md px-4 py-2 text-white transition-colors">
+            <div className="bg-success hover:bg-success-light rounded-md px-4 py-2 text-white transition-colors tracking-widest">
                 {t('proposals.manageProposal')}
             </div>
         </Button>

@@ -359,6 +359,15 @@ Route::localized(
                         ->name('claimCatalystProfile');
                 });
 
+            Route::prefix('/link-wallet/steps')->as('linkWallet.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::get('/{step}/{proposal}/{stakeAddress?}', [WalletController::class, 'handleStep'])
+                        ->name('index');
+                    Route::post('/connect-wallet-to-proposal', [WalletController::class, 'connectWalletToProposal'])
+                        ->name('connectWalletToProposal');    
+                });    
+
             Route::get('/login', [WorkflowController::class, 'auth'])
                 ->name('loginForm');
             Route::post('/login', [WorkflowController::class, 'login'])
