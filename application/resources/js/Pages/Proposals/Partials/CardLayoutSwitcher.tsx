@@ -9,7 +9,7 @@ import { useFilterContext } from '@/Context/FiltersContext';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import { useUserSetting } from '@/useHooks/useUserSettings';
 import { userSettingEnums } from '@/enums/user-setting-enums';
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import Paragraph from '@/Components/atoms/Paragraph';
 
 interface CardLayoutSwitcherProps {
@@ -42,19 +42,35 @@ export default function CardLayoutSwitcher({
     const currentIsHorizontal = isHorizontal ?? false;
     const currentIsMini = isMini ?? false;
 
-    const setQuickpitch = (value: boolean) => {
+    const setQuickpitch = useCallback((value: boolean) => {
         setGlobalQuickPitchView(value);
         setFilters({
             param: ParamsEnum.QUICK_PITCHES,
             value: value ? '1' : '',
             label: undefined,
         });
-    };
+    }, [setGlobalQuickPitchView, setFilters]);
 
-    const handleQuickPitchClick = () => {
+    const handleQuickPitchClick = useCallback(() => {
         setQuickpitch(true);
         setTableOrPdfViewSetting(false);
-    };
+    }, [setQuickpitch, setTableOrPdfViewSetting]);
+
+    const handleTableOrPdfClick = useCallback(() => {
+        setTableOrPdfViewSetting(true);
+        setQuickpitch(false);
+    }, [setTableOrPdfViewSetting, setQuickpitch]);
+
+    const handleCardViewClick = useCallback(() => {
+        setTableOrPdfViewSetting(false);
+        setQuickpitch(false);
+        
+        setTimeout(() => {
+            if (!currentIsTableOrPdfView && !quickPitchView) {
+                setIsMiniSetting(!currentIsMini);
+            }
+        }, 10);
+    }, [setTableOrPdfViewSetting, setQuickpitch, setIsMiniSetting, currentIsTableOrPdfView, quickPitchView, currentIsMini]);
     
     useEffect(() => {
         if (quickPitchView) {
@@ -70,9 +86,9 @@ export default function CardLayoutSwitcher({
                 {/* PDF View Button - conditionally hidden */}
                 {!hidePdfView && (
                     <Button
-                        onClick={() => { setTableOrPdfViewSetting(true); }}
+                        onClick={handleTableOrPdfClick}
                         className={`flex flex-1 items-center justify-center w-[60px] h-[50px] ${customButtonClassName} ${
-                            isTableOrPdfView
+                            currentIsTableOrPdfView
                                 ? 'bg-background-lighter text-primary'
                                 : 'bg-background text-light-gray-persist hover:bg-background-lighter cursor-pointer'
                         } border-r-[2px] border-light-gray-persist`}
@@ -85,11 +101,9 @@ export default function CardLayoutSwitcher({
                 {/* Table View Button - conditionally hidden */}
                 {!hideTableView && (
                     <Button
-                        onClick={() => {
-                            setTableOrPdfViewSetting(true);
-                        }}
+                        onClick={handleTableOrPdfClick}
                         className={`flex flex-1 items-center justify-center w-[60px] h-[50px] ${customButtonClassName} ${
-                            isTableOrPdfView
+                            currentIsTableOrPdfView
                                 ? 'bg-background-lighter text-primary'
                                 : 'bg-background text-light-gray-persist hover:bg-background-lighter cursor-pointer'
                         } border-r-[2px] border-light-gray-persist`}
@@ -100,14 +114,7 @@ export default function CardLayoutSwitcher({
                 )}
 
                 <Button
-                    onClick={() => {
-                        setTableOrPdfViewSetting(false);
-                        setQuickpitch(false);
-                        if (!currentIsTableOrPdfView && !quickPitchView) {
-                            setIsMiniSetting(!currentIsMini);
-                        }
-
-                    }}
+                    onClick={handleCardViewClick}
                     className={`flex flex-1 items-center justify-center w-[60px] h-[50px] ${customButtonClassName} ${
                          !currentIsTableOrPdfView && !quickPitchView
                             ? 'bg-background-lighter text-primary'
@@ -163,7 +170,7 @@ export default function CardLayoutSwitcher({
                 </Button>
 
                 <Button
-                    onClick={() => handleQuickPitchClick()}
+                    onClick={handleQuickPitchClick}
                     className={`flex flex-1 items-center justify-center w-[60px] h-[50px] ${customButtonClassName} ${
                         quickPitchView && !currentIsTableOrPdfView
                             ? 'bg-background-lighter text-primary'

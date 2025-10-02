@@ -7,9 +7,7 @@ namespace App\Http\Controllers;
 use App\DataTransferObjects\CampaignData;
 use App\DataTransferObjects\CatalystTallyData;
 use App\DataTransferObjects\FundData;
-use App\DataTransferObjects\MetricData;
 use App\DataTransferObjects\ProposalData;
-use App\Enums\CampaignsSortBy;
 use App\Enums\CatalystCurrencies;
 use App\Enums\ProposalFundingStatus;
 use App\Enums\ProposalSearchParams;
@@ -180,15 +178,80 @@ class FundsController extends Controller
         ]);
     }
 
+    public function campaign(Request $request, Campaign $campaign): Response
+    {
+        $fund = Fund::latest('launched_at')->first();
+
+        $campaign->loadCount([
+            'completed_proposals',
+            'unfunded_proposals',
+            'funded_proposals',
+            'proposals',
+        ]);
+
+        $campaign->append([
+            'total_requested',
+            'total_awarded',
+            'total_distributed',
+        ]);
+
+        $fund->append(['banner_img_url', 'hero_img_url']);
+
+        $this->getProps($request);
+
+        $amountAwarded = $fund->funded_proposals()->sum('amount_requested') ?? 0;
+        $amountDistributed = $fund->funded_proposals()->sum('amount_received') ?? 0;
+        $amountRemaining = $amountAwarded - $amountDistributed;
+
+        $props = [
+            'fund' => FundData::from($fund),
+            'campaign' => $campaign,
+            'filters' => $this->queryParams,
+            'amountDistributed' => $amountDistributed,
+            'amountRemaining' => $amountRemaining,
+        ];
+
+        $proposalsData = $this->getCampaignProposalsWithPagination($request, $campaign);
+        $props = array_merge($props, $proposalsData);
+
+        $hasPageParam = $request->has('p') && $request->get('p') > 1;
+        $props['initialTab'] = (str_contains($request->path(), '/proposals') || $hasPageParam) ? 'proposals' : 'overview';
+
+        return Inertia::render('ActiveFund/Campaign', $props);
+    }
+
     protected function getProps(Request $request): void
     {
-        $this->queryParams = $request->only([
-            ProposalSearchParams::SORTS()->value,
-            ProposalSearchParams::QUERY()->value,
-            ProposalSearchParams::CAMPAIGNS()->value,
-            ProposalSearchParams::FUNDS()->value,
-            ProposalSearchParams::PAGE()->value,
-            ProposalSearchParams::PER_PAGE()->value,
+        $this->queryParams = $request->validate([
+            ProposalSearchParams::FUNDING_STATUS()->value => 'array|nullable',
+            ProposalSearchParams::OPENSOURCE_PROPOSALS()->value => 'bool|nullable',
+            ProposalSearchParams::PROJECT_LENGTH()->value => 'array|nullable',
+            ProposalSearchParams::PROJECT_STATUS()->value => 'array|nullable',
+            ProposalSearchParams::QUERY()->value => 'string|nullable',
+            ProposalSearchParams::COHORT()->value => 'array|nullable',
+            ProposalSearchParams::QUICK_PITCHES()->value => 'bool|nullable',
+            ProposalSearchParams::TYPE()->value => 'string|nullable',
+            ProposalSearchParams::PAGE()->value => 'int|nullable',
+            ProposalSearchParams::LIMIT()->value => 'int|nullable',
+            ProposalSearchParams::SORTS()->value => 'nullable',
+            ProposalSearchParams::BUDGETS()->value => 'array|nullable',
+            ProposalSearchParams::MIN_BUDGET()->value => 'int|nullable',
+            ProposalSearchParams::MAX_BUDGET()->value => 'int|nullable',
+            ProposalSearchParams::MIN_PROJECT_LENGTH()->value => 'int|nullable',
+            ProposalSearchParams::MAX_PROJECT_LENGTH()->value => 'int|nullable',
+            ProposalSearchParams::CAMPAIGNS()->value => 'array|nullable',
+            ProposalSearchParams::TAGS()->value => 'array|nullable',
+            ProposalSearchParams::GROUPS()->value => 'array|nullable',
+            ProposalSearchParams::COMMUNITIES()->value => 'array|nullable',
+            ProposalSearchParams::CATALYST_PROFILES()->value => 'array|nullable',
+            ProposalSearchParams::IDEASCALE_PROFILES()->value => 'array|nullable',
+            ProposalSearchParams::FUNDS()->value => 'array|nullable',
+            ProposalSearchParams::CHART_TYPE()->value => 'string|nullable',
+            ProposalSearchParams::SUBMITTED_PROPOSALS()->value => 'array|nullable',
+            ProposalSearchParams::APPROVED_PROPOSALS()->value => 'array|nullable',
+            ProposalSearchParams::COMPLETED_PROPOSALS()->value => 'array|nullable',
+            ProposalSearchParams::UNFUNDED_PROPOSALS()->value => 'array|nullable',
+            ProposalSearchParams::IN_PROGRESS_PROPOSALS()->value => 'array|nullable',
         ]);
     }
 
@@ -756,5 +819,91 @@ class FundsController extends Controller
         }
 
         return $title;
+    }
+
+    /**
+     * Get campaign proposals with pagination and filtering using Eloquent queries
+     */
+    private function getCampaignProposalsWithPagination(Request $request, Campaign $campaign): array
+    {
+        $page = (int) $request->get('p', 1);
+        $perPage = (int) $request->get('per_page', 24);
+
+        $proposalsQuery = $campaign->proposals()
+            ->with(['users', 'campaign', 'fund']);
+
+        if (! empty($this->queryParams[ProposalSearchParams::QUERY()->value])) {
+            $searchTerm = trim($this->queryParams[ProposalSearchParams::QUERY()->value]);
+            $proposalsQuery->where('title', 'ILIKE', "%{$searchTerm}%");
+        }
+
+        if (! empty($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
+            $fundingStatuses = $this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value];
+            if (is_array($fundingStatuses)) {
+                $proposalsQuery->whereIn('funding_status', $fundingStatuses);
+            }
+        }
+
+        if (! empty($this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value])) {
+            $projectStatuses = $this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value];
+            if (is_array($projectStatuses)) {
+                $proposalsQuery->whereIn('status', $projectStatuses);
+            }
+        }
+
+        if (! empty($this->queryParams[ProposalSearchParams::MIN_BUDGET()->value])) {
+            $proposalsQuery->where('amount_requested', '>=', $this->queryParams[ProposalSearchParams::MIN_BUDGET()->value]);
+        }
+        if (! empty($this->queryParams[ProposalSearchParams::MAX_BUDGET()->value])) {
+            $proposalsQuery->where('amount_requested', '<=', $this->queryParams[ProposalSearchParams::MAX_BUDGET()->value]);
+        }
+
+        if (! empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
+            $tags = $this->queryParams[ProposalSearchParams::TAGS()->value];
+            if (is_array($tags)) {
+                // Use raw SQL to handle UUID casting properly
+                $placeholders = implode(',', array_fill(0, count($tags), '?'));
+                $proposalsQuery->whereRaw(
+                    'EXISTS (SELECT 1 FROM model_tag WHERE model_tag.model_id::text = proposals.id::text AND model_tag.model_type = ? AND model_tag.tag_id IN ('.$placeholders.'))',
+                    array_merge([\App\Models\Proposal::class], $tags)
+                );
+            }
+        }
+
+        $sortField = 'created_at';
+        $sortDirection = 'desc';
+        if (! empty($this->queryParams[ProposalSearchParams::SORTS()->value])) {
+            $sortParam = $this->queryParams[ProposalSearchParams::SORTS()->value];
+            [$field, $direction] = explode(':', $sortParam);
+
+            if (in_array($field, ['created_at', 'title', 'amount_requested', 'funding_status', 'status']) &&
+                in_array($direction, ['asc', 'desc'])) {
+                $sortField = $field;
+                $sortDirection = $direction;
+            }
+        }
+
+        $proposalsQuery->orderBy($sortField, $sortDirection);
+
+        $proposals = $proposalsQuery->paginate($perPage, ['*'], 'p', $page);
+
+        return [
+            'proposals' => ProposalData::collect($proposals->items()),
+            'pagination' => [
+                'current_page' => $proposals->currentPage(),
+                'data' => ProposalData::collect($proposals->items()),
+                'first_page_url' => $proposals->url(1),
+                'from' => $proposals->firstItem(),
+                'last_page' => $proposals->lastPage(),
+                'last_page_url' => $proposals->url($proposals->lastPage()),
+                'links' => $proposals->linkCollection()->toArray(),
+                'next_page_url' => $proposals->nextPageUrl(),
+                'path' => $proposals->path(),
+                'per_page' => $proposals->perPage(),
+                'prev_page_url' => $proposals->previousPageUrl(),
+                'to' => $proposals->lastItem(),
+                'total' => $proposals->total(),
+            ],
+        ];
     }
 }

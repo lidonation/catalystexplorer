@@ -70,8 +70,8 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                 >
                     <Link
                         href={useLocalizedRoute(
-                            'funds.fund.campaigns.campaign.show',
-                            { fund: fund?.slug, campaign: campaign.slug },
+                            'activeFund.campaigns.index',
+                            { campaign: campaign.id },
                         )}
                     >
                         {campaign?.title}
