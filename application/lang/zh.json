@@ -1478,6 +1478,7 @@
     "downloadImage": "下载图像",
     "postOnX": "发布到X",
     "tweetSeeMore": "点击链接查看更多列表内容",
+    "copyTweetContent": "复制推文内容",
     "shareNoteImageAttachment": "📎 注意：发布到X后，您需要手动将下载的图像附加到您的推文以获得最佳视觉效果。",
     "shareXMessage": "嗨，请查看我在Catalyst Explorer上创建的投票列表\"{title}\"。{url}",
     "votingListExport": "投票列表导出",
@@ -1486,5 +1487,11 @@
     "proposal.metadata.viewInExplorer": "在浏览器中查看",
     "proposal.metadata.title": "提案元数据",
     "proposal.metadata.links": "网站",
-    "editMetrics": "编辑指标"
+    "workflows.linkWallet.linkWallet": "链接钱包",
+    "workflows.linkWallet.walletDetails": "钱包详情",
+    "workflows.linkWallet.info": "请选择一个钱包链接到您的提案。",
+    "workflows.linkWallet.successfullyLink": "已成功链接",
+    "workflows.linkWallet.toProposal": "到您的提案",
+    "workflows.linkWallet.backToMyProposals": "返回我的提案",
+    "workflows.linkWallet.alreadyLinked": "您的提案已链接到此钱包"
 }

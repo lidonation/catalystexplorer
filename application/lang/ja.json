@@ -1469,6 +1469,7 @@
     "downloadImage": "画像をダウンロード",
     "postOnX": "Xに投稿",
     "tweetSeeMore": "リストの詳細を見るにはリンクをクリックしてください。",
+    "copyTweetContent": "ツイート内容をコピー",
     "shareNoteImageAttachment": "📎 注記：Xに投稿した後、最適な視覚効果を得るために、ダウンロードした画像を手動でツイートに添付する必要があります。",
     "shareXMessage": "こんにちは、Catalyst Explorerで作成した私の投票リスト「{title}」をご覧ください。{url}",
     "votingListExport": "投票リストのエクスポート",
@@ -1477,5 +1478,11 @@
     "proposal.metadata.viewInExplorer": "エクスプローラーで表示",
     "proposal.metadata.title": "提案メタデータ",
     "proposal.metadata.links": "リンク",
-    "editMetrics": "メトリクスを編集"
+    "workflows.linkWallet.linkWallet": "ウォレットをリンク",
+    "workflows.linkWallet.walletDetails": "ウォレットの詳細",
+    "workflows.linkWallet.info": "提案にリンクするウォレットを選択してください。",
+    "workflows.linkWallet.successfullyLink": "正常にリンクされました",
+    "workflows.linkWallet.toProposal": "あなたの提案に",
+    "workflows.linkWallet.backToMyProposals": "マイ提案に戻る",
+    "workflows.linkWallet.alreadyLinked": "あなたの提案はすでにこのウォレットにリンクされています"
 }

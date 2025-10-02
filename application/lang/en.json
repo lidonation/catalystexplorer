@@ -1543,11 +1543,20 @@
     "downloadImage": "Download Image",
     "postOnX": "Post on X",
     "tweetSeeMore": "Click link to see more of the list",
+    "copyTweetContent": "Copy Tweet Content",
     "shareNoteImageAttachment": "📎 Note: After posting to X, you'll need to manually attach the downloaded image to your tweet for the best visual impact.",
     "shareXMessage": "Hey, have a look at my Voting List, \"{title}\", created on the Catalyst Explorer. {url}",
     "votingListExport": "Voting List Export",
     "proposal.metadata.totalVotes": "Total Votes",
     "proposal.metadata.viewInExplorer": "View in Explorer",
     "proposal.metadata.title": "Proposal Metadata",
-    "proposal.metadata.links": "Links"
+    "proposal.metadata.links": "Links",
+    "workflows.linkWallet.linkWallet": "Link Wallet",
+    "workflows.linkWallet.walletDetails": "Wallet Details",
+    "workflows.linkWallet.info": "Select a wallet to link to your proposal.",
+    "workflows.linkWallet.successfullyLink": "You have successfully linked",
+    "workflows.linkWallet.toProposal": "to your proposal",
+    "workflows.linkWallet.backToMyProposals": "Back to My Proposals",
+    "workflows.linkWallet.alreadyLinked": "Your proposal is already linked to this wallet",
+    "workflows.linkWallet.backToLinkProposal": "Link new wallet to a proposal"
 }

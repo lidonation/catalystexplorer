@@ -1476,6 +1476,7 @@
     "downloadImage": "Baixar Imagem",
     "postOnX": "Postar no X",
     "tweetSeeMore": "Clique no link para ver mais da lista",
+    "copyTweetContent": "Copiar conteúdo do tweet",
     "shareNoteImageAttachment": "📎 Nota: Após postar no X, você precisará anexar manualmente a imagem baixada ao seu tweet para o melhor impacto visual.",
     "shareXMessage": "Ei, dê uma olhada na minha Lista de Votação, \"{title}\", criada no Catalyst Explorer. {url}",
     "votingListExport": "Exportação de Lista de Votação",
@@ -1484,5 +1485,11 @@
     "proposal.metadata.viewInExplorer": "Ver no Explorador",
     "proposal.metadata.title": "Metadados da Proposta",
     "proposal.metadata.links": "Links",
-    "editMetrics": "Editar métricas"
+    "workflows.linkWallet.linkWallet": "Vincular carteira",
+    "workflows.linkWallet.walletDetails": "Detalhes da carteira",
+    "workflows.linkWallet.info": "Selecione uma carteira para vincular à sua proposta.",
+    "workflows.linkWallet.successfullyLink": "Você vinculou com sucesso",
+    "workflows.linkWallet.toProposal": "à sua proposta",
+    "workflows.linkWallet.backToMyProposals": "Voltar às minhas propostas",
+    "workflows.linkWallet.alreadyLinked": "Sua proposta já está vinculada a esta carteira"
 }

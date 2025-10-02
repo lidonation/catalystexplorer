@@ -1517,6 +1517,7 @@
     "downloadImage": "Pakua Picha",
     "postOnX": "Chapisha kwenye X",
     "tweetSeeMore": "Bofya kiungo ili uone zaidi ya orodha",
+    "copyTweetContent": "Nakili maudhui ya tweet",
     "shareNoteImageAttachment": "📎 Kumbuka: Baada ya kuchapisha kwenye X, utahitaji kuambatisha kwa mikono picha uliyopakua kwenye tweet yako kwa athari bora ya kuona.",
     "shareXMessage": "Hujambo, angalia Orodha yangu ya Kupiga Kura, \"{title}\", iliyoundwa kwenye Catalyst Explorer. {url}",
     "votingListExport": "Uhamishaji wa Orodha ya Ura",
@@ -1525,5 +1526,11 @@
     "proposal.metadata.viewInExplorer": "Tazama kwenye Kichunguzi",
     "proposal.metadata.title": "Metadata ya Pendekezo",
     "proposal.metadata.links": "Tovuti",
-    "editMetrics": "Hariri Viashiria"
+    "workflows.linkWallet.linkWallet": "Unganisha pochi",
+    "workflows.linkWallet.walletDetails": "Maelezo ya pochi",
+    "workflows.linkWallet.info": "Chagua pochi ya kuunganisha na pendekezo lako.",
+    "workflows.linkWallet.successfullyLink": "Umeunganisha kwa mafanikio",
+    "workflows.linkWallet.toProposal": "na pendekezo lako",
+    "workflows.linkWallet.backToMyProposals": "Rudi kwenye mapendekezo yangu",
+    "workflows.linkWallet.alreadyLinked": "Pendekezo lako tayari limeunganishwa na pochi hii"
 }

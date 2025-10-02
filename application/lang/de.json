@@ -1473,6 +1473,7 @@
     "downloadImage": "Bild herunterladen",
     "postOnX": "Auf X posten",
     "tweetSeeMore": "Klicken Sie auf den Link, um mehr von der Liste zu sehen",
+    "copyTweetContent": "Tweet-Inhalt kopieren",
     "shareNoteImageAttachment": "📎 Hinweis: Nach dem Posten auf X müssen Sie das heruntergeladene Bild manuell an Ihren Tweet anhängen, um die beste visuelle Wirkung zu erzielen.",
     "shareXMessage": "Hey, schau dir meine Abstimmungsliste \":title\" an, erstellt im Catalyst Explorer. :url",
     "votingListExport": "Abstimmungslisten-Export",
@@ -1480,5 +1481,11 @@
     "proposal.metadata.viewInExplorer": "Im Explorer anzeigen",
     "proposal.metadata.title": "Vorschlags-Metadaten",
     "proposal.metadata.links": "Links",
-    "editMetrics": "Metriken bearbeiten"
+    "workflows.linkWallet.linkWallet": "Wallet verknüpfen",
+    "workflows.linkWallet.walletDetails": "Wallet-Details",
+    "workflows.linkWallet.info": "Wähle ein Wallet aus, um es mit deinem Vorschlag zu verknüpfen.",
+    "workflows.linkWallet.successfullyLink": "Erfolgreich verknüpft",
+    "workflows.linkWallet.toProposal": "mit deinem Vorschlag",
+    "workflows.linkWallet.backToMyProposals": "Zurück zu meinen Vorschlägen",
+    "workflows.linkWallet.alreadyLinked": "Dein Vorschlag ist bereits mit diesem Wallet verknüpft"
 }

@@ -1481,6 +1481,7 @@
     "downloadImage": "Descargar Imagen",
     "postOnX": "Publicar en X",
     "tweetSeeMore": "Haz clic en el enlace para ver más de la lista",
+    "copyTweetContent": "Copiar contenido del tweet",
     "shareNoteImageAttachment": "📎 Nota: Después de publicar en X, deberás adjuntar manualmente la imagen descargada a tu tweet para el mejor impacto visual.",
     "shareXMessage": "¡Hey, echa un vistazo a mi Lista de Votación, \"{title}\", creada en el Catalyst Explorer! {url}",
     "votingListExport": "Exportación de Lista de Votación",
@@ -1488,5 +1489,12 @@
     "proposal.metadata.totalVotes": "Votos Totales",
     "proposal.metadata.viewInExplorer": "Ver en el Explorador",
     "proposal.metadata.title": "Metadatos de la Propuesta",
-    "proposal.metadata.links": "Enlaces"
+    "proposal.metadata.links": "Enlaces",
+    "workflows.linkWallet.linkWallet": "Vincular billetera",
+    "workflows.linkWallet.walletDetails": "Detalles de la billetera",
+    "workflows.linkWallet.info": "Selecciona una billetera para vincularla a tu propuesta.",
+    "workflows.linkWallet.successfullyLink": "Has vinculado correctamente",
+    "workflows.linkWallet.toProposal": "a tu propuesta",
+    "workflows.linkWallet.backToMyProposals": "Volver a mis propuestas",
+    "workflows.linkWallet.alreadyLinked": "Tu propuesta ya está vinculada a esta billetera"
 }

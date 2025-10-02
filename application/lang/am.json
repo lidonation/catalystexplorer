@@ -1470,9 +1470,16 @@
     "workflows.createService.success.goToMyServices": "ወደ የእኔ አገልግሎቶች ሂዱ",
     "workflows.createService.editService": "አገልግሎት አርትዕ ያድርጉ",
     "tweetSeeMore": "የዝርዝሩን ተጨማሪ ክፍል ለማየት አገናኙን ጠቅ ያድርጉ",
+    "copyTweetContent": "የትዊት ይዘትን ኮፒ አድርግ",
     "proposal.metadata.totalVotes": "ጠቅላላ ድምጾች",
     "proposal.metadata.viewInExplorer": "በኤክስፕሎረር ውስጥ ይመልከቱ",
     "proposal.metadata.title": "የፕሮፖዛል መረጃ",
-    "proposal.metadata.links": "አግናኘች",
-    "editMetrics": "ሜትሪክስን አስቻዋውር"
+    "proposal.metadata.links": "አገናኞች",
+    "workflows.linkWallet.linkWallet": "ቦርሳ አያይዝ",
+    "workflows.linkWallet.walletDetails": "የቦርሳ መረጃ",
+    "workflows.linkWallet.info": "እቅድህን ለማያዝ ቦርሳ ምረጥ።",
+    "workflows.linkWallet.successfullyLink": "ቦርሳውን በትክክል አያይዝክ።",
+    "workflows.linkWallet.toProposal": "ከእቅድህ ጋር",
+    "workflows.linkWallet.backToMyProposals": "ወደ እቅዶቼ ተመለስ",
+    "workflows.linkWallet.alreadyLinked": "እቅድህ ከዚህ ቦርሳ ጋር አስቀድሞ ተያይዞአል።"
 }

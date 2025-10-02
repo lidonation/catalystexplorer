@@ -1477,6 +1477,7 @@
     "downloadImage": "이미지 다운로드",
     "postOnX": "X에 게시",
     "tweetSeeMore": "목록의 더 많은 내용을 보려면 링크를 클릭하세요",
+    "copyTweetContent": "트윗 내용 복사",
     "shareNoteImageAttachment": "📎 참고: X에 게시한 후 최상의 시각적 효과를 위해 다운로드한 이미지를 트윗에 수동으로 첨부해야 합니다.",
     "shareXMessage": "안녕하세요, Catalyst Explorer에서 생성한 제 투표 목록 \"{title}\"을 확인해보세요. {url}",
     "votingListExport": "투표 목록 내보내기",
@@ -1485,5 +1486,11 @@
     "proposal.metadata.viewInExplorer": "탐색기에서 보기",
     "proposal.metadata.title": "제안 메타데이터",
     "proposal.metadata.links": "링크",
-    "editMetrics": "메트릭 편집"
+    "workflows.linkWallet.linkWallet": "지갑 연결",
+    "workflows.linkWallet.walletDetails": "지갑 세부정보",
+    "workflows.linkWallet.info": "제안에 연결할 지갑을 선택하세요.",
+    "workflows.linkWallet.successfullyLink": "성공적으로 연결되었습니다",
+    "workflows.linkWallet.toProposal": "제안에",
+    "workflows.linkWallet.backToMyProposals": "내 제안으로 돌아가기",
+    "workflows.linkWallet.alreadyLinked": "해당 제안은 이미 이 지갑에 연결되어 있습니다"
 }

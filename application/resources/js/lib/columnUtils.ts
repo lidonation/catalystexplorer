@@ -150,12 +150,12 @@ export function generateHierarchicalColumns(
 
     const hierarchicalOptions: HierarchicalOption[] = [];
 
-    // Always include special columns
     const specialColumnsConfig = [
         'my_vote',
         'title',
         'fund.title',
-        'campaign.title'
+        'campaign.title',
+        'link_wallet'
     ];
 
     const specialColumns: HierarchicalOption[] = [];
@@ -196,12 +196,10 @@ export function generateHierarchicalColumns(
 
     directProperties.sort(([a], [b]) => a.localeCompare(b));
     
-    // Sort nested objects alphabetically  
     nestedObjects.sort(([a], [b]) => a.localeCompare(b));
 
     const primaryColumns: HierarchicalOption[] = [];
     directProperties.forEach(([key, config]) => {
-        // Skip excluded columns
         if (options?.excludeColumns?.includes(key)) {
             return;
         }
