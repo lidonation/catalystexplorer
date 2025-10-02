@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Enums\CatalystFunds;
 use App\Models\CatalystTally;
 use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -22,14 +21,32 @@ class UpdateCategoryRankJob implements ShouldQueue
      */
     public int $timeout = 2700; // 45 minutes
 
+    /**
+     * Create a new UpdateCategoryRankJob instance.
+     *
+     * @param  string|null  $fundId  Fund ID to process, or null for all funds
+     */
+    public function __construct(
+        private readonly ?string $fundId = null
+    ) {}
+
     public function handle(): void
+    {
+        if ($this->fundId) {
+            $this->processSpecificFund($this->fundId);
+        } else {
+            $this->processAllFunds();
+        }
+    }
+
+    private function processSpecificFund(string $fundId): void
     {
         $currentChallengeId = null;
         $rank = 0;
         $previousTally = 0;
         $tallyCursor = CatalystTally::join('proposals', 'catalyst_tallies.model_id', '=', 'proposals.id')
             ->join('funds', 'proposals.fund_id', '=', 'funds.id')
-            ->where('context_id', CatalystFunds::FOURTEEN)
+            ->where('catalyst_tallies.context_id', $fundId)
             ->orderBy('proposals.campaign_id')
             ->orderByDesc('catalyst_tallies.tally')
             ->select('catalyst_tallies.*', 'proposals.fund_id as proposal_fund_id')
@@ -45,8 +62,22 @@ class UpdateCategoryRankJob implements ShouldQueue
                 $rank++;
             }
 
-            $tally->saveMeta('category_rank', $rank, null, true);
+            $tally->category_rank = $rank;
+            $tally->save();
             $previousTally = $tally->tally;
+        }
+    }
+
+    private function processAllFunds(): void
+    {
+        $fundIds = CatalystTally::join('proposals', 'catalyst_tallies.model_id', '=', 'proposals.id')
+            ->select('catalyst_tallies.context_id')
+            ->distinct()
+            ->whereNotNull('catalyst_tallies.context_id')
+            ->pluck('catalyst_tallies.context_id');
+
+        foreach ($fundIds as $fundId) {
+            $this->processSpecificFund($fundId);
         }
     }
 }

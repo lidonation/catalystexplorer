@@ -10,12 +10,14 @@ interface SetChartMetricsProps {
     onExploreCharts: () => void;
     onChartDataReceived?: (chartData: any) => void;
     onLoadingChange?: (loading: boolean) => void;
+    disableAutoComplete?: boolean;
 }
 
 export default function SetChartMetrics({
     onExploreCharts,
     onChartDataReceived,
     onLoadingChange,
+    disableAutoComplete = false,
 }: SetChartMetricsProps) {
     const { t } = useLaravelReactI18n();
     const [step1Complete, setStep1Complete] = useState(false);
@@ -79,6 +81,7 @@ export default function SetChartMetrics({
                         rules={rules}
                         onChartDataReceived={handleChartDataReceived}
                         onLoadingChange={handleLoadingChange}
+                        disableAutoComplete={disableAutoComplete}
                     />
                 </div>
             </Card>

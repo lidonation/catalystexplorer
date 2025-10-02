@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import Modal from '@/Components/layout/Modal.tsx';
 import Paragraph from '@/Components/atoms/Paragraph';
@@ -11,6 +11,8 @@ import CatalystLogo from '@/Components/atoms/CatalystLogo';
 import CatalystEyeIcon from '@/Components/svgs/CatalystEyeIcon';
 import ProposalTableView from '../../Proposals/Partials/ProposalTableView';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
+import { currency } from '@/utils/currency';
+import { getNestedValue } from '@/lib/proposalColumnRenderers';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import UserData = App.DataTransferObjects.UserData;
 import ProposalData = App.DataTransferObjects.ProposalData;
@@ -27,6 +29,16 @@ interface ShareOnXModalProps {
     streamedProposals: ProposalData[];
     isVoterList: boolean;
 }
+
+const DEFAULT_TWEET_COLUMNS = ['title', 'budget', 'category', 'openSourced', 'teams'] as const;
+const EXCLUDED_TWEET_COLUMNS = new Set([
+    'viewProposal',
+    'manageProposal',
+    'proposalActions',
+    'actions',
+    'action',
+]);
+const MAX_TWEET_URL_LENGTH = 13000;
 
 export default function ShareOnXModal({
     isOpen,
@@ -52,6 +64,502 @@ export default function ShareOnXModal({
         if (!name) return '@user';
         return '@' + name.toLowerCase().replace(/[^a-z0-9]/g, '').substring(0, 15);
     };
+
+    const routePath = useMemo(
+        () =>
+            generateLocalizedRoute('lists.view', {
+                bookmarkCollection: bookmarkCollection.id,
+                type: type,
+            }),
+        [bookmarkCollection.id, type],
+    );
+
+    const listUrl = useMemo(() => {
+        if (routePath.startsWith('http')) {
+            return routePath;
+        }
+
+        return typeof window !== 'undefined'
+            ? `${window.location.origin}${routePath}`
+            : routePath;
+    }, [routePath]);
+
+    const selectedShareColumns = useMemo(() => {
+        const rawColumns = Array.isArray(selectedColumns) && selectedColumns.length
+            ? selectedColumns
+            : [...DEFAULT_TWEET_COLUMNS];
+
+        return Array.from(new Set(
+            rawColumns
+                .map(column => (typeof column === 'string' ? column : null))
+                .filter((column): column is string => !!column && !EXCLUDED_TWEET_COLUMNS.has(column)),
+        ));
+    }, [selectedColumns]);
+
+    const tweetColumns = useMemo(() => {
+        const columns = [...selectedShareColumns];
+
+        if (!columns.includes('title')) {
+            columns.unshift('title');
+        }
+
+        return columns;
+    }, [selectedShareColumns]);
+
+    const proposalsData = props?.proposals;
+
+    const uncategorizedLabel = useMemo(() => {
+        const campaignTranslation = t('uncategorizedCampaign' as any);
+        if (campaignTranslation && campaignTranslation !== 'uncategorizedCampaign') {
+            return campaignTranslation;
+        }
+
+        const genericTranslation = t('uncategorized' as any);
+        if (genericTranslation && genericTranslation !== 'uncategorized') {
+            return genericTranslation;
+        }
+
+        return 'Uncategorized';
+    }, [t]);
+
+    const getCampaignGroupName = useCallback(
+        (proposal: ProposalData): string => {
+            const campaignData = proposal.campaign as Record<string, any> | undefined;
+            const rawGroupName =
+                proposal.campaign?.title ??
+                campaignData?.label ??
+                campaignData?.name ??
+                proposal.fund?.label ??
+                null;
+
+            if (rawGroupName && typeof rawGroupName === 'string' && rawGroupName.trim().length > 0) {
+                return rawGroupName.trim();
+            }
+
+            return uncategorizedLabel;
+        },
+        [uncategorizedLabel],
+    );
+
+    const getColumnLabel = useCallback(
+        (column: string): string => {
+            if (!column) {
+                return '';
+            }
+
+            const translationCandidates = Array.from(
+                new Set([
+                    `proposalColumns.${column}`,
+                    `proposalColumns.${column.replace(/\./g, '')}`,
+                    `proposalColumns.${column.replace(/\./g, '_')}`,
+                    `proposalColumns.${column
+                        .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
+                        .toLowerCase()}`,
+                ]),
+            );
+
+            for (const key of translationCandidates) {
+                const translated = t(key as any);
+                if (translated && translated !== key) {
+                    return translated;
+                }
+            }
+
+            const normalized = column
+                .replace(/\./g, ' ')
+                .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+                .replace(/_/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+
+            if (!normalized) {
+                return column;
+            }
+
+            return normalized
+                .split(' ')
+                .map((word) =>
+                    word.length ? word.charAt(0).toUpperCase() + word.slice(1) : word,
+                )
+                .join(' ');
+        },
+        [t],
+    );
+
+    const proposalsForTweet = useMemo(() => {
+        if (type !== 'proposals') {
+            return [] as ProposalData[];
+        }
+
+        if (isVoterList) {
+            if (streamedProposals && streamedProposals.length) {
+                return streamedProposals;
+            }
+        }
+
+        const proposalData = proposalsData?.data ?? [];
+
+        return Array.isArray(proposalData) ? proposalData : [];
+    }, [type, isVoterList, streamedProposals, proposalsData]);
+
+    const normalizeValue = useCallback(
+        (value: any): string | null => {
+            if (value === null || value === undefined) {
+                return null;
+            }
+
+            if (typeof value === 'string') {
+                return value.trim() ? value.trim() : null;
+            }
+
+            if (typeof value === 'number') {
+                return Number.isFinite(value) ? value.toLocaleString() : null;
+            }
+
+            if (typeof value === 'boolean') {
+                return value ? t('Yes') : t('No');
+            }
+
+            if (Array.isArray(value)) {
+                const normalizedItems = value
+                    .map(item => normalizeValue(item))
+                    .filter((item): item is string => !!item);
+
+                if (!normalizedItems.length) {
+                    return null;
+                }
+
+                const joined = normalizedItems.slice(0, 3).join(', ');
+                return normalizedItems.length > 3
+                    ? `${joined} +${normalizedItems.length - 3}`
+                    : joined;
+            }
+
+            if (typeof value === 'object') {
+                const priorityKeys = ['title', 'label', 'name', 'value'];
+                for (const key of priorityKeys) {
+                    if (value[key] !== undefined && value[key] !== null) {
+                        const normalized = normalizeValue(value[key]);
+                        if (normalized) {
+                            return normalized;
+                        }
+                    }
+                }
+
+                return null;
+            }
+
+            return null;
+        },
+        [t],
+    );
+
+    const formatColumnValue = useCallback(
+        (proposal: ProposalData, column: string): string | null => {
+            switch (column) {
+                case 'title':
+                case 'proposal':
+                    return proposal.title ?? null;
+                case 'budget': {
+                    const amount = proposal.amount_requested ?? null;
+                    const numericAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+
+                    if (numericAmount === null || numericAmount === undefined || Number.isNaN(numericAmount)) {
+                        return null;
+                    }
+
+                    const currencyCode = proposal.currency || 'USD';
+                    const formatted = currency(Number(numericAmount), 2, currencyCode);
+                    return typeof formatted === 'number' ? formatted.toString() : formatted;
+                }
+                case 'category':
+                    return proposal.campaign?.title || proposal.fund?.label || null;
+                case 'openSourced':
+                case 'opensource':
+                    return proposal.opensource ? t('Yes') : t('No');
+                case 'teams': {
+                    const teamNames = Array.isArray(proposal.users)
+                        ? proposal.users
+                              .map((user) => user?.name)
+                              .filter((name): name is string => !!name && name.trim().length > 0)
+                        : [];
+
+                    if (teamNames.length) {
+                        const display = teamNames.slice(0, 3).join(', ');
+                        return teamNames.length > 3
+                            ? `${display} +${teamNames.length - 3}`
+                            : display;
+                    }
+
+                    const teamCount = (proposal as any)?.team_count ?? (proposal as any)?.users_count;
+                    if (typeof teamCount === 'number' && teamCount > 0) {
+                        return `${teamCount} team member${teamCount === 1 ? '' : 's'}`;
+                    }
+
+                    return null;
+                }
+                case 'yesVotes':
+                case 'yes_votes_count':
+                    return proposal.yes_votes_count !== undefined && proposal.yes_votes_count !== null
+                        ? proposal.yes_votes_count.toLocaleString()
+                        : null;
+                case 'abstainVotes':
+                case 'abstain_votes_count':
+                    return proposal.abstain_votes_count !== undefined && proposal.abstain_votes_count !== null
+                        ? proposal.abstain_votes_count.toLocaleString()
+                        : null;
+                case 'noVotes':
+                case 'no_votes_count':
+                    return proposal.no_votes_count !== undefined && proposal.no_votes_count !== null
+                        ? proposal.no_votes_count.toLocaleString()
+                        : null;
+                case 'fund':
+                case 'fund.label':
+                    return proposal.fund?.label ?? null;
+                case 'status':
+                case 'funding_status':
+                    return proposal.funding_status ?? null;
+                case 'my_vote': {
+                    const rawVote = (proposal as any)?.vote ?? (proposal as any)?.bookmark_vote ?? (proposal as any)?.my_vote;
+
+                    if (rawVote === undefined || rawVote === null) {
+                        return null;
+                    }
+
+                    const voteValue = typeof rawVote === 'string' ? parseInt(rawVote, 10) : rawVote;
+
+                    switch (voteValue) {
+                        case 1:
+                            return t('Yes');
+                        case 0:
+                            return t('Abstain');
+                        case -1:
+                            return t('No');
+                        default:
+                            return null;
+                    }
+                }
+                default: {
+                    const nested = getNestedValue(proposal, column);
+                    if (nested !== undefined) {
+                        const normalizedNested = normalizeValue(nested);
+                        if (normalizedNested) {
+                            return normalizedNested;
+                        }
+                    }
+
+                    const direct = (proposal as Record<string, any>)[column];
+                    return normalizeValue(direct);
+                }
+            }
+        },
+        [normalizeValue, t],
+    );
+
+    const formatProposalLine = useCallback(
+        (proposal: ProposalData): string | null => {
+            let headline: string | null = null;
+            const details: string[] = [];
+
+            const columnsToUse = shareGroupByCategories
+                ? tweetColumns.filter((column) => column !== 'category' && column !== 'campaign.title')
+                : tweetColumns;
+
+            columnsToUse.forEach((column) => {
+                const value = formatColumnValue(proposal, column);
+                if (!value) {
+                    return;
+                }
+
+                if (column === 'title' || column === 'proposal') {
+                    headline = value;
+                    return;
+                }
+
+                const label = getColumnLabel(column);
+                details.push(`${label}: ${value}`);
+            });
+
+            if (!headline) {
+                headline = proposal.title ?? null;
+            }
+
+            if (!headline && !details.length) {
+                return null;
+            }
+
+            if (!details.length) {
+                return headline;
+            }
+
+            return headline ? `${headline} — ${details.join(' | ')}` : details.join(' | ');
+        },
+        [tweetColumns, formatColumnValue, getColumnLabel, shareGroupByCategories],
+    );
+
+    type TweetEntry = {
+        type: 'group' | 'proposal';
+        value: string;
+        groupName?: string;
+    };
+
+    const rawTweetEntries = useMemo(() => {
+        if (!shareIncludeProposals || type !== 'proposals') {
+            return [] as TweetEntry[];
+        }
+
+        const proposalsWithEntries: { proposal: ProposalData; entry: TweetEntry }[] = [];
+
+        proposalsForTweet.forEach((proposal) => {
+            const line = formatProposalLine(proposal);
+            if (!line) {
+                return;
+            }
+
+            proposalsWithEntries.push({
+                proposal,
+                entry: {
+                    type: 'proposal',
+                    value: `- ${line}`,
+                },
+            });
+        });
+
+        if (!shareGroupByCategories) {
+            return proposalsWithEntries.map(({ entry }) => entry);
+        }
+
+        const groupedEntries: TweetEntry[] = [];
+        const groupedMap = new Map<string, TweetEntry[]>();
+
+        proposalsWithEntries.forEach(({ proposal, entry }) => {
+            const groupName = getCampaignGroupName(proposal);
+            const entryWithGroup: TweetEntry = { ...entry, groupName };
+
+            if (!groupedMap.has(groupName)) {
+                groupedMap.set(groupName, []);
+            }
+
+            groupedMap.get(groupName)!.push(entryWithGroup);
+        });
+
+        groupedMap.forEach((entries, groupName) => {
+            if (!entries.length) {
+                return;
+            }
+
+            groupedEntries.push({ type: 'group', value: groupName, groupName });
+            groupedEntries.push(...entries);
+        });
+
+        return groupedEntries;
+    }, [shareIncludeProposals, type, proposalsForTweet, formatProposalLine, shareGroupByCategories, getCampaignGroupName]);
+
+    const baseTweetText = useMemo(
+        () =>
+            t('shareXMessage')
+                .replace('{title}', bookmarkCollection.title || '')
+                .replace('{url}', listUrl),
+        [t, bookmarkCollection.title, listUrl],
+    );
+
+    const seeMoreTweetText = useMemo(
+        () => t('tweetSeeMore'),
+        [t],
+    );
+
+    const { limitedEntries, truncated: tweetLinesTruncated } = useMemo(() => {
+        if (!rawTweetEntries.length) {
+            return { limitedEntries: [] as TweetEntry[], truncated: false };
+        }
+
+        let limitedEntries: TweetEntry[] = [];
+        let truncated = false;
+
+        const computeEncodedLength = (entries: TweetEntry[], includeSeeMore: boolean) => {
+            let text = baseTweetText;
+
+            if (entries.length) {
+                const lines = entries.map((entry) => entry.value);
+                text += `\n\n${lines.join('\n\n')}`;
+            }
+
+            if (includeSeeMore) {
+                text += `\n\n${seeMoreTweetText}`;
+            }
+
+            return encodeURIComponent(text).length;
+        };
+
+        rawTweetEntries.forEach((entry, index) => {
+            const candidateEntries = [...limitedEntries, entry];
+            const remaining = rawTweetEntries.length - (index + 1);
+            const includeSeeMore = remaining > 0;
+            const encodedLength = computeEncodedLength(candidateEntries, includeSeeMore);
+
+            if (encodedLength <= MAX_TWEET_URL_LENGTH) {
+                limitedEntries = candidateEntries;
+            } else {
+                truncated = true;
+            }
+        });
+
+        if (!truncated && limitedEntries.length < rawTweetEntries.length) {
+            truncated = true;
+        }
+
+        if (truncated) {
+            while (limitedEntries.length && computeEncodedLength(limitedEntries, true) > MAX_TWEET_URL_LENGTH) {
+                limitedEntries = limitedEntries.slice(0, -1);
+            }
+
+            if (computeEncodedLength(limitedEntries, true) > MAX_TWEET_URL_LENGTH) {
+                return { limitedEntries, truncated: false };
+            }
+        }
+
+        if (shareGroupByCategories && limitedEntries.length) {
+            const filteredEntries: TweetEntry[] = [];
+            let pendingHeading: TweetEntry | null = null;
+
+            limitedEntries.forEach((entry) => {
+                if (entry.type === 'group') {
+                    pendingHeading = entry;
+                    return;
+                }
+
+                if (pendingHeading) {
+                    filteredEntries.push(pendingHeading);
+                    pendingHeading = null;
+                }
+
+                filteredEntries.push(entry);
+            });
+
+            limitedEntries = filteredEntries;
+        }
+
+        return { limitedEntries, truncated };
+    }, [rawTweetEntries, baseTweetText, seeMoreTweetText, shareGroupByCategories]);
+
+    const tweetProposalLines = useMemo(
+        () => limitedEntries.map((entry) => entry.value),
+        [limitedEntries],
+    );
+
+    const fullTweetText = useMemo(() => {
+        let text = baseTweetText;
+
+        if (tweetProposalLines.length) {
+            text += `\n\n${tweetProposalLines.join('\n\n')}`;
+        }
+
+        if (tweetLinesTruncated) {
+            text += `\n\n${seeMoreTweetText}`;
+        }
+
+        return text;
+    }, [baseTweetText, tweetProposalLines, tweetLinesTruncated, seeMoreTweetText]);
 
     return (
         <Modal
@@ -131,19 +639,24 @@ export default function ShareOnXModal({
 
                     {/* Preview Text */}
                     <div className="rounded-lg">
-                        <Paragraph className="text-content">
-                            {t('shareXMessage')
-                                .replace('{title}', bookmarkCollection.title || '')
-                                .split('{url}').map((part, index, array) => 
-                                    index < array.length - 1 ? (
-                                        <span key={index}>
-                                            {part}
-                                            <a href={generateLocalizedRoute('lists.view', { bookmarkCollection: bookmarkCollection.id, type: type })} className="!text-primary underline">
-                                                {generateLocalizedRoute('lists.view', { bookmarkCollection: bookmarkCollection.id, type: type })}
-                                            </a>
-                                        </span>
-                                    ) : part
-                                )}
+                        <Paragraph className="text-content whitespace-pre-wrap">
+                            {fullTweetText.split(listUrl).map((part, index, array) =>
+                                index < array.length - 1 ? (
+                                    <span key={index}>
+                                        {part}
+                                        <a
+                                            href={listUrl}
+                                            className="!text-primary underline"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            {listUrl}
+                                        </a>
+                                    </span>
+                                ) : (
+                                    <span key={index}>{part}</span>
+                                )
+                            )}
                         </Paragraph>
                     </div>
 
@@ -236,15 +749,12 @@ export default function ShareOnXModal({
                                         
                                         const params = new URLSearchParams();
                                         
-                                        const userSelectedColumns = selectedColumns;
-                                        if (userSelectedColumns && userSelectedColumns.length > 0) {
-                                            const pngColumns = userSelectedColumns.filter(col => col !== 'viewProposal');
-                                            if (pngColumns.length > 0) {
-                                                params.set('columns', JSON.stringify(pngColumns));
-                                            }
+                                        if (selectedShareColumns.length > 0) {
+                                            params.set('columns', JSON.stringify(selectedShareColumns));
                                         }
                                         
-                                        downloadUrl += `?${params.toString()}`;
+                                        const paramString = params.toString();
+                                        downloadUrl += paramString ? `?${paramString}` : '';
                                         window.open(downloadUrl, '_blank');
                                     }}
                                 >
@@ -256,20 +766,9 @@ export default function ShareOnXModal({
                             <PrimaryButton
                                 className='rounded-xl p-4 hover:bg-primary/[0.6] transition-shadow duration-200'
                                 onClick={() => {
-                                    const routePath = generateLocalizedRoute('lists.view', { 
-                                        bookmarkCollection: bookmarkCollection.id, 
-                                        type: type 
-                                    });
-                                    
-                                    const listUrl = routePath.startsWith('http') ? routePath : window.location.origin + routePath;
-                                    
-                                    const tweetText = t('shareXMessage')
-                                        .replace('{title}', bookmarkCollection.title || '')
-                                        .replace('{url}', listUrl);
-                                
-                                    const twitterIntentUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
-                            
-                                    window.open(twitterIntentUrl, '_blank', 'width=600,height=400');
+                                    const twitterIntentUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(fullTweetText)}`;
+
+                                    window.open(twitterIntentUrl, '_blank', 'width=1200,height=800');
                                 }}
                             >
                                 <Paragraph className="flex items-center gap-2 m-0 px-4">

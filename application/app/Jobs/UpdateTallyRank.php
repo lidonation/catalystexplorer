@@ -22,11 +22,13 @@ use Illuminate\Support\Facades\Bus;
  *
  * Stage 1 (Parallel Execution):
  * - UpdateOverallRankJob: Calculates overall rankings across all tallies
- * - UpdateFundRankJob: Calculates rankings within Fund 14
+ * - UpdateFundRankJob: Calculates rankings within specified fund(s)
  * - UpdateCategoryRankJob: Calculates rankings within each campaign/category
  *
  * Stage 2 (Sequential Execution):
  * - UpdateApprovalChanceJob: Calculates approval chances based on historical data
+ *   (Depends on category ranks from Stage 1)
+ * - UpdateFundingChanceJob: Calculates funding chances based on budget allocation
  *   (Depends on category ranks from Stage 1)
  */
 class UpdateTallyRank implements ShouldQueue
@@ -39,6 +41,15 @@ class UpdateTallyRank implements ShouldQueue
     public int $timeout = 2700;
 
     /**
+     * Create a new UpdateTallyRank job instance.
+     *
+     * @param  string|null  $fundId  Fund ID to process, or null for all funds
+     */
+    public function __construct(
+        private readonly ?string $fundId = null
+    ) {}
+
+    /**
      * Orchestrates the parallel execution of ranking jobs followed by
      * approval chance calculation that depends on category rankings.
      *
@@ -46,22 +57,42 @@ class UpdateTallyRank implements ShouldQueue
      */
     public function handle(): void
     {
-        $firstBatch = Bus::batch([
-            new UpdateOverallRankJob,
-            new UpdateFundRankJob,
-            new UpdateCategoryRankJob,
-        ])
-            ->name('Update Rankings')
-            ->allowFailures()
-            ->then(function () {
-                Bus::batch([
-                    new UpdateApprovalChanceJob,
-                ])
-                    ->name('Update Approval Chances')
-                    ->allowFailures()
-                    ->dispatch();
-            });
+        try {
+            // Stage 1 - Create batch with error handling
+            $jobs = [
+                new UpdateCategoryRankJob($this->fundId),
+                new UpdateFundRankJob($this->fundId),
+                //            new UpdateOverallRankJob($this->fundId),
+            ];
 
-        $firstBatch->dispatch();
+            $firstBatch = Bus::batch($jobs)
+                ->name('Update Rankings'.($this->fundId ? " (Fund {$this->fundId})" : ' (All Funds)'))
+                ->allowFailures();
+
+            if (! $firstBatch) {
+                throw new \Exception('Failed to create batch job');
+            }
+
+            $dispatchedBatch = $firstBatch->dispatch();
+
+            if (! $dispatchedBatch || ! $dispatchedBatch->id) {
+                throw new \Exception('Failed to dispatch batch job or get batch ID');
+            }
+
+            UpdateTallyRankMonitor::dispatch($dispatchedBatch->id, $this->fundId)->delay(now()->addSeconds(10));
+
+        } catch (\Exception $e) {
+            \Log::error('UpdateTallyRank failed to create or dispatch batch', [
+                'fund_id' => $this->fundId,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            // Fallback: Run jobs sequentially without batching
+            \Log::info('Falling back to sequential job execution');
+            UpdateCategoryRankJob::dispatch($this->fundId);
+            UpdateFundRankJob::dispatch($this->fundId);
+            UpdateTallyRankSecondStage::dispatch($this->fundId)->delay(now()->addMinutes(5));
+        }
     }
 }
