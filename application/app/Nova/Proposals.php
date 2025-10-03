@@ -6,9 +6,11 @@ namespace App\Nova;
 
 use App\Enums\CatalystGlobals;
 use App\Models\Proposal;
+use App\Nova\Actions\AddQuickPitch;
 use App\Nova\Actions\EditModel;
 use App\Nova\Actions\MakeSearchable;
 use App\Nova\Actions\UpdateModelMedia;
+use App\Nova\Filters\QuickPitchFilter;
 use Illuminate\Support\Str;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Exceptions\HelperNotSupported;
@@ -23,6 +25,7 @@ use Laravel\Nova\Fields\Slug;
 use Laravel\Nova\Fields\Stack;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
+use Laravel\Nova\Filters\Filter;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Proposals extends Resource
@@ -339,6 +342,18 @@ class Proposals extends Resource
     }
 
     /**
+     * Get the filters available for the resource.
+     *
+     * @return array<int, Filter>
+     */
+    public function filters(NovaRequest $request): array
+    {
+        return [
+            new QuickPitchFilter,
+        ];
+    }
+
+    /**
      * Get the actions available for the resource.
      *
      * @return array<int, Action>
@@ -346,6 +361,7 @@ class Proposals extends Resource
     public function actions(NovaRequest $request): array
     {
         return [
+            (new AddQuickPitch(app(\App\Services\VideoService::class))),
             (new EditModel),
             (new UpdateModelMedia),
             (new MakeSearchable),
