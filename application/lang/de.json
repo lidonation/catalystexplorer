@@ -1501,5 +1501,10 @@
     "workflows.linkWallet.successfullyLink": "Erfolgreich verknüpft",
     "workflows.linkWallet.toProposal": "mit deinem Vorschlag",
     "workflows.linkWallet.backToMyProposals": "Zurück zu meinen Vorschlägen",
-    "workflows.linkWallet.alreadyLinked": "Dein Vorschlag ist bereits mit diesem Wallet verknüpft"
+    "workflows.linkWallet.alreadyLinked": "Dein Vorschlag ist bereits mit diesem Wallet verknüpft",
+    "proposals.projectLength": "Projektdauer",
+    "proposals.openSource": "Open Source",
+    "proposals.projectStatus": "Projektstatus",
+    "proposals.month": "Monat",
+    "proposals.months": "Monate"
 }

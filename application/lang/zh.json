@@ -1508,5 +1508,10 @@
     "workflows.linkWallet.successfullyLink": "已成功链接",
     "workflows.linkWallet.toProposal": "到您的提案",
     "workflows.linkWallet.backToMyProposals": "返回我的提案",
-    "workflows.linkWallet.alreadyLinked": "您的提案已链接到此钱包"
+    "workflows.linkWallet.alreadyLinked": "您的提案已链接到此钱包",
+    "proposals.projectLength": "项目周期",
+    "proposals.openSource": "开源",
+    "proposals.projectStatus": "项目状态",
+    "proposals.month": "个月",
+    "proposals.months": "个月"
 }

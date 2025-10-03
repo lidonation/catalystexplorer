@@ -1495,7 +1495,12 @@
     "workflows.linkWallet.walletDetails": "የቦርሳ መረጃ",
     "workflows.linkWallet.info": "እቅድህን ለማያዝ ቦርሳ ምረጥ።",
     "workflows.linkWallet.successfullyLink": "ቦርሳውን በትክክል አያይዝክ።",
-    "workflows.linkWallet.toProposal": "ከእቅድህ ጋር",
-    "workflows.linkWallet.backToMyProposals": "ወደ እቅዶቼ ተመለስ",
-    "workflows.linkWallet.alreadyLinked": "እቅድህ ከዚህ ቦርሳ ጋር አስቀድሞ ተያይዞአል።"
+    "workflows.linkWallet.toProposal": "ከእጥድህ ጓ",
+    "workflows.linkWallet.backToMyProposals": "ወደ እጥዶቼ ተምለስ",
+    "workflows.linkWallet.alreadyLinked": "እጥድህ ከዚህ ቦርሳ ጓ አስቀድሞ ተያይዞአል።",
+    "proposals.projectLength": "የፕሮጄክት ጊዜ",
+    "proposals.openSource": "የተከፈተ ምንጭ",
+    "proposals.projectStatus": "የፕሮጄክት ሁኔታ",
+    "proposals.month": "ወር",
+    "proposals.months": "ወራት"
 }

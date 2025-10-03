@@ -1547,5 +1547,10 @@
     "workflows.linkWallet.successfullyLink": "Umeunganisha kwa mafanikio",
     "workflows.linkWallet.toProposal": "na pendekezo lako",
     "workflows.linkWallet.backToMyProposals": "Rudi kwenye mapendekezo yangu",
-    "workflows.linkWallet.alreadyLinked": "Pendekezo lako tayari limeunganishwa na pochi hii"
+    "workflows.linkWallet.alreadyLinked": "Pendekezo lako tayari limeunganishwa na pochi hii",
+    "proposals.projectLength": "Urefu wa Mradi",
+    "proposals.openSource": "Chanzo Huria",
+    "proposals.projectStatus": "Hali ya Mradi",
+    "proposals.month": "mwezi",
+    "proposals.months": "miezi"
 }

@@ -533,6 +533,7 @@ feasibility_score?: number;
 auditability_score?: number;
 quickpitch?: string;
 quickpitch_length?: number;
+project_length?: number;
 users: any | null;
 reviews: any | null;
 fund: App.DataTransferObjects.FundData | null;

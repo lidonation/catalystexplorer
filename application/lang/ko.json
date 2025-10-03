@@ -1507,5 +1507,10 @@
     "workflows.linkWallet.successfullyLink": "성공적으로 연결되었습니다",
     "workflows.linkWallet.toProposal": "제안에",
     "workflows.linkWallet.backToMyProposals": "내 제안으로 돌아가기",
-    "workflows.linkWallet.alreadyLinked": "해당 제안은 이미 이 지갑에 연결되어 있습니다"
+    "workflows.linkWallet.alreadyLinked": "해당 제안은 이미 이 지갑에 연결되어 있습니다",
+    "proposals.projectLength": "프로젝트 기간",
+    "proposals.openSource": "오픈 소스",
+    "proposals.projectStatus": "프로젝트 상태",
+    "proposals.month": "개월",
+    "proposals.months": "개월"
 }

@@ -9,6 +9,8 @@ import ProposalFundingPercentages from './ProposalFundingPercentages';
 import ProposalFundingStatus from './ProposalFundingStatus';
 import ProposalQuickpitch from './ProposalQuickpitch';
 import ProposalSolution from './ProposalSolution';
+import ProposalProblem from './ProposalProblem';
+import ProposalProjectStatus from './ProposalProjectStatus';
 
 export default function ProposalVerticalCard({
     proposal,
@@ -23,6 +25,7 @@ export default function ProposalVerticalCard({
     yesVotes,
     abstainVotes,
     hideFooter = false,
+    isOnSingleProposalPage = false,
 }: any) {
     const [cardHeight, setCardHeight] = useState<number | null>(null);
     const cardRef = useRef<HTMLElement>(null);
@@ -79,14 +82,18 @@ export default function ProposalVerticalCard({
                         <UserQuickView user={userSelected} />
                     ) : (
                         <>
-                            <ProposalCardNav
-                                quickPitchView={quickPitchView}
-                                toggleLocalQuickPitchView={
-                                    toggleLocalQuickPitchView
-                                }
-                                hasQuickPitch={hasQuickPitch}
-                                t={t}
-                            />
+                            {/* Only show nav toggles when not on single proposal page */}
+                            {!isOnSingleProposalPage && (
+                                <ProposalCardNav
+                                    quickPitchView={quickPitchView}
+                                    toggleLocalQuickPitchView={
+                                        toggleLocalQuickPitchView
+                                    }
+                                    hasQuickPitch={hasQuickPitch}
+                                    t={t}
+                                />
+                            )}
+                            
                             <section
                                 className="mt-3 mb-2 border-b border-gray-200 pb-2"
                                 aria-labelledby="funding-heading"
@@ -108,8 +115,33 @@ export default function ProposalVerticalCard({
                                     proposal={proposal}
                                 />
                             </section>
+                            
+                            {/* Show project status on single proposal pages */}
+                            {isOnSingleProposalPage && (
+                                <ProposalProjectStatus
+                                    project_length={proposal.project_length}
+                                    opensource={proposal.opensource}
+                                />
+                            )}
+                            
+                            {/* Show problem first on single proposal pages only */}
+                            {isOnSingleProposalPage && (
+                                <div className="relative mt-4 mb-2 border-b border-gray-200 pb-2">
+                                    <ProposalProblem
+                                        problem={proposal.problem}
+                                        slug={proposal.slug}
+                                    />
+                                </div>
+                            )}
+                            
                             <div className="relative mt-4 mb-2 min-h-36 border-b border-gray-200 pb-2">
-                                {quickPitchView ? (
+                                {/* On single proposal pages, always show solution. On regular cards, show solution/quickpitch toggle */}
+                                {isOnSingleProposalPage ? (
+                                    <ProposalSolution
+                                        solution={proposal.solution}
+                                        slug={proposal.slug}
+                                    />
+                                ) : quickPitchView ? (
                                     <ProposalQuickpitch
                                         quickpitch={proposal.quickpitch}
                                     />
