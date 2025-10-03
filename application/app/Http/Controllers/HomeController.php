@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\WeightedRandomizeQuickPitches;
 use App\DataTransferObjects\AnnouncementData;
 use App\DataTransferObjects\MetricData;
 use App\DataTransferObjects\ProposalData;
@@ -170,12 +171,14 @@ class HomeController extends Controller
                 ])
                 ->whereNotNull('quickpitch')
                 ->where('fund_id', $activeFundId)
-                ->limit(15)
                 ->get();
 
-            $this->addTeamBasedCounts($rawProposals);
+            $weightedRandomizer = new WeightedRandomizeQuickPitches;
+            $finalProposals = $weightedRandomizer($rawProposals, 15);
 
-            return ProposalData::collect($rawProposals);
+            $this->addTeamBasedCounts($finalProposals);
+
+            return ProposalData::collect($finalProposals);
 
         } catch (\Throwable $e) {
             report($e);

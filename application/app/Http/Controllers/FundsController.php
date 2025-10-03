@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\WeightedRandomizeQuickPitches;
 use App\DataTransferObjects\CampaignData;
 use App\DataTransferObjects\CatalystTallyData;
 use App\DataTransferObjects\FundData;
@@ -297,12 +298,15 @@ class FundsController extends Controller
                 ])
                 ->whereNotNull('quickpitch')
                 ->where('fund_id', $fund->id)
-                ->limit(9)
                 ->get();
 
-            $this->addTeamBasedCounts($rawProposals);
+            // Apply weighted randomization favoring shorter videos, limit to 9
+            $weightedRandomizer = new WeightedRandomizeQuickPitches;
+            $finalProposals = $weightedRandomizer($rawProposals, 9);
 
-            return ProposalData::collect($rawProposals);
+            $this->addTeamBasedCounts($finalProposals);
+
+            return ProposalData::collect($finalProposals);
         } catch (\Throwable $e) {
             \Log::error('Error in getActiveFundQuickPitches', [
                 'error' => $e->getMessage(),
