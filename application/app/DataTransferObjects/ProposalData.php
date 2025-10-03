@@ -119,6 +119,9 @@ final class ProposalData extends Data
         #[TypeScriptOptional]
         public ?int $quickpitch_length,
 
+        #[TypeScriptOptional]
+        public ?int $project_length,
+
         #[MapOutputName('users')]
         #[DataCollectionOf(IdeascaleProfileData::class)]
         public ?DataCollection $users,

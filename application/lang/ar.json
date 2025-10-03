@@ -406,5 +406,10 @@
     "workflows.linkWallet.successfullyLink": "تم ربط المحفظة بنجاح",
     "workflows.linkWallet.toProposal": "باقتراحك",
     "workflows.linkWallet.backToMyProposals": "العودة إلى اقتراحاتي",
-    "workflows.linkWallet.alreadyLinked": "اقتراحك مرتبط بالفعل بهذه المحفظة"
+    "workflows.linkWallet.alreadyLinked": "اقتراحك مرتبط بالفعل بهذه المحفظة",
+    "proposals.projectLength": "مدة المشروع",
+    "proposals.openSource": "مفتوح المصدر",
+    "proposals.projectStatus": "حالة المشروع",
+    "proposals.month": "شهر",
+    "proposals.months": "أشهر"
 }

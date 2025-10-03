@@ -1511,5 +1511,10 @@
     "workflows.linkWallet.successfullyLink": "Has vinculado correctamente",
     "workflows.linkWallet.toProposal": "a tu propuesta",
     "workflows.linkWallet.backToMyProposals": "Volver a mis propuestas",
-    "workflows.linkWallet.alreadyLinked": "Tu propuesta ya está vinculada a esta billetera"
+    "workflows.linkWallet.alreadyLinked": "Tu propuesta ya está vinculada a esta billetera",
+    "proposals.projectLength": "Duración del Proyecto",
+    "proposals.openSource": "Código Abierto",
+    "proposals.projectStatus": "Estado del Proyecto",
+    "proposals.month": "mes",
+    "proposals.months": "meses"
 }

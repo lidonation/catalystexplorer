@@ -11,6 +11,8 @@ import ProposalCardNav from './ProposalCardNav';
 import ProposalFundingDetails from './ProposalFundingDetails';
 import ProposalFundingStatus from './ProposalFundingStatus';
 import ProposalSolution from './ProposalSolution';
+import ProposalProblem from './ProposalProblem';
+import ProposalProjectStatus from './ProposalProjectStatus';
 
 export default function ProposalExtendedCard({
     proposal,
@@ -87,14 +89,6 @@ export default function ProposalExtendedCard({
                         <UserQuickView user={userSelected} />
                     ) : (
                         <>
-                            <ProposalCardNav
-                                quickPitchView={quickPitchView}
-                                toggleLocalQuickPitchView={
-                                    toggleLocalQuickPitchView
-                                }
-                                hasQuickPitch={hasQuickPitch}
-                                t={t}
-                            />
                             <section
                                 className="mt-3"
                                 aria-labelledby="funding-heading"
@@ -113,10 +107,23 @@ export default function ProposalExtendedCard({
                                 </div>
                                 <ProposalFundingDetails proposal={proposal} />
                             </section>
+                            
+                            <ProposalProjectStatus
+                                project_length={proposal.project_length}
+                                opensource={proposal.opensource}
+                            />
+                            {/* Show problem first */}
+                            <div className="relative flex h-auto w-full flex-col items-start overflow-visible mb-4">
+                                <ProposalProblem
+                                    problem={proposal.problem}
+                                    slug={proposal.slug}
+                                />
+                            </div>
+                            
+                            {/* Show solution below problem */}
                             <div className="relative flex h-auto w-full flex-col items-start overflow-visible">
                                 <ProposalSolution
                                     solution={proposal.solution}
-                                    problem={proposal.problem}
                                     slug={proposal.slug}
                                 />
                             </div>

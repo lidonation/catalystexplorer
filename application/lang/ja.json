@@ -1498,5 +1498,10 @@
     "workflows.linkWallet.successfullyLink": "正常にリンクされました",
     "workflows.linkWallet.toProposal": "あなたの提案に",
     "workflows.linkWallet.backToMyProposals": "マイ提案に戻る",
-    "workflows.linkWallet.alreadyLinked": "あなたの提案はすでにこのウォレットにリンクされています"
+    "workflows.linkWallet.alreadyLinked": "あなたの提案はすでにこのウォレットにリンクされています",
+    "proposals.projectLength": "プロジェクト期間",
+    "proposals.openSource": "オープンソース",
+    "proposals.projectStatus": "プロジェクトステータス",
+    "proposals.month": "ヶ月",
+    "proposals.months": "ヶ月"
 }
