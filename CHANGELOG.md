@@ -1,3 +1,10 @@
+# [1.37.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.36.0...v1.37.0) (2025-10-03)
+
+
+### Features
+
+* add support for vietnamese ([c67feab](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/c67feabe798fa1052bc9577695b24c0b335e9c92))
+
 # [1.36.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.35.2...v1.36.0) (2025-10-02)
 
 
