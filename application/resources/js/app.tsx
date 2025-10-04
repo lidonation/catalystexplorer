@@ -37,7 +37,7 @@ createInertiaApp({
                 <LaravelReactI18nProvider
                     locale={locale}
                     fallbackLocale="en"
-                    files={import.meta.glob('/lang/*.json', { eager: true })}
+                    files={import.meta.glob('../../lang/*.json', { eager: true })}
                 >
                     <ModalStackProvider>
                         <StrictMode>

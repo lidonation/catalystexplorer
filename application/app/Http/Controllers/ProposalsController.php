@@ -17,6 +17,7 @@ use App\Models\Fund;
 use App\Models\IdeascaleProfile;
 use App\Models\Metric;
 use App\Models\Proposal;
+use App\Models\User;
 use App\Repositories\ProposalRepository;
 use App\Services\VideoService;
 use Illuminate\Http\JsonResponse;
@@ -113,7 +114,9 @@ class ProposalsController extends Controller
 
     public function proposal(Request $request, $slug): Response
     {
-        $proposal = Proposal::where('slug', $slug)->firstOrFail();
+        $proposal = Proposal::with(['team.model'])
+            ->where('slug', $slug)
+            ->firstOrFail();
 
         $this->getProps($request);
 
@@ -152,22 +155,45 @@ class ProposalsController extends Controller
             $data['auditability_score'] = $proposal->getDiscussionRankingScore('Value for money') ?? 0;
 
             try {
-                $ideascaleProfiles = $proposal->ideascaleProfiles;
-                $ideascaleProfileIds = $ideascaleProfiles ? $ideascaleProfiles->pluck('id')->toArray() : [];
-                $counts = $this->getCounts($ideascaleProfileIds);
+                // Get all claimed profiles (both IdeascaleProfile and CatalystProfile) by the current user
+                $user = Auth::user();
+                $claimedProfileIds = [];
 
-                $data['users'] = $ideascaleProfiles ? $ideascaleProfiles->map(function ($u) {
+                if ($user) {
+                    // Get claimed IdeascaleProfile IDs
+                    $claimedIdeascaleIds = $user->claimed_ideascale_profiles()->pluck('ideascale_profiles.id')->toArray();
+
+                    // Get claimed CatalystProfile IDs
+                    $claimedCatalystIds = $user->claimed_catalyst_profiles()->pluck('catalyst_profiles.id')->toArray();
+
+                    $claimedProfileIds = [
+                        'ideascale' => $claimedIdeascaleIds,
+                        'catalyst' => $claimedCatalystIds,
+                    ];
+                }
+
+                $counts = $this->getCounts($claimedProfileIds);
+
+                // Get all team members (both IdeascaleProfile and CatalystProfile) for display
+                $data['users'] = $proposal->team ? $proposal->team->map(function ($teamMember) {
+                    $profile = $teamMember->model;
+                    if (! $profile) {
+                        return null;
+                    }
+
                     return [
-                        'id' => $u->id,
-                        'ideascale_id' => $u->ideascale_id,
-                        'username' => $u->username,
-                        'name' => $u->name,
-                        'bio' => $u->bio,
-                        'hero_img_url' => $u->hero_img_url,
+                        'id' => $profile->id,
+                        'ideascale_id' => $profile->ideascale_id ?? null,
+                        'catalyst_id' => $profile->catalyst_id ?? null,
+                        'username' => $profile->username,
+                        'name' => $profile->name,
+                        'bio' => $profile->bio ?? null,
+                        'hero_img_url' => $profile->hero_img_url ?? $profile->gravatar ?? null,
+                        'profile_type' => class_basename($teamMember->profile_type),
                         'proposals_completed' => 0, // Disable for now
                         'first_timer' => false, // Disable for now
                     ];
-                })->toArray() : [];
+                })->filter()->toArray() : [];
             } catch (\Exception $e) {
                 $counts = ['userCompleteProposalsCount' => 0, 'userOutstandingProposalsCount' => 0, 'catalystConnectionCount' => 0];
                 $data['users'] = [];
@@ -794,9 +820,9 @@ class ProposalsController extends Controller
         return FundData::collect($funds);
     }
 
-    public function getCounts($ideascaleProfileIds)
+    public function getCounts($claimedProfileIds)
     {
-        if (empty($ideascaleProfileIds)) {
+        if (empty($claimedProfileIds) || (empty($claimedProfileIds['ideascale']) && empty($claimedProfileIds['catalyst']))) {
             return [
                 'userCompleteProposalsCount' => 0,
                 'userOutstandingProposalsCount' => 0,
@@ -805,22 +831,59 @@ class ProposalsController extends Controller
         }
 
         try {
+            $ideascaleIds = $claimedProfileIds['ideascale'] ?? [];
+            $catalystIds = $claimedProfileIds['catalyst'] ?? [];
+
+            // Count complete proposals from both profile types using the proposal_profiles pivot table
             $userCompleteProposalsCount = Proposal::where('status', 'complete')
-                ->whereHas('ideascaleProfiles', function ($query) use ($ideascaleProfileIds) {
-                    $query->whereIn('ideascale_profiles.id', $ideascaleProfileIds);
+                ->where(function ($query) use ($ideascaleIds, $catalystIds) {
+                    if (! empty($ideascaleIds)) {
+                        $query->orWhereHas('team', function ($teamQuery) use ($ideascaleIds) {
+                            $teamQuery->where('profile_type', IdeascaleProfile::class)
+                                ->whereIn('profile_id', $ideascaleIds);
+                        });
+                    }
+                    if (! empty($catalystIds)) {
+                        $query->orWhereHas('team', function ($teamQuery) use ($catalystIds) {
+                            $teamQuery->where('profile_type', CatalystProfile::class)
+                                ->whereIn('profile_id', $catalystIds);
+                        });
+                    }
                 })
                 ->count();
 
+            // Count in-progress proposals from both profile types
             $userOutstandingProposalsCount = Proposal::where('status', 'in_progress')
-                ->whereHas('ideascaleProfiles', function ($query) use ($ideascaleProfileIds) {
-                    $query->whereIn('ideascale_profiles.id', $ideascaleProfileIds);
+                ->where(function ($query) use ($ideascaleIds, $catalystIds) {
+                    if (! empty($ideascaleIds)) {
+                        $query->orWhereHas('team', function ($teamQuery) use ($ideascaleIds) {
+                            $teamQuery->where('profile_type', IdeascaleProfile::class)
+                                ->whereIn('profile_id', $ideascaleIds);
+                        });
+                    }
+                    if (! empty($catalystIds)) {
+                        $query->orWhereHas('team', function ($teamQuery) use ($catalystIds) {
+                            $teamQuery->where('profile_type', CatalystProfile::class)
+                                ->whereIn('profile_id', $catalystIds);
+                        });
+                    }
                 })
                 ->count();
 
-            $catalystConnectionCount = Connection::whereIn('previous_model_id', $ideascaleProfileIds)
-                ->where('previous_model_type', IdeascaleProfile::class)
-                ->distinct()
-                ->count();
+            // Count connections - include both IdeascaleProfile and CatalystProfile connections
+            $catalystConnectionCount = 0;
+            if (! empty($ideascaleIds)) {
+                $catalystConnectionCount += Connection::whereIn('previous_model_id', $ideascaleIds)
+                    ->where('previous_model_type', IdeascaleProfile::class)
+                    ->distinct()
+                    ->count();
+            }
+            if (! empty($catalystIds)) {
+                $catalystConnectionCount += Connection::whereIn('previous_model_id', $catalystIds)
+                    ->where('previous_model_type', CatalystProfile::class)
+                    ->distinct()
+                    ->count();
+            }
 
             return [
                 'userCompleteProposalsCount' => $userCompleteProposalsCount,
@@ -828,6 +891,11 @@ class ProposalsController extends Controller
                 'catalystConnectionCount' => $catalystConnectionCount,
             ];
         } catch (\Exception $e) {
+            \Log::error('Error in getCounts method', [
+                'error' => $e->getMessage(),
+                'claimedProfileIds' => $claimedProfileIds,
+            ]);
+
             return [
                 'userCompleteProposalsCount' => 0,
                 'userOutstandingProposalsCount' => 0,
