@@ -586,6 +586,7 @@ Route::localized(
         // Arabic Test Route
         Route::get('/arabic-test', fn() => Inertia::render('ArabicTest'))
             ->name('arabic-test');
+
     }
 
 );
