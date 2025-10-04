@@ -1,3 +1,10 @@
+## [1.38.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.38.0...v1.38.1) (2025-10-04)
+
+
+### Bug Fixes
+
+* autho history summary counts restored ([9eceab7](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/9eceab77349921ff2fc24780e02417b76ccd33aa))
+
 # [1.38.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.37.0...v1.38.0) (2025-10-03)
 
 
