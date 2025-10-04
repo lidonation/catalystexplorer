@@ -1,3 +1,10 @@
+# [1.38.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.37.0...v1.38.0) (2025-10-03)
+
+
+### Features
+
+* enhance single proposal page ([fa3aaed](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/fa3aaed92b79b64c31eb123719c27148e9e19fec))
+
 # [1.37.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.36.0...v1.37.0) (2025-10-03)
 
 
