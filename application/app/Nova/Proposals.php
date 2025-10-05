@@ -11,6 +11,7 @@ use App\Nova\Actions\EditModel;
 use App\Nova\Actions\MakeSearchable;
 use App\Nova\Actions\UpdateModelMedia;
 use App\Nova\Filters\QuickPitchFilter;
+use App\Services\VideoService;
 use Illuminate\Support\Str;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Exceptions\HelperNotSupported;
@@ -361,7 +362,7 @@ class Proposals extends Resource
     public function actions(NovaRequest $request): array
     {
         return [
-            (new AddQuickPitch(app(\App\Services\VideoService::class))),
+            (new AddQuickPitch(app(VideoService::class))),
             (new EditModel),
             (new UpdateModelMedia),
             (new MakeSearchable),

@@ -144,8 +144,10 @@ const Step3: React.FC<Step3Props> = ({
             delete updatedFilters[ParamsEnum.PAGE];
         }
 
-        if (fundSlug) {
-            updatedFilters[ParamsEnum.FUNDS] = fundSlug;
+        // Preserve the fund filter (use existing fund filter or fundSlug)
+        const existingFundFilter = filters[ParamsEnum.FUNDS];
+        if (existingFundFilter || fundSlug) {
+            updatedFilters[ParamsEnum.FUNDS] = existingFundFilter || fundSlug!;
         }
 
         if (bookmarkHash) {

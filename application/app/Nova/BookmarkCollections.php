@@ -9,6 +9,7 @@ use App\Enums\BookmarkVisibility;
 use App\Enums\CommentsAllowance;
 use App\Models\BookmarkCollection;
 use App\Nova\Actions\EditModel;
+use App\Nova\Actions\MakeSearchable;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Boolean;
@@ -190,6 +191,7 @@ class BookmarkCollections extends Resource
     {
         return [
             (new EditModel),
+            (new MakeSearchable),
         ];
     }
 }
