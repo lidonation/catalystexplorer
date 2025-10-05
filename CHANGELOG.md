@@ -1,3 +1,10 @@
+## [1.39.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.39.1...v1.39.2) (2025-10-05)
+
+
+### Bug Fixes
+
+* cannot remove voting list item ([1f2f34f](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/1f2f34f18eeb974891982443da3de94d011b7082))
+
 ## [1.39.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.39.0...v1.39.1) (2025-10-05)
 
 
