@@ -107,8 +107,8 @@ class ClaimedProfiles extends Resource
 
             DateTime::make(__('Created At'), 'created_at')
                 ->sortable()
-                ->readonly()
-                ->hideFromIndex(),
+                ->filterable()
+                ->readonly(),
 
             DateTime::make(__('Updated At'), 'updated_at')
                 ->sortable()
