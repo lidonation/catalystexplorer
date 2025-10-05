@@ -1,3 +1,10 @@
+# [1.39.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.38.1...v1.39.0) (2025-10-05)
+
+
+### Features
+
+* make the tallies budget table sortable ([f9460de](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/f9460de1e727999365a056775e1f346c3d60bc4e))
+
 ## [1.38.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.38.0...v1.38.1) (2025-10-04)
 
 
