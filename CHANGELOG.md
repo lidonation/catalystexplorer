@@ -1,3 +1,11 @@
+## [1.39.3](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.39.2...v1.39.3) (2025-10-05)
+
+
+### Bug Fixes
+
+* more lists fixes ([fd33550](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/fd33550d12e691666aeccf91cfe6089e72ed5b77))
+* more lists fixes ([076025a](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/076025a21437c2f88bc407abeef0d71c2bd7bfa5))
+
 ## [1.39.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.39.1...v1.39.2) (2025-10-05)
 
 
