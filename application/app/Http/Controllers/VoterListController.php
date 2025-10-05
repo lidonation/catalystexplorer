@@ -25,6 +25,8 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 use ReflectionMethod;
@@ -107,17 +109,24 @@ class VoterListController extends Controller
         $selectedProposals = [];
 
         if ($bookmarkCollection) {
-            $selectedProposals = BookmarkItem::where('bookmark_collection_id', $bookmarkCollection->id)
-                ->where('user_id', $request->user()->id)
-                ->where('model_type', Proposal::class)->get()
-                ->flatMap(
-                    fn ($item) => [
+            // Get all items in the collection, not just items from the current user
+            // This allows creating voter lists from existing bookmark collections
+            // that may have been created by other users or contain items from multiple users
+            $bookmarkItems = BookmarkItem::where('bookmark_collection_id', $bookmarkCollection->id)
+                ->where('model_type', Proposal::class)->get();
+
+            $selectedProposals = $bookmarkItems->flatMap(
+                function ($item) {
+                    $proposal = Proposal::withoutGlobalScopes()->find($item->model_id);
+
+                    return [
                         [
-                            'id' => optional(Proposal::find($item->model_id))->id,
+                            'id' => $proposal?->id,
                             'vote' => $item->vote?->value,
                         ],
-                    ]
-                )->toArray();
+                    ];
+                }
+            )->toArray();
         }
 
         if ($bookmarkCollection?->fund_id) {
@@ -129,6 +138,43 @@ class VoterListController extends Controller
         }
 
         $proposals = $this->getProposals($request, $filters);
+
+        // If we have existing bookmark proposals, ensure they're included in the results
+        // even if they don't match current search criteria
+        if ($bookmarkCollection && ! empty($selectedProposals)) {
+            $existingProposalIds = collect($selectedProposals)->pluck('id')->filter()->toArray();
+            $proposalDataIds = collect($proposals->items())->pluck('id')->toArray();
+            $missingProposalIds = array_diff($existingProposalIds, $proposalDataIds);
+
+            if (! empty($missingProposalIds)) {
+                // Load the missing proposals that aren't in search results
+                $missingProposals = Proposal::withoutGlobalScopes()
+                    ->whereIn('id', $missingProposalIds)
+                    ->with(['fund', 'campaign'])
+                    ->get();
+
+                // Convert to ProposalData format
+                $missingProposalData = $missingProposals->map(function ($proposal) {
+                    return \App\DataTransferObjects\ProposalData::from($proposal);
+                });
+
+                // Merge with existing proposals (put existing bookmarked proposals first)
+                $allProposals = $missingProposalData->concat(collect($proposals->items()));
+
+                // Create a new paginator with merged results
+                $proposals = new \Illuminate\Pagination\LengthAwarePaginator(
+                    $allProposals->take($proposals->perPage()),
+                    $allProposals->count(),
+                    $proposals->perPage(),
+                    $proposals->currentPage(),
+                    [
+                        'path' => $proposals->path(),
+                        'pageName' => 'page',
+                    ]
+                );
+                $proposals->appends($request->query());
+            }
+        }
 
         return Inertia::render('Workflows/CreateVoterList/Step3', [
             'stepDetails' => $this->getStepDetails(),
@@ -444,6 +490,54 @@ class VoterListController extends Controller
             'step' => 5,
             QueryParamsEnum::BOOKMARK_COLLECTION()->value => $bookmarkCollection->id,
         ]);
+    }
+
+    public function removeBookmarkItem(Request $request, $bookmarkCollectionId): \Illuminate\Http\JsonResponse
+    {
+        $bookmarkCollection = BookmarkCollection::allVisibilities()->find($bookmarkCollectionId);
+
+        if (! $bookmarkCollection) {
+            return response()->json(['error' => 'Bookmark collection not found'], 404);
+        }
+
+        // Check authorization
+        Gate::authorize('removeItems', $bookmarkCollection);
+
+        $validated = $request->validate([
+            'modelType' => ['required', 'string'],
+            'hash' => ['required', 'string'],
+        ]);
+
+        $bookmarkableTypeEnum = \App\Enums\BookmarkableType::tryFrom(Str::kebab($validated['modelType']));
+        if (! $bookmarkableTypeEnum) {
+            return response()->json([
+                'error' => "Invalid model type: {$validated['modelType']}",
+            ], 400);
+        }
+
+        $bookmarkableType = $bookmarkableTypeEnum->getModelClass();
+        $model = $bookmarkableType::find($validated['hash']);
+
+        if (empty($model)) {
+            return response()->json([
+                'error' => "Item {$validated['modelType']} with hash {$validated['hash']} not found.",
+            ], 404);
+        }
+
+        // Remove any bookmark item in this collection for this model (not just current user's)
+        $bookmark = BookmarkItem::where('bookmark_collection_id', $bookmarkCollection->id)
+            ->where('model_id', $model->id)
+            ->where('model_type', $bookmarkableType)
+            ->first();
+
+        if (! $bookmark) {
+            return response()->json(['error' => 'Bookmark item not found in collection'], 404);
+        }
+
+        $bookmark->delete();
+        $bookmarkCollection->searchable();
+
+        return response()->json(['success' => 'Bookmark item removed from collection']);
     }
 
     public function getStepDetails(): Collection
