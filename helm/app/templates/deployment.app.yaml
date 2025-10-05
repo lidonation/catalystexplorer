@@ -197,4 +197,4 @@ spec:
             claimName: "{{ .Values.namespace }}-web-storage-pvc"
         - name: ssl-certs
           secret:
-            secretName: "wildcard-catalystexplorer-tls"
+            secretName: "wildcard-catalystexplorer-ssl"

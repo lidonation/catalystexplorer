@@ -444,9 +444,11 @@ Route::localized(
             Route::get('/{bookmarkCollection}/{type}/download-png', [BookmarksController::class, 'downloadPng'])
                 ->name('downloadPng');
             Route::get('/{bookmarkCollection}/{type?}', [BookmarksController::class, 'view'])
-                ->name('view');
-            Route::post('/{bookmarkCollection}/stream/{type?}', [BookmarksController::class, 'streamBookmarkItems'])
-                ->name('stream');
+                ->name('view')
+                ->where('bookmarkCollection', '[0-9a-fA-F-]+');
+            Route::post('/{bookmarkCollectionId}/stream/{type?}', [BookmarksController::class, 'streamBookmarkItems'])
+                ->name('stream')
+                ->where('bookmarkCollectionId', '[0-9a-fA-F-]+');
         });
 
         Route::prefix('charts')->as('charts.')->group(function () {

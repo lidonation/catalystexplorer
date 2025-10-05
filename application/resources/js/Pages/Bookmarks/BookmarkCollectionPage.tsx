@@ -280,6 +280,8 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
     const [activeShareModal, setActiveShareModal] = useState<boolean>(false);
 
     const [streamedProposals, setStreamedProposals] = useState<ProposalData[]>([]);
+    const [streamTimeout, setStreamTimeout] = useState(false);
+    const [streamStarted, setStreamStarted] = useState(false);
 
     const hasItems = (bookmarkCollection.items_count ?? 0) > 0;
     const isVoterList = bookmarkCollection.list_type === 'voter';
@@ -317,10 +319,31 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
 
     // Stream data for voter lists
     useEffect(() => {
-        if (isVoterList && type === 'proposals') {
+        if (isVoterList && type === 'proposals' && !streamStarted) {
+            setStreamTimeout(false);
+            setStreamedProposals([]);
+            setStreamStarted(true);
+
+            // Start streaming
+            console.log('Starting stream for voter list');
             send({});
+
+            // Fallback: if no data after 5 seconds, stop spinner and fall back to paginated data
+            const timeoutId = setTimeout(() => {
+                setStreamTimeout(true);
+                cancel();
+            }, 5000);
+
+            return () => clearTimeout(timeoutId);
         }
-    }, [isVoterList, bookmarkCollection.items_count]);
+        
+        // Reset stream state when changing between non-voter and voter lists
+        if (!isVoterList || type !== 'proposals') {
+            setStreamStarted(false);
+            setStreamTimeout(false);
+            setStreamedProposals([]);
+        }
+    }, [isVoterList, type, streamStarted]); // Removed items_count dependency to avoid race conditions
 
     // Parse streamed data
     useEffect(() => {
@@ -328,16 +351,24 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
             return;
         }
 
-        const lines = data.trim().split('\n');
-        const parsed: ProposalData[] = lines.map(line => {
+        const lines = data.trim().split('\n').filter(line => line.length > 0);
+        const parsed: ProposalData[] = [];
+        
+        for (const line of lines) {
             try {
-                return JSON.parse(line) as ProposalData;
+                const proposal = JSON.parse(line) as ProposalData;
+                if (proposal && proposal.id) {
+                    parsed.push(proposal);
+                }
             } catch (e) {
-                return null;
+                console.warn('Failed to parse streamed proposal data:', line);
             }
-        }).filter((x): x is ProposalData => x !== null);
+        }
 
-        setStreamedProposals(parsed);
+        if (parsed.length > 0) {
+            console.log('Setting streamed proposals:', parsed.length, 'items');
+            setStreamedProposals(parsed);
+        }
     }, [data, isVoterList]);
 
 
@@ -456,15 +487,25 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                     ? props.proposals.data.length
                     : 0;
 
-                // Use streamed data for voter lists
-                const proposalsData = isVoterList
-                    ? {
-                        ...props.proposals,
-                        data: streamedProposals,
+                // For voter lists, use streamed data if available, otherwise show loading or fallback
+                let proposalsData = props.proposals;
+                let showLoading = false;
+                
+                if (isVoterList) {
+                    if (streamedProposals.length > 0) {
+                        // Use streamed data
+                        proposalsData = {
+                            ...props.proposals,
+                            data: streamedProposals,
+                        };
+                    } else if (!streamTimeout && isStreaming) {
+                        // Still loading and streaming - show spinner
+                        showLoading = true;
                     }
-                    : props.proposals;
+                    // If streamTimeout is true, use the original paginated data as fallback
+                }
 
-                if (isVoterList && !streamedProposals.length) {
+                if (showLoading) {
                     return (
                         <div className="container flex justify-center items-center py-8">
                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
