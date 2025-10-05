@@ -9,6 +9,7 @@ use App\DataTransferObjects\CampaignData;
 use App\DataTransferObjects\CatalystTallyData;
 use App\DataTransferObjects\FundData;
 use App\DataTransferObjects\ProposalData;
+use App\Enums\CampaignsSortBy;
 use App\Enums\CatalystCurrencies;
 use App\Enums\ProposalFundingStatus;
 use App\Enums\ProposalSearchParams;
@@ -546,10 +547,15 @@ class FundsController extends Controller
 
             $sortField = 'tally';
             $sortDirection = 'desc';
+            $sortTable = 'catalyst_tallies';
             if ($sortParam) {
                 [$sortField, $sortDirection] = explode(':', $sortParam);
                 if ($sortField === 'votes_count') {
                     $sortField = 'tally';
+                    $sortTable = 'catalyst_tallies';
+                } elseif ($sortField === 'amount_requested') {
+                    $sortField = 'amount_requested';
+                    $sortTable = 'proposals';
                 }
             }
 
@@ -631,7 +637,7 @@ class FundsController extends Controller
             $offset = ($page - 1) * $perPage;
 
             $talliesQuery = (clone $baseQuery)
-                ->orderBy("catalyst_tallies.{$sortField}", $sortDirection)
+                ->orderBy("{$sortTable}.{$sortField}", $sortDirection)
                 ->orderBy('catalyst_tallies.id', 'asc')
                 ->offset($offset)
                 ->limit($perPage);

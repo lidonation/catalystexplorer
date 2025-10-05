@@ -228,11 +228,66 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
         }
     };
 
+    const handleBudgetSort = () => {
+        let direction: 'asc' | 'desc' | null = 'asc';
+
+        if (sortField === 'amount_requested') {
+            if (sortDirection === 'asc') {
+                direction = 'desc';
+            } else if (sortDirection === 'desc') {
+                direction = null;
+            } else {
+                direction = 'asc';
+            }
+        }
+
+        if (showPagination) {
+            if (!direction) {
+                const url = new URL(window.location.href);
+                url.searchParams.delete(ParamsEnum.SORTS);
+
+                router.get(url.pathname + url.search, {}, {
+                    preserveState: true,
+                    preserveScroll: true,
+                    replace: true
+                });
+
+                setFilters({
+                    param: ParamsEnum.SORTS,
+                    value: null,
+                    label: 'Sort'
+                });
+            } else {
+                setFilters({
+                    param: ParamsEnum.SORTS,
+                    value: `amount_requested:${direction}`,
+                    label: 'Sort'
+                });
+            }
+        } else {
+            if (!direction) {
+                setSortBy('ranking');
+                setSortOrder('asc');
+            } else {
+                setSortBy('budget');
+                setSortOrder(direction);
+            }
+        }
+    };
+
     const getVotesSortDirection = (): 'asc' | 'desc' | null => {
         if (showPagination) {
             return sortField === 'votes_count' ? (sortDirection as 'asc' | 'desc' | null) : null;
         } else {
             return sortBy === 'votes' ? sortOrder : null;
+        }
+    };
+
+    const getBudgetSortDirection = (): 'asc' | 'desc' | null => {
+        if (showPagination) {
+            return sortField === 'amount_requested' ? (sortDirection as 'asc' | 'desc' | null) : null;
+        } else {
+            return sortBy === 'budget' ? sortOrder : null;
         }
     };
 
@@ -546,7 +601,12 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
                                     <TableHeader label={t('activeFund.votingStats.categoryFundRank')} />
                                     <TableHeader label={t('activeFund.votingStats.approvalChance')} />
                                     <TableHeader label={t('activeFund.votingStats.fundingChance')} />
-                                    <TableHeader label={t('activeFund.votingStats.budget')} isLastColumn />
+                                    <SortableTableHeader
+                                        label={t('activeFund.votingStats.budget')}
+                                        isLastColumn
+                                        sortDirection={getBudgetSortDirection()}
+                                        onSort={handleBudgetSort}
+                                    />
                                 </tr>
                             </thead>
                             <tbody className="whitespace-nowrap">
