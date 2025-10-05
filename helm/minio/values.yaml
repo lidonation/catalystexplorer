@@ -503,7 +503,7 @@ ingress:
         traefik.ingress.kubernetes.io/router.entrypoints: "websecure,web"
         traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect-http-to-https@kubernetescrd
     tls:
-        - secretName: wildcard-catalystexplorer-tls
+        - secretName: wildcard-catalystexplorer-ssl
           hosts:
           - ms3.catalystexplorer.com
     host: ms3.catalystexplorer.com
@@ -517,7 +517,7 @@ ingress:
         traefik.ingress.kubernetes.io/router.entrypoints: "websecure,web"
         traefik.ingress.kubernetes.io/router.middlewares: traefik-redirect-http-to-https@kubernetescrd
     tls:
-      - secretName: wildcard-catalystexplorer-tls
+      - secretName: wildcard-catalystexplorer-ssl
         hosts:
           - mc.catalystexplorer.com
     host: mc.catalystexplorer.com

@@ -8,6 +8,7 @@ use App\Actions\WeightedRandomizeQuickPitches;
 use App\DataTransferObjects\CampaignData;
 use App\DataTransferObjects\CatalystTallyData;
 use App\DataTransferObjects\FundData;
+use App\DataTransferObjects\MetricData;
 use App\DataTransferObjects\ProposalData;
 use App\Enums\CampaignsSortBy;
 use App\Enums\CatalystCurrencies;
