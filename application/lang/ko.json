@@ -131,6 +131,7 @@
     "approved": "승인됨",
     "completed": "완료됨",
     "loginPrompt": "시작하려면 로그인하세요",
+    "ballotSupportBanner": "투표에서 이 도구를 지원해 주세요. 검색: 'All-in-One Catalyst' 또는 'lido'",
     "back": "뒤로",
     "pdf.header.defaultTitle": "문서 제목",
     "pdf.header.defaultSubtitle": "투표 목록 내보내기",

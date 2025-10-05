@@ -131,6 +131,7 @@
     "approved": "Aprovado",
     "completed": "Concluído",
     "loginPrompt": "Faça login para começar",
+    "ballotSupportBanner": "Por favor, apoie esta ferramenta na votação. Procure por: 'All-in-One Catalyst' ou 'lido'",
     "back": "Voltar",
     "pdf.header.defaultTitle": "Título do Documento",
     "pdf.header.defaultSubtitle": "Exportação de Lista de Votação",

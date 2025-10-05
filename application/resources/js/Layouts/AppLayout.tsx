@@ -1,6 +1,7 @@
 import Button from '@/Components/atoms/Button';
 import CatalystLogo from '@/Components/atoms/CatalystLogo';
 import Breadcrumbs, { generateBreadcrumbs } from '@/Components/Breadcrumbs';
+import GlobalBanner from '@/Components/GlobalBanner';
 import GraphButton from '@/Components/GraphButton';
 import DesktopSidebar from '@/Components/layout/DesktopSidebar';
 import Footer from '@/Components/layout/Footer';
@@ -68,6 +69,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
     return (
         <MainLayout>
+            <GlobalBanner />
             <GlobalErrorProvider>
                 {/* Sidebar for small screens */}
             <Dialog
