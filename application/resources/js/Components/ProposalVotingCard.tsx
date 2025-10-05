@@ -4,7 +4,7 @@ import ValueLabel from '@/Components/atoms/ValueLabel';
 import { VoteEnum } from '@/enums/votes-enums';
 import { currency } from '@/utils/currency';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { Check } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 import React from 'react';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
@@ -13,6 +13,8 @@ interface ProposalVotingCardProps {
     isSelected: boolean;
     onVote: (id: string, vote: number | null) => void;
     currentVote?: number | null;
+    onRemove?: (id: string) => void;
+    showRemoveButton?: boolean;
 }
 
 const ProposalVotingCard: React.FC<ProposalVotingCardProps> = ({
@@ -20,6 +22,8 @@ const ProposalVotingCard: React.FC<ProposalVotingCardProps> = ({
     isSelected,
     onVote,
     currentVote,
+    onRemove,
+    showRemoveButton = false,
 }) => {
     const { t } = useLaravelReactI18n();
 
@@ -44,7 +48,22 @@ const ProposalVotingCard: React.FC<ProposalVotingCardProps> = ({
     );
 
     return (
-        <div className="mr-2 mb-4 ml-4 flex items-center rounded-lg border border-gray-200 p-4 shadow-sm">
+        <div className="mr-2 mb-4 ml-4 flex items-center rounded-lg border border-gray-200 p-4 shadow-sm relative">
+            {showRemoveButton && onRemove && (
+                <button
+                    className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-sm hover:cursor-pointer bg-red-100 hover:bg-red-200 text-red-600 hover:text-red-700 transition-colors"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        if (typeof proposal.id === 'string') {
+                            onRemove(proposal.id);
+                        }
+                    }}
+                    title="Remove from collection"
+                    aria-label="Remove from collection"
+                >
+                    <X className="h-4 w-4" />
+                </button>
+            )}
             <div
                 className={`mr-4 flex h-4 w-4 flex-shrink-0 cursor-pointer items-center justify-center rounded border ${isSelected ? 'bg-primary border-primary' : 'border-gray-300'}`}
                 onClick={(e) => {

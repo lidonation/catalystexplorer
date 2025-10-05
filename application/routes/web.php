@@ -203,6 +203,8 @@ Route::localized(
                         ->name('saveRationales');
                     Route::post('/sign-ballot', [VoterListController::class, 'signBallot'])
                         ->name('signBallot');
+                    Route::post('/{bookmarkCollection}/remove-bookmark-item', [VoterListController::class, 'removeBookmarkItem'])
+                        ->name('removeBookmarkItem');
                 });
 
             Route::prefix('/create-service/steps')->as('createService.')

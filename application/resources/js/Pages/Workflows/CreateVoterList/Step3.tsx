@@ -86,6 +86,48 @@ const Step3: React.FC<Step3Props> = ({
         });
     };
 
+    const handleRemoveBookmark = async (proposalId: string) => {
+        if (!bookmarkHash) return;
+
+        try {
+            const response = await fetch(
+                generateLocalizedRoute('workflows.createVoterList.removeBookmarkItem', {
+                    bookmarkCollection: bookmarkHash,
+                }),
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify({
+                        modelType: 'proposals',
+                        hash: proposalId,
+                    }),
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to remove bookmark item');
+            }
+
+            // Remove from selected proposals list
+            setSelectedIds((prev) => 
+                prev.filter((item) => item.id !== proposalId)
+            );
+            
+            // Reload the page to refresh the proposal list
+            router.reload({ only: ['proposals', 'selectedProposals'] });
+            
+        } catch (error) {
+            console.error('Error removing bookmark item:', error);
+            // You might want to show a toast notification here
+        }
+    };
+
     const handleSearch = (search: string) => {
         const updatedFilters: Record<
             string,
@@ -171,6 +213,10 @@ const Step3: React.FC<Step3Props> = ({
                                                     item.id == proposal.id,
                                             );
 
+                                            const isFromBookmarkCollection = selectedProposals.some(
+                                                (sp) => sp.id === proposal.id
+                                            );
+                                            
                                             return (
                                                 <ProposalVotingCard
                                                     key={proposal.id}
@@ -186,6 +232,8 @@ const Step3: React.FC<Step3Props> = ({
                                                         handleVote(hash, vote)
                                                     }
                                                     currentVote={selected?.vote}
+                                                    onRemove={handleRemoveBookmark}
+                                                    showRemoveButton={isFromBookmarkCollection && !!bookmarkHash}
                                                 />
                                             );
                                         })
