@@ -1,3 +1,10 @@
+## [1.39.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.39.0...v1.39.1) (2025-10-05)
+
+
+### Bug Fixes
+
+* ssl cert update, private bookmark collection not loading, optimized bookmark list ([d95dd48](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/d95dd4847ac5ffa0317b47dfcd65f58e487dff62))
+
 # [1.39.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.38.1...v1.39.0) (2025-10-05)
 
 
