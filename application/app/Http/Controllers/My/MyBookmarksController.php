@@ -282,7 +282,9 @@ class MyBookmarksController extends Controller
         $search = $this->queryParams[ProposalSearchParams::QUERY()->value] ?? null;
         $sort = $this->queryParams[ProposalSearchParams::SORTS()->value] ?? '-created_at';
 
+        // Explicitly query only non-deleted collections
         $query = BookmarkCollection::allVisibilities()
+            ->whereNull('deleted_at') // Explicitly exclude soft-deleted collections
             ->where(function ($query) use ($userId) {
                 $query->where('user_id', $userId)
                     ->orWhereHas('collaborators', function ($query) use ($userId) {
@@ -442,6 +444,7 @@ class MyBookmarksController extends Controller
             $userId = Auth::id();
 
             $collections = BookmarkCollection::allVisibilities()
+                ->whereNull('deleted_at') // Explicitly exclude soft-deleted collections
                 ->where(function ($query) use ($userId) {
                     $query->where('user_id', $userId)
                         ->orWhereHas('contributors', function ($query) use ($userId) {
@@ -560,6 +563,9 @@ class MyBookmarksController extends Controller
 
     public function deleteCollection(BookmarkCollection $bookmarkCollection, Request $request)
     {
+        // Add simple debugging first - write to a file we can easily check
+        file_put_contents('/tmp/delete_debug.log', '['.now().'] DELETE CONTROLLER CALLED - Collection: '.$bookmarkCollection->id.' - User: '.Auth::id()."\n", FILE_APPEND);
+
         // Add comprehensive logging for debugging
         \Log::info('Starting collection deletion', [
             'collection_id' => $bookmarkCollection->id,
@@ -652,6 +658,7 @@ class MyBookmarksController extends Controller
                 'delete_result' => $deleted,
                 'collection_exists_after_delete' => BookmarkCollection::find($bookmarkCollection->id) !== null,
                 'collection_exists_with_trashed' => BookmarkCollection::withTrashed()->find($bookmarkCollection->id) !== null,
+                'collection_deleted_at' => BookmarkCollection::withTrashed()->find($bookmarkCollection->id)?->deleted_at,
             ]);
 
             // Commit the transaction
@@ -662,34 +669,17 @@ class MyBookmarksController extends Controller
             ]);
 
             // Handle different response types
-            if ($request->wantsJson() || $request->ajax()) {
-                \Log::info('Returning JSON success response', [
-                    'collection_id' => $bookmarkCollection->id,
-                ]);
-
-                return response()->json([
-                    'type' => 'success',
-                    'message' => 'Collection deleted successfully',
-                ]);
-            }
-
-            $noRedirect = $request->boolean('no_redirect', false);
-            if ($noRedirect) {
-                \Log::info('Returning JSON success response (no_redirect=true)', [
-                    'collection_id' => $bookmarkCollection->id,
-                ]);
-
-                return response()->json([
-                    'type' => 'success',
-                    'message' => 'Collection deleted successfully',
-                ]);
-            }
-
-            \Log::info('Redirecting to lists index after successful deletion', [
+            // Since this is an API route, always return JSON
+            \Log::info('Returning JSON success response for API route', [
                 'collection_id' => $bookmarkCollection->id,
+                'request_wants_json' => $request->wantsJson(),
+                'request_is_ajax' => $request->ajax(),
             ]);
 
-            return to_route('my.lists.index');
+            return response()->json([
+                'type' => 'success',
+                'message' => 'Collection deleted successfully',
+            ]);
 
         } catch (\Exception $e) {
             // Rollback transaction on error
@@ -710,26 +700,16 @@ class MyBookmarksController extends Controller
             // Log the error for debugging
             report($e);
 
-            if ($request->wantsJson() || $request->ajax()) {
-                \Log::info('Returning JSON error response due to exception', [
-                    'collection_id' => $bookmarkCollection->id,
-                ]);
-
-                return response()->json([
-                    'type' => 'error',
-                    'message' => 'Failed to delete collection. Please try again.',
-                    'debug' => config('app.debug') ? $e->getMessage() : null,
-                ], 500);
-            }
-
-            \Log::info('Returning back with error message due to exception', [
+            // Since this is an API route, always return JSON
+            \Log::info('Returning JSON error response due to exception', [
                 'collection_id' => $bookmarkCollection->id,
             ]);
 
-            return back()->with(
-                'error',
-                'Failed to delete collection. Please try again.',
-            );
+            return response()->json([
+                'type' => 'error',
+                'message' => 'Failed to delete collection. Please try again.',
+                'debug' => config('app.debug') ? $e->getMessage() : null,
+            ], 500);
         }
     }
 }

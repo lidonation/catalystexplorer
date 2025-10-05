@@ -109,18 +109,41 @@ const BookmarkCollectionPage = (props: BookmarkCollectionPageProps) => {
         );
     };
 
-    const handleDelete = () => {
-        setActiveConfirm(true);
+    const handleDeleteConfirmed = () => {
+        console.log('=== DELETE DEBUG (handleDeleteConfirmed) ===');
+        console.log('Collection ID:', bookmarkCollection.id);
+        
+        const deleteUrl = route('api.collections.delete', {
+            bookmarkCollection: bookmarkCollection.id,
+        });
+        console.log('Generated Delete URL:', deleteUrl);
+        
+        setActiveConfirm(false);
+        
+        console.log('Making router.post request...');
         router.post(
-            route('api.collections.delete', {
-                bookmarkCollection: bookmarkCollection.id,
-            }),
+            deleteUrl,
             {},
             {
-                onSuccess: () =>
-                    router.get(generateLocalizedRoute('my.lists.index')),
+                onStart: () => {
+                    console.log('Request started');
+                },
+                onSuccess: (response) => {
+                    console.log('Request successful:', response);
+                    // Use window.location to force a hard redirect to the lists page
+                    window.location.href = '/en/my/lists';
+                },
+                onError: (errors) => {
+                    console.error('Request failed:', errors);
+                    setActiveConfirm(false);
+                    // You might want to show an error message to the user here
+                },
+                onFinish: () => {
+                    console.log('Request finished');
+                },
             },
         );
+        console.log('=== DELETE DEBUG END ===');
     };
 
     const preselected = () => {
@@ -201,7 +224,10 @@ const BookmarkCollectionPage = (props: BookmarkCollectionPageProps) => {
                         <ListSettingsForm
                             bookmarkCollection={bookmarkCollection}
                             handleSave={handleUpdate}
-                            handleDelete={() => setActiveConfirm(true)}
+                            handleDelete={() => {
+                                console.log('Delete button clicked in main modal');
+                                setActiveConfirm(true);
+                            }}
                             pendingInvitations={props.pendingInvitations}
                         />
                     </Modal>
@@ -227,7 +253,7 @@ const BookmarkCollectionPage = (props: BookmarkCollectionPageProps) => {
                                 </PrimaryButton>
 
                                 <Button
-                                    onClick={handleDelete}
+                                    onClick={handleDeleteConfirmed}
                                     className="bg-danger-mid text-content-light flex-1 rounded-md py-1.5 font-semibold"
                                 >
                                     {t('bookmarks.deletesList')}
@@ -290,18 +316,41 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
 
     const { data, isFetching, isStreaming, send, cancel } = useStream('stream');
 
-    const handleDelete = () => {
+    const handleConfirmedDelete = () => {
+        console.log('=== DELETE DEBUG START ===');
+        console.log('Collection ID:', bookmarkCollection.id);
+        
+        const deleteUrl = route('api.collections.delete', {
+            bookmarkCollection: bookmarkCollection.id,
+        });
+        console.log('Generated Delete URL:', deleteUrl);
+        
         setActiveConfirm(false);
+        
+        console.log('Making router.post request...');
         router.post(
-            route('api.collections.delete', {
-                bookmarkCollection: bookmarkCollection.id,
-            }),
+            deleteUrl,
             {},
             {
-                onSuccess: () =>
-                    router.get(generateLocalizedRoute('my.lists.index')),
+                onStart: () => {
+                    console.log('Request started');
+                },
+                onSuccess: (response) => {
+                    console.log('Request successful:', response);
+                    // Use window.location to force a hard redirect to the lists page
+                    window.location.href = '/en/my/lists';
+                },
+                onError: (errors) => {
+                    console.error('Request failed:', errors);
+                    setActiveConfirm(false);
+                    // You might want to show an error message to the user here
+                },
+                onFinish: () => {
+                    console.log('Request finished');
+                },
             },
         );
+        console.log('=== DELETE DEBUG END ===');
     };
 
     const getPublishToIpfsTooltip = () => {
@@ -620,6 +669,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                         );
                     }}
                     handleDelete={() => {
+                        console.log('Delete button clicked in modal');
                         setActiveEditModal(false);
                         setActiveConfirm(true);
                     }}
@@ -649,7 +699,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                         </PrimaryButton>
 
                         <Button
-                            onClick={handleDelete}
+                            onClick={handleConfirmedDelete}
                             className="bg-danger-mid text-content-light flex-1 rounded-md py-1.5 font-semibold"
                         >
                             {t('bookmarks.deletesList')}
