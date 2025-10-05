@@ -356,8 +356,16 @@ class BookmarksController extends Controller
         return $pagination->toArray();
     }
 
-    public function manage(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals'): Response
+    public function manage(string $bookmarkCollectionId, Request $request, ?string $type = 'proposals'): Response
     {
+        // Find collection bypassing global scopes to access private collections
+        $bookmarkCollection = BookmarkCollection::withoutGlobalScope(PublicVisibilityScope::class)
+            ->find($bookmarkCollectionId);
+
+        if (! $bookmarkCollection) {
+            abort(404);
+        }
+
         Gate::authorize('update', $bookmarkCollection);
 
         $this->setFilters($request);
@@ -897,7 +905,12 @@ class BookmarksController extends Controller
             abort(404);
         }
 
-        $bookmarkCollection = BookmarkCollection::findOrFail($collectionId);
+        $bookmarkCollection = BookmarkCollection::withoutGlobalScope(PublicVisibilityScope::class)
+            ->find($collectionId);
+
+        if (! $bookmarkCollection) {
+            abort(404);
+        }
         $invitations = $this->getPendingInvitations($bookmarkCollection);
 
         // Find invitation by token
@@ -974,7 +987,8 @@ class BookmarksController extends Controller
                 ->withErrors(['message' => 'No invitation acceptance found.']);
         }
 
-        $bookmarkCollection = BookmarkCollection::find($collectionId);
+        $bookmarkCollection = BookmarkCollection::withoutGlobalScope(PublicVisibilityScope::class)
+            ->find($collectionId);
 
         if (! $bookmarkCollection) {
             return redirect()->route('lists.index')
@@ -1255,8 +1269,32 @@ class BookmarksController extends Controller
         ];
     }
 
-    public function downloadPdf(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals')
+    public function downloadPdf(string $bookmarkCollectionId, Request $request, ?string $type = 'proposals')
     {
+        // Find collection bypassing global scopes to access private collections
+        $bookmarkCollection = BookmarkCollection::withoutGlobalScope(PublicVisibilityScope::class)
+            ->find($bookmarkCollectionId);
+
+        if (! $bookmarkCollection) {
+            abort(404);
+        }
+
+        // Check access permissions based on visibility and authentication
+        if ($bookmarkCollection->visibility === 'public') {
+            // Public collections are accessible to everyone - no additional checks needed
+        } elseif (Auth::check()) {
+            // Private/unlisted collections require authentication and authorization
+            try {
+                Gate::authorize('view', $bookmarkCollection);
+            } catch (AuthorizationException $e) {
+                // If authorization fails, return 404 to avoid leaking information
+                abort(404);
+            }
+        } else {
+            // Private/unlisted collection accessed by guest user - return 404
+            abort(404);
+        }
+
         $defaultPdfColumns = ['title', 'budget', 'category', 'openSourced', 'teams', 'my_vote'];
         $data = $this->prepareDownloadData($bookmarkCollection, $request, $type, $defaultPdfColumns);
         $data = $this->prepareDownloadData($bookmarkCollection, $request, $type, $defaultPdfColumns);
@@ -1326,8 +1364,32 @@ class BookmarksController extends Controller
             ->download($filename);
     }
 
-    public function downloadPng(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals')
+    public function downloadPng(string $bookmarkCollectionId, Request $request, ?string $type = 'proposals')
     {
+        // Find collection bypassing global scopes to access private collections
+        $bookmarkCollection = BookmarkCollection::withoutGlobalScope(PublicVisibilityScope::class)
+            ->find($bookmarkCollectionId);
+
+        if (! $bookmarkCollection) {
+            abort(404);
+        }
+
+        // Check access permissions based on visibility and authentication
+        if ($bookmarkCollection->visibility === 'public') {
+            // Public collections are accessible to everyone - no additional checks needed
+        } elseif (Auth::check()) {
+            // Private/unlisted collections require authentication and authorization
+            try {
+                Gate::authorize('view', $bookmarkCollection);
+            } catch (AuthorizationException $e) {
+                // If authorization fails, return 404 to avoid leaking information
+                abort(404);
+            }
+        } else {
+            // Private/unlisted collection accessed by guest user - return 404
+            abort(404);
+        }
+
         $defaultPngColumns = ['title', 'budget', 'category', 'openSourced', 'teams'];
         $data = $this->prepareDownloadData($bookmarkCollection, $request, $type, $defaultPngColumns);
 

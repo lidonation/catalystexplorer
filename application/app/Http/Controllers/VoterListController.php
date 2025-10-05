@@ -103,6 +103,13 @@ class VoterListController extends Controller
             $modifiedRequest->merge([
                 QueryParamsEnum::FUNDS()->value => $fund->id,
             ]);
+        } elseif ($bookmarkCollection && $bookmarkCollection->fund_id) {
+            // When modifying an existing voter list, limit results to the collection's fund
+            $modifiedRequest->merge([
+                QueryParamsEnum::FUNDS()->value => $bookmarkCollection->fund_id,
+            ]);
+            $fund = Fund::find($bookmarkCollection->fund_id);
+            $fundSlug = $fund?->slug;
         }
 
         $filters = app(GetUserFilters::class)($modifiedRequest);
@@ -176,13 +183,41 @@ class VoterListController extends Controller
             }
         }
 
+        // Get the original request parameters for frontend filtering
+        $frontendFilters = $request->only([
+            ProposalSearchParams::QUERY()->value,
+            ProposalSearchParams::PAGE()->value,
+            ProposalSearchParams::FUNDS()->value,
+            ProposalSearchParams::CAMPAIGNS()->value,
+            ProposalSearchParams::TAGS()->value,
+            ProposalSearchParams::SORTS()->value,
+            ProposalSearchParams::FUNDING_STATUS()->value,
+            ProposalSearchParams::PROJECT_STATUS()->value,
+            ProposalSearchParams::OPENSOURCE_PROPOSALS()->value,
+            ProposalSearchParams::TYPE()->value,
+            ProposalSearchParams::QUICK_PITCHES()->value,
+            ProposalSearchParams::BUDGETS()->value,
+            ProposalSearchParams::IDEASCALE_PROFILES()->value,
+            ProposalSearchParams::CATALYST_PROFILES()->value,
+            ProposalSearchParams::GROUPS()->value,
+            ProposalSearchParams::COMMUNITIES()->value,
+            ProposalSearchParams::PROJECT_LENGTH()->value,
+            ProposalSearchParams::COHORT()->value,
+            QueryParamsEnum::BOOKMARK_COLLECTION()->value,
+        ]);
+
+        // Ensure fund filter is set when modifying an existing voter list
+        if ($bookmarkCollection && $bookmarkCollection->fund_id && ! $frontendFilters[ProposalSearchParams::FUNDS()->value]) {
+            $frontendFilters[ProposalSearchParams::FUNDS()->value] = $bookmarkCollection->fund_id;
+        }
+
         return Inertia::render('Workflows/CreateVoterList/Step3', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
             'proposals' => $proposals,
             'campaigns' => $campaigns ?? [],
             'selectedProposals' => $selectedProposals,
-            'filters' => $filters,
+            'filters' => $frontendFilters,
             'bookmarkHash' => $bookmarkId,
             'fundSlug' => $fundSlug,
         ]);
@@ -231,11 +266,17 @@ class VoterListController extends Controller
     {
         $bookmarkHash = $request->input(QueryParamsEnum::BOOKMARK_COLLECTION()->value);
 
+        $bookmarkCollection = null;
+        if ($bookmarkHash) {
+            $bookmarkCollection = BookmarkCollection::allVisibilities()->find($bookmarkHash);
+        }
+
         return Inertia::render('Workflows/CreateVoterList/Step5', [
             'stepDetails' => [],
             'activeStep' => intval($request->step),
             'bookmarkHash' => $bookmarkHash,
             'bookmarkId' => $bookmarkHash,
+            'bookmarkCollection' => $bookmarkCollection ? BookmarkCollectionData::from($bookmarkCollection) : null,
         ]);
     }
 
