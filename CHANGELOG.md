@@ -1,3 +1,10 @@
+# [1.41.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.40.0...v1.41.0) (2025-10-06)
+
+
+### Features
+
+* add funding status to the live tally table ([43747a6](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/43747a64ca87a5376a5137530c1764c23b562823))
+
 # [1.40.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.39.3...v1.40.0) (2025-10-06)
 
 
