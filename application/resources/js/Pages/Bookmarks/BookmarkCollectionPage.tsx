@@ -95,56 +95,7 @@ const BookmarkCollectionPage = (props: BookmarkCollectionPageProps) => {
         EventBus.on('listItem-removed', () => setActiveTab(activeTab));
     }, []);
 
-    const [activeEditModal, setActiveEditModal] = useState<boolean>(false);
-    const [activeConfirm, setActiveConfirm] = useState<boolean>(false);
-
-    const handleUpdate = (form: ListForm) => {
-        form.post(
-            route('api.collections.update', {
-                bookmarkCollection: bookmarkCollection.id,
-            }),
-            {
-                onSuccess: () => setActiveTab(activeTab),
-            },
-        );
-    };
-
-    const handleDeleteConfirmed = () => {
-        console.log('=== DELETE DEBUG (handleDeleteConfirmed) ===');
-        console.log('Collection ID:', bookmarkCollection.id);
-        
-        const deleteUrl = route('api.collections.delete', {
-            bookmarkCollection: bookmarkCollection.id,
-        });
-        console.log('Generated Delete URL:', deleteUrl);
-        
-        setActiveConfirm(false);
-        
-        console.log('Making router.post request...');
-        router.post(
-            deleteUrl,
-            {},
-            {
-                onStart: () => {
-                    console.log('Request started');
-                },
-                onSuccess: (response) => {
-                    console.log('Request successful:', response);
-                    // Use window.location to force a hard redirect to the lists page
-                    window.location.href = '/en/my/lists';
-                },
-                onError: (errors) => {
-                    console.error('Request failed:', errors);
-                    setActiveConfirm(false);
-                    // You might want to show an error message to the user here
-                },
-                onFinish: () => {
-                    console.log('Request finished');
-                },
-            },
-        );
-        console.log('=== DELETE DEBUG END ===');
-    };
+    // Note: Edit and delete functionality is handled in BookmarkCollectionContent component
 
     const preselected = () => {
         switch (props.type) {
@@ -212,57 +163,7 @@ const BookmarkCollectionPage = (props: BookmarkCollectionPageProps) => {
                 </div>
             )}
 
-            {/* modals - only show in manage mode */}
-            {mode === 'manage' && (
-                <>
-                    <Modal
-                        title={t('bookmarks.editList')}
-                        isOpen={!!activeEditModal}
-                        onClose={() => setActiveEditModal(false)}
-                        logo={false}
-                    >
-                        <ListSettingsForm
-                            bookmarkCollection={bookmarkCollection}
-                            handleSave={handleUpdate}
-                            handleDelete={() => {
-                                console.log('Delete button clicked in main modal');
-                                setActiveConfirm(true);
-                            }}
-                            pendingInvitations={props.pendingInvitations}
-                        />
-                    </Modal>
-
-                    <Modal
-                        title={t('bookmarks.editList')}
-                        isOpen={!!activeConfirm}
-                        onClose={() => setActiveConfirm(false)}
-                        logo={false}
-                        centered
-                    >
-                        <div className="flex flex-col gap-4 p-4 text-center">
-                            <Title level="5">{t('bookmarks.confirmDelete')}</Title>
-
-                            <p>{t('bookmarks.permanentDelete')}</p>
-
-                            <div className="flex justify-between gap-4">
-                                <PrimaryButton
-                                    onClick={() => setActiveConfirm(false)}
-                                    className="bg-primary flex-1 font-semibold"
-                                >
-                                    {t('Cancel')}
-                                </PrimaryButton>
-
-                                <Button
-                                    onClick={handleDeleteConfirmed}
-                                    className="bg-danger-mid text-content-light flex-1 rounded-md py-1.5 font-semibold"
-                                >
-                                    {t('bookmarks.deletesList')}
-                                </Button>
-                            </div>
-                        </div>
-                    </Modal>
-                </>
-            )}
+            {/* Note: Delete modals are handled in BookmarkCollectionContent component */}
         </div>
     );
 };
@@ -274,6 +175,11 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
     const { auth } = usePage().props;
     const user = bookmarkCollection?.author;
     const isAuthor = auth?.user?.id == user?.id;
+    
+    // Get the delete route at component level (following Rules of Hooks)
+    const deleteRoute = useLocalizedRoute('my.bookmarks.collections.destroy', {
+        id: bookmarkCollection.id,
+    });
 
     // Check if the current user is a contributor
     const isContributor = bookmarkCollection?.collaborators?.some(
@@ -317,40 +223,17 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
     const { data, isFetching, isStreaming, send, cancel } = useStream('stream');
 
     const handleConfirmedDelete = () => {
-        console.log('=== DELETE DEBUG START ===');
-        console.log('Collection ID:', bookmarkCollection.id);
-        
-        const deleteUrl = route('api.collections.delete', {
-            bookmarkCollection: bookmarkCollection.id,
-        });
-        console.log('Generated Delete URL:', deleteUrl);
-        
         setActiveConfirm(false);
-        
-        console.log('Making router.post request...');
-        router.post(
-            deleteUrl,
-            {},
-            {
-                onStart: () => {
-                    console.log('Request started');
-                },
-                onSuccess: (response) => {
-                    console.log('Request successful:', response);
-                    // Use window.location to force a hard redirect to the lists page
-                    window.location.href = '/en/my/lists';
-                },
-                onError: (errors) => {
-                    console.error('Request failed:', errors);
-                    setActiveConfirm(false);
-                    // You might want to show an error message to the user here
-                },
-                onFinish: () => {
-                    console.log('Request finished');
-                },
+
+        router.delete(deleteRoute, {
+            onSuccess: (response) => {
+                // Handle successful deletion
             },
-        );
-        console.log('=== DELETE DEBUG END ===');
+            onError: (errors) => {
+                // Handle errors
+                console.error('Failed to delete collection:', errors);
+            }
+        });
     };
 
     const getPublishToIpfsTooltip = () => {
@@ -385,7 +268,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
 
             return () => clearTimeout(timeoutId);
         }
-        
+
         // Reset stream state when changing between non-voter and voter lists
         if (!isVoterList || type !== 'proposals') {
             setStreamStarted(false);
@@ -402,7 +285,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
 
         const lines = data.trim().split('\n').filter(line => line.length > 0);
         const parsed: ProposalData[] = [];
-        
+
         for (const line of lines) {
             try {
                 const proposal = JSON.parse(line) as ProposalData;
@@ -539,7 +422,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                 // For voter lists, use streamed data if available, otherwise show loading or fallback
                 let proposalsData = props.proposals;
                 let showLoading = false;
-                
+
                 if (isVoterList) {
                     if (streamedProposals.length > 0) {
                         // Use streamed data

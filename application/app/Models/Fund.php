@@ -167,6 +167,11 @@ class Fund extends Model implements HasMedia
         return $this->hasMany(Campaign::class, 'fund_id', 'id');
     }
 
+    public function catalyst_tallies(): HasMany
+    {
+        return $this->hasMany(CatalystTally::class, 'context_id', 'id');
+    }
+
     public function campaignsUuid(): HasMany
     {
         return $this->hasMany(Campaign::class, 'fund_uuid', 'uuid');
