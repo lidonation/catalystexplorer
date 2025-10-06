@@ -1,3 +1,10 @@
+# [1.40.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.39.3...v1.40.0) (2025-10-06)
+
+
+### Features
+
+* add tallies api resource ([7eed3a7](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/7eed3a7870bcd2f30eb27b542d00a88591cecc44))
+
 ## [1.39.3](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.39.2...v1.39.3) (2025-10-05)
 
 
