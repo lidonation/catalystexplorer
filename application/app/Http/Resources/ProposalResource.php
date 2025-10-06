@@ -22,6 +22,7 @@ class ProposalResource extends JsonResource
             'slug' => $this->slug,
             'category' => $this->category,
             'status' => $this->status,
+            'funding_status' => $this->funding_status,
             'yes_votes_count' => $this->yes_votes_count,
             'no_votes_count' => $this->no_votes_count,
             'amount_requested' => $this->amount_requested,

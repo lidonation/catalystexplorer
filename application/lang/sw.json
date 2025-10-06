@@ -1511,6 +1511,7 @@
     "activeFund.votingStats.votesCast": "Kura Zilizopigwa",
     "activeFund.votingStats.proposal": "Pendekezo",
     "activeFund.votingStats.approvalChance": "Nafasi ya Idhini",
+    "activeFund.votingStats.fundingStatus": "Hali ya Ufadhili",
     "activeFund.votingStats.fundingChance": "Nafasi ya Ufadhili",
     "activeFund.votingStats.budget": "Bajeti",
     "activeFund.votingStats.totalVotesCast": "Jumla ya Kura Zilizopigwa",

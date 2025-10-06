@@ -1471,6 +1471,7 @@
     "activeFund.votingStats.votesCast": "투표 수",
     "activeFund.votingStats.proposal": "제안",
     "activeFund.votingStats.approvalChance": "승인 가능성",
+    "activeFund.votingStats.fundingStatus": "자금 지원 상태",
     "activeFund.votingStats.fundingChance": "자금 지원 가능성",
     "activeFund.votingStats.budget": "예산",
     "activeFund.votingStats.totalVotesCast": "총 투표 수",

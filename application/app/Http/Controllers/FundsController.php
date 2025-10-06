@@ -584,6 +584,7 @@ class FundsController extends Controller
                     'proposals.slug as proposal_slug',
                     'proposals.amount_requested',
                     'proposals.currency as proposal_currency',
+                    'proposals.funding_status as proposal_funding_status',
                     'proposals.campaign_id',
                     'campaigns.id as campaign_id',
                     'campaigns.title as campaign_title',
@@ -666,6 +667,7 @@ class FundsController extends Controller
 
                     $proposal->amount_requested = $tally->amount_requested;
                     $proposal->currency = $tally->proposal_currency;
+                    $proposal->funding_status = $tally->proposal_funding_status;
                     $proposal->campaign_id = $tally->campaign_id;
 
                     if ($tally->campaign_id) {

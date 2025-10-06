@@ -1472,6 +1472,7 @@
     "activeFund.votingStats.votesCast": "投票数",
     "activeFund.votingStats.proposal": "提案",
     "activeFund.votingStats.approvalChance": "通过机会",
+    "activeFund.votingStats.fundingStatus": "资助状态",
     "activeFund.votingStats.fundingChance": "资助机会",
     "activeFund.votingStats.budget": "预算",
     "activeFund.votingStats.totalVotesCast": "总投票数",

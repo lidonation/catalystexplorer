@@ -1445,6 +1445,7 @@
     "activeFund.votingStats.votesCast": "Abgegebene Stimmen",
     "activeFund.votingStats.proposal": "Vorschlag",
     "activeFund.votingStats.approvalChance": "Genehmigungs-Chance",
+    "activeFund.votingStats.fundingStatus": "Finanzierungsstatus",
     "activeFund.votingStats.fundingChance": "Finanzierungs-Chance",
     "activeFund.votingStats.budget": "Budget",
     "activeFund.votingStats.totalVotesCast": "Gesamtzahl abgegebener Stimmen",
