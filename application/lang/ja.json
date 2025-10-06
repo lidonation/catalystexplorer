@@ -1449,6 +1449,7 @@
     "activeFund.votingStats.votesCast": "投票数",
     "activeFund.votingStats.proposal": "提案",
     "activeFund.votingStats.approvalChance": "承認率",
+    "activeFund.votingStats.fundingStatus": "資金提供ステータス",
     "activeFund.votingStats.fundingChance": "資金提供率",
     "activeFund.votingStats.budget": "予算",
     "activeFund.votingStats.totalVotesCast": "総投票数",

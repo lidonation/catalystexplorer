@@ -372,6 +372,7 @@
     "activeFund.votingStats.votesCast": "الأصوات المدلاة",
     "activeFund.votingStats.proposal": "الاقتراح",
     "activeFund.votingStats.approvalChance": "فرصة الموافقة",
+    "activeFund.votingStats.fundingStatus": "حالة التمويل",
     "activeFund.votingStats.fundingChance": "فرصة التمويل",
     "activeFund.votingStats.budget": "الميزانية",
     "activeFund.votingStats.totalVotesCast": "إجمالي الأصوات المدلاة",

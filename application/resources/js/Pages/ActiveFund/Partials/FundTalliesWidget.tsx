@@ -19,6 +19,7 @@ import VoterData = App.DataTransferObjects.VoterData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import FundData = App.DataTransferObjects.FundData;
 import CatalystTallyData = App.DataTransferObjects.CatalystTallyData;
+import ProposalFundingStatus from '@/Pages/Proposals/Partials/ProposalFundingStatus';
 
 interface FundTalliesWidgetProps {
     tallies?: PaginatedData<CatalystTallyData[]> & { total_votes_cast?: number };
@@ -112,6 +113,7 @@ const TableSkeleton: React.FC<{ rows: number }> = ({ rows }) => (
                     <TableHeader label="" />
                     <TableHeader label="" />
                     <TableHeader label="" />
+                    <TableHeader label="" />
                     <TableHeader label="" isLastColumn />
                 </tr>
             </thead>
@@ -132,6 +134,9 @@ const TableSkeleton: React.FC<{ rows: number }> = ({ rows }) => (
                         </TableCell>
                         <TableCell>
                             <div className="h-4 bg-gray-200 rounded w-16"></div>
+                        </TableCell>
+                        <TableCell>
+                            <div className="h-4 bg-gray-200 rounded w-20"></div>
                         </TableCell>
                         <TableCell isLastColumn>
                             <div className="h-4 bg-gray-200 rounded w-24"></div>
@@ -599,6 +604,7 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
                                     />
                                     <TableHeader label={t('activeFund.votingStats.proposal')} />
                                     <TableHeader label={t('activeFund.votingStats.categoryFundRank')} />
+                                    <TableHeader label={t('activeFund.votingStats.fundingStatus')} />
                                     <TableHeader label={t('activeFund.votingStats.approvalChance')} />
                                     <TableHeader label={t('activeFund.votingStats.fundingChance')} />
                                     <SortableTableHeader
@@ -653,6 +659,17 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
                                                         {stat.fund_rank ? `${ordinal(stat.fund_rank)}` : '-'}
                                                     </span>
                                                     </div>
+                                                ) : (
+                                                    <span className="text-gray-400 text-sm">-</span>
+                                                )}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center gap-2">
+                                                {stat.proposal?.funding_status ? (
+                                                    <ProposalFundingStatus
+                                                        funding_status={stat.proposal.funding_status}
+                                                    />
                                                 ) : (
                                                     <span className="text-gray-400 text-sm">-</span>
                                                 )}

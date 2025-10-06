@@ -181,6 +181,7 @@
     "activeFund.votingStats.votesCast": "Phiếu Đã bầu",
     "activeFund.votingStats.proposal": "Đề xuất",
     "activeFund.votingStats.approvalChance": "Cơ hội Phê duyệt",
+    "activeFund.votingStats.fundingStatus": "Trạng thái Tài trợ",
     "activeFund.votingStats.fundingChance": "Cơ hội Tài trợ",
     "activeFund.votingStats.budget": "Ngân sách",
     "activeFund.votingStats.totalVotesCast": "Tổng Phiếu Đã bầu",

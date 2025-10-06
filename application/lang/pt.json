@@ -1470,6 +1470,7 @@
     "activeFund.votingStats.votesCast": "Votos Dados",
     "activeFund.votingStats.proposal": "Proposta",
     "activeFund.votingStats.approvalChance": "Chance de Aprovação",
+    "activeFund.votingStats.fundingStatus": "Status de Financiamento",
     "activeFund.votingStats.fundingChance": "Chance de Financiamento",
     "activeFund.votingStats.budget": "Orçamento",
     "activeFund.votingStats.totalVotesCast": "Total de Votos Dados",
