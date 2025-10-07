@@ -186,12 +186,11 @@ export default function Footer() {
                                 <Paragraph>
                                     <NavLinkItem
                                         href={useLocalizedRoute(
-                                            'numbers.general',
+                                            'charts.allCharts.liveTally',
                                         )}
                                         data-testid="general-link"
-                                        title={t('general')}
+                                        title={t('charts.navigation.allCharts')}
                                         active={false}
-                                        disable={true}
                                         showDisableTag={false}
                                         className="text-gray-200"
                                     ></NavLinkItem>
