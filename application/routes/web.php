@@ -454,8 +454,20 @@ Route::localized(
         });
 
         Route::prefix('charts')->as('charts.')->group(function () {
-            Route::get('/charts', [ChartsController::class, 'index'])
+            Route::get('/', [ChartsController::class, 'index'])
                 ->name('index');
+
+            Route::prefix('/all-charts')->as('allCharts.')->group(function () {
+                Route::get('/', [FundsController::class, 'allChartsLiveTally'])
+                    ->name('liveTally');
+                Route::get('/registrations', [FundsController::class, 'allChartsRegistrations'])
+                    ->name('registrations');
+                Route::get('/confirmed-voters', [FundsController::class, 'allChartsConfirmedVoters'])
+                    ->name('confirmedVoters');
+                Route::get('/leaderboards', [FundsController::class, 'allChartsLeaderboards'])
+                    ->name('leaderboards');
+            });
+
             Route::get('/proposals', [ProposalsController::class, 'charts'])
                 ->name('proposals');
         });
@@ -579,7 +591,6 @@ Route::localized(
             ->group(function () {
                 Route::get('/impact', fn() => Inertia::render('ComingSoon', ['context' => 'Impact Numbers']))->name('impact');
                 Route::get('/spending', fn() => Inertia::render('ComingSoon', ['context' => 'Spending Numbers']))->name('spending');
-                Route::get('/general', fn() => Inertia::render('ComingSoon', ['context' => 'General Numbers']))->name('general');
             });
 
         Route::prefix('ccv4')->as('ccv4.')

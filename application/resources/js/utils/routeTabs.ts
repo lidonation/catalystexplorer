@@ -10,11 +10,13 @@ export interface Tab {
 export interface TabConfig {
     translationPrefix: string;
     routePrefix: string;
+    pathPrefix?: string;
     tabs: {
         key: string;
         translationKey?: string;
         routeName?: string;
         only?: string[];
+        path?: string;
     }[];
 }
 
@@ -22,10 +24,16 @@ export function generateTabs(
     t: (key: string, replacements?: ReplacementsInterface) => string,
     config: TabConfig,
 ): Tab[] {
+    const pathPrefix = (config.pathPrefix ?? config.routePrefix).replace(/^\/|\/$/g, '');
+
     return config.tabs.map((tab) => {
-        const routeSuffix = tab.routeName !== undefined ? tab.routeName : tab.key;
-        const routeName = routeSuffix ? `${config.routePrefix}.${routeSuffix}` : config.routePrefix;
-        const href = routeSuffix ? `/${config.routePrefix}/${routeSuffix}` : `/${config.routePrefix}`;
+        const routeSuffix = tab.routeName ?? tab.key;
+        const routeName = routeSuffix
+            ? `${config.routePrefix}.${routeSuffix}`
+            : config.routePrefix;
+
+        const pathSuffix = tab.path ?? routeSuffix;
+        const href = `/${pathPrefix}${pathSuffix ? `/${pathSuffix}` : ''}`;
         
         return {
             name: t(
@@ -115,5 +123,17 @@ export const campaignTabs: TabConfig = {
     tabs: [
         { key: 'overview', routeName: '' },
         { key: 'proposals', routeName: 'proposals' },
+    ],
+};
+
+export const chartsAllContentTabs: TabConfig = {
+    translationPrefix: 'charts.tabs',
+    routePrefix: 'charts.allCharts',
+    pathPrefix: 'charts/all-charts',
+    tabs: [
+        { key: 'liveTally', routeName: 'liveTally', path: '' },
+        { key: 'registrations', routeName: 'registrations' },
+        { key: 'confirmedVoters', routeName: 'confirmedVoters', path: 'confirmed-voters' },
+        { key: 'leaderboards', routeName: 'leaderboards' },
     ],
 };
