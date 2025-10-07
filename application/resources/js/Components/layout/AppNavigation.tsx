@@ -398,6 +398,26 @@ function AppNavigation() {
                                             >
                                                 <NavLinkItem
                                                     href={useLocalizedRoute(
+                                                        'charts.allCharts.liveTally',
+                                                    )}
+                                                    title={t('charts.navigation.allCharts')}
+                                                    ariaLabel={`${t('charts.navigation.allCharts')} ${t('link')}`}
+                                                    active={false}
+                                                    data-testid="numbers-general-link"
+                                                ></NavLinkItem>
+
+                                                 <NavLinkItem
+                                                    href={useLocalizedRoute(
+                                                        'charts.proposals',
+                                                    )}
+                                                    title={t('myCharts')}
+                                                    ariaLabel={`${t('myCharts')} ${t('link')}`}
+                                                    active={false}
+                                                    data-testid="numbers-charts-link"
+                                                ></NavLinkItem>
+                                                
+                                                <NavLinkItem
+                                                    href={useLocalizedRoute(
                                                         'numbers.impact',
                                                     )}
                                                     disable={true}
@@ -417,26 +437,7 @@ function AppNavigation() {
                                                     active={false}
                                                     data-testid="numbers-spending-link"
                                                 ></NavLinkItem>
-
-                                                <NavLinkItem
-                                                    href={useLocalizedRoute(
-                                                        'numbers.general',
-                                                    )}
-                                                    disable={true}
-                                                    title={t('General')}
-                                                    ariaLabel={`${t('general')} ${t('link')}`}
-                                                    active={false}
-                                                    data-testid="numbers-general-link"
-                                                ></NavLinkItem>
-                                                <NavLinkItem
-                                                    href={useLocalizedRoute(
-                                                        'charts.proposals',
-                                                    )}
-                                                    title={t('myCharts')}
-                                                    ariaLabel={`${t('myCharts')} ${t('link')}`}
-                                                    active={false}
-                                                    data-testid="numbers-charts-link"
-                                                ></NavLinkItem>
+                   
                                             </div>
                                         )}
                                     </div>

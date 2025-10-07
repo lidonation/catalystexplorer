@@ -181,6 +181,105 @@ class FundsController extends Controller
         ]);
     }
 
+    public function allChartsLiveTally(Request $request): Response
+    {
+        $this->getProps($request);
+
+        [$selectedFund, $allFunds] = $this->resolveSelectedFund($request);
+
+        $selectedFund->append(['banner_img_url']);
+
+        $campaigns = $this->getCampaigns($selectedFund);
+        $campaigns->append([
+            'total_requested',
+            'total_awarded',
+            'total_distributed',
+        ]);
+
+        $page = (int) ($request->get(ProposalSearchParams::PAGE()->value) ?? 1);
+        $perPage = (int) ($request->get(ProposalSearchParams::PER_PAGE()->value) ?? 24);
+
+        return Inertia::render('Charts/AllCharts/LiveTally/index', [
+            'fund' => FundData::from($selectedFund),
+            'funds' => $allFunds,
+            'campaigns' => Inertia::optional(fn () => CampaignData::collect($campaigns)),
+            'tallies' => $this->getTallies($selectedFund, $perPage, $page),
+            'filters' => $this->queryParams,
+        ]);
+    }
+
+    public function allChartsRegistrations(Request $request): Response
+    {
+        $this->getProps($request);
+
+        [$selectedFund, $allFunds] = $this->resolveSelectedFund($request);
+
+        return Inertia::render('Charts/AllCharts/Registrations/index', [
+            'fund' => FundData::from($selectedFund),
+            'funds' => $allFunds,
+            'filters' => $this->queryParams,
+        ]);
+    }
+
+    public function allChartsConfirmedVoters(Request $request): Response
+    {
+        $this->getProps($request);
+
+        [$selectedFund, $allFunds] = $this->resolveSelectedFund($request);
+
+        return Inertia::render('Charts/AllCharts/ConfirmedVoters/index', [
+            'fund' => FundData::from($selectedFund),
+            'funds' => $allFunds,
+            'filters' => $this->queryParams,
+        ]);
+    }
+
+    public function allChartsLeaderboards(Request $request): Response
+    {
+        $this->getProps($request);
+
+        [$selectedFund, $allFunds] = $this->resolveSelectedFund($request);
+
+        return Inertia::render('Charts/AllCharts/Leaderboards/index', [
+            'fund' => FundData::from($selectedFund),
+            'funds' => $allFunds,
+            'filters' => $this->queryParams,
+        ]);
+    }
+
+    /**
+     * @return array{0: Fund, 1: \Illuminate\Support\Collection}
+     */
+    protected function resolveSelectedFund(Request $request): array
+    {
+        $fundsQuery = Fund::withCount(['funded_proposals', 'completed_proposals', 'unfunded_proposals', 'proposals'])
+            ->orderBy('launched_at', 'desc');
+
+        $fundIdParam = $request->input(ProposalSearchParams::FUNDS()->value);
+        $fundId = null;
+
+        if (is_array($fundIdParam) && count($fundIdParam) > 0) {
+            $fundId = (int) $fundIdParam[0];
+        } elseif ($fundIdParam !== null) {
+            $fundId = (int) $fundIdParam;
+        }
+
+        if ($fundId) {
+            $selectedFund = (clone $fundsQuery)->find($fundId);
+        } else {
+            $selectedFund = (clone $fundsQuery)->first();
+        }
+
+        if (! $selectedFund) {
+            $selectedFund = (clone $fundsQuery)->firstOrFail();
+        }
+
+        $allFunds = Fund::orderBy('launched_at', 'desc')
+            ->get(['id', 'title', 'amount']);
+
+        return [$selectedFund, $allFunds];
+    }
+
     public function campaign(Request $request, Campaign $campaign): Response
     {
         $fund = Fund::latest('launched_at')->first();
