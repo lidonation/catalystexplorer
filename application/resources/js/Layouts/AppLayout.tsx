@@ -1,6 +1,7 @@
 import Button from '@/Components/atoms/Button';
 import CatalystLogo from '@/Components/atoms/CatalystLogo';
 import Breadcrumbs, { generateBreadcrumbs } from '@/Components/Breadcrumbs';
+import GlobalBanner from '@/Components/GlobalBanner';
 import GraphButton from '@/Components/GraphButton';
 import DesktopSidebar from '@/Components/layout/DesktopSidebar';
 import Footer from '@/Components/layout/Footer';
@@ -28,7 +29,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { t, currentLocale } = useLaravelReactI18n();
     const { url, props } = usePage();
-    const breadcrumbItems = generateBreadcrumbs(url, props['locale'] as string);
+    const [currentUrl, setCurrentUrl] = useState(url);
+    const breadcrumbItems = generateBreadcrumbs(currentUrl, props['locale'] as string);
     const memoizedChildren = useMemo(() => children, [children]);
     const savedTheme =
         typeof window === 'undefined' ? null : localStorage.getItem('theme');
@@ -43,11 +45,31 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         document.documentElement.dir = RTL_LANGS.includes(locale) ? 'rtl' : 'ltr';
         document.documentElement.lang = locale;
     }, [currentLocale()]);
+    
+    useEffect(() => {
+        const handleUrlChange = () => {
+            setCurrentUrl(window.location.pathname);
+        };
+        
+        window.addEventListener('popstate', handleUrlChange);
+        
+        window.addEventListener('urlchange', handleUrlChange);
+        
+        return () => {
+            window.removeEventListener('popstate', handleUrlChange);
+            window.removeEventListener('urlchange', handleUrlChange);
+        };
+    }, []);
+    
+    useEffect(() => {
+        setCurrentUrl(url);
+    }, [url]);
 
     const isAuthPage = url.includes('login') || url.includes('register');
 
     return (
         <MainLayout>
+            <GlobalBanner />
             <GlobalErrorProvider>
                 {/* Sidebar for small screens */}
             <Dialog

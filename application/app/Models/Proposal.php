@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Casts\DateFormatCast;
 use App\Enums\CatalystCurrencies;
 use App\Interfaces\IHasMetaData;
 use App\Models\Pivot\ProposalProfile;
@@ -745,8 +744,8 @@ class Proposal extends Model implements IHasMetaData
             'amount_requested' => 'integer',
             'created_at' => 'datetime',
             'currency' => CatalystCurrencies::class.':nullable',
-            'funded_at' => DateFormatCast::class,
-            'funding_updated_at' => DateFormatCast::class,
+            'funded_at' => 'datetime',
+            'funding_updated_at' => 'datetime',
             'offchain_metas' => 'array',
             'opensource' => 'boolean',
             'updated_at' => 'datetime',

@@ -157,18 +157,18 @@ class NMKRIntegrationTest extends TestCase
     protected function createTestNft(string $name = null): Nft
     {
         $nft = new Nft();
-        $nft->name = str_replace(' ', '', $name ?? 'TestNFT') . rand(1000, 9999);
+        $nft->name = str_replace(' ', '', $name ?? 'TestNFT') . random_int(1000, 9999);
         $nft->description = 'Test NFT for NMKR integration';
         $nft->preview_link = 'https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg';;
         $nft->storage_link = 'https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg';;
         $nft->status = 'draft';
         $nft->metadata = [
-            'Project Title' => 'Test Project ' . rand(1000, 9999),
-            'Funded Project Number' => 'F' . rand(10, 20),
-            'Fund' => rand(1, 10),
+            'Project Title' => 'Test Project ' . random_int(1000, 9999),
+            'Funded Project Number' => 'F' . random_int(10, 20),
+            'Fund' => random_int(1, 10),
             'campaign_name' => 'Test Campaign',
-            'yes_votes' => rand(100, 1000),
-            'no_votes' => rand(10, 100),
+            'yes_votes' => random_int(100, 1000),
+            'no_votes' => random_int(10, 100),
             'role' => 'Tester'
         ];
         $nft->save();

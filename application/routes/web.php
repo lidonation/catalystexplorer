@@ -203,6 +203,8 @@ Route::localized(
                         ->name('saveRationales');
                     Route::post('/sign-ballot', [VoterListController::class, 'signBallot'])
                         ->name('signBallot');
+                    Route::post('/{bookmarkCollection}/remove-bookmark-item', [VoterListController::class, 'removeBookmarkItem'])
+                        ->name('removeBookmarkItem');
                 });
 
             Route::prefix('/create-service/steps')->as('createService.')
@@ -444,14 +446,26 @@ Route::localized(
             Route::get('/{bookmarkCollection}/{type}/download-png', [BookmarksController::class, 'downloadPng'])
                 ->name('downloadPng');
             Route::get('/{bookmarkCollection}/{type?}', [BookmarksController::class, 'view'])
-                ->name('view');
-            Route::post('/{bookmarkCollection}/stream/{type?}', [BookmarksController::class, 'streamBookmarkItems'])
-                ->name('stream');
+                ->name('view')
+                ->where('bookmarkCollection', '[0-9a-fA-F-]+');
+            Route::post('/{bookmarkCollectionId}/stream/{type?}', [BookmarksController::class, 'streamBookmarkItems'])
+                ->name('stream')
+                ->where('bookmarkCollectionId', '[0-9a-fA-F-]+');
         });
 
         Route::prefix('charts')->as('charts.')->group(function () {
-            Route::get('/charts', [ChartsController::class, 'index'])
+            Route::get('/', [ChartsController::class, 'index'])
                 ->name('index');
+
+            Route::get('/live-tally', [ChartsController::class, 'index'])
+                ->name('liveTally');
+            Route::get('/registrations', [ChartsController::class, 'index'])
+                ->name('registrations');
+            Route::get('/confirmed-voters', [ChartsController::class, 'index'])
+                ->name('confirmedVoters');
+            Route::get('/leaderboards', [ChartsController::class, 'index'])
+                ->name('leaderboards');
+
             Route::get('/proposals', [ProposalsController::class, 'charts'])
                 ->name('proposals');
         });
@@ -497,13 +511,19 @@ Route::localized(
                     ->name('index');
             });
         });
-
-        Route::prefix('/active-fund')->as('activeFund.')->group(
-            function () {
-                Route::get('/', [FundsController::class, 'activeFund'])
-                    ->name('index');
-            }
-        );
+        Route::prefix('/active-fund')->as('activeFund.')
+            ->group(
+                function () {
+                    Route::get('/', [FundsController::class, 'activeFund'])
+                        ->name('index');
+                    Route::prefix('/campaigns/{campaign}')->as('campaigns.')->group(function () {
+                        Route::get('/', [FundsController::class, 'campaign'])
+                            ->name('index');
+                        Route::get('/proposals', [FundsController::class, 'campaign'])
+                            ->name('proposals');
+                    });
+                }
+            );
 
         // Dreps
         Route::prefix('/dreps')->as('dreps.')->group(
@@ -569,7 +589,6 @@ Route::localized(
             ->group(function () {
                 Route::get('/impact', fn() => Inertia::render('ComingSoon', ['context' => 'Impact Numbers']))->name('impact');
                 Route::get('/spending', fn() => Inertia::render('ComingSoon', ['context' => 'Spending Numbers']))->name('spending');
-                Route::get('/general', fn() => Inertia::render('ComingSoon', ['context' => 'General Numbers']))->name('general');
             });
 
         Route::prefix('ccv4')->as('ccv4.')
@@ -580,6 +599,7 @@ Route::localized(
         // Arabic Test Route
         Route::get('/arabic-test', fn() => Inertia::render('ArabicTest'))
             ->name('arabic-test');
+
     }
 
 );

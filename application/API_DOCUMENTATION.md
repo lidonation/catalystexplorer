@@ -120,6 +120,249 @@ GET /api/proposals                    # Basic list only
 GET /api/proposals?include=campaign   # Legacy endpoint with basic filtering
 ```
 
+---
+
+## CatalystTally API
+
+### Overview
+The CatalystTally API provides access to proposal voting tallies and rankings from Catalyst Fund voting rounds. It supports conditional relationship loading for optimal performance.
+
+### Endpoints
+
+#### 1. List CatalystTallies
+**GET** `/api/v1/catalyst-tallies`
+
+Returns a paginated list of catalyst tallies with optional filtering and sorting.
+
+##### Query Parameters
+
+###### Filtering
+- `fund=<uuid>` - Filter by fund UUID (e.g., `4890007c-d31c-4561-870f-14388d6b6d2c`)
+- `search=<term>` - Search within proposal titles, problems, solutions, and fund titles
+- `proposal_profiles=<id1,id2>` - Filter by proposal profile IDs (comma-separated)
+
+###### Sorting
+- `sort_by=tally` - Sort by tally count (default)
+- `sort_by=fund_rank` - Sort by fund ranking
+- `sort_by=category_rank` - Sort by category ranking
+- `sort_by=overall_rank` - Sort by overall ranking
+- `sort_by=chance_approval` - Sort by approval chance percentage
+- `sort_by=chance_funding` - Sort by funding chance percentage
+- `sort_direction=desc` - Sort direction: `asc` or `desc` (default: `desc`)
+
+###### Relationship Includes 
+- `include_fund=true` - Include fund relationship in response
+- `include_proposal=true` - Include proposal relationship in response
+- `include_proposal_profiles=true` - Include proposal profiles in response
+
+> **Note:** Relationships are only loaded when explicitly requested or when needed for filtering, optimizing performance.
+
+###### Pagination
+- `per_page=20` - Items per page (max 100, default 20)
+- `page=1` - Page number
+
+#### 2. Get Single CatalystTally
+**GET** `/api/v1/catalyst-tallies/{id}`
+
+Returns a single catalyst tally by ID with all relationships loaded.
+
+#### 3. Get Available Funds
+**GET** `/api/v1/catalyst-tallies-funds`
+
+Returns a list of funds that have catalyst tallies available for filtering.
+
+#### 4. Get Statistics
+**GET** `/api/v1/catalyst-tallies-stats`
+
+Returns summary statistics about catalyst tallies.
+
+### Example Requests
+
+#### Basic List (Performance Optimized)
+```
+GET /api/v1/catalyst-tallies
+```
+Returns tallies without relationships for optimal performance.
+
+#### Filter by Fund (Relationships Not Included)
+```
+GET /api/v1/catalyst-tallies?fund=4890007c-d31c-4561-870f-14388d6b6d2c
+```
+Filters by Fund 10 but doesn't include fund details in response.
+
+#### Filter by Fund with Fund Details
+```
+GET /api/v1/catalyst-tallies?fund=4890007c-d31c-4561-870f-14388d6b6d2c&include_fund=true
+```
+Filters by Fund 10 and includes fund details in response.
+
+#### Search with Proposal Details
+```
+GET /api/v1/catalyst-tallies?search=blockchain&include_proposal=true&sort_by=tally&sort_direction=desc
+```
+Searches for "blockchain" and includes proposal details, sorted by tally.
+
+#### Complex Query with All Relationships
+```
+GET /api/v1/catalyst-tallies?fund=72c34fba-3665-4dfa-b6b1-ff72c916dc9c&include_fund=true&include_proposal=true&sort_by=fund_rank&per_page=50
+```
+Filters by Fund 11, includes all relationships, sorted by fund rank.
+
+#### Get Available Funds
+```
+GET /api/v1/catalyst-tallies-funds
+```
+Returns list of funds with their UUIDs for filtering.
+
+#### Get Statistics
+```
+GET /api/v1/catalyst-tallies-stats
+```
+Returns summary statistics.
+
+### Response Formats
+
+#### CatalystTally List Response
+```json
+{
+  "data": [
+    {
+      "id": "a961290f-ce40-4d96-a885-e2a8b8875936",
+      "hash": "proposal_1",
+      "tally": 2345,
+      "model_id": "9c8a5f2d-1b3e-4d7a-8f2c-5e9d8a1b3c4f",
+      "category_rank": null,
+      "fund_rank": 15,
+      "overall_rank": null,
+      "chance_approval": "85.50",
+      "chance_funding": "72.30",
+      "chance": "85.50",
+      "created_at": "2023-09-26 15:38:15",
+      "updated_at": "2023-09-26T15:38:15.000000Z"
+    }
+  ],
+  "meta": {
+    "total": 6520,
+    "count": 20,
+    "per_page": 20,
+    "current_page": 1,
+    "total_pages": 326,
+    "has_more_pages": true
+  },
+  "links": {
+    "first": "/api/v1/catalyst-tallies?page=1",
+    "last": "/api/v1/catalyst-tallies?page=326",
+    "prev": null,
+    "next": "/api/v1/catalyst-tallies?page=2"
+  },
+  "filters": {
+    "fund": null,
+    "search": null,
+    "proposal_profiles": null
+  }
+}
+```
+
+#### CatalystTally with Relationships Response
+```json
+{
+  "data": [
+    {
+      "id": "a961290f-ce40-4d96-a885-e2a8b8875936",
+      "hash": "proposal_1",
+      "tally": 2345,
+      "model_id": "9c8a5f2d-1b3e-4d7a-8f2c-5e9d8a1b3c4f",
+      "category_rank": null,
+      "fund_rank": 15,
+      "overall_rank": null,
+      "chance_approval": "85.50",
+      "chance_funding": "72.30",
+      "chance": "85.50",
+      "fund": {
+        "id": "4890007c-d31c-4561-870f-14388d6b6d2c",
+        "title": "Fund 10",
+        "slug": "fund-10",
+        "label": "Fund 10",
+        "status": "active",
+        "currency": "ADA",
+        "currency_symbol": "₳",
+        "amount": 50000000,
+        "launched_at": "2023-08-31T11:00:00.000000Z"
+      },
+      "proposal": {
+        "id": "9c8a5f2d-1b3e-4d7a-8f2c-5e9d8a1b3c4f",
+        "title": "Blockchain Education Platform",
+        "slug": "blockchain-education-platform",
+        "status": "active",
+        "amount_requested": 25000,
+        "currency": "ADA",
+        "problem": "Lack of accessible blockchain education...",
+        "solution": "Create a comprehensive learning platform..."
+      },
+      "created_at": "2023-09-26 15:38:15",
+      "updated_at": "2023-09-26T15:38:15.000000Z"
+    }
+  ],
+  "meta": { ... }
+}
+```
+
+#### Available Funds Response
+```json
+{
+  "data": [
+    {
+      "id": "4890007c-d31c-4561-870f-14388d6b6d2c",
+      "title": "Fund 10",
+      "slug": "fund-10"
+    },
+    {
+      "id": "72c34fba-3665-4dfa-b6b1-ff72c916dc9c",
+      "title": "Fund 11",
+      "slug": "fund-11"
+    },
+    {
+      "id": "e4e8ea34-867e-4f19-aea6-55d83ecb4ecd",
+      "title": "Fund 12",
+      "slug": "fund-12"
+    }
+  ]
+}
+```
+
+#### Statistics Response
+```json
+{
+  "data": {
+    "total_tallies": 6520,
+    "total_proposals": 6486,
+    "total_funds": 5,
+    "avg_tally": "222.87",
+    "max_tally": 6789,
+    "min_tally": 39
+  }
+}
+```
+
+#### Available Fields
+
+CatalystTally fields:
+- `id` - Unique identifier
+- `hash` - Proposal hash identifier
+- `tally` - Vote tally count
+- `model_id` - Related proposal ID
+- `category_rank` - Ranking within category
+- `fund_rank` - Ranking within fund
+- `overall_rank` - Overall ranking
+- `chance_approval` - Approval chance percentage (0-100)
+- `chance_funding` - Funding chance percentage (0-100)
+- `chance` - Alias for chance_approval (backward compatibility)
+- `created_at` - Creation timestamp
+- `updated_at` - Last update timestamp
+- `fund` - Related fund (when `include_fund=true`)
+- `proposal` - Related proposal (when `include_proposal=true`)
+- `proposal_profiles` - Related proposal profiles (when `include_proposal=true`)
+
 ## Response Format
 
 ### List Response

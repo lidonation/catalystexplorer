@@ -5,7 +5,7 @@ return [
     /**
      * The locales you wish to support.
      */
-    'supported_locales' => ['en', 'am', 'ar', 'de', 'zh', 'ko', 'pt', 'ja', 'sw', 'es', 'fr'],
+    'supported_locales' => ['en', 'am', 'ar', 'de', 'zh', 'ko', 'pt', 'ja', 'sw', 'es', 'fr', 'vi'],
 
     'supported_locale_details' => [
         'am' => [
@@ -84,6 +84,13 @@ return [
             'script' => 'Hans',
             'native' => '简体中文',
             'regional' => 'zh_CN',
+        ],
+        'vi' => [
+            'key' => 'vi',
+            'name' => 'Vietnamese',
+            'script' => 'Latn',
+            'native' => 'Tiếng Việt',
+            'regional' => 'vi_VN',
         ],
     ],
 

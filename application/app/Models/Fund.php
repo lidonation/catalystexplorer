@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder;
 use Spatie\Image\Enums\CropPosition;
@@ -139,6 +140,11 @@ class Fund extends Model implements HasMedia
         return $this->hasManyThrough(VotingPower::class, Snapshot::class, 'model_id', 'snapshot_id', 'id', 'id');
     }
 
+    public function snapshots(): MorphMany
+    {
+        return $this->morphMany(Snapshot::class, 'model');
+    }
+
     public function proposals(): HasMany
     {
         return $this->hasMany(Proposal::class, 'fund_id', 'id');
@@ -165,6 +171,11 @@ class Fund extends Model implements HasMedia
     public function campaigns(): HasMany
     {
         return $this->hasMany(Campaign::class, 'fund_id', 'id');
+    }
+
+    public function catalyst_tallies(): HasMany
+    {
+        return $this->hasMany(CatalystTally::class, 'context_id', 'id');
     }
 
     public function campaignsUuid(): HasMany

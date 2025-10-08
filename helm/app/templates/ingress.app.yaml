@@ -15,7 +15,7 @@ spec:
     - web
     - websecure
   tls:
-    secretName: wildcard-catalystexplorer-tls
+    secretName: wildcard-catalystexplorer-ssl
   routes:
     - match: Host(`catalystexplorer.com`) || Host(`www.catalystexplorer.com`)
       kind: Rule
@@ -49,7 +49,7 @@ spec:
     - web
     - websecure
   tls:
-    secretName: wildcard-catalystexplorer-tls
+    secretName: wildcard-catalystexplorer-ssl
   routes:
     - match: Host(`preview.catalystexplorer.com`)
       kind: Rule

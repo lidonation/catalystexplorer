@@ -36,7 +36,7 @@ Route::localized(
                                     ->name('index');
                                 Route::post('/', [MyBookmarksController::class, 'createCollection'])
                                     ->name('create');
-                                Route::delete('/', [MyBookmarksController::class, 'deleteCollection'])
+                                Route::delete('/{id}', [MyBookmarksController::class, 'deleteCollection'])
                                     ->name('destroy');
                             });
                     });

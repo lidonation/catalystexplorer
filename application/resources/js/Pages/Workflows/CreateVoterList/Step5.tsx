@@ -8,16 +8,19 @@ import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import Content from '../Partials/WorkflowContent';
 import WorkflowLayout from '../WorkflowLayout';
+import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 
 interface SuccessProps {
     stepDetails: StepDetails[];
     activeStep: number;
     bookmarkHash: string;
+    bookmarkCollection?: BookmarkCollectionData;
 }
 export default function step5({
     stepDetails,
     activeStep,
     bookmarkHash,
+    bookmarkCollection,
 }: SuccessProps) {
     const { t } = useLaravelReactI18n();
     const localizedRoute = useLocalizedRoute;
@@ -55,7 +58,7 @@ export default function step5({
                             {t('workflows.bookmarks.bookmarkCreated')}
                         </Paragraph>
                     </div>
-                    <div className="flex w-full items-end justify-between gap-4">
+                    <div className="flex w-full flex-col gap-4 md:flex-row">
                         <PrimaryLink
                             href={browseProposals}
                             className="w-full text-sm lg:px-8 lg:py-3"
@@ -64,6 +67,16 @@ export default function step5({
                                 {t('workflows.voterList.browseProposal')}
                             </span>
                         </PrimaryLink>
+                        {bookmarkCollection && (
+                            <PrimaryLink
+                                href={localizedRoute('my.lists.show', {
+                                    list: bookmarkCollection.id,
+                                })}
+                                className="w-full text-sm lg:px-8 lg:py-3 bg-blue-600 hover:bg-blue-700"
+                            >
+                                <span>{t('workflows.voterList.viewList')}</span>
+                            </PrimaryLink>
+                        )}
                         <PrimaryLink
                             href={nextStep}
                             className="w-full text-sm lg:px-8 lg:py-3"

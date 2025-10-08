@@ -95,33 +95,7 @@ const BookmarkCollectionPage = (props: BookmarkCollectionPageProps) => {
         EventBus.on('listItem-removed', () => setActiveTab(activeTab));
     }, []);
 
-    const [activeEditModal, setActiveEditModal] = useState<boolean>(false);
-    const [activeConfirm, setActiveConfirm] = useState<boolean>(false);
-
-    const handleUpdate = (form: ListForm) => {
-        form.post(
-            route('api.collections.update', {
-                bookmarkCollection: bookmarkCollection.id,
-            }),
-            {
-                onSuccess: () => setActiveTab(activeTab),
-            },
-        );
-    };
-
-    const handleDelete = () => {
-        setActiveConfirm(true);
-        router.post(
-            route('api.collections.delete', {
-                bookmarkCollection: bookmarkCollection.id,
-            }),
-            {},
-            {
-                onSuccess: () =>
-                    router.get(generateLocalizedRoute('my.lists.index')),
-            },
-        );
-    };
+    // Note: Edit and delete functionality is handled in BookmarkCollectionContent component
 
     const preselected = () => {
         switch (props.type) {
@@ -189,54 +163,7 @@ const BookmarkCollectionPage = (props: BookmarkCollectionPageProps) => {
                 </div>
             )}
 
-            {/* modals - only show in manage mode */}
-            {mode === 'manage' && (
-                <>
-                    <Modal
-                        title={t('bookmarks.editList')}
-                        isOpen={!!activeEditModal}
-                        onClose={() => setActiveEditModal(false)}
-                        logo={false}
-                    >
-                        <ListSettingsForm
-                            bookmarkCollection={bookmarkCollection}
-                            handleSave={handleUpdate}
-                            handleDelete={() => setActiveConfirm(true)}
-                            pendingInvitations={props.pendingInvitations}
-                        />
-                    </Modal>
-
-                    <Modal
-                        title={t('bookmarks.editList')}
-                        isOpen={!!activeConfirm}
-                        onClose={() => setActiveConfirm(false)}
-                        logo={false}
-                        centered
-                    >
-                        <div className="flex flex-col gap-4 p-4 text-center">
-                            <Title level="5">{t('bookmarks.confirmDelete')}</Title>
-
-                            <p>{t('bookmarks.permanentDelete')}</p>
-
-                            <div className="flex justify-between gap-4">
-                                <PrimaryButton
-                                    onClick={() => setActiveConfirm(false)}
-                                    className="bg-primary flex-1 font-semibold"
-                                >
-                                    {t('Cancel')}
-                                </PrimaryButton>
-
-                                <Button
-                                    onClick={handleDelete}
-                                    className="bg-danger-mid text-content-light flex-1 rounded-md py-1.5 font-semibold"
-                                >
-                                    {t('bookmarks.deletesList')}
-                                </Button>
-                            </div>
-                        </div>
-                    </Modal>
-                </>
-            )}
+            {/* Note: Delete modals are handled in BookmarkCollectionContent component */}
         </div>
     );
 };
@@ -248,6 +175,11 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
     const { auth } = usePage().props;
     const user = bookmarkCollection?.author;
     const isAuthor = auth?.user?.id == user?.id;
+    
+    // Get the delete route at component level (following Rules of Hooks)
+    const deleteRoute = useLocalizedRoute('my.bookmarks.collections.destroy', {
+        id: bookmarkCollection.id,
+    });
 
     // Check if the current user is a contributor
     const isContributor = bookmarkCollection?.collaborators?.some(
@@ -280,6 +212,8 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
     const [activeShareModal, setActiveShareModal] = useState<boolean>(false);
 
     const [streamedProposals, setStreamedProposals] = useState<ProposalData[]>([]);
+    const [streamTimeout, setStreamTimeout] = useState(false);
+    const [streamStarted, setStreamStarted] = useState(false);
 
     const hasItems = (bookmarkCollection.items_count ?? 0) > 0;
     const isVoterList = bookmarkCollection.list_type === 'voter';
@@ -288,18 +222,18 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
 
     const { data, isFetching, isStreaming, send, cancel } = useStream('stream');
 
-    const handleDelete = () => {
+    const handleConfirmedDelete = () => {
         setActiveConfirm(false);
-        router.post(
-            route('api.collections.delete', {
-                bookmarkCollection: bookmarkCollection.id,
-            }),
-            {},
-            {
-                onSuccess: () =>
-                    router.get(generateLocalizedRoute('my.lists.index')),
+
+        router.delete(deleteRoute, {
+            onSuccess: (response) => {
+                // Handle successful deletion
             },
-        );
+            onError: (errors) => {
+                // Handle errors
+                console.error('Failed to delete collection:', errors);
+            }
+        });
     };
 
     const getPublishToIpfsTooltip = () => {
@@ -317,10 +251,31 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
 
     // Stream data for voter lists
     useEffect(() => {
-        if (isVoterList && type === 'proposals') {
+        if (isVoterList && type === 'proposals' && !streamStarted) {
+            setStreamTimeout(false);
+            setStreamedProposals([]);
+            setStreamStarted(true);
+
+            // Start streaming
+            console.log('Starting stream for voter list');
             send({});
+
+            // Fallback: if no data after 5 seconds, stop spinner and fall back to paginated data
+            const timeoutId = setTimeout(() => {
+                setStreamTimeout(true);
+                cancel();
+            }, 5000);
+
+            return () => clearTimeout(timeoutId);
         }
-    }, [isVoterList, bookmarkCollection.items_count]);
+
+        // Reset stream state when changing between non-voter and voter lists
+        if (!isVoterList || type !== 'proposals') {
+            setStreamStarted(false);
+            setStreamTimeout(false);
+            setStreamedProposals([]);
+        }
+    }, [isVoterList, type, streamStarted]); // Removed items_count dependency to avoid race conditions
 
     // Parse streamed data
     useEffect(() => {
@@ -328,16 +283,24 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
             return;
         }
 
-        const lines = data.trim().split('\n');
-        const parsed: ProposalData[] = lines.map(line => {
-            try {
-                return JSON.parse(line) as ProposalData;
-            } catch (e) {
-                return null;
-            }
-        }).filter((x): x is ProposalData => x !== null);
+        const lines = data.trim().split('\n').filter(line => line.length > 0);
+        const parsed: ProposalData[] = [];
 
-        setStreamedProposals(parsed);
+        for (const line of lines) {
+            try {
+                const proposal = JSON.parse(line) as ProposalData;
+                if (proposal && proposal.id) {
+                    parsed.push(proposal);
+                }
+            } catch (e) {
+                console.warn('Failed to parse streamed proposal data:', line);
+            }
+        }
+
+        if (parsed.length > 0) {
+            console.log('Setting streamed proposals:', parsed.length, 'items');
+            setStreamedProposals(parsed);
+        }
     }, [data, isVoterList]);
 
 
@@ -456,15 +419,25 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                     ? props.proposals.data.length
                     : 0;
 
-                // Use streamed data for voter lists
-                const proposalsData = isVoterList
-                    ? {
-                        ...props.proposals,
-                        data: streamedProposals,
-                    }
-                    : props.proposals;
+                // For voter lists, use streamed data if available, otherwise show loading or fallback
+                let proposalsData = props.proposals;
+                let showLoading = false;
 
-                if (isVoterList && !streamedProposals.length) {
+                if (isVoterList) {
+                    if (streamedProposals.length > 0) {
+                        // Use streamed data
+                        proposalsData = {
+                            ...props.proposals,
+                            data: streamedProposals,
+                        };
+                    } else if (!streamTimeout && isStreaming) {
+                        // Still loading and streaming - show spinner
+                        showLoading = true;
+                    }
+                    // If streamTimeout is true, use the original paginated data as fallback
+                }
+
+                if (showLoading) {
                     return (
                         <div className="container flex justify-center items-center py-8">
                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -579,6 +552,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                         );
                     }}
                     handleDelete={() => {
+                        console.log('Delete button clicked in modal');
                         setActiveEditModal(false);
                         setActiveConfirm(true);
                     }}
@@ -608,7 +582,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                         </PrimaryButton>
 
                         <Button
-                            onClick={handleDelete}
+                            onClick={handleConfirmedDelete}
                             className="bg-danger-mid text-content-light flex-1 rounded-md py-1.5 font-semibold"
                         >
                             {t('bookmarks.deletesList')}

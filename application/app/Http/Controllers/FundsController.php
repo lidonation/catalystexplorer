@@ -4,19 +4,17 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\WeightedRandomizeQuickPitches;
 use App\DataTransferObjects\CampaignData;
-use App\DataTransferObjects\CatalystTallyData;
 use App\DataTransferObjects\FundData;
 use App\DataTransferObjects\MetricData;
 use App\DataTransferObjects\ProposalData;
-use App\Enums\CampaignsSortBy;
 use App\Enums\CatalystCurrencies;
 use App\Enums\ProposalFundingStatus;
 use App\Enums\ProposalSearchParams;
 use App\Enums\ProposalStatus;
+use App\Http\Controllers\Concerns\InteractsWithFunds;
 use App\Models\Campaign;
-use App\Models\CatalystProfile;
-use App\Models\CatalystTally;
 use App\Models\Connection;
 use App\Models\Fund;
 use App\Models\IdeascaleProfile;
@@ -30,7 +28,7 @@ use Inertia\Response;
 
 class FundsController extends Controller
 {
-    protected array $queryParams = [];
+    use InteractsWithFunds;
 
     public function index(Request $request, FundRepository $fundRepository): Response
     {
@@ -180,45 +178,46 @@ class FundsController extends Controller
         ]);
     }
 
-    protected function getProps(Request $request): void
+    public function campaign(Request $request, Campaign $campaign): Response
     {
-        $this->queryParams = $request->only([
-            ProposalSearchParams::SORTS()->value,
-            ProposalSearchParams::QUERY()->value,
-            ProposalSearchParams::CAMPAIGNS()->value,
-            ProposalSearchParams::FUNDS()->value,
-            ProposalSearchParams::PAGE()->value,
-            ProposalSearchParams::PER_PAGE()->value,
+        $fund = Fund::latest('launched_at')->first();
+
+        $campaign->loadCount([
+            'completed_proposals',
+            'unfunded_proposals',
+            'funded_proposals',
+            'proposals',
         ]);
-    }
 
-    public function getCampaigns(Fund $fund)
-    {
-        $sortParam = $this->queryParams[ProposalSearchParams::SORTS()->value] ?? null;
-        $sortField = null;
-        $sortDirection = null;
+        $campaign->append([
+            'total_requested',
+            'total_awarded',
+            'total_distributed',
+        ]);
 
-        if ($sortParam) {
-            [$sortField, $sortDirection] = explode(':', $sortParam);
-        }
+        $fund->append(['banner_img_url', 'hero_img_url']);
 
-        $query = $fund->campaigns()
-            //            ->with(['proposals', 'funded_proposals'])
-            ->withCount([
-                'completed_proposals',
-                'unfunded_proposals',
-                'funded_proposals',
-            ]);
+        $this->getProps($request);
 
-        if ($sortField && $sortDirection && in_array($sortDirection, ['asc', 'desc'])) {
-            if ($sortField === CampaignsSortBy::AMOUNT()->value) {
-                $query->orderBy(CampaignsSortBy::AMOUNT()->value, $sortDirection);
-            } elseif ($sortField === CampaignsSortBy::PROPOSALSCOUNT()->value) {
-                $query->orderBy(CampaignsSortBy::PROPOSALSCOUNT()->value, $sortDirection);
-            }
-        }
+        $amountAwarded = $fund->funded_proposals()->sum('amount_requested') ?? 0;
+        $amountDistributed = $fund->funded_proposals()->sum('amount_received') ?? 0;
+        $amountRemaining = $amountAwarded - $amountDistributed;
 
-        return $query->get();
+        $props = [
+            'fund' => FundData::from($fund),
+            'campaign' => $campaign,
+            'filters' => $this->queryParams,
+            'amountDistributed' => $amountDistributed,
+            'amountRemaining' => $amountRemaining,
+        ];
+
+        $proposalsData = $this->getCampaignProposalsWithPagination($request, $campaign);
+        $props = array_merge($props, $proposalsData);
+
+        $hasPageParam = $request->has('p') && $request->get('p') > 1;
+        $props['initialTab'] = (str_contains($request->path(), '/proposals') || $hasPageParam) ? 'proposals' : 'overview';
+
+        return Inertia::render('ActiveFund/Campaign', $props);
     }
 
     private function getActiveFundQuickPitches(Fund $fund, ProposalRepository $proposals)
@@ -234,12 +233,15 @@ class FundsController extends Controller
                 ])
                 ->whereNotNull('quickpitch')
                 ->where('fund_id', $fund->id)
-                ->limit(9)
                 ->get();
 
-            $this->addTeamBasedCounts($rawProposals);
+            // Apply weighted randomization favoring shorter videos, limit to 9
+            $weightedRandomizer = new WeightedRandomizeQuickPitches;
+            $finalProposals = $weightedRandomizer($rawProposals, 9);
 
-            return ProposalData::collect($rawProposals);
+            $this->addTeamBasedCounts($finalProposals);
+
+            return ProposalData::collect($finalProposals);
         } catch (\Throwable $e) {
             \Log::error('Error in getActiveFundQuickPitches', [
                 'error' => $e->getMessage(),
@@ -455,306 +457,89 @@ class FundsController extends Controller
         return $unfundedCount;
     }
 
-    private function getTallies(Fund $fund, int $perPage = 10, int $page = 1): array
+    /**
+     * Get campaign proposals with pagination and filtering using Eloquent queries
+     */
+    private function getCampaignProposalsWithPagination(Request $request, Campaign $campaign): array
     {
-        try {
-            // Build cache key including all filters
-            $filterHash = hash('sha256', serialize([
-                'search' => $this->queryParams[ProposalSearchParams::QUERY()->value] ?? null,
-                'sort' => $this->queryParams[ProposalSearchParams::SORTS()->value] ?? null,
-                'campaigns' => $this->queryParams[ProposalSearchParams::CAMPAIGNS()->value] ?? null,
-                'funds' => $this->queryParams[ProposalSearchParams::FUNDS()->value] ?? null,
-            ]));
-            $cacheKey = $this->buildTalliesCacheKey($fund->id, $page, $perPage).'_'.$filterHash;
+        $page = (int) $request->get('p', 1);
+        $perPage = (int) $request->get('per_page', 24);
 
-            $cached = \Cache::get($cacheKey);
-            if ($cached && ! app()->environment('local')) {
-                return $cached;
-            }
+        $proposalsQuery = $campaign->proposals()
+            ->with(['users', 'campaign', 'fund']);
 
-            $searchQuery = $this->queryParams[ProposalSearchParams::QUERY()->value] ?? null;
-            $sortParam = $this->queryParams[ProposalSearchParams::SORTS()->value] ?? null;
-            $campaignFilter = $this->queryParams[ProposalSearchParams::CAMPAIGNS()->value] ?? null;
-            $fundFilter = $this->queryParams[ProposalSearchParams::FUNDS()->value] ?? null;
-
-            $sortField = 'tally';
-            $sortDirection = 'desc';
-            if ($sortParam) {
-                [$sortField, $sortDirection] = explode(':', $sortParam);
-                if ($sortField === 'votes_count') {
-                    $sortField = 'tally';
-                }
-            }
-
-            // Determine which fund(s) to show tallies for
-            $targetFundIds = ! empty($fundFilter) && is_array($fundFilter) ? $fundFilter : [$fund->id];
-
-            // Calculate total votes for the target fund(s)
-            $cacheKeySuffix = count($targetFundIds) === 1 ? $targetFundIds[0] : hash('sha256', implode(',', $targetFundIds));
-            $totalVotesCast = \Cache::remember(
-                "funds_{$cacheKeySuffix}_total_votes",
-                now()->addHours(2),
-                fn () => CatalystTally::whereIn('context_id', $targetFundIds)->sum('tally')
-            );
-
-            $baseQuery = CatalystTally::query()
-                ->select([
-                    'catalyst_tallies.*',
-                    'catalyst_tallies.category_rank',
-                    'catalyst_tallies.fund_rank',
-                    'catalyst_tallies.overall_rank',
-                    'catalyst_tallies.chance_approval',
-                    'catalyst_tallies.chance_funding',
-                    'proposals.id as proposal_id',
-                    'proposals.title as proposal_title',
-                    'proposals.slug as proposal_slug',
-                    'proposals.amount_requested',
-                    'proposals.currency as proposal_currency',
-                    'proposals.campaign_id',
-                    'campaigns.id as campaign_id',
-                    'campaigns.title as campaign_title',
-                    'funds.id as fund_id',
-                    'funds.title as fund_title',
-                    'funds.currency as fund_currency',
-                ])
-                ->join('proposals', 'catalyst_tallies.model_id', '=', 'proposals.id')
-                ->join('campaigns', 'proposals.campaign_id', '=', 'campaigns.id')
-                ->join('funds', 'catalyst_tallies.context_id', '=', 'funds.id')
-                ->whereIn('catalyst_tallies.context_id', $targetFundIds) // Use fund filter or default to current fund
-                ->whereNotNull('catalyst_tallies.model_id');
-
-            if (! empty($campaignFilter) && is_array($campaignFilter)) {
-                $baseQuery->whereIn('campaigns.id', $campaignFilter);
-            }
-
-            if (! empty($searchQuery)) {
-                $searchTerm = trim($searchQuery);
-
-                $baseQuery->where(function ($query) use ($searchTerm) {
-                    $query->where('proposals.title', 'ILIKE', "%{$searchTerm}%")
-                        ->orWhere('campaigns.title', 'ILIKE', "%{$searchTerm}%");
-
-                    if (strlen($searchTerm) > 3) {
-                        $query->orWhereExists(function ($subQuery) use ($searchTerm) {
-                            $subQuery->select('*')
-                                ->from('proposal_profiles')
-                                ->join('catalyst_profiles', 'proposal_profiles.profile_id', '=', 'catalyst_profiles.id')
-                                ->whereColumn('proposal_profiles.proposal_id', 'proposals.id')
-                                ->where('proposal_profiles.profile_type', CatalystProfile::class)
-                                ->where(function ($nameQuery) use ($searchTerm) {
-                                    $nameQuery->where('catalyst_profiles.name', 'ILIKE', "%{$searchTerm}%")
-                                        ->orWhere('catalyst_profiles.username', 'ILIKE', "%{$searchTerm}%");
-                                });
-                        })
-                            ->orWhereExists(function ($subQuery) use ($searchTerm) {
-                                $subQuery->select('*')
-                                    ->from('proposal_profiles')
-                                    ->join('ideascale_profiles', 'proposal_profiles.profile_id', '=', 'ideascale_profiles.id')
-                                    ->whereColumn('proposal_profiles.proposal_id', 'proposals.id')
-                                    ->where('proposal_profiles.profile_type', IdeascaleProfile::class)
-                                    ->where(function ($nameQuery) use ($searchTerm) {
-                                        $nameQuery->where('ideascale_profiles.name', 'ILIKE', "%{$searchTerm}%")
-                                            ->orWhere('ideascale_profiles.username', 'ILIKE', "%{$searchTerm}%");
-                                    });
-                            });
-                    }
-                });
-            }
-
-            $offset = ($page - 1) * $perPage;
-
-            $talliesQuery = (clone $baseQuery)
-                ->orderBy("catalyst_tallies.{$sortField}", $sortDirection)
-                ->orderBy('catalyst_tallies.id', 'asc')
-                ->offset($offset)
-                ->limit($perPage);
-
-            $totalCount = $baseQuery->count('catalyst_tallies.id');
-
-            if ($totalCount === 0) {
-                return $this->getEmptyTalliesResponse($perPage, $page, $totalVotesCast);
-            }
-
-            $talliesWithRanking = $talliesQuery->get();
-
-            $currentLocale = \App::getLocale();
-
-            $talliesWithRanking->each(function ($tally) use ($fund, $currentLocale) {
-                // Note: Rankings and chances are now available directly on the tally model
-                // No need to fetch metas for these fields
-
-                if ($tally->proposal_id) {
-                    $proposal = new Proposal;
-                    $proposal->id = $tally->proposal_id;
-
-                    $proposal->title = $this->getTranslatedTitle($tally->proposal_title, $currentLocale);
-                    $proposal->slug = $tally->proposal_slug;
-
-                    $proposal->amount_requested = $tally->amount_requested;
-                    $proposal->currency = $tally->proposal_currency;
-                    $proposal->campaign_id = $tally->campaign_id;
-
-                    if ($tally->campaign_id) {
-                        $campaign = new Campaign;
-                        $campaign->id = $tally->campaign_id;
-                        $campaign->title = $this->getTranslatedTitle($tally->campaign_title, $currentLocale);
-
-                        $proposal->setRelation('campaign', $campaign);
-                    }
-
-                    $tally->setRelation('proposal', $proposal);
-                }
-
-                $fundModel = new Fund;
-                $fundModel->id = $fund->id;
-                $fundModel->title = $fund->title;
-                $fundModel->currency = $fund->currency;
-                $tally->setRelation('fund', $fundModel);
-            });
-
-            $lastUpdated = $talliesWithRanking->max('updated_at') ?? null;
-
-            $result = [
-                ...(to_length_aware_paginator(
-                    CatalystTallyData::collect($talliesWithRanking),
-                    total: $totalCount,
-                    perPage: $perPage,
-                    currentPage: $page
-                )->onEachSide(0)->toArray()),
-                'total' => $totalCount,
-                'total_votes_cast' => $totalVotesCast,
-                'last_updated' => $lastUpdated->toISOString(),
-            ];
-
-            if (! app()->environment('local')) {
-                \Cache::put($cacheKey, $result, now()->addMinutes(5));
-            }
-
-            return $result;
-
-        } catch (\Throwable $e) {
-            \Log::error('Error fetching tallies', [
-                'fund_id' => $fund->id,
-                'page' => $page,
-                'per_page' => $perPage,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            return $this->getEmptyTalliesResponse($perPage, $page, 0);
+        if (! empty($this->queryParams[ProposalSearchParams::QUERY()->value])) {
+            $searchTerm = trim($this->queryParams[ProposalSearchParams::QUERY()->value]);
+            $proposalsQuery->where('title', 'ILIKE', "%{$searchTerm}%");
         }
-    }
 
-    private function getEmptyTalliesResponse(int $perPage, int $page, int $totalVotesCast): array
-    {
+        if (! empty($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
+            $fundingStatuses = $this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value];
+            if (is_array($fundingStatuses)) {
+                $proposalsQuery->whereIn('funding_status', $fundingStatuses);
+            }
+        }
+
+        if (! empty($this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value])) {
+            $projectStatuses = $this->queryParams[ProposalSearchParams::PROJECT_STATUS()->value];
+            if (is_array($projectStatuses)) {
+                $proposalsQuery->whereIn('status', $projectStatuses);
+            }
+        }
+
+        if (! empty($this->queryParams[ProposalSearchParams::MIN_BUDGET()->value])) {
+            $proposalsQuery->where('amount_requested', '>=', $this->queryParams[ProposalSearchParams::MIN_BUDGET()->value]);
+        }
+        if (! empty($this->queryParams[ProposalSearchParams::MAX_BUDGET()->value])) {
+            $proposalsQuery->where('amount_requested', '<=', $this->queryParams[ProposalSearchParams::MAX_BUDGET()->value]);
+        }
+
+        if (! empty($this->queryParams[ProposalSearchParams::TAGS()->value])) {
+            $tags = $this->queryParams[ProposalSearchParams::TAGS()->value];
+            if (is_array($tags)) {
+                // Use raw SQL to handle UUID casting properly
+                $placeholders = implode(',', array_fill(0, count($tags), '?'));
+                $proposalsQuery->whereRaw(
+                    'EXISTS (SELECT 1 FROM model_tag WHERE model_tag.model_id::text = proposals.id::text AND model_tag.model_type = ? AND model_tag.tag_id IN ('.$placeholders.'))',
+                    array_merge([\App\Models\Proposal::class], $tags)
+                );
+            }
+        }
+
+        $sortField = 'created_at';
+        $sortDirection = 'desc';
+        if (! empty($this->queryParams[ProposalSearchParams::SORTS()->value])) {
+            $sortParam = $this->queryParams[ProposalSearchParams::SORTS()->value];
+            [$field, $direction] = explode(':', $sortParam);
+
+            if (in_array($field, ['created_at', 'title', 'amount_requested', 'funding_status', 'status']) &&
+                in_array($direction, ['asc', 'desc'])) {
+                $sortField = $field;
+                $sortDirection = $direction;
+            }
+        }
+
+        $proposalsQuery->orderBy($sortField, $sortDirection);
+
+        $proposals = $proposalsQuery->paginate($perPage, ['*'], 'p', $page);
+
         return [
-            'data' => [],
-            'total' => 0,
-            'total_votes_cast' => $totalVotesCast,
-            'per_page' => $perPage,
-            'current_page' => $page,
-            'last_page' => 1,
-            'from' => 0,
-            'to' => 0,
-            'prev_page_url' => null,
-            'next_page_url' => null,
-            'links' => [],
+            'proposals' => ProposalData::collect($proposals->items()),
+            'pagination' => [
+                'current_page' => $proposals->currentPage(),
+                'data' => ProposalData::collect($proposals->items()),
+                'first_page_url' => $proposals->url(1),
+                'from' => $proposals->firstItem(),
+                'last_page' => $proposals->lastPage(),
+                'last_page_url' => $proposals->url($proposals->lastPage()),
+                'links' => $proposals->linkCollection()->toArray(),
+                'next_page_url' => $proposals->nextPageUrl(),
+                'path' => $proposals->path(),
+                'per_page' => $proposals->perPage(),
+                'prev_page_url' => $proposals->previousPageUrl(),
+                'to' => $proposals->lastItem(),
+                'total' => $proposals->total(),
+            ],
         ];
-    }
-
-    private function buildPaginationUrl(int $page, array $queryParams): string
-    {
-        $params = array_merge($queryParams, ['p' => $page]);
-
-        return request()->url().'?'.http_build_query($params);
-    }
-
-    private function generatePaginationLinks(int $currentPage, int $lastPage, array $queryParams = []): array
-    {
-        $links = [];
-        $baseUrl = request()->url();
-
-        $links[] = [
-            'url' => $currentPage > 1 ? $this->buildPaginationUrl($currentPage - 1, $queryParams) : null,
-            'label' => '&laquo; Previous',
-            'active' => false,
-        ];
-
-        $start = max(1, $currentPage - 2);
-        $end = min($lastPage, $currentPage + 2);
-
-        if ($start > 1) {
-            $links[] = [
-                'url' => $this->buildPaginationUrl(1, $queryParams),
-                'label' => '1',
-                'active' => false,
-            ];
-            if ($start > 2) {
-                $links[] = [
-                    'url' => null,
-                    'label' => '...',
-                    'active' => false,
-                ];
-            }
-        }
-
-        for ($i = $start; $i <= $end; $i++) {
-            $links[] = [
-                'url' => $this->buildPaginationUrl($i, $queryParams),
-                'label' => (string) $i,
-                'active' => $i === $currentPage,
-            ];
-        }
-
-        if ($end < $lastPage) {
-            if ($end < $lastPage - 1) {
-                $links[] = [
-                    'url' => null,
-                    'label' => '...',
-                    'active' => false,
-                ];
-            }
-            $links[] = [
-                'url' => $this->buildPaginationUrl($lastPage, $queryParams),
-                'label' => (string) $lastPage,
-                'active' => false,
-            ];
-        }
-
-        $links[] = [
-            'url' => $currentPage < $lastPage ? $this->buildPaginationUrl($currentPage + 1, $queryParams) : null,
-            'label' => 'Next &raquo;',
-            'active' => false,
-        ];
-
-        return $links;
-    }
-
-    private function buildTalliesCacheKey($fundId, int $page, int $perPage): string
-    {
-        return "fund_{$fundId}_tallies_page_{$page}_per_{$perPage}";
-    }
-
-    private function getTranslatedTitle(?string $title, string $locale = 'en'): ?string
-    {
-        if (empty($title)) {
-            return $title;
-        }
-
-        // If title contains translation data (JSON), parse it
-        if (str_starts_with($title, '{') && str_ends_with($title, '}')) {
-            try {
-                $translations = json_decode($title, true);
-                if (is_array($translations)) {
-                    // Return the translation for the current locale, fallback to English, then first available
-                    return $translations[$locale] ?? $translations['en'] ?? reset($translations) ?? $title;
-                }
-            } catch (\Throwable $e) {
-                // If JSON parsing fails, return the original title
-                return $title;
-            }
-        }
-
-        return $title;
     }
 }

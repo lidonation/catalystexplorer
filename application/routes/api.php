@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\ProposalController;
 use App\Http\Controllers\Api\ReviewerController;
 use App\Http\Controllers\Api\CommunityController;
 use App\Http\Controllers\Api\FundController;
+use App\Http\Controllers\Api\CatalystTallyController;
 use App\Http\Controllers\My\MyBookmarksController;
 use App\Http\Controllers\VoterHistoriesController;
 use App\Http\Controllers\CompletedProjectNftsController;
@@ -24,7 +25,7 @@ use App\Http\Controllers\CatalystDrepController;
 use App\Http\Controllers\UserLanguageController;
 use Inertia\Inertia;
 
-Route::prefix('api')->as('api.')->group(function () {
+Route::as('api.')->group(function () {
     Route::get('/', fn() => Inertia::render(component: 'ComingSoon', props: ['context' => 'API']))->name('index');
 
     Route::get('/groups', [GroupController::class, 'groups'])->name('groups');
@@ -50,6 +51,16 @@ Route::prefix('api')->as('api.')->group(function () {
         // Nested resource for fund proposals
         Route::get('funds/{fund}/proposals', [FundController::class, 'proposals'])
             ->name('funds.proposals');
+
+        // CatalystTally API routes
+        Route::apiResource('catalyst-tallies', CatalystTallyController::class)
+            ->only(['index', 'show']);
+            
+        // Additional CatalystTally endpoints
+        Route::get('catalyst-tallies-funds', [CatalystTallyController::class, 'funds'])
+            ->name('catalyst-tallies.funds');
+        Route::get('catalyst-tallies-stats', [CatalystTallyController::class, 'stats'])
+            ->name('catalyst-tallies.stats');
 
         // You can add other v1 resources here in the future
         // Route::apiResource('campaigns', CampaignController::class)->only(['index', 'show']);
@@ -97,8 +108,8 @@ Route::prefix('api')->as('api.')->group(function () {
                 ->name('create');
             Route::post('{bookmarkCollection}/update', [MyBookmarksController::class, 'updateCollection'])
                 ->name('update');
-            Route::post('{bookmarkCollection}/delete', [MyBookmarksController::class, 'deleteCollection'])
-                ->name('delete');
+//            Route::post('{bookmarkCollection}/delete', [MyBookmarksController::class, 'deleteCollection'])
+//                ->name('delete');
             Route::get('/', [MyBookmarksController::class, 'retrieveCollections'])
                 ->name('retrieve');
             Route::prefix('bookmarks')->as('bookmarks.')

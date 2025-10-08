@@ -20,8 +20,10 @@ use App\Models\Group;
 use App\Models\IdeascaleProfile;
 use App\Models\Proposal;
 use App\Models\Review;
+use App\Models\Scopes\PublicVisibilityScope;
 use App\Models\User;
 use App\Repositories\BookmarkCollectionRepository;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -78,69 +80,81 @@ class BookmarksController extends Controller
         return Inertia::render('Bookmarks/Index', $props);
     }
 
-    public function view(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals')
+    public function view(string $bookmarkCollection, Request $request, ?string $type = 'proposals')
     {
-        $this->setFilters($request);
+        $bookmarkCollectionModel = BookmarkCollection::withoutGlobalScope(PublicVisibilityScope::class)
+            ->find($bookmarkCollection);
 
-        $isVoterList = $bookmarkCollection->list_type === 'voter';
-
-        if ($isVoterList) {
-            // Load minimal required data
-            $bookmarkCollection->load(['author', 'collaborators']);
-            $pendingInvitations = $this->getPendingInvitations($bookmarkCollection);
-
-            $emptyPagination = [
-                'data' => [],
-            ];
-
-            $props = [
-                'bookmarkCollection' => $bookmarkCollection->toArray(),
-                'type' => $type,
-                'search' => $this->search,
-                'sortBy' => $this->sortBy,
-                'sortOrder' => $this->sortOrder,
-                'sort' => "{$this->sortBy}:{$this->sortOrder}",
-                'filters' => $this->filters,
-                'queryParams' => $this->queryParams,
-                $type => $emptyPagination,
-                'pendingInvitations' => array_values($pendingInvitations),
-            ];
-
-            return Inertia::render('Bookmarks/View', $props);
+        if (! $bookmarkCollectionModel) {
+            abort(404);
         }
 
-        $model_type = BookmarkableType::from(Str::kebab($type))->getModelClass();
+        if ($bookmarkCollectionModel->visibility === 'public') {
+            // Public collections are accessible to everyone
+        } elseif (Auth::check()) {
+            try {
+                Gate::authorize('view', $bookmarkCollectionModel);
+            } catch (AuthorizationException $e) {
+                abort(404);
+            }
+        } else {
+            abort(404);
+        }
 
-        $relationshipsMap = [
-            Proposal::class => ['users', 'fund', 'campaign', 'schedule'],
-            Group::class => ['ideascale_profiles'],
-            Community::class => ['ideascale_profiles'],
-        ];
+        $this->setFilters($request);
 
-        $countMap = [
-            Group::class => ['proposals', 'funded_proposals'],
-            Community::class => ['ideascale_profiles', 'proposals'],
-        ];
+        $isVoterList = $bookmarkCollectionModel->list_type === 'voter';
 
-        $relationships = $relationshipsMap[$model_type] ?? [];
-        $counts = $countMap[$model_type] ?? [];
+        // For voter lists with proposals, provide empty pagination since frontend will stream
+        if ($isVoterList && $type === 'proposals') {
+            $pagination = [
+                'current_page' => 1,
+                'data' => [],
+                'first_page_url' => null,
+                'from' => null,
+                'last_page' => 1,
+                'last_page_url' => null,
+                'next_page_url' => null,
+                'path' => null,
+                'per_page' => $this->perPage,
+                'prev_page_url' => null,
+                'to' => null,
+                'total' => $bookmarkCollectionModel->items()->where('model_type', 'App\\Models\\Proposal')->count(),
+            ];
+        } else {
+            // For non-voter lists or non-proposal types, load items normally
+            $model_type = BookmarkableType::from(Str::kebab($type))->getModelClass();
 
-        $bookmarkItemIds = $bookmarkCollection->items
-            ->where('model_type', $model_type)
-            ->pluck('model_id')
-            ->toArray();
+            $relationshipsMap = [
+                Proposal::class => ['users', 'fund', 'campaign', 'schedule'],
+                Group::class => ['ideascale_profiles'],
+                Community::class => ['ideascale_profiles'],
+            ];
 
-        $pagination = $this->queryModels($model_type, $bookmarkItemIds, $relationships, $counts);
+            $countMap = [
+                Group::class => ['proposals', 'funded_proposals'],
+                Community::class => ['ideascale_profiles', 'proposals'],
+            ];
 
-        $typesCounts = $this->getFilteredTypesCounts($bookmarkCollection);
+            $relationships = $relationshipsMap[$model_type] ?? [];
+            $counts = $countMap[$model_type] ?? [];
 
-        // Load collaborators and get pending invitations
-        $bookmarkCollection->load(['author', 'collaborators']);
-        $pendingInvitations = $this->getPendingInvitations($bookmarkCollection);
+            $bookmarkItemIds = $bookmarkCollectionModel->items
+                ->where('model_type', $model_type)
+                ->pluck('model_id')
+                ->toArray();
+
+            $pagination = $this->queryModels($model_type, $bookmarkItemIds, $relationships, $counts);
+        }
+
+        $typesCounts = $this->getFilteredTypesCounts($bookmarkCollectionModel, $isVoterList);
+
+        $bookmarkCollectionModel->load(['author', 'collaborators']);
+        $pendingInvitations = $this->getPendingInvitations($bookmarkCollectionModel);
 
         $props = [
             'bookmarkCollection' => array_merge(
-                $bookmarkCollection->toArray(),
+                $bookmarkCollectionModel->toArray(),
                 ['types_count' => $typesCounts]
             ),
             'type' => $type,
@@ -157,7 +171,7 @@ class BookmarksController extends Controller
         return Inertia::render('Bookmarks/View', $props);
     }
 
-    protected function getFilteredTypesCounts(BookmarkCollection $bookmarkCollection): array
+    protected function getFilteredTypesCounts(BookmarkCollection $bookmarkCollection, bool $isVoterList = false): array
     {
         $modelTypes = [
             'proposals' => Proposal::class,
@@ -170,28 +184,49 @@ class BookmarksController extends Controller
         $typesCounts = [];
 
         foreach ($modelTypes as $typeKey => $modelClass) {
-            $bookmarkItemIds = $bookmarkCollection->items
-                ->where('model_type', $modelClass)
-                ->pluck('model_id')
-                ->toArray();
+            // For voter lists, get counts directly from database without loading all items
+            if ($isVoterList) {
+                Log::info('OPTIMIZATION: Using direct DB query for count', [
+                    'type_key' => $typeKey,
+                    'model_class' => $modelClass,
+                ]);
+                $baseQuery = $bookmarkCollection->items()
+                    ->where('model_type', $modelClass);
 
-            if (empty($bookmarkItemIds)) {
-                $typesCounts[$typeKey] = 0;
+                if ($this->search) {
+                    $searchBuilder = $modelClass::search($this->search);
+                    $searchResults = $searchBuilder->raw();
+                    $searchIds = collect($searchResults['hits'] ?? [])->pluck('id')->toArray();
 
-                continue;
-            }
-
-            if ($this->search) {
-                $searchBuilder = $modelClass::search($this->search);
-                $searchBuilder->whereIn('id', $bookmarkItemIds);
-
-                $searchResults = $searchBuilder->raw();
-                $count = $searchResults['estimatedTotalHits'] ?? 0;
+                    if (empty($searchIds)) {
+                        $count = 0;
+                    } else {
+                        $count = $baseQuery->whereIn('model_id', $searchIds)->count();
+                    }
+                } else {
+                    $count = $baseQuery->count();
+                }
             } else {
-                $query = $modelClass::query();
-                $query->whereIn('id', $bookmarkItemIds);
+                // For non-voter lists, use the existing logic with loaded items
+                $bookmarkItemIds = $bookmarkCollection->items
+                    ->where('model_type', $modelClass)
+                    ->pluck('model_id')
+                    ->toArray();
 
-                $count = $query->count();
+                if (empty($bookmarkItemIds)) {
+                    $count = 0;
+                } elseif ($this->search) {
+                    $searchBuilder = $modelClass::search($this->search);
+                    $searchBuilder->whereIn('id', $bookmarkItemIds);
+
+                    $searchResults = $searchBuilder->raw();
+                    $count = $searchResults['estimatedTotalHits'] ?? 0;
+                } else {
+                    $query = $modelClass::query();
+                    $query->whereIn('id', $bookmarkItemIds);
+
+                    $count = $query->count();
+                }
             }
 
             $typesCounts[$typeKey] = $count;
@@ -216,6 +251,11 @@ class BookmarksController extends Controller
             $data = $searchBuilder->paginate($this->perPage, ProposalSearchParams::PAGE()->value);
         } else {
             $query = $modelType::query();
+
+            // Remove global scopes for bookmark collections to ensure all bookmarked items are returned
+            if ($modelType === Proposal::class) {
+                $query->withoutGlobalScopes();
+            }
 
             if (! empty($relationships)) {
                 $query->with($relationships);
@@ -316,8 +356,16 @@ class BookmarksController extends Controller
         return $pagination->toArray();
     }
 
-    public function manage(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals'): Response
+    public function manage(string $bookmarkCollectionId, Request $request, ?string $type = 'proposals'): Response
     {
+        // Find collection bypassing global scopes to access private collections
+        $bookmarkCollection = BookmarkCollection::withoutGlobalScope(PublicVisibilityScope::class)
+            ->find($bookmarkCollectionId);
+
+        if (! $bookmarkCollection) {
+            abort(404);
+        }
+
         Gate::authorize('update', $bookmarkCollection);
 
         $this->setFilters($request);
@@ -857,7 +905,12 @@ class BookmarksController extends Controller
             abort(404);
         }
 
-        $bookmarkCollection = BookmarkCollection::findOrFail($collectionId);
+        $bookmarkCollection = BookmarkCollection::withoutGlobalScope(PublicVisibilityScope::class)
+            ->find($collectionId);
+
+        if (! $bookmarkCollection) {
+            abort(404);
+        }
         $invitations = $this->getPendingInvitations($bookmarkCollection);
 
         // Find invitation by token
@@ -934,7 +987,8 @@ class BookmarksController extends Controller
                 ->withErrors(['message' => 'No invitation acceptance found.']);
         }
 
-        $bookmarkCollection = BookmarkCollection::find($collectionId);
+        $bookmarkCollection = BookmarkCollection::withoutGlobalScope(PublicVisibilityScope::class)
+            ->find($collectionId);
 
         if (! $bookmarkCollection) {
             return redirect()->route('lists.index')
@@ -1215,8 +1269,32 @@ class BookmarksController extends Controller
         ];
     }
 
-    public function downloadPdf(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals')
+    public function downloadPdf(string $bookmarkCollectionId, Request $request, ?string $type = 'proposals')
     {
+        // Find collection bypassing global scopes to access private collections
+        $bookmarkCollection = BookmarkCollection::withoutGlobalScope(PublicVisibilityScope::class)
+            ->find($bookmarkCollectionId);
+
+        if (! $bookmarkCollection) {
+            abort(404);
+        }
+
+        // Check access permissions based on visibility and authentication
+        if ($bookmarkCollection->visibility === 'public') {
+            // Public collections are accessible to everyone - no additional checks needed
+        } elseif (Auth::check()) {
+            // Private/unlisted collections require authentication and authorization
+            try {
+                Gate::authorize('view', $bookmarkCollection);
+            } catch (AuthorizationException $e) {
+                // If authorization fails, return 404 to avoid leaking information
+                abort(404);
+            }
+        } else {
+            // Private/unlisted collection accessed by guest user - return 404
+            abort(404);
+        }
+
         $defaultPdfColumns = ['title', 'budget', 'category', 'openSourced', 'teams', 'my_vote'];
         $data = $this->prepareDownloadData($bookmarkCollection, $request, $type, $defaultPdfColumns);
         $data = $this->prepareDownloadData($bookmarkCollection, $request, $type, $defaultPdfColumns);
@@ -1286,8 +1364,32 @@ class BookmarksController extends Controller
             ->download($filename);
     }
 
-    public function downloadPng(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals')
+    public function downloadPng(string $bookmarkCollectionId, Request $request, ?string $type = 'proposals')
     {
+        // Find collection bypassing global scopes to access private collections
+        $bookmarkCollection = BookmarkCollection::withoutGlobalScope(PublicVisibilityScope::class)
+            ->find($bookmarkCollectionId);
+
+        if (! $bookmarkCollection) {
+            abort(404);
+        }
+
+        // Check access permissions based on visibility and authentication
+        if ($bookmarkCollection->visibility === 'public') {
+            // Public collections are accessible to everyone - no additional checks needed
+        } elseif (Auth::check()) {
+            // Private/unlisted collections require authentication and authorization
+            try {
+                Gate::authorize('view', $bookmarkCollection);
+            } catch (AuthorizationException $e) {
+                // If authorization fails, return 404 to avoid leaking information
+                abort(404);
+            }
+        } else {
+            // Private/unlisted collection accessed by guest user - return 404
+            abort(404);
+        }
+
         $defaultPngColumns = ['title', 'budget', 'category', 'openSourced', 'teams'];
         $data = $this->prepareDownloadData($bookmarkCollection, $request, $type, $defaultPngColumns);
 
@@ -1423,8 +1525,33 @@ class BookmarksController extends Controller
     /**
      * Stream bookmark collection items for voter lists
      */
-    public function streamBookmarkItems(BookmarkCollection $bookmarkCollection, Request $request, ?string $type = 'proposals')
+    public function streamBookmarkItems(string $bookmarkCollectionId, Request $request, ?string $type = 'proposals')
     {
+        // Find collection without global scope to check if it exists
+        $bookmarkCollection = BookmarkCollection::withoutGlobalScope(PublicVisibilityScope::class)
+            ->find($bookmarkCollectionId);
+
+        // If collection doesn't exist at all, return 404
+        if (! $bookmarkCollection) {
+            abort(404);
+        }
+
+        // Check access permissions based on visibility and authentication
+        if ($bookmarkCollection->visibility === 'public') {
+            // Public collections are accessible to everyone - no additional checks needed
+        } elseif (Auth::check()) {
+            // Private/unlisted collections require authentication and authorization
+            try {
+                Gate::authorize('view', $bookmarkCollection);
+            } catch (AuthorizationException $e) {
+                // If authorization fails, return 404 to avoid leaking information
+                abort(404);
+            }
+        } else {
+            // Private/unlisted collection accessed by guest user - return 404
+            abort(404);
+        }
+
         $this->setFilters($request);
 
         $model_type = BookmarkableType::from(Str::kebab($type))->getModelClass();

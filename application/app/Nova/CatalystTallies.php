@@ -19,7 +19,7 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 
 class CatalystTallies extends Resource
 {
-    public static $perPageViaRelationship = 25;
+    public static $perPageViaRelationship = 50;
 
     public static $tableStyle = 'tight';
 

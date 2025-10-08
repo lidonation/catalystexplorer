@@ -10,11 +10,13 @@ export interface Tab {
 export interface TabConfig {
     translationPrefix: string;
     routePrefix: string;
+    pathPrefix?: string;
     tabs: {
         key: string;
         translationKey?: string;
         routeName?: string;
         only?: string[];
+        path?: string;
     }[];
 }
 
@@ -22,13 +24,22 @@ export function generateTabs(
     t: (key: string, replacements?: ReplacementsInterface) => string,
     config: TabConfig,
 ): Tab[] {
+    const pathPrefix = (config.pathPrefix ?? config.routePrefix).replace(/^\/|\/$/g, '');
+
     return config.tabs.map((tab) => {
-        const routeName = `${config.routePrefix}.${tab.routeName || tab.key}`;
+        const routeSuffix = tab.routeName ?? tab.key;
+        const routeName = routeSuffix
+            ? `${config.routePrefix}.${routeSuffix}`
+            : config.routePrefix;
+
+        const pathSuffix = tab.path ?? routeSuffix;
+        const href = `/${pathPrefix}${pathSuffix ? `/${pathSuffix}` : ''}`;
+        
         return {
             name: t(
                 `${config.translationPrefix}.${tab.translationKey || tab.key}`,
             ),
-            href: `/${config.routePrefix}/${tab.routeName || tab.key}`,
+            href,
             routeName,
             ...(tab.only && { only: tab.only }),
         };
@@ -103,5 +114,26 @@ export const proposalTabs: TabConfig = {
         { key: 'schedule', routeName: 'schedule' },
         { key: 'community', routeName: 'community-review' },
         { key: 'team', routeName: 'team-information' },
+    ],
+};
+
+export const campaignTabs: TabConfig = {
+    translationPrefix: 'campaigns.tabs',
+    routePrefix: 'active-fund/campaigns/{id}',
+    tabs: [
+        { key: 'overview', routeName: '' },
+        { key: 'proposals', routeName: 'proposals' },
+    ],
+};
+
+export const chartsAllContentTabs: TabConfig = {
+    translationPrefix: 'charts.tabs',
+    routePrefix: 'charts',
+    pathPrefix: 'charts',
+    tabs: [
+        { key: 'liveTally', routeName: 'liveTally', path: 'live-tally' },
+        { key: 'registrations', routeName: 'registrations' },
+        { key: 'confirmedVoters', routeName: 'confirmedVoters', path: 'confirmed-voters' },
+        { key: 'leaderboards', routeName: 'leaderboards' },
     ],
 };

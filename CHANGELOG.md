@@ -1,3 +1,90 @@
+# [1.42.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.41.0...v1.42.0) (2025-10-07)
+
+
+### Features
+
+* **charts:** created all charts page with nav tabs ([db310f7](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/db310f7201826952ad33211120265d9c62a3b537))
+
+# [1.41.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.40.0...v1.41.0) (2025-10-06)
+
+
+### Features
+
+* add funding status to the live tally table ([43747a6](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/43747a64ca87a5376a5137530c1764c23b562823))
+
+# [1.40.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.39.3...v1.40.0) (2025-10-06)
+
+
+### Features
+
+* add tallies api resource ([7eed3a7](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/7eed3a7870bcd2f30eb27b542d00a88591cecc44))
+
+## [1.39.3](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.39.2...v1.39.3) (2025-10-05)
+
+
+### Bug Fixes
+
+* more lists fixes ([fd33550](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/fd33550d12e691666aeccf91cfe6089e72ed5b77))
+* more lists fixes ([076025a](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/076025a21437c2f88bc407abeef0d71c2bd7bfa5))
+
+## [1.39.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.39.1...v1.39.2) (2025-10-05)
+
+
+### Bug Fixes
+
+* cannot remove voting list item ([1f2f34f](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/1f2f34f18eeb974891982443da3de94d011b7082))
+
+## [1.39.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.39.0...v1.39.1) (2025-10-05)
+
+
+### Bug Fixes
+
+* ssl cert update, private bookmark collection not loading, optimized bookmark list ([d95dd48](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/d95dd4847ac5ffa0317b47dfcd65f58e487dff62))
+
+# [1.39.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.38.1...v1.39.0) (2025-10-05)
+
+
+### Features
+
+* make the tallies budget table sortable ([f9460de](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/f9460de1e727999365a056775e1f346c3d60bc4e))
+
+## [1.38.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.38.0...v1.38.1) (2025-10-04)
+
+
+### Bug Fixes
+
+* autho history summary counts restored ([9eceab7](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/9eceab77349921ff2fc24780e02417b76ccd33aa))
+
+# [1.38.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.37.0...v1.38.0) (2025-10-03)
+
+
+### Features
+
+* enhance single proposal page ([fa3aaed](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/fa3aaed92b79b64c31eb123719c27148e9e19fec))
+
+# [1.37.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.36.0...v1.37.0) (2025-10-03)
+
+
+### Features
+
+* add support for vietnamese ([c67feab](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/c67feabe798fa1052bc9577695b24c0b335e9c92))
+
+# [1.36.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.35.2...v1.36.0) (2025-10-02)
+
+
+### Features
+
+* link wallet to proposal ([18e1355](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/18e135537997076a41cba2f1e63967d6c33f34ae))
+* **lists:** added copy tweet button on the sharing tweet modal ([c0a3a53](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/c0a3a53e20a8ccdfeaa2feba2cf551aae83cc45e))
+
+## [1.35.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.35.1...v1.35.2) (2025-10-01)
+
+
+### Bug Fixes
+
+* charts bug fixes ([061527f](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/061527f95aba6edbb04063a825034aff6f887be0))
+* **proposal:** fixed pagination issue when next button is clicked ([4741768](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/4741768f46a383263114e1512c87c371dbad8a50))
+
 ## [1.35.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.35.0...v1.35.1) (2025-09-29)
 
 

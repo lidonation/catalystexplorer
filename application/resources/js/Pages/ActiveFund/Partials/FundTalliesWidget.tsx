@@ -19,6 +19,7 @@ import VoterData = App.DataTransferObjects.VoterData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 import FundData = App.DataTransferObjects.FundData;
 import CatalystTallyData = App.DataTransferObjects.CatalystTallyData;
+import ProposalFundingStatus from '@/Pages/Proposals/Partials/ProposalFundingStatus';
 
 interface FundTalliesWidgetProps {
     tallies?: PaginatedData<CatalystTallyData[]> & { total_votes_cast?: number };
@@ -112,6 +113,7 @@ const TableSkeleton: React.FC<{ rows: number }> = ({ rows }) => (
                     <TableHeader label="" />
                     <TableHeader label="" />
                     <TableHeader label="" />
+                    <TableHeader label="" />
                     <TableHeader label="" isLastColumn />
                 </tr>
             </thead>
@@ -132,6 +134,9 @@ const TableSkeleton: React.FC<{ rows: number }> = ({ rows }) => (
                         </TableCell>
                         <TableCell>
                             <div className="h-4 bg-gray-200 rounded w-16"></div>
+                        </TableCell>
+                        <TableCell>
+                            <div className="h-4 bg-gray-200 rounded w-20"></div>
                         </TableCell>
                         <TableCell isLastColumn>
                             <div className="h-4 bg-gray-200 rounded w-24"></div>
@@ -228,11 +233,66 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
         }
     };
 
+    const handleBudgetSort = () => {
+        let direction: 'asc' | 'desc' | null = 'asc';
+
+        if (sortField === 'amount_requested') {
+            if (sortDirection === 'asc') {
+                direction = 'desc';
+            } else if (sortDirection === 'desc') {
+                direction = null;
+            } else {
+                direction = 'asc';
+            }
+        }
+
+        if (showPagination) {
+            if (!direction) {
+                const url = new URL(window.location.href);
+                url.searchParams.delete(ParamsEnum.SORTS);
+
+                router.get(url.pathname + url.search, {}, {
+                    preserveState: true,
+                    preserveScroll: true,
+                    replace: true
+                });
+
+                setFilters({
+                    param: ParamsEnum.SORTS,
+                    value: null,
+                    label: 'Sort'
+                });
+            } else {
+                setFilters({
+                    param: ParamsEnum.SORTS,
+                    value: `amount_requested:${direction}`,
+                    label: 'Sort'
+                });
+            }
+        } else {
+            if (!direction) {
+                setSortBy('ranking');
+                setSortOrder('asc');
+            } else {
+                setSortBy('budget');
+                setSortOrder(direction);
+            }
+        }
+    };
+
     const getVotesSortDirection = (): 'asc' | 'desc' | null => {
         if (showPagination) {
             return sortField === 'votes_count' ? (sortDirection as 'asc' | 'desc' | null) : null;
         } else {
             return sortBy === 'votes' ? sortOrder : null;
+        }
+    };
+
+    const getBudgetSortDirection = (): 'asc' | 'desc' | null => {
+        if (showPagination) {
+            return sortField === 'amount_requested' ? (sortDirection as 'asc' | 'desc' | null) : null;
+        } else {
+            return sortBy === 'budget' ? sortOrder : null;
         }
     };
 
@@ -544,9 +604,15 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
                                     />
                                     <TableHeader label={t('activeFund.votingStats.proposal')} />
                                     <TableHeader label={t('activeFund.votingStats.categoryFundRank')} />
+                                    <TableHeader label={t('activeFund.votingStats.fundingStatus')} />
                                     <TableHeader label={t('activeFund.votingStats.approvalChance')} />
                                     <TableHeader label={t('activeFund.votingStats.fundingChance')} />
-                                    <TableHeader label={t('activeFund.votingStats.budget')} isLastColumn />
+                                    <SortableTableHeader
+                                        label={t('activeFund.votingStats.budget')}
+                                        isLastColumn
+                                        sortDirection={getBudgetSortDirection()}
+                                        onSort={handleBudgetSort}
+                                    />
                                 </tr>
                             </thead>
                             <tbody className="whitespace-nowrap">
@@ -593,6 +659,17 @@ const FundTalliesWidgetComponent: React.FC<FundTalliesWidgetProps> = ({
                                                         {stat.fund_rank ? `${ordinal(stat.fund_rank)}` : '-'}
                                                     </span>
                                                     </div>
+                                                ) : (
+                                                    <span className="text-gray-400 text-sm">-</span>
+                                                )}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center gap-2">
+                                                {stat.proposal?.funding_status ? (
+                                                    <ProposalFundingStatus
+                                                        funding_status={stat.proposal.funding_status}
+                                                    />
                                                 ) : (
                                                     <span className="text-gray-400 text-sm">-</span>
                                                 )}

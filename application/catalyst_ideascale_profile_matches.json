@@ -1,0 +1,1505 @@
+{
+    "analysis_date": "2025-10-05 09:49:49",
+    "summary": [],
+    "matches": [
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "gamayos",
+            "ideascale": {
+                "id": "04da96e4-e1cf-42bf-8792-05b55a6b4559",
+                "name": "Yosef",
+                "username": "gamayos",
+                "email": null
+            },
+            "catalyst": {
+                "id": "b0494fae-8d44-49f9-8b7d-a5f33e419597",
+                "name": "Yosef Akhtman",
+                "username": "yosef-akhtman",
+                "catalyst_id": "id.catalyst:\/\/gamayos@cardano\/De_ckKRZFeUTD7b4I-vXZl_MlIi3rfY5bhNk4lNui68\/3\/0",
+                "extracted_username": "gamayos"
+            }
+        },
+        {
+            "type": "username_to_username",
+            "confidence": "HIGH",
+            "matched_on": "sky3team",
+            "ideascale": {
+                "id": "06055906-6a23-4575-9800-eb6e0bf6dc4d",
+                "name": "Sky3 Team",
+                "username": "sky3team",
+                "email": null
+            },
+            "catalyst": {
+                "id": "1244e2dc-d1d4-48be-8ee2-9f1e59163504",
+                "name": "Sky3Team",
+                "username": "sky3team",
+                "catalyst_id": "id.catalyst:\/\/Sky3Team@cardano\/mktmwABkVDn_O0nUYrvujMyqdmakHUMIGKTVUWtKSXc\/3\/0"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "sky3team",
+            "ideascale": {
+                "id": "06055906-6a23-4575-9800-eb6e0bf6dc4d",
+                "name": "Sky3 Team",
+                "username": "sky3team",
+                "email": null
+            },
+            "catalyst": {
+                "id": "1244e2dc-d1d4-48be-8ee2-9f1e59163504",
+                "name": "Sky3Team",
+                "username": "sky3team",
+                "catalyst_id": "id.catalyst:\/\/Sky3Team@cardano\/mktmwABkVDn_O0nUYrvujMyqdmakHUMIGKTVUWtKSXc\/3\/0",
+                "extracted_username": "sky3team"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "mwojtera",
+            "ideascale": {
+                "id": "0a47cbb8-2984-4cc6-b59e-843bb4f62f35",
+                "name": "mwojtera",
+                "username": "mwojtera",
+                "email": null
+            },
+            "catalyst": {
+                "id": "47b839cc-f686-4778-a675-d17211e049d2",
+                "name": "Micha\u0142 Wojtera",
+                "username": "michal-wojtera",
+                "catalyst_id": "id.catalyst:\/\/mwojtera@cardano\/HB64S-nqVgISLDwzomzF5Mm8CmysiLxQDfyzG-aVIfA\/3\/0",
+                "extracted_username": "mwojtera"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "sheldon",
+            "ideascale": {
+                "id": "0d5ad802-949b-4c15-aead-2c461d8b27c0",
+                "name": "Sheldon Hunt",
+                "username": "sheldon",
+                "email": null
+            },
+            "catalyst": {
+                "id": "9e49d751-dbf0-4efe-8a03-856d208cd3d9",
+                "name": "Sundial Protocol",
+                "username": "sundial-protocol",
+                "catalyst_id": "id.catalyst:\/\/Sheldon@cardano\/Cp_EKkpwHbdECTZB3Oe3uN52T38QpoJQGHl8UpMlor8\/3\/0",
+                "extracted_username": "sheldon"
+            }
+        },
+        {
+            "type": "email_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "david",
+            "ideascale": {
+                "id": "107b7236-3907-4b35-a62f-f18219f0f81a",
+                "name": "David Yagi",
+                "username": "cryptochips",
+                "email": "david@cryptochips.io"
+            },
+            "catalyst": {
+                "id": "dd52f14d-e1c9-4b56-89c9-d42fbec030b0",
+                "name": "David Federico",
+                "username": "david-federico",
+                "catalyst_id": "id.catalyst:\/\/David@cardano\/-wsIp22YcItDITRwGpq5QdL2rn_AoQHVwRv5FNYBwLk\/3\/0",
+                "extracted_username": "david"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "nucast",
+            "ideascale": {
+                "id": "1c2a8d30-2b1c-422b-89d3-bed185888ea9",
+                "name": "Nucast",
+                "username": "nucast",
+                "email": null
+            },
+            "catalyst": {
+                "id": "cc5ac476-26a2-442b-a1c7-d5079b0cbcb1",
+                "name": "Sricharan Ganta",
+                "username": "sricharan-ganta",
+                "catalyst_id": "id.catalyst:\/\/Nucast@cardano\/iHcloTYdVA9JX6z__NVla1Dmea5VRSbPqUsw7w_u4Zc\/3\/0",
+                "extracted_username": "nucast"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "jx",
+            "ideascale": {
+                "id": "1c6a6d2c-de40-4a29-9594-52043c63b2d5",
+                "name": "J Daniel Semrau",
+                "username": "jx",
+                "email": null
+            },
+            "catalyst": {
+                "id": "8fd4534e-a284-4e93-a1be-0184ba7e7d4e",
+                "name": "Ebenezer Eshimokhai",
+                "username": "ebenezer-eshimokhai",
+                "catalyst_id": "id.catalyst:\/\/JX@cardano\/h5_zKhE1yDbwjQQztkCH00XEXYs5vx73n6kx6PaIp9k\/3\/0",
+                "extracted_username": "jx"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "adiuvat",
+            "ideascale": {
+                "id": "1cf85335-d5cb-4ce2-af9b-2605a3c51775",
+                "name": "Dapp ADIUVAT",
+                "username": "adiuvat",
+                "email": null
+            },
+            "catalyst": {
+                "id": "0198bc20-1f9c-70dd-8590-ca425882173e",
+                "name": "Andres Felipe Hoyos Agudelo - Babylon Capital SAS",
+                "username": "andres-felipe-hoyos-agudelo-babylon-capital-sas",
+                "catalyst_id": "id.catalyst:\/\/adiuvat@cardano\/4VFkuToGu7FSr8BSxSGC9hPXISMW-_toCyB8OiqfPTc\/3\/0",
+                "extracted_username": "adiuvat"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "knightsafe",
+            "ideascale": {
+                "id": "1ed7b38d-2da9-411e-a350-70afb7848224",
+                "name": "KnightSafe KS",
+                "username": "knightsafe",
+                "email": null
+            },
+            "catalyst": {
+                "id": "52a99358-c624-404d-8d4e-b0c814587176",
+                "name": "KS LABS LIMITED",
+                "username": "ks-labs-limited",
+                "catalyst_id": "id.catalyst:\/\/KnightSafe@cardano\/MVPhgUnxn6eil53vdbocqFT8s8QH3ldSMdHoJOAeRnc\/3\/0",
+                "extracted_username": "knightsafe"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "knightsafe",
+            "ideascale": {
+                "id": "1ed7b38d-2da9-411e-a350-70afb7848224",
+                "name": "KnightSafe KS",
+                "username": "knightsafe",
+                "email": null
+            },
+            "catalyst": {
+                "id": "dc393d82-3706-49e3-a3b3-d8269c0f4707",
+                "name": "KS Labs Limited",
+                "username": "ks-labs-limited",
+                "catalyst_id": "id.catalyst:\/\/KnightSafe@cardano\/MVPhgUnxn6eil53vdbocqFT8s8QH3ldSMdHoJOAeRnc\/3\/0",
+                "extracted_username": "knightsafe"
+            }
+        },
+        {
+            "type": "username_to_username",
+            "confidence": "HIGH",
+            "matched_on": "reitcircles",
+            "ideascale": {
+                "id": "1f142e71-0219-49d3-9a92-1dba6ce573a1",
+                "name": "Reitcircles",
+                "username": "reitcircles",
+                "email": null
+            },
+            "catalyst": {
+                "id": "f8c6f51c-d509-49cc-ab0c-c2ef869f1e45",
+                "name": "Reitcircles",
+                "username": "reitcircles",
+                "catalyst_id": "id.catalyst:\/\/reitcircles@cardano\/O6Wo1iSlVCq2LHG04A9INrKy-9t3SfnAWFlc9LyKc9Y\/3\/0"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "reitcircles",
+            "ideascale": {
+                "id": "1f142e71-0219-49d3-9a92-1dba6ce573a1",
+                "name": "Reitcircles",
+                "username": "reitcircles",
+                "email": null
+            },
+            "catalyst": {
+                "id": "f8c6f51c-d509-49cc-ab0c-c2ef869f1e45",
+                "name": "Reitcircles",
+                "username": "reitcircles",
+                "catalyst_id": "id.catalyst:\/\/reitcircles@cardano\/O6Wo1iSlVCq2LHG04A9INrKy-9t3SfnAWFlc9LyKc9Y\/3\/0",
+                "extracted_username": "reitcircles"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "agnostica",
+            "ideascale": {
+                "id": "22539290-7095-4e92-b328-685d1796b991",
+                "name": "Agnostica RaaS",
+                "username": "agnostica",
+                "email": null
+            },
+            "catalyst": {
+                "id": "0198bc20-1d85-73e9-91d7-9855c4aabc21",
+                "name": "Agnostica, Ltd.",
+                "username": "agnostica-ltd",
+                "catalyst_id": "id.catalyst:\/\/Agnostica@cardano\/zsb4_eQaCzplVcYEigj8lTkpoq4YczCQLlJPJbsNays\/3\/0",
+                "extracted_username": "agnostica"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "sidotobe",
+            "ideascale": {
+                "id": "289df326-cfe7-48f8-a44f-9c83e5222dcb",
+                "name": "sido tobe",
+                "username": "sidotobe",
+                "email": null
+            },
+            "catalyst": {
+                "id": "15832ced-f2da-4b14-ade2-33d251e4e03b",
+                "name": "Tony Do",
+                "username": "tony-do",
+                "catalyst_id": "id.catalyst:\/\/Sidotobe@cardano\/gt7KXPoxSEVMsnjO25j_Dc0gPVGFimmQypbI9Vb94ow\/3\/0",
+                "extracted_username": "sidotobe"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "fluidtokens",
+            "ideascale": {
+                "id": "28e14f24-b36d-493b-82c1-389551263f4d",
+                "name": "Matteo Coppola",
+                "username": "fluidtokens",
+                "email": null
+            },
+            "catalyst": {
+                "id": "9cb5e268-5285-4563-a658-8c5970923ea2",
+                "name": "Matteo Coppola (FluidTokens)",
+                "username": "matteo-coppola-fluidtokens",
+                "catalyst_id": "id.catalyst:\/\/FluidTokens@cardano\/oeZnXFJvceC9KRD3SFM6-h_pRrtyKD8nFwt2hfMv0mc\/3\/0",
+                "extracted_username": "fluidtokens"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "selahadin",
+            "ideascale": {
+                "id": "3753778f-75cd-464b-84ba-7193dee1cd5b",
+                "name": "Selahadin Esmael",
+                "username": "selahadin",
+                "email": null
+            },
+            "catalyst": {
+                "id": "faf1f8a5-f926-4aee-8b83-f0ba8a079887",
+                "name": "Selahadin Esmael Yesuf",
+                "username": "selahadin-esmael-yesuf",
+                "catalyst_id": "id.catalyst:\/\/Selahadin@cardano\/nPgyqmkXecBaqbPNl4VMmRNsbIv7lrCQW4nbN_Pgu0M\/3\/0",
+                "extracted_username": "selahadin"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "machdiamond",
+            "ideascale": {
+                "id": "43a959e8-dd3d-4f87-9faa-c32894c13231",
+                "name": "Patrick Serafin",
+                "username": "machdiamond",
+                "email": null
+            },
+            "catalyst": {
+                "id": "b7af2e53-4481-4863-a146-241f90671d9e",
+                "name": "MachDiamond Technologies",
+                "username": "machdiamond-technologies",
+                "catalyst_id": "id.catalyst:\/\/machdiamond@cardano\/JTWm5s-fU35eULi2pSzbGdJYyxtgpeH9zGHRIOCXk4E\/3\/0",
+                "extracted_username": "machdiamond"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "bloxet",
+            "ideascale": {
+                "id": "459a0d87-1270-4394-9827-34e5dafa5193",
+                "name": "Ammanuel Mekonnen",
+                "username": "bloxet",
+                "email": null
+            },
+            "catalyst": {
+                "id": "37ad592a-bfd5-454c-8809-e900c99ec2f4",
+                "name": "Ammanuel Mekonnen",
+                "username": "ammanuel-mekonnen",
+                "catalyst_id": "id.catalyst:\/\/BloxET@cardano\/4K-BlBCBFKqxiZpnYx6719lV4D_aZHrKJepb890IbMk\/3\/0",
+                "extracted_username": "bloxet"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "eldermillenial",
+            "ideascale": {
+                "id": "4ec9a6a1-88b7-43bf-9f95-fd660f2c9082",
+                "name": "eldermillenial",
+                "username": "eldermillenial",
+                "email": null
+            },
+            "catalyst": {
+                "id": "798e7ded-804b-4e9f-8ed7-272042a1e753",
+                "name": "Dr. Nick Schaub (aka Elder Millenial)",
+                "username": "dr-nick-schaub-aka-elder-millenial",
+                "catalyst_id": "id.catalyst:\/\/eldermillenial@cardano\/ijgryhv0rC68o4-AcPedeX7sVzSm2fNcsvBC8pLi3rw\/3\/0",
+                "extracted_username": "eldermillenial"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "caike",
+            "ideascale": {
+                "id": "500a2806-192a-4750-8832-a6e0069cdc3a",
+                "name": "Carlos Souza (caike)",
+                "username": "caike",
+                "email": null
+            },
+            "catalyst": {
+                "id": "c857f884-b030-4397-9edc-14aab4414ecf",
+                "name": "Carlos Souza",
+                "username": "carlos-souza",
+                "catalyst_id": "id.catalyst:\/\/caike@cardano\/GZeTNFNGz-8g5ZLBPUWnKiYm3kAdsv2Uv0VgUjcHrC4\/3\/0",
+                "extracted_username": "caike"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "fimi.vn",
+            "ideascale": {
+                "id": "51b859a4-791d-4871-9857-d2a2d4d38a1f",
+                "name": "Fimi",
+                "username": "fimi.vn",
+                "email": null
+            },
+            "catalyst": {
+                "id": "123fd76d-cfd8-4795-a648-687ed3abc0de",
+                "name": "Do Manh Hung",
+                "username": "do-manh-hung",
+                "catalyst_id": "id.catalyst:\/\/Fimi.vn@cardano\/VsSM4QfMjbfOjowQnWaIadeJD5YR5QsvkWut2M4CjCs\/3\/0",
+                "extracted_username": "fimi.vn"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "wims",
+            "ideascale": {
+                "id": "51dbb110-7b87-4c08-bc09-3aa8ec1837f4",
+                "name": "Bernard Sibanda",
+                "username": "wims",
+                "email": null
+            },
+            "catalyst": {
+                "id": "2c2cc712-41f5-442c-88db-0932a92f944e",
+                "name": "Bernard Sibanda",
+                "username": "bernard-sibanda",
+                "catalyst_id": "id.catalyst:\/\/wims@cardano\/p-si5H7tsaB_YnrZqdkD36OEIuMInypXeGl6_vtUshE\/3\/0",
+                "extracted_username": "wims"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "hendrik",
+            "ideascale": {
+                "id": "56bf26f4-7aa9-4c84-a823-83f649ecd66c",
+                "name": "hendrik",
+                "username": "hendrik",
+                "email": null
+            },
+            "catalyst": {
+                "id": "7a8498fd-c2d4-47e5-a502-ff3a0591657f",
+                "name": "PolyCrypt",
+                "username": "polycrypt",
+                "catalyst_id": "id.catalyst:\/\/hendrik@cardano\/IInM5bbD-nMZm2rr2-F6U8wInIrO_xBxnpfJ9byPk0g\/3\/0",
+                "extracted_username": "hendrik"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "sudoscientist",
+            "ideascale": {
+                "id": "57ef3b42-d5c0-4d8a-be6e-1d4e3ad86777",
+                "name": "gabetcras",
+                "username": "sudoscientist",
+                "email": null
+            },
+            "catalyst": {
+                "id": "6a6eba8a-5987-4d97-81c8-21ee6bdf9acb",
+                "name": "Gabriel Talamantes",
+                "username": "gabriel-talamantes",
+                "catalyst_id": "id.catalyst:\/\/sudoScientist@cardano\/aIAtHbCPLEW-1wkAH99VwptcjRYnh-deeGcchW2eT1Q\/3\/0",
+                "extracted_username": "sudoscientist"
+            }
+        },
+        {
+            "type": "email_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "john",
+            "ideascale": {
+                "id": "5a631510-f63f-4dd2-a6bd-acbfcd6693d1",
+                "name": "Agrow Labs",
+                "username": "agrowlabsco",
+                "email": "john@agrowlabs.co"
+            },
+            "catalyst": {
+                "id": "3c8eb1eb-6303-4818-a0fb-307f569710c9",
+                "name": "John Getachew",
+                "username": "john-getachew",
+                "catalyst_id": "id.catalyst:\/\/John@cardano\/XxxeLosECi75RY5nsBIUCrPLoijlTM3Io9DCJ8igfiI\/3\/0",
+                "extracted_username": "john"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "alexeusgr",
+            "ideascale": {
+                "id": "5c3fd503-c83a-4aa2-a54b-30bc02a52756",
+                "name": "alexeusgr",
+                "username": "alexeusgr",
+                "email": null
+            },
+            "catalyst": {
+                "id": "323e1081-182f-4a12-9199-65ba83b6b7fe",
+                "name": "Aleksei Seregin",
+                "username": "aleksei-seregin",
+                "catalyst_id": "id.catalyst:\/\/alexeusgr@cardano\/sdKdAdFjmvTaXTRf3SJQymWDJ_6tA8XySnzff5UZy_s\/3\/0",
+                "extracted_username": "alexeusgr"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "cuongluu",
+            "ideascale": {
+                "id": "655b2e2f-c5d4-4ac8-a976-7171d908e8c7",
+                "name": "Cuong Luu",
+                "username": "cuongluu",
+                "email": null
+            },
+            "catalyst": {
+                "id": "a47de3dd-86a5-404d-8139-475df3707f63",
+                "name": "Cuong Luu",
+                "username": "cuong-luu",
+                "catalyst_id": "id.catalyst:\/\/CuongLuu@cardano\/0ec5BfhmtYjW-u77ZDfalrgb-fwdkofOpxQIbIzAfUQ\/3\/0",
+                "extracted_username": "cuongluu"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "while0x1",
+            "ideascale": {
+                "id": "68fe18c8-23f0-45ea-a80f-abaa30911ca5",
+                "name": "Marc Purvis",
+                "username": "while0x1",
+                "email": null
+            },
+            "catalyst": {
+                "id": "653dfd5a-c9d1-4932-b6a5-9bb3c8b9c5f6",
+                "name": "Marc Purvis",
+                "username": "marc-purvis",
+                "catalyst_id": "id.catalyst:\/\/While0x1@cardano\/MZapLXZWOXTcJcixmkCU0SvI4cG3en7ISB3TTpDifc0\/3\/0",
+                "extracted_username": "while0x1"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "walkers",
+            "ideascale": {
+                "id": "69a67fb0-895f-4e72-950d-1dd837a75165",
+                "name": "WALKERS Walk2Earn",
+                "username": "walkers",
+                "email": null
+            },
+            "catalyst": {
+                "id": "0198bc20-3186-726b-ab9b-59702b82fc47",
+                "name": "Ivana Zafirovski",
+                "username": "ivana-zafirovski",
+                "catalyst_id": "id.catalyst:\/\/Walkers@cardano\/98xB5lDSwwE64u7ziU9wfqTs5ytu3sFbg7KNpAZs50Q\/3\/0",
+                "extracted_username": "walkers"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "sapient",
+            "ideascale": {
+                "id": "6a3663b7-abd6-4c62-991d-8212cf77edbe",
+                "name": "Sapient",
+                "username": "sapient",
+                "email": null
+            },
+            "catalyst": {
+                "id": "d3402cab-076e-4daa-9361-cbbc219564fc",
+                "name": "Sapient Predictive Analytics Pte Ltd",
+                "username": "sapient-predictive-analytics-pte-ltd",
+                "catalyst_id": "id.catalyst:\/\/Sapient@cardano\/2fSLqwH-93_uHI_r5JcaQVbqXuetE3IxwyDtmJ14LHE\/3\/0",
+                "extracted_username": "sapient"
+            }
+        },
+        {
+            "type": "username_to_username",
+            "confidence": "HIGH",
+            "matched_on": "unboundedmarket",
+            "ideascale": {
+                "id": "6b719323-005b-4637-bcaf-85c1b12c2140",
+                "name": "Unbounded Market",
+                "username": "unboundedmarket",
+                "email": null
+            },
+            "catalyst": {
+                "id": "e239d744-c6b1-41b4-b9b0-5bbbd59970b0",
+                "name": "UnboundedMarket",
+                "username": "unboundedmarket",
+                "catalyst_id": "id.catalyst:\/\/Unbounded%20Market@cardano\/OZOsoudr4Rf_Qedh4_WXDkVlbj155dddArkvTYNdmv4\/3\/0"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "newmindflow",
+            "ideascale": {
+                "id": "6bccd9d4-ba72-4b8d-8253-c6aca17f4913",
+                "name": "newmindflow",
+                "username": "newmindflow",
+                "email": null
+            },
+            "catalyst": {
+                "id": "1449a13e-a013-4a33-b6a9-6c1f753c4e97",
+                "name": "New Mindflow & Peter Wolcott",
+                "username": "new-mindflow-peter-wolcott",
+                "catalyst_id": "id.catalyst:\/\/NewMindflow@cardano\/YfaRyJLVtAY4Y_NqAAc8_y-pTcTFlBEAA5YaB3TSoyU\/3\/0",
+                "extracted_username": "newmindflow"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "vyfinance",
+            "ideascale": {
+                "id": "6e1c0c51-a438-4891-b3e1-b06c0e73d176",
+                "name": "Dylan McCoy",
+                "username": "vyfinance",
+                "email": null
+            },
+            "catalyst": {
+                "id": "39e3f148-6542-4afe-86cc-c00a47cda1a6",
+                "name": "Steven Ward",
+                "username": "steven-ward",
+                "catalyst_id": "id.catalyst:\/\/VyFinance@cardano\/WJD2qHoaCm6vIrzTyMwH64mydVTkq25RE2T5DaHdlPY\/3\/0",
+                "extracted_username": "vyfinance"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "leminhtuan0810",
+            "ideascale": {
+                "id": "77479f0c-e6bf-48eb-8cd5-5b1f200748c8",
+                "name": "Minh Tuan Le",
+                "username": "leminhtuan0810",
+                "email": null
+            },
+            "catalyst": {
+                "id": "8221cceb-bfd0-4b6d-99f5-2c049e4d9e14",
+                "name": "Le Minh Tuan",
+                "username": "le-minh-tuan",
+                "catalyst_id": "id.catalyst:\/\/leminhtuan0810@cardano\/N2wJ2_cbWXCE_vH64vrhgvA9_V0uDVuWzNfLRhi8HrA\/3\/0",
+                "extracted_username": "leminhtuan0810"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "melon",
+            "ideascale": {
+                "id": "78554109-f062-45bb-81e8-cb7d4b14cb37",
+                "name": "Nick Melon",
+                "username": "melon",
+                "email": null
+            },
+            "catalyst": {
+                "id": "185d41ab-b68a-42c3-bc7a-29a35da7e46a",
+                "name": "Nikita Melentjevs",
+                "username": "nikita-melentjevs",
+                "catalyst_id": "id.catalyst:\/\/melon@cardano\/Qfxw0ex9dNjLJt4NEBZ4s9AdpAXfEmKk-weAm958MyA\/3\/0",
+                "extracted_username": "melon"
+            }
+        },
+        {
+            "type": "username_to_username",
+            "confidence": "HIGH",
+            "matched_on": "hosky",
+            "ideascale": {
+                "id": "798c8261-a4e3-451d-bbd7-b2b17425462f",
+                "name": "HOSKY Team",
+                "username": "hosky",
+                "email": null
+            },
+            "catalyst": {
+                "id": "5cf740ea-648c-4cf3-a561-d0a082f8b4f3",
+                "name": "HOSKY",
+                "username": "hosky",
+                "catalyst_id": "id.catalyst:\/\/HOSKY@cardano\/nqJ8Lwqz15gG8ogG3Vr83qZ8UH6GidNewl65P31NniI\/3\/0"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "hosky",
+            "ideascale": {
+                "id": "798c8261-a4e3-451d-bbd7-b2b17425462f",
+                "name": "HOSKY Team",
+                "username": "hosky",
+                "email": null
+            },
+            "catalyst": {
+                "id": "5cf740ea-648c-4cf3-a561-d0a082f8b4f3",
+                "name": "HOSKY",
+                "username": "hosky",
+                "catalyst_id": "id.catalyst:\/\/HOSKY@cardano\/nqJ8Lwqz15gG8ogG3Vr83qZ8UH6GidNewl65P31NniI\/3\/0",
+                "extracted_username": "hosky"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "geedo",
+            "ideascale": {
+                "id": "7a52dcc3-352c-4284-90f1-7d1fb25168b4",
+                "name": "stephen Giderson",
+                "username": "geedo",
+                "email": null
+            },
+            "catalyst": {
+                "id": "0198bc20-15a3-716f-9ca7-15064f1f60a3",
+                "name": "Stephen Giderson",
+                "username": "stephen-giderson",
+                "catalyst_id": "id.catalyst:\/\/Geedo@cardano\/Bdqcmi9aq1-fWKNbTzqqhZ530Nf1q6gvp-iL1eYmWCc\/3\/0",
+                "extracted_username": "geedo"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "cardisalatina",
+            "ideascale": {
+                "id": "7bf0e36a-b3c6-4073-90d0-ea71cee65f24",
+                "name": "Cardisa Latina",
+                "username": "cardisalatina",
+                "email": null
+            },
+            "catalyst": {
+                "id": "3fc67250-e946-4800-82a2-c5715686ee12",
+                "name": "Cardisa Latina (Isabella Franco)",
+                "username": "cardisa-latina-isabella-franco",
+                "catalyst_id": "id.catalyst:\/\/CardisaLatina@cardano\/cyhCFjD4RzgphmmgPdw0dy4kjKx2gRJNq5YCShKy6R4\/3\/0",
+                "extracted_username": "cardisalatina"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "tolga",
+            "ideascale": {
+                "id": "7df5cf73-589a-4fbd-9180-ef054797cca9",
+                "name": "Tolga Yayc\u0131",
+                "username": "tolga",
+                "email": null
+            },
+            "catalyst": {
+                "id": "0198bc1f-fa25-71af-931b-5883dad18f62",
+                "name": "Tolga Yayc\u0131",
+                "username": "tolga-yayci",
+                "catalyst_id": "id.catalyst:\/\/tolga@cardano\/UxcNlPKE_2ahkxdew8EDPq-TRgJirf2AUODCd1jfy-4\/3\/0",
+                "extracted_username": "tolga"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "raj",
+            "ideascale": {
+                "id": "7e0b59f1-0c3e-4384-8f94-a09d630a2e63",
+                "name": "Raj A S",
+                "username": "raj",
+                "email": null
+            },
+            "catalyst": {
+                "id": "57cd0fbc-0cdc-48fc-bd2f-08d52fb92ac8",
+                "name": "Raj Rajkotia | LootMogul",
+                "username": "raj-rajkotia-lootmogul",
+                "catalyst_id": "id.catalyst:\/\/Raj@cardano\/T-8MJ4w3yq_uQMbPsgAtq6eWaOhHy25AUjnTHH3tj9w\/3\/0",
+                "extracted_username": "raj"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "raj",
+            "ideascale": {
+                "id": "7e0b59f1-0c3e-4384-8f94-a09d630a2e63",
+                "name": "Raj A S",
+                "username": "raj",
+                "email": null
+            },
+            "catalyst": {
+                "id": "ac38f653-1c77-4048-a985-daba732c9d6a",
+                "name": "Raj Panesar",
+                "username": "raj-panesar",
+                "catalyst_id": "id.catalyst:\/\/Raj@cardano\/h7KBRlkXd9jXOPVhHjOh-4pjDOiGM1e-2BcXPsC5kKg\/3\/0",
+                "extracted_username": "raj"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "natdwamena",
+            "ideascale": {
+                "id": "7e1b5e4d-2675-49dd-9aa4-0bd2aacc4e0e",
+                "name": "natdwamena",
+                "username": "natdwamena",
+                "email": null
+            },
+            "catalyst": {
+                "id": "866f594f-7d0c-476e-ba38-2f4b98ffd2ea",
+                "name": "Nathaniel Dwamena ",
+                "username": "nathaniel-dwamena",
+                "catalyst_id": "id.catalyst:\/\/Natdwamena@cardano\/04pdFJN_uRe8PoL2g1E5Sa0xme-Mp0pHrKPxmDfBuWQ\/3\/0",
+                "extracted_username": "natdwamena"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "natdwamena",
+            "ideascale": {
+                "id": "7e1b5e4d-2675-49dd-9aa4-0bd2aacc4e0e",
+                "name": "natdwamena",
+                "username": "natdwamena",
+                "email": null
+            },
+            "catalyst": {
+                "id": "c38275a3-6235-4b80-bb23-15f584eadfdf",
+                "name": "Nathaniel Dwamena",
+                "username": "nathaniel-dwamena",
+                "catalyst_id": "id.catalyst:\/\/Natdwamena@cardano\/04pdFJN_uRe8PoL2g1E5Sa0xme-Mp0pHrKPxmDfBuWQ\/3\/0",
+                "extracted_username": "natdwamena"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "mariacarmo369",
+            "ideascale": {
+                "id": "81063e97-7d79-463f-8b6d-2a9ccb9707ba",
+                "name": "Maria Carmo 369",
+                "username": "mariacarmo369",
+                "email": null
+            },
+            "catalyst": {
+                "id": "a784fa96-9783-4676-841a-e3bb6f0c717e",
+                "name": "Maria Carmo",
+                "username": "maria-carmo",
+                "catalyst_id": "id.catalyst:\/\/MariaCarmo369@cardano\/9O7wVB1VG0b6d0CK269SVzqUExcTvCKo1pCoDj-jA1c\/3\/0",
+                "extracted_username": "mariacarmo369"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "gabrielaxel",
+            "ideascale": {
+                "id": "82dcb36a-2511-4df1-8561-bc110aaafda0",
+                "name": "Gabriel Axel",
+                "username": "gabrielaxel",
+                "email": "cardano@gabrielaxel.com"
+            },
+            "catalyst": {
+                "id": "750f7b35-8db3-4d20-943c-f1e520c0e0e1",
+                "name": "Gabriel Axel Montes, PhD",
+                "username": "gabriel-axel-montes-phd",
+                "catalyst_id": "id.catalyst:\/\/gabrielaxel@cardano\/S-s-TrmvTGOhmT3v1iyH554AQdBdmc9vdIW_J0kkQvE\/3\/0",
+                "extracted_username": "gabrielaxel"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "selfdrivenmark",
+            "ideascale": {
+                "id": "8340219e-096c-4bcc-baf2-5ef83c82fbfa",
+                "name": "Mark Byers",
+                "username": "selfdrivenmark",
+                "email": null
+            },
+            "catalyst": {
+                "id": "0198bc20-0c35-701a-ad4a-657b46291fb7",
+                "name": "Mark Byers",
+                "username": "mark-byers",
+                "catalyst_id": "id.catalyst:\/\/selfdrivenMark@cardano\/aEbpN_L_8_V-_bjVSdkMnE1ECEIKcLb9TzgBrho9BJo\/3\/0",
+                "extracted_username": "selfdrivenmark"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "erasmocol",
+            "ideascale": {
+                "id": "83db5b69-ebad-4544-90a9-a128b0d157b6",
+                "name": "Jos\u00e9 Erasmo Colmenares Salas",
+                "username": "erasmocol",
+                "email": null
+            },
+            "catalyst": {
+                "id": "1b238708-4a02-4bf6-bbde-03d922603169",
+                "name": "Jose Erasmo Colmenares Salas",
+                "username": "jose-erasmo-colmenares-salas",
+                "catalyst_id": "id.catalyst:\/\/Erasmocol@cardano\/7gs84RXvW_NSqcQMFzHBfFglUC_gVsPMBPJnXUxXTgI\/3\/0",
+                "extracted_username": "erasmocol"
+            }
+        },
+        {
+            "type": "username_to_username",
+            "confidence": "HIGH",
+            "matched_on": "digifarm",
+            "ideascale": {
+                "id": "8d29dea5-5729-44d1-ac1d-113eb02f9b64",
+                "name": "Nils Helset",
+                "username": "digifarm",
+                "email": null
+            },
+            "catalyst": {
+                "id": "14f8cfbc-e00a-40bb-ab7b-bf9917514940",
+                "name": "DigiFarm",
+                "username": "digifarm",
+                "catalyst_id": "id.catalyst:\/\/Nils%20Helset@cardano\/xHbjP0o_xrM_-OTxwi32l9Oh9MgkcfWTpdOSKK--VoQ\/3\/0"
+            }
+        },
+        {
+            "type": "username_to_username",
+            "confidence": "HIGH",
+            "matched_on": "andamio",
+            "ideascale": {
+                "id": "8dcf1911-0581-41aa-b30f-73848f4e4b41",
+                "name": "Andamio Team",
+                "username": "andamio",
+                "email": null
+            },
+            "catalyst": {
+                "id": "985e3c6b-9941-41d3-a0ff-cd8826e0cadf",
+                "name": "Andamio",
+                "username": "andamio",
+                "catalyst_id": "id.catalyst:\/\/Andamio@cardano\/sNWuO3kSDeAX2jH8enT-60N5ytrzVNv3Z0v8pDL1mpg\/3\/0"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "andamio",
+            "ideascale": {
+                "id": "8dcf1911-0581-41aa-b30f-73848f4e4b41",
+                "name": "Andamio Team",
+                "username": "andamio",
+                "email": null
+            },
+            "catalyst": {
+                "id": "985e3c6b-9941-41d3-a0ff-cd8826e0cadf",
+                "name": "Andamio",
+                "username": "andamio",
+                "catalyst_id": "id.catalyst:\/\/Andamio@cardano\/sNWuO3kSDeAX2jH8enT-60N5ytrzVNv3Z0v8pDL1mpg\/3\/0",
+                "extracted_username": "andamio"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "sasansasan",
+            "ideascale": {
+                "id": "97d0c2a9-e1a5-4ff0-85d6-dd15d8a2c94e",
+                "name": "sasansasan",
+                "username": "sasansasan",
+                "email": null
+            },
+            "catalyst": {
+                "id": "84eec4a9-db28-4d85-adf0-9366c97204c3",
+                "name": "Sasan Safai",
+                "username": "sasan-safai",
+                "catalyst_id": "id.catalyst:\/\/sasansasan@cardano\/3bL2Izui9QrIE9DQSNf7HEVNqpzJr-70jRluGSgjMus\/3\/0",
+                "extracted_username": "sasansasan"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "elraulito",
+            "ideascale": {
+                "id": "9c0e2076-cbe2-4db3-b088-3fef387c5644",
+                "name": "Raul",
+                "username": "elraulito",
+                "email": null
+            },
+            "catalyst": {
+                "id": "268bc357-ed86-443f-8826-249bbc01b6fa",
+                "name": "Raul Antonio Rosa Padilla",
+                "username": "raul-antonio-rosa-padilla",
+                "catalyst_id": "id.catalyst:\/\/ElRaulito@cardano\/zSN67XdMn0npHpPHubBL3uBuMZC144p86mLXT2lst0s\/3\/0",
+                "extracted_username": "elraulito"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "yepple",
+            "ideascale": {
+                "id": "9ef5497a-8adb-4c41-bcaa-9696470658c5",
+                "name": "Nicholas Fekete",
+                "username": "yepple",
+                "email": null
+            },
+            "catalyst": {
+                "id": "07cef1d9-7df9-44b0-86f4-251021012365",
+                "name": "Andrew Caldwell",
+                "username": "andrew-caldwell",
+                "catalyst_id": "id.catalyst:\/\/Yepple@cardano\/YtPdgL0FzfCctLLFciMaNaNteCSYYaKqMOwIyi0Fxl4\/3\/0",
+                "extracted_username": "yepple"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "yepple",
+            "ideascale": {
+                "id": "9ef5497a-8adb-4c41-bcaa-9696470658c5",
+                "name": "Nicholas Fekete",
+                "username": "yepple",
+                "email": null
+            },
+            "catalyst": {
+                "id": "7bbbb994-bae3-49b6-aac5-79c3f0e5f31c",
+                "name": "Jake Shearman",
+                "username": "jake-shearman",
+                "catalyst_id": "id.catalyst:\/\/Yepple@cardano\/YtPdgL0FzfCctLLFciMaNaNteCSYYaKqMOwIyi0Fxl4\/3\/0",
+                "extracted_username": "yepple"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "adamrusch",
+            "ideascale": {
+                "id": "9fe67e5b-37f0-49ea-9592-b5f3fa797241",
+                "name": "Adam Rusch",
+                "username": "adamrusch",
+                "email": null
+            },
+            "catalyst": {
+                "id": "1ae8986d-d951-4e7a-953e-620086bacb86",
+                "name": "Adam Rusch",
+                "username": "adam-rusch",
+                "catalyst_id": "id.catalyst:\/\/AdamRusch@cardano\/von7ZzKTL49XOJut9F7nUMojNgA4diG6S71pBKHiEjE\/3\/0",
+                "extracted_username": "adamrusch"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "dejene",
+            "ideascale": {
+                "id": "a0fa9275-7699-4e66-b13f-3dc943d2d19b",
+                "name": "Dejene Hailu Ayele",
+                "username": "dejene",
+                "email": null
+            },
+            "catalyst": {
+                "id": "0d5c7915-7ebf-41f6-8253-94bec41e495b",
+                "name": "dejene mulatu",
+                "username": "dejene-mulatu",
+                "catalyst_id": "id.catalyst:\/\/dejene@cardano\/20_lWzYjiBXxvbgGR38HNlJkbiVv7_byKcJho--OuEA\/3\/0",
+                "extracted_username": "dejene"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "damianh",
+            "ideascale": {
+                "id": "a1eaf3d3-7c96-4c22-90cb-7ff02c624c29",
+                "name": "Damian Hryb",
+                "username": "damianh",
+                "email": null
+            },
+            "catalyst": {
+                "id": "995fd21a-b001-4301-a945-38a68931de49",
+                "name": "Damian Hryb",
+                "username": "damian-hryb",
+                "catalyst_id": "id.catalyst:\/\/DamianH@cardano\/sLSPxObLwMtFLgAqma7bCHkpVNlDUkMZI0d1UvIqurY\/3\/0",
+                "extracted_username": "damianh"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "martin",
+            "ideascale": {
+                "id": "a7b9d894-3522-418a-86f4-edc41084e935",
+                "name": "Martin",
+                "username": "martin",
+                "email": null
+            },
+            "catalyst": {
+                "id": "a8a2020c-44f2-421a-b418-aa71330764fd",
+                "name": "Martin Polasek",
+                "username": "martin-polasek",
+                "catalyst_id": "id.catalyst:\/\/Martin@cardano\/SrjKFxbCQH77mynk29yudxNu8oqJINSpFUtyyQYQO5I\/3\/0",
+                "extracted_username": "martin"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "kidus",
+            "ideascale": {
+                "id": "a85c78be-9483-45a1-9258-168363565d30",
+                "name": "kidus",
+                "username": "kidus",
+                "email": null
+            },
+            "catalyst": {
+                "id": "a017e91f-a666-4945-9e03-8187b09390af",
+                "name": "Kidus Tadele Zwude",
+                "username": "kidus-tadele-zwude",
+                "catalyst_id": "id.catalyst:\/\/kidus@cardano\/G575cAttOnGUBxPvsVz50qpJOuW2WOTChLktcoTn9ak\/3\/0",
+                "extracted_username": "kidus"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "kidus",
+            "ideascale": {
+                "id": "a85c78be-9483-45a1-9258-168363565d30",
+                "name": "kidus",
+                "username": "kidus",
+                "email": null
+            },
+            "catalyst": {
+                "id": "bae93f01-28c2-4570-ab41-16a89c7dbdeb",
+                "name": "Musie Tesfaye Benti",
+                "username": "musie-tesfaye-benti",
+                "catalyst_id": "id.catalyst:\/\/kidus@cardano\/G575cAttOnGUBxPvsVz50qpJOuW2WOTChLktcoTn9ak\/3\/0",
+                "extracted_username": "kidus"
+            }
+        },
+        {
+            "type": "email_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "james",
+            "ideascale": {
+                "id": "adfa9be6-6c31-41ac-a077-f6ea514cf20f",
+                "name": "James Ballester",
+                "username": "nftrescue",
+                "email": "james@nftrescue.org"
+            },
+            "catalyst": {
+                "id": "f1368460-3ccc-4c0f-99b6-3575f7331843",
+                "name": "James Reilly",
+                "username": "james-reilly",
+                "catalyst_id": "id.catalyst:\/\/James@cardano\/L3G4IVs7euvuSTcglQyGfzv-W9Qw_O4rIWKtT6TJEwI\/3\/0",
+                "extracted_username": "james"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "pondora",
+            "ideascale": {
+                "id": "b0540cc0-f35e-4c83-a64a-a9a7bd26b6d7",
+                "name": "Pondora Team",
+                "username": "pondora",
+                "email": null
+            },
+            "catalyst": {
+                "id": "b056c83c-da0b-482a-a531-3091ea9aa1e6",
+                "name": "Shaun Wells",
+                "username": "shaun-wells",
+                "catalyst_id": "id.catalyst:\/\/Pondora@cardano\/IXHxEszoug0bo2Ih1egqYn2glsneDPOUXbDGTpi2wrE\/3\/0",
+                "extracted_username": "pondora"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "dripdropz",
+            "ideascale": {
+                "id": "b19010d4-b0cf-4bc0-822e-d111895bb9f7",
+                "name": "Drip Dropz",
+                "username": "dripdropz",
+                "email": null
+            },
+            "catalyst": {
+                "id": "43720600-cc93-4cbf-9eba-e32949616ddd",
+                "name": "Kyle Solomon",
+                "username": "kyle-solomon",
+                "catalyst_id": "id.catalyst:\/\/DripDropz@cardano\/DPyZKYekqRQ53HGr9kl62CxKwtQQPxcl3nvIM8r1bpk\/3\/0",
+                "extracted_username": "dripdropz"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "simon",
+            "ideascale": {
+                "id": "b5911e01-380b-451e-97a8-c636776ab450",
+                "name": "Simon",
+                "username": "simon",
+                "email": null
+            },
+            "catalyst": {
+                "id": "16815ce5-4741-4bf3-9e70-29a03c8cf678",
+                "name": "Simon Gebeyehu",
+                "username": "simon-gebeyehu",
+                "catalyst_id": "id.catalyst:\/\/Simon@cardano\/3H35o3M4yZ-_Iorj1fO-lex7KcSIG8cirJZ-VKe3wro\/3\/0",
+                "extracted_username": "simon"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "nvhieu",
+            "ideascale": {
+                "id": "bc931d42-0a49-4b2c-8662-1ddf69aa9780",
+                "name": "nvhieu",
+                "username": "nvhieu",
+                "email": null
+            },
+            "catalyst": {
+                "id": "7561e99b-31a7-4c2c-ab73-08fc72013f22",
+                "name": "Hieu Nguyen Van",
+                "username": "hieu-nguyen-van",
+                "catalyst_id": "id.catalyst:\/\/nvhieu@cardano\/VHTFA9JLLbN-2GRYRV9cOlhxzN5QMktV6HowRpcRtyA\/3\/0",
+                "extracted_username": "nvhieu"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "nvhieu",
+            "ideascale": {
+                "id": "bc931d42-0a49-4b2c-8662-1ddf69aa9780",
+                "name": "nvhieu",
+                "username": "nvhieu",
+                "email": null
+            },
+            "catalyst": {
+                "id": "dd5c22f5-b1a9-4026-b205-626217415af5",
+                "name": "Hiieu Nguyen Van",
+                "username": "hiieu-nguyen-van",
+                "catalyst_id": "id.catalyst:\/\/nvhieu@cardano\/VHTFA9JLLbN-2GRYRV9cOlhxzN5QMktV6HowRpcRtyA\/3\/0",
+                "extracted_username": "nvhieu"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "situation1",
+            "ideascale": {
+                "id": "cfc864ba-3ef8-4d21-9bca-6c4c79b1d54c",
+                "name": "Jason C",
+                "username": "situation1",
+                "email": null
+            },
+            "catalyst": {
+                "id": "4a1f5fad-1a1b-4099-9552-21d4bf1f9d1e",
+                "name": "PropBid Property Auctions",
+                "username": "propbid-property-auctions",
+                "catalyst_id": "id.catalyst:\/\/Situation1@cardano\/gwPbabwhrG1hxjRzwwMQYUp8nE3Shextz1otGpZoLE8\/3\/0",
+                "extracted_username": "situation1"
+            }
+        },
+        {
+            "type": "username_to_username",
+            "confidence": "HIGH",
+            "matched_on": "lidonation",
+            "ideascale": {
+                "id": "d289bc01-f87d-4cea-9920-166c667df7ad",
+                "name": "LIDO Nation Foundation",
+                "username": "lidonation",
+                "email": "hello@lidonation.com"
+            },
+            "catalyst": {
+                "id": "2cb5b7ec-0df4-41d9-aeac-de4b31ecd620",
+                "name": "Lido Nation Foundation",
+                "username": "lidonation",
+                "catalyst_id": "id.catalyst:\/\/Darlington%20Kofa@cardano\/QsbtonUxu0VKVbnQdllUg4WJIWUbwQxrJP7cuwD9Wsw\/3\/0"
+            }
+        },
+        {
+            "type": "email_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "james",
+            "ideascale": {
+                "id": "d52ee26d-cfce-401e-b2af-46c310b27c29",
+                "name": "James Reilly",
+                "username": "jamesaddonx",
+                "email": "james@addonx.io"
+            },
+            "catalyst": {
+                "id": "f1368460-3ccc-4c0f-99b6-3575f7331843",
+                "name": "James Reilly",
+                "username": "james-reilly",
+                "catalyst_id": "id.catalyst:\/\/James@cardano\/L3G4IVs7euvuSTcglQyGfzv-W9Qw_O4rIWKtT6TJEwI\/3\/0",
+                "extracted_username": "james"
+            }
+        },
+        {
+            "type": "username_to_username",
+            "confidence": "HIGH",
+            "matched_on": "barov",
+            "ideascale": {
+                "id": "d7785822-f4a6-41d3-9674-8ae1edd23662",
+                "name": "B\u1ea3o Vi",
+                "username": "barov",
+                "email": null
+            },
+            "catalyst": {
+                "id": "07b977d5-91cd-402a-886e-fedb0768334f",
+                "name": "Barov",
+                "username": "barov",
+                "catalyst_id": "id.catalyst:\/\/Barov@cardano\/Fpb0zoCEjlwS0Ea49jJaX_QhrCNuiJhiObmXVBfVlwE\/3\/0"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "barov",
+            "ideascale": {
+                "id": "d7785822-f4a6-41d3-9674-8ae1edd23662",
+                "name": "B\u1ea3o Vi",
+                "username": "barov",
+                "email": null
+            },
+            "catalyst": {
+                "id": "07b977d5-91cd-402a-886e-fedb0768334f",
+                "name": "Barov",
+                "username": "barov",
+                "catalyst_id": "id.catalyst:\/\/Barov@cardano\/Fpb0zoCEjlwS0Ea49jJaX_QhrCNuiJhiObmXVBfVlwE\/3\/0",
+                "extracted_username": "barov"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "adaku",
+            "ideascale": {
+                "id": "daa9f3cf-8b9d-4aab-b1e8-e945b6298c73",
+                "name": "adaku",
+                "username": "adaku",
+                "email": null
+            },
+            "catalyst": {
+                "id": "a802aa47-d2a5-47d1-b8ca-5892bb808dd5",
+                "name": "Adaku Agwunobi",
+                "username": "adaku-agwunobi",
+                "catalyst_id": "id.catalyst:\/\/Adaku@cardano\/Cgg1xBigTiXfHGDMUqLwF0lDkiDhf7rlzn7GgD8aDAc\/3\/0",
+                "extracted_username": "adaku"
+            }
+        },
+        {
+            "type": "username_to_username",
+            "confidence": "HIGH",
+            "matched_on": "socious",
+            "ideascale": {
+                "id": "dcffd1ec-a90d-4b0d-a32b-36d13e69607d",
+                "name": "Socious Team",
+                "username": "socious",
+                "email": null
+            },
+            "catalyst": {
+                "id": "c6babccc-a776-460d-a6e9-dcd979d0d8af",
+                "name": "Socious",
+                "username": "socious",
+                "catalyst_id": "id.catalyst:\/\/Socious%20Team@cardano\/ccApd7GmjO90nx6hB_UeMF9MmQ-lk8ckLAcD698KZPw\/3\/0"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "snek",
+            "ideascale": {
+                "id": "e3ae0fc5-c337-4e45-90f7-cfc27a3bad3e",
+                "name": "Snek Labs",
+                "username": "snek",
+                "email": null
+            },
+            "catalyst": {
+                "id": "5ce5a0f9-eeb1-436a-8b4a-ab109e22571b",
+                "name": "Snek Foundation",
+                "username": "snek-foundation",
+                "catalyst_id": "id.catalyst:\/\/Snek@cardano\/3zu3EuQ4GrgiTgnttuDAbQuzFiekGfX0aaLzRlUn6VU\/3\/0",
+                "extracted_username": "snek"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "francio",
+            "ideascale": {
+                "id": "e4c38556-82fd-4936-9d7c-9aa057060b66",
+                "name": "Francisco Ciordia Cantarella",
+                "username": "francio",
+                "email": null
+            },
+            "catalyst": {
+                "id": "f1da0496-c47a-4600-8d98-54f6f5b6f8b1",
+                "name": "Francisco Ciordia Cantarella",
+                "username": "francisco-ciordia-cantarella",
+                "catalyst_id": "id.catalyst:\/\/Francio@cardano\/cVy4eiWh10QcX7azl3OEDveV_qtyPjDRfG_dlk_O4_E\/3\/0",
+                "extracted_username": "francio"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "mr.harding",
+            "ideascale": {
+                "id": "e55a5af7-26f6-4cee-befc-158f69de540c",
+                "name": "Ekow Harding",
+                "username": "mr.harding",
+                "email": null
+            },
+            "catalyst": {
+                "id": "3723579b-61af-497c-a810-f393c4aa70cd",
+                "name": "Ekow Harding",
+                "username": "ekow-harding",
+                "catalyst_id": "id.catalyst:\/\/mr.harding@cardano\/V7yTfQcRaykDxw51W6O_elQeVrtb3VVeOhBgvMXHNBE\/3\/0",
+                "extracted_username": "mr.harding"
+            }
+        },
+        {
+            "type": "email_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "scatdao",
+            "ideascale": {
+                "id": "f987e53e-6fef-40ec-8f91-ada5ab1d1b83",
+                "name": "Eric Helms",
+                "username": "erkoloco",
+                "email": "scatdao@gmail.com"
+            },
+            "catalyst": {
+                "id": "e62f1d55-21ea-4a23-b75c-c35f1c4705b8",
+                "name": "Eric Helms",
+                "username": "eric-helms",
+                "catalyst_id": "id.catalyst:\/\/SCATDAO@cardano\/iHntAXVPOA6JsHbWwklIz296s2svhqqIAcFvZVpDhLA\/3\/0",
+                "extracted_username": "scatdao"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "comunidadcardano",
+            "ideascale": {
+                "id": "f9998801-4443-445e-b10f-20377fac4d51",
+                "name": "Comunidad Cardano",
+                "username": "comunidadcardano",
+                "email": null
+            },
+            "catalyst": {
+                "id": "d6e5b324-1681-4017-b0c4-38e5e7dbe9e4",
+                "name": "Alejandro Gallardo",
+                "username": "alejandro-gallardo",
+                "catalyst_id": "id.catalyst:\/\/ComunidadCardano@cardano\/viBX04U8-fj7di8zinWVQEK21oDa2gBPkBWeRfCRN8o\/3\/0",
+                "extracted_username": "comunidadcardano"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "kwarxs",
+            "ideascale": {
+                "id": "fbc045e8-f383-49ac-8c02-d3b35c218402",
+                "name": "Sandro Gonzalez",
+                "username": "kwarxs",
+                "email": null
+            },
+            "catalyst": {
+                "id": "55e009b5-df4c-4151-b403-08e54a6d7e30",
+                "name": "Sandro Gonzalez",
+                "username": "sandro-gonzalez",
+                "catalyst_id": "id.catalyst:\/\/KWARXS@cardano\/zGxLv1zs7aKGUA4I00INs9J1csnBvd6VlWwwyPu1Izc\/3\/0",
+                "extracted_username": "kwarxs"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "cardania",
+            "ideascale": {
+                "id": "fbebcd31-9d3e-449b-9903-c29c2261812d",
+                "name": "Chris",
+                "username": "cardania",
+                "email": null
+            },
+            "catalyst": {
+                "id": "0198bc20-051d-7161-9cdc-22feceacab29",
+                "name": "Cardania Digital Assets",
+                "username": "cardania-digital-assets",
+                "catalyst_id": "id.catalyst:\/\/Cardania@cardano\/6vERBHx6AXRBkKFEgJ27DBCn56qd6CACQx90qYhMo-k\/3\/0",
+                "extracted_username": "cardania"
+            }
+        },
+        {
+            "type": "username_to_catalyst_id",
+            "confidence": "MEDIUM-HIGH",
+            "matched_on": "seomon",
+            "ideascale": {
+                "id": "fc54c4f9-ca6d-4923-8358-016740d181b5",
+                "name": "Seomon",
+                "username": "seomon",
+                "email": null
+            },
+            "catalyst": {
+                "id": "7d8c3b50-2344-433e-88d9-0adae229017e",
+                "name": "Seomon Register",
+                "username": "seomon-register",
+                "catalyst_id": "id.catalyst:\/\/Seomon@cardano\/zkPbtL3N4QHRn3NYQBt3sZfWWLMA5SK8Mca3b9urwe4\/3\/0",
+                "extracted_username": "seomon"
+            }
+        }
+    ],
+    "stats": {
+        "total_catalyst_profiles": 1019,
+        "total_ideascale_profiles": 4207,
+        "total_matches": 83,
+        "unique_catalyst_matched": 77,
+        "unique_ideascale_matched": 72,
+        "match_types": {
+            "username_to_username": 9,
+            "username_to_catalyst_id": 69,
+            "email_to_username": 0,
+            "email_to_catalyst_id": 5,
+            "name_similarity": 0
+        }
+    }
+}
