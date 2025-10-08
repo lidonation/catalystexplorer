@@ -330,7 +330,7 @@ trait InteractsWithFunds
     {
         $params = array_merge($queryParams, ['p' => $page]);
 
-    return request()->url().'?'.http_build_query($params);
+        return request()->url().'?'.http_build_query($params);
     }
 
     protected function generatePaginationLinks(int $currentPage, int $lastPage, array $queryParams = []): array
