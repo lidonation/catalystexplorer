@@ -12,7 +12,7 @@ class Snapshot extends Model
 {
     public $timestamps = false;
 
-    public $incrementing = true;
+    public $incrementing = false;
 
     protected $fillable = [
         'snapshot_name',

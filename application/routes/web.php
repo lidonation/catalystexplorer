@@ -457,16 +457,14 @@ Route::localized(
             Route::get('/', [ChartsController::class, 'index'])
                 ->name('index');
 
-            Route::prefix('/all-charts')->as('allCharts.')->group(function () {
-                Route::get('/', [FundsController::class, 'allChartsLiveTally'])
-                    ->name('liveTally');
-                Route::get('/registrations', [FundsController::class, 'allChartsRegistrations'])
-                    ->name('registrations');
-                Route::get('/confirmed-voters', [FundsController::class, 'allChartsConfirmedVoters'])
-                    ->name('confirmedVoters');
-                Route::get('/leaderboards', [FundsController::class, 'allChartsLeaderboards'])
-                    ->name('leaderboards');
-            });
+            Route::get('/live-tally', [ChartsController::class, 'index'])
+                ->name('liveTally');
+            Route::get('/registrations', [ChartsController::class, 'index'])
+                ->name('registrations');
+            Route::get('/confirmed-voters', [ChartsController::class, 'index'])
+                ->name('confirmedVoters');
+            Route::get('/leaderboards', [ChartsController::class, 'index'])
+                ->name('leaderboards');
 
             Route::get('/proposals', [ProposalsController::class, 'charts'])
                 ->name('proposals');

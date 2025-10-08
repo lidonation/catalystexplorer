@@ -186,7 +186,7 @@ export default function Footer() {
                                 <Paragraph>
                                     <NavLinkItem
                                         href={useLocalizedRoute(
-                                            'charts.allCharts.liveTally',
+                                            'charts.index',
                                         )}
                                         data-testid="general-link"
                                         title={t('charts.navigation.allCharts')}
