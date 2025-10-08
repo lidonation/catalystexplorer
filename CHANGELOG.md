@@ -1,3 +1,10 @@
+# [1.42.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.41.0...v1.42.0) (2025-10-07)
+
+
+### Features
+
+* **charts:** created all charts page with nav tabs ([db310f7](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/db310f7201826952ad33211120265d9c62a3b537))
+
 # [1.41.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.40.0...v1.41.0) (2025-10-06)
 
 
