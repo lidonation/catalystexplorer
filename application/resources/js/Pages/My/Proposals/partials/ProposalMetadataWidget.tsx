@@ -93,7 +93,7 @@ export default function ProposalMetadataWidget({
                             href={proposal?.link ?? '#'}
                         >
                             <BlueEyeIcon className="text-white" />
-                            <Paragraph className="mt-2 flex leading-none text-white">
+                            <Paragraph className="flex leading-none text-white">
                                 {t('proposal.metadata.viewInExplorer')}
                             </Paragraph>
                         </Link>
@@ -106,7 +106,7 @@ export default function ProposalMetadataWidget({
                             >
                                 <Link className="bg-primary flex items-center gap-1 rounded-lg px-3 py-1">
                                     <ProjectCatalystLogo className="text-white" />
-                                    <Paragraph className="mt-2 text-white">
+                                    <Paragraph className=" text-white">
                                         {t(
                                             'pdf.table.columns.projectCatalystLink',
                                         )}
@@ -119,10 +119,10 @@ export default function ProposalMetadataWidget({
                                 href={proposal?.ideascale_link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="bg-primary flex items-center gap-1 rounded-lg px-3 py-1"
+                                className="bg-primary flex items-center gap-1 rounded-lg px-3 py-2"
                             >
                                 <IdeascaleLogo />
-                                <Paragraph className="mt-2 text-white">
+                                <Paragraph className=" text-white">
                                     {t('pdf.table.columns.ideascaleLink')}
                                 </Paragraph>
                             </a>
