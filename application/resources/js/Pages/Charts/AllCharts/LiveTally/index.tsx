@@ -1,5 +1,7 @@
 import AllChartsLayout from '../AllChartsLayout';
 import FundTalliesWidget from '@/Pages/ActiveFund/Partials/FundTalliesWidget';
+import FundTalliesWidgetLoader from '../partials/FundTalliesWidgetLoader';
+import { Head, WhenVisible } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import type { PaginatedData } from '@/types/paginated-data';
 import type { SearchParams } from '@/types/search-params';
@@ -16,6 +18,7 @@ type LiveTallyProps = {
         last_updated?: string;
     }) | null;
     filters?: SearchParams;
+    activeTabRoute?: string | null;
 };
 
 const LiveTally: React.FC<LiveTallyProps> = ({
@@ -24,24 +27,40 @@ const LiveTally: React.FC<LiveTallyProps> = ({
     campaigns,
     tallies,
     filters,
+    activeTabRoute,
 }) => {
     const { t } = useLaravelReactI18n();
 
     return (
-        <AllChartsLayout fund={fund} funds={funds} filters={filters}>
+        <AllChartsLayout
+            fund={fund}
+            funds={funds}
+            filters={filters}
+            activeTabRoute={activeTabRoute}
+        >
+            <Head title={`${t('charts.title')} – ${t('charts.tabs.liveTally')}`} />
             <div className="space-y-8">
                 <section>
-                    <FundTalliesWidget
-                        tallies={tallies ?? undefined}
-                        campaigns={campaigns ?? []}
-                        funds={funds}
-                        filters={filters}
-                        routerOptions={{ only: ['tallies'], preserveState: true, preserveScroll: true }}
-                        showPagination
-                        showFilters
-                        customTitle={t('activeFund.votingStats')}
-                        lastUpdated={tallies?.last_updated}
-                    />
+                    <WhenVisible
+                        data={['campaigns', 'tallies']}
+                        fallback={<FundTalliesWidgetLoader />}
+                    >
+                        <FundTalliesWidget
+                            tallies={tallies ?? undefined}
+                            campaigns={campaigns ?? []}
+                            funds={funds}
+                            filters={filters}
+                            routerOptions={{
+                                only: ['tallies', 'campaigns'],
+                                preserveState: true,
+                                preserveScroll: true,
+                            }}
+                            showPagination
+                            showFilters
+                            customTitle={t('activeFund.votingStats')}
+                            lastUpdated={tallies?.last_updated}
+                        />
+                    </WhenVisible>
                 </section>
             </div>
         </AllChartsLayout>

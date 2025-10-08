@@ -398,7 +398,7 @@ function AppNavigation() {
                                             >
                                                 <NavLinkItem
                                                     href={useLocalizedRoute(
-                                                        'charts.allCharts.liveTally',
+                                                        'charts.index',
                                                     )}
                                                     title={t('charts.navigation.allCharts')}
                                                     ariaLabel={`${t('charts.navigation.allCharts')} ${t('link')}`}

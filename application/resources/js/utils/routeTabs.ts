@@ -128,10 +128,10 @@ export const campaignTabs: TabConfig = {
 
 export const chartsAllContentTabs: TabConfig = {
     translationPrefix: 'charts.tabs',
-    routePrefix: 'charts.allCharts',
-    pathPrefix: 'charts/all-charts',
+    routePrefix: 'charts',
+    pathPrefix: 'charts',
     tabs: [
-        { key: 'liveTally', routeName: 'liveTally', path: '' },
+        { key: 'liveTally', routeName: 'liveTally', path: 'live-tally' },
         { key: 'registrations', routeName: 'registrations' },
         { key: 'confirmedVoters', routeName: 'confirmedVoters', path: 'confirmed-voters' },
         { key: 'leaderboards', routeName: 'leaderboards' },
