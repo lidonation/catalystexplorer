@@ -1,3 +1,10 @@
+# [1.43.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.42.0...v1.43.0) (2025-10-08)
+
+
+### Features
+
+* **charts:** did cleanups for the tabs ([0c2e741](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/0c2e74153aa3ac4f514e5429dbea1d47e3ff25e4))
+
 # [1.42.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.41.0...v1.42.0) (2025-10-07)
 
 
