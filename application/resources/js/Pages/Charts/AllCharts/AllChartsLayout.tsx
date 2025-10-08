@@ -10,7 +10,7 @@ import { generateTabs, chartsAllContentTabs } from '@/utils/routeTabs';
 import { PageProps as InertiaPageProps } from '@inertiajs/core';
 import { usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useMemo } from 'react';
 
 interface PageProps extends InertiaPageProps {
     url: string;
@@ -28,34 +28,96 @@ interface AllChartsLayoutProps {
     fund: App.DataTransferObjects.FundData;
     funds?: FundOption[];
     filters?: SearchParams;
+    activeTabRoute?: string | null;
 }
+
+const normalizePath = (value: string | null | undefined): string => {
+    if (!value) {
+        return '';
+    }
+
+    const [pathPart] = value.split('?');
+    let normalized = pathPart.trim();
+
+    if (!normalized.startsWith('/')) {
+        normalized = `/${normalized}`;
+    }
+
+    normalized = normalized.replace(/\/+$/, '');
+
+    return normalized || '/';
+};
 
 function LayoutContent({
     children,
     fund,
     funds = [],
+    activeTabRoute,
 }: Omit<AllChartsLayoutProps, 'filters'>) {
     const { t } = useLaravelReactI18n();
-    const { url } = usePage<PageProps>().props;
     const { setFilters, getFilter } = useFilterContext();
-    const [activeTab, setActiveTab] = useState('');
+    const { url } = usePage<PageProps>().props;
 
     const tabConfig = useMemo(() => chartsAllContentTabs, []);
 
     const tabs = useMemo(() => generateTabs(t, tabConfig), [t, tabConfig]);
 
-    useEffect(() => {
-        const currentPath = window.location.pathname.replace(/\/$/, '');
+    const normalizedRouteName = useMemo(() => {
+        if (!activeTabRoute) {
+            return null;
+        }
 
-        const matchingTab = tabs.find((tab) => {
-            const cleanTabPath = tab.href.replace(/\/$/, '');
-            return currentPath.endsWith(cleanTabPath);
+        const chartsIndex = activeTabRoute.indexOf('charts.');
+
+        if (chartsIndex >= 0) {
+            return activeTabRoute.substring(chartsIndex);
+        }
+
+        return activeTabRoute;
+    }, [activeTabRoute]);
+
+    const currentPath = useMemo(() => {
+        if (typeof window !== 'undefined' && window.location?.pathname) {
+            return normalizePath(window.location.pathname);
+        }
+
+        return normalizePath(url);
+    }, [url]);
+
+    const activeTab = useMemo(() => {
+        if (!tabs.length) {
+            return '';
+        }
+
+        if (normalizedRouteName) {
+            const matchingByRoute = tabs.find(
+                (tab) => tab.routeName === normalizedRouteName,
+            );
+
+            if (matchingByRoute) {
+                return matchingByRoute.name;
+            }
+        }
+
+        const matchingByPath = tabs.find((tab) => {
+            const normalizedHref = normalizePath(tab.href);
+
+            if (!normalizedHref || normalizedHref === '/') {
+                return false;
+            }
+
+            return (
+                currentPath === normalizedHref ||
+                currentPath.endsWith(normalizedHref)
+            );
         });
 
-        if (matchingTab) {
-            setActiveTab(matchingTab.name);
+        if (matchingByPath) {
+            return matchingByPath.name;
         }
-    }, [tabs, url]);
+
+        return tabs[0]?.name ?? '';
+    }, [tabs, normalizedRouteName, currentPath]);
 
     const selectedFundId = useMemo(() => {
         const filter = getFilter(ParamsEnum.FUNDS);
@@ -141,10 +203,15 @@ export default function AllChartsLayout({
     fund,
     funds = [],
     filters = {} as SearchParams,
+    activeTabRoute = null,
 }: AllChartsLayoutProps) {
     return (
         <FiltersProvider defaultFilters={filters}>
-            <LayoutContent fund={fund} funds={funds}>
+            <LayoutContent
+                fund={fund}
+                funds={funds}
+                activeTabRoute={activeTabRoute}
+            >
                 {children}
             </LayoutContent>
         </FiltersProvider>
