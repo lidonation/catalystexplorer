@@ -23,7 +23,18 @@ class SnapshotFactory extends Factory
      */
     public function definition(): array
     {
-        $fund = Fund::inRandomOrder()->first();
+        $fund = Fund::inRandomOrder()->first() ?? Fund::factory()->state(['user_id' => null])->create();
+
+        return $this->attributesForFund($fund);
+    }
+
+    public function forFund(Fund $fund): self
+    {
+        return $this->state(fn () => $this->attributesForFund($fund));
+    }
+
+    private function attributesForFund(Fund $fund): array
+    {
         $epoch = $this->faker->numberBetween(300, 600);
         $snapshotName = "{$fund->title} - {$epoch}";
 

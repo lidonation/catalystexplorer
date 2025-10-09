@@ -67,13 +67,18 @@ trait InteractsWithFunds
         $fundIdParam = $request->input(ProposalSearchParams::FUNDS()->value);
         $fundId = null;
 
+        \Log::info('Fund ID Param', ['fundIdParam' => $fundIdParam]);
         if (is_array($fundIdParam) && count($fundIdParam) > 0) {
-            $fundId = (int) $fundIdParam[0];
+            $fundId = $fundIdParam[0] ?? null;
         } elseif ($fundIdParam !== null) {
-            $fundId = (int) $fundIdParam;
+            $fundId = $fundIdParam;
         }
 
-        if ($fundId) {
+        if (is_string($fundId)) {
+            $fundId = trim($fundId);
+        }
+
+        if ($fundId !== null && $fundId !== '') {
             $selectedFund = (clone $fundsQuery)->find($fundId);
         } else {
             $selectedFund = (clone $fundsQuery)->first();
@@ -330,7 +335,7 @@ trait InteractsWithFunds
     {
         $params = array_merge($queryParams, ['p' => $page]);
 
-    return request()->url().'?'.http_build_query($params);
+        return request()->url().'?'.http_build_query($params);
     }
 
     protected function generatePaginationLinks(int $currentPage, int $lastPage, array $queryParams = []): array
