@@ -30,7 +30,7 @@ interface HomePageProps extends Record<string, unknown> {
     metrics: MetricData[];
     announcements: AnnouncementData[];
     specialAnnouncements: AnnouncementData[];
-    quickPitches: 
+    quickPitches:
         | ProposalData[] // New flat array structure from backend
         | {
             featured: ProposalData[];
@@ -59,26 +59,27 @@ export default function Index({
 
             <div className="relative flex w-full flex-col justify-center gap-8">
                 <CatalystIntro />
-                {((
-                    // New flat array structure
-                    Array.isArray(quickPitches) && quickPitches.length > 0
-                ) || (
-                    // Legacy nested structure (ensure it's an object with 'regular')
-                    !Array.isArray(quickPitches) && 'regular' in (quickPitches || {}) && Array.isArray((quickPitches as { regular?: ProposalData[] }).regular) && (quickPitches as { regular?: ProposalData[] }).regular!.length > 0
-                )) && 
-                <section
-                    className="quickpitches-wrapper"
-                    data-testid="quickpitches-section"
-                >
-                    <div className="container">
-                        <WhenVisible
-                            fallback={<QuickPitchListLoading />}
-                            data="quickPitches"
-                        >
-                            <QuickPitchList quickPitches={quickPitches} activeFundId={quickPitchesFundId} />
-                        </WhenVisible>
-                    </div>
-                </section>}
+
+                {/*{((*/}
+                {/*    // New flat array structure*/}
+                {/*    Array.isArray(quickPitches) && quickPitches.length > 0*/}
+                {/*) || (*/}
+                {/*    // Legacy nested structure (ensure it's an object with 'regular')*/}
+                {/*    !Array.isArray(quickPitches) && 'regular' in (quickPitches || {}) && Array.isArray((quickPitches as { regular?: ProposalData[] }).regular) && (quickPitches as { regular?: ProposalData[] }).regular!.length > 0*/}
+                {/*)) && */}
+                {/*<section*/}
+                {/*    className="quickpitches-wrapper"*/}
+                {/*    data-testid="quickpitches-section"*/}
+                {/*>*/}
+                {/*    <div className="container">*/}
+                {/*        <WhenVisible*/}
+                {/*            fallback={<QuickPitchListLoading />}*/}
+                {/*            data="quickPitches"*/}
+                {/*        >*/}
+                {/*            <QuickPitchList quickPitches={quickPitches} activeFundId={quickPitchesFundId} />*/}
+                {/*        </WhenVisible>*/}
+                {/*    </div>*/}
+                {/*</section>}*/}
 
                 <section
                     className="annnouncements-wrapper"
