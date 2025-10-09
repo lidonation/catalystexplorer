@@ -1,3 +1,10 @@
+## [1.43.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.43.1...v1.43.2) (2025-10-09)
+
+
+### Bug Fixes
+
+* cannot import voting power ([f87b160](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/f87b16062a853680aff5632376a45cfed56859c6))
+
 ## [1.43.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.43.0...v1.43.1) (2025-10-09)
 
 
