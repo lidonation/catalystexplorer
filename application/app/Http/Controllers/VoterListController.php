@@ -207,7 +207,7 @@ class VoterListController extends Controller
         ]);
 
         // Ensure fund filter is set when modifying an existing voter list
-        if ($bookmarkCollection && $bookmarkCollection->fund_id && ! $frontendFilters[ProposalSearchParams::FUNDS()->value]) {
+        if ($bookmarkCollection && $bookmarkCollection->fund_id && ! ($frontendFilters[ProposalSearchParams::FUNDS()->value] ?? null)) {
             $frontendFilters[ProposalSearchParams::FUNDS()->value] = $bookmarkCollection->fund_id;
         }
 
