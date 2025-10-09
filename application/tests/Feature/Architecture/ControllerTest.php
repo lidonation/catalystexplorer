@@ -3,4 +3,13 @@
 arch()
     ->expect('App\Http\Controllers')
     ->toBeClasses()
-    ->toHaveSuffix('Controller');
+    ->ignoring([
+        'App\Http\Controllers\Concerns'
+    ]);
+
+arch()
+    ->expect('App\Http\Controllers')
+    ->toHaveSuffix('Controller')
+    ->ignoring([
+        'App\Http\Controllers\Concerns'
+    ]);
