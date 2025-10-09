@@ -4,7 +4,7 @@ use App\Models\Comment;
 use App\Models\IdeascaleProfile;
 use App\Models\Model;
 use App\Models\ModelTag;
-use App\Models\ProposalProfile;
+use App\Models\Pivot\ProposalProfile;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
