@@ -1,3 +1,10 @@
+## [1.43.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.43.0...v1.43.1) (2025-10-09)
+
+
+### Bug Fixes
+
+* cannot edit proposals ([bdecff6](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/bdecff6086e93b1ec42e1fa11e85ddf1f7f16ca0))
+
 # [1.43.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.42.0...v1.43.0) (2025-10-08)
 
 
