@@ -132,24 +132,22 @@ function buildPieData(
         return acc + (value ?? 0);
     }, 0);
 
-    return ranges
-        .map((range, index) => {
-            const value = field === 'count' ? range.count : range.total_ada;
-            if (!value) {
-                return null;
-            }
+    return ranges.reduce<PieChartDatum[]>((acc, range, index) => {
+        const value = field === 'count' ? range.count : range.total_ada;
+        if (!value) {
+            return acc;
+        }
 
-            const percentage = totalValue > 0 ? (value / totalValue) * 100 : 0;
+        acc.push({
+            id: range.label,
+            label: range.label,
+            value,
+            color: COLOR_PALETTE[index % COLOR_PALETTE.length],
+            percentage: totalValue > 0 ? (value / totalValue) * 100 : 0,
+        });
 
-            return {
-                id: range.label,
-                label: range.label,
-                value,
-                color: COLOR_PALETTE[index % COLOR_PALETTE.length],
-                percentage,
-            } satisfies PieChartDatum;
-        })
-        .filter((value): value is PieChartDatum => value !== null);
+        return acc;
+    }, []);
 }
 
 export default Registrations;
