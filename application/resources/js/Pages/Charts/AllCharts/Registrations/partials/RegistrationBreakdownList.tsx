@@ -20,35 +20,118 @@ type RegistrationBreakdownListProps = {
 
 const RegistrationBreakdownList = ({ ranges }: RegistrationBreakdownListProps) => {
     const { t } = useLaravelReactI18n();
-    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+    const [sortConfig, setSortConfig] = useState<{
+        column: 'range' | 'wallets' | 'totalAda';
+        direction: 'asc' | 'desc';
+    }>({ column: 'range', direction: 'asc' });
 
     const sortedRanges = useMemo(() => {
         if (ranges.length === 0) {
             return [];
         }
 
+        const normalizeLabelValue = (label: string) => {
+            const normalized = label.trim().replace(/^>[\s]*/, '');
+            const match = normalized.match(/(\d+(?:\.\d+)?)([kKmMbB]?)/);
+
+            if (!match) {
+                return Number.POSITIVE_INFINITY;
+            }
+
+            const [, value, unit] = match;
+            const base = parseFloat(value);
+
+            const multiplier = unit
+                ? unit.toLowerCase() === 'k'
+                    ? 1_000
+                    : unit.toLowerCase() === 'm'
+                        ? 1_000_000
+                        : unit.toLowerCase() === 'b'
+                            ? 1_000_000_000
+                            : 1
+                : 1;
+
+            return base * multiplier;
+        };
+
         return [...ranges].sort((a, b) => {
-            const compare = a.label.localeCompare(b.label, undefined, {
-                numeric: true,
-                sensitivity: 'base',
-            });
+            const { column, direction } = sortConfig;
 
-            return sortDirection === 'asc' ? compare : -compare;
+            const factor = direction === 'asc' ? 1 : -1;
+
+            if (column === 'range') {
+                const aValue = normalizeLabelValue(a.label);
+                const bValue = normalizeLabelValue(b.label);
+
+                if (aValue !== bValue) {
+                    return (aValue - bValue) * factor;
+                }
+
+                return (
+                    a.label.localeCompare(b.label, undefined, {
+                        numeric: true,
+                        sensitivity: 'base',
+                    }) * factor
+                );
+            }
+
+            if (column === 'wallets') {
+                if (a.count !== b.count) {
+                    return (a.count - b.count) * factor;
+                }
+
+                return (
+                    a.label.localeCompare(b.label, undefined, {
+                        numeric: true,
+                        sensitivity: 'base',
+                    }) * factor
+                );
+            }
+
+            if (a.total_ada !== b.total_ada) {
+                return (a.total_ada - b.total_ada) * factor;
+            }
+
+            return (
+                a.label.localeCompare(b.label, undefined, {
+                    numeric: true,
+                    sensitivity: 'base',
+                }) * factor
+            );
         });
-    }, [ranges, sortDirection]);
+    }, [ranges, sortConfig]);
 
-    const toggleSortDirection = () => {
-        setSortDirection((current) => (current === 'asc' ? 'desc' : 'asc'));
+    const handleSort = (column: 'range' | 'wallets' | 'totalAda') => {
+        setSortConfig((current) => {
+            if (current.column === column) {
+                return {
+                    column,
+                    direction: current.direction === 'asc' ? 'desc' : 'asc',
+                };
+            }
+
+            return { column, direction: 'asc' };
+        });
     };
 
-    const SortIndicator = () => (
-        <span className=" inline-flex h-5 w-5 items-center justify-center text-[15px]">
-            {sortDirection === 'asc' ? '↑' : '↓'}
-        </span>
-    );
+    const SortIndicator = ({ column }: { column: 'range' | 'wallets' | 'totalAda' }) => {
+        const isActive = sortConfig.column === column;
+        const rotation = isActive && sortConfig.direction === 'asc' ? 'rotate-180' : '';
+
+        return (
+            <Paragraph
+                className={`inline-flex h-5 w-5 items-center justify-center text-[15px] transition-colors ${
+                    isActive ? 'text-primary' : 'text-current'
+                } ${rotation}`}
+                aria-hidden
+            >
+                ↓
+            </Paragraph>
+        );
+    };
 
     return (
-        <div className="flex h-[360px] flex-col rounded-lg bg-background shadow-lg">
+        <div className="flex md:h-[460px] flex-col rounded-lg bg-background shadow-lg">
             <div className="flex flex-wrap items-start justify-between gap-4 m-6">
                 <div>
                     <Paragraph className="text-xl font-semibold text-content">
@@ -73,27 +156,46 @@ const RegistrationBreakdownList = ({ ranges }: RegistrationBreakdownListProps) =
                                     <th className="px-6 py-3 text-left">
                                         <Button
                                             type="button"
-                                            onClick={toggleSortDirection}
+                                            onClick={() => handleSort('range')}
                                             className="flex items-center gap-2 text-left transition hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
                                             ariaLabel={t('charts.registrations.breakdown.toggleSort')}
                                         >
                                             {t('charts.registrations.breakdown.headers.range')}
-                                            <SortIndicator />
+                                            <SortIndicator column="range" />
                                         </Button>
                                     </th>
                                     <th className="px-6 py-3 text-left">
-                                        {t('charts.registrations.breakdown.headers.wallets')}
+                                        <Button
+                                            type="button"
+                                            onClick={() => handleSort('wallets')}
+                                            className="flex items-center gap-2 text-left transition hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+                                            ariaLabel={t('charts.registrations.breakdown.toggleSort')}
+                                        >
+                                            {t('charts.registrations.breakdown.headers.wallets')}
+                                            <SortIndicator column="wallets" />
+                                        </Button>
                                     </th>
                                     <th className="px-6 py-3 text-right">
-                                        {t('charts.registrations.breakdown.headers.number')}
+                                        <Button
+                                            type="button"
+                                            onClick={() => handleSort('totalAda')}
+                                            className="ml-auto flex items-center justify-end gap-2 text-right transition hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+                                            ariaLabel={t('charts.registrations.breakdown.toggleSort')}
+                                        >
+                                            {t('charts.registrations.breakdown.headers.number')}
+                                            <SortIndicator column="totalAda" />
+                                        </Button>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-light-gray-persist">
                                 {sortedRanges.map((range, index) => (
                                     <tr key={`${range.label}-${index}`} className="bg-background">
-                                        <td className="px-6 py-4 font-semibold text-gray-persist">
-                                            {range.label}
+                                        <td className="px-6 py-4">
+                                            <Paragraph className="inline-flex items-center gap-1.5 rounded-full border border-light-gray-persist/20 px-3 py-1 text-sm font-semibold text-gray-persists">
+                                                {range.label}
+                                                <span className="text-sm font-semibold">₳</span>
+                                            </Paragraph>
                                         </td>
                                         <td className="px-6 py-4 font-semibold text-gray-persist">
                                             {t('charts.registrations.breakdown.walletCount', {
