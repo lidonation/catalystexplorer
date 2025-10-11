@@ -100,6 +100,10 @@ const PieChartCard = ({
                     fontWeight: 600,
                     fill: 'var(--cx-background)',
                     fillOpacity: 0.95,
+<<<<<<< HEAD
+=======
+                    suffix: t('wallets'),
+>>>>>>> dev
                 },
                 {
                     text: `${formattedPercentage}%`,
@@ -111,7 +115,11 @@ const PieChartCard = ({
             ];
 
             const longestLineLength = lines.reduce((maxLength, line) => {
+<<<<<<< HEAD
                 const content = line.text;
+=======
+                const content = line.suffix ? `${line.text} ${line.suffix}` : line.text;
+>>>>>>> dev
                 return Math.max(maxLength, content.length);
             }, 0);
             const tooltipWidth = Math.max(128, Math.min(280, longestLineLength * 7 + 32));
@@ -209,7 +217,11 @@ const PieChartCard = ({
                                 dominantBaseline="hanging"
                                 style={{ textTransform: index === 0 ? 'uppercase' : undefined }}
                             >
+<<<<<<< HEAD
                                 {line.text}
+=======
+                                {line.suffix ? `${line.text} ${line.suffix}` : line.text}
+>>>>>>> dev
                             </text>
                         );
                     })}
@@ -297,7 +309,11 @@ const PieChartCard = ({
                                             {datum.label}
                                         </Paragraph>
                                         <Paragraph className="text-white/80 whitespace-nowrap">
+<<<<<<< HEAD
                                             {formattedValue}
+=======
+                                            {formattedValue} {t('wallets')}
+>>>>>>> dev
                                         </Paragraph>
                                         <Paragraph className="text-white/80 whitespace-nowrap">
                                             {formattedPercentage}%
