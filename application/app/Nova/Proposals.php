@@ -137,36 +137,69 @@ class Proposals extends Resource
                 ->sortable()
                 ->displayUsing(fn ($value) => number_format($value ?? 0)),
 
-            Number::make(__('Amount Requested USD'), 'amount_requested_usd')
-                ->hideFromIndex()
+            // Currency conversion fields (computed from model attributes)
+            Number::make(__('Amount Requested USD'), function () {
+                return $this->amount_requested_usd ?? 0;
+            })->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating()
                 ->displayUsing(fn ($value) => '$'.number_format($value ?? 0)),
 
-            Number::make(__('Amount Requested ADA'), 'amount_requested_ada')
-                ->hideFromIndex()
+            Number::make(__('Amount Requested ADA'), function () {
+                return $this->amount_requested_ada ?? 0;
+            })->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating()
                 ->displayUsing(fn ($value) => number_format($value ?? 0).' ₳'),
 
-            Number::make(__('Amount Received USD'), 'amount_received_usd')
-                ->hideFromIndex()
+            Number::make(__('Amount Received USD'), function () {
+                return $this->amount_received_usd ?? 0;
+            })->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating()
                 ->displayUsing(fn ($value) => '$'.number_format($value ?? 0)),
 
-            Number::make(__('Amount Received ADA'), 'amount_received_ada')
-                ->hideFromIndex()
+            Number::make(__('Amount Received ADA'), function () {
+                return $this->amount_received_ada ?? 0;
+            })->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating()
                 ->displayUsing(fn ($value) => number_format($value ?? 0).' ₳'),
 
-            Number::make(__('Amount Awarded USD'), 'amount_awarded_usd')
-                ->hideFromIndex()
+            Number::make(__('Amount Awarded USD'), function () {
+                return $this->amount_awarded_usd ?? 0;
+            })->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating()
                 ->displayUsing(fn ($value) => '$'.number_format($value ?? 0)),
 
-            Number::make(__('Amount Awarded ADA'), 'amount_awarded_ada')
-                ->hideFromIndex()
+            Number::make(__('Amount Awarded ADA'), function () {
+                return $this->amount_awarded_ada ?? 0;
+            })->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating()
                 ->displayUsing(fn ($value) => number_format($value ?? 0).' ₳'),
 
-            Number::make(__('Completed Amount Paid USD'), 'completed_amount_paid_usd')
-                ->hideFromIndex()
+            Number::make(__('Completed Amount Paid USD'), function () {
+                return $this->completed_amount_paid_usd ?? 0;
+            })->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating()
                 ->displayUsing(fn ($value) => '$'.number_format($value ?? 0)),
 
-            Number::make(__('Completed Amount Paid ADA'), 'completed_amount_paid_ada')
-                ->hideFromIndex()
+            Number::make(__('Completed Amount Paid ADA'), function () {
+                return $this->completed_amount_paid_ada ?? 0;
+            })->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating()
                 ->displayUsing(fn ($value) => number_format($value ?? 0).' ₳'),
 
             Select::make(__('Currency'), 'currency')
@@ -200,8 +233,12 @@ class Proposals extends Resource
             Number::make(__('Quick Pitch Length'), 'quickpitch_length')
                 ->hideFromIndex(),
 
-            Boolean::make(__('Has Quick Pitch'), 'has_quick_pitch')
-                ->hideFromIndex(),
+            Boolean::make(__('Has Quick Pitch'), function () {
+                return $this->has_quick_pitch ?? false;
+            })->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating(),
 
             // Status Fields
             Select::make(__('Status'), 'status')
@@ -224,28 +261,52 @@ class Proposals extends Resource
                 ->displayUsingLabels()
                 ->filterable(),
 
-            Boolean::make(__('Paid'), 'paid')
-                ->hideFromIndex(),
+            Boolean::make(__('Paid'), function () {
+                return $this->paid ?? false;
+            })->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating(),
 
-            Boolean::make(__('Over Budget'), 'over_budget')
-                ->hideFromIndex(),
+            Boolean::make(__('Over Budget'), function () {
+                return $this->over_budget ?? false;
+            })->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating(),
 
-            // Rating Fields
-            Number::make(__('CA Rating'), 'ca_rating')
-                ->step(0.1)
-                ->hideFromIndex(),
+            // Rating Fields (computed from model attributes)
+            Number::make(__('CA Rating'), function () {
+                return $this->ca_rating ?? null;
+            })->step(0.1)
+                ->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating(),
 
-            Number::make(__('Alignment Score'), 'alignment_score')
-                ->step(0.1)
-                ->hideFromIndex(),
+            Number::make(__('Alignment Score'), function () {
+                return $this->alignment_score ?? null;
+            })->step(0.1)
+                ->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating(),
 
-            Number::make(__('Feasibility Score'), 'feasibility_score')
-                ->step(0.1)
-                ->hideFromIndex(),
+            Number::make(__('Feasibility Score'), function () {
+                return $this->feasibility_score ?? null;
+            })->step(0.1)
+                ->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating(),
 
-            Number::make(__('Auditability Score'), 'auditability_score')
-                ->step(0.1)
-                ->hideFromIndex(),
+            Number::make(__('Auditability Score'), function () {
+                return $this->auditability_score ?? null;
+            })->step(0.1)
+                ->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating(),
 
             Number::make(__('Ranking Total'), 'ranking_total')
                 ->hideFromIndex(),
@@ -260,22 +321,42 @@ class Proposals extends Resource
             Number::make(__('Abstain Votes'), 'abstain_votes_count')
                 ->hideFromIndex(),
 
-            Number::make(__('Votes Cast'), 'votes_cast')
-                ->hideFromIndex(),
+            Number::make(__('Votes Cast'), function () {
+                return $this->votes_cast ?? 0;
+            })->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating(),
 
-            // Special Proposal Types
-            Boolean::make(__('Impact Proposal'), 'impact_proposal')
-                ->hideFromIndex(),
+            // Special Proposal Types (computed from model attributes)
+            Boolean::make(__('Impact Proposal'), function () {
+                return $this->impact_proposal ?? false;
+            })->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating(),
 
-            Boolean::make(__('Woman Proposal'), 'woman_proposal')
-                ->hideFromIndex(),
+            Boolean::make(__('Woman Proposal'), function () {
+                return $this->woman_proposal ?? false;
+            })->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating(),
 
-            Boolean::make(__('Ideafest Proposal'), 'ideafest_proposal')
-                ->hideFromIndex(),
+            Boolean::make(__('Ideafest Proposal'), function () {
+                return $this->ideafest_proposal ?? false;
+            })->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating(),
 
             // Additional Fields
-            Text::make(__('Hash'), 'hash')
-                ->hideFromIndex(),
+            Text::make(__('Hash'), function () {
+                return $this->hash ?? null;
+            })->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating(),
 
             Text::make(__('User ID'), 'user_id')
                 ->hideFromIndex(),
@@ -293,9 +374,8 @@ class Proposals extends Resource
                 ->searchable()
                 ->hideFromIndex(),
 
-            BelongsTo::make(__('Schedule'), 'schedule', ProjectSchedules::class)
-                ->nullable()
-                ->hideFromIndex(),
+            // Schedule relationship removed - use HasOne relationship instead
+            // To manage schedules, edit them from the ProjectSchedules resource
 
             // Timestamps
             DateTime::make(__('Created At'), 'created_at')

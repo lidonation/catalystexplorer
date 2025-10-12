@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Nova;
 
+use App\Actions\ImportVotingPower;
 use App\Models\Snapshot;
+use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
@@ -39,55 +42,27 @@ class Snapshots extends Resource
     /**
      * Get the fields displayed by the resource.
      *
-     * @return array<int, \Laravel\Nova\Fields\Field>
+     * @return array<int, Field>
      */
     public function fields(NovaRequest $request): array
     {
         return [
             ID::make()->sortable(),
             Text::make('Snapshot Name'),
-            DateTime::make('Snapshot Date'),
+            DateTime::make('Snapshot Date', 'snapshot_at'),
             HasMany::make('Voting Powers', 'votingPowers', VotingPowers::class),
         ];
     }
 
     /**
-     * Get the cards available for the resource.
-     *
-     * @return array<int, \Laravel\Nova\Card>
-     */
-    public function cards(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    /**
-     * Get the filters available for the resource.
-     *
-     * @return array<int, \Laravel\Nova\Filters\Filter>
-     */
-    public function filters(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    /**
-     * Get the lenses available for the resource.
-     *
-     * @return array<int, \Laravel\Nova\Lenses\Lens>
-     */
-    public function lenses(NovaRequest $request): array
-    {
-        return [];
-    }
-
-    /**
      * Get the actions available for the resource.
      *
-     * @return array<int, \Laravel\Nova\Actions\Action>
+     * @return array<int, Action>
      */
     public function actions(NovaRequest $request): array
     {
-        return [];
+        return [
+            (new ImportVotingPower),
+        ];
     }
 }
