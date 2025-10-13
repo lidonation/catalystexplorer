@@ -42,7 +42,7 @@ const FALLBACK_TOTALS: RegistrationTotals = {
 };
 
 const formatAda = (value: number) => `₳${shortNumber(value ?? 0, 2)}`;
-const formatCount = (value: number) => NUMBER_FORMATTER.format(value ?? 0);
+
 
 const Registrations = ({
     fund,
@@ -64,6 +64,7 @@ const Registrations = ({
 
     const walletPieData = useMemo(() => buildPieData(ranges, 'count'), [ranges]);
     const adaPieData = useMemo(() => buildPieData(ranges, 'total_ada'), [ranges]);
+    const formatCount = (value: number) => `${NUMBER_FORMATTER.format(value ?? 0)} ${t('wallets')}`;
 
     return (
         <AllChartsLayout
