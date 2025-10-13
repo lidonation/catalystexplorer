@@ -103,7 +103,7 @@ const Step3: React.FC<Step3Props> = ({ stepDetails, activeStep }) => {
                             onClick={handleNext}
                             disabled={walletName.trim().length < 6}
                         >
-                            {t('buttons.titles.createWallet')}
+                            {t('workflows.linkWallet.linkWallet')}
                         </PrimaryButton>
                     </div>
                 </div>

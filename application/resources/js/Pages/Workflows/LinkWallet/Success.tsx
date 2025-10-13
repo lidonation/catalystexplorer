@@ -46,15 +46,16 @@ export default function Success({
                                 )}{' '}
                             </span>
                             <span className="font-bold">{walletName}</span>
-                            <span> </span>
                             <span>{t('workflows.linkWallet.toProposal')}</span>
                         </Paragraph>
                         <PrimaryLink
-                            href={useLocalizedRoute('my.proposals.index')}
-                            className="w-full text-sm lg:px-8 lg:py-3"
+                            href={useLocalizedRoute('my.proposals.manage', {
+                                proposal: proposal?.id,
+                            })}
+                            className="w-full text-sm lg:px-8 lg:py-3 text-center"
                         >
                             <span>
-                                {t('workflows.linkWallet.backToMyProposals')}
+                                {`${t('workflows.linkWallet.backToManage')}: ${proposal?.title}`}
                             </span>
                         </PrimaryLink>
                     </div>

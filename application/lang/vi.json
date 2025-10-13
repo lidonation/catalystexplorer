@@ -367,5 +367,15 @@
     "my.manageWallets": "Xem và quản lý tất cả ví được kết nối với tài khoản Catalyst Explorer của bạn",
     "my.moreWalletsDetails": "Xem chi tiết ví...",
     "my.connectWallet": "Thêm Ví",
-    "my.my": "Của Tôi"
+    "my.my": "Của Tôi",
+    "workflows.linkWallet.linkWallet": "Liên kết ví",
+    "workflows.linkWallet.info": "Chọn một ví để liên kết với đề xuất của bạn.",
+    "workflows.linkWallet.successfullyLink": "Bạn đã liên kết thành công",
+    "workflows.linkWallet.toProposal": "với đề xuất của bạn",
+    "workflows.linkWallet.backToMyProposals": "Đề xuất của tôi",
+    "workflows.linkWallet.alreadyLinked": "Đề xuất của bạn đã được liên kết với ví này",
+    "workflows.linkWallet.backToLinkProposal": "Liên kết ví mới với một đề xuất",
+    "workflows.linkWallet.linkDifferentWallet": "Liên kết ví khác",
+    "workflows.linkWallet.backToManage": "Quay lại quản lý",
+    "proposal.linkedWallets.title": "Các ví đã liên kết"
 }
