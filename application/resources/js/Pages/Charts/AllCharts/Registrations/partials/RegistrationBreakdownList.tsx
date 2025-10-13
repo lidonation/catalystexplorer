@@ -1,12 +1,14 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import Button from '@/Components/atoms/Button';
 import { shortNumber } from '@/utils/shortNumber';
-import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useMemo, useState } from 'react';
 
 const NUMBER_FORMATTER = new Intl.NumberFormat();
 const formatCount = (value: number) => NUMBER_FORMATTER.format(value ?? 0);
 const formatAda = (value: number) => `₳${shortNumber(value ?? 0, 2)}`;
+
+const defaultWalletCountFormatter = (count: number) => formatCount(count);
+const defaultTotalAdaFormatter = (value: number) => formatAda(value);
 
 export type RegistrationRange = {
     label: string;
@@ -16,10 +18,31 @@ export type RegistrationRange = {
 
 type RegistrationBreakdownListProps = {
     ranges: RegistrationRange[];
+    title: string;
+    subtitle?: string | null;
+    emptyMessage: string;
+    headers: {
+        range: string;
+        wallets: string;
+        totalAda: string;
+    };
+    toggleSortLabel: string;
+    walletCountFormatter?: (count: number) => string;
+    totalAdaFormatter?: (value: number) => string;
+    labelSuffix?: string | null;
 };
 
-const RegistrationBreakdownList = ({ ranges }: RegistrationBreakdownListProps) => {
-    const { t } = useLaravelReactI18n();
+const RegistrationBreakdownList = ({
+    ranges,
+    title,
+    subtitle,
+    emptyMessage,
+    headers,
+    toggleSortLabel,
+    walletCountFormatter = defaultWalletCountFormatter,
+    totalAdaFormatter = defaultTotalAdaFormatter,
+    labelSuffix = '₳',
+}: RegistrationBreakdownListProps) => {
     const [sortConfig, setSortConfig] = useState<{
         column: 'range' | 'wallets' | 'totalAda';
         direction: 'asc' | 'desc';
@@ -135,18 +158,18 @@ const RegistrationBreakdownList = ({ ranges }: RegistrationBreakdownListProps) =
             <div className="flex flex-wrap items-start justify-between gap-4 m-6">
                 <div>
                     <Paragraph className="text-xl font-semibold text-content">
-                        {t('charts.registrations.breakdown.title')}
+                        {title}
                     </Paragraph>
-                    <Paragraph className="text-sm text-content/70">
-                        {t('charts.registrations.breakdown.subtitle')}
-                    </Paragraph>
+                    {subtitle ? (
+                        <Paragraph className="text-sm text-content/70">{subtitle}</Paragraph>
+                    ) : null}
                 </div>
             </div>
 
             <div className=" flex flex-1 min-h-0 flex-col overflow-hidden  bg-background-lighter/40">
                 {sortedRanges.length === 0 ? (
                     <div className="flex flex-1 items-center justify-center px-6 py-12 text-center text-sm text-content/70">
-                        {t('charts.registrations.breakdown.empty')}
+                        {emptyMessage}
                     </div>
                 ) : (
                     <div className="flex-1 overflow-y-auto">
@@ -158,9 +181,9 @@ const RegistrationBreakdownList = ({ ranges }: RegistrationBreakdownListProps) =
                                             type="button"
                                             onClick={() => handleSort('range')}
                                             className="flex items-center gap-2 text-left transition hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
-                                            ariaLabel={t('charts.registrations.breakdown.toggleSort')}
+                                            ariaLabel={toggleSortLabel}
                                         >
-                                            {t('charts.registrations.breakdown.headers.range')}
+                                            {headers.range}
                                             <SortIndicator column="range" />
                                         </Button>
                                     </th>
@@ -169,9 +192,9 @@ const RegistrationBreakdownList = ({ ranges }: RegistrationBreakdownListProps) =
                                             type="button"
                                             onClick={() => handleSort('wallets')}
                                             className="flex items-center gap-2 text-left transition hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
-                                            ariaLabel={t('charts.registrations.breakdown.toggleSort')}
+                                            ariaLabel={toggleSortLabel}
                                         >
-                                            {t('charts.registrations.breakdown.headers.wallets')}
+                                            {headers.wallets}
                                             <SortIndicator column="wallets" />
                                         </Button>
                                     </th>
@@ -180,9 +203,9 @@ const RegistrationBreakdownList = ({ ranges }: RegistrationBreakdownListProps) =
                                             type="button"
                                             onClick={() => handleSort('totalAda')}
                                             className="ml-auto flex items-center justify-end gap-2 text-right transition hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
-                                            ariaLabel={t('charts.registrations.breakdown.toggleSort')}
+                                            ariaLabel={toggleSortLabel}
                                         >
-                                            {t('charts.registrations.breakdown.headers.number')}
+                                            {headers.totalAda}
                                             <SortIndicator column="totalAda" />
                                         </Button>
                                     </th>
@@ -194,16 +217,16 @@ const RegistrationBreakdownList = ({ ranges }: RegistrationBreakdownListProps) =
                                         <td className="px-6 py-4">
                                             <Paragraph className="inline-flex items-center gap-1.5 rounded-full border border-light-gray-persist/20 px-3 py-1 text-sm font-semibold text-gray-persists">
                                                 {range.label}
-                                                <span className="text-sm font-semibold">₳</span>
+                                                {labelSuffix ? (
+                                                    <span className="text-sm font-semibold">{labelSuffix}</span>
+                                                ) : null}
                                             </Paragraph>
                                         </td>
                                         <td className="px-6 py-4 font-semibold text-gray-persist">
-                                            {t('charts.registrations.breakdown.walletCount', {
-                                                count: formatCount(range.count),
-                                            })}
+                                            {walletCountFormatter(range.count)}
                                         </td>
                                         <td className="px-6 py-4 text-right font-semibold text-gray-persist">
-                                            {formatAda(range.total_ada)}
+                                            {totalAdaFormatter(range.total_ada)}
                                         </td>
                                     </tr>
                                 ))}

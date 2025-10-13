@@ -48,7 +48,7 @@ class ChartsController extends Controller
 
         return match ($normalizedRouteName) {
             'charts.registrations' => $this->renderRegistrations($baseProps, $selectedFund),
-            'charts.confirmedVoters' => Inertia::render('Charts/AllCharts/ConfirmedVoters/index', $baseProps),
+            'charts.confirmedVoters' => $this->renderConfirmedVoters($baseProps, $selectedFund),
             'charts.leaderboards' => Inertia::render('Charts/AllCharts/Leaderboards/index', $baseProps),
             'charts.liveTally' => $this->renderLiveTally($baseProps, $selectedFund, $perPage, $page),
             default => $this->renderLiveTally([
@@ -86,6 +86,16 @@ class ChartsController extends Controller
         ]);
     }
 
+    private function renderConfirmedVoters(array $baseProps, Fund $selectedFund): Response
+    {
+        $confirmedVoters = $this->buildConfirmedVotersData($selectedFund);
+
+        return Inertia::render('Charts/AllCharts/ConfirmedVoters/index', [
+            ...$baseProps,
+            'confirmedVoters' => $confirmedVoters,
+        ]);
+    }
+
     private function buildRegistrationsData(Fund $selectedFund): array
     {
         $snapshotIds = $this->getSnapshotIdsForFund($selectedFund);
@@ -109,6 +119,101 @@ class ChartsController extends Controller
             'fundId' => $selectedFund->getKey(),
             'ranges' => $this->getAdaPowerRanges($snapshotIds),
             'totals' => $this->getRegistrationTotals($snapshotIds, $selectedFund),
+        ];
+    }
+
+    private function buildConfirmedVotersData(Fund $selectedFund): array
+    {
+        $snapshotIds = $this->getSnapshotIdsForFund($selectedFund);
+
+        if (empty($snapshotIds)) {
+            return [
+                'fundId' => $selectedFund->getKey(),
+                'stats' => [
+                    'average_votes_cast' => null,
+                    'mode_votes_cast' => null,
+                    'median_votes_cast' => null,
+                    'total_confirmed_voters' => 0,
+                    'total_votes_cast' => 0,
+                    'total_voting_power_ada' => 0.0,
+                ],
+                'ranges' => [],
+            ];
+        }
+
+        $confirmedBase = DB::table('voting_powers as vp')
+            ->whereIn('vp.snapshot_id', $snapshotIds)
+            ->where('vp.consumed', true);
+
+        $averageVotes = (clone $confirmedBase)->avg('vp.votes_cast');
+
+        $modeVotes = DB::table('voting_powers as vp')
+            ->selectRaw('mode() WITHIN GROUP (ORDER BY votes_cast) AS mode')
+            ->whereIn('vp.snapshot_id', $snapshotIds)
+            ->where('vp.consumed', true)
+            ->value('mode');
+
+        $medianVotes = DB::table('voting_powers as vp')
+            ->selectRaw('PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY votes_cast) AS median')
+            ->whereIn('vp.snapshot_id', $snapshotIds)
+            ->where('vp.consumed', true)
+            ->value('median');
+
+        $totalConfirmed = (clone $confirmedBase)->count('vp.id');
+        $totalVotesCast = (clone $confirmedBase)->sum('vp.votes_cast');
+        $totalVotingPowerAda = $this->normalizeAda((clone $confirmedBase)->sum('vp.voting_power'));
+
+        $ranges = DB::table('voting_powers as vp')
+            ->selectRaw(
+                "CASE
+                WHEN votes_cast BETWEEN 0 AND 1 THEN '0-1-1'
+                WHEN votes_cast BETWEEN 2 AND 10 THEN '2-10-2'
+                WHEN votes_cast BETWEEN 11 AND 25 THEN '11-25-3'
+                WHEN votes_cast BETWEEN 26 AND 50 THEN '26-50-4'
+                WHEN votes_cast BETWEEN 51 AND 150 THEN '51-150-5'
+                WHEN votes_cast BETWEEN 151 AND 300 THEN '151-300-6'
+                WHEN votes_cast BETWEEN 301 AND 600 THEN '301-600-7'
+                WHEN votes_cast BETWEEN 601 AND 900 THEN '601-900-8'
+                WHEN votes_cast > 900 THEN '> 900-9'
+                END as range,
+                COUNT(*) as voters,
+                SUM(voting_power) as voting_power"
+            )
+            ->whereIn('vp.snapshot_id', $snapshotIds)
+            ->where('vp.consumed', true)
+            ->where('vp.votes_cast', '>', 0)
+            ->groupByRaw('1')
+            ->get()
+            ->map(function ($row) {
+                [$label, $order] = $this->normalizeRangeLabel($row->range);
+
+                return [
+                    'label' => $label,
+                    'count' => (int) $row->voters,
+                    'total_ada' => $this->normalizeAda((float) $row->voting_power),
+                    'order' => $order,
+                ];
+            })
+            ->sortBy('order')
+            ->values()
+            ->map(fn ($range) => [
+                'label' => $range['label'],
+                'count' => $range['count'],
+                'total_ada' => $range['total_ada'],
+            ])
+            ->toArray();
+
+        return [
+            'fundId' => $selectedFund->getKey(),
+            'stats' => [
+                'average_votes_cast' => $averageVotes !== null ? (int) floor((float) $averageVotes) : null,
+                'mode_votes_cast' => $modeVotes !== null ? (int) $modeVotes : null,
+                'median_votes_cast' => $medianVotes !== null ? round((float) $medianVotes, 2) : null,
+                'total_confirmed_voters' => $totalConfirmed,
+                'total_votes_cast' => $totalVotesCast,
+                'total_voting_power_ada' => $totalVotingPowerAda,
+            ],
+            'ranges' => $ranges,
         ];
     }
 
