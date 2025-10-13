@@ -1,11 +1,31 @@
+import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import Card from '@/Components/Card';
+import { PaginatedData } from '@/types/paginated-data';
+import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Head } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { useState } from 'react';
 import ProposalMetadataWidget from './partials/ProposalMetadataWidget';
 import QuickPitchWidget from './partials/QuickPitchWidget';
-import PrimaryLink from '@/Components/atoms/PrimaryLink';
-import { useLocalizedRoute } from '@/utils/localizedRoute';
+import WalletsSection from './partials/WalletsSection';
 
+interface WalletStats {
+    all_time_votes: number;
+    stakeAddress: string;
+    funds_participated: string[];
+    balance: string;
+    status?: boolean;
+}
+interface WalletData {
+    id: string;
+    name: string;
+    networkName: string;
+    stakeAddress: string;
+    userAddress: string;
+    paymentAddresses?: string[];
+    walletDetails: WalletStats;
+    catId: string;
+}
 interface ManageProposalProps {
     proposal: App.DataTransferObjects.ProposalData;
     quickpitchMetadata?: {
@@ -16,13 +36,39 @@ interface ManageProposalProps {
         favoriteCount: number;
         duration?: number;
     } | null;
+    linkedWallet?: WalletData;
+    hasMoreThanOneWallet?: boolean;
 }
 
 export default function ManageProposal({
     proposal,
     quickpitchMetadata,
+    linkedWallet,
+    hasMoreThanOneWallet,
 }: ManageProposalProps) {
+    const [copySuccesses, setCopySuccesses] = useState<Record<string, boolean>>(
+        {},
+    );
+    const [expandedAddresses, setExpandedAddresses] = useState<
+        Record<string, boolean>
+    >({});
     const { t } = useLaravelReactI18n();
+
+    const handleCopy = (value: string) => {
+        navigator.clipboard.writeText(value).then(() => {
+            setCopySuccesses((prev) => ({ ...prev, [value]: true }));
+            setTimeout(() => {
+                setCopySuccesses((prev) => ({ ...prev, [value]: false }));
+            }, 2000);
+        });
+    };
+
+    const toggleAddressExpansion = (walletId: string) => {
+        setExpandedAddresses((prev) => ({
+            ...prev,
+            [walletId]: !prev[walletId],
+        }));
+    };
     return (
         <div>
             <Head title={t('proposals.manageProposal')} />
@@ -41,21 +87,36 @@ export default function ManageProposal({
                     </div>
 
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                        <div className="w-full">
+                        <div className="grid w-full grid-cols-1 gap-6">
                             <ProposalMetadataWidget proposal={proposal} />
-                            <Card className="mt-4">
-                                <PrimaryLink
-                                    href={useLocalizedRoute(
-                                        'workflows.linkWallet.index',
-                                        {
-                                            step: 1,
-                                            proposal: proposal?.id,
-                                        },
-                                    )}
-                                >
-                                    {t('Link wallet')}
-                                </PrimaryLink>
-                            </Card>
+
+                            {linkedWallet ? (
+                                <WalletsSection
+                                    linkedWallet={linkedWallet}
+                                    onCopy={handleCopy}
+                                    copySuccesses={copySuccesses}
+                                    expandedAddresses={expandedAddresses}
+                                    onToggleAddressExpansion={
+                                        toggleAddressExpansion
+                                    }
+                                    moreThanOneWallet={hasMoreThanOneWallet}
+                                    proposalId={proposal?.id}
+                                />
+                            ) : (
+                                <Card className="mt-4">
+                                    <PrimaryLink
+                                        href={useLocalizedRoute(
+                                            'workflows.linkWallet.index',
+                                            {
+                                                step: 1,
+                                                proposal: proposal?.id,
+                                            },
+                                        )}
+                                    >
+                                        {t('Link wallet')}
+                                    </PrimaryLink>
+                                </Card>
+                            )}
                         </div>
                         <div className="w-full">
                             <QuickPitchWidget
