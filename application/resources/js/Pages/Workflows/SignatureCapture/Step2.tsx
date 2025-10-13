@@ -180,23 +180,25 @@ const Step2: React.FC<Step2Props> = ({
                                 </div>
                             )}
 
-                            <PrimaryButton
-                                className="mt-4 w-full py-3"
-                                onClick={handleSignature}
-                                disabled={isSigning}
-                            >
-                                {isSigning ? (
-                                    <div className="flex items-center justify-center">
-                                        <Loader2
-                                            size={16}
-                                            className="mr-2 animate-spin"
-                                        />
-                                        {t('workflows.signature.signing')}
-                                    </div>
-                                ) : (
-                                    t('workflows.signature.signMessage')
-                                )}
-                            </PrimaryButton>
+                            {!success && (
+                                <PrimaryButton
+                                    className="mt-4 w-full py-3"
+                                    onClick={handleSignature}
+                                    disabled={isSigning}
+                                >
+                                    {isSigning ? (
+                                        <div className="flex items-center justify-center">
+                                            <Loader2
+                                                size={16}
+                                                className="mr-2 animate-spin"
+                                            />
+                                            {t('workflows.signature.signing')}
+                                        </div>
+                                    ) : (
+                                        t('workflows.signature.signMessage')
+                                    )}
+                                </PrimaryButton>
+                            )}
 
                             {error && (
                                 <div

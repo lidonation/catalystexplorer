@@ -47,7 +47,6 @@ class WalletInfoService
                 });
             }
 
-            // No caching, compute directly
             return $this->buildWalletStats($stakeAddress);
         } catch (\Throwable $e) {
             Log::error("WalletStats Exception for {$stakeAddress}: {$e->getMessage()}", [

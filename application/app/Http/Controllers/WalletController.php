@@ -219,15 +219,13 @@ class WalletController extends Controller
 
             Gate::authorize('viewAny', Signature::class);
 
-            $page = $request->get('page', 1);
-            $limit = $request->get('limit', 4);
+            $page = (int) $request->get('p', 1);
+            $limit = (int) $request->get('limit', 4);
 
             $walletsPaginator = $this->walletInfoService->getUserWallets($user->getAuthIdentifier(), $page, $limit);
 
             $walletsPaginator->withPath($request->url())
                 ->appends($request->query());
-
-            $walletsArray = $walletsPaginator->through(fn ($wallet) => $wallet->toArray());
 
             return Inertia::render('My/Wallets/Index', [
                 'connectedWallets' => $walletsPaginator,
@@ -386,8 +384,8 @@ class WalletController extends Controller
 
         Gate::authorize('viewAny', Signature::class);
 
-        $page = $request->get('page', 1);
-        $limit = $request->get('limit', 4);
+        $page = (int) $request->get('p', 1);
+        $limit = (int) $request->get('limit', 4);
 
         $walletsPaginator = $this->walletInfoService->getUserWallets(
             $user->getAuthIdentifier(),
@@ -477,11 +475,15 @@ class WalletController extends Controller
 
         $signature = Signature::where('stake_address', $stakeAddress)->first();
 
-        $proposal->modelSignatures()->firstOrCreate([
-            'model_id' => $proposalId,
-            'model_type' => Proposal::class,
-            'signature_id' => $signature->id,
-        ]);
+        $proposal->modelSignatures()->updateOrCreate(
+            [
+                'model_id' => $proposalId,
+                'model_type' => Proposal::class,
+            ],
+            [
+                'signature_id' => $signature->id,
+            ]
+        );
 
         return to_route('workflows.linkWallet.index', [
             'step' => 3,

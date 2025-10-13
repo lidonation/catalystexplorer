@@ -20,6 +20,7 @@ use App\Models\Proposal;
 use App\Models\User;
 use App\Repositories\ProposalRepository;
 use App\Services\VideoService;
+use App\Services\WalletInfoService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -79,6 +80,10 @@ class ProposalsController extends Controller
     public int $sumDistributedUSD = 0;
 
     public int $sumCompletedUSD = 0;
+
+    public function __construct(
+        private readonly WalletInfoService $walletInfoService
+    ) {}
 
     public function index(Request $request)
     {
@@ -393,9 +398,28 @@ class ProposalsController extends Controller
 
         $metadata = app(VideoService::class)->getVideoMetadata($proposal->quickpitch);
 
+        $user = Auth::user();
+
+        $walletsPaginator = $this->walletInfoService->getUserWallets($user->getAuthIdentifier());
+        $linkedStakeAddresses = $proposal->signatures()->pluck('stake_address');
+
+        $walletsPaginator->getCollection()->transform(function ($wallet) use ($linkedStakeAddresses) {
+            return $wallet->withLinked(
+                $linkedStakeAddresses->contains($wallet->stakeAddress)
+            );
+        });
+
+        $wallets = $walletsPaginator->getCollection();
+
+        $linkedWallet = $wallets->filter(fn ($wallet) => $wallet->linked)->first();
+
+        $hasMoreThanOneWallet = $wallets->count() > 1;
+
         return Inertia::render('My/Proposals/ManageProposal', [
             'proposal' => ProposalData::from($proposal),
             'quickpitchMetadata' => $metadata,
+            'linkedWallet' => $linkedWallet,
+            'hasMoreThanOneWallet' => $hasMoreThanOneWallet,
         ]);
     }
 
