@@ -1524,5 +1524,9 @@
     "proposals.openSource": "የተከፈተ ምንጭ",
     "proposals.projectStatus": "የፕሮጄክት ሁኔታ",
     "proposals.month": "ወር",
-    "proposals.months": "ወራት"
+    "proposals.months": "ወራት",
+    "workflows.linkWallet.backToLinkProposal": "አዲስ ዋሌት ከፕሮፖዛል ጋር ያገናኙ",
+    "workflows.linkWallet.linkDifferentWallet": "ተለየ ዋሌት ያገናኙ",
+    "workflows.linkWallet.backToManage": "ወደ አስተዳደር ተመለስ",
+    "proposal.linkedWallets.title": "የተገናኙ ዋሌቶች"
 }

@@ -14,7 +14,7 @@ export default function ProposalMetadataWidgetSection({
   const {t } = useLaravelReactI18n();  
   return (
     <div className='w-full flex gap-6 border-t border-content/20 last:border-b py-4'>
-      <Paragraph className="min-w-[10rem] text-content/60">{label}</Paragraph>
+      <Paragraph className="md:min-w-[10rem] min-w-[5rem] text-content/60">{label}</Paragraph>
       <div className="font-semibold">{value}</div>
     </div>
   );
