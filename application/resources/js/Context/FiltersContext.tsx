@@ -157,7 +157,7 @@ export function FiltersProvider({
                 changedParams.includes(ParamsEnum.LIMIT);
 
             const shouldPreserveScroll = !changedParams.includes(ParamsEnum.PAGE);
-            const shouldPreserveState = !changedParams.includes(ParamsEnum.FUNDS);
+            const shouldPreserveState = true;
 
             router.get(currentUrl, formatToParams(), {
                 preserveState: shouldPreserveState,
