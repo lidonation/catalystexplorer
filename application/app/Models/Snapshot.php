@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Interfaces\IHasMetaData;
+use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class Snapshot extends Model
+class Snapshot extends Model implements IHasMetaData
 {
+    use HasMetaData;
+
     public $timestamps = false;
 
     public $incrementing = false;

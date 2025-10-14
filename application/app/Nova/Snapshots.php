@@ -51,6 +51,7 @@ class Snapshots extends Resource
             Text::make('Snapshot Name'),
             DateTime::make('Snapshot Date', 'snapshot_at'),
             HasMany::make('Voting Powers', 'votingPowers', VotingPowers::class),
+            HasMany::make('Metadata', 'metas', Metas::class),
         ];
     }
 
