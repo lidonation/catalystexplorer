@@ -1,3 +1,10 @@
+## [1.43.3](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.43.2...v1.43.3) (2025-10-14)
+
+
+### Bug Fixes
+
+* proposal filters broken ([da9a691](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/da9a691fbaaa39e37d481808077c184793875026))
+
 ## [1.43.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.43.1...v1.43.2) (2025-10-09)
 
 
