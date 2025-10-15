@@ -31,12 +31,19 @@ type ConfirmedVoterStats = {
     total_confirmed_voters: number;
     total_votes_cast: number;
     total_voting_power_ada: number;
+    total_verified_participant_ada: number;
+    yes_votes_ada_sum: number;
+    abstain_votes_ada_sum: number;
+    delegated_ada_power: number;
+    total_wallet_delegations: number;
+    total_unique_wallets: number;
 };
 
 type ConfirmedVotersData = {
     fundId: string | number;
     stats: ConfirmedVoterStats;
     ranges: RegistrationRange[];
+    ada_power_ranges: RegistrationRange[];
 };
 
 const FALLBACK_TOTALS: RegistrationTotals = {
@@ -55,6 +62,12 @@ const FALLBACK_STATS: ConfirmedVoterStats = {
     total_confirmed_voters: 0,
     total_votes_cast: 0,
     total_voting_power_ada: 0,
+    total_verified_participant_ada: 0,
+    yes_votes_ada_sum: 0,
+    abstain_votes_ada_sum: 0,
+    delegated_ada_power: 0,
+    total_wallet_delegations: 0,
+    total_unique_wallets: 0,
 };
 
 const NUMBER_FORMATTER = new Intl.NumberFormat();
@@ -74,9 +87,10 @@ const ConfirmedVoters: React.FC<ConfirmedVotersProps> = ({
         fundId: fund?.id ?? '',
         stats: FALLBACK_STATS,
         ranges: [],
+        ada_power_ranges: [],
     };
 
-    const statsConfig = useMemo(
+    const participationStatsConfig = useMemo(
         () => [
             {
                 key: 'average_votes_cast',
@@ -118,7 +132,57 @@ const ConfirmedVoters: React.FC<ConfirmedVotersProps> = ({
         [confirmedData.stats, t],
     );
 
-    const pieData = useMemo(() => buildPieData(confirmedData.ranges, 'count'), [confirmedData.ranges]);
+    const verifiedStatsConfig = useMemo(
+        () => [
+            {
+                key: 'total_verified_participant_ada',
+                title: t('charts.confirmedVoters.stats.totalVerifiedParticipantAda'),
+                value: confirmedData.stats.total_verified_participant_ada,
+                format: 'ada' as const,
+            },
+            {
+                key: 'yes_votes_ada_sum',
+                title: t('charts.confirmedVoters.stats.yesVotesAdaSum'),
+                value: confirmedData.stats.yes_votes_ada_sum,
+                format: 'ada' as const,
+            },
+            {
+                key: 'abstain_votes_ada_sum',
+                title: t('charts.confirmedVoters.stats.abstainVotesAdaSum'),
+                value: confirmedData.stats.abstain_votes_ada_sum,
+                format: 'ada' as const,
+            },
+            {
+                key: 'delegated_ada_power',
+                title: t('charts.confirmedVoters.stats.delegatedAdaPower'),
+                value: confirmedData.stats.delegated_ada_power,
+                format: 'ada' as const,
+            },
+            {
+                key: 'total_wallet_delegations',
+                title: t('charts.confirmedVoters.stats.totalWalletDelegations'),
+                value: confirmedData.stats.total_wallet_delegations,
+                format: 'count' as const,
+            },
+            {
+                key: 'total_unique_wallets',
+                title: t('charts.confirmedVoters.stats.totalUniqueWallets'),
+                value: confirmedData.stats.total_unique_wallets,
+                format: 'count' as const,
+            },
+        ],
+        [confirmedData.stats, t],
+    );
+
+    const participationPieData = useMemo(
+        () => buildPieData(confirmedData.ranges, 'count'),
+        [confirmedData.ranges],
+    );
+
+    const adaPowerPieData = useMemo(
+        () => buildPieData(confirmedData.ada_power_ranges ?? [], 'total_ada'),
+        [confirmedData.ada_power_ranges],
+    );
 
     return (
         <AllChartsLayout
@@ -131,15 +195,36 @@ const ConfirmedVoters: React.FC<ConfirmedVotersProps> = ({
             <div className="space-y-6">
                 <section className="grid gap-6 xl:grid-cols-12">
                     <div className="xl:col-span-7">
-                        <RegistrationStatsGrid totals={FALLBACK_TOTALS} statsConfig={statsConfig} />
+                        <RegistrationStatsGrid
+                            totals={FALLBACK_TOTALS}
+                            statsConfig={participationStatsConfig}
+                        />
                     </div>
                     <div className="xl:col-span-5">
                         <PieChartCard
                             title={t('charts.confirmedVoters.pie.title')}
                             subtitle={t('charts.confirmedVoters.pie.subtitle')}
                             emptyMessage={t('charts.confirmedVoters.pie.empty')}
-                            data={pieData}
+                            data={participationPieData}
                             valueFormatter={(value) => formatCount(Math.round(value))}
+                        />
+                    </div>
+                </section>
+
+                <section className="grid gap-6 xl:grid-cols-12">
+                    <div className="xl:col-span-5">
+                        <PieChartCard
+                            title={t('charts.confirmedVoters.verifiedAdaPower.title')}
+                            subtitle={t('charts.confirmedVoters.verifiedAdaPower.subtitle')}
+                            emptyMessage={t('charts.confirmedVoters.verifiedAdaPower.empty')}
+                            data={adaPowerPieData}
+                            valueFormatter={(value) => formatAda(value)}
+                        />
+                    </div>
+                    <div className="xl:col-span-7">
+                        <RegistrationStatsGrid
+                            totals={FALLBACK_TOTALS}
+                            statsConfig={verifiedStatsConfig}
                         />
                     </div>
                 </section>
@@ -157,9 +242,7 @@ const ConfirmedVoters: React.FC<ConfirmedVotersProps> = ({
                         }}
                         toggleSortLabel={t('charts.confirmedVoters.breakdown.toggleSort')}
                         walletCountFormatter={(count) =>
-                            t('charts.confirmedVoters.breakdown.walletCount', {
-                                count: formatCount(count),
-                            })
+                           formatCount(count)
                         }
                         totalAdaFormatter={(value) => formatAda(value)}
                         labelSuffix={null}

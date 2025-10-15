@@ -3,6 +3,8 @@ import FundTalliesWidget from '@/Pages/ActiveFund/Partials/FundTalliesWidget';
 import FundTalliesWidgetLoader from '../partials/FundTalliesWidgetLoader';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { useMemo } from 'react';
+import { ParamsEnum } from '@/enums/proposal-search-params';
 import type { PaginatedData } from '@/types/paginated-data';
 import type { SearchParams } from '@/types/search-params';
 import CatalystTallyData = App.DataTransferObjects.CatalystTallyData;
@@ -30,6 +32,15 @@ const LiveTally: React.FC<LiveTallyProps> = ({
     activeTabRoute,
 }) => {
     const { t } = useLaravelReactI18n();
+    const whenVisibleKey = useMemo(() => {
+        const fundId = fund?.id ?? 'fund';
+        const fundFilter = filters?.[ParamsEnum.FUNDS];
+        const normalizedFundFilter = Array.isArray(fundFilter)
+            ? fundFilter.join('-')
+            : fundFilter ?? '';
+
+        return `live-tally-${String(fundId)}-${normalizedFundFilter}`;
+    }, [fund?.id, filters?.[ParamsEnum.FUNDS]]);
 
     return (
         <AllChartsLayout
@@ -42,10 +53,12 @@ const LiveTally: React.FC<LiveTallyProps> = ({
             <div className="space-y-8">
                 <section>
                     <WhenVisible
+                        key={whenVisibleKey}
                         data={['campaigns', 'tallies']}
                         fallback={<FundTalliesWidgetLoader />}
                     >
                         <FundTalliesWidget
+                            key={`fund-tallies-${whenVisibleKey}`}
                             tallies={tallies ?? undefined}
                             campaigns={campaigns ?? []}
                             funds={funds}
