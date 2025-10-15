@@ -32,8 +32,8 @@ class SyncVotingResultsJob implements ShouldQueue
         $funds = [
             'cardano-open-developers' => 'cardano-open-developers-f14',
             'cardano-open-ecosystem' => 'cardano-open-ecosystem-f14',
-            'cardano-use-cases-concept' => 'cardano-use-case-concept-f14',
-            'cardano-use-cases-partners-and-product' => 'cardano-use-case-partners-and-products-f14',
+            'cardano-use-cases-concepts' => 'cardano-use-case-concept-f14',
+            'cardano-use-cases-partners-and-products' => 'cardano-use-case-partners-and-products-f14',
             'sponsored-by-leftovers' => null,
         ];
 
@@ -173,11 +173,20 @@ class SyncVotingResultsJob implements ShouldQueue
 
                     $p->yes_votes_count = $votingData['yes']['amount'] / 1000000;
                     $p->abstain_votes_count = $votingData['abstain']['amount'] / 1000000;
-                    $p->funding_status = match ($votingData['reasonForNotFundedStatus']) {
-                        'Not Funded - Over Budget' => 'over_budget',
-                        'Not Funded - Approval Threshold' => 'not_approved',
-                        default => 'funded'
-                    };
+                    if ($votingData['status'] == 'Funded') {
+                        $p->funding_status = 'funded';
+                    } else {
+                        if ((bool) $votingData['meetsApprovalThreshold']) {
+                            $p->funding_status = 'over_budget';
+                        } else {
+                            $p->funding_status = 'not_approved';
+                        }
+                    }
+                    //                    $p->funding_status = match ($votingData['reasonForNotFundedStatus']) {
+                    //                        'Not Funded - Over Budget' => 'over_budget',
+                    //                        'Not Funded - Approval Threshold' => 'not_approved',
+                    //                        default => 'funded'
+                    //                    };
 
                     if ($p->funding_status === 'funded') {
                         $p->funded_at = now();
