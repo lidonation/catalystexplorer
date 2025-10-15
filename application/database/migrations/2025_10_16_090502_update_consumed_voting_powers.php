@@ -12,19 +12,19 @@ return new class extends Migration
     {
         // Read the SQL file and process the data
         $sqlFile = database_path('sql/cx.consumed_voting_powers.sql');
-        
+
         if (!file_exists($sqlFile)) {
             echo "SQL file not found: " . $sqlFile . "\n";
             return;
         }
-        
+
         $sql = file_get_contents($sqlFile);
         $lines = explode("\n", $sql);
-        
+
         $updates = [];
         $batchSize = 1000;
         $processed = 0;
-        
+
         foreach ($lines as $line) {
             // Look for INSERT statements - match lines with parentheses containing data
             if (preg_match('/^\(\d+,\s*\d+,\s*\'([^\']*)\',\s*\'([^\']*)\',\s*\'([tf])\',\s*(\d+)\)/', $line, $matches)) {
@@ -32,14 +32,14 @@ return new class extends Migration
                 $voter_id = $matches[2];
                 $consumed = $matches[3] === 't' ? true : false;
                 $votes_cast = intval($matches[4]);
-                
+
                 $updates[] = [
                     'snapshot_id' => $snapshot_id,
                     'voter_id' => $voter_id,
                     'consumed' => $consumed,
                     'votes_cast' => $votes_cast
                 ];
-                
+
                 // Process in batches
                 if (count($updates) >= $batchSize) {
                     $processed += $this->processUpdates($updates);
@@ -48,15 +48,14 @@ return new class extends Migration
                 }
             }
         }
-        
-        // Process remaining updates
+
         if (!empty($updates)) {
             $processed += $this->processUpdates($updates);
         }
-        
+
         echo "Voting powers consumed/votes_cast data updated successfully. Total processed: {$processed}\n";
     }
-    
+
     private function processUpdates(array $updates): int
     {
         $updated = 0;

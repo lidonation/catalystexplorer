@@ -26,6 +26,7 @@ CREATE TABLE "public"."voting_powers" (
 -- Indices
 CREATE INDEX voter_id_index ON public.voting_powers USING btree (voter_id);
 
+
 INSERT INTO "public"."voting_powers" ("id", "voting_power", "snapshot_id", "voter_id", "consumed", "votes_cast") VALUES
 (1150248, 85505000000, 'b77b307e-2e83-4f9d-8be1-ba9f600299f3', 'ca1q5pxh2fkkwhsl3zsqp3xdm6fteff0u363kgql0hxufe3k5hs86lczz33ln6', 't', 17),
 (1150410, 847559000000, 'b77b307e-2e83-4f9d-8be1-ba9f600299f3', 'ca1q5pgv4yzrxq90kdxztpc69zwqtpkzpclmjadq4aj6jlj46huypg4x68mc9g', 't', 14),
