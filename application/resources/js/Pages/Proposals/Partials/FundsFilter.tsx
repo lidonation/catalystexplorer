@@ -23,7 +23,7 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
     useEffect(() => {
         // Check if funds are already cached in localStorage to prevent refetching
         const cachedFunds = localStorage.getItem('funds');
-        if (cachedFunds?.length === 0) {
+        if (cachedFunds) {
             setFunds(JSON.parse(cachedFunds));
         } else {
             fetchFunds();
@@ -69,7 +69,7 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
                             return (
                                 <li
                                     key={fund.id}
-                                    className={`bg-background hover:border-primary flex flex-shrink-0 cursor-pointer rounded-md border-2 border-transparent shadow-xs ${selectedItems.includes(fund) ? 'border-primary' : ''}`}
+                                    className={`bg-background hover:border-primary flex flex-shrink-0 cursor-pointer rounded-md border-2 border-transparent shadow-xs ${selectedItems.includes(fund.id) ? 'border-primary' : ''}`}
                                     onClick={() => handleSelect(fund.id)}
                                     aria-label={fund.id as string}
                                     data-testid={`fund-filter-item-${fund.id}`}

@@ -431,5 +431,9 @@
     "proposals.openSource": "مفتوح المصدر",
     "proposals.projectStatus": "حالة المشروع",
     "proposals.month": "شهر",
-    "proposals.months": "أشهر"
+    "proposals.months": "أشهر",
+    "workflows.linkWallet.backToLinkProposal": "اربط محفظة جديدة باقتراح",
+    "workflows.linkWallet.linkDifferentWallet": "اربط محفظة مختلفة",
+    "workflows.linkWallet.backToManage": "العودة إلى الإدارة",
+    "proposal.linkedWallets.title": "المحافظ المرتبطة"
 }

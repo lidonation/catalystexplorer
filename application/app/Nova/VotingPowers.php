@@ -6,6 +6,8 @@ namespace App\Nova;
 
 use App\Models\VotingPower;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
@@ -34,6 +36,8 @@ class VotingPowers extends Resource
      */
     public static $search = [
         'id',
+        'voter_id',
+        'delegate',
     ];
 
     /**
@@ -45,9 +49,60 @@ class VotingPowers extends Resource
     {
         return [
             ID::make()->sortable(),
-            Text::make('Delegate'),
-            BelongsTo::make('Snapshot', 'snapshot', Snapshots::class),
-            Number::make('Voting Power')->step(0.00000001),
+
+            Text::make('Voter ID')
+                ->sortable()
+                ->filterable()
+                ->help('Unique identifier for the voter'),
+
+            Text::make('Delegate')
+                ->sortable()
+                ->filterable()
+                ->nullable()
+                ->help('Delegate address if applicable'),
+
+            Number::make('Voting Power')
+                ->step(0.00000001)
+                ->sortable()
+                ->filterable()
+                ->help('Amount of voting power for this voter'),
+
+            Boolean::make('Consumed')
+                ->sortable()
+                ->filterable()
+                ->nullable()
+                ->help('Whether this voting power has been consumed/used'),
+
+            Number::make('Votes Cast')
+                ->sortable()
+                ->filterable()
+                ->help('Number of votes cast by this voter'),
+
+            Number::make('Old ID')
+                ->sortable()
+                ->nullable()
+                ->hideFromIndex()
+                ->help('Legacy ID from previous system'),
+
+            BelongsTo::make('Snapshot', 'snapshot', Snapshots::class)
+                ->sortable()
+                ->filterable(),
+
+            BelongsTo::make('Voter', 'voter', Voters::class)
+                ->sortable()
+                ->nullable()
+                ->hideFromIndex()
+                ->help('Related voter record'),
+
+            DateTime::make('Created At')
+                ->sortable()
+                ->hideFromIndex()
+                ->readonly(),
+
+            DateTime::make('Updated At')
+                ->sortable()
+                ->hideFromIndex()
+                ->readonly(),
         ];
     }
 
