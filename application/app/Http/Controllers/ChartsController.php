@@ -136,8 +136,15 @@ class ChartsController extends Controller
                     'total_confirmed_voters' => 0,
                     'total_votes_cast' => 0,
                     'total_voting_power_ada' => 0.0,
+                    'total_verified_participant_ada' => 0.0,
+                    'yes_votes_ada_sum' => 0.0,
+                    'abstain_votes_ada_sum' => 0.0,
+                    'delegated_ada_power' => 0.0,
+                    'total_wallet_delegations' => 0,
+                    'total_unique_wallets' => 0,
                 ],
                 'ranges' => [],
+                'ada_power_ranges' => [],
             ];
         }
 
@@ -162,6 +169,35 @@ class ChartsController extends Controller
         $totalConfirmed = (clone $confirmedBase)->count('vp.id');
         $totalVotesCast = (clone $confirmedBase)->sum('vp.votes_cast');
         $totalVotingPowerAda = $this->normalizeAda((clone $confirmedBase)->sum('vp.voting_power'));
+        $totalUniqueWallets = (clone $confirmedBase)->distinct('vp.voter_id')->count('vp.voter_id');
+
+        $yesVotesAdaSum = (float) DB::table('proposals as p')
+            ->where('p.fund_id', $selectedFund->getKey())
+            ->sum('p.yes_votes_count');
+
+        $abstainVotesAdaSum = (float) DB::table('proposals as p')
+            ->where('p.fund_id', $selectedFund->getKey())
+            ->sum('p.abstain_votes_count');
+
+        $delegationBase = DB::table('voting_powers as vp')
+            ->joinSub(
+                DB::table('delegations')
+                    ->select('cat_onchain_id')
+                    ->groupBy('cat_onchain_id')
+                    ->havingRaw('COUNT(*) > 1'),
+                'delegators',
+                'vp.voter_id',
+                '=',
+                'delegators.cat_onchain_id'
+            )
+            ->leftJoin('snapshots as s', 'vp.snapshot_id', '=', 's.id')
+            ->whereIn('vp.snapshot_id', $snapshotIds)
+            ->where('s.model_type', Fund::class)
+            ->where('s.model_id', $selectedFund->getKey())
+            ->where('vp.consumed', true);
+
+        $delegatedAdaPower = $this->normalizeAda((clone $delegationBase)->sum('vp.voting_power'));
+        $totalWalletDelegations = (clone $delegationBase)->distinct('vp.id')->count('vp.id');
 
         $ranges = DB::table('voting_powers as vp')
             ->selectRaw(
@@ -212,12 +248,19 @@ class ChartsController extends Controller
                 'total_confirmed_voters' => $totalConfirmed,
                 'total_votes_cast' => $totalVotesCast,
                 'total_voting_power_ada' => $totalVotingPowerAda,
+                'total_verified_participant_ada' => $totalVotingPowerAda,
+                'yes_votes_ada_sum' => round($yesVotesAdaSum, 2),
+                'abstain_votes_ada_sum' => round($abstainVotesAdaSum, 2),
+                'delegated_ada_power' => $delegatedAdaPower,
+                'total_wallet_delegations' => (int) $totalWalletDelegations,
+                'total_unique_wallets' => (int) $totalUniqueWallets,
             ],
             'ranges' => $ranges,
+            'ada_power_ranges' => $this->getAdaPowerRanges($snapshotIds, true),
         ];
     }
 
-    private function getAdaPowerRanges(array $snapshotIds): array
+    private function getAdaPowerRanges(array $snapshotIds, bool $confirmedOnly = false): array
     {
         $query = DB::table('voting_powers as vp')
             ->selectRaw(
@@ -225,6 +268,7 @@ class ChartsController extends Controller
             )
             ->whereIn('vp.snapshot_id', $snapshotIds)
             ->where('voting_power', '>=', 25000000)
+            ->when($confirmedOnly, fn ($query) => $query->where('vp.consumed', true))
             ->groupByRaw('1');
 
         $results = $query->get()
