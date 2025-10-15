@@ -2,53 +2,68 @@
 
 declare(strict_types=1);
 
-namespace App\Actions;
+namespace App\Nova\Actions;
 
 use App\Jobs\SyncVotingPowersFileJob;
 use App\Models\Fund;
 use App\Models\Meta;
 use App\Models\Snapshot;
 use App\Models\VotingPower;
-use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Nova\Actions\Action;
+use Laravel\Nova\Fields\ActionFields;
+use Laravel\Nova\Fields\File as FileField;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
-class ImportVotingPower
+class ImportVotingPower extends Action
 {
+    //    use InteractsWithQueue, Queueable;
+
     /**
-     * Import voting powers for a snapshot from an uploaded file.
+     * The displayable name of the action.
+     *
+     * @var string
      */
-    public function __invoke(Snapshot $snapshot, UploadedFile $file): void
+    public $name = 'Import Voting Powers';
+
+    /**
+     * Perform the action on the given models.
+     */
+    public function handle(ActionFields $fields, Collection $models): void
     {
-        Log::info('Importing voting powers for snapshot '.$snapshot->id);
+        Log::info('Importing voting powers');
+        $models->each(function (Snapshot $snapshot) use ($fields) {
+            Log::info('Importing voting powers for snapshot '.$snapshot->id);
+            try {
+                $fund = Fund::find($snapshot->model_id);
 
-        try {
-            $fund = Fund::find($snapshot->model_id);
+                $directory = 'catalyst_snapshots';
+                $storageDirectory = storage_path('app/public/'.$directory);
+                $fileName = 'catalyst-snapshot-'.$fund->slug.'.'.$fields->file->getClientOriginalExtension();
+                $storagePath = 'app/public/catalyst_snapshots/'.$fileName;
+                $fullFilePath = $storageDirectory.'/'.$fileName;
 
-            $directory = 'catalyst_snapshots';
-            $storageDirectory = storage_path('app/public/'.$directory);
-            $fileName = 'catalyst-snapshot-'.$fund->slug.'.'.$file->getClientOriginalExtension();
-            $storagePath = 'app/public/catalyst_snapshots/'.$fileName;
-            $fullFilePath = $storageDirectory.'/'.$fileName;
+                Log::info('Importing voting powers for snapshot '.$snapshot->id.' from file '.$fullFilePath);
 
-            Log::info('Importing voting powers for snapshot '.$snapshot->id.' from file '.$fullFilePath);
+                // save then format the file
+                $fields->file->move($storageDirectory, $fileName);
+                $this->formatCSV($fullFilePath, $storagePath);
 
-            // save then format the file
-            $file->move($storageDirectory, $fileName);
-            $this->formatCSV($fullFilePath, $storagePath);
+                // delete existing snapshot records
+                $this->deleteExistingRecords($snapshot);
 
-            // delete existing snapshot records
-            $this->deleteExistingRecords($snapshot);
+                // save snapshot's metadata about file
+                $this->saveSnapshotMeta($snapshot, $directory, $fileName);
 
-            // save snapshot's metadata about file
-            $this->saveSnapshotMeta($snapshot, $directory, $fileName);
-
-            $header = $this->getFirstLine($storagePath);
-            SyncVotingPowersFileJob::dispatch($snapshot, $fullFilePath, $header);
-        } catch (\Exception $e) {
-            $this->markAsFailed($snapshot, $e);
-        }
+                $header = $this->getFirstLine($storagePath);
+                SyncVotingPowersFileJob::dispatch($snapshot, $fullFilePath, $header);
+            } catch (\Exception $e) {
+                $this->markAsFailed($snapshot, $e);
+            }
+        });
     }
 
     protected function deleteExistingRecords(Snapshot $snapshot): void
@@ -113,11 +128,12 @@ class ImportVotingPower
     }
 
     /**
-     * Mark the snapshot as failed and log the error.
+     * Get the fields available on the action.
      */
-    protected function markAsFailed(Snapshot $snapshot, \Exception $e): void
+    public function fields(NovaRequest $request): array
     {
-        Log::error('Failed to import voting powers for snapshot '.$snapshot->id.': '.$e->getMessage());
-        // Add any additional failure handling logic here if needed
+        return [
+            FileField::make('Voting Power Snapshot', 'file'),
+        ];
     }
 }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Nova;
 
-use App\Actions\ImportVotingPower;
 use App\Models\Snapshot;
+use App\Nova\Actions\ImportVotingPower;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
