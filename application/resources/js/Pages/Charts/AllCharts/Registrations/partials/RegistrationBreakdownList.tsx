@@ -174,7 +174,7 @@ const RegistrationBreakdownList = ({
                 ) : (
                     <div className="flex-1 overflow-y-auto">
                         <table className="min-w-full table-fixed text-sm text-content">
-                            <thead className="border-t border-b border-light-gray-persist text-xs font-medium uppercase text-gray-persist">
+                            <thead className="sticky top-0 z-10 bg-background-lighter border-t border-b border-light-gray-persist text-xs font-medium uppercase text-gray-persist">
                                 <tr>
                                     <th className="px-6 py-3 text-left">
                                         <Button
