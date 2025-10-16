@@ -14,7 +14,7 @@ class Meta extends Model
 
     protected $keyType = 'string';
 
-    public $incrementing = true;
+    public $incrementing = false;
 
     public function uniqueIds(): array
     {
