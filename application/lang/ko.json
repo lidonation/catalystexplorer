@@ -91,6 +91,7 @@
     "numbers": "숫자",
     "password": "비밀번호",
     "policyID": "정책 ID",
+    "charts.confirmedVoters.breakdown.rawSnapshot": "원시 스냅샷",
     "filters": "필터",
     "rememberMe": "로그인 상태 유지",
     "privacy": "개인정보보호",

@@ -87,6 +87,7 @@
     "pdf.footer.defaultMessage": "Die Cardano-Gemeinschaft stärken",
     "pdf.footer.defaultGeneratorName": "Catalyst Explorer",
     "pdf.table.columns.title": "Titel",
+    "charts.confirmedVoters.breakdown.rawSnapshot": "Rohdaten-Snapshot",
     "pdf.table.columns.budget": "Budget",
     "pdf.table.columns.category": "Kategorie",
     "pdf.table.columns.openSourced": "Open Source",

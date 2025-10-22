@@ -16,6 +16,7 @@ type RegistrationsData = {
     fundId: string;
     ranges: RegistrationRange[];
     totals: RegistrationTotals;
+    snapshotDownloadId?: string | number | null;
 };
 
 type RegistrationsProps = {
@@ -57,10 +58,12 @@ const Registrations = ({
         fundId: fund?.id ?? '',
         ranges: [],
         totals: FALLBACK_TOTALS,
+        snapshotDownloadId: null,
     };
 
     const ranges = registrationData.ranges ?? [];
     const totals = registrationData.totals ?? FALLBACK_TOTALS;
+    const snapshotDownloadId = registrationData.snapshotDownloadId ?? null;
 
     const walletPieData = useMemo(() => buildPieData(ranges, 'count'), [ranges]);
     const adaPieData = useMemo(() => buildPieData(ranges, 'total_ada'), [ranges]);
@@ -84,6 +87,7 @@ const Registrations = ({
                             emptyMessage={t('charts.registrations.noData')}
                             data={walletPieData}
                             valueFormatter={(value) => formatCount(Math.round(value))}
+                            downloadSnapshotId={snapshotDownloadId}
                         />
                     </div>
                     <div className="xl:col-span-7">
@@ -118,6 +122,7 @@ const Registrations = ({
                             emptyMessage={t('charts.registrations.noData')}
                             data={adaPieData}
                             valueFormatter={(value) => formatAda(value)}
+                            downloadSnapshotId={snapshotDownloadId}
                         />
                     </div>
                 </section>

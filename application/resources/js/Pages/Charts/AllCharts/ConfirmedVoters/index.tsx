@@ -44,6 +44,7 @@ type ConfirmedVotersData = {
     stats: ConfirmedVoterStats;
     ranges: RegistrationRange[];
     ada_power_ranges: RegistrationRange[];
+    snapshotDownloadId?: string | number | null;
 };
 
 const FALLBACK_TOTALS: RegistrationTotals = {
@@ -88,7 +89,9 @@ const ConfirmedVoters: React.FC<ConfirmedVotersProps> = ({
         stats: FALLBACK_STATS,
         ranges: [],
         ada_power_ranges: [],
+        snapshotDownloadId: null,
     };
+    const snapshotDownloadId = confirmedData.snapshotDownloadId ?? null;
 
     const participationStatsConfig = useMemo(
         () => [
@@ -207,6 +210,7 @@ const ConfirmedVoters: React.FC<ConfirmedVotersProps> = ({
                             emptyMessage={t('charts.confirmedVoters.pie.empty')}
                             data={participationPieData}
                             valueFormatter={(value) => formatCount(Math.round(value))}
+                            downloadSnapshotId={snapshotDownloadId}
                         />
                     </div>
                 </section>
@@ -219,6 +223,7 @@ const ConfirmedVoters: React.FC<ConfirmedVotersProps> = ({
                             emptyMessage={t('charts.confirmedVoters.verifiedAdaPower.empty')}
                             data={adaPowerPieData}
                             valueFormatter={(value) => formatAda(value)}
+                            downloadSnapshotId={snapshotDownloadId}
                         />
                     </div>
                     <div className="xl:col-span-7">
