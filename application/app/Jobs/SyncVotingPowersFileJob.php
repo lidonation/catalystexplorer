@@ -48,6 +48,13 @@ class SyncVotingPowersFileJob implements ShouldQueue
         }
 
         $normalizedHeader = array_map(static fn ($value) => strtolower((string) $value), $this->header);
+        $snapshotId = (string) $this->snapshot->getKey();
+
+        if ($snapshotId === '') {
+            Log::warning('Snapshot id missing while syncing voting powers.');
+
+            return;
+        }
 
         LazyCollection::make(function () use ($stream) {
             try {
@@ -60,19 +67,45 @@ class SyncVotingPowersFileJob implements ShouldQueue
         })
             ->skip(1)
             ->chunk(500)
-            ->each(function (LazyCollection $chunk) use ($normalizedHeader) {
+            ->each(function (LazyCollection $chunk) use ($normalizedHeader, $snapshotId) {
                 $normalizedChunk = $chunk->map(function (array $row) use ($normalizedHeader) {
                     if ($normalizedHeader === ['stake_address', 'voting_power']) {
-                        return $row;
+                        return [
+                            $row[0] ?? null,
+                            $row[1] ?? null,
+                        ];
                     }
 
                     return [
                         $row[1] ?? null,
                         $row[0] ?? null,
                     ];
+                })->filter(function (array $row) {
+                    return ($row[0] ?? null) !== null || ($row[1] ?? null) !== null;
                 });
 
-                CreateVotingPowerSnapshotJob::dispatch($normalizedChunk, $this->snapshot?->id);
+                $payload = $normalizedChunk
+                    ->map(static function (array $row) {
+                        $stakeAddress = is_string($row[0] ?? null) ? trim($row[0]) : ($row[0] ?? null);
+                        $votingPower = $row[1] ?? null;
+
+                        if (is_string($votingPower)) {
+                            $votingPower = trim($votingPower);
+                        }
+
+                        return [$stakeAddress, $votingPower];
+                    })
+                    ->filter(function (array $row) {
+                        return ($row[0] ?? '') !== '' && ($row[1] ?? '') !== '';
+                    })
+                    ->values()
+                    ->all();
+
+                if ($payload === []) {
+                    return;
+                }
+
+                CreateVotingPowerSnapshotJob::dispatch($payload, $snapshotId);
             });
     }
 }
