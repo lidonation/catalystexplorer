@@ -46,7 +46,7 @@ class CreateVotingPowerSnapshotJob implements ShouldQueue
 
             VotingPower::create([
                 'voter_id' => $stakeAddress,
-                'voting_power' => $votingPower,
+                'voting_power' => (int) round((float) $votingPower * 1_000_000),
                 'snapshot_id' => $this->snapshotId,
             ]);
         }
