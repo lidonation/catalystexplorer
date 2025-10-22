@@ -1,9 +1,12 @@
 import Card from '@/Components/Card';
+import Button from '@/Components/atoms/Button';
+import RawSnapshotIcon from '@/Components/svgs/RawSnapshotIcon';
 import Paragraph from '@/Components/atoms/Paragraph';
-import { ResponsivePie, type PieCustomLayer } from '@nivo/pie';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { ResponsivePie, type PieCustomLayer } from '@nivo/pie';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 export type PieChartDatum = {
     id: string;
@@ -19,6 +22,7 @@ type PieChartCardProps = {
     emptyMessage: string;
     data: PieChartDatum[];
     valueFormatter: (value: number) => string;
+    downloadSnapshotId?: string | number | null;
 };
 
 const PERCENT_FORMATTER = new Intl.NumberFormat(undefined, {
@@ -32,6 +36,7 @@ const PieChartCard = ({
     emptyMessage,
     data,
     valueFormatter,
+    downloadSnapshotId = null,
 }: PieChartCardProps) => {
     const hasData = data.length > 0;
     const [selectedSliceId, setSelectedSliceId] = useState<string | null>(null);
@@ -41,6 +46,36 @@ const PieChartCard = ({
     const chartContainerRef = useRef<HTMLDivElement>(null);
     const activeSliceId = hoveredSliceId ?? selectedSliceId ?? null;
     const { t } = useLaravelReactI18n();
+   
+    const downloadLink = useMemo(() => {
+        if (downloadSnapshotId === null || downloadSnapshotId === undefined) {
+            return null;
+        }
+
+        try {
+            return generateLocalizedRoute(
+                'charts.snapshots.download',
+                { snapshot: downloadSnapshotId }
+            );
+        } catch (error) {
+            console.warn('Unable to generate snapshot download route', error);
+            return null;
+        }
+    }, [downloadSnapshotId]);
+
+    const isDownloadAvailable = Boolean(downloadLink);
+
+    const handleRawSnapshotClick = useCallback(() => {
+        if (!isDownloadAvailable || !downloadLink) {
+            return;
+        }
+
+        if (typeof window === 'undefined') {
+            return;
+        }
+
+        window.open(downloadLink, '_blank');
+    }, [downloadLink, isDownloadAvailable]);
 
     const toggleSlice = useCallback((id: string) => {
         setSelectedSliceId((current) => {
@@ -222,11 +257,33 @@ const PieChartCard = ({
 
     return (
         <Card className="relative flex flex-col overflow-visible bg-background p-6 shadow-lg md:h-[460px]">
-            <header className="mb-4 space-y-1">
-                <Paragraph className="text-xl font-semibold text-content">{title}</Paragraph>
-                {subtitle ? (
-                    <Paragraph className="text-sm text-content/70">{subtitle}</Paragraph>
-                ) : null}
+            <header className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div className="space-y-1">
+                    <Paragraph className="text-xl font-semibold text-content">{title}</Paragraph>
+                    {subtitle ? (
+                        <Paragraph className="text-sm text-content/70">{subtitle}</Paragraph>
+                    ) : null}
+                </div>
+                <Button
+                    onClick={handleRawSnapshotClick}
+                    disabled={!isDownloadAvailable}
+                    ariaLabel="Raw snapshot"
+                    type="button"
+                    className={
+                        isDownloadAvailable
+                            ? 'inline-flex items-center gap-2 self-start rounded-xl border border-light-gray-persist/40 bg-background px-4 py-2  font-semibold   transition-colors focus:outline-none sm:self-auto text-content/80 hover:text-primary focus-visible:ring-2 focus-visible:ring-primary/60'
+                            : 'inline-flex items-center gap-2 self-start rounded-xl border border-light-gray-persist/40 bg-background px-4 py-2  font-semibold  transition-colors focus:outline-none sm:self-auto text-light-gray-persist opacity-60'
+                    }
+                    dataTestId="raw-snapshot-download"
+                >
+                    <RawSnapshotIcon
+                        className={`h-4 w-4 ${
+                            isDownloadAvailable ? 'text-content' : 'text-light-gray-persist/40'
+                        }`}
+                        strokeOpacity={isDownloadAvailable ? 0.8 : 0.5}
+                    />
+                    <Paragraph>{t('charts.confirmedVoters.breakdown.rawSnapshot')}</Paragraph>
+                </Button>
             </header>
 
             {hasData ? (

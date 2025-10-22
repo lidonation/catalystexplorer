@@ -87,6 +87,7 @@
     "pdf.table.columns.openSourced": "Open source",
     "pdf.table.columns.team": "Équipe",
     "pdf.table.columns.fund": "Fonds",
+    "charts.confirmedVoters.breakdown.rawSnapshot": "Instantané brut",
     "pdf.table.columns.yesVotes": "Votes Oui",
     "pdf.table.columns.abstainVotes": "Votes d'Abstention",
     "pdf.table.columns.noVotes": "Votes Non",

@@ -69,6 +69,7 @@
     "charts.confirmedVoters.breakdown.subtitle": "توزيع المصوتين المؤكدين حسب الأصوات المقدمة",
     "charts.confirmedVoters.breakdown.empty": "لا توجد بيانات لمصوتين مؤكدين",
     "charts.confirmedVoters.breakdown.toggleSort": "تبديل ترتيب الفرز",
+    "charts.confirmedVoters.breakdown.rawSnapshot": "لقطة البيانات الأولية",
     "charts.confirmedVoters.breakdown.headers.range": "نطاق الأصوات المدلى بها",
     "charts.confirmedVoters.breakdown.headers.wallets": "المحافظ المؤكدة",
     "charts.confirmedVoters.breakdown.headers.number": "إجمالي قوة التصويت",

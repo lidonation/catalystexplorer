@@ -9,12 +9,15 @@ use App\DataTransferObjects\FundData;
 use App\Enums\ProposalSearchParams;
 use App\Http\Controllers\Concerns\InteractsWithFunds;
 use App\Models\Fund;
+use App\Models\Meta;
 use App\Models\Snapshot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ChartsController extends Controller
 {
@@ -99,6 +102,7 @@ class ChartsController extends Controller
     private function buildRegistrationsData(Fund $selectedFund): array
     {
         $snapshotIds = $this->getSnapshotIdsForFund($selectedFund);
+        $downloadSnapshotId = $this->resolveSnapshotDownloadId($selectedFund);
 
         if (empty($snapshotIds)) {
             return [
@@ -112,6 +116,7 @@ class ChartsController extends Controller
                     'delegated_ada_power' => 0.0,
                     'delegated_wallets' => 0,
                 ],
+                'snapshotDownloadId' => $downloadSnapshotId,
             ];
         }
 
@@ -119,12 +124,14 @@ class ChartsController extends Controller
             'fundId' => $selectedFund->getKey(),
             'ranges' => $this->getAdaPowerRanges($snapshotIds),
             'totals' => $this->getRegistrationTotals($snapshotIds, $selectedFund),
+            'snapshotDownloadId' => $downloadSnapshotId,
         ];
     }
 
     private function buildConfirmedVotersData(Fund $selectedFund): array
     {
         $snapshotIds = $this->getSnapshotIdsForFund($selectedFund);
+        $downloadSnapshotId = $this->resolveSnapshotDownloadId($selectedFund);
 
         if (empty($snapshotIds)) {
             return [
@@ -145,6 +152,7 @@ class ChartsController extends Controller
                 ],
                 'ranges' => [],
                 'ada_power_ranges' => [],
+                'snapshotDownloadId' => $downloadSnapshotId,
             ];
         }
 
@@ -257,7 +265,88 @@ class ChartsController extends Controller
             ],
             'ranges' => $ranges,
             'ada_power_ranges' => $this->getAdaPowerRanges($snapshotIds, true),
+            'snapshotDownloadId' => $downloadSnapshotId,
         ];
+    }
+
+    private function resolveSnapshotDownloadId(Fund $selectedFund): ?string
+    {
+        $snapshot = Snapshot::query()
+            ->where('model_type', Fund::class)
+            ->where('model_id', $selectedFund->getKey())
+            ->orderByDesc('snapshot_at')
+            ->orderByDesc('order')
+            ->orderByDesc('id')
+            ->first();
+
+        if ($snapshot === null) {
+            return null;
+        }
+
+        $hasSnapshotFile = Meta::query()
+            ->where('model_type', Snapshot::class)
+            ->where('model_id', $snapshot->getKey())
+            ->where('key', 'snapshot_file_path')
+            ->exists();
+
+        return $hasSnapshotFile ? (string) $snapshot->getKey() : null;
+    }
+
+    public function downloadSnapshot(Snapshot $snapshot): StreamedResponse
+    {
+        $meta = Meta::query()
+            ->where('model_type', Snapshot::class)
+            ->where('model_id', $snapshot->getKey())
+            ->where('key', 'snapshot_file_path')
+            ->latest()
+            ->first();
+
+        if ($meta === null || empty($meta->content)) {
+            abort(404, 'Snapshot file not available.');
+        }
+
+        $diskName = config('filesystems.default', 's3');
+        $disk = Storage::disk($diskName);
+        $path = $meta->content;
+
+        if (! $disk->exists($path)) {
+            abort(404, 'Snapshot file not found.');
+        }
+
+        $stream = $disk->readStream($path);
+
+        if ($stream === false) {
+            abort(500, 'Unable to read snapshot file.');
+        }
+
+        $fileName = $this->resolveSnapshotFileName($snapshot, $path);
+
+        return response()->streamDownload(
+            function () use ($stream): void {
+                try {
+                    fpassthru($stream);
+                } finally {
+                    if (is_resource($stream)) {
+                        fclose($stream);
+                    }
+                }
+            },
+            $fileName,
+            [
+                'Content-Type' => 'text/csv',
+            ]
+        );
+    }
+
+    private function resolveSnapshotFileName(Snapshot $snapshot, string $path): string
+    {
+        if (! empty($snapshot->snapshot_name)) {
+            $baseName = pathinfo($snapshot->snapshot_name, PATHINFO_FILENAME);
+
+            return sprintf('%s.csv', $baseName);
+        }
+
+        return basename($path) ?: 'snapshot.csv';
     }
 
     private function getAdaPowerRanges(array $snapshotIds, bool $confirmedOnly = false): array

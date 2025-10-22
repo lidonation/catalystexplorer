@@ -91,6 +91,7 @@
     "numbers": "数値",
     "password": "パスワード",
     "policyID": "ポリシーID",
+    "charts.confirmedVoters.breakdown.rawSnapshot": "生データスナップショット",
     "filters": "フィルター",
     "rememberMe": "ログイン状態を保持",
     "privacy": "プライバシー",

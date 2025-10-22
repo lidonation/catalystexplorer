@@ -466,6 +466,9 @@ Route::localized(
             Route::get('/leaderboards', [ChartsController::class, 'index'])
                 ->name('leaderboards');
 
+            Route::get('/snapshots/{snapshot}/download', [ChartsController::class, 'downloadSnapshot'])
+                ->name('snapshots.download');
+
             Route::get('/proposals', [ProposalsController::class, 'charts'])
                 ->name('proposals');
         });

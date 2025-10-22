@@ -9,8 +9,8 @@ use App\Models\Fund;
 use App\Models\Meta;
 use App\Models\Snapshot;
 use App\Models\VotingPower;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Nova\Actions\Action;
@@ -20,6 +20,12 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 
 class ImportVotingPower extends Action
 {
+    private const CSV_DELIMITER = ',';
+
+    private const CSV_ENCLOSURE = '"';
+
+    private const CSV_ESCAPE = '\\';
+
     //    use InteractsWithQueue, Queueable;
 
     /**
@@ -35,22 +41,32 @@ class ImportVotingPower extends Action
     public function handle(ActionFields $fields, Collection $models): void
     {
         Log::info('Importing voting powers');
-        $models->each(function (Snapshot $snapshot) use ($fields) {
+        $diskName = config('filesystems.default', 's3');
+
+        $models->each(function (Snapshot $snapshot) use ($fields, $diskName) {
             Log::info('Importing voting powers for snapshot '.$snapshot->id);
             try {
                 $fund = Fund::find($snapshot->model_id);
 
+                if (! $fund) {
+                    throw new \RuntimeException('Unable to locate fund for snapshot '.$snapshot->id);
+                }
+
                 $directory = 'catalyst_snapshots';
-                $storageDirectory = storage_path('app/public/'.$directory);
                 $fileName = 'catalyst-snapshot-'.$fund->slug.'.'.$fields->file->getClientOriginalExtension();
-                $storagePath = 'app/public/catalyst_snapshots/'.$fileName;
-                $fullFilePath = $storageDirectory.'/'.$fileName;
+                $path = $directory.'/'.$fileName;
 
-                Log::info('Importing voting powers for snapshot '.$snapshot->id.' from file '.$fullFilePath);
+                Log::info(
+                    sprintf('Importing voting powers for snapshot %s to disk "%s" at "%s".', $snapshot->id, $diskName, $path)
+                );
 
-                // save then format the file
-                $fields->file->move($storageDirectory, $fileName);
-                $this->formatCSV($fullFilePath, $storagePath);
+                $this->deleteExistingSnapshotFiles($snapshot, $diskName);
+
+                [$storagePath, $header] = $this->storeSnapshotFile(
+                    $fields->file,
+                    $path,
+                    $diskName
+                );
 
                 // delete existing snapshot records
                 $this->deleteExistingRecords($snapshot);
@@ -58,12 +74,24 @@ class ImportVotingPower extends Action
                 // save snapshot's metadata about file
                 $this->saveSnapshotMeta($snapshot, $directory, $fileName);
 
-                $header = $this->getFirstLine($storagePath);
-                SyncVotingPowersFileJob::dispatch($snapshot, $fullFilePath, $header);
+                SyncVotingPowersFileJob::dispatch($snapshot, $diskName, $storagePath, $header);
             } catch (\Exception $e) {
                 $this->markAsFailed($snapshot, $e);
             }
         });
+    }
+
+    protected function deleteExistingSnapshotFiles(Snapshot $snapshot, string $diskName): void
+    {
+        Meta::where('key', 'snapshot_file_path')
+            ->where('model_type', Snapshot::class)
+            ->where('model_id', $snapshot->id)
+            ->get()
+            ->each(function (Meta $meta) use ($diskName) {
+                if (! empty($meta->content)) {
+                    Storage::disk($diskName)->delete($meta->content);
+                }
+            });
     }
 
     protected function deleteExistingRecords(Snapshot $snapshot): void
@@ -90,41 +118,141 @@ class ImportVotingPower extends Action
         $meta->save();
     }
 
-    protected function formatCSV($fullPath, $storagePath): void
+    /**
+     * @return array{0: string, 1: array<int, string>}
+     */
+    protected function storeSnapshotFile(UploadedFile $file, string $path, string $diskName): array
     {
+        $disk = Storage::disk($diskName);
+
+        $inputPath = $file->getRealPath();
+
+        if ($inputPath === false) {
+            throw new \RuntimeException('Unable to access uploaded file contents.');
+        }
+
+        $inputHandle = fopen($inputPath, 'r');
+
+        if ($inputHandle === false) {
+            throw new \RuntimeException('Unable to open uploaded file for reading.');
+        }
+
         $expectedHeaders = ['stake_address', 'voting_power'];
-        $csvHeaders = $this->getFirstLine($storagePath);
+        $headerRow = $expectedHeaders;
+        $outputHandle = null;
 
-        if ($expectedHeaders !== $csvHeaders) {
-            // if either is numeric then no header is provided
-            if (! is_numeric($csvHeaders[0]) && ! is_numeric($csvHeaders[1])) {
-                // remove the current headers that dont conform
-                $lines = $this->getFileLines($storagePath);
-                array_shift($lines);
-                $newFileContents = implode("\n", $lines);
-                Storage::put($storagePath, $newFileContents);
+        try {
+            $firstRow = $this->readCsvRow($inputHandle);
 
-                // read the file again and add headers based on column arrangements
-                $csvHeaders = $this->getFirstLine($storagePath);
-
+            if ($firstRow === false) {
+                throw new \RuntimeException('Uploaded voting power file is empty.');
             }
-            $header = is_numeric($csvHeaders[1]) ? "stake_address,voting_power\n" : "voting_power,stake_address\n";
-            File::prepend($fullPath, $header);
+
+            if ($this->rowMatchesHeader($firstRow, $expectedHeaders)) {
+                rewind($inputHandle);
+                $disk->put($path, $inputHandle);
+
+                return [$path, $headerRow];
+            }
+
+            if ($this->rowLooksLikeHeader($firstRow)) {
+                $firstRow = $this->readCsvRow($inputHandle);
+            }
+
+            $headerRow = $this->resolveHeaderFromRow($firstRow, $expectedHeaders);
+
+            $outputHandle = fopen('php://temp', 'w+');
+
+            if ($outputHandle === false) {
+                throw new \RuntimeException('Unable to create temporary stream.');
+            }
+
+            $this->writeCsvRow($outputHandle, $headerRow);
+
+            if ($firstRow !== false) {
+                $this->writeCsvRow($outputHandle, $firstRow);
+            }
+
+            while (($row = $this->readCsvRow($inputHandle)) !== false) {
+                $this->writeCsvRow($outputHandle, $row);
+            }
+
+            rewind($outputHandle);
+
+            $disk->put($path, $outputHandle);
+
+            return [$path, $headerRow];
+        } finally {
+            fclose($inputHandle);
+            if (is_resource($outputHandle)) {
+                fclose($outputHandle);
+            }
         }
     }
 
-    protected function getFirstLine($filePath): array
+    protected function readCsvRow($handle): array|false
     {
-        $lines = $this->getFileLines($filePath);
+        if (! is_resource($handle)) {
+            return false;
+        }
 
-        return str_getcsv($lines[0]);
+        while (($row = fgetcsv($handle, 0, self::CSV_DELIMITER, self::CSV_ENCLOSURE, self::CSV_ESCAPE)) !== false) {
+            if ($row === null) {
+                continue;
+            }
+
+            $hasValue = false;
+
+            foreach ($row as $value) {
+                if ($value !== null && trim((string) $value) !== '') {
+                    $hasValue = true;
+                    break;
+                }
+            }
+
+            if (! $hasValue) {
+                continue;
+            }
+
+            return $row;
+        }
+
+        return false;
     }
 
-    protected function getFileLines($filePath): array
+    protected function rowMatchesHeader(array $row, array $expected): bool
     {
-        $file = file_get_contents(storage_path($filePath));
+        $normalize = static fn (array $values) => array_map(
+            static fn ($value) => strtolower(trim((string) $value)),
+            array_slice($values, 0, count($expected))
+        );
 
-        return explode("\n", $file);
+        return $normalize($row) === $normalize($expected);
+    }
+
+    protected function rowLooksLikeHeader(array $row): bool
+    {
+        return isset($row[0], $row[1])
+            && ! is_numeric($row[0])
+            && ! is_numeric($row[1]);
+    }
+
+    protected function resolveHeaderFromRow(array|false $row, array $fallback): array
+    {
+        if ($row === false || count($row) < 2) {
+            return $fallback;
+        }
+
+        return is_numeric($row[1]) ? $fallback : ['voting_power', 'stake_address'];
+    }
+
+    protected function writeCsvRow($handle, array $row): void
+    {
+        if (! is_resource($handle)) {
+            return;
+        }
+
+        fputcsv($handle, $row, self::CSV_DELIMITER, self::CSV_ENCLOSURE, self::CSV_ESCAPE);
     }
 
     /**
