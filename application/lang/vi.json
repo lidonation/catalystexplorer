@@ -27,7 +27,7 @@
     "charts.confirmedVoters.stats.totalWalletDelegations": "Tổng số ví ủy quyền",
     "charts.confirmedVoters.stats.totalUniqueWallets": "Tổng số ví duy nhất",
     "charts.confirmedVoters.verifiedAdaPower.title": "Khoảng sức mạnh ADA của cử tri đã xác minh",
-    "charts.confirmedVoters.verifiedAdaPower.subtitle": "Phân bố sức mạnh ADA của cử tri đã xác minh",
+    "charts.confirmedVoters.verifiedAdaPower.subtitle": "Tỷ lệ tổng khóa bỏ phiếu đã xác nhận theo số phiếu đã bỏ",
     "charts.confirmedVoters.verifiedAdaPower.empty": "Không có sức mạnh ADA của cử tri đã xác minh để hiển thị",
     "chooseMetaData": "Chọn MetaData của riêng bạn",
     "confirmPassword": "Xác nhận Mật khẩu",
