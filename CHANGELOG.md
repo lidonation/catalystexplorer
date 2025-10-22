@@ -1,3 +1,10 @@
+# [1.44.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.43.3...v1.44.0) (2025-10-22)
+
+
+### Features
+
+* **charts:** added download raw snapshot button ([751a699](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/751a69991b3bd0d9f4c7bd907167e50e61c2ba82))
+
 ## [1.43.3](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.43.2...v1.43.3) (2025-10-14)
 
 
