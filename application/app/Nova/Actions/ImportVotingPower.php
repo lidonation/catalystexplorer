@@ -68,9 +68,6 @@ class ImportVotingPower extends Action
                     $diskName
                 );
 
-                // delete existing snapshot records
-                $this->deleteExistingRecords($snapshot);
-
                 // save snapshot's metadata about file
                 $this->saveSnapshotMeta($snapshot, $directory, $fileName);
 
@@ -92,19 +89,6 @@ class ImportVotingPower extends Action
                     Storage::disk($diskName)->delete($meta->content);
                 }
             });
-    }
-
-    protected function deleteExistingRecords(Snapshot $snapshot): void
-    {
-        // delete file details metadata
-        $metaData = Meta::where('key', 'snapshot_file_path')
-            ->where('model_type', Snapshot::class)
-            ->where('model_id', $snapshot->id);
-        $metaData->delete();
-
-        // delete related voting powers
-        $powers = VotingPower::where('snapshot_id', $snapshot->id);
-        $powers->delete();
     }
 
     protected function saveSnapshotMeta(Snapshot $snapshot, $directory, $fileName): void

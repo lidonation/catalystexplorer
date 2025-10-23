@@ -32,6 +32,8 @@ class CreateVotingPowerSnapshotJob implements ShouldQueue
             return;
         }
 
+        $records = [];
+
         foreach ($this->chunk as $row) {
             $stakeAddress = $row[0] ?? null;
             $votingPower = $row[1] ?? null;
@@ -44,11 +46,21 @@ class CreateVotingPowerSnapshotJob implements ShouldQueue
                 continue;
             }
 
-            VotingPower::create([
+            $records[] = [
                 'voter_id' => $stakeAddress,
-                'voting_power' => (int) round(((float) $votingPower) * 1000000),
                 'snapshot_id' => $this->snapshotId,
-            ]);
+                'voting_power' => $votingPower,
+            ];
         }
+
+        if (empty($records)) {
+            return;
+        }
+
+        VotingPower::upsert(
+            $records,
+            ['voter_id', 'snapshot_id'],
+            ['voting_power']
+        );
     }
 }
