@@ -1378,7 +1378,7 @@
     "wallet.connect.noWallets.subtitle": "请安装 Lace、Eternl、Flint 或其他 Cardano 钱包",
     "wallet.connect.errors.notInitialized": "Cardano 库尚未初始化。请稍后重试。",
     "wallet.connect.errors.walletNotFound": "未找到 {{walletName}} 钱包。请先安装它。",
-    "wallet.connect.errors.wrongNetwork": "检测到错误网络。请切换到 {{expected}}",
+    "wallet.connect.errors.wrongNetwork": "检测到错误网络。请切换到 ::expected",
     "wallet.connect.errors.noAddresses": "钱包中未找到地址",
     "wallet.connect.errors.connectionFailed": "连接失败",
     "wallet.connect.errors.disconnectError": "断开钱包时出错",

@@ -1465,7 +1465,7 @@
     "wallet.connect.noWallets.subtitle": "Please install Lace, Eternl, Flint, or another Cardano wallet",
     "wallet.connect.errors.notInitialized": "Cardano library not initialized yet. Please try again in a moment.",
     "wallet.connect.errors.walletNotFound": "{{walletName}} wallet not found. Please install it first.",
-    "wallet.connect.errors.wrongNetwork": "Wrong network detected. Please switch to {{expected}}",
+    "wallet.connect.errors.wrongNetwork": "Wrong network detected. Please switch to ::expected",
     "wallet.connect.errors.noAddresses": "No addresses found in wallet",
     "wallet.connect.errors.connectionFailed": "Connection failed",
     "wallet.connect.errors.disconnectError": "Error disconnecting wallet",
