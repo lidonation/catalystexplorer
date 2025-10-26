@@ -147,6 +147,7 @@ class SyncVotingPowersFileJob implements ShouldQueue
 
                 if ($row === []) {
                     $skipRows++;
+
                     continue;
                 }
 
@@ -192,7 +193,7 @@ class SyncVotingPowersFileJob implements ShouldQueue
     }
 
     /**
-     * @param array<int, string|null> $row
+     * @param  array<int, string|null>  $row
      */
     protected function isDataRow(array $row): bool
     {
@@ -200,10 +201,9 @@ class SyncVotingPowersFileJob implements ShouldQueue
             return false;
         }
 
-        return (
+        return
             ($this->isLikelyStakeAddress($row[0]) && $this->isNumericValue($row[1]))
-            || ($this->isLikelyStakeAddress($row[1]) && $this->isNumericValue($row[0]))
-        );
+            || ($this->isLikelyStakeAddress($row[1]) && $this->isNumericValue($row[0]));
     }
 
     protected function isLikelyStakeAddress(?string $value): bool
@@ -216,7 +216,7 @@ class SyncVotingPowersFileJob implements ShouldQueue
     }
 
     /**
-     * @param string|float|int|null $value
+     * @param  string|float|int|null  $value
      */
     protected function isNumericValue($value): bool
     {
@@ -236,7 +236,7 @@ class SyncVotingPowersFileJob implements ShouldQueue
     }
 
     /**
-     * @param array<int, string|null> $row
+     * @param  array<int, string|null>  $row
      * @return array<int, string>
      */
     protected function normalizeRow(array $row): array
@@ -264,7 +264,7 @@ class SyncVotingPowersFileJob implements ShouldQueue
     }
 
     /**
-     * @param array<int, string> $row
+     * @param  array<int, string>  $row
      */
     protected function resolveStakeIndexFromHeader(array $row): ?int
     {
@@ -280,7 +280,7 @@ class SyncVotingPowersFileJob implements ShouldQueue
     }
 
     /**
-     * @param array<int, string> $row
+     * @param  array<int, string>  $row
      */
     protected function resolvePowerIndexFromHeader(array $row): ?int
     {

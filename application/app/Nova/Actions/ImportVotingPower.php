@@ -8,7 +8,6 @@ use App\Jobs\SyncVotingPowersFileJob;
 use App\Models\Fund;
 use App\Models\Meta;
 use App\Models\Snapshot;
-use App\Models\VotingPower;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
