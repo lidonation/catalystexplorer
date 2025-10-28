@@ -233,6 +233,15 @@ Route::localized(
                         ->name('index');
                 });
 
+            Route::prefix('/convert-list/steps')->as('convertList.')
+                ->middleware([WorkflowMiddleware::class])
+                ->group(function () {
+                    Route::get('/{step}', [\App\Http\Controllers\ConvertListWorkflowController::class, 'handleStep'])
+                        ->name('index');
+                    Route::post('/convert', [\App\Http\Controllers\ConvertListWorkflowController::class, 'convert'])
+                        ->name('convert');
+                });
+
 
             // Route::prefix('/submit-votes/steps')->as('voting.')
             //     ->middleware([WorkflowMiddleware::class])
@@ -448,7 +457,7 @@ Route::localized(
             Route::get('/{bookmarkCollection}/{type?}', [BookmarksController::class, 'view'])
                 ->name('view')
                 ->where('bookmarkCollection', '[0-9a-fA-F-]+');
-            Route::post('/{bookmarkCollectionId}/stream/{type?}', [BookmarksController::class, 'streamBookmarkItems'])
+            Route::post('/{bookmarkCollectionId}/stream', [BookmarksController::class, 'streamBookmarkItems'])
                 ->name('stream')
                 ->where('bookmarkCollectionId', '[0-9a-fA-F-]+');
         });
