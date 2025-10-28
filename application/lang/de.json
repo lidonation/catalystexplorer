@@ -1317,7 +1317,6 @@
     "transactions.stakePub": "Stake Pub",
     "transactions.view": "Wallet-Details anzeigen...",
     "transactions.votingPurpose": "Abstimmungszweck",
-    "transactions.voterCatalysId": "Catalyst-ID",
     "transactions.witness": "Zeuge",
     "transactions.walletDetails": "Wallet-Details",
     "transactions.table.viewDetails": "Details für Transaktion anzeigen",

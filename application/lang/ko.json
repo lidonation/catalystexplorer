@@ -1335,7 +1335,6 @@
     "transactions.stakePub": "스테이킹 공개키",
     "transactions.view": "지갑 세부사항 보기...",
     "transactions.votingPurpose": "투표 목적",
-    "transactions.voterCatalysId": "Catalyst ID",
     "transactions.witness": "서명자",
     "transactions.walletDetails": "지갑 세부사항",
     "transactions.table.viewDetails": "거래 세부사항 보기",
