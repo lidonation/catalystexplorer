@@ -129,17 +129,143 @@ export function ConnectWalletProvider({
     }, [t]);
 
     useEffect(() => {
-        const supportedWallets = [
-            'nami',
-            'eternl',
-            'flint',
-            'lace',
-            'typhon',
-            'yoroi',
-            'gerowallet',
-        ];
-        const detected = supportedWallets.filter((w) => window.cardano?.[w]);
-        setWallets(detected);
+        if (typeof window === 'undefined') {
+            return;
+        }
+
+        const isWalletProvider = (provider: unknown): provider is Record<string, unknown> => {
+            if (!provider || typeof provider !== 'object') {
+                return false;
+            }
+
+            const candidate = provider as Record<string, unknown>;
+            const enable = candidate.enable;
+            const apiVersion = candidate.apiVersion;
+            const name = candidate.name;
+            const isEnabled = candidate.isEnabled;
+
+            return (
+                typeof enable === 'function' &&
+                (typeof apiVersion === 'string' ||
+                    typeof isEnabled === 'function' ||
+                    typeof name === 'string')
+            );
+        };
+
+        const updateWallets = (nextWallets: string[]) => {
+            setWallets((current) => {
+                if (
+                    current.length === nextWallets.length &&
+                    current.every((wallet, index) => wallet === nextWallets[index])
+                ) {
+                    return current;
+                }
+
+                return nextWallets;
+            });
+        };
+
+        const detectWallets = () => {
+            const cardano = (window as typeof window & {
+                cardano?: Record<string, unknown> & {
+                    supportedWallets?: unknown;
+                };
+            }).cardano;
+
+            if (!cardano) {
+                updateWallets([]);
+                return;
+            }
+
+            const walletKeySet = new Set<string>();
+
+            Object.entries(cardano).forEach(([key, provider]) => {
+                if (isWalletProvider(provider)) {
+                    walletKeySet.add(key);
+                }
+            });
+
+            const supportedWallets = Array.isArray(cardano.supportedWallets)
+                ? cardano.supportedWallets.filter(
+                      (walletName): walletName is string => typeof walletName === 'string',
+                  )
+                : [];
+
+            supportedWallets.forEach((walletName) => {
+                const directMatch = (cardano as Record<string, unknown>)[walletName];
+
+                if (isWalletProvider(directMatch)) {
+                    walletKeySet.add(walletName);
+                    return;
+                }
+
+                const normalized = walletName.toLowerCase();
+                const matchedKey = Array.from(cardano ? Object.keys(cardano) : []).find((key) => {
+                    const provider = (cardano as Record<string, unknown>)[key];
+                    if (!isWalletProvider(provider)) {
+                        return false;
+                    }
+
+                    const providerName =
+                        typeof (provider as Record<string, unknown>).name === 'string'
+                            ? ((provider as Record<string, unknown>).name as string).toLowerCase()
+                            : key.toLowerCase();
+
+                    return providerName === normalized || key.toLowerCase() === normalized;
+                });
+
+                if (matchedKey) {
+                    walletKeySet.add(matchedKey);
+                }
+            });
+
+            const detectSortKey = (key: string) => {
+                const provider = (cardano as Record<string, unknown>)[key];
+                if (
+                    provider &&
+                    typeof provider === 'object' &&
+                    typeof (provider as Record<string, unknown>).name === 'string'
+                ) {
+                    return ((provider as Record<string, unknown>).name as string).toLowerCase();
+                }
+
+                return key.toLowerCase();
+            };
+
+            const detectedWallets = Array.from(walletKeySet).sort((a, b) =>
+                detectSortKey(a).localeCompare(detectSortKey(b), undefined, {
+                    sensitivity: 'base',
+                }),
+            );
+
+            updateWallets(detectedWallets);
+        };
+
+        const handleCardanoInitialized = () => {
+            detectWallets();
+        };
+
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                detectWallets();
+            }
+        };
+
+        detectWallets();
+
+        window.addEventListener('cardano#initialized', handleCardanoInitialized as EventListener);
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        const pollingInterval = window.setInterval(detectWallets, 2000);
+
+        return () => {
+            window.removeEventListener(
+                'cardano#initialized',
+                handleCardanoInitialized as EventListener,
+            );
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            window.clearInterval(pollingInterval);
+        };
     }, []);
 
     useEffect(() => {

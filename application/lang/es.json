@@ -1429,7 +1429,7 @@
     "wallet.connect.noWallets.subtitle": "Por favor instala Lace, Eternl, Flint u otra billetera de Cardano",
     "wallet.connect.errors.notInitialized": "Biblioteca de Cardano aún no inicializada. Por favor intenta de nuevo en un momento.",
     "wallet.connect.errors.walletNotFound": "Billetera {{walletName}} no encontrada. Por favor instálala primero.",
-    "wallet.connect.errors.wrongNetwork": "Red incorrecta detectada. Por favor cambia a {{expected}}",
+    "wallet.connect.errors.wrongNetwork": "Red incorrecta detectada. Por favor cambia a ::expected",
     "wallet.connect.errors.noAddresses": "No se encontraron direcciones en la billetera",
     "wallet.connect.errors.connectionFailed": "Conexión falló",
     "wallet.connect.errors.disconnectError": "Error desconectando billetera",

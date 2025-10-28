@@ -1105,7 +1105,7 @@
     "wallet.connect.noWallets.subtitle": "Tafadhali sakinisha Lace, Eternl, Flint, au mkoba mwingine wa Cardano",
     "wallet.connect.errors.notInitialized": "Maktaba ya Cardano bado haijaanzishwa. Tafadhali jaribu tena baada ya muda.",
     "wallet.connect.errors.walletNotFound": "Mkoba wa {{walletName}} haujapatikana. Tafadhali usakinishe kwanza.",
-    "wallet.connect.errors.wrongNetwork": "Mtandao mbaya umegunduliwa. Tafadhali badili hadi {{expected}}",
+    "wallet.connect.errors.wrongNetwork": "Mtandao mbaya umegunduliwa. Tafadhali badili hadi ::expected",
     "wallet.connect.errors.noAddresses": "Hakuna anwani zilizopatikana kwenye mkoba",
     "wallet.connect.errors.connectionFailed": "Muunganiko umeshindwa",
     "wallet.connect.errors.disconnectError": "Hitilafu ya kutenganisha mkoba",

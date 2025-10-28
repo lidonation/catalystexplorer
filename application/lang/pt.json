@@ -1432,7 +1432,7 @@
     "wallet.connect.noWallets.subtitle": "Por favor instale Lace, Eternl, Flint ou outra carteira Cardano",
     "wallet.connect.errors.notInitialized": "Biblioteca Cardano ainda não inicializada. Tente novamente em um momento.",
     "wallet.connect.errors.walletNotFound": "Carteira {{walletName}} não encontrada. Instale-a primeiro.",
-    "wallet.connect.errors.wrongNetwork": "Rede errada detectada. Mude para {{expected}}",
+    "wallet.connect.errors.wrongNetwork": "Rede errada detectada. Mude para ::expected",
     "wallet.connect.errors.noAddresses": "Nenhum endereço encontrado na carteira",
     "wallet.connect.errors.connectionFailed": "Falha na conexão",
     "wallet.connect.errors.disconnectError": "Erro ao desconectar carteira",

@@ -1411,7 +1411,7 @@
     "wallet.connect.noWallets.subtitle": "Lace、Eternl、Flint、または別のCardanoウォレットをインストールしてください",
     "wallet.connect.errors.notInitialized": "Cardanoライブラリがまだ初期化されていません。少しお待ちください。",
     "wallet.connect.errors.walletNotFound": "{{walletName}}ウォレットが見つかりません。まずインストールしてください。",
-    "wallet.connect.errors.wrongNetwork": "間違ったネットワークが検出されました。{{expected}}に切り替えてください",
+    "wallet.connect.errors.wrongNetwork": "間違ったネットワークが検出されました。::expected に切り替えてください",
     "wallet.connect.errors.noAddresses": "ウォレットにアドレスが見つかりません",
     "wallet.connect.errors.connectionFailed": "接続に失敗しました",
     "wallet.connect.errors.disconnectError": "ウォレット切断エラー",
