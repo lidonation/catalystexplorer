@@ -93,7 +93,7 @@ Route::as('api.')->group(function () {
     Route::prefix('bookmark-items')->as('bookmarks.')
         ->group(function () {
             Route::post('/{modelType}/{uuid}/{bookmarkCollection?}', [MyBookmarksController::class, 'store'])
-                ->middleware('auth')
+                ->middleware(['web', 'auth'])
                 ->name('store');
             Route::delete('/{bookmarkItem}', [MyBookmarksController::class, 'delete'])
                 ->name('remove');
@@ -102,7 +102,7 @@ Route::as('api.')->group(function () {
         });
 
     Route::prefix('collection-items')->as('collections.')
-        ->middleware('auth')
+        ->middleware(['web', 'auth'])
         ->group(function () {
             Route::post('/create', [MyBookmarksController::class, 'createCollection'])
                 ->name('create');

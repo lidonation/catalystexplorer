@@ -1361,7 +1361,7 @@
     "wallet.connect.noWallets.subtitle": "እባክዎ ሌይስ (Lace), Eternl, Flint ወይም ሌላ የCardano ዋሌት ይጫኑ",
     "wallet.connect.errors.notInitialized": "የCardano ቤተ-መፅሀፍት ገና አልተጀመረም። እባክዎ ጥቂት ጊዜ በኋላ ይሞክሩ።",
     "wallet.connect.errors.walletNotFound": "{{walletName}} ዋሌት አልተገኘም። እባክዎ መጀመሪያ ይጫኑት።",
-    "wallet.connect.errors.wrongNetwork": "የተሳሳተ ኔትወርክ ተገኝቷል። እባክዎ ወደ {{expected}} ይለውጡ",
+    "wallet.connect.errors.wrongNetwork": "የተሳሳተ ኔትወርክ ተገኝቷል። እባክዎ ወደ ::expected ይለውጡ",
     "wallet.connect.errors.noAddresses": "በዋሌት ውስጥ ምንም አድራሻ አልተገኘም",
     "wallet.connect.errors.connectionFailed": "ግንኙነት አልተሳካም",
     "wallet.connect.errors.disconnectError": "ዋሌትን ለማቋረጥ ስህተት ተከስቷል",

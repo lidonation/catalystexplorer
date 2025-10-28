@@ -10,11 +10,14 @@ import RadioGroup from '@/Components/RadioGroup';
 import ColumnSelector, { ColumnKey } from '@/Components/ColumnSelector';
 import { StatusEnum, VisibilityEnum } from '@/enums/votes-enums';
 import { userSettingEnums } from '@/enums/user-setting-enums';
+import { ConvertListWorkflowParams } from '@/enums/convert-list-workflow-params';
 import { useUserSetting } from '@/useHooks/useUserSettings';
-import { InertiaFormProps, useForm } from '@inertiajs/react';
+import { InertiaFormProps, useForm, router } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import lodashPkg from 'lodash';
 import { useRef } from 'react';
+import { generateLocalizedRoute } from '@/utils/localizedRoute';
+import { ArrowLeftRight } from 'lucide-react';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import UserData = App.DataTransferObjects.UserData;
 import Contributors from '@/Pages/My/Bookmarks/Partials/Contributors';
@@ -83,7 +86,25 @@ export default function ListSettingsForm({
         form.setData('status', value);
     };
 
+    const handleConvertList = () => {
+        const convertRoute = generateLocalizedRoute('workflows.convertList.index', {
+            step: 1,
+            [ConvertListWorkflowParams.COLLECTION_HASH]: bookmarkCollection.id,
+        });
+        router.visit(convertRoute);
+    };
+
     const showColumnSelector = bookmarkCollection?.list_type === 'voter' || bookmarkCollection?.list_type === 'tinder';
+
+    const canConvertList = bookmarkCollection?.list_type === 'voter' || bookmarkCollection?.list_type === 'normal';
+    const isTinderList = bookmarkCollection?.list_type === 'tinder';
+
+    const getConvertButtonText = () => {
+        if (bookmarkCollection?.list_type === 'voter') {
+            return t('workflows.convertList.convertToResearch');
+        }
+        return t('workflows.convertList.convertToVoter');
+    };
 
 
     return (
@@ -283,6 +304,19 @@ export default function ListSettingsForm({
                             onSelectionChange={setSelectedColumns}
                         />
                     </div>
+                </div>
+            )}
+
+            {/* Convert List Button - full width, placed before save/delete buttons */}
+            {canConvertList && !isTinderList && (
+                <div className="border-t pt-4">
+                    <PrimaryButton
+                        onClick={handleConvertList}
+                        className="w-full bg-info hover:bg-info/90 flex items-center justify-center gap-2 font-semibold"
+                        data-testid="convert-list-button"
+                    >
+                        {getConvertButtonText()}
+                    </PrimaryButton>
                 </div>
             )}
 
