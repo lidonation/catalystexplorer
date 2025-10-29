@@ -211,6 +211,7 @@
     "funded": "Financé",
     "approved": "Approuvée",
     "completed": "Complété",
+    "description": "Description",
     "loginPrompt": "Connectez-vous pour commencer",
     "ballotSupportBanner": "Veuillez soutenir cet outil sur le bulletin de vote. Recherchez : 'All-in-One Catalyst' ou 'lido'",
     "loginToMint": "Connectez-vous à Mint",

@@ -140,6 +140,7 @@
     "funded": "자금 지원됨",
     "approved": "승인됨",
     "completed": "완료됨",
+    "description": "설명",
     "loginPrompt": "시작하려면 로그인하세요",
     "ballotSupportBanner": "투표에서 이 도구를 지원해 주세요. 검색: 'All-in-One Catalyst' 또는 'lido'",
     "back": "뒤로",
