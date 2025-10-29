@@ -149,6 +149,7 @@
     "funded": "ممول",
     "approved": "موافق عليه",
     "completed": "مكتمل",
+    "description": "وصف",
     "loginPrompt": "قم بتسجيل الدخول للبدء",
     "ballotSupportBanner": "يرجى دعم هذه الأداة في بطاقة الاقتراع. ابحث عن: 'All-in-One Catalyst' أو 'lido'",
     "back": "العودة",

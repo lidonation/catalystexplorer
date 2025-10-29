@@ -140,6 +140,7 @@
     "funded": "已资助",
     "approved": "已批准",
     "completed": "已完成",
+    "description": "描述",
     "loginPrompt": "登录开始",
     "ballotSupportBanner": "请在投票中支持这个工具。搜索：'All-in-One Catalyst' 或 'lido'",
     "back": "返回",
