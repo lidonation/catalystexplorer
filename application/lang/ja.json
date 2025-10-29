@@ -139,6 +139,7 @@
     "submitted": "提出済み",
     "funded": "資金提供済み",
     "approved": "承認済み",
+    "description": "説明",
     "completed": "完了済み",
     "loginPrompt": "開始するにはログインしてください",
     "ballotSupportBanner": "投票でこのツールをサポートしてください。検索: 'All-in-One Catalyst' または 'lido'",

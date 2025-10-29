@@ -215,6 +215,7 @@
     "funded": "Finanziert",
     "approved": "Genehmigt",
     "completed": "Abgeschlossen",
+    "description": "Beschreibung",
     "loginPrompt": "Anmelden um zu beginnen",
     "ballotSupportBanner": "Bitte unterstützen Sie dieses Tool bei der Abstimmung. Suchen Sie nach: 'All-in-One Catalyst' oder 'lido'",
     "back": "Zurück",
