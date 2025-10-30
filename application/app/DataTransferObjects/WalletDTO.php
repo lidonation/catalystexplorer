@@ -19,6 +19,7 @@ class WalletDTO
         public readonly int $allTimeVotes,
         public readonly array $fundsParticipated,
         public readonly bool $linked = false,
+        public readonly ?string $createdAt = null,
     ) {}
 
     public static function fromSignature(object $signature, array $walletStats, ?object $latestInfo = null, bool $linked = false): self
@@ -40,6 +41,7 @@ class WalletDTO
             allTimeVotes: $walletStats['all_time_votes'] ?? 0,
             fundsParticipated: $walletStats['funds_participated'] ?? [],
             linked: $linked,
+            createdAt: $signature->created_at?->toDateTimeString(),
         );
     }
 
@@ -58,6 +60,7 @@ class WalletDTO
             allTimeVotes: $this->allTimeVotes,
             fundsParticipated: $this->fundsParticipated,
             linked: $linked,
+            createdAt: $this->createdAt,
         );
     }
 
@@ -76,6 +79,7 @@ class WalletDTO
             'all_time_votes' => $this->allTimeVotes,
             'funds_participated' => $this->fundsParticipated,
             'linked' => $this->linked,
+            'created_at' => $this->createdAt,
         ];
     }
 }

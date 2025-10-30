@@ -1701,5 +1701,7 @@
     "workflows.linkWallet.backToLinkProposal": "Link new wallet to a proposal",
     "workflows.linkWallet.linkDifferentWallet": "Link a different wallet",
     "workflows.linkWallet.backToManage": "Back to manage",
-    "proposal.linkedWallets.title": "Linked Wallet"
+    "proposal.linkedWallets.title": "Linked Wallet",
+    "workflows.signature.success.returnToLinkWallet": "Continue to link wallet to your proposal",
+    "workflows.linkWallet.myWallets": "My wallets"
 }

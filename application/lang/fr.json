@@ -1644,6 +1644,8 @@
     "workflows.linkWallet.backToLinkProposal": "Lier un nouveau portefeuille à une proposition",
     "workflows.linkWallet.linkDifferentWallet": "Lier un autre portefeuille",
     "workflows.linkWallet.backToManage": "Retour à la gestion",
+    "workflows.signature.success.returnToLinkWallet": "Continuez pour lier votre portefeuille à votre proposition",
+    "workflows.linkWallet.myWallets": "Mes portefeuilles",
     "proposal.linkedWallets.title": "Portefeuilles liés",
     "proposals.projectLength": "Durée du Projet",
     "proposals.openSource": "Open Source",

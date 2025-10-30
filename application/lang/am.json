@@ -1534,5 +1534,7 @@
     "workflows.linkWallet.backToLinkProposal": "አዲስ ዋሌት ከፕሮፖዛል ጋር ያገናኙ",
     "workflows.linkWallet.linkDifferentWallet": "ተለየ ዋሌት ያገናኙ",
     "workflows.linkWallet.backToManage": "ወደ አስተዳደር ተመለስ",
-    "proposal.linkedWallets.title": "የተገናኙ ዋሌቶች"
+    "proposal.linkedWallets.title": "የተገናኙ ዋሌቶች",
+    "workflows.signature.success.returnToLinkWallet": "ወደ ፕሮፖዛልዎ እንዲገናኝ የቦርሳዎን መገናኘት ይቀጥሉ",
+    "workflows.linkWallet.myWallets": "የኔ ቦርሳዎች"
 }

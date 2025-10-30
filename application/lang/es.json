@@ -1640,6 +1640,8 @@
     "workflows.linkWallet.backToLinkProposal": "Vincular una nueva billetera a una propuesta",
     "workflows.linkWallet.linkDifferentWallet": "Vincular una billetera diferente",
     "workflows.linkWallet.backToManage": "Volver a administrar",
+    "workflows.signature.success.returnToLinkWallet": "Continúa para vincular tu billetera a tu propuesta",
+    "workflows.linkWallet.myWallets": "Mis billeteras",
     "proposal.linkedWallets.title": "Billeteras vinculadas",
     "proposals.projectLength": "Duración del Proyecto",
     "proposals.openSource": "Código Abierto",
