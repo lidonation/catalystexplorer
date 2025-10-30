@@ -1,3 +1,30 @@
+# [1.45.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.44.0...v1.45.0) (2025-10-28)
+
+
+### Bug Fixes
+
+* **lists:** fixed routes using auth in the api routes ([117ec26](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/117ec26f56618656206c514c99da95befc90508a))
+* **wallets:** improved wallet detection ([631ca5c](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/631ca5cf70ba0fa60221e1384e7aa4d5492d13cb))
+
+
+### Features
+
+* **lists:** implement convertion of lists ([d4e2423](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/d4e2423a8f88bb42255ca19ee0a69460fce7f01f))
+
+# [1.44.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.43.3...v1.44.0) (2025-10-22)
+
+
+### Features
+
+* **charts:** added download raw snapshot button ([751a699](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/751a69991b3bd0d9f4c7bd907167e50e61c2ba82))
+
+## [1.43.3](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.43.2...v1.43.3) (2025-10-14)
+
+
+### Bug Fixes
+
+* proposal filters broken ([da9a691](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/da9a691fbaaa39e37d481808077c184793875026))
+
 ## [1.43.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.43.1...v1.43.2) (2025-10-09)
 
 

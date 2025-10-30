@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs;
 
 use App\Models\VotingPower;
@@ -8,7 +10,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\LazyCollection;
 
 class CreateVotingPowerSnapshotJob implements ShouldQueue
 {
@@ -17,7 +18,7 @@ class CreateVotingPowerSnapshotJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(protected LazyCollection $chunk, protected string $snapshotId)
+    public function __construct(protected array $chunk, protected string $snapshotId)
     {
         //
     }
@@ -27,14 +28,39 @@ class CreateVotingPowerSnapshotJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $this->chunk->each(function ($row) {
-            if (is_numeric($row[1])) {
-                VotingPower::create([
-                    'voter_id' => $row[0],
-                    'voting_power' => $row[1] * 1000000,
-                    'snapshot_id' => $this->snapshotId,
-                ]);
+        if ($this->snapshotId === '') {
+            return;
+        }
+
+        $records = [];
+
+        foreach ($this->chunk as $row) {
+            $stakeAddress = $row[0] ?? null;
+            $votingPower = $row[1] ?? null;
+
+            if (! is_string($stakeAddress) || $stakeAddress === '') {
+                continue;
             }
-        });
+
+            if (! is_numeric($votingPower)) {
+                continue;
+            }
+
+            $records[] = [
+                'voter_id' => $stakeAddress,
+                'snapshot_id' => $this->snapshotId,
+                'voting_power' => $votingPower,
+            ];
+        }
+
+        if (empty($records)) {
+            return;
+        }
+
+        VotingPower::upsert(
+            $records,
+            ['voter_id', 'snapshot_id'],
+            ['voting_power']
+        );
     }
 }

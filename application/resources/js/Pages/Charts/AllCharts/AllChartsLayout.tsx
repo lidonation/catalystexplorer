@@ -60,7 +60,27 @@ function LayoutContent({
 
     const tabConfig = useMemo(() => chartsAllContentTabs, []);
 
-    const tabs = useMemo(() => generateTabs(t, tabConfig), [t, tabConfig]);
+    const tabs = useMemo(() => {
+        const baseTabs = generateTabs(t, tabConfig);
+    
+        const fundFilter = getFilter(ParamsEnum.FUNDS);
+        if (fundFilter) {
+            return baseTabs.map(tab => {
+                const fundParam = Array.isArray(fundFilter) ? fundFilter : [fundFilter]
+                const params = new URLSearchParams();
+                fundParam.forEach((id) => {
+                    params.append(`${ParamsEnum.FUNDS}[]`, String(id));
+                });
+                const queryString = `?${params.toString()}`;
+                return {
+                    ...tab,
+                    href: `${tab.href}${queryString}`
+                };
+            });
+        }
+        
+        return baseTabs;
+    }, [t, tabConfig, getFilter]);
 
     const normalizedRouteName = useMemo(() => {
         if (!activeTabRoute) {

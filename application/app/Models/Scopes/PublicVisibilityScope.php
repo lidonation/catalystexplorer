@@ -16,6 +16,14 @@ class PublicVisibilityScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        $builder->where('visibility', BookmarkVisibility::PUBLIC()->value);
+        $ownerId = auth()->id();
+
+        $builder->where(function (Builder $query) use ($ownerId) {
+            $query->where('visibility', BookmarkVisibility::PUBLIC()->value);
+
+            if ($ownerId !== null) {
+                $query->orWhere('user_id', $ownerId);
+            }
+        });
     }
 }

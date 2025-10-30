@@ -82,6 +82,8 @@ class Groups extends Resource
 
             new Panel('Media', self::mediaFields()),
 
+            HasMany::make('Metadata', 'metas', Metas::class),
+
             HasMany::make('Proposals', 'proposals', Proposals::class),
 
             BelongsToMany::make('Ideascale Profiles', 'ideascale_profiles', IdeascaleProfiles::class)

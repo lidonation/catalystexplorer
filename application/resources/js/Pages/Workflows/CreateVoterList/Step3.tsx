@@ -1,4 +1,4 @@
-import PrimaryButton from '@/Components/atoms/PrimaryButton';
+
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import Paginator from '@/Components/Paginator';
 import ProposalVotingCard from '@/Components/ProposalVotingCard';
@@ -14,7 +14,7 @@ import {
     generateLocalizedRoute,
     useLocalizedRoute,
 } from '@/utils/localizedRoute';
-import { Link, router, useForm } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
@@ -59,20 +59,18 @@ const Step3: React.FC<Step3Props> = ({
         step: activeStep - 1,
         bk: bookmarkHash,
     });
+    const nextStep = localizedRoute('workflows.createVoterList.index', {
+        step: activeStep + 1,
+        bk: bookmarkHash,
+    });
 
     const [selectedIds, setSelectedIds] =
         useState<{ id: string; vote: number | null }[]>(selectedProposals);
 
-    const form = useForm({
-        proposals: selectedIds,
-        bookmarkHash,
-    });
+    const handleVote = async (proposalId: string, vote: number | null) => {
+        if (!bookmarkHash) return;
 
-    useEffect(() => {
-        form.setData('proposals', selectedIds);
-    }, [selectedIds]);
-
-    const handleVote = (proposalId: string, vote: number | null) => {
+        // Update local state immediately for better UX
         setSelectedIds((prev) => {
             const existing = prev.find((item) => item.id === proposalId);
 
@@ -84,6 +82,32 @@ const Step3: React.FC<Step3Props> = ({
                 item.id === proposalId ? { ...item, vote } : item,
             );
         });
+
+        try {
+            const response = await fetch(
+                generateLocalizedRoute('workflows.createVoterList.saveProposals'),
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify({
+                        proposals: [{ id: proposalId, vote }],
+                        bookmarkHash,
+                    }),
+                }
+            );
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.error || 'Failed to save proposal');
+            }
+        } catch (error) {
+            console.error('Error saving proposal:', error);
+            
+        }
     };
 
     const handleRemoveBookmark = async (proposalId: string) => {
@@ -159,12 +183,6 @@ const Step3: React.FC<Step3Props> = ({
             preserveState: true,
             replace: true,
         });
-    };
-
-    const submitForm = () => {
-        form.post(
-            generateLocalizedRoute('workflows.createVoterList.saveProposals'),
-        );
     };
 
     return (
@@ -278,14 +296,14 @@ const Step3: React.FC<Step3Props> = ({
                             <ChevronLeft className="h-4 w-4" />
                             <span>{t('Previous')}</span>
                         </PrimaryLink>
-                        <PrimaryButton
+                        <PrimaryLink
+                            href={nextStep}
                             className="text-sm lg:px-8 lg:py-3"
                             disabled={!selectedIds.length}
-                            onClick={submitForm}
                         >
                             <span>{t('Next')}</span>
                             <ChevronRight className="h-4 w-4" />
-                        </PrimaryButton>
+                        </PrimaryLink>
                     </div>
                 </Footer>
             </WorkflowLayout>

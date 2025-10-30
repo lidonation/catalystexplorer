@@ -71,6 +71,7 @@ class Metas extends Resource
                 Groups::class,
                 Proposals::class,
                 Reviews::class,
+                Snapshots::class,
                 Users::class,
             ])->searchable()
                 ->filterable(),
