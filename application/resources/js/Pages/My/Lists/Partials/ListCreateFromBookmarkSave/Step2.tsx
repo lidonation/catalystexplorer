@@ -132,12 +132,13 @@ const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
     };
 
     return (
-        <div className="space-y-2">
+        <div className="space-y-2" data-testid="bookmark-page2">
             <div className="bg-primary-light">
                 <button
                     type="button"
                     onClick={() => onNavigate?.(0)}
                     className="text-content flex items-center gap-2 px-3 py-2 font-bold"
+                    data-testid="new-list-back-button"
                 >
                     <ArrowLeftIcon />
                     <Paragraph size="md">
@@ -145,7 +146,7 @@ const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
                     </Paragraph>
                 </button>
             </div>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3 px-3">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-3 px-3" data-testid="bookmark-page2-form">
                 <div className="flex flex-col gap-2">
                     <TextInput
                         type="text"
@@ -157,6 +158,7 @@ const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
                         onChange={handleInputChange('name')}
                         autoComplete="off"
                         tabIndex={1000}
+                        data-testid="list-name-input"
                     />
                     <textarea
                         id="list-description"
@@ -168,6 +170,7 @@ const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
                         onKeyDown={handleTextareaKeyDown}
                         autoComplete="off"
                         tabIndex={1001}
+                        data-testid="list-description-input"
                     />
                 </div>
 
@@ -178,10 +181,11 @@ const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
                         label={t('listQuickCreate.public')}
                         labelShouldPrecede
                         className="w-full"
+                        data-testid="list-public-switch"
                     />
                 </div>
                 {error && (
-                    <Paragraph size="sm" className="text-red-600">
+                    <Paragraph size="sm" className="text-red-600" data-testid="form-error">
                         {error.message}
                     </Paragraph>
                 )}
@@ -191,6 +195,7 @@ const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
                     className="my-2 flex w-full items-center justify-center rounded-lg text-center capitalize"
                     onClick={handleSubmit}
                     loading={isAddingList}
+                    data-testid="create-list-submit-button"
                 >
                     {t('listQuickCreate.createListShort')}
                 </PrimaryButton>

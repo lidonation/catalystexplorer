@@ -259,7 +259,7 @@ export default function LoginForm({ closeModal, intendedUrl }: LoginFormProps) {
                         className="flex h-10 w-full items-center justify-center rounded-md"
                         disabled={processing || !connectedWalletProvider}
                         type="submit"
-                        data-testid="login-submit-button"
+                        data-testid="wallet-submit-button"
                         onClick={() => setActiveConfirm(true)}
                     >
                         {t('wallet.login')}

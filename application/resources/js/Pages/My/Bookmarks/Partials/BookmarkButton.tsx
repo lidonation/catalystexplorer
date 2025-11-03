@@ -107,6 +107,7 @@ export default function BookmarkButton({
             width="240px"
             open={isOpen}
             onOpenChange={handleOpenChange}
+            data-testid="bookmark-popup"
         />
     );
 }
