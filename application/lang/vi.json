@@ -458,5 +458,7 @@
     "workflows.linkWallet.backToLinkProposal": "Liên kết ví mới với một đề xuất",
     "workflows.linkWallet.linkDifferentWallet": "Liên kết ví khác",
     "workflows.linkWallet.backToManage": "Quay lại quản lý",
-    "proposal.linkedWallets.title": "Các ví đã liên kết"
+    "proposal.linkedWallets.title": "Các ví đã liên kết",
+    "workflows.signature.success.returnToLinkWallet": "Tiếp tục để liên kết ví của bạn với đề xuất của bạn",
+    "workflows.linkWallet.myWallets": "Ví của tôi"
 }

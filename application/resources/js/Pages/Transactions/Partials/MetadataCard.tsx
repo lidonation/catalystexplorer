@@ -102,7 +102,7 @@ export default function MetadataCard({ transaction }: MetadataCardProps) {
                     {isProposalPayout ? (
                         <>
                             {transaction.json_metadata.purpose_info && (
-                                <div className="flex">
+                                <div className="flex flex-col">
                                     <span className="text-gray-persist w-40 shrink-0 mb-2">
                                         Purpose Info
                                     </span>
@@ -130,7 +130,7 @@ export default function MetadataCard({ transaction }: MetadataCardProps) {
                             )}
 
                             {transaction.json_metadata.x509_data && (
-                                <div className="flex">
+                                <div className="flex flex-col">
                                     <span className="text-gray-persist w-40 shrink-0 mb-2">
                                         X509 Data
                                     </span>
@@ -173,7 +173,7 @@ export default function MetadataCard({ transaction }: MetadataCardProps) {
                             )}
 
                             {transaction.json_metadata.x509_envelope && (
-                                <div className="flex">
+                                <div className="flex flex-col">
                                     <span className="text-gray-persist w-40 shrink-0 mb-2">
                                         X509 Envelope
                                     </span>
@@ -202,7 +202,7 @@ export default function MetadataCard({ transaction }: MetadataCardProps) {
                                 </div>
                             )}
 
-                            <div className="flex">
+                            <div className="flex flex-col">
                                 <span className="text-gray-persist w-40 shrink-0 mb-2">
                                     Transaction Details
                                 </span>
@@ -263,7 +263,7 @@ export default function MetadataCard({ transaction }: MetadataCardProps) {
                             </div>
 
                             {transaction.json_metadata.voter_delegations && (
-                                <div className="flex">
+                                <div className="flex flex-col">
                                     <span className="text-gray-persist w-40 shrink-0 mb-2">
                                         Voter Delegations
                                     </span>
@@ -272,7 +272,7 @@ export default function MetadataCard({ transaction }: MetadataCardProps) {
                                             {transaction.json_metadata.voter_delegations.map((delegation: any, idx: number) => (
                                                 <div
                                                     key={idx}
-                                                    className="bg-background-lighter rounded-md p-3 text-sm text-content"
+                                                    className="bg-background-lighter rounded-md text-sm text-content"
                                                 >
                                                     <div>
                                                         <span className="font-semibold text-gray-persist">{t('voter.voterKey')}: </span>{' '}
@@ -307,11 +307,11 @@ export default function MetadataCard({ transaction }: MetadataCardProps) {
                                         <span className="text-gray-persist w-40 shrink-0 mb-2">
                                             {formatKey(key)}
                                         </span>
-                                        <div className="space-y-3">
+                                        <div className="bg-background-lighter rounded-md space-y-3">
                                             {value.map((delegation, idx) => (
                                                 <div
                                                     key={idx}
-                                                    className="bg-background-lighter rounded-md p-3 text-sm text-content"
+                                                    className="border border-background-lighter/40 rounded-md p-3 text-sm text-content space-y-1"
                                                 >
                                                     <div>
                                                         <span className="font-semibold text-gray-persist">{t('voter.voterKey')}: </span>{' '}
@@ -337,7 +337,7 @@ export default function MetadataCard({ transaction }: MetadataCardProps) {
                             }
 
                             return (
-                                <div key={key} className="flex">
+                                <div key={key} className="flex flex-col">
                                     <span className="text-gray-persist w-40 shrink-0">
                                         {formatKey(key)}
                                     </span>

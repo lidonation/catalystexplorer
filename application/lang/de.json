@@ -1631,6 +1631,8 @@
     "workflows.linkWallet.backToLinkProposal": "Neue Wallet mit einem Vorschlag verknüpfen",
     "workflows.linkWallet.linkDifferentWallet": "Eine andere Wallet verknüpfen",
     "workflows.linkWallet.backToManage": "Zur Verwaltung zurückkehren",
+    "workflows.signature.success.returnToLinkWallet": "Fahre fort, um deine Wallet mit deinem Vorschlag zu verknüpfen",
+    "workflows.linkWallet.myWallets": "Meine Wallets",
     "proposal.linkedWallets.title": "Verknüpfte Wallets",
     "proposals.projectLength": "Projektdauer",
     "proposals.openSource": "Open Source",

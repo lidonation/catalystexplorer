@@ -1674,6 +1674,8 @@
     "workflows.linkWallet.linkDifferentWallet": "Unganisha pochi tofauti",
     "workflows.linkWallet.backToManage": "Rudi kusimamia",
     "proposal.linkedWallets.title": "Pochi zilizounganishwa",
+    "workflows.signature.success.returnToLinkWallet": "Endelea kuunganisha pochi yako na pendekezo lako",
+    "workflows.linkWallet.myWallets": "Pochi zangu",
     "proposals.projectLength": "Urefu wa Mradi",
     "proposals.openSource": "Chanzo Huria",
     "proposals.projectStatus": "Hali ya Mradi",
