@@ -11,6 +11,7 @@ interface TransitionMenuProps {
     sideOffset?: number;
     alignOffset?: number;
     width?: string;
+    'data-testid'?: string;
 }
 const TransitionDropdown = ({
     open,
@@ -22,6 +23,7 @@ const TransitionDropdown = ({
     sideOffset = 5,
     alignOffset = 0,
     width = '220px',
+    'data-testid': dataTestId,
 }: TransitionMenuProps) => {
     const [currentPage, setCurrentPage] = useState(0);
 
@@ -41,6 +43,7 @@ const TransitionDropdown = ({
                     align={align}
                     sideOffset={sideOffset}
                     alignOffset={alignOffset}
+                    data-testid={dataTestId}
                 >
                     <div className="relative">
                         <div className="relative">

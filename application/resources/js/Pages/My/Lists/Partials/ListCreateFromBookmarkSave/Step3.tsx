@@ -13,11 +13,12 @@ const BookmarkPage3 = ({ onNavigate }: TransitionListPageProps) => {
     }
 
     return (
-        <div className="space-y-2">
+        <div className="space-y-2" data-testid="bookmark-page3">
             <div className="bg-primary-light">
                 <button
                     onClick={() => onNavigate?.(0)}
                     className="text-content flex items-center gap-2 px-3 py-2 font-bold"
+                    data-testid="success-back-button"
                 >
                     <ArrowLeftIcon />
                     <Paragraph size="md">
@@ -25,11 +26,11 @@ const BookmarkPage3 = ({ onNavigate }: TransitionListPageProps) => {
                     </Paragraph>
                 </button>
             </div>
-            <section className="flex flex-col items-center justify-center gap-1 px-3">
+            <section className="flex flex-col items-center justify-center gap-1 px-3" data-testid="success-message-section">
                 <Paragraph size="sm" className="font-light italic">
                     {t('listQuickCreate.success.message')}
                 </Paragraph>
-                <Paragraph size="md" className="font-semibold">
+                <Paragraph size="md" className="font-semibold" data-testid="created-list-title">
                     "{latestAddedList.title}"
                 </Paragraph>
             </section>

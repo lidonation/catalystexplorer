@@ -8,6 +8,7 @@ export default defineConfig({
     workers: 3,
     timeout: 120 * 1000,
     reporter: [['html', { open: 'never' }], ['allure-playwright']],
+    testMatch: '**/*.{spec,setup}.ts',
 
     use: {
         baseURL: 'https://preview.catalystexplorer.com/en',

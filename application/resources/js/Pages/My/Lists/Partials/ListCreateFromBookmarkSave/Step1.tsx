@@ -132,7 +132,7 @@ const BookmarkPage1 = ({
     );
 
     return (
-        <div className="space-y-1">
+        <div className="space-y-1" data-testid="bookmark-page1">
             <div className="bg-primary-light relative">
                 <Paragraph
                     size="md"
@@ -144,6 +144,7 @@ const BookmarkPage1 = ({
                     onClick={onClose}
                     className="absolute top-1/2 right-2 -translate-y-1/2 rounded-full p-1 transition-colors hover:bg-gray-200"
                     aria-label="Close popup"
+                    data-testid="bookmark-close-button"
                 >
                     <X size={16} className="text-gray-600" />
                 </button>
@@ -157,6 +158,7 @@ const BookmarkPage1 = ({
                         className="text-error cursor-pointer font-semibold"
                         disabled={!isBookmarked}
                         onClick={handleRemoveBookmark}
+                        data-testid="remove-bookmark-button"
                     >
                         {t('listQuickCreate.removeBookmark')}
                     </button>
@@ -167,7 +169,7 @@ const BookmarkPage1 = ({
                 ) : lists.length === 0 ? (
                     <NoListsState />
                 ) : (
-                    <div className="no-scrollbar flex max-h-24 flex-col gap-2 overflow-y-scroll">
+                    <div className="no-scrollbar flex max-h-24 flex-col gap-2 overflow-y-scroll" data-testid="bookmark-lists-container">
                         {/* Add All option (button, not checkbox) */}
                         <button
                             onClick={handleAddAllClick}
@@ -191,6 +193,7 @@ const BookmarkPage1 = ({
                             <label
                                 key={list.id}
                                 htmlFor={list.id}
+                                data-testid={`bookmark-list-item-${list.id}`}
                                 className={`flex items-center justify-between ${
                                     isLoading
                                         ? 'cursor-not-allowed'
@@ -215,6 +218,7 @@ const BookmarkPage1 = ({
                                             ? 'none'
                                             : 'auto',
                                     }}
+                                    data-testid={`bookmark-list-checkbox-${list.id}`}
                                 />
                             </label>
                         ))}
@@ -225,6 +229,7 @@ const BookmarkPage1 = ({
                     className="my-2 flex w-full items-center justify-center rounded-lg text-center capitalize"
                     onClick={() => onNavigate?.(1)}
                     disabled={isLoading}
+                    data-testid="add-list-button"
                 >
                     <PlusIcon size={16} className="mr-2" />
                     <Paragraph size="md">
