@@ -8,7 +8,7 @@ import { SearchParams } from '@/types/search-params';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
@@ -33,12 +33,13 @@ interface WalletData {
     walletDetails: WalletStats;
     catId: string;
     linked?: boolean;
+    createdAt: string;
 }
 
 interface Step1Props {
     stepDetails: StepDetails[];
     activeStep: number;
-    proposal: string;
+    proposal: App.DataTransferObjects.ProposalData;
     wallets?: PaginatedData<WalletData[]>;
 }
 
@@ -55,16 +56,14 @@ const Step1: React.FC<Step1Props> = ({
     const [expandedAddresses, setExpandedAddresses] = useState<
         Record<string, boolean>
     >({});
-    const [stakeAddress, setStakeAddress] = useState<string | null>(
-        null,
-    );
+    const [stakeAddress, setStakeAddress] = useState<string | null>(null);
 
     const localizedRoute = useLocalizedRoute;
 
-    const prevStep =''
+    const prevStep = '';
     const nextStep = localizedRoute('workflows.linkWallet.index', {
         step: activeStep + 1,
-        proposal,
+        proposal: proposal?.id,
         stakeAddress,
     });
 
@@ -99,11 +98,13 @@ const Step1: React.FC<Step1Props> = ({
                 <Content>
                     <div className="flex h-full w-full flex-col gap-6">
                         <PrimaryLink
-                            className="lg:text-md mb-4 mt-4 mr-8 ml-auto px-4 py-2 text-sm text-nowrap"
+                            className="lg:text-md mt-4 mr-8 mb-4 ml-auto px-4 py-2 text-sm text-nowrap"
                             href={useLocalizedRoute(
                                 'workflows.signature.index',
                                 {
                                     step: 1,
+                                    returnTo: 'link-wallet',
+                                    proposal: proposal?.id,
                                 },
                             )}
                         >
@@ -112,23 +113,34 @@ const Step1: React.FC<Step1Props> = ({
                         {wallets && wallets.data.length > 0 ? (
                             <div className="h-full w-full overflow-y-auto px-8">
                                 <div className="grid grid-cols-1 gap-6">
-                                    {wallets.data.map((wallet) => (
-                                        <SelectWalletCard
-                                            wallet={wallet}
-                                            key={wallet.id}
-                                            copySuccesses={copySuccesses}
-                                            onCopy={handleCopy}
-                                            expandedAddresses={
-                                                expandedAddresses
-                                            }
-                                            onToggleAddressExpansion={
-                                                toggleAddressExpansion
-                                            }
-                                            selectedWalletId={stakeAddress}
-                                            onSelect={() => handleWalletSelect(wallet)}
-                                            disabled={wallet?.linked}
-                                        />
-                                    ))}
+                                    {wallets.data
+                                        .slice() 
+                                        .sort(
+                                            (a, b) =>
+                                                new Date(
+                                                    b.createdAt,
+                                                ).getTime() -
+                                                new Date(a.createdAt).getTime(),
+                                        )
+                                        .map((wallet: WalletData) => (
+                                            <SelectWalletCard
+                                                wallet={wallet}
+                                                key={wallet.id}
+                                                copySuccesses={copySuccesses}
+                                                onCopy={handleCopy}
+                                                expandedAddresses={
+                                                    expandedAddresses
+                                                }
+                                                onToggleAddressExpansion={
+                                                    toggleAddressExpansion
+                                                }
+                                                selectedWalletId={stakeAddress}
+                                                onSelect={() =>
+                                                    handleWalletSelect(wallet)
+                                                }
+                                                disabled={wallet?.linked}
+                                            />
+                                        ))}
                                 </div>
                                 <div className="mt-8 w-full">
                                     <Paginator pagination={wallets} />

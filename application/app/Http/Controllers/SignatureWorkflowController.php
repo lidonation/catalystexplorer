@@ -34,6 +34,15 @@ class SignatureWorkflowController extends Controller
     public function step1(Request $request): Response
     {
 
+        $request->session()->forget('return_context');
+
+        if ($request->has('returnTo') && $request->has('proposal')) {
+            $request->session()->put('return_context', [
+                'returnTo' => $request->input('returnTo'),
+                'proposal' => $request->input('proposal'),
+            ]);
+        }
+
         return Inertia::render('Workflows/SignatureCapture/Step1', [
             'stepDetails' => $this->getStepDetails(),
             'activeStep' => intval($request->step),
@@ -73,7 +82,11 @@ class SignatureWorkflowController extends Controller
 
     public function success(Request $request): Response
     {
-        return Inertia::render('Workflows/SignatureCapture/Success');
+        $returnContext = $request->session()->get('return_context');
+
+        return Inertia::render('Workflows/SignatureCapture/Success', [
+            'returnContext' => $returnContext,
+        ]);
     }
 
     public function signMessage(Request $request): RedirectResponse

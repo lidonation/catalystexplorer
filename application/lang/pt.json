@@ -1635,6 +1635,8 @@
     "workflows.linkWallet.backToLinkProposal": "Vincular uma nova carteira a uma proposta",
     "workflows.linkWallet.linkDifferentWallet": "Vincular uma carteira diferente",
     "workflows.linkWallet.backToManage": "Voltar para gerenciar",
+    "workflows.signature.success.returnToLinkWallet": "Continue para vincular sua carteira à sua proposta",
+    "workflows.linkWallet.myWallets": "Minhas carteiras",
     "proposal.linkedWallets.title": "Carteiras vinculadas",
     "proposals.projectLength": "Duração do Projeto",
     "proposals.openSource": "Código Aberto",

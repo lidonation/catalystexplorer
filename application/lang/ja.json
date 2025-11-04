@@ -1628,6 +1628,8 @@
     "workflows.linkWallet.linkDifferentWallet": "別のウォレットをリンクする",
     "workflows.linkWallet.backToManage": "管理に戻る",
     "proposal.linkedWallets.title": "リンクされたウォレット",
+    "workflows.signature.success.returnToLinkWallet": "ウォレットを提案にリンクするために続行します",
+    "workflows.linkWallet.myWallets": "自分のウォレット",
     "proposals.projectLength": "プロジェクト期間",
     "proposals.openSource": "オープンソース",
     "proposals.projectStatus": "プロジェクトステータス",
