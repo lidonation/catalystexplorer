@@ -437,5 +437,7 @@
     "workflows.linkWallet.backToLinkProposal": "اربط محفظة جديدة باقتراح",
     "workflows.linkWallet.linkDifferentWallet": "اربط محفظة مختلفة",
     "workflows.linkWallet.backToManage": "العودة إلى الإدارة",
-    "proposal.linkedWallets.title": "المحافظ المرتبطة"
+    "proposal.linkedWallets.title": "المحافظ المرتبطة",
+    "workflows.signature.success.returnToLinkWallet": "تابع لربط المحفظة بمقترحك",
+    "workflows.linkWallet.myWallets": "محافظي"
 }
