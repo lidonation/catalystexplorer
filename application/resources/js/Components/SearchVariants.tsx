@@ -33,17 +33,13 @@ const SearchVariants = ({
 
     const allKey = 'allGroups';
     const handleSelection = (newValue: string[]) => {
-        console.log('BEFORE:', value);
-        console.log('CLICKED:', newValue);
 
         if (newValue.includes(allKey) && !value.includes(allKey)) {
-            console.log('Toggling all ON');
             onChange(variantItems.map((v) => v.key));
             return;
         }
 
         if (!newValue.includes(allKey) && value.includes(allKey)) {
-            console.log('Toggling all OFF');
             onChange([]);
             return;
         }
@@ -52,7 +48,6 @@ const SearchVariants = ({
             newValue.length < value.length &&
             newValue.includes(allKey)
         ) {
-            console.log("Individual option deselected - removing 'All Groups'");
 
             const filteredValue = newValue.filter((item) => item !== allKey);
             onChange(filteredValue);
@@ -70,9 +65,6 @@ const SearchVariants = ({
             selectedIndividualOptions.length === individualOptions.length &&
             !newValue.includes(allKey)
         ) {
-            console.log(
-                "All individual options selected - adding 'All Groups'",
-            );
             onChange([...newValue, allKey]);
             return;
         }
