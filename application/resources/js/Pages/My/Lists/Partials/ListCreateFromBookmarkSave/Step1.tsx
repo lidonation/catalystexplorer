@@ -136,7 +136,7 @@ const BookmarkPage1 = ({
             <div className="bg-primary-light relative">
                 <Paragraph
                     size="md"
-                    className="text-content px-3 py-2 pr-10 font-bold"
+                    className="text-content-black-persist px-3 py-2 pr-10 font-bold"
                 >
                     {t('listQuickCreate.addBookmark')}
                 </Paragraph>
@@ -173,11 +173,10 @@ const BookmarkPage1 = ({
                         {/* Add All option (button, not checkbox) */}
                         <button
                             onClick={handleAddAllClick}
-                            className={`flex items-center text-left ${
-                                isLoading
-                                    ? 'cursor-not-allowed opacity-70'
-                                    : 'cursor-pointer'
-                            }`}
+                            className={`flex items-center text-left ${isLoading
+                                ? 'cursor-not-allowed opacity-70'
+                                : 'cursor-pointer'
+                                }`}
                             disabled={isLoading}
                         >
                             <Paragraph
@@ -194,11 +193,10 @@ const BookmarkPage1 = ({
                                 key={list.id}
                                 htmlFor={list.id}
                                 data-testid={`bookmark-list-item-${list.id}`}
-                                className={`flex items-center justify-between ${
-                                    isLoading
-                                        ? 'cursor-not-allowed'
-                                        : 'cursor-pointer'
-                                }`}
+                                className={`flex items-center justify-between ${isLoading
+                                    ? 'cursor-not-allowed'
+                                    : 'cursor-pointer'
+                                    }`}
                             >
                                 <Paragraph size="md">{list.title}</Paragraph>
                                 <CheckboxWithLoading
