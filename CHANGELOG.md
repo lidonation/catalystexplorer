@@ -1,3 +1,11 @@
+# [1.46.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.45.0...v1.46.0) (2025-10-29)
+
+
+### Features
+
+* **jamugandr transactions:** transaform proposal payouts transactions into human and raw view. ([e12bdcc](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/e12bdcc446b281069326874835fbf6c0d3532e36))
+* **lists:** adding proposal to list on vote, instead of on next button ([1364136](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/1364136e565a8ee36ac5ef66cbd7e70a7a36cc63))
+
 # [1.45.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.44.0...v1.45.0) (2025-10-28)
 
 
