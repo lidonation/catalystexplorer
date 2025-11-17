@@ -1,3 +1,10 @@
+## [1.46.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.46.0...v1.46.1) (2025-11-07)
+
+
+### Bug Fixes
+
+* **transaction metadata:** transform the metadatas to column strucutre ([8f90164](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/8f90164c6fb755210cf5479683cacd05194fc6c9))
+
 # [1.46.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.45.0...v1.46.0) (2025-10-29)
 
 
