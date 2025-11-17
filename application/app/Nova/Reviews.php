@@ -8,6 +8,7 @@ use App\Models\Review;
 use App\Nova\Actions\MakeSearchable;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Textarea;
@@ -41,16 +42,23 @@ class Reviews extends Resource
     /**
      * Get the fields displayed by the resource.
      *
-     * @return array<int, \Laravel\Nova\Fields\Field>
+     * @return array<int, Field>
      */
     public function fields(NovaRequest $request): array
     {
         return [
             ID::make()->sortable(),
+
             Textarea::make('Content'),
+
+            BelongsTo::make(__('Proposal'), 'proposal', Proposals::class)
+                ->searchable()
+                ->filterable(),
+
             BelongsTo::make(__('Reviewer'), 'reviewer', Reviewers::class)
                 ->searchable()
                 ->filterable(),
+
             HasMany::make('Metadata', 'metas', Metas::class),
 
         ];

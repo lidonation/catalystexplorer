@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\ProposalSearchParams;
+use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,7 +18,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Review extends Model
 {
-    use HasRelationships, HasUuids, Searchable;
+    use HasMetaData, HasRelationships, HasUuids, Searchable;
 
     protected $guarded = [];
 
@@ -95,7 +96,7 @@ class Review extends Model
 
     public function discussion(): BelongsTo
     {
-        return $this->belongsTo(Discussion::class, 'model_id', 'old_id')
+        return $this->belongsTo(Discussion::class, 'model_id', 'id')
             ->where('model_type', Discussion::class);
     }
 
@@ -194,6 +195,8 @@ class Review extends Model
 
     public function toSearchableArray(): array
     {
+        $this->load(['reviewer', 'model', 'rating', 'discussion']);
+
         // Safely load relationships with error handling
         $array = $this->toArray();
 
@@ -206,9 +209,6 @@ class Review extends Model
         $modelData = null;
         $discussionData = null;
         $parentData = null;
-        $childrenData = [];
-        $ratingValue = null;
-        $rankingData = [];
         $positiveRankingsCount = 0;
         $negativeRankingsCount = 0;
 
@@ -258,6 +258,15 @@ class Review extends Model
         }
 
         try {
+            $reviewerData = $this->reviewer;
+        } catch (\Exception $e) {
+            \Log::error('Error loading rankings for review in toSearchableArray', [
+                'review_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
             $rankingData = $this->rankings;
         } catch (\Exception $e) {
             \Log::error('Error loading rankings for review in toSearchableArray', [
@@ -286,6 +295,7 @@ class Review extends Model
 
         return array_merge($array, [
             'model_type' => 'review',
+            'reviewer' => $reviewerData,
             'model' => $modelData,
             'discussion' => $discussionData,
             'parent' => $parentData,
