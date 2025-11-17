@@ -1,3 +1,10 @@
+## [1.46.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.46.1...v1.46.2) (2025-11-17)
+
+
+### Bug Fixes
+
+* reviewer reputation scores not showing ([f68a398](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/f68a3982daa7b040833fcceabb89287c16c3d4e5))
+
 ## [1.46.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.46.0...v1.46.1) (2025-11-07)
 
 
