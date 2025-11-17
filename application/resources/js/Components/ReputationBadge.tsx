@@ -30,14 +30,11 @@ export const ReputationBadge: React.FC<ReputationBadgeProps> = ({
         }
     }, [showTooltip]);
 
-    if (
-        !review?.reviewer?.reputation_scores ||
-        review?.reviewer?.reputation_scores.length === 0
-    ) {
+    const finalScore = review?.reviewer?.avg_reputation_score;
+
+    if (!finalScore && finalScore !== 0) {
         return null;
     }
-
-    const finalScore = review?.reviewer?.avg_reputation_score;
 
     const getTier = (score: number | null) => {
         if (!score) return;

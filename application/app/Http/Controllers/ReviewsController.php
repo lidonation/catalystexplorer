@@ -234,8 +234,6 @@ class ReviewsController extends Controller
 
             $reviewerIds = implode(',', $reviewerIdsArr);
 
-            // dd($reviewerIds);
-
             $filters[] = "reviewer_id IN ['{$reviewerIds}']";
         }
 

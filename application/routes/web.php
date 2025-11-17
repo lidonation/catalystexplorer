@@ -376,8 +376,8 @@ Route::localized(
                     Route::get('/{step}/{proposal}/{stakeAddress?}', [WalletController::class, 'handleStep'])
                         ->name('index');
                     Route::post('/connect-wallet-to-proposal', [WalletController::class, 'connectWalletToProposal'])
-                        ->name('connectWalletToProposal');    
-                });    
+                        ->name('connectWalletToProposal');
+                });
 
             Route::get('/login', [WorkflowController::class, 'auth'])
                 ->name('loginForm');
@@ -435,7 +435,7 @@ Route::localized(
 
         Route::prefix('/reviews')->as('reviews.')->group(function () {
 
-            Route::prefix('/{review:hash}')->middleware(['auth'])->group(function () {
+            Route::prefix('/{review:id}')->middleware(['auth'])->group(function () {
                 Route::post('/not-helpful', [ReviewsController::class, 'notHelpfulReview'])->name('notHelpful');
                 Route::post('/helpful', [ReviewsController::class, 'helpfulReview'])->name('helpful');
             });
