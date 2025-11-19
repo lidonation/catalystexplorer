@@ -120,6 +120,8 @@
     }
   },
   "resolutions": {
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
     "laravel-react-i18n/react": "19.1.1",
     "laravel-react-i18n/react-dom": "19.1.1"
   }

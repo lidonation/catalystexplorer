@@ -46,16 +46,14 @@ createServer(async (page) => {
                 });
             };
 
-            const { locale } = props as any;
+            const locale = (page.props as any)?.locale || 'en';
 
             return (
                 <RouteContext.Provider value={ssrRoute as any}>
                     <LaravelReactI18nProvider
                         locale={locale}
-                        fallbackLocale={'en'}
-                        files={import.meta.glob('/lang/*.json', {
-                            eager: true,
-                        })}
+                        fallbackLocale="en"
+                        files={import.meta.glob('/lang/*.json')}
                     >
                         <ModalStackProvider>
                             <StrictMode>
