@@ -29,7 +29,11 @@ createInertiaApp({
     // @ts-ignore
     setup({ el, App, props }) {
         initFromPageProps(props);
-        const { locale } = props.initialPage.props as any;
+        const locale = (props.initialPage.props as any)?.locale || 'en';
+        
+        if (!locale) {
+            console.error('Locale is undefined! Props:', props);
+        }
 
         return hydrateRoot(
             el,
@@ -37,7 +41,7 @@ createInertiaApp({
                 <LaravelReactI18nProvider
                     locale={locale}
                     fallbackLocale="en"
-                    files={import.meta.glob('../../lang/*.json', { eager: true })}
+                    files={import.meta.glob('/lang/*.json')}
                 >
                     <ModalStackProvider>
                         <StrictMode>
