@@ -50,7 +50,9 @@ const Step2: React.FC<Step2Props> = ({
     const [isFormTouched, setIsFormTouched] = useState(false);
 
     const localizedRoute = useLocalizedRoute;
-
+    const handleFieldChange = () => {
+        localStorage.setItem('bookmark_was_edited', 'true');
+    };
     const param = bookmarkCollection
         ? { step: activeStep - 1, bookmarkCollection: bookmarkCollection?.id }
         : { step: activeStep - 1 };
@@ -108,9 +110,10 @@ const Step2: React.FC<Step2Props> = ({
                             className="w-full rounded-sm placeholder:text-sm"
                             placeholder={t('workflows.voterList.title')}
                             value={form.data.title}
-                            onChange={(e) =>
-                                form.setData('title', e.target.value)
-                            }
+                            onChange={(e) => {
+                                form.setData('title', e.target.value);
+                                handleFieldChange();
+                            }}
                             required
                         />
                         <InputError message={form.errors.title} />
@@ -127,9 +130,10 @@ const Step2: React.FC<Step2Props> = ({
                             minLengthEnforced
                             required
                             value={form.data.content}
-                            onChange={(e) =>
+                            onChange={(e) =>{
+                                handleFieldChange();
                                 form.setData('content', e.target.value)
-                            }
+                            }}
                             className="h-30 w-full rounded-lg px-4 py-2"
                         />
                         <InputError message={form.errors.content} />
@@ -145,9 +149,10 @@ const Step2: React.FC<Step2Props> = ({
                             <RadioGroup
                                 name="visibility"
                                 selectedValue={form.data.visibility}
-                                onChange={(value) =>
+                                onChange={(value) => {
+                                    handleFieldChange();
                                     form.setData('visibility', value)
-                                }
+                                }}
                                 options={[
                                     {
                                         value: lowerCase(VisibilityEnum.PUBLIC),
@@ -225,24 +230,26 @@ const Step2: React.FC<Step2Props> = ({
                                     <input
                                         type="text"
                                         value={form.data.color}
-                                        onChange={(e) =>
+                                        onChange={(e) => {
+                                            handleFieldChange();
                                             form.setData(
                                                 'color',
                                                 e.target.value,
                                             )
-                                        }
+                                        }}
                                         className="bg-background text-content border-none text-sm focus:outline-none"
                                     />
                                     <input
                                         type="color"
                                         id="color-picker"
                                         value={form.data.color}
-                                        onChange={(e) =>
+                                        onChange={(e) => {
+                                            handleFieldChange();
                                             form.setData(
                                                 'color',
                                                 e.target.value,
                                             )
-                                        }
+                                        }}
                                         className="absolute top-0 left-0 h-full w-full cursor-pointer opacity-0"
                                     />
                                 </div>
@@ -260,9 +267,10 @@ const Step2: React.FC<Step2Props> = ({
                             <RadioGroup
                                 name="status"
                                 selectedValue={form.data.status}
-                                onChange={(value) =>
+                                onChange={(value) =>{
+                                    handleFieldChange();
                                     form.setData('status', value)
-                                }
+                                }}
                                 options={[
                                     {
                                         value: lowerCase(StatusEnum.PUBLISHED),
