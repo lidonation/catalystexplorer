@@ -39,6 +39,7 @@ export const BookmarkProvider: React.FC<{
             ...prev,
             [model]: newSelection,
         }));
+        localStorage.setItem('bookmark_was_edited', 'true');
 
         const action: 'add' | 'remove' = isSelected ? 'remove' : 'add';
 

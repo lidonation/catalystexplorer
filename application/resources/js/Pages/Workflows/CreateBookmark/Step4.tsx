@@ -79,6 +79,9 @@ const Step4: React.FC<Step4Props> = ({
     });
 
     const searchUsersUrl = localizedRoute('workflows.bookmarks.searchUsers');
+    const trackEdit = () => {
+        localStorage.setItem('bookmark_was_edited', 'true');
+    };
     const inviteContributorUrl = localizedRoute('workflows.bookmarks.inviteContributor', {
         bookmarkCollection: bookmarkCollection.id,
     });
@@ -139,6 +142,7 @@ const Step4: React.FC<Step4Props> = ({
         }
 
         console.log('Inviting user with ID:', userId);
+        trackEdit();
 
         router.post(
             inviteContributorUrl,
@@ -165,6 +169,7 @@ const Step4: React.FC<Step4Props> = ({
         }
 
         console.log('Removing user with ID:', userId);
+        trackEdit();
 
         // Use router.post directly to ensure data is sent correctly
         router.post(
@@ -188,6 +193,7 @@ const Step4: React.FC<Step4Props> = ({
         }
 
         setLoadingActions(prev => ({ ...prev, [userId]: 'cancel' }));
+        trackEdit();
 
         router.post(
             cancelInvitationUrl,
@@ -212,6 +218,7 @@ const Step4: React.FC<Step4Props> = ({
         }
 
         setLoadingActions(prev => ({ ...prev, [userId]: 'resend' }));
+        trackEdit();
 
         router.post(
             resendInvitationUrl,

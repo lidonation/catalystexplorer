@@ -36,7 +36,7 @@ const Step5: React.FC<Step5Props> = ({
 
     const [isFormValid, setIsFormValid] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
-    const [isFormTouched, setIsFormTouched] = useState(false);
+    const [hasEdits, setHasEdits] = useState(false);
 
     const localizedRoute = useLocalizedRoute;
     const prevStep = localizedRoute('workflows.bookmarks.index', {
@@ -47,13 +47,20 @@ const Step5: React.FC<Step5Props> = ({
     const { t } = useLaravelReactI18n();
 
     useEffect(() => {
-        if (!isFormTouched) {
-            setIsFormTouched(true);
-            return;
-        }
+        const wasEdited = localStorage.getItem('bookmark_was_edited') === 'true';
+        setHasEdits(wasEdited);
+    }, []);
+
+    useEffect(() => {
         validateForm();
     }, [form.data.rationale]);
 
+    useEffect(() => {
+        if (form.data.rationale !== rationale) {
+            localStorage.setItem('bookmark_was_edited', 'true');
+            setHasEdits(true);
+        }
+    }, [form.data.rationale, rationale]);
     const validateForm = () => {
         const newErrors: Record<string, string> = {};
 
@@ -68,12 +75,14 @@ const Step5: React.FC<Step5Props> = ({
     };
 
     const submitForm = () => {
+        localStorage.setItem('bookmark_was_edited', 'false');
         form.post(
             generateLocalizedRoute('workflows.bookmarks.saveRationales', {
                 bookmarkCollection,
             }),
         );
     };
+    const canSubmit = isFormValid && hasEdits;
 
     return (
         <WorkflowLayout
@@ -122,7 +131,7 @@ const Step5: React.FC<Step5Props> = ({
                 </PrimaryLink>
                 <PrimaryButton
                     className="text-sm lg:px-8 lg:py-3"
-                    disabled={!isFormValid}
+                    disabled={!canSubmit}
                     onClick={submitForm}
                 >
                     <span>{t('Complete')}</span>
