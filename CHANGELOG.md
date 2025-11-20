@@ -1,3 +1,10 @@
+## [1.46.4](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.46.3...v1.46.4) (2025-11-19)
+
+
+### Bug Fixes
+
+* funds not loading ([5a9ae76](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/5a9ae76fdbccb447fe617205961c1dc4d5f37416))
+
 ## [1.46.3](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.46.2...v1.46.3) (2025-11-17)
 
 
