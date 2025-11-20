@@ -5,13 +5,14 @@ import { StepDetails } from '@/types';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Content from '../Partials/WorkflowContent';
 import Footer from '../Partials/WorkflowFooter';
 import Nav from '../Partials/WorkflowNav';
 import WorkflowLayout from '../WorkflowLayout';
 import BookmarkCollectionData = App.DataTransferObjects.BookmarkCollectionData;
 import { Link } from '@inertiajs/react';
+import eventBus from '@/utils/eventBus';
 
 interface Campaign {
     id: number;
@@ -34,6 +35,19 @@ const Step3: React.FC<Step3Props> = ({
 }) => {
     const { t } = useLaravelReactI18n();
     const localizedRoute = useLocalizedRoute;
+    useEffect(() => {
+        const handleItemChange = () => {
+            localStorage.setItem('bookmark_was_edited', 'true');
+        };
+
+        eventBus.on('listIitem-added', handleItemChange);
+        eventBus.on('listIitem-removed', handleItemChange);
+
+        return () => {
+            eventBus.off('listIitem-added', handleItemChange);
+            eventBus.off('listIitem-removed', handleItemChange);
+        };
+    }, []);
     const prevStep = localizedRoute('workflows.bookmarks.index', {
         step: activeStep - 1,
         bookmarkCollection: bookmarkCollection.id,
