@@ -24,6 +24,8 @@ export default defineConfig({
         alias: {
             ziggy: path.resolve('vendor/tightenco/ziggy/dist'),
             '@': path.resolve(__dirname, 'resources/js'),
+            'react': path.resolve(__dirname, 'node_modules/react'),
+            'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),
         },
         extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json'],
     },

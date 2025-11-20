@@ -68,6 +68,8 @@ class Funds extends Resource
                 ->sortable()
                 ->required(),
 
+            Text::make(__('Meta Title')),
+
             Text::make(__('Slug'))->sortable(),
 
             Stack::make('Details', [
