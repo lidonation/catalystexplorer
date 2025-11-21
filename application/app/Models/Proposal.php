@@ -236,7 +236,7 @@ class Proposal extends Model implements IHasMetaData
 
         $query->when(
             $filters['fund_id'] ?? false,
-            fn (Builder $query, $fund_id) => $query->whereRelation('fund_id', '=', $fund_id)
+            fn (Builder $query, $fund_id) => $query->where('fund_id', $fund_id)
         );
     }
 
