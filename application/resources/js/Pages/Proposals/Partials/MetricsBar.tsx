@@ -175,22 +175,34 @@ const SectionTwo: React.FC<
     );
 };
 
-// MetricsBar Component that combines SectionOne and SectionTwo
-const MetricsBar: React.FC<ProposalMetrics | undefined> = (props) => {
-    const { isPlayerBarExpanded } = useUIContext(); // Access the context to manage player bar state
+interface MetricsBarProps extends ProposalMetrics {
+    isConnected?: boolean; 
+}
+
+const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
+    const { isPlayerBarExpanded } = useUIContext();
     const [isExpanded, setIsExpanded] = useState(true);
     const { metrics } = useMetrics();
     const onProposals = usePage().component == 'Proposals/Index';
+
+    const borderRadiusClass = isConnected 
+        ? 'rounded-l-xl rounded-r-none' // 
+        : 'rounded-xl';
+
+    const gradientClass = isConnected
+    ? 'bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)] bg-opacity-90' 
+    : 'bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)]';
 
     return (
         metrics &&
         onProposals && (
             <div
-                className={`bg-bg-dark divide-dark sticky inset-x-0 bottom-0 z-50 mx-auto mb-4 flex items-center justify-between divide-x overflow-hidden rounded-xl px-4 py-3 text-white shadow-lg transition-all duration-300 ${
+                className={`${gradientClass} divide-dark flex items-center justify-between divide-x overflow-hidden ${borderRadiusClass} px-4 py-3 text-white shadow-lg transition-all duration-300 ${
                     isExpanded && !isPlayerBarExpanded ? 'w-full' : 'w-auto'
                 }`}
                 data-testid="metrics-bar-container"
             >
+                {/* SectionOne - always visible */}
                 <div className="flex w-full items-center justify-between">
                     <SectionOne
                         submitted={metrics?.submitted}
@@ -198,6 +210,8 @@ const MetricsBar: React.FC<ProposalMetrics | undefined> = (props) => {
                         completed={metrics?.completed}
                     />
                 </div>
+                
+                {/* SectionTwo - hidden on mobile, shown on desktop when expanded */}
                 {isExpanded && !isPlayerBarExpanded && (
                     <div className="hidden w-full items-center md:flex md:space-x-4">
                         <div className="grow items-center transition-all duration-300">

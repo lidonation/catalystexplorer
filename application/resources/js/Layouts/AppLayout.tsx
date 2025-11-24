@@ -67,9 +67,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     }, [url]);
 
     const isAuthPage = url.includes('login') || url.includes('register');
-    const toggleMetricsBar = () => {
-        setShowMetricsBar(!showMetricsBar);
-    };
+    
 
     return (
         <MainLayout>
@@ -132,8 +130,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                         <MetricsProvider>
                             {memoizedChildren}
 
-                            <UIProvider>
-                                <div className="fixed bottom-4 right-4 lg:right-18 z-40 flex lg:flex-col lg:items-end gap-0"> 
+                            {/* <UIProvider>
+                                <div className=" z-40">
                                     <GraphButton 
                                         onAnalyticsClick={toggleMetricsBar}
                                         showMetricsBar={showMetricsBar}
@@ -142,7 +140,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                                 {showMetricsBar && (
                                     <MetricsBar />
                                 )}
-                            </UIProvider>
+                            </UIProvider> */}
                         </MetricsProvider>
                     </PlayerProvider>
                 </main>
