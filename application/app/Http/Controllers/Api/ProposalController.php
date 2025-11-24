@@ -35,6 +35,7 @@ class ProposalController extends Controller
         }
 
         $queryBuilder = QueryBuilder::for(Proposal::class)
+            ->select('proposals.*')
             ->allowedFilters([
                 AllowedFilter::exact('id'),
                 AllowedFilter::partial('title'),
@@ -71,7 +72,8 @@ class ProposalController extends Controller
                 AllowedSort::field('created_at'),
                 AllowedSort::field('updated_at'),
             ])
-            ->defaultSort('-created_at');
+            ->defaultSort('-created_at')
+            ->groupBy('proposals.id');
 
         $includedRelations = collect(explode(',', $request->get('include', '')))
             ->filter()
