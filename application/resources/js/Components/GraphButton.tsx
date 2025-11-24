@@ -17,8 +17,8 @@ const GraphButton = () => {
 
     return (
         <>
-            {/* Mobile: Buttons centered at bottom */}
-            <div className="fixed bottom-4 left-0 right-0 z-40 flex justify-center gap-2 lg:hidden">
+            {/* Mobile: Buttons centered at bottom - CHANGE fixed to sticky */}
+            <div className="sticky bottom-4 left-0 right-0 z-40 flex justify-center gap-2 lg:hidden">
                 <IconButton
                     onClick={() => setActivePopup(activePopup === "ai" ? null : "ai")}
                     icon={<AIPromptIcon />}
@@ -34,8 +34,8 @@ const GraphButton = () => {
                 />
             </div>
 
-            {/* Desktop: MetricsBar + Buttons aligned right */}
-            <div className="fixed bottom-4 lg:right-26 z-40 hidden lg:flex items-end">
+            {/* Desktop: MetricsBar + Buttons aligned right - CHANGE fixed to sticky */}
+            <div className="sticky bottom-4 lg:right-26 z-40 hidden lg:flex items-end">
                 {activePopup === "analytics" && metrics && (
                     <div className="flex items-end mb-2">
                         <MetricsBar isConnected={true} />
@@ -58,8 +58,10 @@ const GraphButton = () => {
                 />
                 </div>
             </div>
+
+            {/* Mobile MetricsBar - CHANGE fixed to sticky */}
             {activePopup === "analytics" && metrics && (
-                <div className="fixed bottom-20 left-4 right-4 z-40 lg:hidden">
+                <div className="sticky bottom-20 left-4 right-4 z-40 lg:hidden">
                     <MetricsBar isConnected={false} />
                 </div>
             )}
