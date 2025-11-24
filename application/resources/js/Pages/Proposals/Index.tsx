@@ -272,9 +272,9 @@ export default function Index({
                         </AnimatePresence>
                     ) : null}
 
-                    <div className="sticky bottom-4 left-0 right-0 flex justify-center z-40 lg:justify-end lg:right-26">
-    <GraphButton />
-</div>
+                    <div className="sticky bottom-8 flex justify-center z-40 ">
+                        <GraphButton />
+                    </div>
                 </div> 
             </FiltersProvider>
         </ListProvider>
