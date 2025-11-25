@@ -24,6 +24,8 @@ import { useUserSetting } from '@/useHooks/useUserSettings';
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import ProposalData = App.DataTransferObjects.ProposalData;
+import GraphButton from '@/Components/GraphButton';
+import MetricsBar from '@/Pages/Proposals/Partials/MetricsBar';
 
 interface HomePageProps extends Record<string, unknown> {
     proposals: PaginatedData<ProposalData[]>;
@@ -43,6 +45,10 @@ export default function Index({
 }: PageProps<HomePageProps>) {
     const { t } = useLaravelReactI18n();
     const { setMetrics } = useMetrics();
+    const [showMetricsBar, setShowMetricsBar] = useState(true);
+    const toggleMetricsBar = () => {
+        setShowMetricsBar(!showMetricsBar);
+    };
 
     const [proposalProperties, setProposalProperties] = useState<ProposalPropertyResponse>({});
 
@@ -226,45 +232,50 @@ export default function Index({
                     />
                 </section>
 
-                {settingsInitialized ? (
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={currentIsTableView ? 'table' : 'list'}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.4, ease: 'easeInOut' }}
-                        >
-                            {currentIsTableView ? (
-                                <ProposalTableView
-                                    proposals={proposalsSource}
-                                    actionType="view"
-                                    disableSorting={true}
-                                    columns={[
-                                        'title',
-                                        'viewProposal',
-                                        'fund',
-                                        'status',
-                                        'funding',
-                                        'teams',
-                                        'yesVotes',
-                                        'abstainVotes'
-                                    ]}
-                                    iconOnlyActions={true}
-                                    //excludeColumnsFromSelector={['my_vote']}
-                                />
-                            ) : (
-                                <ProposalPaginatedList
-                                    proposals={proposalsSource}
-                                    isHorizontal={currentIsHorizontal}
-                                    isMini={currentIsMini}
-                                    quickPitchView={quickPitchView}
-                                    setQuickPitchView={setQuickPitchView}
-                                />
-                            )}
-                        </motion.div>
-                    </AnimatePresence>
-                ) : null}
+                <div className="relative container pb-20">
+                    {settingsInitialized ? (
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={currentIsTableView ? 'table' : 'list'}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ duration: 0.4, ease: 'easeInOut' }}
+                            >
+                                {currentIsTableView ? (
+                                    <ProposalTableView
+                                        proposals={proposalsSource}
+                                        actionType="view"
+                                        disableSorting={true}
+                                        columns={[
+                                            'title',
+                                            'viewProposal',
+                                            'fund',
+                                            'status',
+                                            'funding',
+                                            'teams',
+                                            'yesVotes',
+                                            'abstainVotes'
+                                        ]}
+                                        iconOnlyActions={true}
+                                    />
+                                ) : (
+                                    <ProposalPaginatedList
+                                        proposals={proposalsSource}
+                                        isHorizontal={currentIsHorizontal}
+                                        isMini={currentIsMini}
+                                        quickPitchView={quickPitchView}
+                                        setQuickPitchView={setQuickPitchView}
+                                    />
+                                )}
+                            </motion.div>
+                        </AnimatePresence>
+                    ) : null}
+
+                    <div className="sticky bottom-8 flex justify-center z-40 ">
+                        <GraphButton />
+                    </div>
+                </div> 
             </FiltersProvider>
         </ListProvider>
     );

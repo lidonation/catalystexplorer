@@ -38,6 +38,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     // RTL languages
     const RTL_LANGS = ['ar'];
     const isRTL = RTL_LANGS.includes(currentLocale());
+    const [showMetricsBar, setShowMetricsBar] = useState(true);
 
     // Update document direction when locale changes
     useEffect(() => {
@@ -66,6 +67,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     }, [url]);
 
     const isAuthPage = url.includes('login') || url.includes('register');
+    
 
     return (
         <MainLayout>
@@ -120,30 +122,30 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 <main
                     id="main-content"
                     data-testid="main-content"
-                    className="pb-16"
+                    className="" 
                 >
-                    {/* Add bottom padding equal to the height of your sticky bar */}
                     <Breadcrumbs items={breadcrumbItems} />
 
                     <PlayerProvider>
                         <MetricsProvider>
                             {memoizedChildren}
 
-                            <UIProvider>
-                                <section className="sticky bottom-0 z-50 flex justify-center">
-                                    <div className="flex items-center gap-2">
-                                        <MetricsBar />
-                                        <GraphButton />
-                                    </div>
-                                </section>
-                            </UIProvider>
+                            {/* <UIProvider>
+                                <div className=" z-40">
+                                    <GraphButton 
+                                        onAnalyticsClick={toggleMetricsBar}
+                                        showMetricsBar={showMetricsBar}
+                                    />
+                                </div>
+                                {showMetricsBar && (
+                                    <MetricsBar />
+                                )}
+                            </UIProvider> */}
                         </MetricsProvider>
                     </PlayerProvider>
                 </main>
 
                 <ProposalComparison />
-
-                {/* modal sidebar */}
                 <Modal
                     title={t('register')}
                     isOpen={false}
