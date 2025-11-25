@@ -21,6 +21,7 @@ enum CatalystFunds: string
     case TWELVE = 'e4e8ea34-867e-4f19-aea6-55d83ecb4ecd'; // 139
     case THIRTEEN = 'f7ab84cf-504a-43d7-b2fe-c4acd4113528'; // 146
     case FOURTEEN = 'b77b307e-2e83-4f9d-8be1-ba9f600299f3'; // 147
+    case FIFTEEN = '019a9c61-7d7a-7277-b082-bd4137a5a936';
 
     /**
      * Get all enum values as an array.
