@@ -33,7 +33,7 @@ export default function Nav({ stepDetails, activeStep }: NavProps) {
 
     if (!stepDetails) return null;
 
-    const hasFewSteps = stepDetails.length <= 4;
+    const hasFewSteps = stepDetails.length <= 5;
 
     const formatStepNumber = (num: number) => {
         return num.toString();
