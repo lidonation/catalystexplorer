@@ -14,8 +14,9 @@ const GraphButton = () => {
     const [connectorOffset, setConnectorOffset] = useState(0);
     const { metrics } = useMetrics();
     const { t } = useLaravelReactI18n();
+
     const onProposals = usePage().component == 'Proposals/Index';
-    
+
     const aiButtonRef = useRef<HTMLDivElement>(null);
     const chartButtonRef = useRef<HTMLDivElement>(null);
     const analyticsButtonRef = useRef<HTMLDivElement>(null);
@@ -28,9 +29,9 @@ const GraphButton = () => {
     // Calculate offset when activePopup changes
     useEffect(() => {
         if (!activePopup || !containerRef.current) return;
-        
+
         let targetButton: HTMLDivElement | null = null;
-        
+
         switch(activePopup) {
             case 'ai':
                 targetButton = aiButtonRef.current;
@@ -42,7 +43,7 @@ const GraphButton = () => {
                 targetButton = analyticsButtonRef.current;
                 break;
         }
-        
+
         if (targetButton && containerRef.current) {
             const containerRect = containerRef.current.getBoundingClientRect();
             const buttonRect = targetButton.getBoundingClientRect();
@@ -64,27 +65,27 @@ const GraphButton = () => {
                     <svg
                         width={129}
                         height={40}
-                        viewBox="0 177 129 24" 
+                        viewBox="0 177 129 24"
                         className="mx-auto transition-transform duration-300 -mt-4"
                         style={{ transform: `translateX(${connectorOffset}px)` }}
                         xmlns="http://www.w3.org/2000/svg"
                         >
-                        <rect 
-                            width="71" 
-                            height="28" 
-                            x="25" 
-                            y="177" 
+                        <rect
+                            width="71"
+                            height="28"
+                            x="25"
+                            y="177"
                             fill="url(#paint0_linear_7395_41434)"
                         />
-                        <path 
-                            d="M27.5 197.5C23.9 187.1 7.66667 184.833 3.49693e-07 185L3.5 180L27.5 177L38 185L36 200C34.6667 203.5 31.1 207.9 27.5 197.5Z" 
+                        <path
+                            d="M27.5 197.5C23.9 187.1 7.66667 184.833 3.49693e-07 185L3.5 180L27.5 177L38 185L36 200C34.6667 203.5 31.1 207.9 27.5 197.5Z"
                             fill="url(#paint1_linear_7395_41434)"
                         />
-                        <path 
-                            d="M101.5 197.5C105.1 187.1 121.333 184.833 129 185L125.5 180L101.5 177L91 185L93 200C94.3333 203.5 97.9 207.9 101.5 197.5Z" 
+                        <path
+                            d="M101.5 197.5C105.1 187.1 121.333 184.833 129 185L125.5 180L101.5 177L91 185L93 200C94.3333 203.5 97.9 207.9 101.5 197.5Z"
                             fill="url(#paint2_linear_7395_41434)"
                         />
-                        
+
                         <defs>
                             <linearGradient id="paint0_linear_7395_41434" x1="29" y1="177" x2="100" y2="177" gradientUnits="userSpaceOnUse">
                                 <stop stopColor="#475467"/>
@@ -108,7 +109,7 @@ const GraphButton = () => {
                         icon={<AIPromptIcon />}
                     />
                 </div>
-                
+
                 <div ref={chartButtonRef}>
                     {onProposals ? (
                         <IconButton
@@ -124,15 +125,15 @@ const GraphButton = () => {
                         />
                     )}
                 </div>
-                
+
                 <div ref={analyticsButtonRef}>
                     <IconButton
                         onClick={() => setActivePopup(activePopup === "analytics" ? null : "analytics")}
                         icon={<AnalyticsIcon />}
                         aria-label="View analytics"
                         className={`cursor-pointer ${
-                            activePopup === "analytics" 
-                                ? "bg-gradient-to-br from-[var(--cx-background-gradient-2-dark)] to-[var(--cx-background-gradient-2-dark)] bg-opacity-60" 
+                            activePopup === "analytics"
+                                ? "bg-gradient-to-br from-[var(--cx-background-gradient-2-dark)] to-[var(--cx-background-gradient-2-dark)] bg-opacity-60"
                                 : "bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)]"
                         }`}
                     />

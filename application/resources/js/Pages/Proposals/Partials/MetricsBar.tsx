@@ -180,7 +180,7 @@ const SectionTwo: React.FC<
 };
 
 interface MetricsBarProps extends ProposalMetrics {
-    isConnected?: boolean; 
+    isConnected?: boolean;
 }
 
 const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
@@ -190,12 +190,12 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
     const onProposals = usePage().component == 'Proposals/Index';
     const { t } = useLaravelReactI18n();
 
-    const borderRadiusClass = isConnected 
-        ? 'rounded-l-xl rounded-r-none' 
+    const borderRadiusClass = isConnected
+        ? 'rounded-l-xl rounded-r-none'
         : 'rounded-xl';
 
     const gradientClass = isConnected
-        ? 'bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)] bg-opacity-90' 
+        ? 'bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)] bg-opacity-90'
         : 'bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)]';
 
     return (
@@ -220,7 +220,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
                                         <MetricBarSvg type="submitted" className="mt-2" />
                                     </div>
                                 )}
-                                
+
                                 {metrics?.approved !== undefined && metrics?.submitted !== undefined && (
                                     <div className="flex flex-col items-center justify-start gap-1 w-28">
                                         <ValueLabel className="text-primary block font-semibold text-[15px] uppercase tracking-wide">
@@ -256,7 +256,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
                                                     secondaryBackgroudColor="bg-green-500"
                                                 />
                                             </div>
-                                            
+
                                         </div>
                                     </div>
                                 )}

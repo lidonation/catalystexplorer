@@ -32,7 +32,7 @@ export default function GraphIcon({
                     strokeLinejoin="round"
                 />
             </g>
-            
+
             <text
                 x="36"
                 y="58"

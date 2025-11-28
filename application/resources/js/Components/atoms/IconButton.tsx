@@ -13,14 +13,14 @@ type IconButtonProps = {
 
 
 export default function IconButton({ href, icon, testId, className = '', onClick, connected = false,  'aria-label': ariaLabel  }: IconButtonProps) {
-    const gradientClass = connected 
+    const gradientClass = connected
     ? 'bg-gradient-to-br from-[var(--cx-background-gradient-2-dark)] to-[var(--cx-background-gradient-2-dark)] ' // Start with bar's end color
     : 'bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)]';
-    
-    const borderRadiusClass = connected 
+
+    const borderRadiusClass = connected
         ? 'rounded-l-none rounded-r-xl'
-        : 'rounded-xl'; 
-    
+        : 'rounded-xl';
+
     const baseClasses = `${gradientClass} ${borderRadiusClass} mb-2 flex z-20 justify-center px-2 py-1 transition-all ${className}`;
 
     if (href) {

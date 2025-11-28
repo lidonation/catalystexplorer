@@ -277,8 +277,8 @@ export default function Index({
             </>
                     ) : null}
 
-                    
-                </div> 
+
+                </div>
             </FiltersProvider>
         </ListProvider>
     );
