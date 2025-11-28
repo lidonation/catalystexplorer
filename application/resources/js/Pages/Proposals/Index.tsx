@@ -234,6 +234,7 @@ export default function Index({
 
                 <div className="relative container pb-20">
                     {settingsInitialized ? (
+                        <>
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={currentIsTableView ? 'table' : 'list'}
@@ -270,11 +271,13 @@ export default function Index({
                                 )}
                             </motion.div>
                         </AnimatePresence>
+                        <div className="sticky bottom-8 flex justify-center z-40">
+                <GraphButton />
+            </div>
+            </>
                     ) : null}
 
-                    <div className="sticky bottom-8 flex justify-center z-40 ">
-                        <GraphButton />
-                    </div>
+                    
                 </div> 
             </FiltersProvider>
         </ListProvider>
