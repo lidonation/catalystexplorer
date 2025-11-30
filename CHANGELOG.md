@@ -1,3 +1,10 @@
+## [1.46.5](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.46.4...v1.46.5) (2025-11-30)
+
+
+### Bug Fixes
+
+* resolved sort causing duplicated proposals across pages ([66c5721](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/66c57216e314ed0c82d02ddd3017752e63ed6113))
+
 ## [1.46.4](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.46.3...v1.46.4) (2025-11-19)
 
 
