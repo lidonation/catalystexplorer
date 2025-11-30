@@ -1,4 +1,4 @@
-ARG PHP_VERSION=8.4
+ARG PHP_VERSION=8.5
 ARG FRANKENPHP_VERSION=1.9.1
 
 FROM dunglas/frankenphp:${FRANKENPHP_VERSION}-php${PHP_VERSION}
@@ -123,7 +123,7 @@ RUN apt-get update; \
     gd \
     redis \
     rdkafka \
-    igbinary \
+    igbinary/igbinary@master \
     ldap \
     && curl -sLS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer \
     && curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - \
