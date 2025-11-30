@@ -21,19 +21,19 @@ export default function IconButton({ href, icon, testId, className = '', onClick
         ? 'rounded-l-none rounded-r-xl'
         : 'rounded-xl';
 
-    const baseClasses = `${gradientClass} ${borderRadiusClass} mb-2 flex z-20 justify-center px-2 py-1 transition-all ${className}`;
+    const baseClasses = `${gradientClass} ${borderRadiusClass} flex z-20 justify-center px-2 h-18 transition-all ${className}`;
 
     if (href) {
         return (
             <Link href={href} className={baseClasses} preserveState={false} data-testid={testId} aria-label={ariaLabel}>
-                <div className="lg:h-23.5 lg:w-23.5  h-16 w-16  items-center justify-center">{icon}</div>
+                <div className="lg:h-16 lg:w-16 h-12 w-12  items-center justify-center">{icon}</div>
             </Link>
         );
     }
 
     return (
         <button onClick={onClick} className={baseClasses} data-testid={testId} type="button" aria-label={ariaLabel}>
-            <div className="flex lg:h-23.5 lg:w-23.5  h-16 w-16 items-center justify-center">{icon}</div>
+            <div className="flex lg:h-16 lg:w-16 h-12 w-12 items-center justify-center">{icon}</div>
         </button>
     );
 }

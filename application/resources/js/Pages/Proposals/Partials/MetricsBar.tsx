@@ -76,13 +76,13 @@ const SectionTwo: React.FC<
         | 'awardedADA'
     >
 > = ({
-    distributedUSD,
-    distributedADA,
-    awardedUSD,
-    awardedADA,
-    requestedUSD,
-    requestedADA,
-}) => {
+         distributedUSD,
+         distributedADA,
+         awardedUSD,
+         awardedADA,
+         requestedUSD,
+         requestedADA
+     }) => {
     const { t } = useLaravelReactI18n();
     return (
         <div
@@ -206,12 +206,13 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
                 data-testid="metrics-bar-container"
             >
                 <div className="lg:hidden w-full">
-                    <div className="flex flex-col items-center px-4 py-4 w-full">
+                    <div className="flex flex-col items-center px-4 py-2 w-full">
                         <div className="w-full max-w-md">
                             <div className="flex justify-center mb-4 gap-4">
                                 {metrics?.submitted !== undefined && (
                                     <div className="flex flex-col items-center justify-start gap-1 w-28">
-                                        <ValueLabel className="content-light block font-semibold text-[15px] uppercase tracking-wide">
+                                        <ValueLabel
+                                            className="content-light block font-semibold text-[15px] uppercase tracking-wide">
                                             {t('submitted')}
                                         </ValueLabel>
                                         <span className="text-xl font-bold leading-5">
@@ -223,15 +224,17 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
 
                                 {metrics?.approved !== undefined && metrics?.submitted !== undefined && (
                                     <div className="flex flex-col items-center justify-start gap-1 w-28">
-                                        <ValueLabel className="text-primary block font-semibold text-[15px] uppercase tracking-wide">
+                                        <ValueLabel
+                                            className="text-primary block font-semibold text-[15px] uppercase tracking-wide">
                                             {t('approved')}
                                         </ValueLabel>
                                         <span className="text-xl font-bold leading-5">
                                             {metrics.approved.toLocaleString()}
                                         </span>
                                         <div className="inline-flex justify-center items-center gap-1 mt-1">
-                                           <MetricBarSvg type="approved" />
-                                            <div className="text-center justify-start text-green-500 text-[15px] font-medium font-['Inter'] leading-4">
+                                            <MetricBarSvg type="approved" />
+                                            <div
+                                                className="text-center justify-start text-green-500 text-[15px] font-medium font-['Inter'] leading-4">
                                                 {((metrics.approved / metrics.submitted) * 100).toFixed(1)}%
                                             </div>
                                         </div>
@@ -241,7 +244,8 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
                             <div className="flex justify-center mb-4 gap-16">
                                 {metrics?.completed !== undefined && metrics?.submitted !== undefined && (
                                     <div className="flex flex-col items-center justify-start gap-1 w-28">
-                                        <ValueLabel className="text-success block font-semibold text-[15px] uppercase tracking-wide">
+                                        <ValueLabel
+                                            className="text-success block font-semibold text-[15px] uppercase tracking-wide">
                                             {t('completed')}
                                         </ValueLabel>
                                         <span className="text-xl font-bold leading-5">
@@ -262,7 +266,8 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
                                 )}
                                 {metrics?.distributedADA !== undefined && (
                                     <div className="flex flex-col items-center justify-start gap-1 w-28">
-                                        <ValueLabel className="block font-semibold text-[15px] text-nowrap uppercase tracking-wide">
+                                        <ValueLabel
+                                            className="block font-semibold text-[15px] text-nowrap uppercase tracking-wide">
                                             ₳ {t('distributed')}
                                         </ValueLabel>
                                         <span className="text-xl font-bold leading-5">
@@ -279,7 +284,8 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
                             <div className="flex justify-center mb-2 gap-24">
                                 {metrics?.awardedADA !== undefined && (
                                     <div className="flex flex-col items-center justify-start gap-1 w-28">
-                                        <ValueLabel className="block font-semibold text-[15px] text-nowrap uppercase tracking-wide">
+                                        <ValueLabel
+                                            className="block font-semibold text-[15px] text-nowrap uppercase tracking-wide">
                                             ₳ {t('awarded')}
                                         </ValueLabel>
                                         <span className="text-xl font-bold leading-5">
@@ -295,7 +301,8 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
 
                                 {metrics?.requestedADA !== undefined && (
                                     <div className="flex flex-col items-center justify-start gap-1 w-28">
-                                        <ValueLabel className="block font-semibold text-[15px] text-nowrap uppercase tracking-wide">
+                                        <ValueLabel
+                                            className="block font-semibold text-[15px] text-nowrap uppercase tracking-wide">
                                             ₳ {t('requested')}
                                         </ValueLabel>
                                         <span className="text-xl font-bold leading-5">
@@ -313,111 +320,114 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
                     </div>
                     <div className="flex justify-center pb-4">
                         <ViewAnalyticsButton
-                            onClick={() => {/* Add navigation logic */}}
+                            onClick={() => {/* Add navigation logic */
+                            }}
                         />
                     </div>
                 </div>
-                <div className="hidden lg:flex lg:items-center lg:justify-between px-6 py-4 w-full min-h-16">
-    {metrics?.submitted !== undefined && (
-        <div className="flex flex-col items-center px-4 flex-1">
-            <ValueLabel className="content-light block font-semibold text-xs uppercase">
-                {t('submitted')}
-            </ValueLabel>
-            <span className="text-base font-bold mt-1">{metrics.submitted.toLocaleString()}</span>
-            <div className="inline-flex justify-center items-center gap-1 mt-1 min-h-[20px]">
-                <MetricBarSvg type="submitted" />
-            </div>
-        </div>
-    )}
-    {metrics?.approved !== undefined && metrics?.submitted !== undefined && (
-        <div className="flex flex-col items-center px-4 flex-1">
-            <ValueLabel className="text-primary block font-semibold text-xs uppercase">
-                {t('approved')}
-            </ValueLabel>
-            <span className="text-base font-bold mt-1">{metrics.approved.toLocaleString()}</span>
-            <div className="inline-flex justify-center items-center gap-1 min-h-[20px]">
-                <MetricBarSvg type="approved" />
-                <div className="text-center justify-start text-green-500 text-[12px] font-medium font-['Inter'] leading-4">
-                    {((metrics.approved / metrics.submitted) * 100).toFixed(1)}%
+                <div className="hidden lg:flex lg:items-center lg:justify-between px-4 py-0.5 h-18 w-full font-medium text-xs">
+                    {metrics?.submitted !== undefined && (
+                        <div className="flex flex-col items-center px-4 flex-1">
+                            <ValueLabel className="content-light block font-semibold text-xs uppercase">
+                                {t('submitted')}
+                            </ValueLabel>
+                            <span className="text-base font-bold mt-1">{metrics.submitted.toLocaleString()}</span>
+                            <div className="inline-flex justify-center items-center gap-1 mt-1">
+                                <MetricBarSvg type="submitted" />
+                            </div>
+                        </div>
+                    )}
+                    {metrics?.approved !== undefined && metrics?.submitted !== undefined && (
+                        <div className="flex flex-col items-center justify-center px-4 flex-1">
+                            <ValueLabel className="text-primary block font-semibold text-xs uppercase">
+                                {t('approved')}
+                            </ValueLabel>
+                            <span className="text-base font-bold">{metrics.approved.toLocaleString()}</span>
+                            <div className="inline-flex justify-center items-center gap-0.5">
+                                <MetricBarSvg type="approved" />
+                                <div
+                                    className="text-center justify-start text-green-500 font-['Inter'] leading-4">
+                                    {((metrics.approved / metrics.submitted) * 100).toFixed(1)}%
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {metrics?.completed !== undefined && metrics?.submitted !== undefined && (
+                        <div className="flex flex-col items-center justify-center px-4 flex-1">
+                            <ValueLabel className="text-success block font-semibold text-xs uppercase">
+                                {t('completed')}
+                            </ValueLabel>
+                            <span className="text-base font-bold">{metrics.completed.toLocaleString()}</span>
+                            <div className="inline-flex justify-center items-center gap-1 mt-1">
+                                <div className="w-12">
+                                    <PercentageProgressBar
+                                        value={metrics.completed}
+                                        total={metrics.submitted}
+                                        primaryBackgroundColor="bg-gray-300"
+                                        secondaryBackgroudColor="bg-green-500"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {metrics?.distributedADA !== undefined && (
+                        <div className="flex flex-col items-center justify-center px-4 flex-1">
+                            <ValueLabel className="block text-xs text-nowrap uppercase">
+                                ₳ {t('distributed')}
+                            </ValueLabel>
+                            <span className="text-base font-bold mt-1">₳{shortNumber(metrics.distributedADA, 2)}</span>
+                            <div className="inline-flex justify-center items-center">
+                                {metrics?.distributedUSD !== undefined && metrics.distributedUSD > 0 ? (
+                                    <div className="text-white/80">
+                                        ${shortNumber(metrics.distributedUSD, 2)}
+                                    </div>
+                                ) : (
+                                    <div className="" />
+                                )}
+                            </div>
+                        </div>
+                    )}
+                    {metrics?.awardedADA !== undefined && (
+                        <div className="flex flex-col items-center justify-center px-4 flex-1">
+                            <ValueLabel className="block text-xs text-nowrap uppercase">
+                                ₳ {t('awarded')}
+                            </ValueLabel>
+                            <span className="text-base font-bold mt-1">₳{shortNumber(metrics.awardedADA, 2)}</span>
+                            <div className="inline-flex justify-center items-center">
+                                {metrics?.awardedUSD !== undefined && metrics.awardedUSD > 0 ? (
+                                    <div className="text-white/80">
+                                        ${shortNumber(metrics.awardedUSD, 2)}
+                                    </div>
+                                ) : (
+                                    <div className="" />
+                                )}
+                            </div>
+                        </div>
+                    )}
+                    {metrics?.requestedADA !== undefined && (
+                        <div className="flex flex-col items-center justify-center h-full px-4 flex-1">
+                            <ValueLabel className="block text-xs text-nowrap uppercase">
+                                ₳ {t('requested')}
+                            </ValueLabel>
+                            <span className="text-base font-bold mt-1">₳{shortNumber(metrics.requestedADA, 2)}</span>
+                            <div className="inline-flex justify-center items-center">
+                                {metrics?.requestedUSD !== undefined && metrics.requestedUSD > 0 ? (
+                                    <div className="text-white/80">
+                                        ${shortNumber(metrics.requestedUSD, 2)}
+                                    </div>
+                                ) : (
+                                    <div className="" />
+                                )}
+                            </div>
+                        </div>
+                    )}
+                    <div className="flex items-center pl-4 ml-4 ">
+                        <ViewAnalyticsButton
+                            onClick={() => {/* Add navigation logic */
+                            }}
+                        />
+                    </div>
                 </div>
-            </div>
-        </div>
-    )}
-    {metrics?.completed !== undefined && metrics?.submitted !== undefined && (
-        <div className="flex flex-col items-center px-4 flex-1">
-            <ValueLabel className="text-success block font-semibold text-xs uppercase">
-                {t('completed')}
-            </ValueLabel>
-            <span className="text-base font-bold">{metrics.completed.toLocaleString()}</span>
-            <div className="inline-flex justify-center items-center gap-1 mt-1 min-h-[20px]">
-                <div className="w-12">
-                    <PercentageProgressBar
-                        value={metrics.completed}
-                        total={metrics.submitted}
-                        primaryBackgroundColor="bg-gray-300"
-                        secondaryBackgroudColor="bg-green-500"
-                    />
-                </div>
-            </div>
-        </div>
-    )}
-    {metrics?.distributedADA !== undefined && (
-        <div className="flex flex-col items-center px-4 flex-1">
-            <ValueLabel className="block text-xs text-nowrap uppercase">
-                ₳ {t('distributed')}
-            </ValueLabel>
-            <span className="text-base font-bold mt-1">₳{shortNumber(metrics.distributedADA, 2)}</span>
-            <div className="inline-flex justify-center items-center  min-h-[20px]">
-                {metrics?.distributedUSD !== undefined && metrics.distributedUSD > 0 ? (
-                    <div className="text-white/80 text-[10px] font-medium">
-                        ${shortNumber(metrics.distributedUSD, 2)}
-                    </div>
-                ) : (
-                    <div className="h-[10px]" />
-                )}
-            </div>
-        </div>
-    )}
-    {metrics?.awardedADA !== undefined && (
-        <div className="flex flex-col items-center px-4 flex-1">
-            <ValueLabel className="block text-xs text-nowrap uppercase">
-                ₳ {t('awarded')}
-            </ValueLabel>
-            <span className="text-base font-bold mt-1">₳{shortNumber(metrics.awardedADA, 2)}</span>
-            <div className="inline-flex justify-center items-center  min-h-[20px]">
-                {metrics?.awardedUSD !== undefined && metrics.awardedUSD > 0 ? (
-                    <div className="text-white/80 text-[10px] font-medium">
-                        ${shortNumber(metrics.awardedUSD, 2)}
-                    </div>
-                ) : (
-                    <div className="h-[10px]" />
-                )}
-            </div>
-        </div>
-    )}
-    {metrics?.requestedADA !== undefined && (
-        <div className="flex flex-col items-center px-4 flex-1">
-            <ValueLabel className="block text-xs text-nowrap uppercase">
-                ₳ {t('requested')}
-            </ValueLabel>
-            <span className="text-base font-bold mt-1">₳{shortNumber(metrics.requestedADA, 2)}</span>
-            <div className="inline-flex justify-center items-center  min-h-[20px]">
-                {metrics?.requestedUSD !== undefined && metrics.requestedUSD > 0 ? (
-                    <div className="text-white/80 text-[10px] font-medium">
-                        ${shortNumber(metrics.requestedUSD, 2)}
-                    </div>
-                ) : (
-                    <div className="h-[10px]" />
-                )}
-            </div>
-        </div>
-    )}
-    <div className="flex items-center pl-4 ml-4 ">
-        <ViewAnalyticsButton
-            onClick={() => {/* Add navigation logic */}}
-        />
-    </div>
-</div>
             </div>
         )
     );

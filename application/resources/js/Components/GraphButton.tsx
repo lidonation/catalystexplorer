@@ -56,9 +56,9 @@ const GraphButton = () => {
 
     return (
         <>
-            <div ref={containerRef} className="sticky bottom-4 left-0 right-0 z-0  flex justify-center gap-2 lg:hidden">
+            <div ref={containerRef} className="sticky bottom-2 left-0 right-0 z-0  flex justify-center gap-1.5 lg:hidden">
                 {activePopup === "analytics" && metrics && (
-                <div className="fixed bottom-24 left-0 right-0 flex flex-col items-center px-2 pointer-events-none z-50">
+                <div className="fixed bottom-2 left-0 right-0 flex flex-col items-center px-3 pointer-events-none z-50">
                     <div className="w-full max-w-full mb-0">
                         <MetricsBar isConnected={false} />
                     </div>
@@ -139,9 +139,10 @@ const GraphButton = () => {
                     />
                 </div>
             </div>
-            <div className="absolute bottom-4 lg:right-8 z-1 isolate hidden lg:flex items-end -translate-y-20">
+
+            <div className="absolute bottom-2 lg:-right-7 z-1 isolate hidden lg:flex items-end -translate-y-20">
                 {activePopup === "analytics" && metrics && (
-                    <div className="flex items-end mb-2">
+                    <div className="flex items-end">
                         <MetricsBar isConnected={true} />
                     </div>
                 )}
