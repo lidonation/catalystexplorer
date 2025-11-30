@@ -28,6 +28,7 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Filters\Filter;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use MetasyncSite\NovaHasManySearchable\HasManySearchable;
 
 class Proposals extends Resource
 {
@@ -360,6 +361,16 @@ class Proposals extends Resource
 
             Text::make(__('User ID'), 'user_id')
                 ->hideFromIndex(),
+
+            //            HasManySearchable::make(__('Team'), 'team')
+            //                ->relationshipConfig(
+            //                    resourceClass: ProposalProfiles::class,
+            //                    foreignKey: 'proposal_id',
+            //                    displayCallback: function ($coupon) {
+            //                        return "{$coupon?->Name} (Type: {$coupon->Type})";
+            //                    }
+            //                )
+            //                ->withCreateButton(true, 'Add a team member'),
 
             Text::make(__('Old ID'), 'old_id')
                 ->hideFromIndex(),
