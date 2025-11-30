@@ -199,7 +199,7 @@ services:
 
   # meilisearch
   catalystexplorer-search:
-    image: getmeili/meilisearch:v1.22.0
+    image: getmeili/meilisearch:v1.27.0
     container_name: catalystexplorer-search
     logging: *default-logging
     ports:

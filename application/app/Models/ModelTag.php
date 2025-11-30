@@ -9,4 +9,6 @@ use Illuminate\Database\Eloquent\Relations\MorphPivot;
 class ModelTag extends MorphPivot
 {
     protected $table = 'model_tag';
+
+    public $timestamps = false;
 }

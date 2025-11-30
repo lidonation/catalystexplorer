@@ -44,7 +44,7 @@ class ProposalResource extends JsonResource
             'fund' => new FundResource($this->whenLoaded('fund')),
             'team' => IdeascaleProfileResource::collection($this->whenLoaded('team')),
             'schedule' => new ProjectScheduleResource($this->whenLoaded('schedule')),
-            'user' => $this->when($this->relationLoaded('user'), function () {
+            'user' => $this->when($this->relationLoaded('user') && $this->user !== null, function () {
                 return [
                     'id' => $this->user->id,
                     'name' => $this->user->name,
