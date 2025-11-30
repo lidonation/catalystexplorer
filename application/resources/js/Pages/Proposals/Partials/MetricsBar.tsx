@@ -1,4 +1,5 @@
 import ValueLabel from '@/Components/atoms/ValueLabel';
+import PercentageProgressBar from '@/Components/PercentageProgressBar';
 import { useMetrics } from '@/Context/MetricsContext';
 import { useUIContext } from '@/Context/SharedUIContext';
 import { ProposalMetrics } from '@/types/proposal-metrics';
@@ -6,6 +7,9 @@ import { currency } from '@/utils/currency';
 import { usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { useState } from 'react';
+import { shortNumber } from '@/utils/shortNumber';
+import ViewAnalyticsButton from '@/Components/atoms/ViewAnalyticsButton';
+import MetricBarSvg from '@/Components/svgs/MetricBarSvg';
 
 // SectionOne displays the first set of data in the MetricsBar
 const SectionOne: React.FC<
@@ -14,7 +18,7 @@ const SectionOne: React.FC<
     const { t } = useLaravelReactI18n();
     return (
         <div
-            className="divide-dark flex w-full items-center justify-between divide-x text-sm md:text-base"
+            className="divide-dark import Submittedimport SubmittedBarSVG from '@/Components/atoms/SubmittedBarSVG';BarSVG from '@/Components/atoms/SubmittedBarSVG';flex w-full items-center justify-between divide-x text-sm md:text-base"
             data-testid="metrics-bar-section-one"
         >
             {!!submitted && (
@@ -176,7 +180,7 @@ const SectionTwo: React.FC<
 };
 
 interface MetricsBarProps extends ProposalMetrics {
-    isConnected?: boolean; 
+    isConnected?: boolean;
 }
 
 const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
@@ -184,48 +188,236 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
     const [isExpanded, setIsExpanded] = useState(true);
     const { metrics } = useMetrics();
     const onProposals = usePage().component == 'Proposals/Index';
+    const { t } = useLaravelReactI18n();
 
-    const borderRadiusClass = isConnected 
-        ? 'rounded-l-xl rounded-r-none' // 
+    const borderRadiusClass = isConnected
+        ? 'rounded-l-xl rounded-r-none'
         : 'rounded-xl';
 
     const gradientClass = isConnected
-    ? 'bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)] bg-opacity-90' 
-    : 'bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)]';
+        ? 'bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)] bg-opacity-90'
+        : 'bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)]';
 
     return (
         metrics &&
         onProposals && (
             <div
-                className={`${gradientClass} divide-dark flex items-center justify-between divide-x overflow-hidden ${borderRadiusClass} px-4 py-3 text-white shadow-lg transition-all duration-300 ${
-                    isExpanded && !isPlayerBarExpanded ? 'w-full' : 'w-auto'
-                }`}
+                className={`${gradientClass} overflow-hidden ${borderRadiusClass} text-white shadow-lg transition-all duration-300 w-full`}
                 data-testid="metrics-bar-container"
             >
-                {/* SectionOne - always visible */}
-                <div className="flex w-full items-center justify-between">
-                    <SectionOne
-                        submitted={metrics?.submitted}
-                        approved={metrics?.approved}
-                        completed={metrics?.completed}
-                    />
-                </div>
-                
-                {/* SectionTwo - hidden on mobile, shown on desktop when expanded */}
-                {isExpanded && !isPlayerBarExpanded && (
-                    <div className="hidden w-full items-center md:flex md:space-x-4">
-                        <div className="grow items-center transition-all duration-300">
-                            <SectionTwo
-                                distributedUSD={metrics?.distributedUSD}
-                                distributedADA={metrics?.distributedADA}
-                                awardedADA={metrics?.awardedADA}
-                                awardedUSD={metrics?.awardedUSD}
-                                requestedUSD={metrics?.requestedUSD}
-                                requestedADA={metrics?.requestedADA}
-                            />
+                <div className="lg:hidden w-full">
+                    <div className="flex flex-col items-center px-4 py-4 w-full">
+                        <div className="w-full max-w-md">
+                            <div className="flex justify-center mb-4 gap-4">
+                                {metrics?.submitted !== undefined && (
+                                    <div className="flex flex-col items-center justify-start gap-1 w-28">
+                                        <ValueLabel className="content-light block font-semibold text-[15px] uppercase tracking-wide">
+                                            {t('submitted')}
+                                        </ValueLabel>
+                                        <span className="text-xl font-bold leading-5">
+                                            {metrics.submitted.toLocaleString()}
+                                        </span>
+                                        <MetricBarSvg type="submitted" className="mt-2" />
+                                    </div>
+                                )}
+
+                                {metrics?.approved !== undefined && metrics?.submitted !== undefined && (
+                                    <div className="flex flex-col items-center justify-start gap-1 w-28">
+                                        <ValueLabel className="text-primary block font-semibold text-[15px] uppercase tracking-wide">
+                                            {t('approved')}
+                                        </ValueLabel>
+                                        <span className="text-xl font-bold leading-5">
+                                            {metrics.approved.toLocaleString()}
+                                        </span>
+                                        <div className="inline-flex justify-center items-center gap-1 mt-1">
+                                           <MetricBarSvg type="approved" />
+                                            <div className="text-center justify-start text-green-500 text-[15px] font-medium font-['Inter'] leading-4">
+                                                {((metrics.approved / metrics.submitted) * 100).toFixed(1)}%
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex justify-center mb-4 gap-16">
+                                {metrics?.completed !== undefined && metrics?.submitted !== undefined && (
+                                    <div className="flex flex-col items-center justify-start gap-1 w-28">
+                                        <ValueLabel className="text-success block font-semibold text-[15px] uppercase tracking-wide">
+                                            {t('completed')}
+                                        </ValueLabel>
+                                        <span className="text-xl font-bold leading-5">
+                                            {metrics.completed.toLocaleString()}
+                                        </span>
+                                        <div className="inline-flex justify-center items-center gap-[3px] mt-1">
+                                            <div className="w-14">
+                                                <PercentageProgressBar
+                                                    value={metrics.completed}
+                                                    total={metrics.submitted}
+                                                    primaryBackgroundColor="bg-gray-300"
+                                                    secondaryBackgroudColor="bg-green-500"
+                                                />
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                )}
+                                {metrics?.distributedADA !== undefined && (
+                                    <div className="flex flex-col items-center justify-start gap-1 w-28">
+                                        <ValueLabel className="block font-semibold text-[15px] text-nowrap uppercase tracking-wide">
+                                            ₳ {t('distributed')}
+                                        </ValueLabel>
+                                        <span className="text-xl font-bold leading-5">
+                                            ₳{shortNumber(metrics.distributedADA, 2)}
+                                        </span>
+                                        {metrics?.distributedUSD !== undefined && metrics.distributedUSD > 0 && (
+                                            <div className="text-white/80 text-[9px] font-medium">
+                                                ${shortNumber(metrics.distributedUSD, 2)}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex justify-center mb-2 gap-24">
+                                {metrics?.awardedADA !== undefined && (
+                                    <div className="flex flex-col items-center justify-start gap-1 w-28">
+                                        <ValueLabel className="block font-semibold text-[15px] text-nowrap uppercase tracking-wide">
+                                            ₳ {t('awarded')}
+                                        </ValueLabel>
+                                        <span className="text-xl font-bold leading-5">
+                                            ₳{shortNumber(metrics.awardedADA, 2)}
+                                        </span>
+                                        {metrics?.awardedUSD !== undefined && metrics.awardedUSD > 0 && (
+                                            <div className="text-white/80 text-[9px] font-medium">
+                                                ${shortNumber(metrics.awardedUSD, 2)}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                {metrics?.requestedADA !== undefined && (
+                                    <div className="flex flex-col items-center justify-start gap-1 w-28">
+                                        <ValueLabel className="block font-semibold text-[15px] text-nowrap uppercase tracking-wide">
+                                            ₳ {t('requested')}
+                                        </ValueLabel>
+                                        <span className="text-xl font-bold leading-5">
+                                            ₳{shortNumber(metrics.requestedADA, 2)}
+                                        </span>
+                                        {metrics?.requestedUSD !== undefined && metrics.requestedUSD > 0 && (
+                                            <div className="text-white/80 text-[9px] font-medium">
+                                                ${shortNumber(metrics.requestedUSD, 2)}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
+                    <div className="flex justify-center pb-4">
+                        <ViewAnalyticsButton
+                            onClick={() => {/* Add navigation logic */}}
+                        />
+                    </div>
+                </div>
+                <div className="hidden lg:flex lg:items-center lg:justify-between px-6 py-4 w-full min-h-16">
+    {metrics?.submitted !== undefined && (
+        <div className="flex flex-col items-center px-4 flex-1">
+            <ValueLabel className="content-light block font-semibold text-xs uppercase">
+                {t('submitted')}
+            </ValueLabel>
+            <span className="text-base font-bold mt-1">{metrics.submitted.toLocaleString()}</span>
+            <div className="inline-flex justify-center items-center gap-1 mt-1 min-h-[20px]">
+                <MetricBarSvg type="submitted" />
+            </div>
+        </div>
+    )}
+    {metrics?.approved !== undefined && metrics?.submitted !== undefined && (
+        <div className="flex flex-col items-center px-4 flex-1">
+            <ValueLabel className="text-primary block font-semibold text-xs uppercase">
+                {t('approved')}
+            </ValueLabel>
+            <span className="text-base font-bold mt-1">{metrics.approved.toLocaleString()}</span>
+            <div className="inline-flex justify-center items-center gap-1 min-h-[20px]">
+                <MetricBarSvg type="approved" />
+                <div className="text-center justify-start text-green-500 text-[12px] font-medium font-['Inter'] leading-4">
+                    {((metrics.approved / metrics.submitted) * 100).toFixed(1)}%
+                </div>
+            </div>
+        </div>
+    )}
+    {metrics?.completed !== undefined && metrics?.submitted !== undefined && (
+        <div className="flex flex-col items-center px-4 flex-1">
+            <ValueLabel className="text-success block font-semibold text-xs uppercase">
+                {t('completed')}
+            </ValueLabel>
+            <span className="text-base font-bold">{metrics.completed.toLocaleString()}</span>
+            <div className="inline-flex justify-center items-center gap-1 mt-1 min-h-[20px]">
+                <div className="w-12">
+                    <PercentageProgressBar
+                        value={metrics.completed}
+                        total={metrics.submitted}
+                        primaryBackgroundColor="bg-gray-300"
+                        secondaryBackgroudColor="bg-green-500"
+                    />
+                </div>
+            </div>
+        </div>
+    )}
+    {metrics?.distributedADA !== undefined && (
+        <div className="flex flex-col items-center px-4 flex-1">
+            <ValueLabel className="block text-xs text-nowrap uppercase">
+                ₳ {t('distributed')}
+            </ValueLabel>
+            <span className="text-base font-bold mt-1">₳{shortNumber(metrics.distributedADA, 2)}</span>
+            <div className="inline-flex justify-center items-center  min-h-[20px]">
+                {metrics?.distributedUSD !== undefined && metrics.distributedUSD > 0 ? (
+                    <div className="text-white/80 text-[10px] font-medium">
+                        ${shortNumber(metrics.distributedUSD, 2)}
+                    </div>
+                ) : (
+                    <div className="h-[10px]" />
                 )}
+            </div>
+        </div>
+    )}
+    {metrics?.awardedADA !== undefined && (
+        <div className="flex flex-col items-center px-4 flex-1">
+            <ValueLabel className="block text-xs text-nowrap uppercase">
+                ₳ {t('awarded')}
+            </ValueLabel>
+            <span className="text-base font-bold mt-1">₳{shortNumber(metrics.awardedADA, 2)}</span>
+            <div className="inline-flex justify-center items-center  min-h-[20px]">
+                {metrics?.awardedUSD !== undefined && metrics.awardedUSD > 0 ? (
+                    <div className="text-white/80 text-[10px] font-medium">
+                        ${shortNumber(metrics.awardedUSD, 2)}
+                    </div>
+                ) : (
+                    <div className="h-[10px]" />
+                )}
+            </div>
+        </div>
+    )}
+    {metrics?.requestedADA !== undefined && (
+        <div className="flex flex-col items-center px-4 flex-1">
+            <ValueLabel className="block text-xs text-nowrap uppercase">
+                ₳ {t('requested')}
+            </ValueLabel>
+            <span className="text-base font-bold mt-1">₳{shortNumber(metrics.requestedADA, 2)}</span>
+            <div className="inline-flex justify-center items-center  min-h-[20px]">
+                {metrics?.requestedUSD !== undefined && metrics.requestedUSD > 0 ? (
+                    <div className="text-white/80 text-[10px] font-medium">
+                        ${shortNumber(metrics.requestedUSD, 2)}
+                    </div>
+                ) : (
+                    <div className="h-[10px]" />
+                )}
+            </div>
+        </div>
+    )}
+    <div className="flex items-center pl-4 ml-4 ">
+        <ViewAnalyticsButton
+            onClick={() => {/* Add navigation logic */}}
+        />
+    </div>
+</div>
             </div>
         )
     );
