@@ -145,6 +145,7 @@ class ProposalsController extends Controller
         $proposalData = Cache::remember($cacheKey, now()->addMinutes(0), function () use ($proposal) {
             $proposal->load([
                 'fund',
+                'campaign',
                 'groups',
                 'team',
                 'users',

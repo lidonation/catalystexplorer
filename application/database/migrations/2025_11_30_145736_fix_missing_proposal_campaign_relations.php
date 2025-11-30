@@ -39,13 +39,26 @@ return new class extends Migration
         $unfixed = 0;
         
         foreach ($proposalsWithoutCampaign as $proposal) {
-            $campaignId = $this->findCampaignForProposal($proposal);
+            // Special handling for cPoker Development - assign to Products & Integrations
+            if (stripos($proposal->title, 'cPoker') !== false) {
+                $campaignId = $this->findSpecificCampaignForCPoker($proposal);
+            } else {
+                $campaignId = $this->findCampaignForProposal($proposal);
+            }
             
             if ($campaignId) {
                 $proposal->campaign_id = $campaignId;
                 $proposal->save();
+                
+                // Index the proposal into Scout search after fixing
+                try {
+                    $proposal->searchable();
+                    echo "✓ Fixed & Indexed: {$proposal->title}\n";
+                } catch (\Exception $e) {
+                    echo "✓ Fixed (Index failed): {$proposal->title} - {$e->getMessage()}\n";
+                }
+                
                 $fixed++;
-                echo "✓ Fixed: {$proposal->title}\n";
             } else {
                 $unfixed++;
                 echo "✗ Could not find campaign for: {$proposal->title}\n";
@@ -53,8 +66,9 @@ return new class extends Migration
         }
         
         echo "\nResults:\n";
-        echo "- Fixed: {$fixed}\n";
+        echo "- Fixed & Indexed: {$fixed}\n";
         echo "- Unfixed: {$unfixed}\n";
+        echo "- All fixed proposals have been indexed into Scout search\n";
     }
 
     private function findCampaignForProposal(Proposal $proposal): ?string
@@ -130,5 +144,37 @@ return new class extends Migration
         $anyCampaign = Campaign::where('fund_id', $proposal->fund_id)->first();
         
         return $anyCampaign ? $anyCampaign->id : null;
+    }
+    
+    private function findSpecificCampaignForCPoker(Proposal $proposal): ?string
+    {
+        // Look for Products & Integrations campaign in the same fund as cPoker
+        $productsIntegrationsCampaign = Campaign::where('fund_id', $proposal->fund_id)
+            ->where(function($query) {
+                $query->where('title', 'ILIKE', '%Products%Integrations%')
+                      ->orWhere('title', 'ILIKE', '%Products & Integrations%')
+                      ->orWhere('title', 'ILIKE', '%Products and Integrations%')
+                      ->orWhere('title', 'ILIKE', '%Product%Integration%');
+            })
+            ->first();
+            
+        if ($productsIntegrationsCampaign) {
+            echo "   → Assigning to Products & Integrations campaign: {$productsIntegrationsCampaign->title}\n";
+            return $productsIntegrationsCampaign->id;
+        }
+        
+        // Fallback to any campaign with "product" in the name
+        $productCampaign = Campaign::where('fund_id', $proposal->fund_id)
+            ->where('title', 'ILIKE', '%product%')
+            ->first();
+            
+        if ($productCampaign) {
+            echo "   → Assigning to product-related campaign: {$productCampaign->title}\n";
+            return $productCampaign->id;
+        }
+        
+        // Final fallback - use the general strategy
+        echo "   → No specific Products & Integrations campaign found, using general strategy\n";
+        return $this->findCampaignForProposal($proposal);
     }
 };
