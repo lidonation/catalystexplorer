@@ -38,7 +38,10 @@ class ProposalController extends Controller
             ->select('proposals.*')
             ->allowedFilters([
                 AllowedFilter::exact('id'),
-                AllowedFilter::partial('title'),
+                AllowedFilter::callback('title', function ($query, $value) {
+                    // Handle JSON title column - search in the 'en' field
+                    $query->whereRaw("title->>'en' ILIKE ?", ["%{$value}%"]);
+                }),
                 AllowedFilter::exact('status'),
                 AllowedFilter::exact('type'),
                 AllowedFilter::exact('category'),
@@ -72,8 +75,7 @@ class ProposalController extends Controller
                 AllowedSort::field('created_at'),
                 AllowedSort::field('updated_at'),
             ])
-            ->defaultSort('-created_at')
-            ->groupBy('proposals.id');
+            ->defaultSort(['-created_at', '-id']);
 
         $includedRelations = collect(explode(',', $request->get('include', '')))
             ->filter()
