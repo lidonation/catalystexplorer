@@ -71,6 +71,7 @@ Available sort fields:
 - `include=campaign` - Include campaign relationship
 - `include=user` - Include user relationship
 - `include=fund` - Include fund relationship
+- `include=meta_data` - Include proposal metadata
 - `include=campaign,user` - Include multiple relationships
 
 ##### Pagination
@@ -85,7 +86,7 @@ Returns a single proposal by ID.
 > **Legacy:** Individual proposal endpoints are only available in the versioned API.
 
 #### Query Parameters
-- `include=campaign,user` - Include relationships
+- `include=campaign,user,meta_data` - Include relationships
 
 ## Example Requests
 
@@ -111,7 +112,7 @@ GET /api/v1/proposals?include=campaign,user&filter[funded]=1&filter[amount_min]=
 
 ### Get Single Proposal with Relationships
 ```
-GET /api/v1/proposals/12345?include=campaign,user,fund
+GET /api/v1/proposals/12345?include=campaign,user,fund,meta_data
 ```
 
 ### Legacy Examples (Unversioned)
@@ -470,7 +471,107 @@ All proposal fields are included in the response:
 - `campaign` - Related campaign (when included)
 - `user` - Proposal owner (when included)
 - `fund` - Related fund (when included)
+- `meta_data` - Proposal metadata (when included)
 - `link` - Full URL to proposal page
+
+## Meta Data Relation
+
+The `meta_data` relationship provides access to dynamic key-value metadata associated with proposals. This data is stored as schemaless information and can vary significantly between proposals.
+
+### Including Meta Data
+```
+GET /api/v1/proposals?include=meta_data
+GET /api/v1/proposals/{id}?include=meta_data
+```
+
+### Meta Data Structure
+The `meta_data` field returns a flat object with string keys and values. The structure varies by proposal, but common fields include:
+
+#### Common Meta Data Fields
+- `funds_remaining` - Remaining project funding amount
+- `unique_wallets` - Number of unique wallets that voted
+- `alignment_score` - Community advisor alignment rating (0-5 scale)
+- `auditability_score` - Community advisor auditability rating (0-5 scale) 
+- `feasibility_score` - Community advisor feasibility rating (0-5 scale)
+- `proposal_impact_score` - Impact assessment score
+- `applicant_type` - Type of applicant ("Individual", "Entity (Not Incorporated)", etc.)
+- `project_length` - Project duration in months
+- `opensource` - Open source status ("1" for yes, "0" for no)
+
+#### Catalyst Platform Integration
+- `catalyst_document_id` - Document identifier in Catalyst system
+- `catalyst_document_version` - Document version identifier
+- `projectcatalyst_io_url` - Link to proposal on projectcatalyst.io
+- `ideascale_id` - Legacy Ideascale platform identifier
+- `iog_hash` - IOG internal hash identifier
+
+#### Blockchain Integration
+- `chain_proposal_id` - Proposal identifier on Cardano blockchain
+- `chain_proposal_index` - Proposal index number on chain
+- `proposal_public_key` - Cryptographic public key for proposal
+
+#### Media and Resources
+- `youtube` - Link to proposal presentation video
+- `quickpitch` - Quick pitch video URL (may also be in main proposal fields)
+
+### Example Response with Meta Data
+```json
+{
+  "data": {
+    "id": "12345",
+    "title": "LATAM Cardano Community Operations",
+    "slug": "latam-cardano-community-operations",
+    "status": "active",
+    "amount_requested": 75000,
+    "currency": "ADA",
+    "meta_data": {
+      "alignment_score": "4.41",
+      "applicant_type": "Entity (Not Incorporated)",
+      "auditability_score": "3.55",
+      "catalyst_document_id": "0198ae90-30b7-7a74-8a3b-e3c4cfc864be",
+      "catalyst_document_version": "0198aed0-6d11-775a-9aab-3ffdb7a158cb",
+      "chain_proposal_id": "78536759894080d15118cea4bb7dcf3c8c0e8654e6ffc78e8ead1c6e96f9920b",
+      "chain_proposal_index": "106",
+      "feasibility_score": "4.21",
+      "funds_remaining": "1286190",
+      "ideascale_id": "404699",
+      "iog_hash": "800227",
+      "opensource": "1",
+      "projectcatalyst_io_url": "https://projectcatalyst.io/funds/14/cardano-open-ecosystem/latam-cardano-community-operations",
+      "project_length": "6",
+      "proposal_impact_score": "0",
+      "proposal_public_key": "2jaUgcRgeZ9LisG7V/9AjdzYcZ32EvkrAYqaJcmhg+U=",
+      "unique_wallets": "146",
+      "youtube": "https://www.youtube.com/watch?v=j-zejRhSO3M&t=5256s"
+    },
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-02-01T09:00:00Z"
+  }
+}
+```
+
+### Simple Meta Data Example
+Some proposals may have minimal meta data:
+```json
+{
+  "data": {
+    "id": "67890",
+    "title": "Cardano India Developers Community Hub",
+    "meta_data": {
+      "funds_remaining": "1286190",
+      "unique_wallets": "178"
+    }
+  }
+}
+```
+
+### Important Notes
+- Meta data structure is **not guaranteed** - fields may be present or absent
+- All values are stored as **strings**, including numeric data
+- Field names use **snake_case** convention
+- Some fields may contain URLs, identifiers, or encoded data
+- Meta data is only included when explicitly requested via `include=meta_data`
+- Empty meta data returns `null` or an empty object `{}`
 
 ## Error Responses
 

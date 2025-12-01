@@ -79,8 +79,6 @@ Route::as('api.')->group(function () {
     Route::post('/test-modal', function () {
         return response()->json(['message' => 'OK', 'time' => now()]);
     })->name('test');
-    
-    Route::get('/test-pagination', [\App\Http\Controllers\TestPaginationController::class, 'test'])->name('test-pagination');
 
     Route::get('/communities', [CommunityController::class, 'communities'])->name('communities');
     Route::get('/communities/{community:id}', [CommunitiesController::class, 'community'])->name('community');
