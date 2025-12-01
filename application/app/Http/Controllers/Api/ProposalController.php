@@ -62,6 +62,7 @@ class ProposalController extends Controller
                 AllowedInclude::relationship('team'),
                 AllowedInclude::relationship('schedule'),
                 AllowedInclude::relationship('schedule.milestones'),
+                AllowedInclude::relationship('meta_data'),
             ])
             ->allowedSorts([
                 AllowedSort::field('title'),
@@ -88,6 +89,11 @@ class ProposalController extends Controller
 
         $proposals = $queryBuilder->paginate($per_page);
 
+        // Remove currency from appends to prevent automatic relationship loading
+        $proposals->getCollection()->each(function ($proposal) {
+            $proposal->makeHidden(['currency']);
+        });
+
         return ProposalResource::collection($proposals);
     }
 
@@ -104,6 +110,7 @@ class ProposalController extends Controller
                 AllowedInclude::relationship('team'),
                 AllowedInclude::relationship('schedule'),
                 AllowedInclude::relationship('schedule.milestones'),
+                AllowedInclude::relationship('meta_data'),
             ]);
 
         // Check if any relations are being included and ensure they're loaded
@@ -117,6 +124,9 @@ class ProposalController extends Controller
         }
 
         $proposal = $queryBuilder->findOrFail($id);
+
+        // Remove currency from appends to prevent automatic relationship loading
+        $proposal->makeHidden(['currency']);
 
         return new ProposalResource($proposal);
     }

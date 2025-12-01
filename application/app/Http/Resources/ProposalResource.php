@@ -27,7 +27,7 @@ class ProposalResource extends JsonResource
             'no_votes_count' => $this->no_votes_count,
             'amount_requested' => $this->amount_requested,
             'amount_received' => $this->amount_received,
-            'currency' => $this->currency,
+            'currency' => $this->getCurrencyWithoutRelationshipLoading(),
             'problem' => $this->problem,
             'solution' => $this->solution,
             'experience' => $this->experience,
@@ -40,20 +40,45 @@ class ProposalResource extends JsonResource
             'link' => $this->link,
 
             // Relationships
-            'campaign' => new CampaignResource($this->whenLoaded('campaign')),
-            'fund' => new FundResource($this->whenLoaded('fund')),
-            'team' => IdeascaleProfileResource::collection($this->whenLoaded('team')),
-            'schedule' => new ProjectScheduleResource($this->whenLoaded('schedule')),
+            'campaign' => $this->when($this->relationLoaded('campaign'), new CampaignResource($this->campaign)),
+            'fund' => $this->when($this->relationLoaded('fund'), new FundResource($this->fund)),
+            'team' => $this->when($this->relationLoaded('team'), IdeascaleProfileResource::collection($this->team)),
+            'schedule' => $this->when($this->relationLoaded('schedule'), new ProjectScheduleResource($this->schedule)),
             'user' => $this->when($this->relationLoaded('user') && $this->user !== null, function () {
                 return [
                     'id' => $this->user->id,
                     'name' => $this->user->name,
                 ];
             }),
+            'meta_data' => $this->when($this->relationLoaded('meta_data'), $this->meta_info),
 
             // Computed attributes
             //            'currency_symbol' => $this->when(method_exists($this->resource, 'getCurrencySymbolAttribute'), $this->currency_symbol),
 
         ];
+    }
+
+    /**
+     * Get currency without triggering automatic relationship loading
+     */
+    private function getCurrencyWithoutRelationshipLoading(): string
+    {
+        // First try the actual database column value
+        $directCurrency = $this->getOriginal('currency');
+        if ($directCurrency) {
+            return $directCurrency;
+        }
+
+        // Only check relationships if they're already loaded
+        if ($this->relationLoaded('campaign') && $this->campaign?->currency) {
+            return $this->campaign->currency;
+        }
+
+        if ($this->relationLoaded('fund') && $this->fund?->currency) {
+            return $this->fund->currency;
+        }
+
+        // Default fallback
+        return 'ADA';
     }
 }
