@@ -1,6 +1,6 @@
 import Title from '@/Components/atoms/Title';
 import UserQuickView from '@/Components/UserQuickView';
-import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
+import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/ProposalProfilesComponent';
 import { useCallback, useRef, useState } from 'react';
 import ProposalCardFooter from './ProposalCardFooter';
 import ProposalCardHeader from './ProposalCardHeader';
@@ -93,7 +93,7 @@ export default function ProposalVerticalCard({
                                     t={t}
                                 />
                             )}
-                            
+
                             <section
                                 className="mt-3 mb-2 border-b border-gray-200 pb-2"
                                 aria-labelledby="funding-heading"
@@ -115,7 +115,7 @@ export default function ProposalVerticalCard({
                                     proposal={proposal}
                                 />
                             </section>
-                            
+
                             {/* Show project status on single proposal pages */}
                             {isOnSingleProposalPage && (
                                 <ProposalProjectStatus
@@ -123,7 +123,7 @@ export default function ProposalVerticalCard({
                                     opensource={proposal.opensource}
                                 />
                             )}
-                            
+
                             {/* Show problem first on single proposal pages only */}
                             {isOnSingleProposalPage && (
                                 <div className="relative mt-4 mb-2 border-b border-gray-200 pb-2">
@@ -133,7 +133,7 @@ export default function ProposalVerticalCard({
                                     />
                                 </div>
                             )}
-                            
+
                             <div className="relative mt-4 mb-2 min-h-36 border-b border-gray-200 pb-2">
                                 {/* On single proposal pages, always show solution. On regular cards, show solution/quickpitch toggle */}
                                 {isOnSingleProposalPage ? (
