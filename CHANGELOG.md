@@ -1,3 +1,10 @@
+# [1.47.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.46.5...v1.47.0) (2025-12-01)
+
+
+### Features
+
+* add meta_data relationt to proposal api resource to provide schmemaless proposal related data ([645c107](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/645c107e06162710f14237de68e5e366919b0978))
+
 ## [1.46.5](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.46.4...v1.46.5) (2025-11-30)
 
 
