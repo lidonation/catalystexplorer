@@ -1,3 +1,10 @@
+## [1.47.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.47.0...v1.47.1) (2025-12-01)
+
+
+### Bug Fixes
+
+* remove proposal_profile duplicate attachments ([a43147e](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/a43147e79cbfe3a9781b8d20f74108f4b28f014e))
+
 # [1.47.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.46.5...v1.47.0) (2025-12-01)
 
 
