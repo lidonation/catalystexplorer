@@ -1,6 +1,6 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
-import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
+import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/ProposalProfilesComponent';
 import { IndexedDBService } from '@/Services/IndexDbService';
 import { shortNumber } from '@/utils/shortNumber';
 import { useSortable } from '@dnd-kit/sortable';

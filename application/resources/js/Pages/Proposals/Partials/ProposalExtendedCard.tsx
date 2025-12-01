@@ -3,7 +3,7 @@ import Title from '@/Components/atoms/Title';
 import ValueLabel from '@/Components/atoms/ValueLabel';
 import Rating from '@/Components/Rating';
 import UserQuickView from '@/Components/UserQuickView';
-import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
+import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/ProposalProfilesComponent';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import ProposalCardFooter from './ProposalCardFooter';
 import ProposalCardHeader from './ProposalCardHeader';
@@ -107,7 +107,7 @@ export default function ProposalExtendedCard({
                                 </div>
                                 <ProposalFundingDetails proposal={proposal} />
                             </section>
-                            
+
                             <ProposalProjectStatus
                                 project_length={proposal.project_length}
                                 opensource={proposal.opensource}
@@ -119,7 +119,7 @@ export default function ProposalExtendedCard({
                                     slug={proposal.slug}
                                 />
                             </div>
-                            
+
                             {/* Show solution below problem */}
                             <div className="relative flex h-auto w-full flex-col items-start overflow-visible">
                                 <ProposalSolution
