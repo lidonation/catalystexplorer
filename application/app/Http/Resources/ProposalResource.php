@@ -42,7 +42,37 @@ class ProposalResource extends JsonResource
             // Relationships
             'campaign' => $this->when($this->relationLoaded('campaign'), new CampaignResource($this->campaign)),
             'fund' => $this->when($this->relationLoaded('fund'), new FundResource($this->fund)),
-            'team' => $this->when($this->relationLoaded('team'), IdeascaleProfileResource::collection($this->team)),
+            'team' => $this->when($this->relationLoaded('team'), function () {
+                // Extract and format the actual profile models from the ProposalProfile pivot objects
+                $profiles = $this->team->map(function ($teamMember) {
+                    $model = $teamMember->model;
+                    if (! $model) {
+                        return null;
+                    }
+
+                    // Create a unified format for both IdeascaleProfile and CatalystProfile
+                    return [
+                        'id' => $model->id,
+                        'ideascale_id' => $model->ideascale_id ?? null,
+                        'catalyst_id' => $model->catalyst_id ?? null,
+                        'username' => $model->username ?? null,
+                        'email' => $model->email ?? null,
+                        'name' => $model->name ?? null,
+                        'bio' => $model->bio ?? null,
+                        'twitter' => $model->twitter ?? null,
+                        'linkedin' => $model->linkedin ?? null,
+                        'discord' => $model->discord ?? null,
+                        'ideascale' => $model->ideascale ?? null,
+                        'telegram' => $model->telegram ?? null,
+                        'title' => $model->title ?? null,
+                        'proposals_count' => $model->proposals_count ?? null,
+                        'hero_img_url' => $model->hero_img_url ?? null,
+                        'profile_type' => get_class($model), // Include the profile type for reference
+                    ];
+                })->filter(); // Remove any null models
+
+                return $profiles->values(); // Reset array keys
+            }),
             'schedule' => $this->when($this->relationLoaded('schedule'), new ProjectScheduleResource($this->schedule)),
             'user' => $this->when($this->relationLoaded('user') && $this->user !== null, function () {
                 return [
