@@ -38,7 +38,7 @@ export default function GraphIcon({
                 y="58"
                 textAnchor="middle"
                 fill="white"
-                fontSize="15"
+                fontSize="16"
                 fontFamily="Inter"
                 fontWeight="500"
             >

@@ -181,9 +181,10 @@ const SectionTwo: React.FC<
 
 interface MetricsBarProps extends ProposalMetrics {
     isConnected?: boolean;
+    isAnimating?: boolean;
 }
 
-const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
+const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimating = false }) => {
     const { isPlayerBarExpanded } = useUIContext();
     const [isExpanded, setIsExpanded] = useState(true);
     const { metrics } = useMetrics();
@@ -195,23 +196,25 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
         : 'rounded-xl';
 
     const gradientClass = isConnected
-        ? 'bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)] bg-opacity-90'
+        ? 'bg-gradient-to-br from-[var(--cx-background-gradient-2-dark)] to-[var(--cx-background-gradient-2-dark)] bg-opacity-90'
         : 'bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)]';
 
     return (
         metrics &&
         onProposals && (
             <div
-                className={`${gradientClass} overflow-hidden ${borderRadiusClass} text-white shadow-lg transition-all duration-300 w-full`}
+                className={`${gradientClass} overflow-hidden ${borderRadiusClass} text-white shadow-lg transition-all duration-300 w-full ${
+                    isAnimating ? 'scale-95 opacity-0' : 'scale-100 opacity-100'
+                }`}
                 data-testid="metrics-bar-container"
             >
                 <div className="lg:hidden w-full">
                     <div className="flex flex-col items-center px-4 py-4 w-full">
                         <div className="w-full max-w-md">
-                            <div className="flex justify-center mb-4 gap-4">
+                            <div className="flex justify-center mb-4 gap-12">
                                 {metrics?.submitted !== undefined && (
                                     <div className="flex flex-col items-center justify-start gap-1 w-28">
-                                        <ValueLabel className="content-light block font-semibold text-[15px] uppercase tracking-wide">
+                                        <ValueLabel className="text-content-light block font-semibold text-[15px] uppercase tracking-wide">
                                             {t('submitted')}
                                         </ValueLabel>
                                         <span className="text-xl font-bold leading-5">
@@ -238,7 +241,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
                                     </div>
                                 )}
                             </div>
-                            <div className="flex justify-center mb-4 gap-16">
+                            <div className="flex justify-center mb-4 gap-24">
                                 {metrics?.completed !== undefined && metrics?.submitted !== undefined && (
                                     <div className="flex flex-col items-center justify-start gap-1 w-28">
                                         <ValueLabel className="text-success block font-semibold text-[15px] uppercase tracking-wide">
@@ -248,7 +251,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
                                             {metrics.completed.toLocaleString()}
                                         </span>
                                         <div className="inline-flex justify-center items-center gap-[3px] mt-1">
-                                            <div className="w-14">
+                                            <div className="w-14 scale-y-[0.5]">
                                                 <PercentageProgressBar
                                                     value={metrics.completed}
                                                     total={metrics.submitted}
@@ -262,31 +265,31 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
                                 )}
                                 {metrics?.distributedADA !== undefined && (
                                     <div className="flex flex-col items-center justify-start gap-1 w-28">
-                                        <ValueLabel className="block font-semibold text-[15px] text-nowrap uppercase tracking-wide">
+                                        <ValueLabel className="block text-content-light font-semibold text-[15px] text-nowrap uppercase tracking-wide">
                                             ₳ {t('distributed')}
                                         </ValueLabel>
                                         <span className="text-xl font-bold leading-5">
                                             ₳{shortNumber(metrics.distributedADA, 2)}
                                         </span>
                                         {metrics?.distributedUSD !== undefined && metrics.distributedUSD > 0 && (
-                                            <div className="text-white/80 text-[9px] font-medium">
+                                            <div className="text-content-light text-[9px] font-medium">
                                                 ${shortNumber(metrics.distributedUSD, 2)}
                                             </div>
                                         )}
                                     </div>
                                 )}
                             </div>
-                            <div className="flex justify-center mb-2 gap-24">
+                            <div className="flex justify-center mb-4 gap-40">
                                 {metrics?.awardedADA !== undefined && (
                                     <div className="flex flex-col items-center justify-start gap-1 w-28">
-                                        <ValueLabel className="block font-semibold text-[15px] text-nowrap uppercase tracking-wide">
+                                        <ValueLabel className="text-content-light block font-semibold text-[15px] text-nowrap uppercase tracking-wide">
                                             ₳ {t('awarded')}
                                         </ValueLabel>
                                         <span className="text-xl font-bold leading-5">
                                             ₳{shortNumber(metrics.awardedADA, 2)}
                                         </span>
                                         {metrics?.awardedUSD !== undefined && metrics.awardedUSD > 0 && (
-                                            <div className="text-white/80 text-[9px] font-medium">
+                                            <div className="text-content-light text-[9px] font-medium">
                                                 ${shortNumber(metrics.awardedUSD, 2)}
                                             </div>
                                         )}
@@ -295,14 +298,14 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
 
                                 {metrics?.requestedADA !== undefined && (
                                     <div className="flex flex-col items-center justify-start gap-1 w-28">
-                                        <ValueLabel className="block font-semibold text-[15px] text-nowrap uppercase tracking-wide">
+                                        <ValueLabel className="text-content-light block font-semibold text-[15px] text-nowrap uppercase tracking-wide">
                                             ₳ {t('requested')}
                                         </ValueLabel>
                                         <span className="text-xl font-bold leading-5">
                                             ₳{shortNumber(metrics.requestedADA, 2)}
                                         </span>
                                         {metrics?.requestedUSD !== undefined && metrics.requestedUSD > 0 && (
-                                            <div className="text-white/80 text-[9px] font-medium">
+                                            <div className="text-content-light text-[9px] font-medium">
                                                 ${shortNumber(metrics.requestedUSD, 2)}
                                             </div>
                                         )}
@@ -320,7 +323,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
                 <div className="hidden lg:flex lg:items-center lg:justify-between px-6 py-4 w-full min-h-16">
     {metrics?.submitted !== undefined && (
         <div className="flex flex-col items-center px-4 flex-1">
-            <ValueLabel className="content-light block font-semibold text-xs uppercase">
+            <ValueLabel className="text-content-light block font-semibold text-xs uppercase">
                 {t('submitted')}
             </ValueLabel>
             <span className="text-base font-bold mt-1">{metrics.submitted.toLocaleString()}</span>
@@ -350,7 +353,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
             </ValueLabel>
             <span className="text-base font-bold">{metrics.completed.toLocaleString()}</span>
             <div className="inline-flex justify-center items-center gap-1 mt-1 min-h-[20px]">
-                <div className="w-12">
+                <div className="w-12 scale-y-[0.5]">
                     <PercentageProgressBar
                         value={metrics.completed}
                         total={metrics.submitted}
@@ -363,13 +366,13 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
     )}
     {metrics?.distributedADA !== undefined && (
         <div className="flex flex-col items-center px-4 flex-1">
-            <ValueLabel className="block text-xs text-nowrap uppercase">
+            <ValueLabel className="text-content-light font-semibold block text-xs text-nowrap uppercase">
                 ₳ {t('distributed')}
             </ValueLabel>
-            <span className="text-base font-bold mt-1">₳{shortNumber(metrics.distributedADA, 2)}</span>
+            <span className="text-base font-bold mt-2">₳{shortNumber(metrics.distributedADA, 2)}</span>
             <div className="inline-flex justify-center items-center  min-h-[20px]">
                 {metrics?.distributedUSD !== undefined && metrics.distributedUSD > 0 ? (
-                    <div className="text-white/80 text-[10px] font-medium">
+                    <div className="text-content-light text-[10px] font-medium">
                         ${shortNumber(metrics.distributedUSD, 2)}
                     </div>
                 ) : (
@@ -380,13 +383,13 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
     )}
     {metrics?.awardedADA !== undefined && (
         <div className="flex flex-col items-center px-4 flex-1">
-            <ValueLabel className="block text-xs text-nowrap uppercase">
+            <ValueLabel className=" text-content-light block  font-semibold text-xs text-nowrap uppercase">
                 ₳ {t('awarded')}
             </ValueLabel>
-            <span className="text-base font-bold mt-1">₳{shortNumber(metrics.awardedADA, 2)}</span>
+            <span className="text-base font-bold mt-2">₳{shortNumber(metrics.awardedADA, 2)}</span>
             <div className="inline-flex justify-center items-center  min-h-[20px]">
                 {metrics?.awardedUSD !== undefined && metrics.awardedUSD > 0 ? (
-                    <div className="text-white/80 text-[10px] font-medium">
+                    <div className="text-content-light text-[10px] font-medium">
                         ${shortNumber(metrics.awardedUSD, 2)}
                     </div>
                 ) : (
@@ -397,13 +400,13 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false }) => {
     )}
     {metrics?.requestedADA !== undefined && (
         <div className="flex flex-col items-center px-4 flex-1">
-            <ValueLabel className="block text-xs text-nowrap uppercase">
+            <ValueLabel className="text-content-light font-semibold block text-xs text-nowrap uppercase">
                 ₳ {t('requested')}
             </ValueLabel>
-            <span className="text-base font-bold mt-1">₳{shortNumber(metrics.requestedADA, 2)}</span>
+            <span className="text-base font-bold mt-2">₳{shortNumber(metrics.requestedADA, 2)}</span>
             <div className="inline-flex justify-center items-center  min-h-[20px]">
                 {metrics?.requestedUSD !== undefined && metrics.requestedUSD > 0 ? (
-                    <div className="text-white/80 text-[10px] font-medium">
+                    <div className="text-content-light text-[10px] font-medium">
                         ${shortNumber(metrics.requestedUSD, 2)}
                     </div>
                 ) : (

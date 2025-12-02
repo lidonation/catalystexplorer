@@ -3,7 +3,6 @@ x-logging: &default-logging
   options:
     max-size: "50m"
     max-file: 6
-
 services:
   # app
   catalystexplorer.com:
@@ -52,66 +51,64 @@ services:
       - catalystexplorer.db
       - catalystexplorer-search
       - catalystexplorer.redis
-
-  catalystexplorer.cardanonode:
-    container_name: catalystexplorer.cardanonode
-    image: ghcr.io/intersectmbo/cardano-node:10.1.4
-    command:
-      [
-        "run",
-        "--config",
-        "/config/config.json",
-        "--database-path",
-        "/data/db",
-        "--socket-path",
-        "/ipc/node.socket",
-        "--topology",
-        "/config/topology.json",
-      ]
-    volumes:
-      - ./cardanonode/config/network/${CARDANO_NETWORK:-preview}/cardano-node:/config
-      - ./cardanonode/config/network/${CARDANO_NETWORK:-preview}/genesis:/genesis
-      - node-db:/data
-      - node-ipc:/ipc
-    restart: on-failure
-    environment:
-      CARDANO_NODE_SOCKET_PATH: /ipc/node.socket
-    healthcheck:
-      test: ["CMD", "stat", "/ipc/node.socket"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    networks:
-      - catalystexplorer-net
-      - shared-network
-  catalystexplorer.cardanodb:
-    container_name: catalystexplorer.cardanodb
-    image: postgres:16.3-alpine3.19
-    environment:
-      - POSTGRES_LOGGING=true
-      - POSTGRES_DB=${POSTGRES_DB:-carp_preview} # dynamic based on network, default to carp_preview
-      - POSTGRES_USER=${PGUSER:-carp}
-      - POSTGRES_PASSWORD=${PGPASSWORD:-v8hlDV0yMAHHlIurYupj}
-      - PGPASSFILE=/run/secrets/.pgpass
-    secrets:
-      - source: pgpass
-        target: .pgpass
-    ports:
-      - ${POSTGRES_PORT:-5434}:5434 # Expose the database on a different port
-    volumes:
-      - carp-db-data:/var/lib/postgresql/data
-    restart: on-failure
-    networks:
-      - catalystexplorer-net
-      - shared-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U carp -d carp_preview -p 5434"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    command: >
-      postgres -c port=5434 ${POSTGRES_ARGS:--c maintenance_work_mem=1GB -c max_parallel_maintenance_workers=4}
-
+  # catalystexplorer.cardanonode:
+  #   container_name: catalystexplorer.cardanonode
+  #   image: ghcr.io/intersectmbo/cardano-node:10.1.4
+  #   command:
+  #     [
+  #       "run",
+  #       "--config",
+  #       "/config/config.json",
+  #       "--database-path",
+  #       "/data/db",
+  #       "--socket-path",
+  #       "/ipc/node.socket",
+  #       "--topology",
+  #       "/config/topology.json",
+  #     ]
+  #   volumes:
+  #     - ./cardanonode/config/network/${CARDANO_NETWORK:-preview}/cardano-node:/config
+  #     - ./cardanonode/config/network/${CARDANO_NETWORK:-preview}/genesis:/genesis
+  #     - node-db:/data
+  #     - node-ipc:/ipc
+  #   restart: on-failure
+  #   environment:
+  #     CARDANO_NODE_SOCKET_PATH: /ipc/node.socket
+  #   healthcheck:
+  #     test: ["CMD", "stat", "/ipc/node.socket"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #   networks:
+  #     - catalystexplorer-net
+  #     - shared-network
+  # catalystexplorer.cardanodb:
+  #   container_name: catalystexplorer.cardanodb
+  #   image: postgres:16.3-alpine3.19
+  #   environment:
+  #     - POSTGRES_LOGGING=true
+  #     - POSTGRES_DB=${POSTGRES_DB:-carp_preview} # dynamic based on network, default to carp_preview
+  #     - POSTGRES_USER=${PGUSER:-carp}
+  #     - POSTGRES_PASSWORD=${PGPASSWORD:-v8hlDV0yMAHHlIurYupj}
+  #     - PGPASSFILE=/run/secrets/.pgpass
+  #   secrets:
+  #     - source: pgpass
+  #       target: .pgpass
+  #   ports:
+  #     - ${POSTGRES_PORT:-5434}:5434 # Expose the database on a different port
+  #   volumes:
+  #     - carp-db-data:/var/lib/postgresql/data
+  #   restart: on-failure
+  #   networks:
+  #     - catalystexplorer-net
+  #     - shared-network
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U carp -d carp_preview -p 5434"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  #   command: >
+  #     postgres -c port=5434 ${POSTGRES_ARGS:--c maintenance_work_mem=1GB -c max_parallel_maintenance_workers=4}
   catalystexplorer.adminer:
     image: adminer:4.8.1
     container_name: catalystexplorer.adminer
@@ -121,7 +118,6 @@ services:
     networks:
       - catalystexplorer-net
       - shared-network
-
   catalystexplorer.queue:
     image: catalystexplorer
     container_name: catalystexplorer.queue
@@ -156,16 +152,15 @@ services:
       args: {}
       dockerfile: ./Dockerfile.dev
     volumes:
-      - type: volume
-        source: node-ipc
-        target: /ipc
-        volume:
-          nocopy: true
+      # - type: volume
+      #   source: node-ipc
+      #   target: /ipc
+      #   volume:
+      #     nocopy: true
       - ./application:/var/www:cached
     networks:
       - catalystexplorer-net
       - shared-network
-
   # database
   catalystexplorer.db:
     image: postgres:17.1-bookworm
@@ -196,7 +191,6 @@ services:
         - "catalystexplorer"
       retries: 3
       timeout: 5s
-
   # meilisearch
   catalystexplorer-search:
     image: getmeili/meilisearch:v1.22.0
@@ -220,7 +214,6 @@ services:
         - "http://127.0.0.1:7700/health"
       retries: 3
       timeout: 5s
-
   # redis
   catalystexplorer.redis:
     image: redis:8.0-M02-alpine3.20
@@ -239,7 +232,6 @@ services:
         - ping
       retries: 3
       timeout: 5s
-
   # minio
   catalystexplorer-minio:
     image: "minio/minio:RELEASE.2025-02-18T16-25-55Z"
@@ -265,7 +257,6 @@ services:
       test: ["CMD", "mc", "ready", "local"]
       retries: 3
       timeout: 5s
-
   catalystexplorer.allure:
     image: frankescobar/allure-docker-service:2.27.0
     container_name: catalystexplorer.allure
@@ -284,7 +275,6 @@ services:
       - catalystexplorer-net
     profiles:
       - testing
-
   createbuckets:
     image: minio/mc
     environment:
@@ -309,7 +299,6 @@ networks:
   shared-network:
     name: shared-network
     driver: bridge
-
 volumes:
   catalystexplorer-minio:
     driver: local
@@ -321,10 +310,10 @@ volumes:
     driver: local
   test_catalystexplorer-db:
     driver: local
-  node-ipc:
-  node-db:
+  # node-ipc:
+  # node-db:
   db-data:
-  carp-db-data:
+  # carp-db-data:
 secrets:
   pgpass:
     file: ./config/carp/secrets/.pgpass
