@@ -87,83 +87,64 @@ const GraphButton = () => {
                     </Transition.Child>
 
                     <motion.svg
-                            key={`connector-${connectorOffset}`}
-                            width={129}
-                            height={40}
-                            viewBox="0 177 129 24"
-                            className="mx-auto -mt-4"
-                            style={{ x: connectorOffset }}
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ 
-                                type: "spring",
-                                stiffness: 300,
-                                damping: 20,
-                                duration: 0.3
-                            }}
-                        >
-                            <motion.rect
-                                width="71"
-                                height="29"
-                                x="25"
-                                y="177"
-                                fill="url(#paint0_linear_7395_41434)"
-                                initial={{ scaleX: 0 }}
-                                animate={{ scaleX: 1 }}
-                                transition={{ 
-                                    duration: 0.2,
-                                    ease: "easeOut",
-                                    delay: 0.1 
-                                }}
-                                transform-origin="center"
-                            />
-                            <motion.path
-                                d="M27.5 210.5C23.9 187.1 7.66667 184.833 3.49693e-07 185L3.5 180L27.5 177L38 185L36 200C34.6667 203.5 31.1 207.9 27.5 197.5Z"
-                                fill="url(#paint1_linear_7395_41434)"
-                                initial={{ pathLength: 0 }}
-                                animate={{ pathLength: 1 }}
-                                transition={{ 
-                                    duration: 0.2,
-                                    ease: "easeOut",
-                                    delay: 0.1
-                                }}
-                                style={{ 
-                                    stroke: "url(#paint1_linear_7395_41434)",
-                                    strokeWidth: 0.5
-                                }}
-                            />
-                            
-                            <motion.path
-                                d="M101.5 210.5C105.1 187.1 121.333 184.833 129 185L125.5 180L101.5 177L91 185L93 200C94.3333 203.5 97.9 207.9 101.5 197.5Z"
-                                fill="url(#paint2_linear_7395_41434)"
-                                initial={{ pathLength: 0 }}
-                                animate={{ pathLength: 1 }}
-                                transition={{ 
-                                    duration: 0.2,
-                                    ease: "easeOut",
-                                    delay: 0.1
-                                }}
-                                style={{ 
-                                    stroke: "url(#paint2_linear_7395_41434)",
-                                    strokeWidth: 0.5
-                                }}
-                            />
-
-                            <defs>
-                                <linearGradient id="paint0_linear_7395_41434" x1="29" y1="177" x2="100" y2="177" gradientUnits="userSpaceOnUse">
-                                    <stop stopColor="#475467"/>
-                                    <stop offset="0.997174" stopColor="#475467"/>
-                                </linearGradient>
-                                <linearGradient id="paint1_linear_7395_41434" x1="5.89804e-07" y1="190.493" x2="38" y2="190.493" gradientUnits="userSpaceOnUse">
-                                    <stop stopColor="#475467"/>
-                                     <stop offset="0.997174" stopColor="#475467"/>
-                                </linearGradient>
-                                <linearGradient id="paint2_linear_7395_41434" x1="129" y1="190.493" x2="91" y2="190.493" gradientUnits="userSpaceOnUse">
-                                    <stop stopColor="#475467"/>
-                                     <stop offset="0.997174" stopColor="#475467"/>
-                                </linearGradient>
-                            </defs>
-                        </motion.svg>
+    key={`connector-${connectorOffset}`}
+    width={129}
+    height={40}
+    viewBox="0 177 129 24"
+    className="mx-auto -mt-4"
+    style={{ x: connectorOffset }}
+    initial={{ opacity: 0, scale: 0.9 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ 
+        type: "spring",
+        stiffness: 300,
+        damping: 20,
+        duration: 0.3
+    }}
+>
+    <motion.rect
+        width="71"
+        height="29"
+        x="25"
+        y="177"
+        fill="var(--cx-background-gradient-2-dark)"
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: 1 }}
+        transition={{ 
+            duration: 0.2,
+            ease: "easeOut",
+            delay: 0.1 
+        }}
+        transform-origin="center"
+    />
+    <motion.path
+        d="M27.5 210.5C23.9 187.1 7.66667 184.833 3.49693e-07 185L3.5 180L27.5 177L38 185L36 200C34.6667 203.5 31.1 207.9 27.5 197.5Z"
+        fill="var(--cx-background-gradient-2-dark)"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ 
+            duration: 0.2,
+            ease: "easeOut",
+            delay: 0.1
+        }}
+        stroke="var(--cx-background-gradient-2-dark)"
+        strokeWidth={0.5}
+    />
+    
+    <motion.path
+        d="M101.5 210.5C105.1 187.1 121.333 184.833 129 185L125.5 180L101.5 177L91 185L93 200C94.3333 203.5 97.9 207.9 101.5 197.5Z"
+        fill="var(--cx-background-gradient-2-dark)"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ 
+            duration: 0.2,
+            ease: "easeOut",
+            delay: 0.1
+        }}
+        stroke="var(--cx-background-gradient-2-dark)"
+        strokeWidth={0.5}
+    />
+</motion.svg>
 
                     <Transition.Child
                         as="div"
@@ -279,7 +260,7 @@ const GraphButton = () => {
                         className={`cursor-pointer ${
                             activePopup === "analytics"
                                 ? "bg-gradient-to-br from-[var(--cx-background-gradient-2-dark)] to-[var(--cx-background-gradient-1-dark)] bg-opacity-0 "
-                                : "bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)] hover:scale-105 transition-transform duration-200 active:scale-95"
+                                : "bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)] "
                         } `}
                     />
                 </div>
