@@ -271,12 +271,12 @@ export default function Index({
                                 )}
                             </motion.div>
                         </AnimatePresence>
-
-                        <div className="sticky -bottom-8 flex justify-center z-40">
-                             <GraphButton />
-                        </div>
+                        <div className="sticky bottom-8 flex justify-center z-40">
+                <GraphButton />
+            </div>
             </>
                     ) : null}
+
 
                 </div>
             </FiltersProvider>
