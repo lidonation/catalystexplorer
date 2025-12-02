@@ -1,6 +1,6 @@
 import Title from '@/Components/atoms/Title';
 import UserQuickView from '@/Components/UserQuickView';
-import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
+import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/ProposalProfilesComponent';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import ProposalCardFooter from './ProposalCardFooter';
 import ProposalCardHeader from './ProposalCardHeader';

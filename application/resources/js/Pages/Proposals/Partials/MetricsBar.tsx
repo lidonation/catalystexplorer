@@ -76,13 +76,13 @@ const SectionTwo: React.FC<
         | 'awardedADA'
     >
 > = ({
-    distributedUSD,
-    distributedADA,
-    awardedUSD,
-    awardedADA,
-    requestedUSD,
-    requestedADA,
-}) => {
+         distributedUSD,
+         distributedADA,
+         awardedUSD,
+         awardedADA,
+         requestedUSD,
+         requestedADA
+     }) => {
     const { t } = useLaravelReactI18n();
     return (
         <div

@@ -26,7 +26,7 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
         if (cachedFunds) {
             setFunds(JSON.parse(cachedFunds));
         } else {
-            fetchFunds();
+            fetchFunds().then();
         }
     }, []);
 

@@ -8,7 +8,7 @@ import FundingPercentages from '@/Components/FundingPercentages';
 import Image from '@/Components/Image';
 import UserQuickView from '@/Components/UserQuickView';
 import { ListProvider } from '@/Context/ListContext';
-import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/IdeascaleProfileUsersComponent';
+import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/ProposalProfilesComponent';
 import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';

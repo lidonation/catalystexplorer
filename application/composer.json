@@ -17,12 +17,12 @@
         "fakerphp/faker": "^1.23",
         "inertiajs/inertia-laravel": "^2.0",
         "inertiaui/modal": "^0.21.1",
-        "laravel/framework": "^12.0",
+        "laravel/framework": "^12.47",
         "laravel/helpers": "^1.8",
         "laravel/horizon": "^5.33",
         "laravel/jetstream": "^5.3",
         "laravel/nova": "^5.7",
-        "laravel/octane": "^2.11",
+        "laravel/octane": "^2.13",
         "laravel/sanctum": "^4.0",
         "laravel/scout": "^10.16",
         "laravel/tinker": "^2.10.1",
@@ -32,9 +32,6 @@
         "lido-nation/cardano-nft-maker-laravel": "^2.1",
         "maatwebsite/excel": "^3.1",
         "meilisearch/meilisearch-php": "^1.15",
-        "mockery/mockery": "^1.6",
-        "pestphp/pest": "^3.8",
-        "pestphp/pest-plugin-laravel": "^3.2",
         "phpseclib/phpseclib": "^3.0",
         "saloonphp/cache-plugin": "^3.0",
         "saloonphp/laravel-plugin": "^3.6",
@@ -62,7 +59,9 @@
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
-        "nunomaduro/collision": "^8.6"
+        "nunomaduro/collision": "^8.6",
+        "pestphp/pest": "^4.0@dev",
+        "pestphp/pest-plugin-laravel": "^4.0@dev"
     },
     "autoload": {
         "files": [

@@ -5,13 +5,18 @@ declare(strict_types=1);
 namespace App\Models\Pivot;
 
 use App\Models\Proposal;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class ProposalProfile extends Pivot
+class ProposalProfile extends Model
 {
+    use HasUuids;
+
     protected $table = 'proposal_profiles';
+
+    public $timestamps = false;
 
     public function model(): MorphTo
     {

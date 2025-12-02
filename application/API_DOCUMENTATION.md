@@ -69,9 +69,10 @@ Available sort fields:
 
 ##### Includes (Relationships)
 - `include=campaign` - Include campaign relationship
-- `include=user` - Include user relationship
 - `include=fund` - Include fund relationship
-- `include=campaign,user` - Include multiple relationships
+- `include=team` - Include team member relationships
+- `include=meta_data` - Include proposal metadata
+- `include=campaign,team` - Include multiple relationships
 
 ##### Pagination
 - `per_page=24` - Items per page (max 60)
@@ -85,7 +86,7 @@ Returns a single proposal by ID.
 > **Legacy:** Individual proposal endpoints are only available in the versioned API.
 
 #### Query Parameters
-- `include=campaign,user` - Include relationships
+- `include=campaign,meta_data` - Include relationships
 
 ## Example Requests
 
@@ -106,12 +107,12 @@ GET /api/v1/proposals?filter[status]=active&filter[campaign_id]=123&sort=-amount
 
 ### Complex Query
 ```
-GET /api/v1/proposals?include=campaign,user&filter[funded]=1&filter[amount_min]=1000&sort=-funded_at&per_page=50
+GET /api/v1/proposals?include=campaign,team&filter[funded]=1&filter[amount_min]=1000&sort=-funded_at&per_page=50
 ```
 
 ### Get Single Proposal with Relationships
 ```
-GET /api/v1/proposals/12345?include=campaign,user,fund
+GET /api/v1/proposals/12345?include=campaign,team,fund,meta_data
 ```
 
 ### Legacy Examples (Unversioned)
@@ -433,10 +434,19 @@ CatalystTally fields:
       "currency": "ADA",
       "launched_at": "2024-01-01T00:00:00Z"
     },
-    "user": {
-      "id": "789",
-      "name": "John Doe"
-    },
+    "team": [
+      {
+        "id": "team-001",
+        "ideascale_id": "67890",
+        "catalyst_id": null,
+        "username": "project_lead",
+        "name": "Jane Doe",
+        "bio": "Blockchain architect with 8 years experience",
+        "title": "Technical Lead",
+        "proposals_count": 5,
+        "hero_img_url": "https://example.com/jane.jpg"
+      }
+    ],
     "link": "https://yoursite.com/en/proposals/sample-proposal"
   }
 }
@@ -468,9 +478,205 @@ All proposal fields are included in the response:
 - `created_at` - Creation date
 - `updated_at` - Last update date
 - `campaign` - Related campaign (when included)
-- `user` - Proposal owner (when included)
 - `fund` - Related fund (when included)
+- `team` - Team member profiles (when included)
+- `meta_data` - Proposal metadata (when included)
 - `link` - Full URL to proposal page
+
+## Team Relation
+
+The `team` relationship provides access to the team members associated with a proposal. This includes project leads, developers, advisors, and other contributors.
+
+### Including Team Data
+```
+GET /api/v1/proposals?include=team
+GET /api/v1/proposals/{id}?include=team
+```
+
+### Team Structure
+The `team` field returns an array of team member objects with unified formatting for both IdeascaleProfile and CatalystProfile types.
+
+#### Team Member Fields
+- `id` - Unique identifier of the profile
+- `ideascale_id` - Ideascale platform ID (when applicable)
+- `catalyst_id` - Catalyst platform ID (when applicable)
+- `username` - Platform username
+- `name` - Full name of the team member
+- `bio` - Biography or description
+- `title` - Professional title or role
+- `proposals_count` - Number of proposals associated with this profile
+- `hero_img_url` - Profile image URL
+
+### Example Response with Team Data
+```json
+{
+  "data": {
+    "id": "12345",
+    "title": "Blockchain Education Platform",
+    "slug": "blockchain-education-platform",
+    "status": "active",
+    "amount_requested": 25000,
+    "currency": "ADA",
+    "team": [
+      {
+        "id": "profile-001",
+        "ideascale_id": "12345",
+        "catalyst_id": null,
+        "username": "john_dev",
+        "name": "John Smith",
+        "bio": "Experienced blockchain developer with 5+ years in Web3",
+        "title": "Lead Developer",
+        "proposals_count": 3,
+        "hero_img_url": "https://example.com/profile/john.jpg"
+      },
+      {
+        "id": "profile-002",
+        "ideascale_id": null,
+        "catalyst_id": "cat-456",
+        "username": "sarah_pm",
+        "name": "Sarah Johnson",
+        "bio": "Product manager specializing in educational technology",
+        "title": "Project Manager",
+        "proposals_count": 1,
+        "hero_img_url": "https://example.com/profile/sarah.jpg"
+      }
+    ],
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-02-01T09:00:00Z"
+  }
+}
+```
+
+### Simple Team Example
+Some proposals may have minimal team data:
+```json
+{
+  "data": {
+    "id": "67890",
+    "title": "Community Hub Development",
+    "team": [
+      {
+        "id": "profile-003",
+        "ideascale_id": "78901",
+        "catalyst_id": null,
+        "username": "community_lead",
+        "name": "Alex Chen",
+        "bio": null,
+        "title": null,
+        "proposals_count": 2,
+        "hero_img_url": null
+      }
+    ]
+  }
+}
+```
+
+### Important Notes
+- Team data structure is **consistent** across different profile types (Ideascale and Catalyst)
+- Fields may be **null** when not available in the source profile
+- **Mixed profile types** - A single proposal can have team members from both Ideascale and Catalyst platforms
+- Team data is only included when explicitly requested via `include=team`
+- Empty teams return an empty array `[]`
+- The `proposals_count` field indicates how many proposals this team member is associated with across the platform
+
+## Meta Data Relation
+
+The `meta_data` relationship provides access to dynamic key-value metadata associated with proposals. This data is stored as schemaless information and can vary significantly between proposals.
+
+### Including Meta Data
+```
+GET /api/v1/proposals?include=meta_data
+GET /api/v1/proposals/{id}?include=meta_data
+```
+
+### Meta Data Structure
+The `meta_data` field returns a flat object with string keys and values. The structure varies by proposal, but common fields include:
+
+#### Common Meta Data Fields
+- `funds_remaining` - Remaining project funding amount
+- `unique_wallets` - Number of unique wallets that voted
+- `alignment_score` - Community advisor alignment rating (0-5 scale)
+- `auditability_score` - Community advisor auditability rating (0-5 scale) 
+- `feasibility_score` - Community advisor feasibility rating (0-5 scale)
+- `proposal_impact_score` - Impact assessment score
+- `applicant_type` - Type of applicant ("Individual", "Entity (Not Incorporated)", etc.)
+- `project_length` - Project duration in months
+- `opensource` - Open source status ("1" for yes, "0" for no)
+
+#### Catalyst Platform Integration
+- `catalyst_document_id` - Document identifier in Catalyst system
+- `catalyst_document_version` - Document version identifier
+- `projectcatalyst_io_url` - Link to proposal on projectcatalyst.io
+- `ideascale_id` - Legacy Ideascale platform identifier
+- `iog_hash` - IOG internal hash identifier
+
+#### Blockchain Integration
+- `chain_proposal_id` - Proposal identifier on Cardano blockchain
+- `chain_proposal_index` - Proposal index number on chain
+- `proposal_public_key` - Cryptographic public key for proposal
+
+#### Media and Resources
+- `youtube` - Link to proposal presentation video
+- `quickpitch` - Quick pitch video URL (may also be in main proposal fields)
+
+### Example Response with Meta Data
+```json
+{
+  "data": {
+    "id": "12345",
+    "title": "LATAM Cardano Community Operations",
+    "slug": "latam-cardano-community-operations",
+    "status": "active",
+    "amount_requested": 75000,
+    "currency": "ADA",
+    "meta_data": {
+      "alignment_score": "4.41",
+      "applicant_type": "Entity (Not Incorporated)",
+      "auditability_score": "3.55",
+      "catalyst_document_id": "0198ae90-30b7-7a74-8a3b-e3c4cfc864be",
+      "catalyst_document_version": "0198aed0-6d11-775a-9aab-3ffdb7a158cb",
+      "chain_proposal_id": "78536759894080d15118cea4bb7dcf3c8c0e8654e6ffc78e8ead1c6e96f9920b",
+      "chain_proposal_index": "106",
+      "feasibility_score": "4.21",
+      "funds_remaining": "1286190",
+      "ideascale_id": "404699",
+      "iog_hash": "800227",
+      "opensource": "1",
+      "projectcatalyst_io_url": "https://projectcatalyst.io/funds/14/cardano-open-ecosystem/latam-cardano-community-operations",
+      "project_length": "6",
+      "proposal_impact_score": "0",
+      "proposal_public_key": "2jaUgcRgeZ9LisG7V/9AjdzYcZ32EvkrAYqaJcmhg+U=",
+      "unique_wallets": "146",
+      "youtube": "https://www.youtube.com/watch?v=j-zejRhSO3M&t=5256s"
+    },
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-02-01T09:00:00Z"
+  }
+}
+```
+
+### Simple Meta Data Example
+Some proposals may have minimal meta data:
+```json
+{
+  "data": {
+    "id": "67890",
+    "title": "Cardano India Developers Community Hub",
+    "meta_data": {
+      "funds_remaining": "1286190",
+      "unique_wallets": "178"
+    }
+  }
+}
+```
+
+### Important Notes
+- Meta data structure is **not guaranteed** - fields may be present or absent
+- All values are stored as **strings**, including numeric data
+- Field names use **snake_case** convention
+- Some fields may contain URLs, identifiers, or encoded data
+- Meta data is only included when explicitly requested via `include=meta_data`
+- Empty meta data returns `null` or an empty object `{}`
 
 ## Error Responses
 

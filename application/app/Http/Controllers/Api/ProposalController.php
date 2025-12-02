@@ -38,7 +38,10 @@ class ProposalController extends Controller
             ->select('proposals.*')
             ->allowedFilters([
                 AllowedFilter::exact('id'),
-                AllowedFilter::partial('title'),
+                AllowedFilter::callback('title', function ($query, $value) {
+                    // Handle JSON title column - search in the 'en' field
+                    $query->whereRaw("title->>'en' ILIKE ?", ["%{$value}%"]);
+                }),
                 AllowedFilter::exact('status'),
                 AllowedFilter::exact('type'),
                 AllowedFilter::exact('category'),
@@ -59,6 +62,7 @@ class ProposalController extends Controller
                 AllowedInclude::relationship('team'),
                 AllowedInclude::relationship('schedule'),
                 AllowedInclude::relationship('schedule.milestones'),
+                AllowedInclude::relationship('meta_data'),
             ])
             ->allowedSorts([
                 AllowedSort::field('title'),
@@ -72,8 +76,7 @@ class ProposalController extends Controller
                 AllowedSort::field('created_at'),
                 AllowedSort::field('updated_at'),
             ])
-            ->defaultSort('-created_at')
-            ->groupBy('proposals.id');
+            ->defaultSort(['-created_at', '-id']);
 
         $includedRelations = collect(explode(',', $request->get('include', '')))
             ->filter()
@@ -85,6 +88,11 @@ class ProposalController extends Controller
         }
 
         $proposals = $queryBuilder->paginate($per_page);
+
+        // Remove currency from appends to prevent automatic relationship loading
+        $proposals->getCollection()->each(function ($proposal) {
+            $proposal->makeHidden(['currency']);
+        });
 
         return ProposalResource::collection($proposals);
     }
@@ -102,6 +110,7 @@ class ProposalController extends Controller
                 AllowedInclude::relationship('team'),
                 AllowedInclude::relationship('schedule'),
                 AllowedInclude::relationship('schedule.milestones'),
+                AllowedInclude::relationship('meta_data'),
             ]);
 
         // Check if any relations are being included and ensure they're loaded
@@ -115,6 +124,9 @@ class ProposalController extends Controller
         }
 
         $proposal = $queryBuilder->findOrFail($id);
+
+        // Remove currency from appends to prevent automatic relationship loading
+        $proposal->makeHidden(['currency']);
 
         return new ProposalResource($proposal);
     }

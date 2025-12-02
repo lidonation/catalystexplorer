@@ -15,6 +15,7 @@ class ProposalTypeScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        $builder->where('type', 'proposal');
+        // Handle JSON type column - cast to text for comparison
+        $builder->whereRaw('type::text = ?', ['proposal']);
     }
 }

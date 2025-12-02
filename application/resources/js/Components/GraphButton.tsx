@@ -95,7 +95,7 @@ const GraphButton = () => {
     style={{ x: connectorOffset }}
     initial={{ opacity: 0, scale: 0.9 }}
     animate={{ opacity: 1, scale: 1 }}
-    transition={{ 
+    transition={{
         type: "spring",
         stiffness: 300,
         damping: 20,
@@ -110,10 +110,10 @@ const GraphButton = () => {
         fill="var(--cx-background-gradient-2-dark)"
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
-        transition={{ 
+        transition={{
             duration: 0.2,
             ease: "easeOut",
-            delay: 0.1 
+            delay: 0.1
         }}
         transform-origin="center"
     />
@@ -122,7 +122,7 @@ const GraphButton = () => {
         fill="var(--cx-background-gradient-2-dark)"
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
-        transition={{ 
+        transition={{
             duration: 0.2,
             ease: "easeOut",
             delay: 0.1
@@ -130,13 +130,13 @@ const GraphButton = () => {
         stroke="var(--cx-background-gradient-2-dark)"
         strokeWidth={0.5}
     />
-    
+
     <motion.path
         d="M101.5 210.5C105.1 187.1 121.333 184.833 129 185L125.5 180L101.5 177L91 185L93 200C94.3333 203.5 97.9 207.9 101.5 197.5Z"
         fill="var(--cx-background-gradient-2-dark)"
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
-        transition={{ 
+        transition={{
             duration: 0.2,
             ease: "easeOut",
             delay: 0.1
@@ -155,7 +155,7 @@ const GraphButton = () => {
                         leaveFrom="opacity-100 scale-100"
                         leaveTo="opacity-0 scale-95"
                     >
-                        
+
                     </Transition.Child>
                 </Transition>
 

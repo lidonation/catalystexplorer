@@ -573,6 +573,11 @@ class Proposal extends Model implements IHasMetaData
         ]);
     }
 
+    public function meta_data(): HasMany
+    {
+        return $this->metas();
+    }
+
     public function campaign(): BelongsTo
     {
         return $this->belongsTo(Campaign::class, 'campaign_id', 'id');

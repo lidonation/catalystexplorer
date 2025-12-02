@@ -1,3 +1,24 @@
+## [1.47.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.47.0...v1.47.1) (2025-12-01)
+
+
+### Bug Fixes
+
+* remove proposal_profile duplicate attachments ([a43147e](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/a43147e79cbfe3a9781b8d20f74108f4b28f014e))
+
+# [1.47.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.46.5...v1.47.0) (2025-12-01)
+
+
+### Features
+
+* add meta_data relationt to proposal api resource to provide schmemaless proposal related data ([645c107](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/645c107e06162710f14237de68e5e366919b0978))
+
+## [1.46.5](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.46.4...v1.46.5) (2025-11-30)
+
+
+### Bug Fixes
+
+* resolved sort causing duplicated proposals across pages ([66c5721](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/66c57216e314ed0c82d02ddd3017752e63ed6113))
+
 ## [1.46.4](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.46.3...v1.46.4) (2025-11-19)
 
 
