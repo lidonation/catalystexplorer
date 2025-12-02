@@ -3,7 +3,6 @@ x-logging: &default-logging
   options:
     max-size: "50m"
     max-file: 6
-
 services:
   # app
   catalystexplorer.com:
@@ -121,7 +120,6 @@ services:
     networks:
       - catalystexplorer-net
       - shared-network
-
   catalystexplorer.queue:
     image: catalystexplorer
     container_name: catalystexplorer.queue
@@ -165,7 +163,6 @@ services:
     networks:
       - catalystexplorer-net
       - shared-network
-
   # database
   catalystexplorer.db:
     image: postgres:17.1-bookworm
@@ -196,7 +193,6 @@ services:
         - "catalystexplorer"
       retries: 3
       timeout: 5s
-
   # meilisearch
   catalystexplorer-search:
     image: getmeili/meilisearch:v1.27.0
@@ -220,7 +216,6 @@ services:
         - "http://127.0.0.1:7700/health"
       retries: 3
       timeout: 5s
-
   # redis
   catalystexplorer.redis:
     image: redis:8.0-M02-alpine3.20
@@ -239,7 +234,6 @@ services:
         - ping
       retries: 3
       timeout: 5s
-
   # minio
   catalystexplorer-minio:
     image: "minio/minio:RELEASE.2025-02-18T16-25-55Z"
@@ -265,7 +259,6 @@ services:
       test: ["CMD", "mc", "ready", "local"]
       retries: 3
       timeout: 5s
-
   catalystexplorer.allure:
     image: frankescobar/allure-docker-service:2.27.0
     container_name: catalystexplorer.allure
@@ -284,7 +277,6 @@ services:
       - catalystexplorer-net
     profiles:
       - testing
-
   createbuckets:
     image: minio/mc
     environment:
@@ -309,7 +301,6 @@ networks:
   shared-network:
     name: shared-network
     driver: bridge
-
 volumes:
   catalystexplorer-minio:
     driver: local

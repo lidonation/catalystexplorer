@@ -13,7 +13,7 @@ export default function ViewAnalyticsButton({
 }: ViewAnalyticsButtonProps) {
     return (
         <Button
-            className={`bg-cyan-600 hover:bg-cyan-700 transition-colors rounded-md inline-flex justify-center items-center gap-1 overflow-hidden  px-3 py-2 ${className}`}
+            className={`bg-cyan-600 hover:bg-cyan-700 transition-colors rounded-md inline-flex justify-center items-center gap-1 overflow-hidden  px-4 py-3 ${className}`}
             onClick={onClick}
             ariaLabel="View Analytics"
         >

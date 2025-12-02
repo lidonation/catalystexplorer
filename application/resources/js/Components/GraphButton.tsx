@@ -8,6 +8,8 @@ import AnalyticsIcon from './svgs/AnalyticsIcon';
 import AIPromptIcon from './svgs/AIPromptIcon';
 import MetricsBar from '@/Pages/Proposals/Partials/MetricsBar';
 import { useMetrics } from '@/Context/MetricsContext';
+import { Transition } from '@headlessui/react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const GraphButton = () => {
     const [activePopup, setActivePopup] = useState<null | "analytics" | "ai" | "chart">(null);
@@ -21,10 +23,9 @@ const GraphButton = () => {
     const chartButtonRef = useRef<HTMLDivElement>(null);
     const analyticsButtonRef = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
-    const [barHeight, setBarHeight] = useState(71);
-    const [metricsBarBottom, setMetricsBarBottom] = useState(24);
 
     const chartsUrl = useLocalizedRoute('charts.proposals');
+
 
     // Calculate offset when activePopup changes
     useEffect(() => {
@@ -56,100 +57,184 @@ const GraphButton = () => {
 
     return (
         <>
-            <div ref={containerRef} className="sticky bottom-2 left-0 right-0 z-0  flex justify-center gap-1.5 lg:hidden">
-                {activePopup === "analytics" && metrics && (
-                <div className="fixed bottom-2 left-0 right-0 flex flex-col items-center px-3 pointer-events-none z-50">
-                    <div className="w-full max-w-full mb-0">
-                        <MetricsBar isConnected={false} />
+            {/* Mobile View */}
+            <div className="lg:hidden">
+                {/* Sticky container for everything */}
+                <div ref={containerRef} className="sticky bottom-4 left-0 right-0 z-0">
+                <Transition
+                    show={activePopup === "analytics"}
+                    as="div"
+                    className="fixed bottom-24 left-0 right-0 flex flex-col items-center px-2 z-50"
+                    enter="transition-all duration-300 ease-out"
+                    enterFrom="opacity-0 translate-y-4"
+                    enterTo="opacity-100 translate-y-0"
+                    leave="transition-all duration-200 ease-in"
+                    leaveFrom="opacity-100 translate-y-0"
+                    leaveTo="opacity-0 translate-y-4"
+                    afterLeave={() => setConnectorOffset(0)}
+                >
+                    <Transition.Child
+                        as="div"
+                        enter="transition-all duration-300 ease-out delay-75"
+                        enterFrom="opacity-0 scale-95"
+                        enterTo="opacity-100 scale-100"
+                        leave="transition-all duration-200 ease-in"
+                        leaveFrom="opacity-100 scale-100"
+                        leaveTo="opacity-0 scale-95"
+                        className="w-full max-w-full mb-0"
+                    >
+                        {metrics && <MetricsBar isConnected={false} />}
+                    </Transition.Child>
+
+                    <motion.svg
+    key={`connector-${connectorOffset}`}
+    width={129}
+    height={40}
+    viewBox="0 177 129 24"
+    className="mx-auto -mt-4"
+    style={{ x: connectorOffset }}
+    initial={{ opacity: 0, scale: 0.9 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{
+        type: "spring",
+        stiffness: 300,
+        damping: 20,
+        duration: 0.3
+    }}
+>
+    <motion.rect
+        width="71"
+        height="29"
+        x="25"
+        y="177"
+        fill="var(--cx-background-gradient-2-dark)"
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: 1 }}
+        transition={{
+            duration: 0.2,
+            ease: "easeOut",
+            delay: 0.1
+        }}
+        transform-origin="center"
+    />
+    <motion.path
+        d="M27.5 210.5C23.9 187.1 7.66667 184.833 3.49693e-07 185L3.5 180L27.5 177L38 185L36 200C34.6667 203.5 31.1 207.9 27.5 197.5Z"
+        fill="var(--cx-background-gradient-2-dark)"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{
+            duration: 0.2,
+            ease: "easeOut",
+            delay: 0.1
+        }}
+        stroke="var(--cx-background-gradient-2-dark)"
+        strokeWidth={0.5}
+    />
+
+    <motion.path
+        d="M101.5 210.5C105.1 187.1 121.333 184.833 129 185L125.5 180L101.5 177L91 185L93 200C94.3333 203.5 97.9 207.9 101.5 197.5Z"
+        fill="var(--cx-background-gradient-2-dark)"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{
+            duration: 0.2,
+            ease: "easeOut",
+            delay: 0.1
+        }}
+        stroke="var(--cx-background-gradient-2-dark)"
+        strokeWidth={0.5}
+    />
+</motion.svg>
+
+                    <Transition.Child
+                        as="div"
+                        enter="transition-all duration-300 ease-out delay-150"
+                        enterFrom="opacity-0 scale-95"
+                        enterTo="opacity-100 scale-100"
+                        leave="transition-all duration-200 ease-in"
+                        leaveFrom="opacity-100 scale-100"
+                        leaveTo="opacity-0 scale-95"
+                    >
+
+                    </Transition.Child>
+                </Transition>
+
+                <div className="flex justify-center gap-2">
+                        <div ref={aiButtonRef}>
+                            <IconButton
+                                onClick={() => setActivePopup(activePopup === "ai" ? null : "ai")}
+                                icon={<AIPromptIcon />}
+                                aria-label="AI Assistant"
+                            />
+                        </div>
+
+                        <div ref={chartButtonRef}>
+                            {onProposals ? (
+                                <IconButton
+                                    href={chartsUrl}
+                                    icon={<GraphIcon />}
+                                    testId="proposals-charts-button"
+                                    aria-label="View charts"
+                                />
+                            ) : (
+                                <IconButton
+                                    onClick={() => setActivePopup(activePopup === "chart" ? null : "chart")}
+                                    icon={<GraphIcon />}
+                                    aria-label="View charts"
+                                />
+                            )}
+                        </div>
+
+                        <div ref={analyticsButtonRef}>
+                            <IconButton
+                                onClick={() => setActivePopup(activePopup === "analytics" ? null : "analytics")}
+                                icon={<AnalyticsIcon />}
+                                aria-label="View analytics"
+                                className={`cursor-pointer ${
+                                    activePopup === "analytics"
+                                        ? "bg-gradient-to-br from-[var(--cx-background-gradient-2-dark)] to-[var(--cx-background-gradient-2-dark)] bg-opacity-60 ring-2 ring-white/20"
+                                        : "bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)] hover:scale-105"
+                                } transition-all duration-200 active:scale-95`}
+                            />
+                        </div>
                     </div>
-                    <svg
-                        width={129}
-                        height={40}
-                        viewBox="0 177 129 24"
-                        className="mx-auto transition-transform duration-300 -mt-4"
-                        style={{ transform: `translateX(${connectorOffset}px)` }}
-                        xmlns="http://www.w3.org/2000/svg"
-                        >
-                        <rect
-                            width="71"
-                            height="28"
-                            x="25"
-                            y="177"
-                            fill="url(#paint0_linear_7395_41434)"
-                        />
-                        <path
-                            d="M27.5 197.5C23.9 187.1 7.66667 184.833 3.49693e-07 185L3.5 180L27.5 177L38 185L36 200C34.6667 203.5 31.1 207.9 27.5 197.5Z"
-                            fill="url(#paint1_linear_7395_41434)"
-                        />
-                        <path
-                            d="M101.5 197.5C105.1 187.1 121.333 184.833 129 185L125.5 180L101.5 177L91 185L93 200C94.3333 203.5 97.9 207.9 101.5 197.5Z"
-                            fill="url(#paint2_linear_7395_41434)"
-                        />
-
-                        <defs>
-                            <linearGradient id="paint0_linear_7395_41434" x1="29" y1="177" x2="100" y2="177" gradientUnits="userSpaceOnUse">
-                                <stop stopColor="#475467"/>
-                                <stop offset="0.997174" stopColor="#475467"/>
-                            </linearGradient>
-                            <linearGradient id="paint1_linear_7395_41434" x1="5.89804e-07" y1="190.493" x2="38" y2="190.493" gradientUnits="userSpaceOnUse">
-                                <stop stopColor="#475467"/>
-                                <stop offset="1" stopColor="#435063"/>
-                            </linearGradient>
-                            <linearGradient id="paint2_linear_7395_41434" x1="129" y1="190.493" x2="91" y2="190.493" gradientUnits="userSpaceOnUse">
-                                <stop stopColor="#475467"/>
-                                <stop offset="1" stopColor="#435063"/>
-                            </linearGradient>
-                        </defs>
-                    </svg>
-                </div>
-            )}
-                <div ref={aiButtonRef}>
-                    <IconButton
-                        onClick={() => setActivePopup(activePopup === "ai" ? null : "ai")}
-                        icon={<AIPromptIcon />}
-                    />
-                </div>
-
-                <div ref={chartButtonRef}>
-                    {onProposals ? (
-                        <IconButton
-                            href={chartsUrl}
-                            icon={<GraphIcon />}
-                            testId="proposals-charts-button"
-                            aria-label="View charts"
-                        />
-                    ) : (
-                        <IconButton
-                            onClick={() => setActivePopup(activePopup === "chart" ? null : "chart")}
-                            icon={<GraphIcon />}
-                        />
-                    )}
-                </div>
-
-                <div ref={analyticsButtonRef}>
-                    <IconButton
-                        onClick={() => setActivePopup(activePopup === "analytics" ? null : "analytics")}
-                        icon={<AnalyticsIcon />}
-                        aria-label="View analytics"
-                        className={`cursor-pointer ${
-                            activePopup === "analytics"
-                                ? "bg-gradient-to-br from-[var(--cx-background-gradient-2-dark)] to-[var(--cx-background-gradient-2-dark)] bg-opacity-60"
-                                : "bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)]"
-                        }`}
-                    />
                 </div>
             </div>
 
-            <div className="absolute bottom-2 lg:-right-7 z-1 isolate hidden lg:flex items-end -translate-y-20">
-                {activePopup === "analytics" && metrics && (
-                    <div className="flex items-end">
-                        <MetricsBar isConnected={true} />
-                    </div>
-                )}
+            {/* Desktop View */}
+            <div className="absolute bottom-4 lg:right-8 z-1 isolate hidden lg:flex items-end -translate-y-20">
+                {/* Desktop Analytics Popover */}
+                <Transition
+                    show={activePopup === "analytics"}
+                    as="div"
+                    className="flex items-end mb-2"
+                    enter="transition-all duration-300 ease-out"
+                    enterFrom="opacity-0 translate-x-4"
+                    enterTo="opacity-100 translate-x-0"
+                    leave="transition-all duration-200 ease-in"
+                    leaveFrom="opacity-100 translate-x-0"
+                    leaveTo="opacity-0 translate-x-4"
+                >
+                    <Transition.Child
+                        as="div"
+                        enter="transition-all duration-300 ease-out delay-100"
+                        enterFrom="opacity-0 scale-95"
+                        enterTo="opacity-100 scale-100"
+                        leave="transition-all duration-200 ease-in"
+                        leaveFrom="opacity-100 scale-100"
+                        leaveTo="opacity-0 scale-95"
+                    >
+                        {metrics && <MetricsBar isConnected={true} />}
+                    </Transition.Child>
+                </Transition>
+
+                {/* Desktop Buttons */}
                 <div className="flex flex-col gap-2">
                     <IconButton
                         onClick={() => setActivePopup(activePopup === "ai" ? null : "ai")}
                         icon={<AIPromptIcon />}
+                        aria-label="AI Assistant"
+                        className="hover:scale-105 transition-transform duration-200 active:scale-95"
                     />
                     {onProposals ? (
                         <IconButton
@@ -157,11 +242,14 @@ const GraphButton = () => {
                             icon={<GraphIcon />}
                             testId="proposals-charts-button"
                             aria-label="View charts"
+                            className="hover:scale-105 transition-transform duration-200 active:scale-95"
                         />
                     ) : (
                         <IconButton
                             onClick={() => setActivePopup(activePopup === "chart" ? null : "chart")}
                             icon={<GraphIcon />}
+                            aria-label="View charts"
+                            className="hover:scale-105 transition-transform duration-200 active:scale-95"
                         />
                     )}
                     <IconButton
@@ -169,7 +257,11 @@ const GraphButton = () => {
                         icon={<AnalyticsIcon />}
                         aria-label="View analytics"
                         connected={activePopup === "analytics"}
-                        className={`cursor-pointer ${activePopup === "analytics" ? "bg-opacity-100" : "bg-opacity-60"}`}
+                        className={`cursor-pointer ${
+                            activePopup === "analytics"
+                                ? "bg-gradient-to-br from-[var(--cx-background-gradient-2-dark)] to-[var(--cx-background-gradient-1-dark)] bg-opacity-0 "
+                                : "bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)] "
+                        } `}
                     />
                 </div>
             </div>
