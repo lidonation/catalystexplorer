@@ -4,20 +4,21 @@ type ViewAnalyticsButtonProps = {
     onClick?: () => void;
     className?: string;
     showText?: boolean;
+    label?: string;
 };
 
 export default function ViewAnalyticsButton({
     onClick,
     className = '',
     showText = true,
+    label = "View Analytics",
 }: ViewAnalyticsButtonProps) {
     return (
         <Button
-            className={`bg-cyan-600 hover:bg-cyan-700 transition-colors rounded-md inline-flex justify-center items-center gap-1 overflow-hidden  px-4 py-3 ${className}`}
+            className={`bg-cyan-600 hover:bg-cyan-700 transition-colors rounded-md inline-flex justify-center items-center gap-1 overflow-hidden px-4 py-3 ${className}`}
             onClick={onClick}
-            ariaLabel="View Analytics"
+            ariaLabel={label}
         >
-            {/* Analytics Icon SVG */}
             <svg
                 width="14"
                 height="14"
@@ -38,23 +39,23 @@ export default function ViewAnalyticsButton({
             {showText && (
                 <div className="flex justify-start items-center gap-0.5">
                     <span className="text-white text-s font-medium font-['Inter'] leading-3 whitespace-nowrap">
-                        View Analytics
+                        {label}
                     </span>
                     <svg
-    width="14"
-    height="14"
-    viewBox="0 0 14 14"
-    fill="none"
-    className="flex-shrink-0"
->
-    <path
-        d="M3 8L6 5L9 8"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-    />
-</svg>
+                        width="14"
+                        height="14"
+                        viewBox="0 0 14 14"
+                        fill="none"
+                        className="flex-shrink-0"
+                    >
+                        <path
+                            d="M3 8L6 5L9 8"
+                            stroke="white"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                    </svg>
                 </div>
             )}
         </Button>
