@@ -2,7 +2,10 @@ import Checkbox from '@/Components/atoms/Checkbox';
 import { PaginatedData } from '@/types/paginated-data';
 import axios from 'axios';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useCallback } from 'react';
+import { useCachedData } from '@/useHooks/useCachedData'; 
+import { StorageKeys } from '@/enums/storage-keys-enums'; 
+
 import FundData = App.DataTransferObjects.FundData;
 
 interface FundFiltersProps {
@@ -17,33 +20,33 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
     setSelectedItems,
 }) => {
     const { t } = useLaravelReactI18n();
-    const [funds, setFunds] = useState<PaginatedData<FundData[]> | null>();
-    const [isFetching, setIsFetching] = useState(false);
+    // const [funds, setFunds] = useState<PaginatedData<FundData[]> | null>();
+    // const [isFetching, setIsFetching] = useState(false);
+
+    const fetchFunds = useCallback(async () => {
+        const response = await axios.get(route('api.funds.legacy'));
+        return response?.data || { data: [] };
+    }, []);
+    
+    const { 
+        data: funds,
+        loading: isFetching,
+        error,
+        refetch,
+        clearCache
+    } = useCachedData<PaginatedData<FundData[]>>({
+        key: StorageKeys.FUNDS,
+        fetchFn: fetchFunds,
+        onSuccess: (data) => {
+            console.log(`Loaded ${data.data?.length || 0} funds`);
+        },
+        onError: (err) => console.error('Failed to fetch funds:', err),
+    });
 
     useEffect(() => {
-        // Check if funds are already cached in localStorage to prevent refetching
-        const cachedFunds = localStorage.getItem('funds');
-        if (cachedFunds) {
-            setFunds(JSON.parse(cachedFunds));
-        } else {
-            fetchFunds().then();
-        }
-    }, []);
+        console.log('FundsFilter rendered');
+    });
 
-    const fetchFunds = async () => {
-        try {
-            setIsFetching(true);
-            const response = await axios.get(route('api.funds.legacy'));
-            const fetchedFunds: PaginatedData<FundData[]> =
-                response?.data || [];
-            setFunds(fetchedFunds);
-            localStorage.setItem('funds', JSON.stringify(fetchedFunds));
-        } catch (error) {
-            console.error('Failed to fetch funds:', error);
-        } finally {
-            setIsFetching(false);
-        }
-    };
 
     const handleSelect = (value: string | null) => {
         const updatedItems = selectedItems.includes(value)
@@ -64,7 +67,7 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
                     data-testid="funds-filter-list"
                 >
                     {funds?.data &&
-                        funds?.data.length &&
+                        funds?.data.length > 0 &&
                         funds.data.map((fund) => {
                             return (
                                 <li
