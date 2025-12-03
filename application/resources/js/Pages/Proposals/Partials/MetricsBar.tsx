@@ -353,14 +353,14 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                         </div>
                     )}
                     
-                    <div className={`flex items-center justify-between px-4 ${showAnalytics ? 'py-4' : 'py-4'} w-full min-h-16`}>
+                    <div className={`flex items-center justify-between px-2 w-full min-h-10`}>
                         {metrics?.submitted !== undefined && (
-                            <div className="flex flex-col items-center px-3 flex-1">
+                            <div className="flex flex-col items-center px-2 flex-1">
                             <ValueLabel className="text-content-light block font-semibold text-xs uppercase">
                                 {t('submitted')}
                             </ValueLabel>
                             <span className="text-base font-bold mt-1">{metrics.submitted.toLocaleString()}</span>
-                            <div className="inline-flex justify-center items-center gap-1 mt-1 min-h-[20px]">
+                            <div className="inline-flex justify-center items-center gap-1 mt-1 ">
                                 <MetricBarSvg type="submitted" />
                             </div>
                             </div>
@@ -371,9 +371,9 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                                 {t('approved')}
                             </ValueLabel>
                             <span className="text-base font-bold mt-1">{metrics.approved.toLocaleString()}</span>
-                            <div className="inline-flex justify-center items-center gap-1 min-h-[20px]">
+                            <div className="inline-flex justify-center items-center gap-1 ">
                                 <MetricBarSvg type="approved" />
-                                <div className="text-center justify-start text-green-500 text-[12px] font-medium font-['Inter'] leading-4">
+                                <div className="text-center justify-start text-success text-xs font-medium leading-4">
                                 {((metrics.approved / metrics.submitted) * 100).toFixed(1)}%
                                 </div>
                             </div>
@@ -385,7 +385,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                                 {t('completed')}
                             </ValueLabel>
                             <span className="text-base font-bold">{metrics.completed.toLocaleString()}</span>
-                            <div className="inline-flex justify-center items-center gap-1 mt-1 min-h-[20px]">
+                            <div className="inline-flex justify-center items-center gap-1 mt-1 ">
                                 <div className="w-12 scale-y-[0.5]">
                                 <PercentageProgressBar
                                     value={metrics.completed}
@@ -403,7 +403,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                                 ₳ {t('distributed')}
                             </ValueLabel>
                             <span className="text-base font-bold mt-2">₳{shortNumber(metrics.distributedADA, 2)}</span>
-                            <div className="inline-flex justify-center items-center min-h-[20px]">
+                            <div className="inline-flex justify-center items-center ">
                                 {metrics?.distributedUSD !== undefined && metrics.distributedUSD > 0 ? (
                                 <div className="text-content-light text-[10px] font-medium">
                                     ${shortNumber(metrics.distributedUSD, 2)}
@@ -420,9 +420,9 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                                 ₳ {t('awarded')}
                             </ValueLabel>
                             <span className="text-base font-bold mt-2">₳{shortNumber(metrics.awardedADA, 2)}</span>
-                            <div className="inline-flex justify-center items-center min-h-[20px]">
+                            <div className="inline-flex justify-center items-center ">
                                 {metrics?.awardedUSD !== undefined && metrics.awardedUSD > 0 ? (
-                                <div className="text-content-light text-[10px] font-medium">
+                                <div className="text-content-light text-xs font-medium">
                                     ${shortNumber(metrics.awardedUSD, 2)}
                                 </div>
                                 ) : (
@@ -437,9 +437,9 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                                 ₳ {t('requested')}
                             </ValueLabel>
                             <span className="text-base font-bold mt-2">₳{shortNumber(metrics.requestedADA, 2)}</span>
-                            <div className="inline-flex justify-center items-center min-h-[20px]">
+                            <div className="inline-flex justify-center items-center">
                                 {metrics?.requestedUSD !== undefined && metrics.requestedUSD > 0 ? (
-                                <div className="text-content-light text-[10px] font-medium">
+                                <div className="text-content-light text-xs font-medium">
                                     ${shortNumber(metrics.requestedUSD, 2)}
                                 </div>
                                 ) : (

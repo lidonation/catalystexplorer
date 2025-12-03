@@ -249,7 +249,7 @@ const GraphButton = () => {
                             onClick={() => setActivePopup(activePopup === "chart" ? null : "chart")}
                             icon={<GraphIcon />}
                             aria-label="View charts"
-                            className="hover:scale-105 transition-transform duration-200 active:scale-95"
+                            className="hover:scale-105 transition-transform duration-200"
                         />
                     )}
                     <IconButton
