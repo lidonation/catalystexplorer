@@ -20,8 +20,6 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
     setSelectedItems,
 }) => {
     const { t } = useLaravelReactI18n();
-    // const [funds, setFunds] = useState<PaginatedData<FundData[]> | null>();
-    // const [isFetching, setIsFetching] = useState(false);
 
     const fetchFunds = useCallback(async () => {
         const response = await axios.get(route('api.funds.legacy'));
@@ -37,14 +35,6 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
     } = useCachedData<PaginatedData<FundData[]>>({
         key: StorageKeys.FUNDS,
         fetchFn: fetchFunds,
-        onSuccess: (data) => {
-            console.log(`Loaded ${data.data?.length || 0} funds`);
-        },
-        onError: (err) => console.error('Failed to fetch funds:', err),
-    });
-
-    useEffect(() => {
-        console.log('FundsFilter rendered');
     });
 
 

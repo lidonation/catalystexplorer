@@ -53,7 +53,6 @@ export class StorageService {
 
             // Check if item has expired
             if (item.expiry && now > item.expiry) {
-                console.log(`Cache expired for key: ${key}`);
                 this.remove(key);
                 return defaultValue ?? null;
             }
