@@ -12,6 +12,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Only run this migration in production environment
+        if (!app()->environment('production')) {
+            \Illuminate\Support\Facades\Log::info('Migration skipped: delete_orphaned_catalyst_document_id_metas only runs in production environment');
+            return;
+        }
+        
         // Count records before deletion for logging
         $nullModelIdCount = DB::table('metas')
             ->where('key', 'catalyst_document_id')
@@ -29,7 +35,7 @@ return new class extends Migration
             ->count();
             
         // Log the counts for reference
-        \Log::info('Deleting orphaned catalyst_document_id metas', [
+        \Illuminate\Support\Facades\Log::info('Deleting orphaned catalyst_document_id metas', [
             'null_model_id_count' => $nullModelIdCount,
             'orphaned_count' => $orphanedCount,
             'total_to_delete' => $nullModelIdCount + $orphanedCount
@@ -52,7 +58,7 @@ return new class extends Migration
             })
             ->delete();
             
-        \Log::info('Completed deletion of orphaned catalyst_document_id metas');
+        \Illuminate\Support\Facades\Log::info('Completed deletion of orphaned catalyst_document_id metas');
     }
 
     /**
@@ -63,8 +69,14 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Only run this rollback in production environment
+        if (!app()->environment('production')) {
+            \Illuminate\Support\Facades\Log::info('Migration rollback skipped: delete_orphaned_catalyst_document_id_metas only runs in production environment');
+            return;
+        }
+        
         // This migration cannot be reversed as we're deleting orphaned data
         // that has no valid relationship. The data cannot be reconstructed.
-        \Log::warning('Migration cannot be reversed: orphaned metas data was permanently deleted');
+        \Illuminate\Support\Facades\Log::warning('Migration cannot be reversed: orphaned metas data was permanently deleted');
     }
 };
