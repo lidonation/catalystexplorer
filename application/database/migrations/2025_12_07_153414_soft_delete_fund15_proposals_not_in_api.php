@@ -14,6 +14,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Only run this migration in production environment
+        if (!app()->environment('production')) {
+            \Illuminate\Support\Facades\Log::info('Migration skipped: soft_delete_fund15_proposals_not_in_api only runs in production environment');
+            return;
+        }
+        
         // Read pr_ids from the API CSV file using more robust parsing
         $csvPath = database_path('data/f15proposals.csv');
         $apiPrIds = [];
@@ -83,6 +89,12 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Only run this rollback in production environment
+        if (!app()->environment('production')) {
+            \Illuminate\Support\Facades\Log::info('Migration rollback skipped: soft_delete_fund15_proposals_not_in_api only runs in production environment');
+            return;
+        }
+        
         // Restore the soft deleted Fund 15 proposals
         $fund15Id = '019a9c61-7d7a-7277-b082-bd4137a5a936';
         
