@@ -28,7 +28,7 @@ export default function IconButton({
         ? 'rounded-l-none rounded-r-xl'
         : 'rounded-xl';
 
-    const baseClasses = `${gradientClass} ${borderRadiusClass} mb-2 flex z-20 justify-center px-2 py-1 transition-all duration-200  ${className}`;
+    const baseClasses = `${gradientClass} ${borderRadiusClass} mb-2 flex z-20 justify-center px-2  transition-all duration-200  ${className}`;
 
     if (href) {
         return (
@@ -39,7 +39,7 @@ export default function IconButton({
                 data-testid={testId}
                 aria-label={ariaLabel}
             >
-                <div className="lg:h-23.5 lg:w-23.5 h-16 w-16 flex items-center justify-center">
+                <div className="h-18 w-18 flex items-center justify-center">
                     {icon}
                 </div>
             </Link>
@@ -54,7 +54,7 @@ export default function IconButton({
             type="button"
             aria-label={ariaLabel}
         >
-            <div className="flex lg:h-23.5 lg:w-23.5 h-16 w-16 items-center justify-center">
+            <div className="flex h-18 w-18 items-center justify-center">
                 {icon}
             </div>
         </button>
