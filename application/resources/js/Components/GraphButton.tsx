@@ -197,69 +197,71 @@ const GraphButton = () => {
                     </div>
                 </div>
             </div>
+<div className="hidden lg:block relative h-0">
+  <div className="absolute bottom-0 right-8 flex items-end justify-end z-10 -translate-y-20">
+    <Transition
+      show={activePopup === 'analytics'}
+      as="div"
+      className="flex items-end mb-2"
+      enter="transition-all duration-300 ease-out"
+      enterFrom="opacity-0 translate-x-4"
+      enterTo="opacity-100 translate-x-0"
+      leave="transition-all duration-200 ease-in"
+      leaveFrom="opacity-100 translate-x-0"
+      leaveTo="opacity-0 translate-x-1"
+    >
+      <Transition.Child
+        as="div"
+        enter="transition-all duration-300 ease-out delay-100"
+        enterFrom="opacity-0 scale-95"
+        enterTo="opacity-100 scale-100"
+        leave="transition-all duration-200 ease-in"
+        leaveFrom="opacity-100 scale-100"
+        leaveTo="opacity-0 scale-95"
+      >
+        <div className="relative">
+          {metrics && <MetricsBar isConnected={true} />}
+        </div>
+      </Transition.Child>
+    </Transition>
 
-            <div className="absolute bottom-4 lg:right-8 z-1 isolate hidden lg:flex items-end -translate-y-20 relative">
-                <Transition
-                    show={activePopup === "analytics"}
-                    as="div"
-                    className="flex items-end mb-2 "
-                    enter="transition-all duration-300 ease-out"
-                    enterFrom="opacity-0 translate-x-4"
-                    enterTo="opacity-100 translate-x-0"
-                    leave="transition-all duration-200 ease-in"
-                    leaveFrom="opacity-100 translate-x-0"
-                    leaveTo="opacity-0 translate-x-1"
-                >
-                    <Transition.Child
-                        as="div"
-                        enter="transition-all duration-300 ease-out delay-100"
-                        enterFrom="opacity-0 scale-95"
-                        enterTo="opacity-100 scale-100"
-                        leave="transition-all duration-200 ease-in"
-                        leaveFrom="opacity-100 scale-100"
-                        leaveTo="opacity-0 scale-95"
-                    >
-                        <div className="relative">
-                            {metrics && <MetricsBar isConnected={true} />}
-                        </div>
-                    </Transition.Child>
-                </Transition>
-                <div className="flex flex-col gap-2">
-                    <IconButton
-                        onClick={() => setActivePopup(activePopup === "ai" ? null : "ai")}
-                        icon={<AIPromptIcon />}
-                        aria-label="AI Assistant"
-                        className="hover:scale-105 transition-transform duration-200 active:scale-95"
-                    />
-                    {onProposals ? (
-                        <IconButton
-                            href={chartsUrl}
-                            icon={<GraphIcon />}
-                            testId="proposals-charts-button"
-                            aria-label="View charts"
-                            className="transition-transform duration-200 "
-                        />
-                    ) : (
-                        <IconButton
-                            onClick={() => setActivePopup(activePopup === "chart" ? null : "chart")}
-                            icon={<GraphIcon />}
-                            aria-label="View charts"
-                            className="hover:scale-105 transition-transform duration-200"
-                        />
-                    )}
-                    <IconButton
-                        onClick={() => setActivePopup(activePopup === "analytics" ? null : "analytics")}
-                        icon={<AnalyticsIcon />}
-                        aria-label="View analytics"
-                        connected={activePopup === "analytics"}
-                        className={`cursor-pointer ${
-                            activePopup === "analytics"
-                                ? "bg-gradient-to-br from-[var(--cx-background-gradient-2-dark)] to-[var(--cx-background-gradient-1-dark)] bg-opacity-0 "
-                                : "bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)] "
-                        } `}
-                    />
-                </div>
-            </div>
+    <div className="flex flex-col gap-2">
+      <IconButton
+        onClick={() => setActivePopup(activePopup === 'ai' ? null : 'ai')}
+        icon={<AIPromptIcon />}
+        aria-label="AI Assistant"
+        className="hover:scale-105 transition-transform duration-200 active:scale-95"
+      />
+      {onProposals ? (
+        <IconButton
+          href={chartsUrl}
+          icon={<GraphIcon />}
+          testId="proposals-charts-button"
+          aria-label="View charts"
+          className="transition-transform duration-200"
+        />
+      ) : (
+        <IconButton
+          onClick={() => setActivePopup(activePopup === 'chart' ? null : 'chart')}
+          icon={<GraphIcon />}
+          aria-label="View charts"
+          className="hover:scale-105 transition-transform duration-200"
+        />
+      )}
+      <IconButton
+        onClick={() => setActivePopup(activePopup === 'analytics' ? null : 'analytics')}
+        icon={<AnalyticsIcon />}
+        aria-label="View analytics"
+        connected={activePopup === 'analytics'}
+        className={`cursor-pointer ${
+          activePopup === 'analytics'
+            ? 'bg-gradient-to-br from-[var(--cx-background-gradient-2-dark)] to-[var(--cx-background-gradient-1-dark)] bg-opacity-0'
+            : 'bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)]'
+        }`}
+      />
+    </div>
+  </div>
+</div>
         </>
     );
 };
