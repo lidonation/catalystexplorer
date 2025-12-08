@@ -62,18 +62,19 @@ class Metas extends Resource
                 ->onlyOnIndex()
                 ->filterable()
                 ->sortable(),
-            MorphTo::make(__('Type'), 'model')->types([
-                //                Articles::class,
-                Campaigns::class,
-                IdeascaleProfiles::class,
-                //                Discussions::class,
-                Funds::class,
-                Groups::class,
-                Proposals::class,
-                Reviews::class,
-                Snapshots::class,
-                Users::class,
-            ])->searchable()
+            MorphTo::make(__('Type'), 'model')
+                ->types([
+                    //                Articles::class,
+                    Campaigns::class,
+                    IdeascaleProfiles::class,
+                    //                Discussions::class,
+                    Funds::class,
+                    Groups::class,
+                    Proposals::class,
+                    Reviews::class,
+                    Snapshots::class,
+                    Users::class,
+                ])->searchable()
                 ->filterable(),
         ];
 

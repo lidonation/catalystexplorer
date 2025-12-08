@@ -365,7 +365,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
       </div>
     </div>
   )}
-                    
+
                     <div className='relative '>
                         <div className={`flex items-center justify-between gap-8 px-2 w-full h-18`}>
                             {metrics?.submitted !== undefined && (
