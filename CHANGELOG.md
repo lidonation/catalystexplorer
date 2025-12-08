@@ -1,3 +1,10 @@
+## [1.47.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.47.1...v1.47.2) (2025-12-04)
+
+
+### Bug Fixes
+
+* add expiry to cached funds ([b0c68e8](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/b0c68e8dad8874963c06f35e912564f1d7473b6a))
+
 ## [1.47.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.47.0...v1.47.1) (2025-12-01)
 
 
