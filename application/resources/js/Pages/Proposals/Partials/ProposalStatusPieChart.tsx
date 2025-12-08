@@ -45,7 +45,7 @@ const ProposalStatusPieChart: React.FC<ProposalStatusPieChartProps> = ({
             label: t('project.status.unfunded'),
             value: unfunded,
             percentage: unfundedPercent,
-            color: 'bg-accent-secondary',
+            color: 'bg-accent',
             chartId: 'Unfunded Proposals',
         },
     ];

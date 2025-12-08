@@ -15,7 +15,7 @@ export default function ViewAnalyticsButton({
 }: ViewAnalyticsButtonProps) {
     return (
         <Button
-            className={`bg-cyan-600 hover:bg-cyan-700 transition-colors rounded-md inline-flex justify-center items-center gap-1 overflow-hidden px-4 py-3 ${className}`}
+            className={`bg-cyan-600 hover:bg-cyan-700 transition-colors rounded-md inline-flex justify-center items-center gap-1 overflow-hidden px-3 py-2 ${className}`}
             onClick={onClick}
             ariaLabel={label}
         >
@@ -38,7 +38,7 @@ export default function ViewAnalyticsButton({
 
             {showText && (
                 <div className="flex justify-start items-center gap-0.5">
-                    <span className="text-white text-s font-medium font-['Inter'] leading-3 whitespace-nowrap">
+                    <span className="text-content-light text-xs font-medium font-['Inter'] leading-3 whitespace-nowrap">
                         {label}
                     </span>
                     <svg
