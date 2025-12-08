@@ -105,6 +105,9 @@ class Proposals extends Resource
             Text::make(__('Meta Title'), 'meta_title')
                 ->hideFromIndex(),
 
+            DateTime::make('Created At')
+                ->sortable(),
+
             Textarea::make(__('Problem'), 'problem')
                 ->hideFromIndex(),
 
@@ -244,6 +247,7 @@ class Proposals extends Resource
             // Status Fields
             Select::make(__('Status'), 'status')
                 ->options([
+                    'pending' => 'Pending',
                     'active' => 'Active',
                     'complete' => 'Complete',
                     'over_budget' => 'Over Budget',
@@ -256,6 +260,7 @@ class Proposals extends Resource
             Select::make(__('Funding Status'), 'funding_status')
                 ->options([
                     'funded' => 'Funded',
+                    'pending' => 'Pending',
                     'not_funded' => 'Not Funded',
                     'over_budget' => 'Over Budget',
                 ])
