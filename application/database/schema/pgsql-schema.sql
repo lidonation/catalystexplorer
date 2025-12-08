@@ -2,10 +2,10 @@
 -- PostgreSQL database dump
 --
 
-\restrict jKqDJlwUrNVpjArtq674hhLZY5f3m6Y8lZj41yPgAmSqqggWyJzRUuoYTRbGNi6
+\restrict oWavAJDYiAG8TUYGYJXwFGj6LF0jY1dRMbhcn1ZHYhQfXobdupvYFgs8QPNafGU
 
--- Dumped from database version 17.1 (Debian 17.1-1.pgdg120+1)
--- Dumped by pg_dump version 17.6 (Debian 17.6-1.pgdg13+1)
+-- Dumped from database version 17.5
+-- Dumped by pg_dump version 17.7 (Debian 17.7-3.pgdg13+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -18,6 +18,13 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
+
+--
+-- Name: public; Type: SCHEMA; Schema: -; Owner: -
+--
+
+-- *not* creating schema, since initdb creates it
+
 
 SET default_tablespace = '';
 
@@ -431,6 +438,75 @@ CREATE TABLE public.catalyst_profiles (
 
 
 --
+-- Name: catalyst_registrations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.catalyst_registrations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: catalyst_tallies; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.catalyst_tallies (
+    id uuid NOT NULL,
+    hash character varying(255) NOT NULL,
+    tally integer NOT NULL,
+    model_type character varying(255),
+    model_id uuid,
+    context_id uuid,
+    context_type character varying(255),
+    created_at timestamp(0) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at timestamp(0) without time zone,
+    category_rank integer,
+    fund_rank integer,
+    overall_rank integer,
+    chance_approval numeric(5,2),
+    chance_funding numeric(5,2)
+);
+
+
+--
+-- Name: COLUMN catalyst_tallies.category_rank; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.catalyst_tallies.category_rank IS 'Rank within campaign/category (1 = best)';
+
+
+--
+-- Name: COLUMN catalyst_tallies.fund_rank; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.catalyst_tallies.fund_rank IS 'Rank within fund (1 = best)';
+
+
+--
+-- Name: COLUMN catalyst_tallies.overall_rank; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.catalyst_tallies.overall_rank IS 'Overall rank across all tallies (1 = best)';
+
+
+--
+-- Name: COLUMN catalyst_tallies.chance_approval; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.catalyst_tallies.chance_approval IS 'Approval chance percentage (0.00-100.00)';
+
+
+--
+-- Name: COLUMN catalyst_tallies.chance_funding; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.catalyst_tallies.chance_funding IS 'Funding chance percentage (0.00-100.00)';
+
+
+--
 -- Name: categories; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -614,18 +690,29 @@ ALTER SEQUENCE public.connections_id_seq OWNED BY public.connections.id;
 
 
 --
+-- Name: delegations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.delegations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
 -- Name: delegations; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.delegations (
+    id bigint DEFAULT nextval('public.delegations_id_seq'::regclass) NOT NULL,
+    registration_id bigint NOT NULL,
     voting_pub character varying(255) NOT NULL,
     weight integer NOT NULL,
-    cat_onchain_id text,
     created_at timestamp(0) without time zone,
     updated_at timestamp(0) without time zone,
-    registration_id uuid NOT NULL,
-    old_id bigint,
-    id uuid DEFAULT gen_random_uuid() NOT NULL
+    cat_onchain_id text
 );
 
 
@@ -972,7 +1059,7 @@ CREATE TABLE public.metas (
     content text NOT NULL,
     created_at timestamp(0) without time zone,
     updated_at timestamp(0) without time zone,
-    model_id text,
+    model_id uuid,
     old_id bigint,
     id uuid DEFAULT gen_random_uuid() NOT NULL
 );
@@ -1129,6 +1216,37 @@ CREATE TABLE public.milestones (
 
 
 --
+-- Name: model_categories; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.model_categories (
+    id bigint NOT NULL,
+    category_id bigint NOT NULL,
+    model_type character varying(255) NOT NULL,
+    model_id uuid NOT NULL
+);
+
+
+--
+-- Name: model_categories_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.model_categories_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: model_categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.model_categories_id_seq OWNED BY public.model_categories.id;
+
+
+--
 -- Name: model_has_locations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1182,6 +1300,68 @@ CREATE TABLE public.model_has_roles (
 
 
 --
+-- Name: model_links; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.model_links (
+    id bigint NOT NULL,
+    link_id bigint NOT NULL,
+    model_id uuid NOT NULL,
+    model_type character varying(255) NOT NULL
+);
+
+
+--
+-- Name: model_links_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.model_links_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: model_links_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.model_links_id_seq OWNED BY public.model_links.id;
+
+
+--
+-- Name: model_quiz; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.model_quiz (
+    id bigint NOT NULL,
+    quiz_id bigint NOT NULL,
+    model_id uuid NOT NULL,
+    model_type text NOT NULL
+);
+
+
+--
+-- Name: model_quiz_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.model_quiz_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: model_quiz_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.model_quiz_id_seq OWNED BY public.model_quiz.id;
+
+
+--
 -- Name: model_signature; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1190,6 +1370,68 @@ CREATE TABLE public.model_signature (
     signature_id uuid NOT NULL,
     model_id uuid NOT NULL
 );
+
+
+--
+-- Name: model_signatures; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.model_signatures (
+    id bigint NOT NULL,
+    signature_id bigint NOT NULL,
+    model_type character varying(255) NOT NULL,
+    model_id uuid NOT NULL
+);
+
+
+--
+-- Name: model_signatures_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.model_signatures_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: model_signatures_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.model_signatures_id_seq OWNED BY public.model_signatures.id;
+
+
+--
+-- Name: model_snippets; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.model_snippets (
+    id bigint NOT NULL,
+    model_id uuid NOT NULL,
+    snippet_id bigint NOT NULL,
+    model_type text NOT NULL
+);
+
+
+--
+-- Name: model_snippets_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.model_snippets_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: model_snippets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.model_snippets_id_seq OWNED BY public.model_snippets.id;
 
 
 --
@@ -1203,6 +1445,50 @@ CREATE TABLE public.model_tag (
     old_id bigint,
     id uuid DEFAULT gen_random_uuid() NOT NULL
 );
+
+
+--
+-- Name: model_tags; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.model_tags (
+    model_type text,
+    old_id bigint,
+    id uuid,
+    tag_id bigint,
+    model_id uuid
+);
+
+
+--
+-- Name: model_wallets; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.model_wallets (
+    id bigint NOT NULL,
+    wallet_id bigint NOT NULL,
+    model_id uuid NOT NULL,
+    model_type character varying(255) NOT NULL
+);
+
+
+--
+-- Name: model_wallets_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.model_wallets_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: model_wallets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.model_wallets_id_seq OWNED BY public.model_wallets.id;
 
 
 --
@@ -1570,13 +1856,12 @@ ALTER SEQUENCE public.reactions_id_seq OWNED BY public.reactions.id;
 --
 
 CREATE TABLE public.registrations (
+    id bigint DEFAULT nextval('public.catalyst_registrations_id_seq'::regclass) NOT NULL,
     tx text NOT NULL,
     stake_pub text NOT NULL,
     stake_key text NOT NULL,
-    created_at timestamp(0) without time zone,
-    updated_at timestamp(0) without time zone,
-    old_id bigint,
-    id uuid DEFAULT gen_random_uuid() NOT NULL
+    created_at timestamp(0) without time zone NOT NULL,
+    updated_at timestamp(0) without time zone
 );
 
 
@@ -1898,7 +2183,7 @@ CREATE TABLE public.signatures (
 CREATE TABLE public.snapshots (
     snapshot_name character varying(255),
     model_type character varying(255) NOT NULL,
-    model_id text NOT NULL,
+    model_id uuid NOT NULL,
     epoch integer NOT NULL,
     "order" smallint NOT NULL,
     snapshot_at timestamp without time zone NOT NULL,
@@ -2100,8 +2385,8 @@ CREATE TABLE public.users (
     two_factor_recovery_codes text,
     website character varying(255),
     password_updated_at timestamp(0) without time zone,
-    location_id bigint,
-    id uuid NOT NULL
+    id uuid NOT NULL,
+    location_id uuid
 );
 
 
@@ -2301,10 +2586,52 @@ ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.m
 
 
 --
+-- Name: model_categories id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.model_categories ALTER COLUMN id SET DEFAULT nextval('public.model_categories_id_seq'::regclass);
+
+
+--
 -- Name: model_has_locations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.model_has_locations ALTER COLUMN id SET DEFAULT nextval('public.model_has_locations_id_seq'::regclass);
+
+
+--
+-- Name: model_links id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.model_links ALTER COLUMN id SET DEFAULT nextval('public.model_links_id_seq'::regclass);
+
+
+--
+-- Name: model_quiz id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.model_quiz ALTER COLUMN id SET DEFAULT nextval('public.model_quiz_id_seq'::regclass);
+
+
+--
+-- Name: model_signatures id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.model_signatures ALTER COLUMN id SET DEFAULT nextval('public.model_signatures_id_seq'::regclass);
+
+
+--
+-- Name: model_snippets id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.model_snippets ALTER COLUMN id SET DEFAULT nextval('public.model_snippets_id_seq'::regclass);
+
+
+--
+-- Name: model_wallets id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.model_wallets ALTER COLUMN id SET DEFAULT nextval('public.model_wallets_id_seq'::regclass);
 
 
 --
@@ -2510,6 +2837,22 @@ ALTER TABLE ONLY public.catalyst_profile_has_proposal
 
 ALTER TABLE ONLY public.catalyst_profiles
     ADD CONSTRAINT catalyst_profiles_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: registrations catalyst_registrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.registrations
+    ADD CONSTRAINT catalyst_registrations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: catalyst_tallies catalyst_tallies_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.catalyst_tallies
+    ADD CONSTRAINT catalyst_tallies_pkey PRIMARY KEY (id);
 
 
 --
@@ -2729,6 +3072,14 @@ ALTER TABLE ONLY public.milestones
 
 
 --
+-- Name: model_categories model_categories_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.model_categories
+    ADD CONSTRAINT model_categories_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: model_has_locations model_has_locations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2753,11 +3104,51 @@ ALTER TABLE ONLY public.model_has_roles
 
 
 --
+-- Name: model_links model_links_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.model_links
+    ADD CONSTRAINT model_links_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: model_quiz model_quiz_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.model_quiz
+    ADD CONSTRAINT model_quiz_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: model_signatures model_signatures_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.model_signatures
+    ADD CONSTRAINT model_signatures_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: model_snippets model_snippets_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.model_snippets
+    ADD CONSTRAINT model_snippets_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: model_tag model_tag_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.model_tag
     ADD CONSTRAINT model_tag_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: model_wallets model_wallets_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.model_wallets
+    ADD CONSTRAINT model_wallets_pkey PRIMARY KEY (id);
 
 
 --
@@ -2873,6 +3264,14 @@ ALTER TABLE ONLY public.proposal_profiles
 
 
 --
+-- Name: proposal_profiles proposal_profiles_unique_attachment; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.proposal_profiles
+    ADD CONSTRAINT proposal_profiles_unique_attachment UNIQUE (proposal_id, profile_type, profile_id);
+
+
+--
 -- Name: proposals proposals_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2910,14 +3309,6 @@ ALTER TABLE ONLY public.ratings
 
 ALTER TABLE ONLY public.reactions
     ADD CONSTRAINT reactions_pkey PRIMARY KEY (id);
-
-
---
--- Name: registrations registrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.registrations
-    ADD CONSTRAINT registrations_pkey PRIMARY KEY (id);
 
 
 --
@@ -3129,6 +3520,14 @@ ALTER TABLE ONLY public.voting_powers
 
 
 --
+-- Name: voting_powers voting_powers_voter_snapshot_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.voting_powers
+    ADD CONSTRAINT voting_powers_voter_snapshot_unique UNIQUE (voter_id, snapshot_id);
+
+
+--
 -- Name: action_events_actionable_type_actionable_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3185,6 +3584,13 @@ CREATE INDEX cardano_budget_proposals_govtool_username_index ON public.cardano_b
 
 
 --
+-- Name: cat_onchain_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX cat_onchain_id_index ON public.delegations USING btree (cat_onchain_id);
+
+
+--
 -- Name: catalyst_dreps_uuid_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3196,6 +3602,69 @@ CREATE INDEX catalyst_dreps_uuid_index ON public.catalyst_dreps USING btree (id)
 --
 
 CREATE INDEX catalyst_profiles_uuid_index ON public.catalyst_profiles USING btree (id);
+
+
+--
+-- Name: catalyst_tallies_category_rank_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX catalyst_tallies_category_rank_index ON public.catalyst_tallies USING btree (category_rank);
+
+
+--
+-- Name: catalyst_tallies_chance_approval_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX catalyst_tallies_chance_approval_index ON public.catalyst_tallies USING btree (chance_approval);
+
+
+--
+-- Name: catalyst_tallies_chance_funding_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX catalyst_tallies_chance_funding_index ON public.catalyst_tallies USING btree (chance_funding);
+
+
+--
+-- Name: catalyst_tallies_context_type_context_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX catalyst_tallies_context_type_context_id_index ON public.catalyst_tallies USING btree (context_type, context_id);
+
+
+--
+-- Name: catalyst_tallies_context_type_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX catalyst_tallies_context_type_index ON public.catalyst_tallies USING btree (context_type);
+
+
+--
+-- Name: catalyst_tallies_fund_rank_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX catalyst_tallies_fund_rank_index ON public.catalyst_tallies USING btree (fund_rank);
+
+
+--
+-- Name: catalyst_tallies_hash_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX catalyst_tallies_hash_index ON public.catalyst_tallies USING btree (hash);
+
+
+--
+-- Name: catalyst_tallies_model_type_model_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX catalyst_tallies_model_type_model_id_index ON public.catalyst_tallies USING btree (model_type, model_id);
+
+
+--
+-- Name: catalyst_tallies_overall_rank_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX catalyst_tallies_overall_rank_index ON public.catalyst_tallies USING btree (overall_rank);
 
 
 --
@@ -3245,6 +3714,27 @@ CREATE INDEX group_has_ideascale_profile_ideascale_profile_uuid_index ON public.
 --
 
 CREATE INDEX ideascale_profile_has_proposal_ideascale_profile_uuid_index ON public.ideascale_profile_has_proposal USING btree (ideascale_profile_id);
+
+
+--
+-- Name: idx_catalyst_tallies_context_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_catalyst_tallies_context_id ON public.catalyst_tallies USING btree (context_id);
+
+
+--
+-- Name: idx_catalyst_tallies_context_tally; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_catalyst_tallies_context_tally ON public.catalyst_tallies USING btree (context_id, tally DESC);
+
+
+--
+-- Name: idx_metas_lookup; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_metas_lookup ON public.metas USING btree (model_type, model_id, key);
 
 
 --
@@ -3381,6 +3871,20 @@ CREATE INDEX milestones_proposal_milestone_id_index ON public.milestones USING b
 
 
 --
+-- Name: model_categories_category_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX model_categories_category_id_index ON public.model_categories USING btree (category_id);
+
+
+--
+-- Name: model_categories_model_type_model_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX model_categories_model_type_model_id_index ON public.model_categories USING btree (model_type, model_id);
+
+
+--
 -- Name: model_has_permissions_model_type_model_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3392,6 +3896,76 @@ CREATE INDEX model_has_permissions_model_type_model_id_index ON public.model_has
 --
 
 CREATE INDEX model_has_roles_model_type_model_id_index ON public.model_has_roles USING btree (model_type, model_id);
+
+
+--
+-- Name: model_links_link_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX model_links_link_id_index ON public.model_links USING btree (link_id);
+
+
+--
+-- Name: model_links_model_type_model_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX model_links_model_type_model_id_index ON public.model_links USING btree (model_type, model_id);
+
+
+--
+-- Name: model_quiz_model_type_model_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX model_quiz_model_type_model_id_index ON public.model_quiz USING btree (model_type, model_id);
+
+
+--
+-- Name: model_quiz_quiz_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX model_quiz_quiz_id_index ON public.model_quiz USING btree (quiz_id);
+
+
+--
+-- Name: model_signatures_model_type_model_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX model_signatures_model_type_model_id_index ON public.model_signatures USING btree (model_type, model_id);
+
+
+--
+-- Name: model_signatures_signature_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX model_signatures_signature_id_index ON public.model_signatures USING btree (signature_id);
+
+
+--
+-- Name: model_snippets_model_type_model_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX model_snippets_model_type_model_id_index ON public.model_snippets USING btree (model_type, model_id);
+
+
+--
+-- Name: model_snippets_snippet_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX model_snippets_snippet_id_index ON public.model_snippets USING btree (snippet_id);
+
+
+--
+-- Name: model_wallets_model_type_model_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX model_wallets_model_type_model_id_index ON public.model_wallets USING btree (model_type, model_id);
+
+
+--
+-- Name: model_wallets_wallet_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX model_wallets_wallet_id_index ON public.model_wallets USING btree (wallet_id);
 
 
 --
@@ -4099,16 +4673,16 @@ ALTER TABLE ONLY public.voting_powers
 -- PostgreSQL database dump complete
 --
 
-\unrestrict jKqDJlwUrNVpjArtq674hhLZY5f3m6Y8lZj41yPgAmSqqggWyJzRUuoYTRbGNi6
+\unrestrict oWavAJDYiAG8TUYGYJXwFGj6LF0jY1dRMbhcn1ZHYhQfXobdupvYFgs8QPNafGU
 
 --
 -- PostgreSQL database dump
 --
 
-\restrict FIlqYiIMOtlwqBehuwezE0lzUegU2kYCs3Bkpri1bTI1zHWtDLCAy2XDnhmT0bA
+\restrict hDuu8qEKeprRssKODF56pUswAG6zTmNrZiN6K1tKX8h5fyFNBh79PhXifWqzfd6
 
--- Dumped from database version 17.1 (Debian 17.1-1.pgdg120+1)
--- Dumped by pg_dump version 17.6 (Debian 17.6-1.pgdg13+1)
+-- Dumped from database version 17.5
+-- Dumped by pg_dump version 17.7 (Debian 17.7-3.pgdg13+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -4370,9 +4944,29 @@ COPY public.migrations (id, migration, batch) FROM stdin;
 343	2025_09_15_110656_change_bookmark_collections_type_id_to_uuid	34
 344	2025_09_15_144820_import_bookmark_collections_and_items_from_csv	34
 345	2025_09_18_101350_change_claimed_by_to_uuid_in_catalyst_profiles_table	35
-350	2025_01_20_000000_create_claimed_profiles_table	36
-351	2025_01_20_000001_migrate_existing_claimed_profiles_data	36
-352	2025_01_20_000002_add_uuid_primary_key_to_claimed_profiles_table	37
+346	2025_01_20_000000_create_claimed_profiles_table	36
+347	2025_01_20_000001_migrate_existing_claimed_profiles_data	36
+348	2025_01_20_000002_add_uuid_primary_key_to_claimed_profiles_table	37
+349	2025_09_23_013729_change_metas_model_id_to_uuid	38
+350	2025_09_23_211329_create_catalyst_tallies_table	39
+351	2025_09_23_214620_import_catalyst_tallies_from_sql_dump	39
+352	2025_09_24_000001_populate_catalyst_tallies_with_correct_mapping	39
+353	2025_09_24_000002_update_null_context_id_to_fund_14	39
+354	2025_09_29_005404_add_ranking_columns_to_catalyst_tallies_table	40
+355	2025_09_29_105257_change_location_id_to_uuid_in_users_table	41
+356	2025_10_05_105403_link_matched_profiles_to_users	42
+357	2025_10_08_120000_change_snapshots_model_id_to_uuid	43
+358	2025_10_14_155141_update_catalyst_voting_powers_consumed_column	44
+359	2025_10_15_074031_update_fund14_consumed_voting_powers_correctly	45
+360	2025_10_15_190502_update_consumed_voting_powers	46
+361	2025_10_15_191502_consumed_voting_powers	46
+362	2025_10_23_104215_add_unique_constraint_to_voting_powers_table	47
+363	2025_11_30_145736_fix_missing_proposal_campaign_relations	48
+364	2025_12_01_115758_remove_duplicate_proposal_profiles	49
+365	2025_12_01_115906_add_unique_constraint_to_proposal_profiles	49
+366	2025_12_07_145740_delete_orphaned_catalyst_document_id_metas	50
+367	2025_12_08_074158_soft_delete_74_fund15_proposals_not_in_csv	50
+368	2025_12_08_110533_add_missing_fund15_proposals	50
 \.
 
 
@@ -4380,12 +4974,12 @@ COPY public.migrations (id, migration, batch) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 352, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 368, true);
 
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict FIlqYiIMOtlwqBehuwezE0lzUegU2kYCs3Bkpri1bTI1zHWtDLCAy2XDnhmT0bA
+\unrestrict hDuu8qEKeprRssKODF56pUswAG6zTmNrZiN6K1tKX8h5fyFNBh79PhXifWqzfd6
 
