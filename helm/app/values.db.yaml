@@ -1472,7 +1472,7 @@ pgpool:
 #    backend_hostname0 = 'cx-web-db-postgresql-ha-postgresql-0.cx-web-db-postgresql-ha-postgresql-headless.catalystexplorer-preview.svc.cluster.local'
 #    backend_port0 = 5432
 #    backend_weight0 = 1
-#    backend_data_directory0 = '/opt/bitnami/pgpool/data'
+#    backend_data_directory0 = '/scripts/bitnami/pgpool/data'
 #    backend_flag0 = 'ALLOW_TO_FAILOVER'
 #
 #    backend_hostname1 = 'cx-web-db-postgresql-ha-postgresql-1.cx-web-db-postgresql-ha-postgresql-headless.catalystexplorer-preview.svc.cluster.local'

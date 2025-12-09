@@ -37,9 +37,9 @@ class DecodeCatalystDocument
 
         // Use Docker container paths (venv has required packages)
         $python = '/venv/bin/python3';
-        $coseScript = '/opt/catalyst-proposal-decoder/decodeProposal.py';
-        $directScript = '/opt/catalyst-proposal-decoder/decodeProposalDirect.py';
-        $recursiveScript = '/opt/catalyst-proposal-decoder/decodeProposalRecursive.py';
+        $coseScript = '/scripts/decodeProposal.py';
+        $directScript = '/scripts/decodeProposalDirect.py';
+        $recursiveScript = '/scripts/decodeProposalRecursive.py';
 
         $attempts = 0;
         $lastException = null;

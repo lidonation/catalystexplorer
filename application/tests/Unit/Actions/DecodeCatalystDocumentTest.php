@@ -65,7 +65,7 @@ class DecodeCatalystDocumentTest extends TestCase
     public function it_retries_decoding_multiple_times_on_failure()
     {
         $binaryData = 'test binary data';
-        
+
         // Mock unsuccessful process result
         $mockResult = Mockery::mock();
         $mockResult->shouldReceive('successful')->andReturn(false);
@@ -75,8 +75,8 @@ class DecodeCatalystDocumentTest extends TestCase
         // Mock PendingProcess to return our mock result
         $mockPendingProcess = Mockery::mock(PendingProcess::class);
         $mockPendingProcess->shouldReceive('timeout')->with(30)->andReturnSelf();
-        $mockPendingProcess->shouldReceive('run')->with(['/venv/bin/python3', '/opt/catalyst-proposal-decoder/decodeProposalDirect.py'])->andReturn($mockResult);
-        $mockPendingProcess->shouldReceive('run')->with(['/venv/bin/python3', '/opt/catalyst-proposal-decoder/decodeProposal.py'])->andReturn($mockResult);
+        $mockPendingProcess->shouldReceive('run')->with(['/venv/bin/python3', '/scripts/decodeProposalDirect.py'])->andReturn($mockResult);
+        $mockPendingProcess->shouldReceive('run')->with(['/venv/bin/python3', '/scripts/decodeProposal.py'])->andReturn($mockResult);
 
         Process::shouldReceive('input')->with($binaryData)->andReturn($mockPendingProcess)->times(4); // 2 attempts × 2 methods each
 
@@ -110,14 +110,14 @@ class DecodeCatalystDocumentTest extends TestCase
         // Mock PendingProcess
         $mockPendingProcess = Mockery::mock(PendingProcess::class);
         $mockPendingProcess->shouldReceive('timeout')->with(30)->andReturnSelf();
-        $mockPendingProcess->shouldReceive('run')->with(['/venv/bin/python3', '/opt/catalyst-proposal-decoder/decodeProposalDirect.py'])->andReturn($mockResult);
+        $mockPendingProcess->shouldReceive('run')->with(['/venv/bin/python3', '/scripts/decodeProposalDirect.py'])->andReturn($mockResult);
 
         Process::shouldReceive('input')->with($binaryData)->andReturn($mockPendingProcess)->once();
 
         $result = ($this->action)($binaryData);
 
         expect($result)->toBe($expectedDecoded);
-        
+
         // Verify it logs success
         Log::shouldHaveReceived('debug')->with('Document decoded successfully on attempt 1');
     }
@@ -145,8 +145,8 @@ class DecodeCatalystDocumentTest extends TestCase
         // Mock PendingProcess
         $mockPendingProcess = Mockery::mock(PendingProcess::class);
         $mockPendingProcess->shouldReceive('timeout')->with(30)->andReturnSelf();
-        $mockPendingProcess->shouldReceive('run')->with(['/venv/bin/python3', '/opt/catalyst-proposal-decoder/decodeProposalDirect.py'])->andReturn($mockDirectResult);
-        $mockPendingProcess->shouldReceive('run')->with(['/venv/bin/python3', '/opt/catalyst-proposal-decoder/decodeProposal.py'])->andReturn($mockCoseResult);
+        $mockPendingProcess->shouldReceive('run')->with(['/venv/bin/python3', '/scripts/decodeProposalDirect.py'])->andReturn($mockDirectResult);
+        $mockPendingProcess->shouldReceive('run')->with(['/venv/bin/python3', '/scripts/decodeProposal.py'])->andReturn($mockCoseResult);
 
         Process::shouldReceive('input')->with($binaryData)->andReturn($mockPendingProcess)->twice();
 
@@ -176,7 +176,7 @@ class DecodeCatalystDocumentTest extends TestCase
 
         $mockPendingProcess = Mockery::mock(PendingProcess::class);
         $mockPendingProcess->shouldReceive('timeout')->with(30)->andReturnSelf();
-        $mockPendingProcess->shouldReceive('run')->with(['/venv/bin/python3', '/opt/catalyst-proposal-decoder/decodeProposalDirect.py'])->andReturn($mockResult1, $mockResult2);
+        $mockPendingProcess->shouldReceive('run')->with(['/venv/bin/python3', '/scripts/decodeProposalDirect.py'])->andReturn($mockResult1, $mockResult2);
 
         Process::shouldReceive('input')->with($binaryData)->andReturn($mockPendingProcess)->twice();
 
@@ -211,13 +211,13 @@ class DecodeCatalystDocumentTest extends TestCase
         $mockPendingProcess1 = Mockery::mock(PendingProcess::class);
         $mockPendingProcess1->shouldReceive('timeout')->with(30)->andReturnSelf();
         $mockPendingProcess1->shouldReceive('run')
-            ->with(['/venv/bin/python3', '/opt/catalyst-proposal-decoder/decodeProposalDirect.py'])
+            ->with(['/venv/bin/python3', '/scripts/decodeProposalDirect.py'])
             ->andThrow($processException); // First call throws exception
 
         $mockPendingProcess2 = Mockery::mock(PendingProcess::class);
         $mockPendingProcess2->shouldReceive('timeout')->with(30)->andReturnSelf();
         $mockPendingProcess2->shouldReceive('run')
-            ->with(['/venv/bin/python3', '/opt/catalyst-proposal-decoder/decodeProposalDirect.py'])
+            ->with(['/venv/bin/python3', '/scripts/decodeProposalDirect.py'])
             ->andReturn($mockSuccessResult); // Second call succeeds
 
         Process::shouldReceive('input')->with($binaryData)
@@ -229,8 +229,8 @@ class DecodeCatalystDocumentTest extends TestCase
 
         // Verify crash logging
         Log::shouldHaveReceived('error')->withArgs(function ($message, $context = []) {
-            return str_contains($message, 'Process crashed with signal 9 on attempt 1') && 
-                   isset($context['signal']) && $context['signal'] === 9 && 
+            return str_contains($message, 'Process crashed with signal 9 on attempt 1') &&
+                   isset($context['signal']) && $context['signal'] === 9 &&
                    isset($context['attempt']) && $context['attempt'] === 1;
         });
     }
@@ -248,7 +248,7 @@ class DecodeCatalystDocumentTest extends TestCase
         $mockPendingProcess = Mockery::mock(PendingProcess::class);
         $mockPendingProcess->shouldReceive('timeout')->with(30)->andReturnSelf();
         $mockPendingProcess->shouldReceive('run')
-            ->with(['/venv/bin/python3', '/opt/catalyst-proposal-decoder/decodeProposalDirect.py'])
+            ->with(['/venv/bin/python3', '/scripts/decodeProposalDirect.py'])
             ->andThrow($processException);
 
         Process::shouldReceive('input')->with($binaryData)->andReturn($mockPendingProcess)->times(2);
@@ -263,7 +263,7 @@ class DecodeCatalystDocumentTest extends TestCase
     public function it_logs_binary_data_characteristics_for_debugging()
     {
         $binaryData = "test\x00\x01\x02\x03binary data with special chars\xff\xfe";
-        
+
         $mockResult = Mockery::mock();
         $mockResult->shouldReceive('successful')->andReturn(true);
         $mockResult->shouldReceive('output')->andReturn('{"payload": "test"}');
@@ -292,7 +292,7 @@ class DecodeCatalystDocumentTest extends TestCase
     public function it_handles_successful_cose_output_with_error_field()
     {
         $binaryData = 'test binary data';
-        
+
         // Mock direct decoder result that has "error" in output (treated as failed)
         $mockDirectResult = Mockery::mock();
         $mockDirectResult->shouldReceive('successful')->andReturn(true);
@@ -305,8 +305,8 @@ class DecodeCatalystDocumentTest extends TestCase
 
         $mockPendingProcess = Mockery::mock(PendingProcess::class);
         $mockPendingProcess->shouldReceive('timeout')->with(30)->andReturnSelf();
-        $mockPendingProcess->shouldReceive('run')->with(['/venv/bin/python3', '/opt/catalyst-proposal-decoder/decodeProposalDirect.py'])->andReturn($mockDirectResult);
-        $mockPendingProcess->shouldReceive('run')->with(['/venv/bin/python3', '/opt/catalyst-proposal-decoder/decodeProposal.py'])->andReturn($mockCoseResult);
+        $mockPendingProcess->shouldReceive('run')->with(['/venv/bin/python3', '/scripts/decodeProposalDirect.py'])->andReturn($mockDirectResult);
+        $mockPendingProcess->shouldReceive('run')->with(['/venv/bin/python3', '/scripts/decodeProposal.py'])->andReturn($mockCoseResult);
 
         Process::shouldReceive('input')->with($binaryData)->andReturn($mockPendingProcess)->twice();
 
