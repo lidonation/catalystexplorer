@@ -52,7 +52,7 @@ const CampaignCardMini: React.FC<CampaignCardMiniProps> = ({
     };
 
     return (
-        <Card>
+        <Card className="bg-background">
             <div className="bg-content-light h-60 overflow-hidden rounded-lg">
                 {heroImageUrl ? (
                     <img

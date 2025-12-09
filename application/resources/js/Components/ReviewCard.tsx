@@ -107,7 +107,7 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                 onHoverChange={setIsHovered}
                 className={className}
             >
-                <Card>
+                <Card className="bg-background">
                     <div className={`pb-6 ${className}`}>
                         <div className="flex items-start justify-between">
                             <div className="flex">

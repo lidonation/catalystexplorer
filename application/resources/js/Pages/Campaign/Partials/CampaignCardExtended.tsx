@@ -58,7 +58,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
         return input; // Return original if format is incorrect
     };
     return (
-        <Card className={className}>
+        <Card className={`bg-background ${className || ''}`}>
             <div className={`card-campaign flex flex-col gap-6`}>
                 <section className="bg-content-light h-52 overflow-hidden rounded-lg">
                     {heroImageUrl ? (

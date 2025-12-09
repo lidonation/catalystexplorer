@@ -47,7 +47,7 @@ export default function Comments({
     }, [commentableType, commentableHash]);
 
     return (
-        <Card className="bg-white p-6">
+        <Card className="bg-background p-6">
             <h2 className="border-gray-light border-b pb-4 text-xl font-bold">
                 {t('comments.comments')}
             </h2>

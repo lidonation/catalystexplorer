@@ -43,7 +43,7 @@ const BioCard: React.FC<BioCardProps> = ({ group }) => {
     );
 
     return (
-        <Card>
+        <Card className="bg-background">
             <div>
                 <Paragraph className="border-dark border-b pt-2 pb-3 font-bold">
                     {t('bio')}

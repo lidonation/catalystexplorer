@@ -202,7 +202,7 @@ export default function QuickPitchWidget({
     };
 
     return (
-        <Card>
+        <Card className="bg-background">
             <div className="border-gray-persist/80 mb-4 flex items-center justify-between border-b pb-5">
                 <h3 className="text-content text-lg font-semibold">
                     {t('widgets.quickPitch.title')}
