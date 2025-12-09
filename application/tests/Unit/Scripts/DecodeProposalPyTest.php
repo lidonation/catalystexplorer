@@ -18,7 +18,7 @@ class DecodeProposalPyTest extends TestCase
     use WithoutMiddleware;
 
     private string $pythonPath = '/venv/bin/python3';
-    private string $scriptPath = '/opt/catalyst-proposal-decoder/decodeProposal.py';
+    private string $scriptPath = '/scripts/decodeProposal.py';
 
     #[Test]
     public function it_correctly_decodes_cose_messages_with_payload()
@@ -56,9 +56,9 @@ class DecodeProposalPyTest extends TestCase
             ->run([$this->pythonPath, $this->scriptPath]);
 
         expect($result->successful())->toBeTrue();
-        
+
         $decodedData = json_decode($result->output(), true);
-        
+
         expect($decodedData['protected_headers'])->toBeArray();
         expect($decodedData['payload'])->toBeArray();
         expect($decodedData['payload']['proposal_id'])->toBe('12345');
@@ -95,9 +95,9 @@ class DecodeProposalPyTest extends TestCase
             ->run([$this->pythonPath, $this->scriptPath]);
 
         expect($result->successful())->toBeTrue();
-        
+
         $decodedData = json_decode($result->output(), true);
-        
+
         expect($decodedData['payload']['compressed'])->toBeTrue();
         expect($decodedData['payload']['proposal_data']['id'])->toBe('compressed-proposal-001');
         expect($decodedData['payload']['proposal_data']['requested_funds'])->toBe(75000);
@@ -125,7 +125,7 @@ class DecodeProposalPyTest extends TestCase
         // When exit code is 1, the process should be considered failed
         expect($result->exitCode())->toBe(1);
         expect($result->failed())->toBeTrue();
-        
+
         $errorData = json_decode($result->output(), true);
         expect($errorData['error'])->toContain('Failed to decode COSE');
     }
@@ -150,9 +150,9 @@ class DecodeProposalPyTest extends TestCase
             ->run([$this->pythonPath, $this->scriptPath]);
 
         expect($result->successful())->toBeTrue();
-        
+
         $decodedData = json_decode($result->output(), true);
-        
+
         expect($decodedData['payload'])->toBe('raw_hex_data_due_to_decompression_failure');
         expect($decodedData['payload_error'])->toContain('Failed to decompress or decode payload');
     }
@@ -195,9 +195,9 @@ class DecodeProposalPyTest extends TestCase
             ->run([$this->pythonPath, $this->scriptPath]);
 
         expect($result->successful())->toBeTrue();
-        
+
         $decodedData = json_decode($result->output(), true);
-        
+
         expect($decodedData['signatures'])->toHaveCount(3);
         expect($decodedData['signatures'][0]['kid'])->toBe('signer-1');
         expect($decodedData['signatures'][1]['kid'])->toBe('signer-2');
@@ -266,9 +266,9 @@ class DecodeProposalPyTest extends TestCase
             ->run([$this->pythonPath, $this->scriptPath]);
 
         expect($result->successful())->toBeTrue();
-        
+
         $decodedData = json_decode($result->output(), true);
-        
+
         expect($decodedData['payload']['metadata']['version'])->toBe('1.0');
         expect($decodedData['payload']['proposal']['basic_info']['title'])->toBe('Advanced DeFi Protocol');
         expect($decodedData['payload']['proposal']['team'])->toHaveCount(2);
@@ -297,9 +297,9 @@ class DecodeProposalPyTest extends TestCase
             ->run([$this->pythonPath, $this->scriptPath]);
 
         expect($result->successful())->toBeTrue();
-        
+
         $decodedData = json_decode($result->output(), true);
-        
+
         expect($decodedData['payload'])->toBe('48656c6c6f20576f726c64');
         expect($decodedData['payload_error'])->toContain('Failed to parse payload JSON');
     }
@@ -327,9 +327,9 @@ class DecodeProposalPyTest extends TestCase
             ->run([$this->pythonPath, $this->scriptPath]);
 
         expect($result->successful())->toBeTrue();
-        
+
         $decodedData = json_decode($result->output(), true);
-        
+
         expect($decodedData['payload']['proposal_id'])->toBe('unsigned-proposal');
         expect($decodedData['signatures'])->toBeArray();
         expect($decodedData['signatures'])->toBeEmpty();
@@ -353,15 +353,15 @@ class DecodeProposalPyTest extends TestCase
         ]);
 
         $result = Process::run([
-            $this->pythonPath, 
-            $this->scriptPath, 
+            $this->pythonPath,
+            $this->scriptPath,
             '/tmp/test_cose_file.bin'
         ]);
 
         expect($result->successful())->toBeTrue();
-        
+
         $decodedData = json_decode($result->output(), true);
-        
+
         expect($decodedData['payload']['source'])->toBe('file_input');
         expect($decodedData['payload']['proposal_id'])->toBe('file-based-proposal');
     }
