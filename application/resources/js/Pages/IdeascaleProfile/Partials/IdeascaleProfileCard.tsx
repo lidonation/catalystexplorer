@@ -88,7 +88,7 @@ const IdeascaleProfileCard: React.FC<IdeascaleProfileProps> = ({
     ] as Segments[];
 
     return (
-        <Card>
+        <Card className="bg-background">
             <div className="relative mb-2 h-full w-full">
                 <div className="mb-3 flex items-center gap-3">
                     <div className="flex-shrink-0">

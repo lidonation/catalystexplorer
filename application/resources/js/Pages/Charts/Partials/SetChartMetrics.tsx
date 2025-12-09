@@ -57,7 +57,7 @@ export default function SetChartMetrics({
             <div className="mb-4 text-center">
                 <Title level="3">{t('charts.setMetrics')}</Title>
             </div>
-            <Card className="p-6">
+            <Card className="p-6 bg-background">
                 <div className="mb-6">
                     <Step1
                         onCompletionChange={handleStep1Completion}

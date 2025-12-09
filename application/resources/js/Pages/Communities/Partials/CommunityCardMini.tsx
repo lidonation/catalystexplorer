@@ -79,7 +79,7 @@ const CommunityCardMini: React.FC<CommunityCardMiniProps> = ({
     };
 
     return (
-        <Card className="border-border-dark-on-dark flex-1 justify-between overflow-hidden border">
+        <Card className="border-border-dark-on-dark flex-1 justify-between overflow-hidden border bg-background">
             <div className="inline-flex items-center justify-between self-stretch">
                 <div className="flex items-center justify-start gap-2">
                     <CommunitiesIcon className="text-dark h-4 w-3.5" />

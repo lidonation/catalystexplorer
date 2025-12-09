@@ -181,7 +181,7 @@ export default function Show({ service }: ShowProps) {
                     </div>
                 )}
                 
-                <Card className="flex min-w-0 flex-1 flex-col">
+                <Card className="flex min-w-0 flex-1 flex-col bg-background">
                 {service.header_image_url && (
                     <img
                         src={service.header_image_url}

@@ -1,15 +1,13 @@
 import QuickPitchCard from "./QuickPitchCard";
-import { Link } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ParamsEnum } from '@/enums/proposal-search-params';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import Title from "@/Components/atoms/Title";
 import SecondaryLink from "@/Components/SecondaryLink";
-import { categorizeQuickPitches, createMixedQuickPitchLayout, organizeQuickPitchRows } from '@/utils/proposalUtils';
 import { useMemo } from 'react';
 
 interface QuickPitchListProps {
-    quickPitches?: 
+    quickPitches?:
         | App.DataTransferObjects.ProposalData[]
         | {
             featured: App.DataTransferObjects.ProposalData[];
@@ -17,38 +15,69 @@ interface QuickPitchListProps {
           };
     activeFundId?: string | null;
 }
-export default function QuickPitchList ({ quickPitches, activeFundId }: QuickPitchListProps) {
+
+export default function QuickPitchList({ quickPitches, activeFundId }: QuickPitchListProps) {
     const { t } = useLaravelReactI18n();
-    
-    const { featuredArray, regularArray, mixedLayoutRows } = useMemo(() => {
+
+    const { proposals, featuredIndices } = useMemo(() => {
         if (!quickPitches) {
-            return { featuredArray: [], regularArray: [], mixedLayoutRows: [] };
+            return { proposals: [], featuredIndices: new Set<number>() };
         }
 
-        let featured: App.DataTransferObjects.ProposalData[];
-        let regular: App.DataTransferObjects.ProposalData[];
-
+        let allProposals: App.DataTransferObjects.ProposalData[];
         if (Array.isArray(quickPitches)) {
-            const categorized = categorizeQuickPitches(quickPitches, 3);
-            featured = categorized.featured;
-            regular = categorized.regular;
+            allProposals = quickPitches;
         } else {
-            featured = Array.isArray(quickPitches?.featured) ? quickPitches.featured : [];
-            regular = Array.isArray(quickPitches?.regular) ? quickPitches.regular : [];
+            allProposals = [
+                ...(quickPitches?.featured || []),
+                ...(quickPitches?.regular || [])
+            ];
         }
 
-        const mixedLayout = createMixedQuickPitchLayout(featured, regular);
-        const rows = organizeQuickPitchRows(mixedLayout);
+        if (allProposals.length === 0) {
+            return { proposals: [], featuredIndices: new Set<number>() };
+        }
+
+        // Determine how many to feature based on total count
+        let featuredCount = 0;
+        if (allProposals.length > 6) {
+            featuredCount = 3;
+        } else if (allProposals.length > 4) {
+            featuredCount = 2;
+        } else if (allProposals.length > 3) {
+            featuredCount = 1;
+        }
+
+        // Select random indices to feature (avoid gaps of exactly 2)
+        const indices = new Set<number>();
+        const maxAttempts = allProposals.length * 2; // Prevent infinite loop
+        let attempts = 0;
+
+        while (indices.size < featuredCount && attempts < maxAttempts) {
+            const randomIndex = Math.floor(Math.random() * allProposals.length);
+
+            // Check if this index creates an invalid spacing with existing featured indices
+            // Reject if consecutive (distance 1) or if gap is exactly 2 (distance 3)
+            const hasInvalidSpacing = Array.from(indices).some(existingIndex => {
+                const distance = Math.abs(existingIndex - randomIndex);
+                return distance === 1 || distance === 3;
+            });
+
+            if (!hasInvalidSpacing) {
+                indices.add(randomIndex);
+            }
+
+            attempts++;
+        }
 
         return {
-            featuredArray: featured,
-            regularArray: regular,
-            mixedLayoutRows: rows,
+            proposals: allProposals,
+            featuredIndices: indices
         };
     }, [quickPitches]);
 
-    if (!quickPitches || (featuredArray.length === 0 && regularArray.length === 0)) {
-        return <div className="text-center text-gray-persist">No quickpitches available</div>;
+    if (proposals.length === 0) {
+        return <div className="text-center text-gray-persist">{t('recordsNotFound.message')}</div>;
     }
 
     return (
@@ -64,24 +93,21 @@ export default function QuickPitchList ({ quickPitches, activeFundId }: QuickPit
                 </SecondaryLink>
             </div>
 
-            {mixedLayoutRows.length > 0 && (
-                <div className="space-y-4">
-                    {mixedLayoutRows.map((row, rowIndex) => (
-                        <div key={rowIndex} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
-                            {row.map((item, itemIndex) => (
-                                <QuickPitchCard
-                                    key={`${rowIndex}-${item.proposal.id}`}
-                                    proposal={item.proposal}
-                                    thumbnail={''}
-                                    type={item.type}
-                                    className={item.type === 'featured' ? 'col-span-1 md:col-span-2' : 'col-span-1'}
-                                    aspectRatio={item.type === 'featured' ? 'aspect-[32/8]' : 'aspect-[16/8]'}
-                                />
-                            ))}
-                        </div>
-                    ))}
-                </div>
-            )}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-stretch">
+                {proposals.map((proposal, index) => {
+                    const isFeatured = featuredIndices.has(index);
+                    return (
+                        <QuickPitchCard
+                            key={proposal.id}
+                            proposal={proposal}
+                            thumbnail={''}
+                            type={isFeatured ? 'featured' : 'regular'}
+                            feature={isFeatured}
+                            aspectRatio={isFeatured ? 'aspect-[16/9]' : 'aspect-[16/9]'}
+                        />
+                    );
+                })}
+            </div>
         </div>
-    )
+    );
 }

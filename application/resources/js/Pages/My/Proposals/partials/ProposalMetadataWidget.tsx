@@ -25,7 +25,7 @@ export default function ProposalMetadataWidget({
         (proposal?.no_votes_count ?? 0) +
         (proposal?.abstain_votes_count ?? 0);
     return (
-        <Card className="w-full">
+        <Card className="w-full bg-background">
             <Title level="4" className="mb-6 font-semibold">
                 {t('proposal.metadata.title')}
             </Title>

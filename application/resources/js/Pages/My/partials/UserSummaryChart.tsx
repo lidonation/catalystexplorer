@@ -75,7 +75,7 @@ export default function UserSummaryChart({
     );
 
     return (
-        <Card className="flex h-full min-h-64 flex-col gap-4">
+        <Card className="flex h-full min-h-64 flex-col gap-4 bg-background">
             <div className="border-content-light flex items-center justify-between border-b pb-4">
                 <Title
                     level="4"

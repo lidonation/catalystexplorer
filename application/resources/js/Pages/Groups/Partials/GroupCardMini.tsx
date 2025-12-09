@@ -16,7 +16,7 @@ const GroupCardMini: React.FC<GroupCardMiniProps> = ({ group }) => {
 
     return (
         group && (
-            <Card className="flex flex-col">
+            <Card className="flex flex-col bg-background">
                 <div className="flex w-full flex-col items-center gap-4">
                     <div className="flex w-full flex-col items-center gap-4 pt-2">
                         <Image

@@ -60,7 +60,7 @@ export default function ProposalSummaryCard({
     ] as Segments[];
 
     return (
-        <Card className="h-full flex-1">
+        <Card className="h-full flex-1 bg-background">
             <div className="border-background-lighter border-b-2">
                 <Title level="5" className="mb-2 font-bold">
                     {t('communities.proposalSummary')}

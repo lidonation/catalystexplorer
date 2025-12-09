@@ -268,7 +268,7 @@ export default function ModelSearch({
                         return (
                             <Card
                                 key={uuid}
-                                className={`mb-3 w-full rounded-xl border shadow-sm transition-all ${
+                                className={`mb-3 w-full rounded-xl border shadow-sm transition-all bg-background ${
                                     isSelected
                                         ? 'border-primary border-2'
                                         : 'border-gray-light'

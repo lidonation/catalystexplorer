@@ -46,7 +46,7 @@ const CommunityFundingChart: React.FC<CommunityFundingChartProps> = ({
     const chartData = data.filter((item) => filters.includes(item.id));
 
     return (
-        <Card>
+        <Card className="bg-background">
             <div className="flex items-center justify-between">
                 <Paragraph className="font-bold" size="md">
                     {chartTitle}

@@ -398,6 +398,7 @@
     "activeFund.votingStats.totalVotesCast": "إجمالي الأصوات المدلاة",
     "activeFund.votingStats.updatedMonthsAgo": "تم التحديث منذ 3 أشهر",
     "activeFund.votingStats.updated": "تم التحديث في :time",
+    "recordsNotFound.message": "هذا كل ما نعرفه"
     "activeFund.votingStats.liveTally": "العد المباشر",
     "activeFund.votingStats.limitToCampaigns": "الحصر على الحملات",
     "activeFund.votingStats.selectCampaigns": "اختر الحملات",

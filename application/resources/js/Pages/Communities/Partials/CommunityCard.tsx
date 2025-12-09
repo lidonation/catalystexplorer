@@ -51,7 +51,7 @@ const CommunityCard: React.FC<CommunityCardProps> = ({
     }, [community.content]);
 
     return (
-        <Card className="border-border-dark-on-dark flex-1 justify-between overflow-hidden border">
+        <Card className="border-border-dark-on-dark flex-1 justify-between overflow-hidden border bg-background">
             <div className="border-gray-persist/50 text-gray-persist/50 ml-auto w-fit items-center rounded-md border-1 py-0">
                 <ListProvider>
                     <BookmarkButton

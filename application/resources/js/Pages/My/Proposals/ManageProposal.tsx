@@ -103,7 +103,7 @@ export default function ManageProposal({
                                     proposalId={proposal?.id}
                                 />
                             ) : (
-                                <Card className="mt-4">
+                                <Card className="mt-4 bg-background">
                                     <PrimaryLink
                                         href={useLocalizedRoute(
                                             'workflows.linkWallet.index',

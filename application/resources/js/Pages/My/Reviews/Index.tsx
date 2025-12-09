@@ -32,7 +32,7 @@ export default function MyReviews({
                 <div className="container">
                     {reviews?.data.length > 0 ? (
                         <div className="container space-y-8">
-                            <Card className="">
+                            <Card className="bg-background">
                                 <AggregatedReviewsSummary
                                     reviews={reviews?.data}
                                     aggregatedRatings={aggregatedRatings}
