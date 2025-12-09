@@ -398,7 +398,6 @@
     "activeFund.votingStats.totalVotesCast": "إجمالي الأصوات المدلاة",
     "activeFund.votingStats.updatedMonthsAgo": "تم التحديث منذ 3 أشهر",
     "activeFund.votingStats.updated": "تم التحديث في :time",
-    "recordsNotFound.message": "هذا كل ما نعرفه"
     "activeFund.votingStats.liveTally": "العد المباشر",
     "activeFund.votingStats.limitToCampaigns": "الحصر على الحملات",
     "activeFund.votingStats.selectCampaigns": "اختر الحملات",
@@ -440,5 +439,6 @@
     "workflows.linkWallet.backToManage": "العودة إلى الإدارة",
     "proposal.linkedWallets.title": "المحافظ المرتبطة",
     "workflows.signature.success.returnToLinkWallet": "تابع لربط المحفظة بمقترحك",
-    "workflows.linkWallet.myWallets": "محافظي"
+    "workflows.linkWallet.myWallets": "محافظي",
+    "recordsNotFound.message": "هذا كل ما نعرفه"
 }
