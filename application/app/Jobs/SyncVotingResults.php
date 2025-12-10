@@ -240,6 +240,28 @@ class SyncVotingResults implements ShouldQueue
             }
         }
 
+        // Update projectcatalyst_io_link if we have the necessary data
+        if ($campaignSlug && isset($project['projectSlug'])) {
+            $projectCatalystUrl = "https://projectcatalyst.io/funds/{$fundNumber}/{$campaignSlug}/{$project['projectSlug']}";
+            if ($proposal->projectcatalyst_io_link !== $projectCatalystUrl) {
+                $proposal->projectcatalyst_io_link = $projectCatalystUrl;
+                $updated = true;
+                Log::info('Updated proposal projectcatalyst.io link', [
+                    'proposal_id' => $proposal->id,
+                    'old_link' => $proposal->getOriginal('projectcatalyst_io_link'),
+                    'new_link' => $projectCatalystUrl,
+                ]);
+            }
+        } elseif ($campaignSlug || isset($project['projectSlug'])) {
+            Log::debug('Cannot generate projectcatalyst.io link - missing required data', [
+                'proposal_id' => $proposal->id,
+                'has_campaign_slug' => !empty($campaignSlug),
+                'has_project_slug' => isset($project['projectSlug']),
+                'campaign_slug' => $campaignSlug,
+                'project_slug' => $project['projectSlug'] ?? null,
+            ]);
+        }
+
         if ($updated) {
             Log::info('Proposal details updated', [
                 'proposal_id' => $proposal->id,
