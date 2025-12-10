@@ -10,6 +10,7 @@ use App\Nova\Actions\AddQuickPitch;
 use App\Nova\Actions\EditModel;
 use App\Nova\Actions\MakeSearchable;
 use App\Nova\Actions\SyncProposalFromCatalyst;
+use App\Nova\Actions\SyncVotingResults;
 use App\Nova\Actions\UpdateModelMedia;
 use App\Nova\Filters\QuickPitchFilter;
 use App\Services\VideoService;
@@ -29,13 +30,19 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Filters\Filter;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use MetasyncSite\NovaHasManySearchable\HasManySearchable;
 
 class Proposals extends Resource
 {
     public static $perPageViaRelationship = 25;
 
     public static $scoutSearchResults = 50;
+
+    /**
+     * The pagination options for the resource.
+     *
+     * @var array
+     */
+    public static $perPageOptions = [25, 50, 100, 250, 500];
 
     public static $tableStyle = 'tight';
 
@@ -75,7 +82,6 @@ class Proposals extends Resource
     public function fields(NovaRequest $request): array
     {
         return [
-            // Basic Identification Fields
             Text::make('ID', 'id')
                 ->sortable()
                 ->readonly()
@@ -461,9 +467,10 @@ class Proposals extends Resource
         return [
             (new AddQuickPitch(app(VideoService::class))),
             (new EditModel),
-            (new UpdateModelMedia),
             (new MakeSearchable),
             (new SyncProposalFromCatalyst),
+            (new SyncVotingResults),
+            (new UpdateModelMedia),
         ];
     }
 }
