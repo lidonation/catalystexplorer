@@ -198,7 +198,7 @@ const GraphButton = () => {
                 </div>
             </div>
 <div className="hidden lg:block relative h-0">
-  <div className="absolute bottom-0 right-8 flex items-end justify-end z-10 -translate-y-20">
+  <div className="absolute bottom-0 right-0 flex items-end justify-end z-10 -translate-y-20">
     <Transition
       show={activePopup === 'analytics'}
       as="div"

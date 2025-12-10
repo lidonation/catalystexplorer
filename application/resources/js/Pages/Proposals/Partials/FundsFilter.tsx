@@ -53,7 +53,7 @@ const FundsFilter: React.FC<FundFiltersProps> = ({
         <div className="w-full py-8" data-testid="funds-filter">
             <div className="overflow-x-auto pb-4">
                 <ul
-                    className="flex min-w-max gap-4 whitespace-nowrap"
+                    className="flex w-max gap-4 whitespace-nowrap"
                     data-testid="funds-filter-list"
                 >
                     {funds?.data &&

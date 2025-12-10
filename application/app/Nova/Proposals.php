@@ -12,7 +12,9 @@ use App\Nova\Actions\MakeSearchable;
 use App\Nova\Actions\SyncProposalFromCatalyst;
 use App\Nova\Actions\SyncVotingResults;
 use App\Nova\Actions\UpdateModelMedia;
+use App\Nova\Filters\FundingStatusBooleanFilter;
 use App\Nova\Filters\QuickPitchFilter;
+use App\Nova\Filters\StatusBooleanFilter;
 use App\Services\VideoService;
 use Illuminate\Support\Str;
 use Laravel\Nova\Actions\Action;
@@ -260,19 +262,21 @@ class Proposals extends Resource
                     'over_budget' => 'Over Budget',
                     'not_approved' => 'Not Approved',
                     'unfunded' => 'Unfunded',
+                    'in_progress' => 'In Progress',
                 ])
-                ->displayUsingLabels()
-                ->filterable(),
+                ->displayUsingLabels(),
 
             Select::make(__('Funding Status'), 'funding_status')
                 ->options([
                     'funded' => 'Funded',
                     'pending' => 'Pending',
                     'not_funded' => 'Not Funded',
+                    'not_approved' => 'Not Approved',
                     'over_budget' => 'Over Budget',
+                    'leftover' => 'Leftover',
+                    'withdrawn' => 'Withdrawn',
                 ])
-                ->displayUsingLabels()
-                ->filterable(),
+                ->displayUsingLabels(),
 
             Boolean::make(__('Paid'), function () {
                 return $this->paid ?? false;
@@ -453,6 +457,8 @@ class Proposals extends Resource
     public function filters(NovaRequest $request): array
     {
         return [
+            new StatusBooleanFilter,
+            new FundingStatusBooleanFilter,
             new QuickPitchFilter,
         ];
     }
