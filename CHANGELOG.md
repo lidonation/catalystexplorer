@@ -1,3 +1,15 @@
+# [1.49.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.48.0...v1.49.0) (2025-12-10)
+
+
+### Bug Fixes
+
+* scroll and container padding ([cc4e6bb](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/cc4e6bbccaad973a0014697b7181f569d541b85f))
+
+
+### Features
+
+* cleanup voting results sync. Added made nova filter for status and funding status multiselect ([d52f86c](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/d52f86ca2cc020d25d25a33be6ddc8c214215c4d))
+
 # [1.48.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.47.2...v1.48.0) (2025-12-10)
 
 
