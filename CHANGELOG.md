@@ -1,3 +1,10 @@
+# [1.48.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.47.2...v1.48.0) (2025-12-10)
+
+
+### Features
+
+* nova action to sync voting results ([fd87acb](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/fd87acb2474ab4ba6a96df6aaa4354eed23ffe94))
+
 ## [1.47.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.47.1...v1.47.2) (2025-12-04)
 
 
