@@ -150,6 +150,9 @@ class SyncProposalJob implements ShouldQueue
             // Process and extract web links from proposal content and metadata
             $this->processLinks($content, $this->proposalDetail);
 
+            // Generate projectcatalyst.io link if we have the necessary data
+            $this->generateProjectCatalystLink($proposal, $campaign, $fundNumber);
+
         } catch (\Throwable $e) {
             Log::error('Error syncing proposal: '.$e->getMessage(), [
                 'document_id' => $this->documentId,
@@ -818,5 +821,58 @@ class SyncProposalJob implements ShouldQueue
         $title = ucfirst(str_replace(['.com', '.org', '.io', '.net'], '', $host));
 
         return $title ?: 'Link';
+    }
+
+    /**
+     * Generate ProjectCatalyst.io link using campaign slug and proposal title
+     */
+    protected function generateProjectCatalystLink(Proposal $proposal, Campaign $campaign, string $fundNumber): void
+    {
+        try {
+            if (!$campaign->slug || !$proposal->title) {
+                Log::debug('Cannot generate projectcatalyst.io link - missing required data', [
+                    'proposal_id' => $proposal->id,
+                    'has_campaign_slug' => !empty($campaign->slug),
+                    'has_proposal_title' => !empty($proposal->title),
+                ]);
+                return;
+            }
+
+            // Extract campaign slug by removing the fund suffix (e.g., 'cardano-open-developers-f12' -> 'cardano-open-developers')
+            $campaignSlug = $campaign->slug;
+            $fundSuffix = '-f' . $fundNumber;
+            if (str_ends_with($campaignSlug, $fundSuffix)) {
+                $campaignSlug = substr($campaignSlug, 0, -strlen($fundSuffix));
+            }
+
+            // Generate project slug from proposal title (similar to how it's done in the gateway API)
+            $projectSlug = Str::slug($proposal->title);
+            
+            // Construct the ProjectCatalyst.io URL
+            $projectCatalystUrl = "https://projectcatalyst.io/funds/{$fundNumber}/{$campaignSlug}/{$projectSlug}";
+            
+            // Only update if the link is different from current
+            if ($proposal->projectcatalyst_io_link !== $projectCatalystUrl) {
+                $proposal->projectcatalyst_io_link = $projectCatalystUrl;
+                $proposal->save();
+                
+                Log::info('Updated proposal projectcatalyst.io link', [
+                    'proposal_id' => $proposal->id,
+                    'old_link' => $proposal->getOriginal('projectcatalyst_io_link'),
+                    'new_link' => $projectCatalystUrl,
+                    'campaign_slug' => $campaignSlug,
+                    'project_slug' => $projectSlug,
+                    'fund_number' => $fundNumber,
+                ]);
+            }
+
+        } catch (\Throwable $e) {
+            Log::error('Failed to generate projectcatalyst.io link', [
+                'proposal_id' => $proposal->id ?? null,
+                'campaign_id' => $campaign->id ?? null,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+        }
     }
 }

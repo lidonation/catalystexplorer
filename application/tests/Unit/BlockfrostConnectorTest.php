@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Http\Intergrations\LidoNation\Blockfrost\BlockfrostConnector;
-use App\Http\Intergrations\LidoNation\Blockfrost\Requests\BlockfrostRequest;
+use App\Http\Integrations\LidoNation\Blockfrost\BlockfrostConnector;
+use App\Http\Integrations\LidoNation\Blockfrost\Requests\BlockfrostRequest;
 use Illuminate\Support\Facades\Config;
 use Saloon\Exceptions\SaloonException;
 use Tests\TestCase;
@@ -21,10 +21,10 @@ class BlockfrostConnectorTest extends TestCase
 
         // Assert: Connector should be marked as not configured
         $this->assertFalse($connector->isConfigured());
-        
+
         // Assert: Authentication should return null
         $this->assertNull($connector->defaultAuth());
-        
+
         // Assert: Headers should not include project_id
         $headers = $connector->defaultHeaders();
         $this->assertArrayNotHasKey('project_id', $headers);
@@ -37,7 +37,7 @@ class BlockfrostConnectorTest extends TestCase
     {
         // Arrange: Remove the project ID configuration
         Config::set('services.blockfrost.project_id', null);
-        
+
         $connector = new BlockfrostConnector();
         $request = new BlockfrostRequest('/accounts/stake1test');
 
@@ -60,12 +60,12 @@ class BlockfrostConnectorTest extends TestCase
 
         // Assert: Connector should be marked as configured
         $this->assertTrue($connector->isConfigured());
-        
+
         // Assert: Authentication should return QueryAuthenticator
         $auth = $connector->defaultAuth();
         $this->assertNotNull($auth);
         $this->assertInstanceOf(\Saloon\Http\Auth\QueryAuthenticator::class, $auth);
-        
+
         // Assert: Headers should include project_id
         $headers = $connector->defaultHeaders();
         $this->assertArrayHasKey('project_id', $headers);

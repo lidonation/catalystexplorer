@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Intergrations\LidoNation\Blockfrost\Requests;
+namespace App\Http\Integrations\LidoNation\Blockfrost\Requests;
 
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Data\MultipartValue;
@@ -27,7 +27,7 @@ class IpfsAddRequest extends BlockfrostRequest implements HasBody
 
     public function resolveConnector(): Connector
     {
-        return app(\App\Http\Intergrations\LidoNation\Blockfrost\IpfsConnector::class);
+        return app(\App\Http\Integrations\LidoNation\Blockfrost\IpfsConnector::class);
     }
 
     public function resolveEndpoint(): string

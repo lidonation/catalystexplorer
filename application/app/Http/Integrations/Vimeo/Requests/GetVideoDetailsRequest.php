@@ -2,38 +2,38 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Intergrations\LidoNation\Blockfrost\Requests;
+namespace App\Http\Integrations\Vimeo\Requests;
 
-use App\Http\Intergrations\LidoNation\Blockfrost\BlockfrostConnector;
+use App\Http\Integrations\Vimeo\VimeoConnector;
 use Saloon\Enums\Method;
 use Saloon\Http\Connector;
 use Saloon\Http\Request;
 use Saloon\Traits\Request\HasConnector;
 
-class BlockfrostRequest extends Request
+class GetVideoDetailsRequest extends Request
 {
     use HasConnector;
 
     protected Method $method = Method::GET;
 
     public function __construct(
-        protected string $endpoint
+        private readonly string $videoId
     ) {}
 
     public function resolveConnector(): Connector
     {
-        return app(BlockfrostConnector::class);
+        return app(VimeoConnector::class);
     }
 
     public function resolveEndpoint(): string
     {
-        return $this->endpoint;
+        return "/videos/{$this->videoId}";
     }
 
-    protected function defaultConfig(): array
+    public function defaultQuery(): array
     {
         return [
-            'timeout' => 120,
+            'fields' => 'duration,name',
         ];
     }
 }

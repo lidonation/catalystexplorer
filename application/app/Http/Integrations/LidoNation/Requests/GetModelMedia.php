@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Intergrations\LidoNation\Requests;
+namespace App\Http\Integrations\LidoNation\Requests;
 
-use App\Http\Intergrations\LidoNation\LidoNationConnector;
+use App\Http\Integrations\LidoNation\LidoNationConnector;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Connector;

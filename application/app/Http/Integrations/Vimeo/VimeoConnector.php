@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Intergrations\Vimeo;
+namespace App\Http\Integrations\Vimeo;
 
 use Saloon\Http\Connector;
 

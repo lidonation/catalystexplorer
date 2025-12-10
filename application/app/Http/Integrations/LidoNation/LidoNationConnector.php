@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Intergrations\LidoNation;
+namespace App\Http\Integrations\LidoNation;
 
 use Saloon\Http\Connector;
 use Saloon\Http\Request;

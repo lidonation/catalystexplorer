@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\Http\Intergrations\LidoNation\LidoNationConnector;
-use App\Http\Intergrations\LidoNation\Requests\GetPostsRequest;
+use App\Http\Integrations\LidoNation\LidoNationConnector;
+use App\Http\Integrations\LidoNation\Requests\GetPostsRequest;
 use App\Models\Fund;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException as GuzzleRequestException;

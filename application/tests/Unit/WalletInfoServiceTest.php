@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
+use App\Http\Integrations\LidoNation\Blockfrost\BlockfrostConnector;
 use App\Services\WalletInfoService;
-use \App\Http\Intergrations\LidoNation\Blockfrost\BlockfrostConnector;
-use Illuminate\Support\Facades\Cache;
-use PHPUnit\Framework\Attributes\Test;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
 class WalletInfoServiceTest extends TestCase
 {
@@ -143,7 +143,7 @@ class WalletInfoServiceTest extends TestCase
     #[Test]
     public function it_formats_balance_correctly()
     {
-        $stakeAddress = 'stake1u8q...'; 
+        $stakeAddress = 'stake1u8q...';
 
         $service = $this->mockServiceWithResponse([
             'controlled_amount' => '1234000000',
