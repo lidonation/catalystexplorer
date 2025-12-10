@@ -119,7 +119,13 @@ class ProposalsController extends Controller
 
     public function proposal(Request $request, $slug): Response
     {
-        $proposal = Proposal::with(['team.model'])
+        // Load links relationship if we're on the links page
+        $withRelations = ['team.model'];
+        if (str_contains($request->path(), '/links')) {
+            $withRelations[] = 'links';
+        }
+        
+        $proposal = Proposal::with($withRelations)
             ->where('slug', $slug)
             ->firstOrFail();
 
@@ -290,6 +296,7 @@ class ProposalsController extends Controller
             str_contains($request->path(), '/schedule') => Inertia::render('Proposals/Schedule/Index', $props),
             str_contains($request->path(), '/community-review') => Inertia::render('Proposals/CommunityReview/Index', $props),
             str_contains($request->path(), '/team-information') => Inertia::render('Proposals/TeamInformation/Index', $props),
+            str_contains($request->path(), '/links') => Inertia::render('Proposals/Links/Index', $props),
             default => Inertia::render('Proposals/Details/Index', $props),
         };
     }

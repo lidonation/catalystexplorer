@@ -6,6 +6,7 @@ namespace App\Jobs;
 
 use App\Models\Campaign;
 use App\Models\CatalystProfile;
+use App\Models\Fund;
 use App\Models\Proposal;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
 use League\HTMLToMarkdown\HtmlConverter;
+use App\Models\Link;
 
 class SyncProposalJob implements ShouldQueue
 {
@@ -145,6 +147,9 @@ class SyncProposalJob implements ShouldQueue
 
             $this->processTags($this->proposalDetail->theme->theme->grouped_tag ?? []);
 
+            // Process and extract web links from proposal content and metadata
+            $this->processLinks($content, $this->proposalDetail);
+
         } catch (\Throwable $e) {
             Log::error('Error syncing proposal: '.$e->getMessage(), [
                 'document_id' => $this->documentId,
@@ -201,7 +206,7 @@ class SyncProposalJob implements ShouldQueue
         })->implode("\n\n");
     }
 
-    protected function processTags($groupTags)
+    protected function processTags($groupTags): void
     {
         if (empty($groupTags)) {
             return;
@@ -238,7 +243,7 @@ class SyncProposalJob implements ShouldQueue
         }
     }
 
-    protected function processMetas($project_length, $applicant_type, $opensource)
+    protected function processMetas($project_length, $applicant_type, $opensource): void
     {
         try {
             $proposal = Proposal::find($this->proposalId);
@@ -276,7 +281,7 @@ class SyncProposalJob implements ShouldQueue
         }
     }
 
-    protected function processPrimaryAuthor($data, $signatures)
+    protected function processPrimaryAuthor($data, $signatures): void
     {
         if (! $data || ! isset($data->applicant)) {
             Log::warning('processPrimaryAuthor: no applicant data');
@@ -353,7 +358,7 @@ class SyncProposalJob implements ShouldQueue
     protected function getFundNumber(string $fundId): string
     {
         try {
-            $fund = \App\Models\Fund::where('id', $fundId)->first();
+            $fund = Fund::where('id', $fundId)->first();
 
             if ($fund && isset($fund->title)) {
                 if (preg_match('/Fund (\d+)/', $fund->title, $matches)) {
@@ -448,5 +453,370 @@ class SyncProposalJob implements ShouldQueue
 
             return now();
         }
+    }
+
+    /**
+     * Extract and process web links from proposal content and metadata
+     */
+    protected function processLinks(string $content, $proposalDetail = null): void
+    {
+        try {
+            $proposal = Proposal::find($this->proposalId);
+            if (!$proposal) {
+                return;
+            }
+
+            $linkIds = [];
+            $extractedUrls = [];
+
+            $contentUrls = $this->extractUrlsFromText($content);
+            $extractedUrls = array_merge($extractedUrls, $contentUrls);
+
+            if ($proposalDetail) {
+                $structuredUrls = $this->extractUrlsFromStructuredData($proposalDetail);
+                $extractedUrls = array_merge($extractedUrls, $structuredUrls);
+            }
+
+            $extractedUrls = $this->cleanAndValidateUrls($extractedUrls);
+
+            foreach ($extractedUrls as $urlData) {
+                $link = $this->createOrUpdateLink($urlData);
+                if ($link) {
+                    $linkIds[] = $link->id;
+                }
+            }
+
+            if (!empty($linkIds)) {
+                // Prepare pivot data with model_type
+                $pivotData = [];
+                foreach ($linkIds as $linkId) {
+                    $pivotData[$linkId] = ['model_type' => Proposal::class];
+                }
+                $proposal->links()->sync($pivotData);
+                Log::info('Successfully synced links for proposal', [
+                    'proposal_id' => $this->proposalId,
+                    'links_count' => count($linkIds)
+                ]);
+            } else {
+                $proposal->links()->detach();
+            }
+
+        } catch (\Throwable $e) {
+            Log::error('processLinks failed', [
+                'proposal_id' => $this->proposalId,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+        }
+    }
+
+    /**
+     * Extract URLs from text content using regex patterns
+     */
+    protected function extractUrlsFromText(string $content): array
+    {
+        $urls = [];
+
+        // Comprehensive URL regex pattern
+        $pattern = '/(?:(?:https?:\/\/)?(?:[a-zA-Z0-9\-\_]+\.)+[a-zA-Z]{2,}(?:\/[^\s]*)?)/i';
+
+        if (preg_match_all($pattern, $content, $matches)) {
+            foreach ($matches[0] as $url) {
+                // Clean up the URL
+                $url = trim($url, '.,;:!?)"\']');
+
+                // Add protocol if missing
+                if (!preg_match('/^https?:\/\//i', $url)) {
+                    $url = 'https://' . $url;
+                }
+
+                $urls[] = [
+                    'url' => $url,
+                    'type' => $this->categorizeUrl($url),
+                    'context' => 'content',
+                    'label' => null
+                ];
+            }
+        }
+
+        return $urls;
+    }
+
+    /**
+     * Extract URLs from structured proposal data
+     */
+    protected function extractUrlsFromStructuredData($data): array
+    {
+        $urls = [];
+
+        if (!$data) {
+            return $urls;
+        }
+
+        // Convert to array for easier processing
+        $dataArray = $data instanceof Fluent ? $data->toArray() : (array) $data;
+
+        // Look for URLs in various fields
+        $this->extractUrlsRecursively($dataArray, $urls, 'metadata');
+
+        return $urls;
+    }
+
+    /**
+     * Recursively extract URLs from nested data structures
+     */
+    protected function extractUrlsRecursively($data, &$urls, string $context, string $currentPath = ''): void
+    {
+        try {
+            if (is_string($data)) {
+                // Check if this string contains URLs
+                $extractedUrls = $this->extractUrlsFromText($data);
+                foreach ($extractedUrls as $urlData) {
+                    $urlData['context'] = $context;
+                    $urlData['path'] = $currentPath;
+                    $urls[] = $urlData;
+                }
+            } elseif (is_array($data) || is_object($data)) {
+                $dataArray = is_object($data) ? (array) $data : $data;
+                foreach ($dataArray as $key => $value) {
+                    // Skip null or invalid keys/values
+                    if ($key === null || $value === null) {
+                        continue;
+                    }
+                    
+                    $newPath = $currentPath ? $currentPath . '.' . (string) $key : (string) $key;
+                    
+                    // Special handling for fields that commonly contain links
+                    if (is_string($key) && is_string($value)) {
+                        $lowerKey = strtolower($key);
+                        if (in_array($lowerKey, ['url', 'link', 'website', 'homepage', 'github', 'twitter', 'linkedin'])) {
+                            if (filter_var($value, FILTER_VALIDATE_URL) || preg_match('/^https?:\/\//i', $value)) {
+                                $urls[] = [
+                                    'url' => $value,
+                                    'type' => $this->categorizeUrl($value),
+                                    'context' => $context,
+                                    'label' => ucfirst($key),
+                                    'path' => $newPath
+                                ];
+                                continue;
+                            }
+                        }
+                    }
+                    
+                    // Recursively process nested structures (with depth limit)
+                    $depth = substr_count($currentPath, '.');
+                    if ($depth < 10) { // Limit recursion depth to prevent infinite loops
+                        $this->extractUrlsRecursively($value, $urls, $context, $newPath);
+                    }
+                }
+            }
+        } catch (\Throwable $e) {
+            // Log the error but don't let it stop the entire process
+            Log::warning('Error in extractUrlsRecursively', [
+                'error' => $e->getMessage(),
+                'context' => $context,
+                'path' => $currentPath,
+                'data_type' => gettype($data)
+            ]);
+        }
+    }
+
+    /**
+     * Clean and validate extracted URLs
+     */
+    protected function cleanAndValidateUrls(array $urls): array
+    {
+        $cleanUrls = [];
+        $seenUrls = [];
+
+        foreach ($urls as $urlData) {
+            $url = $urlData['url'];
+
+            // Validate URL first
+            if (!filter_var($url, FILTER_VALIDATE_URL)) {
+                continue;
+            }
+
+            // Skip obvious non-web URLs
+            if (preg_match('/^(mailto:|tel:|ftp:|file:)/i', $url)) {
+                continue;
+            }
+
+            // Skip schema.json files and other non-user-facing file types
+            if (preg_match('/\.(schema\.json|xsd|dtd)$/i', $url)) {
+                continue;
+            }
+
+            // Skip localhost and internal URLs in production
+            if (preg_match('/\b(localhost|127\.0\.0\.1|192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/', $url)) {
+                continue;
+            }
+
+            // Normalize URL for deduplication
+            $normalizedUrl = $this->normalizeUrl($url);
+            
+            // Skip if we've already seen this normalized URL
+            if (isset($seenUrls[$normalizedUrl])) {
+                continue;
+            }
+
+            // Update the URL data with the normalized URL
+            $urlData['url'] = $normalizedUrl;
+            $seenUrls[$normalizedUrl] = true;
+            $cleanUrls[] = $urlData;
+        }
+
+        return $cleanUrls;
+    }
+
+    /**
+     * Normalize URL to prevent duplicates
+     * - Remove trailing slashes
+     * - Prefer www version for consistency 
+     * - Convert to lowercase
+     */
+    protected function normalizeUrl(string $url): string
+    {
+        try {
+            $parsed = parse_url($url);
+            if (!$parsed || !isset($parsed['host'])) {
+                return $url;
+            }
+
+            // Reconstruct URL with normalization
+            $scheme = $parsed['scheme'] ?? 'https';
+            $host = strtolower($parsed['host']);
+            $port = isset($parsed['port']) ? ':' . $parsed['port'] : '';
+            $path = isset($parsed['path']) ? rtrim($parsed['path'], '/') : '';
+            $query = isset($parsed['query']) ? '?' . $parsed['query'] : '';
+            $fragment = isset($parsed['fragment']) ? '#' . $parsed['fragment'] : '';
+
+            // For common domains, prefer the www version for consistency
+            if (!str_starts_with($host, 'www.') && !in_array($host, ['github.com', 'gitlab.com', 'twitter.com', 'x.com', 'linkedin.com'])) {
+                // Check if this is a domain that typically uses www
+                $commonWwwDomains = ['catalystexplorer.com', 'lidonation.com'];
+                foreach ($commonWwwDomains as $domain) {
+                    if ($host === $domain || str_ends_with($host, '.' . $domain)) {
+                        $host = 'www.' . $host;
+                        break;
+                    }
+                }
+            }
+
+            // If path is empty, don't add trailing slash
+            $normalizedUrl = $scheme . '://' . $host . $port . $path . $query . $fragment;
+            
+            return $normalizedUrl;
+            
+        } catch (\Throwable $e) {
+            // If parsing fails, return original URL
+            return $url;
+        }
+    }
+
+    /**
+     * Categorize URL by domain/pattern
+     */
+    protected function categorizeUrl(string $url): string
+    {
+        $domain = parse_url(strtolower($url), PHP_URL_HOST);
+
+        if (!$domain) {
+            return 'website';
+        }
+
+        // Social media platforms
+        if (strpos($domain, 'twitter.com') !== false || strpos($domain, 'x.com') !== false) return 'twitter';
+        if (strpos($domain, 'linkedin.com') !== false) return 'linkedin';
+        if (strpos($domain, 'facebook.com') !== false) return 'facebook';
+        if (strpos($domain, 'instagram.com') !== false) return 'instagram';
+        if (strpos($domain, 'youtube.com') !== false || strpos($domain, 'youtu.be') !== false) return 'youtube';
+        if (strpos($domain, 'telegram.org') !== false || strpos($domain, 't.me') !== false) return 'telegram';
+        if (strpos($domain, 'discord.com') !== false) return 'discord';
+
+        // Development platforms
+        if (strpos($domain, 'github.com') !== false || strpos($domain, 'gitlab.com') !== false) return 'repository';
+
+        // Documentation
+        if (strpos($domain, 'gitbook.com') !== false || strpos($domain, 'notion.so') !== false) return 'documentation';
+
+        return 'website';
+    }
+
+    /**
+     * Create or update a Link record
+     */
+    protected function createOrUpdateLink(array $urlData): ?Link
+    {
+        try {
+            $url = $urlData['url'];
+            $normalizedUrl = $this->normalizeUrl($url);
+
+            // Try to find existing link by normalized URL
+            $link = Link::where('link', $normalizedUrl)->first();
+            
+            // If not found, also check for the original URL (for backward compatibility)
+            if (!$link && $url !== $normalizedUrl) {
+                $link = Link::where('link', $url)->first();
+                // If found with original URL, update it to normalized version
+                if ($link) {
+                    $link->update(['link' => $normalizedUrl]);
+                }
+            }
+
+            if (!$link) {
+                // Generate title from URL if no label provided
+                $title = $urlData['label'] ?: $this->generateTitleFromUrl($url);
+
+                $link = Link::create([
+                    'id' => (string) Str::uuid(),
+                    'type' => $urlData['type'],
+                    'link' => $normalizedUrl,
+                    'label' => $urlData['label'],
+                    'title' => $title, // Use simple string instead of translation array for now
+                    'status' => 'published',
+                    'valid' => true,
+                ]);
+            } else {
+                // Update existing link if needed
+                $updates = [];
+                if ($link->type !== $urlData['type']) {
+                    $updates['type'] = $urlData['type'];
+                }
+                if ($urlData['label'] && !$link->label) {
+                    $updates['label'] = $urlData['label'];
+                }
+
+                if (!empty($updates)) {
+                    $link->update($updates);
+                }
+            }
+
+            return $link;
+
+        } catch (\Throwable $e) {
+            Log::warning('Failed to create/update link', [
+                'url' => $urlData['url'] ?? 'unknown',
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * Generate a readable title from URL
+     */
+    protected function generateTitleFromUrl(string $url): string
+    {
+        $parsed = parse_url($url);
+        $host = $parsed['host'] ?? '';
+
+        // Remove www. prefix
+        $host = preg_replace('/^www\./', '', $host);
+
+        // Convert domain to title case
+        $title = ucfirst(str_replace(['.com', '.org', '.io', '.net'], '', $host));
+
+        return $title ?: 'Link';
     }
 }

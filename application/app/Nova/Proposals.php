@@ -141,6 +141,8 @@ class Proposals extends Resource
             Text::make(__('Comment Prompt'), 'comment_prompt')
                 ->hideFromIndex(),
 
+            Number::make(__('projectcatalyst.io link'), 'projectcatalyst_io_link'),
+
             // Financial Fields
             Number::make(__('Amount Requested'), 'amount_requested')
                 ->sortable()
@@ -435,6 +437,8 @@ class Proposals extends Resource
             Text::make('View Proposal', function () {
                 return '<a style="color: #578ae4" href="'.$this->link.'" target="_blank">View</a>';
             })->asHtml()->hideWhenCreating()->hideWhenUpdating(),
+
+            HasMany::make(__('Links'), 'links', Links::class),
 
             // Relationships
             HasMany::make(__('Team'), 'team', ProposalProfiles::class),

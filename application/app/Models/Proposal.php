@@ -658,6 +658,13 @@ class Proposal extends Model implements IHasMetaData
             ->with('model');
     }
 
+    public function links(): BelongsToMany
+    {
+        return $this->belongsToMany(Link::class, 'model_links', 'model_id', 'link_id', 'id', 'id')
+            ->withPivot('model_type')
+            ->wherePivot('model_type', static::class);
+    }
+
     public function catalyst_tallies(): HasMany
     {
         return $this->hasMany(CatalystTally::class, 'model_id', 'id')
