@@ -106,6 +106,15 @@ class SyncVotingResults extends Action implements ShouldQueue
                 'cardano-open-developers' => 'cardano-open-developers-f12',
                 'sponsored-by-leftovers' => null,
             ],
+            '13' => [
+                'cardano-open-developers' => 'cardano-open-developers-f13',
+                'cardano-open-ecosystem' => 'cardano-open-echo-system-f13',
+                'cardano-use-cases-concept' => 'cardano-use-cases-concept-f13',
+                'cardano-use-cases-product' => 'cardano-use-cases-product-f13',
+                'cardano-partners-enterprise-randd' => 'cardano-partners-enterprise-f13',
+                'cardano-partners-growth-and-acceleration' => 'cardano-partners-growth-f13',
+                'sponsored-by-leftovers' => null,
+            ],
             '14' => [
                 'cardano-open-developers' => 'cardano-open-developers-f14',
                 'cardano-open-ecosystem' => 'cardano-open-ecosystem-f14',
