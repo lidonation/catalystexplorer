@@ -439,5 +439,6 @@
     "workflows.linkWallet.backToManage": "العودة إلى الإدارة",
     "proposal.linkedWallets.title": "المحافظ المرتبطة",
     "workflows.signature.success.returnToLinkWallet": "تابع لربط المحفظة بمقترحك",
-    "workflows.linkWallet.myWallets": "محافظي"
+    "workflows.linkWallet.myWallets": "محافظي",
+    "recordsNotFound.message": "هذا كل ما نعرفه"
 }

@@ -6,7 +6,7 @@ export default function BookmarkCollectionListLoader() {
     return (
         <div className="grid grid-cols-1 gap-4">
             {collections.map((collection, index) => (
-                <Card className="w-full" key={index}>
+                <Card className="w-full bg-background" key={index}>
                     <div className="flex flex-row items-center justify-between pb-2">
                         <div className="w-full space-y-3">
                             <div className="flex items-center gap-3">

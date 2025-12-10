@@ -9,7 +9,7 @@ export default function Card({ children, ...props }: CardProps) {
     delete props.className;
     return (
         <div
-            className={`bg-background card flex flex-col rounded-lg p-4 shadow-md ${classNames}`}
+            className={`card flex flex-col rounded-lg p-4 shadow-md ${classNames}`}
             data-testid="campaign-card"
             {...props}
         >

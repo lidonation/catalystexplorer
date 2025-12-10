@@ -2,7 +2,7 @@ import Card from '@/Components/Card';
 
 export default function QuickPitchCardLoader() {
     return (
-        <Card>
+        <Card className="bg-background">
             {/* Video player area skeleton */}
             <div className="bg-border-secondary aspect-[16/8] w-full animate-pulse rounded-xl"></div>
             

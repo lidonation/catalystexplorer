@@ -202,7 +202,7 @@ class HomeController extends Controller
         foreach ($proposals as $proposal) {
             $profileIds = [];
             if ($proposal->team && $proposal->team->isNotEmpty()) {
-                $profileIds = $proposal->team->pluck('model.id')->filter()->values()->toArray();
+                $profileIds = $proposal->team->pluck('profile_id')->filter()->values()->toArray();
             }
             $proposalProfileMap[$proposal->id] = $profileIds;
             $allProfileIds = $allProfileIds->merge($profileIds);
@@ -221,34 +221,25 @@ class HomeController extends Controller
         }
 
         try {
+            // Get completed proposal counts by profile
             $completedCounts = Proposal::where('status', 'complete')
-                ->whereHas('team', function ($query) use ($uniqueProfileIds) {
-                    $query->whereIn('profile_id', $uniqueProfileIds);
-                })
-                ->with(['team' => function ($query) use ($uniqueProfileIds) {
-                    $query->whereIn('profile_id', $uniqueProfileIds);
-                }])
-                ->get()
-                ->flatMap(function ($proposal) {
-                    return $proposal->team->pluck('profile_id');
-                })
-                ->countBy()
+                ->join('proposal_profiles', 'proposals.id', '=', 'proposal_profiles.proposal_id')
+                ->whereIn('proposal_profiles.profile_id', $uniqueProfileIds)
+                ->selectRaw('proposal_profiles.profile_id, COUNT(*) as count')
+                ->groupBy('proposal_profiles.profile_id')
+                ->pluck('count', 'proposal_profiles.profile_id')
                 ->toArray();
 
+            // Get outstanding proposal counts by profile
             $outstandingCounts = Proposal::where('status', 'in_progress')
-                ->whereHas('team', function ($query) use ($uniqueProfileIds) {
-                    $query->whereIn('profile_id', $uniqueProfileIds);
-                })
-                ->with(['team' => function ($query) use ($uniqueProfileIds) {
-                    $query->whereIn('profile_id', $uniqueProfileIds);
-                }])
-                ->get()
-                ->flatMap(function ($proposal) {
-                    return $proposal->team->pluck('profile_id');
-                })
-                ->countBy()
+                ->join('proposal_profiles', 'proposals.id', '=', 'proposal_profiles.proposal_id')
+                ->whereIn('proposal_profiles.profile_id', $uniqueProfileIds)
+                ->selectRaw('proposal_profiles.profile_id, COUNT(*) as count')
+                ->groupBy('proposal_profiles.profile_id')
+                ->pluck('count', 'proposal_profiles.profile_id')
                 ->toArray();
 
+            // Get connection counts by profile
             $connectionCounts = Connection::whereIn('previous_model_id', $uniqueProfileIds)
                 ->where('previous_model_type', IdeascaleProfile::class)
                 ->selectRaw('previous_model_id, COUNT(*) as count')
@@ -256,6 +247,7 @@ class HomeController extends Controller
                 ->pluck('count', 'previous_model_id')
                 ->toArray();
 
+            // Apply counts to each proposal
             foreach ($proposals as $proposal) {
                 $profileIds = $proposalProfileMap[$proposal->id];
 

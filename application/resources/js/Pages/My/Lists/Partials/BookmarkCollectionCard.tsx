@@ -98,7 +98,7 @@ const BookmarkCollectionCard = ({
     ];
     return (
         <Card
-            className="relative flex w-full gap-1 lg:gap-3"
+            className="relative flex w-full gap-1 lg:gap-3 bg-background"
             key={collection.id}
             data-testid="bookmark-collection-card"
             data-collection-hash={collection.id}

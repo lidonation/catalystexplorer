@@ -39,7 +39,7 @@ const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
     );
 
     return (
-        <Card className="h-full">
+        <Card className="h-full bg-background">
             <div className="border-gray-persist/50 text-gray-persist/50 z-20 ml-auto w-fit items-center rounded-md border-1 py-0">
                 <ListProvider>
                     <BookmarkButton

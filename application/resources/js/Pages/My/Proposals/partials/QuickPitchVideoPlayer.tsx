@@ -32,7 +32,7 @@ export default function QuickpitchVideoPlayer({
 
     return (
         <div
-            className={`relative my-5 ${aspectRatio} w-full overflow-hidden rounded-2xl`}
+            className={`relative ${aspectRatio} w-full overflow-hidden rounded-2xl`}
         >
             {isPlaying ? (
                 <iframe

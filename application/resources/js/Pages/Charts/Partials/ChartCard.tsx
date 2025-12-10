@@ -11,7 +11,7 @@ export default function ChartCard({ children, title }: ChartCardProps) {
     const { t } = useLaravelReactI18n();
 
     return (
-        <Card className="w-full">
+        <Card className="w-full bg-background">
             <div className="mb-4 flex items-center justify-between">
                 <Title level="4" className="font-semibold">
                     {title}

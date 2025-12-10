@@ -69,6 +69,10 @@ class Proposal extends Model implements IHasMetaData
 
     protected $guarded = ['user_id', 'created_at', 'funded_at'];
 
+    protected $with = [
+        //        'metas'
+    ];
+
     protected $appends = [
         'link',
         'currency',
@@ -273,6 +277,15 @@ class Proposal extends Model implements IHasMetaData
     {
         return Attribute::make(
             get: fn ($value) => ($this->schedule?->funds_distributed ?? $value)
+        );
+    }
+
+    public function catalystDocumentId(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                return $this->meta_info?->catalyst_document_id ?? null;
+            }
         );
     }
 
