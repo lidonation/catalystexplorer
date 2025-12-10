@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Http\Intergrations\LidoNation\Requests\GetModelMedia;
+use App\Http\Integrations\LidoNation\Requests\GetModelMedia;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

@@ -14,8 +14,9 @@ Pretty much every youtube api request should be cache. See below for deets.
 ## Usage
 
 ### Basic Usage (Recommended)
+
 ```php
-use App\Http\Intergrations\YouTube\Requests\GetVideoDetailsRequest;
+use App\Http\Integrations\YouTube\Requests\GetVideoDetailsRequest;
 
 // Create and send request - caching is automatic
 $request = new GetVideoDetailsRequest('your-video-id');

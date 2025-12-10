@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Intergrations\LidoNation\Blockfrost;
+namespace App\Http\Integrations\LidoNation\Blockfrost;
 
 use App\Jobs\CheckBlockfrostHealth;
 use Illuminate\Support\Facades\Cache;

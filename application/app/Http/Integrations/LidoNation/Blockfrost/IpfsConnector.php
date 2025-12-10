@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Intergrations\LidoNation\Blockfrost;
+namespace App\Http\Integrations\LidoNation\Blockfrost;
 
 use Saloon\Contracts\Authenticator;
 use Saloon\Http\Auth\HeaderAuthenticator;

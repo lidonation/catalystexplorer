@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Intergrations\YouTube\Requests;
+namespace App\Http\Integrations\YouTube\Requests;
 
-use App\Http\Intergrations\YouTube\YouTubeConnector;
+use App\Http\Integrations\YouTube\YouTubeConnector;
 use Saloon\CachePlugin\Contracts\Cacheable;
 use Saloon\CachePlugin\Contracts\Driver;
 use Saloon\CachePlugin\Traits\HasCaching;

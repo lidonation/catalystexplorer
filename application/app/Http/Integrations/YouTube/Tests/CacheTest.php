@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Intergrations\YouTube\Tests;
+namespace App\Http\Integrations\YouTube\Tests;
 
-use App\Http\Intergrations\YouTube\Requests\GetVideoDetailsRequest;
-use App\Http\Intergrations\YouTube\YouTubeConnector;
+use App\Http\Integrations\YouTube\Requests\GetVideoDetailsRequest;
+use App\Http\Integrations\YouTube\YouTubeConnector;
 use Illuminate\Support\Facades\Cache;
 
 /**
