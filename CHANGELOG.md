@@ -1,3 +1,10 @@
+# [1.50.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.49.0...v1.50.0) (2025-12-10)
+
+
+### Features
+
+* proposal links ([8827dcf](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/8827dcfd718ef1c70ba58d7710dc0c21251512ac))
+
 # [1.49.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.48.0...v1.49.0) (2025-12-10)
 
 
