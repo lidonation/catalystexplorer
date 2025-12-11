@@ -28,7 +28,7 @@ const ProposalPaginatedList: React.FC<ProposalProps> = ({
 }) => {
     return (
         <>
-            <section className="proposals-wrapper container mt-3 w-full pb-8">
+            <section className="proposals-wrapper container mt-3 w-full pb-8 px-0">
                 {disableInertiaLoading ? (
                     // Direct render without WhenVisible for streaming data
                     proposals?.data.length ? (

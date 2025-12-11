@@ -58,11 +58,11 @@ const GraphButton = () => {
     return (
         <>
             <div className="lg:hidden">
-                <div ref={containerRef} className="sticky bottom-4 left-0 right-0 z-0">
+                <div ref={containerRef} className=" bottom-4 left-0 right-0 z-0">
                 <Transition
                     show={activePopup === "analytics"}
                     as="div"
-                    className="fixed bottom-24 left-0 right-0 flex flex-col items-center px-2 z-50"
+                    className="fixed bottom-24 left-0 right-0 flex flex-col items-center z-50"
                     enter="transition-all duration-300 ease-out"
                     enterFrom="opacity-0 translate-y-4"
                     enterTo="opacity-100 translate-y-0"
@@ -198,7 +198,7 @@ const GraphButton = () => {
                 </div>
             </div>
 <div className="hidden lg:block relative h-0">
-  <div className="absolute bottom-0 right-8 flex items-end justify-end z-10 -translate-y-20">
+  <div className="absolute bottom-0 right-0 flex items-end justify-end z-10 -translate-y-20">
     <Transition
       show={activePopup === 'analytics'}
       as="div"
@@ -225,12 +225,12 @@ const GraphButton = () => {
       </Transition.Child>
     </Transition>
 
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 ml-4">
       <IconButton
         onClick={() => setActivePopup(activePopup === 'ai' ? null : 'ai')}
         icon={<AIPromptIcon />}
         aria-label="AI Assistant"
-        className="hover:scale-105 transition-transform duration-200 active:scale-95"
+        className="hover:scale-105 transition-transform duration-200 active:scale-95 "
       />
       {onProposals ? (
         <IconButton
@@ -255,7 +255,7 @@ const GraphButton = () => {
         connected={activePopup === 'analytics'}
         className={`cursor-pointer ${
           activePopup === 'analytics'
-            ? 'bg-gradient-to-br from-[var(--cx-background-gradient-2-dark)] to-[var(--cx-background-gradient-1-dark)] bg-opacity-0'
+            ? 'bg-gradient-to-br from-[var(--cx-background-gradient-2-dark)] to-[var(--cx-background-gradient-1-dark) '
             : 'bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)]'
         }`}
       />

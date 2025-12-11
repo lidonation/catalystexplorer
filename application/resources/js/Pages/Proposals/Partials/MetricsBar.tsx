@@ -334,7 +334,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex justify-center pb-4">
+                            <div className="flex justify-center pb-4 mr-4">
                                 <ViewAnalyticsButton
                                     onClick={toggleAnalytics}
                                     label="View Analytics"
@@ -346,15 +346,31 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
 
                 {/* Desktop View */}
                 <div className="hidden lg:flex lg:flex-col w-full">
-                    {showAnalytics && (
+                {showAnalytics && (
                         <div className="relative">
-                        <div className="w-[calc(100%-40px)]">
                             <AnalyticsView metrics={metrics} isMobile={false} />
-                        </div>
+                            <svg
+                                className="absolute -right-10 bottom-0"
+                                width="40"
+                                height="40"
+                                viewBox="0 0 40 40"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                style={{ transform: 'scaleX(-1)' }}
+                            >
+                                <path
+                                    d="M40 0 C40 0, 40 40, 0 40 L40 40 Z"
+                                    className="fill-[var(--cx-background-gradient-2-dark)]"
+                                />
+                            </svg>
                         </div>
                     )}
 
                     <div className='relative '>
+                        {/* Dark extension that fills the gap between metrics bar and icon buttons when connected */}
+                        {isConnected && (
+                            <div className="absolute -right-4 top-0 bottom-0 w-4 bg-[var(--cx-background-gradient-2-dark)]" />
+                        )}
                         <div className={`flex items-center justify-between gap-8 px-2 w-full h-18`}>
                             {metrics?.submitted !== undefined && (
                             <div className="flex flex-col items-center flex-1">

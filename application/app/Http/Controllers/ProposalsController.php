@@ -81,6 +81,10 @@ class ProposalsController extends Controller
 
     public int $sumCompletedUSD = 0;
 
+    public int $inProgressProposals = 0;
+
+    public int $unfundedProposals = 0;
+
     public function __construct(
         private readonly WalletInfoService $walletInfoService
     ) {}
@@ -112,6 +116,17 @@ class ProposalsController extends Controller
                     'awardedADA' => $this->sumApprovedADA,
                     'distributedUSD' => $this->sumDistributedUSD,
                     'distributedADA' => $this->sumDistributedADA,
+                    'completionRate' => $this->approvedProposals > 0
+                        ? round(($this->completedProposals / $this->approvedProposals) * 100, 1)
+                        : 0,
+                    'avgRequestedADA' => $this->submittedProposals > 0
+                        ? round($this->sumBudgetsADA / $this->submittedProposals)
+                        : 0,
+                    'avgRequestedUSD' => $this->submittedProposals > 0
+                        ? round($this->sumBudgetsUSD / $this->submittedProposals)
+                        : 0,
+                    'inProgress' => $this->inProgressProposals,
+                    'unfunded' => $this->unfundedProposals,
                 ],
             ]
         );
@@ -763,10 +778,18 @@ class ProposalsController extends Controller
             $this->completedProposals = $facets['status']['complete'];
         }
 
+        if (isset($facets['status']['in_progress'])) {
+            $this->inProgressProposals = $facets['status']['in_progress'];
+        }
+
         if (isset($facets['status'])) {
             foreach ($facets['status'] as $key => $value) {
                 $this->submittedProposals += $value;
             }
+        }
+
+        if (isset($facets['funding_status']['not_approved'])) {
+            $this->unfundedProposals = $facets['funding_status']['not_approved'];
         }
 
         if (isset($facets['funding_status']['funded']) || isset($facets['funding_status']['leftover'])) {
