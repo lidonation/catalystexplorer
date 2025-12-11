@@ -15,19 +15,19 @@ final class LinkData extends Data
         public string $id,
         public string $link,
         public string $type,
-        
+
         #[TypeScriptOptional]
         public ?string $title,
-        
+
         #[TypeScriptOptional]
         public ?string $label,
-        
+
         #[TypeScriptOptional]
         public ?string $status,
-        
+
         #[TypeScriptOptional]
         public ?bool $valid,
-        
+
         #[TypeScriptOptional]
         public ?int $order,
     ) {}

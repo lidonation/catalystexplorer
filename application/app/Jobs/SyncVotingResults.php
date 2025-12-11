@@ -255,7 +255,7 @@ class SyncVotingResults implements ShouldQueue
         } elseif ($campaignSlug || isset($project['projectSlug'])) {
             Log::debug('Cannot generate projectcatalyst.io link - missing required data', [
                 'proposal_id' => $proposal->id,
-                'has_campaign_slug' => !empty($campaignSlug),
+                'has_campaign_slug' => ! empty($campaignSlug),
                 'has_project_slug' => isset($project['projectSlug']),
                 'campaign_slug' => $campaignSlug,
                 'project_slug' => $project['projectSlug'] ?? null,
