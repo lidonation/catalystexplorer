@@ -58,105 +58,97 @@ const GraphButton = () => {
     return (
         <>
             <div className="lg:hidden">
-                <div ref={containerRef} className=" bottom-4 left-0 right-0 z-0">
-                <Transition
-                    show={activePopup === "analytics"}
-                    as="div"
-                    className="fixed bottom-24 left-0 right-0 flex flex-col items-center z-50"
-                    enter="transition-all duration-300 ease-out"
-                    enterFrom="opacity-0 translate-y-4"
-                    enterTo="opacity-100 translate-y-0"
-                    leave="transition-all duration-200 ease-in"
-                    leaveFrom="opacity-100 translate-y-0"
-                    leaveTo="opacity-0 translate-y-4"
-                    afterLeave={() => setConnectorOffset(0)}
-                >
-                    <Transition.Child
+                {/* Fixed container for mobile - metrics bar + icon buttons scroll together */}
+                <div ref={containerRef} className="fixed bottom-4 left-0 right-0 z-50 flex flex-col items-center">
+                    {/* Analytics panel transition */}
+                    <Transition
+                        show={activePopup === "analytics"}
                         as="div"
-                        enter="transition-all duration-300 ease-out delay-75"
-                        enterFrom="opacity-0 scale-95"
-                        enterTo="opacity-100 scale-100"
+                        className="w-full flex flex-col items-center mb-0"
+                        enter="transition-all duration-300 ease-out"
+                        enterFrom="opacity-0 translate-y-4"
+                        enterTo="opacity-100 translate-y-0"
                         leave="transition-all duration-200 ease-in"
-                        leaveFrom="opacity-100 scale-100"
-                        leaveTo="opacity-0 scale-95"
-                        className="w-full max-w-full mb-0"
+                        leaveFrom="opacity-100 translate-y-0"
+                        leaveTo="opacity-0 translate-y-4"
+                        afterLeave={() => setConnectorOffset(0)}
                     >
-                        {metrics && <MetricsBar isConnected={false} />}
-                    </Transition.Child>
+                        <Transition.Child
+                            as="div"
+                            enter="transition-all duration-300 ease-out delay-75"
+                            enterFrom="opacity-0 scale-95"
+                            enterTo="opacity-100 scale-100"
+                            leave="transition-all duration-200 ease-in"
+                            leaveFrom="opacity-100 scale-100"
+                            leaveTo="opacity-0 scale-95"
+                            className="w-full max-w-full mb-0"
+                        >
+                            {metrics && <MetricsBar isConnected={false} />}
+                        </Transition.Child>
 
-                    <motion.svg
-                        key={`connector-${connectorOffset}`}
-                        width={129}
-                        height={40}
-                        viewBox="0 177 129 24"
-                        className="mx-auto -mt-4"
-                        style={{ x: connectorOffset }}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{
-                            type: "spring",
-                            stiffness: 300,
-                            damping: 20,
-                            duration: 0.3
-                        }}
-                    >
-                        <motion.rect
-                            width="71"
-                            height="29"
-                            x="25"
-                            y="177"
-                            fill="var(--cx-background-gradient-2-dark)"
-                            initial={{ scaleX: 0 }}
-                            animate={{ scaleX: 1 }}
+                        <motion.svg
+                            key={`connector-${connectorOffset}`}
+                            width={129}
+                            height={42}
+                            viewBox="0 177 129 27"
+                            className="mx-auto -mt-4"
+                            style={{ x: connectorOffset }}
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
                             transition={{
-                                duration: 0.2,
-                                ease: "easeOut",
-                                delay: 0.1
+                                type: "spring",
+                                stiffness: 300,
+                                damping: 20,
+                                duration: 0.3
                             }}
-                            transform-Origin="center"
-                        />
-                        <motion.path
-                            d="M27.5 210.5C23.9 187.1 7.66667 184.833 3.49693e-07 185L3.5 180L27.5 177L38 185L36 200C34.6667 203.5 31.1 207.9 27.5 197.5Z"
-                            fill="var(--cx-background-gradient-2-dark)"
-                            initial={{ pathLength: 0 }}
-                            animate={{ pathLength: 1 }}
-                            transition={{
-                                duration: 0.2,
-                                ease: "easeOut",
-                                delay: 0.1
-                            }}
-                            stroke="var(--cx-background-gradient-2-dark)"
-                            strokeWidth={0.5}
-                        />
+                        >
+                            <motion.rect
+                                width="71"
+                                height="29"
+                                x="25"
+                                y="177"
+                                fill="var(--cx-background-gradient-2-dark)"
+                                initial={{ scaleX: 0 }}
+                                animate={{ scaleX: 1 }}
+                                transition={{
+                                    duration: 0.2,
+                                    ease: "easeOut",
+                                    delay: 0.1
+                                }}
+                                transform-Origin="center"
+                            />
+                            <motion.path
+                                d="M27.5 230.5C23.9 187.1 7.66667 185.833 3.49693e-07 185L3.5 180L27.5 177L38 185L36 200C34.6667 203.5 31.1 207.9 27.5 197.5Z"
+                                fill="var(--cx-background-gradient-2-dark)"
+                                initial={{ pathLength: 0 }}
+                                animate={{ pathLength: 1 }}
+                                transition={{
+                                    duration: 0.2,
+                                    ease: "easeOut",
+                                    delay: 0.1
+                                }}
+                                stroke="var(--cx-background-gradient-2-dark)"
+                                strokeWidth={0.5}
+                            />
 
-                        <motion.path
-                            d="M101.5 210.5C105.1 187.1 121.333 184.833 129 185L125.5 180L101.5 177L91 185L93 200C94.3333 203.5 97.9 207.9 101.5 197.5Z"
-                            fill="var(--cx-background-gradient-2-dark)"
-                            initial={{ pathLength: 0 }}
-                            animate={{ pathLength: 1 }}
-                            transition={{
-                                duration: 0.2,
-                                ease: "easeOut",
-                                delay: 0.1
-                            }}
-                            stroke="var(--cx-background-gradient-2-dark)"
-                            strokeWidth={0.5}
-                        />
-                    </motion.svg>
-                    <Transition.Child
-                        as="div"
-                        enter="transition-all duration-300 ease-out delay-150"
-                        enterFrom="opacity-0 scale-95"
-                        enterTo="opacity-100 scale-100"
-                        leave="transition-all duration-200 ease-in"
-                        leaveFrom="opacity-100 scale-100"
-                        leaveTo="opacity-0 scale-95"
-                    >
+                            <motion.path
+                                d="M101.5 230.5C105.1 197.1 121.333 185.833 129 185L125.5 180L101.5 177L91 185L93 200C94.3333 203.5 97.9 207.9 101.5 203.5Z"
+                                fill="var(--cx-background-gradient-2-dark)"
+                                initial={{ pathLength: 0 }}
+                                animate={{ pathLength: 1 }}
+                                transition={{
+                                    duration: 0.2,
+                                    ease: "easeOut",
+                                    delay: 0.1
+                                }}
+                                stroke="var(--cx-background-gradient-2-dark)"
+                                strokeWidth={0.5}
+                            />
+                        </motion.svg>
+                    </Transition>
 
-                    </Transition.Child>
-                </Transition>
-
-                <div className="flex justify-center gap-2">
+                    {/* Icon buttons - always visible, connected to metrics bar */}
+                    <div className="flex justify-center gap-2 -mt-2">
                         <div ref={aiButtonRef}>
                             <IconButton
                                 onClick={() => setActivePopup(activePopup === "ai" ? null : "ai")}
