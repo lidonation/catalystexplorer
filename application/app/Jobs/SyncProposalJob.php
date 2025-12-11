@@ -854,16 +854,35 @@ class SyncProposalJob implements ShouldQueue
                     'proposal_id' => $proposal->id,
                     'has_campaign_slug' => ! empty($campaign->slug),
                     'has_proposal_title' => ! empty($proposal->title),
+                    'has_projectcatalyst_io_slug_meta' => ! empty($campaign->getMeta('projectcatalyst_io_slug')),
                 ]);
 
                 return;
             }
 
-            // Extract campaign slug by removing the fund suffix (e.g., 'cardano-open-developers-f12' -> 'cardano-open-developers')
-            $campaignSlug = $campaign->slug;
-            $fundSuffix = '-f'.$fundNumber;
-            if (str_ends_with($campaignSlug, $fundSuffix)) {
-                $campaignSlug = substr($campaignSlug, 0, -strlen($fundSuffix));
+            // First try to get the actual ProjectCatalyst.io slug from campaign metas
+            $campaignSlug = $campaign->getMeta('projectcatalyst_io_slug');
+
+            // If not found in metas, fall back to extracting from campaign slug
+            if (! $campaignSlug) {
+                $campaignSlug = $campaign->slug;
+                $fundSuffix = '-f'.$fundNumber;
+                if (str_ends_with($campaignSlug, $fundSuffix)) {
+                    $campaignSlug = substr($campaignSlug, 0, -strlen($fundSuffix));
+                }
+
+                Log::debug('Using fallback campaign slug extraction', [
+                    'proposal_id' => $proposal->id,
+                    'original_slug' => $campaign->slug,
+                    'extracted_slug' => $campaignSlug,
+                    'fund_number' => $fundNumber,
+                ]);
+            } else {
+                Log::debug('Using campaign meta projectcatalyst_io_slug', [
+                    'proposal_id' => $proposal->id,
+                    'campaign_slug' => $campaignSlug,
+                    'campaign_id' => $campaign->id,
+                ]);
             }
 
             // Generate project slug from proposal title (similar to how it's done in the gateway API)
@@ -882,6 +901,7 @@ class SyncProposalJob implements ShouldQueue
                     'old_link' => $proposal->getOriginal('projectcatalyst_io_link'),
                     'new_link' => $projectCatalystUrl,
                     'campaign_slug' => $campaignSlug,
+                    'campaign_slug_source' => $campaign->getMeta('projectcatalyst_io_slug') ? 'meta' : 'extracted',
                     'project_slug' => $projectSlug,
                     'fund_number' => $fundNumber,
                 ]);

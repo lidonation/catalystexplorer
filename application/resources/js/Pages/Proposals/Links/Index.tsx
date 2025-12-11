@@ -33,14 +33,14 @@ const Index: React.FC<IndexProps> = ({
     catalystConnectionsCount = 0,
 }) => {
     const { t } = useLaravelReactI18n();
-    
+
     const links = proposal.links || [];
     const activeLinks = links.filter(link => link.valid && link.status === 'published');
     const inactiveLinks = links.filter(link => !link.valid || link.status !== 'published');
 
     // Create special links from proposal properties
     const specialLinks: LinkData[] = [];
-    
+
     if (proposal.ideascale_link) {
         specialLinks.push({
             id: `ideascale-${proposal.id}`,
@@ -52,7 +52,7 @@ const Index: React.FC<IndexProps> = ({
             valid: true
         });
     }
-    
+
     if (proposal.projectcatalyst_io_link) {
         specialLinks.push({
             id: `projectcatalyst-${proposal.id}`,
@@ -77,7 +77,7 @@ const Index: React.FC<IndexProps> = ({
 
     const linkTypeOrder = [
         'website',
-        'repository', 
+        'repository',
         'github',
         'documentation',
         'youtube',
@@ -92,11 +92,11 @@ const Index: React.FC<IndexProps> = ({
     const sortedLinkGroups = Object.entries(groupedLinks).sort(([a], [b]) => {
         const aIndex = linkTypeOrder.indexOf(a);
         const bIndex = linkTypeOrder.indexOf(b);
-        
+
         if (aIndex === -1 && bIndex === -1) return a.localeCompare(b);
         if (aIndex === -1) return 1;
         if (bIndex === -1) return -1;
-        
+
         return aIndex - bIndex;
     });
 
@@ -185,8 +185,8 @@ const Index: React.FC<IndexProps> = ({
                                 </h3>
                                 <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-1">
                                     {specialLinks.map((link) => (
-                                        <LinkCard 
-                                            key={link.id} 
+                                        <LinkCard
+                                            key={link.id}
                                             link={link}
                                             className="border-2 border-blue-100 dark:border-blue-800"
                                         />
@@ -194,7 +194,7 @@ const Index: React.FC<IndexProps> = ({
                                 </div>
                             </div>
                         )}
-                        
+
                         {/* Active links */}
                         {activeLinks.length > 0 && (
                             <div>
@@ -203,8 +203,8 @@ const Index: React.FC<IndexProps> = ({
                                 </h3>
                                 <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-1">
                                     {activeLinks.map((link) => (
-                                        <LinkCard 
-                                            key={link.id} 
+                                        <LinkCard
+                                            key={link.id}
                                             link={link}
                                         />
                                     ))}
@@ -220,38 +220,10 @@ const Index: React.FC<IndexProps> = ({
                                 </h3>
                                 <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-1">
                                     {inactiveLinks.map((link) => (
-                                        <LinkCard 
-                                            key={link.id} 
+                                        <LinkCard
+                                            key={link.id}
                                             link={link}
                                         />
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Links grouped by type - alternative layout for when there are many links */}
-                        {links.length > 8 && (
-                            <div className="mt-8 pt-6 border-t border-gray-persist/20">
-                                <h3 className="text-content text-lg font-medium mb-4">
-                                    {t('proposals.links.byCategory')}
-                                </h3>
-                                <div className="space-y-4">
-                                    {sortedLinkGroups.map(([type, typeLinks]) => (
-                                        <div key={type} className="space-y-2">
-                                            <h4 className="text-content font-medium capitalize flex items-center gap-2">
-                                                <span className="inline-block w-2 h-2 rounded-full bg-blue-500"></span>
-                                                {type} ({typeLinks.length})
-                                            </h4>
-                                            <div className="grid gap-2 sm:grid-cols-1 md:grid-cols-2">
-                                                {typeLinks.map((link) => (
-                                                    <LinkCard 
-                                                        key={link.id} 
-                                                        link={link}
-                                                        className="text-sm"
-                                                    />
-                                                ))}
-                                            </div>
-                                        </div>
                                     ))}
                                 </div>
                             </div>

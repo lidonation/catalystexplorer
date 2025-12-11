@@ -52,6 +52,7 @@ class ProposalResource extends JsonResource
                     'name' => $this->user->name,
                 ];
             }),
+            'links' => $this->when($this->relationLoaded('links'), LinkResource::collection($this->links)),
             'meta_data' => $this->when($this->relationLoaded('meta_data'), $this->meta_info),
 
             // Computed attributes
