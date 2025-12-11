@@ -62,6 +62,7 @@ class ProposalController extends Controller
                 AllowedInclude::relationship('team'),
                 AllowedInclude::relationship('schedule'),
                 AllowedInclude::relationship('schedule.milestones'),
+                AllowedInclude::relationship('links'),
                 AllowedInclude::relationship('meta_data'),
             ])
             ->allowedSorts([
@@ -110,6 +111,7 @@ class ProposalController extends Controller
                 AllowedInclude::relationship('team'),
                 AllowedInclude::relationship('schedule'),
                 AllowedInclude::relationship('schedule.milestones'),
+                AllowedInclude::relationship('links'),
                 AllowedInclude::relationship('meta_data'),
             ]);
 
