@@ -27,7 +27,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
@@ -280,6 +279,60 @@ class Proposal extends Model implements IHasMetaData
         );
     }
 
+    public function amountRequestedUsd(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->currency === CatalystCurrencies::USD()->value
+                ? intval($this->amount_requested ?? 0)
+                : 0
+        );
+    }
+
+    public function amountRequestedAda(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->currency === CatalystCurrencies::ADA()->value
+                ? intval($this->amount_requested ?? 0)
+                : 0
+        );
+    }
+
+    public function amountReceivedUsd(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->currency === CatalystCurrencies::USD()->value
+                ? intval($this->amount_received ?? 0)
+                : 0
+        );
+    }
+
+    public function amountReceivedAda(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->currency === CatalystCurrencies::ADA()->value
+                ? intval($this->amount_received ?? 0)
+                : 0
+        );
+    }
+
+    public function amountAwardedUsd(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => ($this->funded_at && $this->currency === CatalystCurrencies::USD()->value)
+                ? intval($this->amount_requested ?? 0)
+                : 0
+        );
+    }
+
+    public function amountAwardedAda(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => ($this->funded_at && $this->currency === CatalystCurrencies::ADA()->value)
+                ? intval($this->amount_requested ?? 0)
+                : 0
+        );
+    }
+
     public function catalystDocumentId(): Attribute
     {
         return Attribute::make(
@@ -516,9 +569,13 @@ class Proposal extends Model implements IHasMetaData
             'currency' => $this->currency,
             'amount_requested' => $this->amount_requested ? intval($this->amount_requested) : 0,
             'amount_received' => $this->amount_received ? intval($this->amount_received) : 0,
+            'amount_requested_USD' => $this->amount_requested_usd,
+            'amount_requested_ADA' => $this->amount_requested_ada,
+            'amount_received_USD' => $this->amount_received_usd,
+            'amount_received_ADA' => $this->amount_received_ada,
+            'amount_awarded_USD' => $this->amount_awarded_usd,
+            'amount_awarded_ADA' => $this->amount_awarded_ada,
             'link' => $this->link,
-            'created_at_timestamp' => $this->created_at ? Carbon::parse($this->created_at)->timestamp : null,
-            'tags' => $this->tags,
             'fund' => [
                 'id' => $this->fund?->id,
                 'label' => $this->fund?->label,
