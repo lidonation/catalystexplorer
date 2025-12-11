@@ -271,7 +271,7 @@ export default function Index({
                                 )}
                             </motion.div>
                         </AnimatePresence>
-                        <div className="sticky bottom-8  z-40">
+                        <div className="sticky lg:-bottom-20  z-40">
                 <GraphButton />
             </div>
             </>

@@ -8,7 +8,7 @@ import PercentageProgressBar from '@/Components/PercentageProgressBar';
 import ShareArrowIcon from '@/Components/svgs/ShareArrowIcon';
 import { Link } from '@inertiajs/react';
 import ShareIcon from '@/Components/svgs/ShareIcon';
-import ProposalStatusPieChart from '@/Pages/Proposals/Partials/ProposalStatusPieChart';
+import { ProposalStatusPieChart } from '@/Pages/Proposals/Partials/ProposalStatusPieChart';
 
 interface AnalyticsViewProps {
     metrics: ProposalMetrics;
@@ -23,12 +23,10 @@ interface AnalyticsCalculated {
     awardedPercent: string;
 }
 
-const IN_PROGRESS_STATIC = 2148;
-const UNFUNDED_STATIC = 6123;
-const AVG_REQUESTED_STATIC = 88600;
-const COMPLETION_RATE_STATIC = '61.8';
-
-function computeAnalytics(metrics: ProposalMetrics): AnalyticsCalculated {
+function computeAnalytics(metrics: ProposalMetrics): AnalyticsCalculated & {
+    completionRate: number;
+    avgRequestedADA: number;
+} {
     const totalProposals = metrics.submitted || 1;
 
     const completedPercent = metrics.completed
@@ -41,36 +39,34 @@ function computeAnalytics(metrics: ProposalMetrics): AnalyticsCalculated {
 
     const distributedPercent = metrics.distributedADA && metrics.awardedADA
         ? ((metrics.distributedADA / metrics.awardedADA) * 100).toFixed(1)
-        : '73.1';
+        : '0';
 
     const awardedPercent = metrics.awardedADA && metrics.requestedADA
         ? ((metrics.awardedADA / metrics.requestedADA) * 100).toFixed(1)
-        : '20.7';
+        : '0';
+
+    const completionRate = metrics.approved && metrics.approved > 0
+        ? ((metrics.completed ?? 0) / metrics.approved) * 100
+        : 0;
+
+    const avgRequestedADA = metrics.submitted && metrics.submitted > 0
+        ? (metrics.requestedADA ?? 0) / metrics.submitted
+        : 0;
 
     return {
         totalProposals,
         completedPercent,
         approvedPercent,
         distributedPercent,
-        awardedPercent
+        awardedPercent,
+        completionRate,
+        avgRequestedADA
     };
 }
 
 const AnalyticsHeader: React.FC = () => {
     const { t } = useLaravelReactI18n();
     const chartsUrl = useLocalizedRoute('charts.proposals');
-
-    const handleCopyCharts = () => {
-        const textToCopy = window.location.href; 
-        navigator.clipboard.writeText(textToCopy)
-            .then(() => {
-                console.log('Copied to clipboard:', textToCopy);
-            })
-            .catch((err) => {
-                console.error('Failed to copy:', err);
-            });
-    };
-
     return (
         <div className="w-full inline-flex justify-between items-center mb-4 px-4 py-2">
             <div className="flex justify-center items-center gap-2">
@@ -139,31 +135,108 @@ type StatusDistributionCardProps = {
 };
 
 const StatusDistributionCard: React.FC<StatusDistributionCardProps> = ({
-    metrics,
-    isMobile = false
+  metrics,
+  isMobile = false,
 }) => {
-    const { t } = useLaravelReactI18n();
+  const { t } = useLaravelReactI18n();
 
-    const wrapperClasses = isMobile
-        ? 'self-stretch inline-flex flex-col justify-center items-center gap-4'
-        : 'flex-1 p-2.5 bg-[var(--cx-background-gradient-1-dark)] rounded-xl inline-flex flex-col justify-start items-start gap-3.5';
+  const completed = metrics.completed || 0;
+  const inProgress = metrics.inProgress || 0;
+  const unfunded = metrics.unfunded || 0;
+  const total = completed + inProgress + unfunded;
 
+  const legendItems = [
+    { id: 'completed', label: t('Completed'), value: completed, colorClass: 'bg-success' },
+    { id: 'in_progress', label: t('project.status.inProgress'), value: inProgress, colorClass: 'bg-primary' },
+    { id: 'unfunded', label: t('project.status.unfunded'), value: unfunded, colorClass: 'bg-[var(--cx-dark)]' },
+  ];
 
+  if (isMobile) {
     return (
-        <div className={wrapperClasses}>
-            <div className="self-stretch inline-flex justify-start items-start gap-6">
-                <div className='text-content-light text-base font-semibold leading-7'>
-                    {t('Proposal Status Distribution')}
-                    </div>
+        <div className="w-full flex flex-col gap-3 ">
+            <div className="text-content-light text-base font-semibold leading-7">
+                {t('Proposal Status Distribution')}
             </div>
-            {/* <ProposalStatusPieChart
-                completed={metrics.completed || 0}
-                inProgress={IN_PROGRESS_STATIC}
-                unfunded={UNFUNDED_STATIC}
-                className="w-full"
-            /> */}
+    
+
+            <div className="flex w-full gap-10">
+                <div className="basis-1/2 flex items-center justify-center">
+                    <ProposalStatusPieChart
+                    completed={completed}
+                    inProgress={inProgress}
+                    unfunded={unfunded}
+                    />
+                </div>
+                <div className="basis-1/2 space-y-3 items-end justify-end">
+                    {legendItems.map((item) => {
+                        const percent =
+                            total > 0 ? ((item.value / total) * 100).toFixed(1) : '0.0';
+
+                        return (
+                            <div key={item.id} className="flex flex-col gap-0.5">
+                                <div className="flex items-center gap-2">
+                                    <span className={`w-2.5 h-2.5 rounded-full ${item.colorClass}`} />
+                                    <span className="text-content-light text-sm">
+                                    {item.label}
+                                    </span>
+                                </div>
+                                <div>
+                                    <span className="text-content-light text-sm font-semibold">
+                                    {item.value.toLocaleString()}
+                                    </span>
+                                    <span className="text-content-light text-sm opacity-80 ml-1">
+                                    ({percent}%)
+                                    </span>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
         </div>
     );
+  }
+
+  return (
+  <div className="flex-1 w-full rounded-xl bg-[var(--cx-background-gradient-1-dark)] lg:p-3 flex flex-col gap-5">
+    <div className="text-content-light text-lg lg:text-xl font-semibold leading-7">
+      {t('Proposal Status Distribution')}
+    </div>
+    <div className="flex flex-col items-center gap-6">
+      <div className="w-54 h-40 xl:w-62 xl:h-42">
+        <ProposalStatusPieChart
+          completed={completed}
+          inProgress={inProgress}
+          unfunded={unfunded}
+        />
+      </div>
+
+      <div className="w-full max-w-md space-y-4">
+        {legendItems.map((item) => {
+          const percent =
+            total > 0 ? ((item.value / total) * 100).toFixed(1) : '0.0';
+
+          return (
+            <div
+              key={item.id}
+              className="flex items-center justify-between gap-4"
+            >
+              <div className="flex items-center gap-3">
+                <span className={`w-3 h-3 rounded-full ${item.colorClass}`} />
+                <span className="text-white text-base">
+                  {item.label}
+                </span>
+              </div>
+              <span className="text-white text-base font-semibold whitespace-nowrap">
+                {item.value.toLocaleString()} ({percent}%)
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+);
 };
 
 type FundingOverviewCardProps = {
@@ -191,7 +264,7 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
     return (
         <div className={wrapperClasses}>
             <div className="inline-flex justify-start items-start gap-6">
-                <div className=''>{t('Funding Overview')}</div>
+                <div className='text-content-light text-lg lg:text-xl font-semibold leading-7 '>{t('Funding Overview')}</div>
             </div> 
 
             <div className="self-stretch flex flex-col justify-start items-start gap-2">
@@ -315,10 +388,12 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
 
 type KpisCardProps = {
     metrics: ProposalMetrics;
+    completionRate: number;
+    avgRequestedADA: number;
     isMobile?: boolean;
 };
 
-const KpisCard: React.FC<KpisCardProps> = ({ metrics, isMobile = false }) => {
+const KpisCard: React.FC<KpisCardProps> = ({ metrics, completionRate, avgRequestedADA, isMobile = false }) => {
     const { t } = useLaravelReactI18n();
 
     const wrapperClasses = isMobile
@@ -329,7 +404,7 @@ const KpisCard: React.FC<KpisCardProps> = ({ metrics, isMobile = false }) => {
     return (
         <div className={wrapperClasses}>
             <div className="inline-flex justify-start items-start gap-2  w-full">
-                <div className=''>{t('KPIs')}</div>
+                <div className='text-content-light text-lg lg:text-xl font-semibold leading-7'>{t('KPIs')}</div>
             </div>
 
             <div className="inline-flex justify-center items-center gap-6 ">
@@ -358,10 +433,10 @@ const KpisCard: React.FC<KpisCardProps> = ({ metrics, isMobile = false }) => {
                         {t('AVG. AMOUNT REQUESTED')}
                     </div>
                     <div className={` text-xl font-bold leading-5`}>
-                        {shortNumber(AVG_REQUESTED_STATIC, 2)} ₳
+                        {shortNumber(avgRequestedADA, 2)} ₳
                     </div>
                     <div className={` text-xs text-dark font-normal leading-5`}>
-                        {t('Per approved proposal')}
+                        {t('Per submitted proposal')}
                     </div>
                 </div>
 
@@ -373,7 +448,7 @@ const KpisCard: React.FC<KpisCardProps> = ({ metrics, isMobile = false }) => {
                         {t('COMPLETION RATE')}
                     </div>
                     <div className={` text-xl font-bold leading-5`}>
-                        {COMPLETION_RATE_STATIC}%
+                        {completionRate.toFixed(1)}%
                     </div>
                     <div
                         className={` text-xs text-dark font-normal leading-5`}
@@ -404,7 +479,7 @@ const KpisCard: React.FC<KpisCardProps> = ({ metrics, isMobile = false }) => {
 };
 
 const AnalyticsView: React.FC<AnalyticsViewProps> = ({ metrics, isMobile = false }) => {
-    const { approvedPercent, distributedPercent, awardedPercent } =
+    const { approvedPercent, distributedPercent, awardedPercent, completionRate, avgRequestedADA } =
         computeAnalytics(metrics);
 
     if (isMobile) {
@@ -420,7 +495,7 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({ metrics, isMobile = false
                     isMobile
                 />
 
-                <KpisCard metrics={metrics} isMobile />
+                <KpisCard metrics={metrics} completionRate={completionRate} avgRequestedADA={avgRequestedADA} isMobile />
             </div>
         );
     }
@@ -436,7 +511,7 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({ metrics, isMobile = false
                     awardedPercent={awardedPercent}
                     approvedPercent={approvedPercent}
                 />
-                <KpisCard metrics={metrics} />
+                <KpisCard metrics={metrics} completionRate={completionRate} avgRequestedADA={avgRequestedADA} />
             </div>
         </>
     );
