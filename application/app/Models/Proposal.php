@@ -333,24 +333,6 @@ class Proposal extends Model implements IHasMetaData
         );
     }
 
-    public function completedAmountPaidUsd(): Attribute
-    {
-        return Attribute::make(
-            get: fn () => ($this->status === 'complete' && $this->currency === CatalystCurrencies::USD()->value)
-                ? intval($this->amount_received ?? 0)
-                : 0
-        );
-    }
-
-    public function completedAmountPaidAda(): Attribute
-    {
-        return Attribute::make(
-            get: fn () => ($this->status === 'complete' && $this->currency === CatalystCurrencies::ADA()->value)
-                ? intval($this->amount_received ?? 0)
-                : 0
-        );
-    }
-
     public function catalystDocumentId(): Attribute
     {
         return Attribute::make(
@@ -593,8 +575,6 @@ class Proposal extends Model implements IHasMetaData
             'amount_received_ADA' => $this->amount_received_ada,
             'amount_awarded_USD' => $this->amount_awarded_usd,
             'amount_awarded_ADA' => $this->amount_awarded_ada,
-            'completed_amount_paid_USD' => $this->completed_amount_paid_usd,
-            'completed_amount_paid_ADA' => $this->completed_amount_paid_ada,
             'link' => $this->link,
             'fund' => [
                 'id' => $this->fund?->id,

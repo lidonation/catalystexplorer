@@ -139,7 +139,7 @@ class ProposalsController extends Controller
         if (str_contains($request->path(), '/links')) {
             $withRelations[] = 'links';
         }
-        
+
         $proposal = Proposal::with($withRelations)
             ->where('slug', $slug)
             ->firstOrFail();

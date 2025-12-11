@@ -58,9 +58,7 @@ const GraphButton = () => {
     return (
         <>
             <div className="lg:hidden">
-                {/* Fixed container for mobile - metrics bar + icon buttons scroll together */}
                 <div ref={containerRef} className="fixed bottom-4 left-0 right-0 z-50 flex flex-col items-center">
-                    {/* Analytics panel transition */}
                     <Transition
                         show={activePopup === "analytics"}
                         as="div"

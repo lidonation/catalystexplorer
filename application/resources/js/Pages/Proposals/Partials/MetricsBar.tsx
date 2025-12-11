@@ -226,7 +226,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                         </div>
                     ) : (
                         <>
-                            <div className="flex flex-col items-center px-4 py-4 w-full">
+                            <div className="flex flex-col items-center px-2 py-4 w-full">
                                 <div className="w-full max-w-md">
                                     <div className="flex justify-center mb-4 gap-12">
                                         {metrics?.submitted !== undefined && (
@@ -234,7 +234,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                                                 <ValueLabel className="text-content-light block font-semibold text-sm uppercase tracking-wide">
                                                     {t('submitted')}
                                                 </ValueLabel>
-                                                <span className="text-xl font-bold leading-5">
+                                                <span className="text-xl font-bold leading-5 ml-8">
                                                     {metrics.submitted.toLocaleString()}
                                                 </span>
                                                 <MetricBarSvg type="submitted" className="mt-2" />
@@ -246,7 +246,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                                                 <ValueLabel className="text-primary block font-semibold text-sm uppercase tracking-wide">
                                                     {t('approved')}
                                                 </ValueLabel>
-                                                <span className="text-xl font-bold leading-5">
+                                                <span className="text-xl font-bold leading-5 mr-10">
                                                     {metrics.approved.toLocaleString()}
                                                 </span>
                                                 <div className="inline-flex justify-center items-center gap-1 mt-1">
@@ -258,13 +258,13 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                                             </div>
                                         )}
                                     </div>
-                                    <div className="flex justify-center mb-4 gap-24">
+                                    <div className="flex justify-center mb-4 gap-16">
                                         {metrics?.completed !== undefined && metrics?.submitted !== undefined && (
                                             <div className="flex flex-col items-center justify-start gap-2 w-28">
                                                 <ValueLabel className="text-success block font-semibold text-sm uppercase tracking-wide">
                                                     {t('completed')}
                                                 </ValueLabel>
-                                                <span className="text-xl font-bold leading-5">
+                                                <span className="text-xl font-bold leading-5 ml-8">
                                                     {metrics.completed.toLocaleString()}
                                                 </span>
                                                 <div className="inline-flex justify-center items-center gap-1 mt-1">
@@ -283,8 +283,8 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                                             <div className="flex flex-col items-center justify-start gap-2 w-28">
                                                 <ValueLabel className="block text-content-light font-semibold text-sm text-nowrap uppercase tracking-wide">
                                                     ₳ {t('distributed')}
-                                                </ValueLabel>
-                                                <span className="text-xl font-bold leading-5">
+                                                </ValueLabel> 
+                                                <span className="text-xl font-bold leading-5 mr-12">
                                                     ₳{shortNumber(metrics.distributedADA, 2)}
                                                 </span>
                                                 {metrics?.distributedUSD !== undefined && metrics.distributedUSD > 0 && (
@@ -295,13 +295,13 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                                             </div>
                                         )}
                                     </div>
-                                    <div className="flex justify-center mb-4 gap-40">
+                                    <div className="flex justify-center mb-4 gap-20">
                                         {metrics?.awardedADA !== undefined && (
                                             <div className="flex flex-col items-center justify-start gap-2 w-28">
                                                 <ValueLabel className="text-content-light block font-semibold text-sm text-nowrap uppercase tracking-wide">
                                                     ₳ {t('awarded')}
                                                 </ValueLabel>
-                                                <span className="text-xl font-bold leading-5">
+                                                <span className="text-xl font-bold leading-5 ml-8">
                                                     ₳{shortNumber(metrics.awardedADA, 2)}
                                                 </span>
                                                 {metrics?.awardedUSD !== undefined && metrics.awardedUSD > 0 && (
@@ -317,7 +317,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                                                 <ValueLabel className="text-content-light block font-semibold text-sm text-nowrap uppercase tracking-wide">
                                                     ₳ {t('requested')}
                                                 </ValueLabel>
-                                                <span className="text-xl font-bold leading-5">
+                                                <span className="text-xl font-bold leading-5 mr-12">
                                                     ₳{shortNumber(metrics.requestedADA, 2)}
                                                 </span>
                                                 {metrics?.requestedUSD !== undefined && metrics.requestedUSD > 0 && (

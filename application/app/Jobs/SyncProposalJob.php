@@ -7,6 +7,7 @@ namespace App\Jobs;
 use App\Models\Campaign;
 use App\Models\CatalystProfile;
 use App\Models\Fund;
+use App\Models\Link;
 use App\Models\Proposal;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -18,7 +19,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
 use League\HTMLToMarkdown\HtmlConverter;
-use App\Models\Link;
 
 class SyncProposalJob implements ShouldQueue
 {
@@ -465,7 +465,7 @@ class SyncProposalJob implements ShouldQueue
     {
         try {
             $proposal = Proposal::find($this->proposalId);
-            if (!$proposal) {
+            if (! $proposal) {
                 return;
             }
 
@@ -489,7 +489,7 @@ class SyncProposalJob implements ShouldQueue
                 }
             }
 
-            if (!empty($linkIds)) {
+            if (! empty($linkIds)) {
                 // Prepare pivot data with model_type
                 $pivotData = [];
                 foreach ($linkIds as $linkId) {
@@ -498,7 +498,7 @@ class SyncProposalJob implements ShouldQueue
                 $proposal->links()->sync($pivotData);
                 Log::info('Successfully synced links for proposal', [
                     'proposal_id' => $this->proposalId,
-                    'links_count' => count($linkIds)
+                    'links_count' => count($linkIds),
                 ]);
             } else {
                 $proposal->links()->detach();
@@ -529,15 +529,15 @@ class SyncProposalJob implements ShouldQueue
                 $url = trim($url, '.,;:!?)"\']');
 
                 // Add protocol if missing
-                if (!preg_match('/^https?:\/\//i', $url)) {
-                    $url = 'https://' . $url;
+                if (! preg_match('/^https?:\/\//i', $url)) {
+                    $url = 'https://'.$url;
                 }
 
                 $urls[] = [
                     'url' => $url,
                     'type' => $this->categorizeUrl($url),
                     'context' => 'content',
-                    'label' => null
+                    'label' => null,
                 ];
             }
         }
@@ -552,7 +552,7 @@ class SyncProposalJob implements ShouldQueue
     {
         $urls = [];
 
-        if (!$data) {
+        if (! $data) {
             return $urls;
         }
 
@@ -586,9 +586,9 @@ class SyncProposalJob implements ShouldQueue
                     if ($key === null || $value === null) {
                         continue;
                     }
-                    
-                    $newPath = $currentPath ? $currentPath . '.' . (string) $key : (string) $key;
-                    
+
+                    $newPath = $currentPath ? $currentPath.'.'.(string) $key : (string) $key;
+
                     // Special handling for fields that commonly contain links
                     if (is_string($key) && is_string($value)) {
                         $lowerKey = strtolower($key);
@@ -599,13 +599,14 @@ class SyncProposalJob implements ShouldQueue
                                     'type' => $this->categorizeUrl($value),
                                     'context' => $context,
                                     'label' => ucfirst($key),
-                                    'path' => $newPath
+                                    'path' => $newPath,
                                 ];
+
                                 continue;
                             }
                         }
                     }
-                    
+
                     // Recursively process nested structures (with depth limit)
                     $depth = substr_count($currentPath, '.');
                     if ($depth < 10) { // Limit recursion depth to prevent infinite loops
@@ -619,7 +620,7 @@ class SyncProposalJob implements ShouldQueue
                 'error' => $e->getMessage(),
                 'context' => $context,
                 'path' => $currentPath,
-                'data_type' => gettype($data)
+                'data_type' => gettype($data),
             ]);
         }
     }
@@ -636,7 +637,7 @@ class SyncProposalJob implements ShouldQueue
             $url = $urlData['url'];
 
             // Validate URL first
-            if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            if (! filter_var($url, FILTER_VALIDATE_URL)) {
                 continue;
             }
 
@@ -657,7 +658,7 @@ class SyncProposalJob implements ShouldQueue
 
             // Normalize URL for deduplication
             $normalizedUrl = $this->normalizeUrl($url);
-            
+
             // Skip if we've already seen this normalized URL
             if (isset($seenUrls[$normalizedUrl])) {
                 continue;
@@ -675,42 +676,42 @@ class SyncProposalJob implements ShouldQueue
     /**
      * Normalize URL to prevent duplicates
      * - Remove trailing slashes
-     * - Prefer www version for consistency 
+     * - Prefer www version for consistency
      * - Convert to lowercase
      */
     protected function normalizeUrl(string $url): string
     {
         try {
             $parsed = parse_url($url);
-            if (!$parsed || !isset($parsed['host'])) {
+            if (! $parsed || ! isset($parsed['host'])) {
                 return $url;
             }
 
             // Reconstruct URL with normalization
             $scheme = $parsed['scheme'] ?? 'https';
             $host = strtolower($parsed['host']);
-            $port = isset($parsed['port']) ? ':' . $parsed['port'] : '';
+            $port = isset($parsed['port']) ? ':'.$parsed['port'] : '';
             $path = isset($parsed['path']) ? rtrim($parsed['path'], '/') : '';
-            $query = isset($parsed['query']) ? '?' . $parsed['query'] : '';
-            $fragment = isset($parsed['fragment']) ? '#' . $parsed['fragment'] : '';
+            $query = isset($parsed['query']) ? '?'.$parsed['query'] : '';
+            $fragment = isset($parsed['fragment']) ? '#'.$parsed['fragment'] : '';
 
             // For common domains, prefer the www version for consistency
-            if (!str_starts_with($host, 'www.') && !in_array($host, ['github.com', 'gitlab.com', 'twitter.com', 'x.com', 'linkedin.com'])) {
+            if (! str_starts_with($host, 'www.') && ! in_array($host, ['github.com', 'gitlab.com', 'twitter.com', 'x.com', 'linkedin.com'])) {
                 // Check if this is a domain that typically uses www
                 $commonWwwDomains = ['catalystexplorer.com', 'lidonation.com'];
                 foreach ($commonWwwDomains as $domain) {
-                    if ($host === $domain || str_ends_with($host, '.' . $domain)) {
-                        $host = 'www.' . $host;
+                    if ($host === $domain || str_ends_with($host, '.'.$domain)) {
+                        $host = 'www.'.$host;
                         break;
                     }
                 }
             }
 
             // If path is empty, don't add trailing slash
-            $normalizedUrl = $scheme . '://' . $host . $port . $path . $query . $fragment;
-            
+            $normalizedUrl = $scheme.'://'.$host.$port.$path.$query.$fragment;
+
             return $normalizedUrl;
-            
+
         } catch (\Throwable $e) {
             // If parsing fails, return original URL
             return $url;
@@ -724,24 +725,42 @@ class SyncProposalJob implements ShouldQueue
     {
         $domain = parse_url(strtolower($url), PHP_URL_HOST);
 
-        if (!$domain) {
+        if (! $domain) {
             return 'website';
         }
 
         // Social media platforms
-        if (strpos($domain, 'twitter.com') !== false || strpos($domain, 'x.com') !== false) return 'twitter';
-        if (strpos($domain, 'linkedin.com') !== false) return 'linkedin';
-        if (strpos($domain, 'facebook.com') !== false) return 'facebook';
-        if (strpos($domain, 'instagram.com') !== false) return 'instagram';
-        if (strpos($domain, 'youtube.com') !== false || strpos($domain, 'youtu.be') !== false) return 'youtube';
-        if (strpos($domain, 'telegram.org') !== false || strpos($domain, 't.me') !== false) return 'telegram';
-        if (strpos($domain, 'discord.com') !== false) return 'discord';
+        if (strpos($domain, 'twitter.com') !== false || strpos($domain, 'x.com') !== false) {
+            return 'twitter';
+        }
+        if (strpos($domain, 'linkedin.com') !== false) {
+            return 'linkedin';
+        }
+        if (strpos($domain, 'facebook.com') !== false) {
+            return 'facebook';
+        }
+        if (strpos($domain, 'instagram.com') !== false) {
+            return 'instagram';
+        }
+        if (strpos($domain, 'youtube.com') !== false || strpos($domain, 'youtu.be') !== false) {
+            return 'youtube';
+        }
+        if (strpos($domain, 'telegram.org') !== false || strpos($domain, 't.me') !== false) {
+            return 'telegram';
+        }
+        if (strpos($domain, 'discord.com') !== false) {
+            return 'discord';
+        }
 
         // Development platforms
-        if (strpos($domain, 'github.com') !== false || strpos($domain, 'gitlab.com') !== false) return 'repository';
+        if (strpos($domain, 'github.com') !== false || strpos($domain, 'gitlab.com') !== false) {
+            return 'repository';
+        }
 
         // Documentation
-        if (strpos($domain, 'gitbook.com') !== false || strpos($domain, 'notion.so') !== false) return 'documentation';
+        if (strpos($domain, 'gitbook.com') !== false || strpos($domain, 'notion.so') !== false) {
+            return 'documentation';
+        }
 
         return 'website';
     }
@@ -757,9 +776,9 @@ class SyncProposalJob implements ShouldQueue
 
             // Try to find existing link by normalized URL
             $link = Link::where('link', $normalizedUrl)->first();
-            
+
             // If not found, also check for the original URL (for backward compatibility)
-            if (!$link && $url !== $normalizedUrl) {
+            if (! $link && $url !== $normalizedUrl) {
                 $link = Link::where('link', $url)->first();
                 // If found with original URL, update it to normalized version
                 if ($link) {
@@ -767,7 +786,7 @@ class SyncProposalJob implements ShouldQueue
                 }
             }
 
-            if (!$link) {
+            if (! $link) {
                 // Generate title from URL if no label provided
                 $title = $urlData['label'] ?: $this->generateTitleFromUrl($url);
 
@@ -786,11 +805,11 @@ class SyncProposalJob implements ShouldQueue
                 if ($link->type !== $urlData['type']) {
                     $updates['type'] = $urlData['type'];
                 }
-                if ($urlData['label'] && !$link->label) {
+                if ($urlData['label'] && ! $link->label) {
                     $updates['label'] = $urlData['label'];
                 }
 
-                if (!empty($updates)) {
+                if (! empty($updates)) {
                     $link->update($updates);
                 }
             }
@@ -800,8 +819,9 @@ class SyncProposalJob implements ShouldQueue
         } catch (\Throwable $e) {
             Log::warning('Failed to create/update link', [
                 'url' => $urlData['url'] ?? 'unknown',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return null;
         }
     }
@@ -829,33 +849,34 @@ class SyncProposalJob implements ShouldQueue
     protected function generateProjectCatalystLink(Proposal $proposal, Campaign $campaign, string $fundNumber): void
     {
         try {
-            if (!$campaign->slug || !$proposal->title) {
+            if (! $campaign->slug || ! $proposal->title) {
                 Log::debug('Cannot generate projectcatalyst.io link - missing required data', [
                     'proposal_id' => $proposal->id,
-                    'has_campaign_slug' => !empty($campaign->slug),
-                    'has_proposal_title' => !empty($proposal->title),
+                    'has_campaign_slug' => ! empty($campaign->slug),
+                    'has_proposal_title' => ! empty($proposal->title),
                 ]);
+
                 return;
             }
 
             // Extract campaign slug by removing the fund suffix (e.g., 'cardano-open-developers-f12' -> 'cardano-open-developers')
             $campaignSlug = $campaign->slug;
-            $fundSuffix = '-f' . $fundNumber;
+            $fundSuffix = '-f'.$fundNumber;
             if (str_ends_with($campaignSlug, $fundSuffix)) {
                 $campaignSlug = substr($campaignSlug, 0, -strlen($fundSuffix));
             }
 
             // Generate project slug from proposal title (similar to how it's done in the gateway API)
             $projectSlug = Str::slug($proposal->title);
-            
+
             // Construct the ProjectCatalyst.io URL
             $projectCatalystUrl = "https://projectcatalyst.io/funds/{$fundNumber}/{$campaignSlug}/{$projectSlug}";
-            
+
             // Only update if the link is different from current
             if ($proposal->projectcatalyst_io_link !== $projectCatalystUrl) {
                 $proposal->projectcatalyst_io_link = $projectCatalystUrl;
                 $proposal->save();
-                
+
                 Log::info('Updated proposal projectcatalyst.io link', [
                     'proposal_id' => $proposal->id,
                     'old_link' => $proposal->getOriginal('projectcatalyst_io_link'),
