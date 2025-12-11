@@ -1,3 +1,29 @@
+# [1.50.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.49.0...v1.50.0) (2025-12-10)
+
+
+### Features
+
+* proposal links ([8827dcf](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/8827dcfd718ef1c70ba58d7710dc0c21251512ac))
+
+# [1.49.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.48.0...v1.49.0) (2025-12-10)
+
+
+### Bug Fixes
+
+* scroll and container padding ([cc4e6bb](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/cc4e6bbccaad973a0014697b7181f569d541b85f))
+
+
+### Features
+
+* cleanup voting results sync. Added made nova filter for status and funding status multiselect ([d52f86c](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/d52f86ca2cc020d25d25a33be6ddc8c214215c4d))
+
+# [1.48.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.47.2...v1.48.0) (2025-12-10)
+
+
+### Features
+
+* nova action to sync voting results ([fd87acb](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/fd87acb2474ab4ba6a96df6aaa4354eed23ffe94))
+
 ## [1.47.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.47.1...v1.47.2) (2025-12-04)
 
 

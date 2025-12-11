@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\DataTransferObjects\WalletDTO;
-use App\Http\Intergrations\LidoNation\Blockfrost\BlockfrostConnector;
-use App\Http\Intergrations\LidoNation\Blockfrost\Requests\BlockfrostRequest;
+use App\Http\Integrations\LidoNation\Blockfrost\BlockfrostConnector;
+use App\Http\Integrations\LidoNation\Blockfrost\Requests\BlockfrostRequest;
 use App\Models\Signature;
 use App\Repositories\VoterHistoryRepository;
 use Illuminate\Pagination\LengthAwarePaginator;

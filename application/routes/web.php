@@ -75,6 +75,9 @@ Route::localized(
 
                 Route::get('/team-information', [ProposalsController::class, 'proposal'])
                     ->name('teamInformation');
+
+                Route::get('/links', [ProposalsController::class, 'proposal'])
+                    ->name('links');
             });
 
             Route::post('/{id}/rationale', [ProposalController::class, 'storeRationale'])

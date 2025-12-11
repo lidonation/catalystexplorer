@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Http\Intergrations\Vimeo\Requests\GetVideoDetailsRequest as VimeoVideoDetailsRequest;
-use App\Http\Intergrations\YouTube\Requests\GetVideoDetailsRequest as YouTubeVideoDetailsRequest;
+use App\Http\Integrations\Vimeo\Requests\GetVideoDetailsRequest as VimeoVideoDetailsRequest;
+use App\Http\Integrations\YouTube\Requests\GetVideoDetailsRequest as YouTubeVideoDetailsRequest;
 use Exception;
 use Illuminate\Support\Facades\Log;
 

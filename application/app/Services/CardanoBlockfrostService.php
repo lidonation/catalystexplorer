@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Http\Intergrations\LidoNation\Blockfrost\Requests\BlockfrostRequest;
+use App\Http\Integrations\LidoNation\Blockfrost\Requests\BlockfrostRequest;
 use Saloon\Enums\Method;
 use Saloon\Http\Response;
 

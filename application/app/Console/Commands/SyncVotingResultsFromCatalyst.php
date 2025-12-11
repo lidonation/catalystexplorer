@@ -1,0 +1,157 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Console\Commands;
+
+use App\Jobs\SyncVotingResults;
+use App\Models\Fund;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
+
+class SyncVotingResultsFromCatalyst extends Command
+{
+    /**
+     * The name and signature of the console command.
+     */
+    protected $signature = 'voting:sync-from-catalyst
+                            {--fund= : Fund ID to sync voting results for}
+                            {--fund-number= : Fund number (e.g., "14" for Fund 14)}
+                            {--challenge= : Specific challenge slug to sync}
+                            {--sync : Run synchronously instead of queueing jobs}
+                            {--update-details : Also update campaign ID and amount received}';
+
+    /**
+     * The console command description.
+     */
+    protected $description = 'Sync voting results from the Project Catalyst API';
+
+    /**
+     * Execute the console command.
+     */
+    public function handle(): int
+    {
+        $fundId = $this->option('fund');
+        $fundNumber = $this->option('fund-number');
+        $challengeSlug = $this->option('challenge');
+        $sync = $this->option('sync');
+        $updateDetails = $this->option('update-details');
+
+        if (! $fundId || ! $fundNumber) {
+            $this->error('❌ Both --fund and --fund-number options are required.');
+            $this->info('Example: php artisan voting:sync-from-catalyst --fund=019a9c61-7d7a-7277-b082-bd4137a5a936 --fund-number=14');
+
+            return Command::FAILURE;
+        }
+
+        // Validate fund exists
+        $fund = Fund::find($fundId);
+        if (! $fund) {
+            $this->error("❌ Fund not found: {$fundId}");
+
+            return Command::FAILURE;
+        }
+
+        $this->info("🚀 Starting voting results sync for Fund {$fundNumber} ({$fund->title})");
+
+        if ($updateDetails) {
+            $this->info('📝 Proposal details will also be updated (campaign ID and amount received)');
+        }
+
+        if ($challengeSlug) {
+            $this->info("Syncing specific challenge: {$challengeSlug}");
+            $this->syncChallenge($challengeSlug, $fundNumber, $fundId, null, $sync, $updateDetails);
+        } else {
+            $this->info("Syncing all challenges for Fund {$fundNumber}");
+            $this->syncAllChallenges($fundNumber, $fundId, $sync, $updateDetails);
+        }
+
+        return Command::SUCCESS;
+    }
+
+    private function syncChallenge(string $challengeSlug, string $fundNumber, string $fundId, ?string $campaignSlug, bool $sync = false, bool $updateDetails = false): void
+    {
+        if ($sync) {
+            $this->info("⏳ Syncing challenge {$challengeSlug} synchronously...");
+            try {
+                $job = new SyncVotingResults($challengeSlug, $fundNumber, $fundId, $challengeSlug, $updateDetails);
+                $job->handle();
+                $this->info("✅ Successfully synced challenge: {$challengeSlug}");
+            } catch (\Throwable $e) {
+                $this->error("❌ Failed to sync challenge {$challengeSlug}: ".$e->getMessage());
+                Log::error('Command sync failed', [
+                    'challenge' => $challengeSlug,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        } else {
+            $this->info("📋 Queuing challenge: {$challengeSlug}");
+            SyncVotingResults::dispatch($challengeSlug, $fundNumber, $fundId, $challengeSlug, $updateDetails);
+            $this->info("✅ Queued job for challenge: {$challengeSlug}");
+        }
+    }
+
+    private function syncAllChallenges(string $fundNumber, string $fundId, bool $sync = false, bool $updateDetails = false): void
+    {
+        $challenges = $this->getFundChallenges($fundNumber);
+
+        if (empty($challenges)) {
+            $this->warn("⚠️ No challenges configured for Fund {$fundNumber}");
+            $this->info('Available challenge mappings:');
+            $this->info('- Fund 14: cardano-open-developers, cardano-open-ecosystem, cardano-use-cases-concepts, cardano-use-cases-partners-and-products, sponsored-by-leftovers');
+
+            return;
+        }
+
+        $jobsCount = 0;
+
+        foreach ($challenges as $challengeSlug => $campaignSlug) {
+            $this->syncChallenge($challengeSlug, $fundNumber, $fundId, $campaignSlug, $sync, $updateDetails);
+            $jobsCount++;
+        }
+
+        if ($sync) {
+            $this->info("🎉 Completed synchronous sync of {$jobsCount} challenges");
+        } else {
+            $this->info("🎉 Queued {$jobsCount} voting sync jobs successfully");
+        }
+    }
+
+    /**
+     * Get challenge mappings for a specific fund
+     */
+    protected function getFundChallenges(string $fundNumber): array
+    {
+        $challengeMappings = [
+            '12' => [
+                'cardano-open-ecosystem' => 'cardano-open-ecosystem-f12',
+                'cardano-use-cases-product' => 'cardano-use-cases-product-f12',
+                'cardano-use-cases-mvp' => 'cardano-use-cases-mvp-f12',
+                'cardano-use-cases-concept' => 'cardano-use-cases-concept-f12',
+                'cardano-partners-developers-real-world-intergrations' => 'cardano-partners-developers-real-world-intergrations-f12',
+                'cardano-open-developers' => 'cardano-open-developers-f12',
+                'sponsored-by-leftovers' => null, // null indicates leftover funding
+            ],
+            '13' => [
+                'cardano-open-developers' => 'cardano-open-developers-f13',
+                'cardano-open-ecosystem' => 'cardano-open-echo-system-f13',
+                'cardano-use-cases-concept' => 'cardano-use-cases-concept-f13',
+                'cardano-use-cases-product' => 'cardano-use-cases-product-f13',
+                'cardano-partners-enterprise-randd' => 'cardano-partners-enterprise-f13',
+                'cardano-partners-growth-and-acceleration' => 'cardano-partners-growth-f13',
+                'sponsored-by-leftovers' => null,
+            ],
+            '14' => [
+                'cardano-open-developers' => 'cardano-open-developers-f14',
+                'cardano-open-ecosystem' => 'cardano-open-ecosystem-f14',
+                'cardano-use-cases-concepts' => 'cardano-use-case-concept-f14',
+                'cardano-use-cases-partners-and-products' => 'cardano-use-case-partners-and-products-f14',
+                'sponsored-by-leftovers' => null, // null indicates leftover funding
+            ],
+            // Add more funds as needed
+            // '15' => [...],
+        ];
+
+        return $challengeMappings[$fundNumber] ?? [];
+    }
+}

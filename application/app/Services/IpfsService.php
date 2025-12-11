@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Http\Intergrations\LidoNation\Blockfrost\IpfsConnector;
-use App\Http\Intergrations\LidoNation\Blockfrost\Requests\IpfsAddRequest;
-use App\Http\Intergrations\LidoNation\Blockfrost\Requests\IpfsPinRequest;
+use App\Http\Integrations\LidoNation\Blockfrost\IpfsConnector;
+use App\Http\Integrations\LidoNation\Blockfrost\Requests\IpfsAddRequest;
+use App\Http\Integrations\LidoNation\Blockfrost\Requests\IpfsPinRequest;
 use Illuminate\Http\UploadedFile;
 use Saloon\Exceptions\Request\RequestException;
 

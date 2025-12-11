@@ -161,5 +161,9 @@ final class ProposalData extends Data
         #[TypeScriptOptional]
         public ?int $outstanding_proposals_count,
 
+        #[TypeScriptOptional]
+        #[DataCollectionOf(LinkData::class)]
+        public ?DataCollection $links,
+
     ) {}
 }

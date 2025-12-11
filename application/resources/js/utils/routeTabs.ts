@@ -114,6 +114,7 @@ export const proposalTabs: TabConfig = {
         { key: 'schedule', routeName: 'schedule' },
         { key: 'community', routeName: 'community-review' },
         { key: 'team', routeName: 'team-information' },
+        { key: 'links', routeName: 'links' },
     ],
 };
 
