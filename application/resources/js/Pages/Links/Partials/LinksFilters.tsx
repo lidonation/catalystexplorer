@@ -32,7 +32,6 @@ const LinksFilters: React.FC = () => {
     const statusOptions = [
         { label: t('links.filters.allStatuses'), value: '' },
         { label: t('links.filters.published'), value: 'published' },
-        { label: t('links.filters.draft'), value: 'draft' },
         { label: t('links.filters.archived'), value: 'archived' },
     ];
 
@@ -61,7 +60,7 @@ const LinksFilters: React.FC = () => {
     };
 
     return (
-        <div className="w-full max-w-4xl">
+        <div className="w-full">
             <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3">
                 {/* Model Type Filter */}
                 <div>

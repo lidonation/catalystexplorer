@@ -13,8 +13,8 @@ const SingleLinkCard: React.FC<LinkCardProps> = ({ link, className = '' }) => {
     const displayUrl = link.link;
     const isValid = link.valid && link.status === 'published';
 
-    const relatedModel = link.getRelatedModel?.() || (link.proposal || link.service);
-    const modelType = link.getModelTypeLabel?.() || getModelTypeFromClass(link.modelType || '');
+    const relatedModel = link.proposal || link.service;
+    const modelType = getModelTypeFromClass(link.modelType || '');
 
     const handleClick = () => {
         if (isValid) {
@@ -22,11 +22,11 @@ const SingleLinkCard: React.FC<LinkCardProps> = ({ link, className = '' }) => {
         }
     };
 
-    const handleModelClick = (e: React.MouseEvent) => {
+    const handleModelClick = (e: React.MouseEvent | React.KeyboardEvent) => {
         e.stopPropagation();
-        if (link.proposal) {
+        if (link.proposal && link.proposal.link) {
             window.open(link.proposal.link, '_blank', 'noopener,noreferrer');
-        } else if (link.service) {
+        } else if (link.service && link.service.link) {
             window.open(link.service.link, '_blank', 'noopener,noreferrer');
         }
     };
@@ -86,7 +86,7 @@ const SingleLinkCard: React.FC<LinkCardProps> = ({ link, className = '' }) => {
                         
                         <div className="flex items-center gap-2 flex-shrink-0">
                             {/* Status indicator */}
-                            <div className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusBadgeClasses(isValid)}`}>
+                            <div className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusBadgeClasses(!!isValid)}`}>
                                 {isValid ? 'Active' : 'Inactive'}
                             </div>
                             
@@ -121,7 +121,9 @@ const SingleLinkCard: React.FC<LinkCardProps> = ({ link, className = '' }) => {
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${getModelTypeBadgeClasses(modelType)}`}>
                             {modelType}
                         </span>
-                        <ArrowUpRight size={14} className="text-gray-persist" />
+                        <div className="text-gray-persist w-4 h-4">
+                            <ArrowUpRight />
+                        </div>
                     </div>
 
                     {/* Model Content */}
@@ -131,10 +133,10 @@ const SingleLinkCard: React.FC<LinkCardProps> = ({ link, className = '' }) => {
                                 {link.proposal.title}
                             </h4>
                             <div className="flex flex-wrap gap-4 text-xs text-gray-persist">
-                                {link.proposal.amountRequested && (
+                                {link.proposal.amount_requested && (
                                     <div>
                                         <span className="font-medium">Budget:</span>{' '}
-                                        {currency(link.proposal.amountRequested, 2, link.proposal.currency || 'ADA')}
+                                        {currency(link.proposal.amount_requested, 2, link.proposal.currency || 'ADA')}
                                     </div>
                                 )}
                                 {link.proposal.fund?.title && (

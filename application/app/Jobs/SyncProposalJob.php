@@ -885,10 +885,9 @@ class SyncProposalJob implements ShouldQueue
                 ]);
             }
 
-            // Generate project slug from proposal title (similar to how it's done in the gateway API)
-            $projectSlug = Str::slug($proposal->title);
+            $titleForSlug = str_replace('&', 'and', $proposal->title);
+            $projectSlug = Str::slug($titleForSlug);
 
-            // Construct the ProjectCatalyst.io URL
             $projectCatalystUrl = "https://projectcatalyst.io/funds/{$fundNumber}/{$campaignSlug}/{$projectSlug}";
 
             // Only update if the link is different from current

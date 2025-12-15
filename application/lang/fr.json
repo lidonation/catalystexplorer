@@ -1681,5 +1681,13 @@
     "links.filters.draft": "Brouillon",
     "links.filters.archived": "Archivé",
     "links.filters.selectStatus": "Sélectionner l'état",
-    "sort.modelType": "Type de modèle"
+    "sort.newest": "Plus récents d'abord",
+    "sort.oldest": "Plus anciens d'abord",
+    "sort.titleAZ": "Titre : A à Z",
+    "sort.titleZA": "Titre : Z à A",
+    "sort.type": "Type",
+    "sort.status": "Statut",
+    "sort.modelType": "Type de modèle",
+    "links.links": "Liens",
+    "links.subtitle": "Découvrez et explorez des liens sélectionnés vers des propositions, des ressources et du contenu communautaire."
 }

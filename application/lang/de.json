@@ -1668,5 +1668,13 @@
     "links.filters.draft": "Entwurf",
     "links.filters.archived": "Archiviert",
     "links.filters.selectStatus": "Status auswählen",
-    "sort.modelType": "Modelltyp"
+    "sort.newest": "Neueste zuerst",
+    "sort.oldest": "Älteste zuerst",
+    "sort.titleAZ": "Titel: A bis Z",
+    "sort.titleZA": "Titel: Z bis A",
+    "sort.type": "Typ",
+    "sort.status": "Status",
+    "sort.modelType": "Modelltyp",
+    "links.links": "Links",
+    "links.subtitle": "Entdecken und erkunden Sie kuratierte Links zu Vorschlägen, Ressourcen und Community-Inhalten."
 }

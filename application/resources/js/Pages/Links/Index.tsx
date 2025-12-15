@@ -7,7 +7,6 @@ import { PaginatedData } from '@/types/paginated-data';
 import { SearchParams } from '@/types/search-params';
 import { Head } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import SingleLinkCard from '@/Components/atoms/SingleLinkCard';
 import LinksFilters from './Partials/LinksFilters';
 import LinksList from './Partials/LinksList';
 import LinksSortOptions from '@/lib/LinksSortOptions';
@@ -74,7 +73,7 @@ const Index: React.FC<LinksPageProps> = ({
 
             <section
                 className={`container flex w-full flex-col items-center justify-center overflow-hidden transition-[max-height] duration-500 ease-in-out ${
-                    showFilters ? 'max-h-[500px]' : 'max-h-0'
+                    showFilters ? 'max-h-[500px] pb-16' : 'max-h-0'
                 }`}
             >
                 <LinksFilters />
