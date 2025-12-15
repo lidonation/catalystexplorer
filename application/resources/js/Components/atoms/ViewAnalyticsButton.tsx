@@ -5,6 +5,7 @@ type ViewAnalyticsButtonProps = {
     className?: string;
     showText?: boolean;
     label?: string;
+    isExpanded?: boolean;
 };
 
 export default function ViewAnalyticsButton({
@@ -12,6 +13,7 @@ export default function ViewAnalyticsButton({
     className = '',
     showText = true,
     label = "View Analytics",
+    isExpanded = false,
 }: ViewAnalyticsButtonProps) {
     return (
         <Button
@@ -46,7 +48,7 @@ export default function ViewAnalyticsButton({
                         height="14"
                         viewBox="0 0 14 14"
                         fill="none"
-                        className="flex-shrink-0"
+                        className={`flex-shrink-0 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
                     >
                         <path
                             d="M3 8L6 5L9 8"

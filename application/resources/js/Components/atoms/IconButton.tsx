@@ -28,7 +28,7 @@ export default function IconButton({
         ? 'rounded-l-none rounded-r-xl'
         : 'rounded-xl';
 
-    const baseClasses = `${gradientClass} ${borderRadiusClass} mb-2 flex z-20 justify-center px-2  transition-all duration-200  ${className}`;
+    const baseClasses = `${gradientClass} ${borderRadiusClass} mb-2 flex z-20 items-center justify-center w-18 h-18 transition-all duration-200 ${className}`;
 
     if (href) {
         return (
@@ -39,9 +39,7 @@ export default function IconButton({
                 data-testid={testId}
                 aria-label={ariaLabel}
             >
-                <div className="h-18 w-18 flex items-center justify-center">
-                    {icon}
-                </div>
+                {icon}
             </Link>
         );
     }
@@ -54,9 +52,7 @@ export default function IconButton({
             type="button"
             aria-label={ariaLabel}
         >
-            <div className="flex h-18 w-18 items-center justify-center">
-                {icon}
-            </div>
+            {icon}
         </button>
     );
 }

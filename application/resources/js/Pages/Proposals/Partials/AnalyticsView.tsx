@@ -90,15 +90,15 @@ const AnalyticsHeader: React.FC = () => {
                     {t('Proposal Analytics Dashboard')}
                 </div>
                 <div className="flex justify-start items-center gap-1">
-                    <Link 
+                    <Link
                     href={chartsUrl}
                     className="flex items-center gap-1 text-primary text-xs font-normal leading-5 hover:underline"
                 >
                     {t('View Charts')}
-                    <ShareArrowIcon 
-                        width={13} 
-                        height={14} 
-                        className="text-primary" 
+                    <ShareArrowIcon
+                        width={13}
+                        height={14}
+                        className="text-primary"
                     />
                 </Link>
 
@@ -143,7 +143,8 @@ const StatusDistributionCard: React.FC<StatusDistributionCardProps> = ({
   const completed = metrics.completed || 0;
   const inProgress = metrics.inProgress || 0;
   const unfunded = metrics.unfunded || 0;
-  const total = completed + inProgress + unfunded;
+  // Use submitted as total since completed + inProgress + unfunded may not equal all proposals
+  const total = metrics.submitted || (completed + inProgress + unfunded);
 
   const legendItems = [
     { id: 'completed', label: t('Completed'), value: completed, colorClass: 'bg-success' },
@@ -157,7 +158,7 @@ const StatusDistributionCard: React.FC<StatusDistributionCardProps> = ({
             <div className="text-content-light text-base font-semibold leading-7">
                 {t('Proposal Status Distribution')}
             </div>
-    
+
 
             <div className="flex w-full gap-10">
                 <div className="basis-1/2 flex items-center justify-center">
@@ -165,6 +166,7 @@ const StatusDistributionCard: React.FC<StatusDistributionCardProps> = ({
                     completed={completed}
                     inProgress={inProgress}
                     unfunded={unfunded}
+                    total={total}
                     />
                 </div>
                 <div className="basis-1/2 space-y-3 items-end justify-end">
@@ -208,6 +210,7 @@ const StatusDistributionCard: React.FC<StatusDistributionCardProps> = ({
           completed={completed}
           inProgress={inProgress}
           unfunded={unfunded}
+          total={total}
         />
       </div>
 
@@ -265,7 +268,7 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
         <div className={wrapperClasses}>
             <div className="inline-flex justify-start items-start gap-6">
                 <div className='text-content-light text-lg lg:text-xl font-semibold leading-7 '>{t('Funding Overview')}</div>
-            </div> 
+            </div>
 
             <div className="self-stretch flex flex-col justify-start items-start gap-2">
                 <div className="self-stretch inline-flex justify-between items-start">
@@ -406,24 +409,6 @@ const KpisCard: React.FC<KpisCardProps> = ({ metrics, completionRate, avgRequest
             <div className="inline-flex justify-start items-start gap-2  w-full">
                 <div className='text-content-light text-lg lg:text-xl font-semibold leading-7'>{t('KPIs')}</div>
             </div>
-
-            <div className="inline-flex justify-center items-center gap-6 ">
-                {['Fund 14', 'Fund 13', 'Fund 12'].map((fund) => (
-                    <div
-                        key={fund}
-                        className="flex justify-start items-center gap-0.5"
-                    >
-                        <Checkbox defaultChecked className="w-4 h-4" />
-                        <div
-                            className={` text-xs font-normal leading-3`}
-                        >
-                            {fund}
-                        </div>
-                    </div>
-                ))}
-            </div>
-
-            {/* KPI metrics */}
             <div className="self-stretch flex flex-col justify-start items-start gap-3 ">
                 {/* AVG. AMOUNT REQUESTED */}
                 <div className="self-stretch flex flex-col justify-center items-start">
