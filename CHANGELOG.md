@@ -1,3 +1,15 @@
+# [1.52.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.51.0...v1.52.0) (2025-12-15)
+
+
+### Bug Fixes
+
+* resolved TypeScript errors in SingleLinkCard.tsx ([4c5ceb4](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/4c5ceb41987d5f1518204511e91d764e51229310))
+
+
+### Features
+
+* added links page ([9aae91d](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/9aae91d895f3af66beccce8066c0fc348c6855e4))
+
 # [1.51.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.50.0...v1.51.0) (2025-12-15)
 
 
