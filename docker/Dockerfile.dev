@@ -135,20 +135,7 @@ RUN apt-get update; \
     && apt-get -y autoremove \
     && apt-get clean \
     && docker-php-source delete \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* 
-
-
-# Install additional Chrome dependencies required by Puppeteer
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        libnss3 \
-        libxshmfence1 \
-        libatk-bridge2.0-0 \
-        libxkbcommon0 \
-        libxdamage1 \
-        libgbm1 \
-        libpango-1.0-0 \
-        libasound2 \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
 
  # Install chromium
 RUN npx puppeteer browsers install chrome
@@ -160,11 +147,15 @@ ENV CHROME_BIN=/usr/bin/chromium-browser \
 COPY ./scripts /scripts/
 
 # Install fonts for PDF generation (CJK and Ethiopic support)
-   RUN rm -rf /var/lib/apt/lists/* \
-       && apt-get update -o Acquire::CompressionTypes::Order::=gz \
-       && apt-get install -y --no-install-recommends \
-          fonts-noto-cjk fonts-noto-core fonts-noto-extra fontconfig \
-       && rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+       fonts-noto-cjk \
+       fonts-noto-core \
+       fonts-noto-extra \
+       fontconfig \
+    && fc-cache -f -v \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN mkdir /venv && chown -R 777 /venv
 
