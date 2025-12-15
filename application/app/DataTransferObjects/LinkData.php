@@ -30,5 +30,41 @@ final class LinkData extends Data
 
         #[TypeScriptOptional]
         public ?int $order,
+
+        #[TypeScriptOptional]
+        public ?string $modelType,
+
+        #[TypeScriptOptional]
+        public ?string $modelId,
+
+        #[TypeScriptOptional]
+        public ?ProposalData $proposal,
+
+        #[TypeScriptOptional]
+        public ?ServiceData $service,
+
+        #[TypeScriptOptional]
+        public ?string $createdAt,
+
+        #[TypeScriptOptional]
+        public ?string $updatedAt,
     ) {}
+
+    public function getRelatedModel(): ?Data
+    {
+        return match ($this->modelType) {
+            'App\\Models\\Proposal' => $this->proposal,
+            'App\\Models\\Service' => $this->service,
+            default => null,
+        };
+    }
+
+    public function getModelTypeLabel(): string
+    {
+        return match ($this->modelType) {
+            'App\\Models\\Proposal' => 'Proposal',
+            'App\\Models\\Service' => 'Service',
+            default => 'Unknown',
+        };
+    }
 }

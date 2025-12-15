@@ -74,6 +74,8 @@ Route::as('api.')->group(function () {
 
     Route::get('/reviews', [ReviewController::class, 'reviews'])->name('reviews');
 
+    Route::get('/links', [\App\Http\Controllers\LinksController::class, 'links'])->name('links');
+
     Route::get('/ideascaleProfiles', [IdeascaleProfilesController::class, 'ideascaleProfiles'])->name('ideascaleProfiles');
 
     Route::post('/test-modal', function () {

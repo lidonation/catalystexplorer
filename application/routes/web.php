@@ -35,6 +35,7 @@ use App\Http\Controllers\ClaimIdeascaleProfileController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\PublishToIpfsController;
 use App\Http\Controllers\WalletController;
+use App\Http\Controllers\LinksController;
 use CodeZero\LocalizedRoutes\Controllers\FallbackController;
 
 Route::localized(
@@ -447,6 +448,11 @@ Route::localized(
                 ->where('review', '[0-9]+');
 
             Route::get('/', [ReviewsController::class, 'index'])
+                ->name('index');
+        });
+
+        Route::prefix('/links')->as('links.')->group(function () {
+            Route::get('/', [LinksController::class, 'index'])
                 ->name('index');
         });
 
