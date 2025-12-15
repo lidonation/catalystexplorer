@@ -58,15 +58,6 @@ const LinksList: React.FC<LinksListProps> = ({ links }) => {
                     <Paginator pagination={links} />
                 </div>
             )}
-
-            {/* Results count */}
-            <div className="text-center text-sm text-gray-persist">
-                {t('pagination.showing', {
-                    from: links.from || 0,
-                    to: links.to || 0,
-                    total: links.total,
-                })}
-            </div>
         </div>
     );
 };

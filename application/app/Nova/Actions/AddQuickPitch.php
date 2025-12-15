@@ -42,9 +42,19 @@ class AddQuickPitch extends Action implements ShouldQueue
      */
     public $confirmButtonText = 'Add Quick Pitch';
 
-    public function __construct(
-        private VideoService $videoService
-    ) {}
+    private ?VideoService $videoService = null;
+
+    /**
+     * Get the video service instance.
+     */
+    private function getVideoService(): VideoService
+    {
+        if ($this->videoService === null) {
+            $this->videoService = app(VideoService::class);
+        }
+
+        return $this->videoService;
+    }
 
     /**
      * Perform the action on the given models.
@@ -64,11 +74,11 @@ class AddQuickPitch extends Action implements ShouldQueue
                     throw new \Exception('The quickpitch must be a valid YouTube or Vimeo URL.');
                 }
 
-                $normalizedUrl = $this->videoService->normalizeYouTubeUrl((string) $url);
+                $normalizedUrl = $this->getVideoService()->normalizeYouTubeUrl((string) $url);
 
                 $duration = null;
                 try {
-                    $metadata = $this->videoService->getVideoMetadata($normalizedUrl);
+                    $metadata = $this->getVideoService()->getVideoMetadata($normalizedUrl);
                     $duration = $metadata['duration'] ?? null;
                 } catch (\Exception $e) {
                     Log::warning('Failed to fetch video metadata for proposal quick pitch via Nova action', [

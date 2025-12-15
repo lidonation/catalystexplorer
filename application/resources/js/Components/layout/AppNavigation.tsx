@@ -17,6 +17,7 @@ import CompletedProjectNftsIcon from '../svgs/CompletedProjectNftsIcon';
 import ConnectionsIcon from '../svgs/ConnectionsIcon';
 import DrepIcon from '../svgs/DrepIcon';
 import HomeIcon from '../svgs/HomeIcon';
+import LinkIcon from '../svgs/LinkIcon';
 import MoreIcon from '../svgs/MoreIcon';
 import NoteIcon from '../svgs/NoteIcon';
 import NotificationBoxIcon from '../svgs/NotificationBoxIcon';
@@ -516,6 +517,17 @@ function AppNavigation() {
                                                     active={false}
                                                     prefetch
                                                     data-testid="reviewers-link"
+                                                ></NavLinkItem>
+
+                                                <NavLinkItem
+                                                    href={useLocalizedRoute(
+                                                        'links.index',
+                                                    )}
+                                                    title={t('links.links')}
+                                                    ariaLabel={`${t('links.links')} ${t('link')}`}
+                                                    active={false}
+                                                    prefetch
+                                                    data-testid="links-link"
                                                 ></NavLinkItem>
 
                                                 <NavLinkItem
