@@ -476,8 +476,8 @@ class Proposals extends Resource
     {
         return [
             AddQuickPitch::make()->canSee(function () {
-                return auth()->user()->hasRole(RoleEnum::SUPER_ADMIN->value)
-                    || auth()->user()->hasRole(RoleEnum::EDITOR->value);
+                return auth()->user()->hasRole(RoleEnum::super_admin()->value)
+                    || auth()->user()->hasRole(RoleEnum::editor()->value);
             }),
             (new EditModel),
             (new MakeSearchable),
