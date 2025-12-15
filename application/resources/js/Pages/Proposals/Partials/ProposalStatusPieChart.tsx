@@ -4,14 +4,16 @@ type ProposalStatusPieChartProps = {
   completed: number;
   inProgress: number;
   unfunded: number;
+  total?: number;
 };
 
 export const ProposalStatusPieChart: React.FC<ProposalStatusPieChartProps> = ({
   completed,
   inProgress,
   unfunded,
+  total: providedTotal,
 }) => {
-  const total = completed + inProgress + unfunded;
+  const total = providedTotal ?? (completed + inProgress + unfunded);
   
   const data = [
     { 
