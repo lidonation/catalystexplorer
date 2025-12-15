@@ -220,6 +220,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                                 <ViewAnalyticsButton
                                     onClick={toggleAnalytics}
                                     label="Hide Analytics"
+                                    isExpanded={true}
                                 />
                             </div>
                         </div>
@@ -333,6 +334,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                                 <ViewAnalyticsButton
                                     onClick={toggleAnalytics}
                                     label="View Analytics"
+                                    isExpanded={false}
                                 />
                             </div>
                         </>
@@ -474,6 +476,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                                 onClick={toggleAnalytics}
                                 label={showAnalytics ? "Hide Analytics" : "View Analytics"}
                                 showText={true}
+                                isExpanded={showAnalytics}
                                 />
                             </div>
                         </div>
