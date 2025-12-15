@@ -42,7 +42,7 @@ export default function AIPromptIcon({
                 y="58"
                 textAnchor="middle"
                 fill="white"
-                fontSize="16"
+                fontSize="12"
                 fontFamily="Inter"
                 fontWeight="500"
             >
