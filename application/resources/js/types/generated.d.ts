@@ -294,6 +294,22 @@ groups?: any;
 claimed_by: App.DataTransferObjects.UserData | null;
 reviews: any | null;
 };
+export type LinkData = {
+id: string;
+link: string;
+type: string;
+title?: string;
+label?: string;
+status?: string;
+valid?: boolean;
+order?: number;
+modelType?: string;
+modelId?: string;
+proposal?: App.DataTransferObjects.ProposalData;
+service?: App.DataTransferObjects.ServiceData;
+createdAt?: string;
+updatedAt?: string;
+};
 export type LocationData = {
 id: string | null;
 country: string;
@@ -547,6 +563,7 @@ quickpitch_thumbnail?: string;
 connections_count?: number;
 completed_proposals_count?: number;
 outstanding_proposals_count?: number;
+links?: any;
 };
 export type RankingData = {
 id?: string;

@@ -90,15 +90,15 @@ const AnalyticsHeader: React.FC = () => {
                     {t('Proposal Analytics Dashboard')}
                 </div>
                 <div className="flex justify-start items-center gap-1">
-                    <Link 
+                    <Link
                     href={chartsUrl}
                     className="flex items-center gap-1 text-primary text-xs font-normal leading-5 hover:underline"
                 >
                     {t('View Charts')}
-                    <ShareArrowIcon 
-                        width={13} 
-                        height={14} 
-                        className="text-primary" 
+                    <ShareArrowIcon
+                        width={13}
+                        height={14}
+                        className="text-primary"
                     />
                 </Link>
 
@@ -158,7 +158,7 @@ const StatusDistributionCard: React.FC<StatusDistributionCardProps> = ({
             <div className="text-content-light text-base font-semibold leading-7">
                 {t('Proposal Status Distribution')}
             </div>
-    
+
 
             <div className="flex w-full gap-10">
                 <div className="basis-1/2 flex items-center justify-center">
@@ -268,7 +268,7 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
         <div className={wrapperClasses}>
             <div className="inline-flex justify-start items-start gap-6">
                 <div className='text-content-light text-lg lg:text-xl font-semibold leading-7 '>{t('Funding Overview')}</div>
-            </div> 
+            </div>
 
             <div className="self-stretch flex flex-col justify-start items-start gap-2">
                 <div className="self-stretch inline-flex justify-between items-start">

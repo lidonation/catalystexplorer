@@ -2,6 +2,7 @@ import React from 'react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import ProposalLayout from '../ProposalLayout';
 import LinkCard from '@/Components/atoms/LinkCard';
+import Paragraph from '@/Components/atoms/Paragraph.tsx';
 
 interface LinkData {
     id: string;
@@ -27,20 +28,16 @@ interface IndexProps {
 const Index: React.FC<IndexProps> = ({
     proposal,
     globalQuickPitchView,
-    setGlobalQuickPitchView,
-    userCompleteProposalsCount = 0,
-    userOutstandingProposalsCount = 0,
-    catalystConnectionsCount = 0,
+    setGlobalQuickPitchView
 }) => {
     const { t } = useLaravelReactI18n();
-    
-    const links = proposal.links || [];
-    const activeLinks = links.filter(link => link.valid && link.status === 'published');
-    const inactiveLinks = links.filter(link => !link.valid || link.status !== 'published');
 
-    // Create special links from proposal properties
+    const links = proposal.links || [];
+    const activeLinks = links.filter((link: { valid: any; status: string; }) => link.valid && link.status === 'published');
+    const inactiveLinks = links.filter((link: { valid: any; status: string; }) => !link.valid || link.status !== 'published');
+
     const specialLinks: LinkData[] = [];
-    
+
     if (proposal.ideascale_link) {
         specialLinks.push({
             id: `ideascale-${proposal.id}`,
@@ -52,7 +49,7 @@ const Index: React.FC<IndexProps> = ({
             valid: true
         });
     }
-    
+
     if (proposal.projectcatalyst_io_link) {
         specialLinks.push({
             id: `projectcatalyst-${proposal.id}`,
@@ -66,7 +63,7 @@ const Index: React.FC<IndexProps> = ({
     }
 
     // Group links by type for better organization
-    const groupedLinks = links.reduce((acc, link) => {
+    const groupedLinks = links.reduce((acc: { [x: string]: any[]; }, link: { type: string; }) => {
         const type = link.type || 'website';
         if (!acc[type]) {
             acc[type] = [];
@@ -77,7 +74,7 @@ const Index: React.FC<IndexProps> = ({
 
     const linkTypeOrder = [
         'website',
-        'repository', 
+        'repository',
         'github',
         'documentation',
         'youtube',
@@ -89,24 +86,12 @@ const Index: React.FC<IndexProps> = ({
         'discord'
     ];
 
-    const sortedLinkGroups = Object.entries(groupedLinks).sort(([a], [b]) => {
-        const aIndex = linkTypeOrder.indexOf(a);
-        const bIndex = linkTypeOrder.indexOf(b);
-        
-        if (aIndex === -1 && bIndex === -1) return a.localeCompare(b);
-        if (aIndex === -1) return 1;
-        if (bIndex === -1) return -1;
-        
-        return aIndex - bIndex;
-    });
-
     return (
         <ProposalLayout
             proposal={proposal}
             globalQuickPitchView={globalQuickPitchView}
             setGlobalQuickPitchView={setGlobalQuickPitchView}
         >
-            {/* Stats section - similar to other proposal pages */}
             <div className="bg-background shadow-cx-box-shadow flex flex-col items-start justify-between gap-5 self-stretch rounded-xl p-4 sm:flex-row sm:gap-2 sm:p-6">
                 <div className="flex w-full items-center justify-start gap-4 overflow-x-auto">
                     <div className="inline-flex flex-1 flex-col items-start justify-start gap-1">
@@ -168,9 +153,9 @@ const Index: React.FC<IndexProps> = ({
                         <h3 className="text-content text-lg font-medium mb-2">
                             {t('proposals.links.noLinks')}
                         </h3>
-                        <p className="text-gray-persist text-sm max-w-md mx-auto">
+                        <Paragraph className="text-gray-persist text-sm max-w-md mx-auto">
                             {t('proposals.links.noLinksDescription')}
-                        </p>
+                        </Paragraph>
                     </div>
                 ) : (
                     <div className="space-y-6">
@@ -185,8 +170,8 @@ const Index: React.FC<IndexProps> = ({
                                 </h3>
                                 <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-1">
                                     {specialLinks.map((link) => (
-                                        <LinkCard 
-                                            key={link.id} 
+                                        <LinkCard
+                                            key={link.id}
                                             link={link}
                                             className="border-2 border-blue-100 dark:border-blue-800"
                                         />
@@ -194,7 +179,7 @@ const Index: React.FC<IndexProps> = ({
                                 </div>
                             </div>
                         )}
-                        
+
                         {/* Active links */}
                         {activeLinks.length > 0 && (
                             <div>
@@ -202,9 +187,9 @@ const Index: React.FC<IndexProps> = ({
                                     {t('proposals.links.activeLinks')} ({activeLinks.length})
                                 </h3>
                                 <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-1">
-                                    {activeLinks.map((link) => (
-                                        <LinkCard 
-                                            key={link.id} 
+                                    {activeLinks.map((link: any) => (
+                                        <LinkCard
+                                            key={link.id}
                                             link={link}
                                         />
                                     ))}
@@ -219,39 +204,11 @@ const Index: React.FC<IndexProps> = ({
                                     {t('proposals.links.inactiveLinks')} ({inactiveLinks.length})
                                 </h3>
                                 <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-1">
-                                    {inactiveLinks.map((link) => (
-                                        <LinkCard 
-                                            key={link.id} 
+                                    {inactiveLinks.map((link: any) => (
+                                        <LinkCard
+                                            key={link.id}
                                             link={link}
                                         />
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Links grouped by type - alternative layout for when there are many links */}
-                        {links.length > 8 && (
-                            <div className="mt-8 pt-6 border-t border-gray-persist/20">
-                                <h3 className="text-content text-lg font-medium mb-4">
-                                    {t('proposals.links.byCategory')}
-                                </h3>
-                                <div className="space-y-4">
-                                    {sortedLinkGroups.map(([type, typeLinks]) => (
-                                        <div key={type} className="space-y-2">
-                                            <h4 className="text-content font-medium capitalize flex items-center gap-2">
-                                                <span className="inline-block w-2 h-2 rounded-full bg-blue-500"></span>
-                                                {type} ({typeLinks.length})
-                                            </h4>
-                                            <div className="grid gap-2 sm:grid-cols-1 md:grid-cols-2">
-                                                {typeLinks.map((link) => (
-                                                    <LinkCard 
-                                                        key={link.id} 
-                                                        link={link}
-                                                        className="text-sm"
-                                                    />
-                                                ))}
-                                            </div>
-                                        </div>
                                     ))}
                                 </div>
                             </div>

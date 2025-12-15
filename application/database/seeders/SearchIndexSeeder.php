@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use App\Models\BookmarkCollection;
 use App\Models\Group;
+use App\Models\Link;
 use App\Models\Voter;
 use App\Models\Review;
 use App\Models\Proposal;
@@ -35,5 +36,6 @@ class SearchIndexSeeder extends Seeder
         VoterHistory::runCustomIndex();
         Voter::runCustomIndex();
         BookmarkCollection::runCustomIndex();
+        Link::runCustomIndex();
     }
 }

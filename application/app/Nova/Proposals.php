@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Nova;
 
 use App\Enums\CatalystGlobals;
+use App\Enums\RoleEnum;
 use App\Models\Proposal;
 use App\Nova\Actions\AddQuickPitch;
 use App\Nova\Actions\EditModel;
@@ -15,7 +16,6 @@ use App\Nova\Actions\UpdateModelMedia;
 use App\Nova\Filters\FundingStatusBooleanFilter;
 use App\Nova\Filters\QuickPitchFilter;
 use App\Nova\Filters\StatusBooleanFilter;
-use App\Services\VideoService;
 use Illuminate\Support\Str;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Exceptions\HelperNotSupported;
@@ -475,7 +475,10 @@ class Proposals extends Resource
     public function actions(NovaRequest $request): array
     {
         return [
-            (new AddQuickPitch(app(VideoService::class))),
+            AddQuickPitch::make()->canSee(function () {
+                return auth()->user()->hasRole(RoleEnum::super_admin()->value)
+                    || auth()->user()->hasRole(RoleEnum::editor()->value);
+            }),
             (new EditModel),
             (new MakeSearchable),
             (new SyncProposalFromCatalyst),

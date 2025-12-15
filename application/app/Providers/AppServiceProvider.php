@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Models\Meta;
 use App\Models\Pivot\ClaimedProfile;
 use App\Observers\ClaimedProfileObserver;
+use App\Observers\MetaObserver;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Vite;
@@ -33,6 +35,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // Register model observers
+        Meta::observe(MetaObserver::class);
         ClaimedProfile::observe(ClaimedProfileObserver::class);
     }
 }

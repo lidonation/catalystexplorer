@@ -595,6 +595,15 @@
             "all": "All Groups"
         }
     },
+    "sort": {
+        "newest": "Newest First",
+        "oldest": "Oldest First",
+        "titleAZ": "Title: A to Z",
+        "titleZA": "Title: Z to A",
+        "type": "Type",
+        "status": "Status",
+        "modelType": "Model Type"
+    },
     "catalystIntro": {
         "title": {
             "normalText": "Project Catalyst",
@@ -638,6 +647,10 @@
             "proposalCountsLowToHigh": "Proposal count: Low to High",
             "proposalCountsHighToLow": "Proposal count: High to Low"
         }
+    },
+    "links": {
+        "links": "Links",
+        "subtitle": "Discover and explore curated links to proposals, resources, and community content."
     },
     "listQuickCreate": {
         "createListLong": "Create a new list to get started",

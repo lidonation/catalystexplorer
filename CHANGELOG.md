@@ -1,3 +1,10 @@
+# [1.51.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.50.0...v1.51.0) (2025-12-15)
+
+
+### Features
+
+* working on links ([9aedce6](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/9aedce6d6e9c341970b111c62458734690a830b4))
+
 # [1.50.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.49.0...v1.50.0) (2025-12-10)
 
 

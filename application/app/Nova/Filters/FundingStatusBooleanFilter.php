@@ -25,16 +25,11 @@ class FundingStatusBooleanFilter extends BooleanFilter
      */
     public function apply(Request $request, $query, $value)
     {
-        $selectedStatuses = [];
-
-        foreach ($value as $status => $isSelected) {
-            if ($isSelected) {
-                $selectedStatuses[] = $status;
+        if (is_array($value) && ! empty($value)) {
+            $selectedStatuses = array_keys(array_filter($value));
+            if (! empty($selectedStatuses)) {
+                return $query->whereIn('funding_status', $selectedStatuses);
             }
-        }
-
-        if (! empty($selectedStatuses)) {
-            return $query->whereIn('funding_status', $selectedStatuses);
         }
 
         return $query;
@@ -50,7 +45,6 @@ class FundingStatusBooleanFilter extends BooleanFilter
         return [
             'Funded' => 'funded',
             'Pending' => 'pending',
-            'Not Funded' => 'not_funded',
             'Not Approved' => 'not_approved',
             'Over Budget' => 'over_budget',
             'Leftover' => 'leftover',

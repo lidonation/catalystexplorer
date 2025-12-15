@@ -50,14 +50,17 @@ class Metas extends Resource
     public function fields(NovaRequest $request): array
     {
         $metaFields = [
-            Text::make('ID', 'id')->sortable(),
+            Text::make('ID', 'id')
+                ->sortable()
+                ->hideWhenCreating()
+                ->hideWhenUpdating(),
             Text::make(__('Key'), 'key')->sortable()->filterable(),
             Markdown::make(__('Content'), 'content')
                 ->alwaysShow()
                 ->filterable()
                 ->hideFromIndex(),
-            Text::make(__('Model Id'), 'model_id')
-                ->filterable(),
+            //            Text::make(__('Model Id'), 'model_id')
+            //                ->filterable(),
             Text::make(__('Value'), 'content')
                 ->onlyOnIndex()
                 ->filterable()

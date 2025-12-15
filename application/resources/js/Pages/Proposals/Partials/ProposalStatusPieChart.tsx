@@ -14,24 +14,24 @@ export const ProposalStatusPieChart: React.FC<ProposalStatusPieChartProps> = ({
   total: providedTotal,
 }) => {
   const total = providedTotal ?? (completed + inProgress + unfunded);
-  
+
   const data = [
-    { 
-      id: 'Completed', 
-      label: 'Completed', 
-      value: completed, 
-      color: '#22c55e' 
+    {
+      id: 'Completed',
+      label: 'Completed',
+      value: completed,
+      color: '#22c55e'
     },
-    { 
-      id: 'In Progress', 
-      label: 'In Progress', 
-      value: inProgress, 
+    {
+      id: 'In Progress',
+      label: 'In Progress',
+      value: inProgress,
       color: 'var(--cx-primary)'
     },
-    { 
-      id: 'Unfunded', 
-      label: 'Unfunded', 
-      value: unfunded, 
+    {
+      id: 'Unfunded',
+      label: 'Unfunded',
+      value: unfunded,
       color: 'var(--cx-dark)'
     },
   ];

@@ -283,7 +283,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                                             <div className="flex flex-col items-center justify-start gap-2 w-28">
                                                 <ValueLabel className="block text-content-light font-semibold text-5 text-nowrap uppercase tracking-wide">
                                                     ₳ {t('distributed')}
-                                                </ValueLabel> 
+                                                </ValueLabel>
                                                 <span className="text-1 font-bold leading-5 mr-12">
                                                     ₳{shortNumber(metrics.distributedADA, 2)}
                                                 </span>
