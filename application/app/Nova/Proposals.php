@@ -9,6 +9,7 @@ use App\Enums\RoleEnum;
 use App\Models\Proposal;
 use App\Nova\Actions\AddQuickPitch;
 use App\Nova\Actions\EditModel;
+use App\Nova\Actions\GenerateProposalLinks;
 use App\Nova\Actions\MakeSearchable;
 use App\Nova\Actions\SyncProposalFromCatalyst;
 use App\Nova\Actions\SyncVotingResults;
@@ -480,6 +481,7 @@ class Proposals extends Resource
                     || auth()->user()->hasRole(RoleEnum::editor()->value);
             }),
             (new EditModel),
+            (new GenerateProposalLinks),
             (new MakeSearchable),
             (new SyncProposalFromCatalyst),
             (new SyncVotingResults),
