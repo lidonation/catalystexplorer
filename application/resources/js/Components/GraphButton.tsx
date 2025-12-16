@@ -11,8 +11,17 @@ import { useMetrics } from '@/Context/MetricsContext';
 import { Transition } from '@headlessui/react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const METRICS_BAR_STORAGE_KEY = 'cx-metrics-bar-visible';
+
 const GraphButton = () => {
-    const [activePopup, setActivePopup] = useState<null | "analytics" | "ai" | "chart">(null);
+    const [activePopup, setActivePopup] = useState<null | "analytics" | "ai" | "chart">(() => {
+        // Initialize from localStorage - only restore 'analytics' state
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem(METRICS_BAR_STORAGE_KEY);
+            return saved === 'true' ? 'analytics' : null;
+        }
+        return null;
+    });
     const [connectorOffset, setConnectorOffset] = useState(0);
     const { metrics } = useMetrics();
     const { t } = useLaravelReactI18n();
@@ -26,6 +35,11 @@ const GraphButton = () => {
 
     const chartsUrl = useLocalizedRoute('charts.proposals');
 
+
+    // Persist metrics bar visibility to localStorage
+    useEffect(() => {
+        localStorage.setItem(METRICS_BAR_STORAGE_KEY, String(activePopup === 'analytics'));
+    }, [activePopup]);
 
     // Calculate offset when activePopup changes
     useEffect(() => {

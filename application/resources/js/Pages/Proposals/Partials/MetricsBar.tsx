@@ -6,11 +6,13 @@ import { ProposalMetrics } from '@/types/proposal-metrics';
 import { currency } from '@/utils/currency';
 import { usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { shortNumber } from '@/utils/shortNumber';
 import ViewAnalyticsButton from '@/Components/atoms/ViewAnalyticsButton';
 import MetricBarSvg from '@/Components/svgs/MetricBarSvg';
 import AnalyticsView from '@/Pages/Proposals/Partials/AnalyticsView';
+
+const ANALYTICS_STORAGE_KEY = 'cx-show-analytics';
 
 // SectionOne displays the first set of data in the MetricsBar
 const SectionOne: React.FC<
@@ -187,17 +189,45 @@ interface MetricsBarProps extends ProposalMetrics {
 
 const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimating = false }) => {
     const { isPlayerBarExpanded } = useUIContext();
-    const [showAnalytics, setShowAnalytics] = useState(false); // Add analytics state
+    const [showAnalytics, setShowAnalytics] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem(ANALYTICS_STORAGE_KEY);
+            return saved === 'true';
+        }
+        return false;
+    });
     const { metrics } = useMetrics();
     const onProposals = usePage().component == 'Proposals/Index';
     const { t } = useLaravelReactI18n();
+    const analyticsRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        localStorage.setItem(ANALYTICS_STORAGE_KEY, String(showAnalytics));
+    }, [showAnalytics]);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                showAnalytics &&
+                analyticsRef.current &&
+                !analyticsRef.current.contains(event.target as Node)
+            ) {
+                setShowAnalytics(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showAnalytics]);
 
     const borderRadiusClass = isConnected
         ? 'rounded-l-xl rounded-r-none'
         : 'rounded-xl';
 
     const gradientClass = isConnected
-        ? 'bg-gradient-to-r from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)] bg-opacity-90'
+        ? 'bg-gradient-to-r from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)]'
         : 'bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)]';
 
     const toggleAnalytics = () => {
@@ -208,6 +238,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
         metrics &&
         onProposals && (
             <div
+                ref={analyticsRef}
                 className={`${gradientClass} overflow-visible ${borderRadiusClass} text-content-light shadow-lg transition-all duration-300 w-full ${
                     isAnimating ? 'scale-95 opacity-0' : 'scale-100 opacity-100'
                 } ${showAnalytics && !isConnected ? 'min-h-[400px]' : ''}`}
@@ -345,7 +376,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                 <div className="hidden lg:flex lg:flex-col w-full ">
                 {showAnalytics && (
                         <div className="relative">
-                            <AnalyticsView metrics={metrics} isMobile={false} />
+                            <AnalyticsView metrics={metrics} isMobile={false} onClose={toggleAnalytics} />
                             <svg
                                 className="absolute -right-10 bottom-0"
                                 width="40"

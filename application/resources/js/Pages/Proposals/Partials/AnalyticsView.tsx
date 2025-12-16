@@ -8,11 +8,13 @@ import PercentageProgressBar from '@/Components/PercentageProgressBar';
 import ShareArrowIcon from '@/Components/svgs/ShareArrowIcon';
 import { Link } from '@inertiajs/react';
 import ShareIcon from '@/Components/svgs/ShareIcon';
+import CloseIcon from '@/Components/svgs/CloseIcon';
 import { ProposalStatusPieChart } from '@/Pages/Proposals/Partials/ProposalStatusPieChart';
 
 interface AnalyticsViewProps {
     metrics: ProposalMetrics;
     isMobile?: boolean;
+    onClose?: () => void;
 }
 
 interface AnalyticsCalculated {
@@ -64,7 +66,11 @@ function computeAnalytics(metrics: ProposalMetrics): AnalyticsCalculated & {
     };
 }
 
-const AnalyticsHeader: React.FC = () => {
+type AnalyticsHeaderProps = {
+    onClose?: () => void;
+};
+
+const AnalyticsHeader: React.FC<AnalyticsHeaderProps> = ({ onClose }) => {
     const { t } = useLaravelReactI18n();
     const chartsUrl = useLocalizedRoute('charts.proposals');
     return (
@@ -124,6 +130,19 @@ const AnalyticsHeader: React.FC = () => {
                         />
                     </div>
                 </div>
+                {onClose && (
+                    <button
+                        onClick={onClose}
+                        className="p-2 rounded-md transition-colors cursor-pointer"
+                        aria-label="Close analytics"
+                    >
+                        <CloseIcon
+                            width={16}
+                            height={16}
+                            className="text-content-light"
+                        />
+                    </button>
+                )}
             </div>
         </div>
     );
@@ -463,7 +482,7 @@ const KpisCard: React.FC<KpisCardProps> = ({ metrics, completionRate, avgRequest
     );
 };
 
-const AnalyticsView: React.FC<AnalyticsViewProps> = ({ metrics, isMobile = false }) => {
+const AnalyticsView: React.FC<AnalyticsViewProps> = ({ metrics, isMobile = false, onClose }) => {
     const { approvedPercent, distributedPercent, awardedPercent, completionRate, avgRequestedADA } =
         computeAnalytics(metrics);
 
@@ -487,7 +506,7 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({ metrics, isMobile = false
 
     return (
         <>
-            <AnalyticsHeader />
+            <AnalyticsHeader onClose={onClose} />
             <div className="w-full inline-flex justify-start items-stretch gap-2.5 px-6 py-4">
                 <StatusDistributionCard metrics={metrics} />
                 <FundingOverviewCard
