@@ -1,3 +1,10 @@
+# [1.53.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.52.0...v1.53.0) (2025-12-16)
+
+
+### Features
+
+* new nova action to generate links ([655f8bd](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/655f8bd21be61086c0de2d443a23402e07c35b5e))
+
 # [1.52.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.51.0...v1.52.0) (2025-12-15)
 
 
