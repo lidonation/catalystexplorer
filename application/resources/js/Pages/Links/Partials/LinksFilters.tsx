@@ -35,6 +35,12 @@ const LinksFilters: React.FC = () => {
         { label: t('links.filters.archived'), value: 'archived' },
     ];
 
+    const validityOptions = [
+        { label: t('links.filters.allValidities'), value: '' },
+        { label: t('links.filters.valid'), value: 'true' },
+        { label: t('links.filters.invalid'), value: 'false' },
+    ];
+
     const handleModelTypeChange = (value: string) => {
         setFilters({
             label: t('links.filters.modelType'),
@@ -59,9 +65,17 @@ const LinksFilters: React.FC = () => {
         });
     };
 
+    const handleValidityChange = (value: string) => {
+        setFilters({
+            label: t('links.filters.validity'),
+            value: value || null,
+            param: 'valid',
+        });
+    };
+
     return (
         <div className="w-full">
-            <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
                 {/* Model Type Filter */}
                 <div>
                     <label className="mb-2 block text-sm font-medium text-content">
@@ -98,6 +112,19 @@ const LinksFilters: React.FC = () => {
                         selectedItems={getFilter('statuses')?.[0] || ''}
                         setSelectedItems={handleStatusChange}
                         placeholder={t('links.filters.selectStatus')}
+                    />
+                </div>
+
+                {/* Validity Filter */}
+                <div>
+                    <label className="mb-2 block text-sm font-medium text-content">
+                        {t('links.filters.validity')}
+                    </label>
+                    <Selector
+                        options={validityOptions}
+                        selectedItems={getFilter('valid') || ''}
+                        setSelectedItems={handleValidityChange}
+                        placeholder={t('links.filters.selectValidity')}
                     />
                 </div>
             </div>
