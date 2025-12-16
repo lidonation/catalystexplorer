@@ -197,7 +197,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
         : 'rounded-xl';
 
     const gradientClass = isConnected
-        ? 'bg-gradient-to-br from-[var(--cx-background-gradient-2-dark)] to-[var(--cx-background-gradient-2-dark)] bg-opacity-90'
+        ? 'bg-gradient-to-r from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)] bg-opacity-90'
         : 'bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)]';
 
     const toggleAnalytics = () => {
@@ -342,7 +342,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                 </div>
 
                 {/* Desktop View */}
-                <div className="hidden lg:flex lg:flex-col w-full">
+                <div className="hidden lg:flex lg:flex-col w-full ">
                 {showAnalytics && (
                         <div className="relative">
                             <AnalyticsView metrics={metrics} isMobile={false} />

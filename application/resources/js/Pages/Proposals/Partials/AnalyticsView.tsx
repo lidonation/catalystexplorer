@@ -200,7 +200,7 @@ const StatusDistributionCard: React.FC<StatusDistributionCardProps> = ({
   }
 
   return (
-  <div className="flex-1 w-full rounded-xl bg-[var(--cx-background-gradient-1-dark)] lg:p-3 flex flex-col gap-5">
+  <div className="flex-1 w-full rounded-xl bg-[var(--cx-background-gradient-1-dark)]  dark:bg-[var(--cx-background-gradient-2-dark)] lg:p-3 flex flex-col gap-5">
     <div className="text-content-light text-lg lg:text-xl font-semibold leading-7">
       {t('Proposal Status Distribution')}
     </div>
@@ -261,7 +261,7 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
 
     const wrapperClasses = isMobile
         ? 'self-stretch flex flex-col justify-start items-start gap-2.5'
-        : 'flex-1 p-2.5 bg-[var(--cx-background-gradient-1-dark)] rounded-xl inline-flex flex-col justify-start items-start gap-3';
+        : 'flex-1 p-2.5 bg-[var(--cx-background-gradient-1-dark)]  dark:bg-[var(--cx-background-gradient-2-dark)] rounded-xl inline-flex flex-col justify-start items-start gap-3';
 
 
     return (
@@ -401,7 +401,7 @@ const KpisCard: React.FC<KpisCardProps> = ({ metrics, completionRate, avgRequest
 
     const wrapperClasses = isMobile
         ? 'self-stretch inline-flex flex-col justify-start items-center gap-2.5'
-        : 'flex-1 p-2.5 bg-[var(--cx-background-gradient-1-dark)] rounded-xl inline-flex flex-col justify-start items-start gap-4';
+        : 'flex-1 p-2.5 bg-[var(--cx-background-gradient-1-dark)]  dark:bg-[var(--cx-background-gradient-2-dark)]  rounded-xl inline-flex flex-col justify-start items-start gap-4';
 
 
     return (

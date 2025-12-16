@@ -21,7 +21,7 @@ export default function IconButton({
     'aria-label': ariaLabel
 }: IconButtonProps) {
     const gradientClass = connected
-        ? 'bg-gradient-to-br from-[var(--cx-background-gradient-2-dark)] to-[var(--cx-background-gradient-2-dark)]'
+        ? 'bg-[var(--cx-background-gradient-2-dark)]'
         : 'bg-gradient-to-br from-[var(--cx-background-gradient-1-dark)] to-[var(--cx-background-gradient-2-dark)]';
 
     const borderRadiusClass = connected
