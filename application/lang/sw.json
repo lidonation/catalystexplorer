@@ -1710,5 +1710,10 @@
     "links.filters.draft": "Rasimu",
     "links.filters.archived": "Kimehifadhiwa",
     "links.filters.selectStatus": "Chagua hali",
+    "links.filters.validity": "Uhalali",
+    "links.filters.allValidities": "Uhalali Wote",
+    "links.filters.valid": "Halali",
+    "links.filters.invalid": "Si Halali",
+    "links.filters.selectValidity": "Chagua uhalali",
     "sort.modelType": "Aina ya Muundo"
 }

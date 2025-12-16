@@ -80,7 +80,7 @@ class LinksController extends Controller
             'model_types' => 'array|nullable',
             'link_types' => 'array|nullable',
             'statuses' => 'array|nullable',
-            'valid' => 'boolean|nullable',
+            'valid' => 'string|nullable|in:true,false',
             ProposalSearchParams::QUERY()->value => 'string|nullable',
             ProposalSearchParams::PAGE()->value => 'integer|nullable',
             ProposalSearchParams::LIMIT()->value => 'integer|nullable',
@@ -266,7 +266,7 @@ class LinksController extends Controller
         }
 
         if (isset($this->queryParams['valid'])) {
-            $valid = $this->queryParams['valid'] ? 'true' : 'false';
+            $valid = $this->queryParams['valid'];
             $filters[] = "valid = {$valid}";
         }
 

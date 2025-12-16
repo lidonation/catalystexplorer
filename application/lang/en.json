@@ -1753,5 +1753,10 @@
     "links.filters.draft": "Draft",
     "links.filters.archived": "Archived",
     "links.filters.selectStatus": "Select status",
+    "links.filters.validity": "Validity",
+    "links.filters.allValidities": "All Validities",
+    "links.filters.valid": "Valid",
+    "links.filters.invalid": "Invalid",
+    "links.filters.selectValidity": "Select validity",
     "sort.modelType": "Model Type"
 }

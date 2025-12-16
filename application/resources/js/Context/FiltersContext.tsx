@@ -43,17 +43,18 @@ const labels = {
     h: 'Helpful',
     r: 'Ratings',
     rs: 'Reputation Score',
+    valid: 'Validity',
 };
 
 type LabelKeys = keyof typeof labels;
 
-const formatToFilters = (paramObj: Record<LabelKeys, any>): FilteredItem[] => {
+const formatToFilters = (paramObj: Record<string, any>): FilteredItem[] => {
     return Object.keys(paramObj).map((param) => {
         const typedParam = param as LabelKeys;
         return {
-            param: typedParam,
-            label: labels[typedParam],
-            value: paramObj[typedParam],
+            param: param,
+            label: labels[typedParam] || param,
+            value: paramObj[param],
         };
     });
 };

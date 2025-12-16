@@ -1686,5 +1686,10 @@
     "links.filters.draft": "Borrador",
     "links.filters.archived": "Archivado",
     "links.filters.selectStatus": "Seleccionar estado",
+    "links.filters.validity": "Validez",
+    "links.filters.allValidities": "Todas las valideces",
+    "links.filters.valid": "Válido",
+    "links.filters.invalid": "Inválido",
+    "links.filters.selectValidity": "Seleccionar validez",
     "sort.modelType": "Tipo de modelo"
 }
