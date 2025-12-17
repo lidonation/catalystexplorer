@@ -259,102 +259,102 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                         <>
                             <div className="flex flex-col items-center px-2 py-4 w-full">
                                 <div className="w-full max-w-md">
-                                    <div className="flex justify-center mb-4 gap-12">
+                                    <div className="flex justify-center mb-6 gap-12">
                                         {metrics?.submitted !== undefined && (
-                                            <div className="flex flex-col items-center justify-start gap-2 w-28">
-                                                <ValueLabel className="text-content-light block font-semibold text-5 uppercase tracking-wide">
+                                            <div className="flex flex-col items-center w-32">
+                                                <span className="text-content-light/70 text-5 font-medium uppercase tracking-wide">
                                                     {t('submitted')}
-                                                </ValueLabel>
-                                                <span className="text-1 font-bold leading-5 ml-8">
+                                                </span>
+                                                <span className="text-1 font-bold my-1">
                                                     {metrics.submitted.toLocaleString()}
                                                 </span>
-                                                <MetricBarSvg type="submitted" className="mt-2" />
+                                                <MetricBarSvg type="submitted" />
                                             </div>
                                         )}
 
                                         {metrics?.approved !== undefined && metrics?.submitted !== undefined && (
-                                            <div className="flex flex-col items-center justify-start gap-2 w-28">
-                                                <ValueLabel className="text-primary block font-semibold text-5 uppercase tracking-wide">
+                                            <div className="flex flex-col items-center w-32">
+                                                <span className="text-primary text-5 font-medium uppercase tracking-wide">
                                                     {t('approved')}
-                                                </ValueLabel>
-                                                <span className="text-1 font-bold leading-5 mr-10">
+                                                </span>
+                                                <span className="text-1 font-bold my-1">
                                                     {metrics.approved.toLocaleString()}
                                                 </span>
-                                                <div className="inline-flex justify-center items-center gap-1 mt-1">
-                                                   <MetricBarSvg type="approved" />
-                                                    <div className="text-center justify-start text-success text-sm font-medium font-['Inter'] leading-4">
+                                                <div className="inline-flex items-center gap-1">
+                                                    <MetricBarSvg type="approved" />
+                                                    <span className="text-success text-5 font-medium">
                                                         {((metrics.approved / metrics.submitted) * 100).toFixed(1)}%
-                                                    </div>
+                                                    </span>
                                                 </div>
                                             </div>
                                         )}
                                     </div>
-                                    <div className="flex justify-center mb-4 gap-16">
+                                    <div className="flex justify-center mb-6 gap-12">
                                         {metrics?.completed !== undefined && metrics?.submitted !== undefined && (
-                                            <div className="flex flex-col items-center justify-start gap-2 w-28">
-                                                <ValueLabel className="text-success block font-semibold text-5 uppercase tracking-wide">
+                                            <div className="flex flex-col items-center w-32">
+                                                <span className="text-success text-5 font-medium uppercase tracking-wide">
                                                     {t('completed')}
-                                                </ValueLabel>
-                                                <span className="text-xl font-bold leading-5 ml-8">
+                                                </span>
+                                                <span className="text-1 font-bold my-1">
                                                     {metrics.completed.toLocaleString()}
                                                 </span>
-                                                <div className="inline-flex justify-center items-center gap-1 mt-1">
-                                                    <div className="w-14 scale-y-[0.5]">
-                                                        <PercentageProgressBar
-                                                            value={metrics.completed}
-                                                            total={metrics.submitted}
-                                                            primaryBackgroundColor="bg-gray-300"
-                                                            secondaryBackgroudColor="bg-green-500"
-                                                        />
-                                                    </div>
+                                                <div className="w-14 scale-y-[0.5]">
+                                                    <PercentageProgressBar
+                                                        value={metrics.completed}
+                                                        total={metrics.submitted}
+                                                        primaryBackgroundColor="bg-gray-300"
+                                                        secondaryBackgroudColor="bg-green-500"
+                                                    />
                                                 </div>
                                             </div>
                                         )}
                                         {metrics?.distributedADA !== undefined && (
-                                            <div className="flex flex-col items-center justify-start gap-2 w-28">
-                                                <ValueLabel className="block text-content-light font-semibold text-5 text-nowrap uppercase tracking-wide">
+                                            <div className="flex flex-col items-center w-32">
+                                                <span className="text-content-light/70 text-5 font-medium uppercase tracking-wide">
                                                     ₳ {t('distributed')}
-                                                </ValueLabel>
-                                                <span className="text-1 font-bold leading-5 mr-12">
+                                                </span>
+                                                <span className="text-1 font-bold my-1">
                                                     ₳{shortNumber(metrics.distributedADA, 2)}
                                                 </span>
                                                 {metrics?.distributedUSD !== undefined && metrics.distributedUSD > 0 && (
-                                                    <div className="text-content-light text-xs font-medium">
+                                                    <span className="text-content-light/60 text-5 font-medium">
                                                         ${shortNumber(metrics.distributedUSD, 2)}
-                                                    </div>
+                                                    </span>
                                                 )}
                                             </div>
                                         )}
                                     </div>
-                                    <div className="flex justify-center mb-4 gap-20">
+
+                                    {/* Row 3: Awarded & Requested */}
+                                    <div className="flex justify-center mb-4 gap-12">
                                         {metrics?.awardedADA !== undefined && (
-                                            <div className="flex flex-col items-center justify-start gap-2 w-28">
-                                                <ValueLabel className="text-content-light block font-semibold text-5 text-nowrap uppercase tracking-wide">
+                                            <div className="flex flex-col items-center w-32">
+                                                <span className="text-content-light/70 text-5 font-medium uppercase tracking-wide">
                                                     ₳ {t('awarded')}
-                                                </ValueLabel>
-                                                <span className="text-1 font-bold leading-5 ml-8">
+                                                </span>
+                                                <span className="text-1 font-bold my-1">
                                                     ₳{shortNumber(metrics.awardedADA, 2)}
                                                 </span>
                                                 {metrics?.awardedUSD !== undefined && metrics.awardedUSD > 0 && (
-                                                    <div className="text-content-light text-xs font-medium">
+                                                    <span className="text-content-light/60 text-5 font-medium">
                                                         ${shortNumber(metrics.awardedUSD, 2)}
-                                                    </div>
+                                                    </span>
                                                 )}
                                             </div>
                                         )}
 
                                         {metrics?.requestedADA !== undefined && (
-                                            <div className="flex flex-col items-center justify-start gap-2 w-28">
-                                                <ValueLabel className="text-content-light block font-semibold text-5 text-nowrap uppercase tracking-wide">
+                                            <div className="flex flex-col items-center w-32">
+                                                <span className="text-content-light/70 text-5 font-medium uppercase tracking-wide">
                                                     ₳ {t('requested')}
-                                                </ValueLabel>
-                                                <span className="text-1 font-bold leading-5 mr-12">
+                                                </span>
+                                                <span className="text-1 font-bold my-1">
                                                     ₳{shortNumber(metrics.requestedADA, 2)}
                                                 </span>
                                                 {metrics?.requestedUSD !== undefined && metrics.requestedUSD > 0 && (
-                                                    <div className="text-content-light text-xs font-medium">
+                                                    <span className="text-content-light/60 text-5 font-medium">
                                                         ${shortNumber(metrics.requestedUSD, 2)}
-                                                    </div>
+                                                    </span>
                                                 )}
                                             </div>
                                         )}
