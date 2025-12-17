@@ -56,8 +56,6 @@ class SyncVotingResults implements ShouldQueue
             $successCount = 0;
             $errorCount = 0;
 
-            //            dd($projects[0]);
-
             foreach ($projects as $project) {
                 try {
                     $this->processProject($project, $this->fundNumber, $this->fundId, $this->campaignSlug, $this->updateProposalDetails);

@@ -130,12 +130,21 @@ class SyncVotingResultsFromCatalyst extends Command
     protected function getFundChallenges(string $fundNumber): array
     {
         $challengeMappings = [
+            '11' => [
+                'cardano-use-cases-concept' => 'f11-cardano-use-cases-concept',
+                'cardano-use-cases-solution' => 'f11-cardano-use-cases-solution',
+                'cardano-use-cases-product' => 'f11-cardano-use-cases-product',
+                'cardano-open-developers' => 'f11-cardano-open-developers-technical',
+                'cardano-open-ecosystem' => 'f11-cardano-open-ecosystem-non-technical',
+                'catalyst-systems-improvements-discovery' => 'f11-catalyst-systems-improvements-development',
+                'sponsored-by-leftovers' => null, // null indicates leftover funding
+            ],
             '12' => [
                 'cardano-open-ecosystem' => 'cardano-open-ecosystem-f12',
                 'cardano-use-cases-product' => 'cardano-use-cases-product-f12',
                 'cardano-use-cases-mvp' => 'cardano-use-cases-mvp-f12',
                 'cardano-use-cases-concept' => 'cardano-use-cases-concept-f12',
-                'cardano-partners-developers-real-world-intergrations' => 'cardano-partners-developers-real-world-intergrations-f12',
+                'cardano-partners-and-real-world-integrations' => 'cardano-partners-developers-real-world-intergrations-f12',
                 'cardano-open-developers' => 'cardano-open-developers-f12',
                 'sponsored-by-leftovers' => null, // null indicates leftover funding
             ],
