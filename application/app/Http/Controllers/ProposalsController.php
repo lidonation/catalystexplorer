@@ -85,6 +85,8 @@ class ProposalsController extends Controller
 
     public int $unfundedProposals = 0;
 
+    public int $fundedProposals = 0;
+
     public int $groupsCount = 0;
 
     public int $communitiesCount = 0;
@@ -131,6 +133,7 @@ class ProposalsController extends Controller
                         : 0,
                     'inProgress' => $this->inProgressProposals,
                     'unfunded' => $this->unfundedProposals,
+                    'funded' => $this->fundedProposals,
                     'groupsCount' => $this->groupsCount,
                     'communitiesCount' => $this->communitiesCount,
                 ],
@@ -805,13 +808,13 @@ class ProposalsController extends Controller
             $this->unfundedProposals = $facets['funding_status']['not_approved'];
         }
 
+        // Funded = proposals that received funding (funded + leftover)
         if (isset($facets['funding_status']['funded']) || isset($facets['funding_status']['leftover'])) {
-            $this->approvedProposals = ($facets['funding_status']['funded'] ?? 0) + ($facets['funding_status']['leftover'] ?? 0);
+            $this->fundedProposals = ($facets['funding_status']['funded'] ?? 0) + ($facets['funding_status']['leftover'] ?? 0);
         }
 
-        if (isset($facets['funding_status']['leftover'])) {
-            $this->approvedProposals = $this->approvedProposals + $facets['funding_status']['leftover'];
-        }
+        // Approved = all proposals that passed voting (funded + leftover + over_budget)
+        $this->approvedProposals = $this->fundedProposals + ($facets['funding_status']['over_budget'] ?? 0);
 
         if (isset($facets['campaign.title']) && count($facets['campaign.title'])) {
             $this->challengesCount = $facets['campaign.title'];

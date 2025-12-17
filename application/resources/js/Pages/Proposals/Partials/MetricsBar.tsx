@@ -272,18 +272,18 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                                             </div>
                                         )}
 
-                                        {metrics?.approved !== undefined && metrics?.submitted !== undefined && (
+                                        {metrics?.funded !== undefined && metrics?.submitted !== undefined && (
                                             <div className="flex flex-col items-center w-32">
                                                 <span className="text-primary text-5 font-medium uppercase tracking-wide">
-                                                    {t('approved')}
+                                                    {t('funded')}
                                                 </span>
                                                 <span className="text-1 font-bold my-1">
-                                                    {metrics.approved.toLocaleString()}
+                                                    {metrics.funded.toLocaleString()}
                                                 </span>
                                                 <div className="inline-flex items-center gap-1">
                                                     <MetricBarSvg type="approved" />
                                                     <span className="text-success text-5 font-medium">
-                                                        {((metrics.approved / metrics.submitted) * 100).toFixed(1)}%
+                                                        {((metrics.funded / metrics.submitted) * 100).toFixed(1)}%
                                                     </span>
                                                 </div>
                                             </div>
@@ -413,18 +413,18 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                             </div>
                             )}
 
-                            {metrics?.approved !== undefined && metrics?.submitted !== undefined && (
+                            {metrics?.funded !== undefined && metrics?.submitted !== undefined && (
                             <div className="flex flex-col items-center flex-1">
                                 <ValueLabel className="text-primary block font-semibold text-5 uppercase">
-                                {t('approved')}
+                                {t('funded')}
                                 </ValueLabel>
                                 <span className="text-1 font-bold m-0 leading-tight">
-                                {metrics.approved.toLocaleString()}
+                                {metrics.funded.toLocaleString()}
                                 </span>
                                 <div className="inline-flex justify-center items-center gap-1 mt-0">
                                 <MetricBarSvg type="approved" />
                                 <span className="text-success text-[9px] font-medium leading-4">
-                                    {((metrics.approved / metrics.submitted) * 100).toFixed(1)}%
+                                    {((metrics.funded / metrics.submitted) * 100).toFixed(1)}%
                                 </span>
                                 </div>
                             </div>

@@ -4,6 +4,7 @@ export type ProposalMetrics = {
     completed?: number;
     inProgress?: number;
     unfunded?: number;
+    funded?: number;
     requestedUSD?: number;
     requestedADA?: number;
     awardedUSD?: number;
