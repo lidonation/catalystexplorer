@@ -11,6 +11,7 @@ use Spatie\Enum\Laravel\Enum;
  * @method static self complete()
  * @method static self in_progress()
  * @method static self unfunded()
+ * @method static self onboarding()
  */
 final class ProposalStatus extends Enum
 {

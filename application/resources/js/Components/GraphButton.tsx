@@ -11,8 +11,16 @@ import { useMetrics } from '@/Context/MetricsContext';
 import { Transition } from '@headlessui/react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const METRICS_BAR_STORAGE_KEY = 'cx-metrics-bar-visible';
+
 const GraphButton = () => {
-    const [activePopup, setActivePopup] = useState<null | "analytics" | "ai" | "chart">(null);
+    const [activePopup, setActivePopup] = useState<null | "analytics" | "ai" | "chart">(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem(METRICS_BAR_STORAGE_KEY);
+            return saved === 'true' ? 'analytics' : null;
+        }
+        return null;
+    });
     const [connectorOffset, setConnectorOffset] = useState(0);
     const { metrics } = useMetrics();
     const { t } = useLaravelReactI18n();
@@ -26,8 +34,10 @@ const GraphButton = () => {
 
     const chartsUrl = useLocalizedRoute('charts.proposals');
 
+    useEffect(() => {
+        localStorage.setItem(METRICS_BAR_STORAGE_KEY, String(activePopup === 'analytics'));
+    }, [activePopup]);
 
-    // Calculate offset when activePopup changes
     useEffect(() => {
         if (!activePopup || !containerRef.current) return;
 
@@ -116,7 +126,7 @@ const GraphButton = () => {
                                 transform-Origin="center"
                             />
                             <motion.path
-                                d="M27.5 230.5C23.9 187.1 7.66667 185.833 3.49693e-07 185L3.5 180L27.5 177L38 185L36 200C34.6667 203.5 31.1 207.9 27.5 197.5Z"
+                                d="M32.5 230.5C23.9 187.1 7.66667 180.833 3.49693e-07 185L3.5 180L27.5 177L38 185L36 20C34.6667 203.5 31.1 207.9 37.5 197.5Z"
                                 fill="var(--cx-background-gradient-2-dark)"
                                 initial={{ pathLength: 0 }}
                                 animate={{ pathLength: 1 }}
@@ -130,7 +140,7 @@ const GraphButton = () => {
                             />
 
                             <motion.path
-                                d="M101.5 230.5C105.1 197.1 121.333 185.833 129 185L125.5 180L101.5 177L91 185L93 200C94.3333 203.5 97.9 207.9 101.5 203.5Z"
+                                d="M93.5 230.5C105.1 187.1 121.333 185.833 129 185L125.5 180L101.5 177L91 185L93 200C94.3333 203.5 97.9 220.9 81.5 203.5Z"
                                 fill="var(--cx-background-gradient-2-dark)"
                                 initial={{ pathLength: 0 }}
                                 animate={{ pathLength: 1 }}

@@ -6,6 +6,7 @@ namespace App\Jobs;
 
 use App\Http\Integrations\ProjectCatalyst\ProjectCatalystConnector;
 use App\Http\Integrations\ProjectCatalyst\Requests\GetChallengeVotingDataRequest;
+use App\Models\Campaign;
 use App\Models\Proposal;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -54,6 +55,8 @@ class SyncVotingResults implements ShouldQueue
             $projects = $data['data']['challenge']['projects'];
             $successCount = 0;
             $errorCount = 0;
+
+            //            dd($projects[0]);
 
             foreach ($projects as $project) {
                 try {
@@ -158,11 +161,6 @@ class SyncVotingResults implements ShouldQueue
             }
         }
 
-        $proposal->status = match ($proposal->funding_status) {
-            'funded', 'leftover' => 'in_progress',
-            default => 'unfunded'
-        };
-
         if ($updateProposalDetails) {
             $this->updateProposalDetails($proposal, $project, $campaignSlug, $this->fundNumber);
         }
@@ -183,15 +181,14 @@ class SyncVotingResults implements ShouldQueue
         }
     }
 
-    protected function updateProposalDetails(Proposal $proposal, array $project, ?string $campaignSlug, string $fundNumber): void
+    protected function updateProposalDetails(Proposal &$proposal, array $project, ?string $campaignSlug, string $fundNumber): void
     {
         $updated = false;
-
         // Update campaign ID if we have a campaign slug and it's different from current
         if ($campaignSlug) {
             // Append fund number to campaign slug (e.g., 'cardano-open-developers' becomes 'cardano-open-developers-f12')
             $fullCampaignSlug = $campaignSlug.'-f'.$fundNumber;
-            $campaign = \App\Models\Campaign::where('slug', $fullCampaignSlug)->first();
+            $campaign = Campaign::where('slug', $fullCampaignSlug)->first();
             if ($campaign && $proposal->campaign_id !== $campaign->id) {
                 $proposal->campaign_id = $campaign->id;
                 $updated = true;
@@ -212,6 +209,19 @@ class SyncVotingResults implements ShouldQueue
             }
         }
 
+        // update the project status
+        $proposal->status = match (strtolower($project['projectStatus'])) {
+            'active' => 'in_progress',
+            'completed' => 'complete',
+            'notapproved' => 'unfunded',
+            default => strtolower($project['projectStatus'])
+        };
+
+        // Update amount received from distributedToDate
+        if (isset($project['completed']['date'])) {
+            $proposal->completed_at = $project['completed']['date'];
+        }
+
         // Update amount received from distributedToDate
         if (isset($project['funding']['distributedToDate']['amount'])) {
             $rawAmount = $project['funding']['distributedToDate']['amount'];
@@ -221,6 +231,7 @@ class SyncVotingResults implements ShouldQueue
                 $amountReceived = $rawAmount / 1000000; // Convert from micro-ADA
                 if ($proposal->amount_received !== $amountReceived) {
                     $proposal->amount_received = $amountReceived;
+                    $proposal->funding_updated_at = now();
                     $updated = true;
                     Log::info('Updated proposal amount received', [
                         'proposal_id' => $proposal->id,
