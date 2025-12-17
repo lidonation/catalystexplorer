@@ -79,7 +79,7 @@ function computeAnalytics(metrics: ProposalMetrics): AnalyticsCalculated & {
 
 function exportMetricsToCSV(metrics: ProposalMetrics, t: (key: string) => string) {
     const computed = computeAnalytics(metrics);
-    
+
     const rows = [
         ['Metric', 'Value'],
         [t('Submitted'), metrics.submitted?.toLocaleString() ?? '0'],
@@ -365,11 +365,11 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
 
     const { distributed, awarded, requested, symbol, suffix } = getCurrencyValues();
 
-    const currencyDistributedPercent = awarded > 0 
-        ? ((distributed / awarded) * 100).toFixed(1) 
+    const currencyDistributedPercent = awarded > 0
+        ? ((distributed / awarded) * 100).toFixed(1)
         : '0';
-    const currencyAwardedPercent = requested > 0 
-        ? ((awarded / requested) * 100).toFixed(1) 
+    const currencyAwardedPercent = requested > 0
+        ? ((awarded / requested) * 100).toFixed(1)
         : '0';
 
     const currencyOptions: { value: CurrencyType; label: string; disabled?: boolean }[] = [
@@ -389,8 +389,8 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
                             onClick={() => !option.disabled && setSelectedCurrency(option.value)}
                             disabled={option.disabled}
                             className={`flex items-center gap-1.5 text-5 transition-colors ${
-                                option.disabled 
-                                    ? 'text-content-light/60 cursor-not-allowed' 
+                                option.disabled
+                                    ? 'text-content-light/60 cursor-not-allowed'
                                     : selectedCurrency === option.value
                                         ? 'text-primary'
                                         : 'text-content-light '

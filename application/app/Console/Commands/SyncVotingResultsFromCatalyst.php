@@ -16,7 +16,6 @@ class SyncVotingResultsFromCatalyst extends Command
      */
     protected $signature = 'voting:sync-from-catalyst
                             {--fund= : Fund ID to sync voting results for}
-                            {--fund-number= : Fund number (e.g., "14" for Fund 14)}
                             {--challenge= : Specific challenge slug to sync}
                             {--sync : Run synchronously instead of queueing jobs}
                             {--update-details : Also update campaign ID and amount received}';
@@ -32,25 +31,33 @@ class SyncVotingResultsFromCatalyst extends Command
     public function handle(): int
     {
         $fundId = $this->option('fund');
-        $fundNumber = $this->option('fund-number');
         $challengeSlug = $this->option('challenge');
         $sync = $this->option('sync');
         $updateDetails = $this->option('update-details');
 
-        if (! $fundId || ! $fundNumber) {
-            $this->error('❌ Both --fund and --fund-number options are required.');
-            $this->info('Example: php artisan voting:sync-from-catalyst --fund=019a9c61-7d7a-7277-b082-bd4137a5a936 --fund-number=14');
+        if (! $fundId) {
+            $this->error('❌ The --fund option is required.');
+            $this->info('Example: php artisan voting:sync-from-catalyst --fund=019a9c61-7d7a-7277-b082-bd4137a5a936');
 
             return Command::FAILURE;
         }
 
-        // Validate fund exists
+        // Find fund by ID
         $fund = Fund::find($fundId);
+
         if (! $fund) {
             $this->error("❌ Fund not found: {$fundId}");
 
             return Command::FAILURE;
         }
+
+        // Extract fund number from slug (e.g., "fund-14" -> "14")
+        if (! preg_match('/fund-(\d+)/', $fund->slug, $matches)) {
+            $this->error("❌ Invalid fund slug format: {$fund->slug}. Expected format: fund-{{number}} (e.g., fund-14)");
+
+            return Command::FAILURE;
+        }
+        $fundNumber = $matches[1];
 
         $this->info("🚀 Starting voting results sync for Fund {$fundNumber} ({$fund->title})");
 
@@ -60,10 +67,10 @@ class SyncVotingResultsFromCatalyst extends Command
 
         if ($challengeSlug) {
             $this->info("Syncing specific challenge: {$challengeSlug}");
-            $this->syncChallenge($challengeSlug, $fundNumber, $fundId, null, $sync, $updateDetails);
+            $this->syncChallenge($challengeSlug, $fundNumber, $fund->id, null, $sync, $updateDetails);
         } else {
             $this->info("Syncing all challenges for Fund {$fundNumber}");
-            $this->syncAllChallenges($fundNumber, $fundId, $sync, $updateDetails);
+            $this->syncAllChallenges($fundNumber, $fund->id, $sync, $updateDetails);
         }
 
         return Command::SUCCESS;
@@ -123,12 +130,21 @@ class SyncVotingResultsFromCatalyst extends Command
     protected function getFundChallenges(string $fundNumber): array
     {
         $challengeMappings = [
+            '11' => [
+                'cardano-use-cases-concept' => 'f11-cardano-use-cases-concept',
+                'cardano-use-cases-solution' => 'f11-cardano-use-cases-solution',
+                'cardano-use-cases-product' => 'f11-cardano-use-cases-product',
+                'cardano-open-developers' => 'f11-cardano-open-developers-technical',
+                'cardano-open-ecosystem' => 'f11-cardano-open-ecosystem-non-technical',
+                'catalyst-systems-improvements-discovery' => 'f11-catalyst-systems-improvements-development',
+                'sponsored-by-leftovers' => null, // null indicates leftover funding
+            ],
             '12' => [
                 'cardano-open-ecosystem' => 'cardano-open-ecosystem-f12',
                 'cardano-use-cases-product' => 'cardano-use-cases-product-f12',
                 'cardano-use-cases-mvp' => 'cardano-use-cases-mvp-f12',
                 'cardano-use-cases-concept' => 'cardano-use-cases-concept-f12',
-                'cardano-partners-developers-real-world-intergrations' => 'cardano-partners-developers-real-world-intergrations-f12',
+                'cardano-partners-and-real-world-integrations' => 'cardano-partners-developers-real-world-intergrations-f12',
                 'cardano-open-developers' => 'cardano-open-developers-f12',
                 'sponsored-by-leftovers' => null, // null indicates leftover funding
             ],

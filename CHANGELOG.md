@@ -1,3 +1,10 @@
+## [1.53.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.53.0...v1.53.1) (2025-12-16)
+
+
+### Bug Fixes
+
+* cleanup links page ([a797f05](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/a797f05b3c8063dd32fbc50303d97540ebbe32f5))
+
 # [1.53.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.52.0...v1.53.0) (2025-12-16)
 
 
