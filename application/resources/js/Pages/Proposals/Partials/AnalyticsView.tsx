@@ -65,11 +65,53 @@ function computeAnalytics(metrics: ProposalMetrics): AnalyticsCalculated & {
     };
 }
 
+function exportMetricsToCSV(metrics: ProposalMetrics, t: (key: string) => string) {
+    const computed = computeAnalytics(metrics);
+    
+    const rows = [
+        ['Metric', 'Value'],
+        [t('Submitted'), metrics.submitted?.toLocaleString() ?? '0'],
+        [t('Approved'), metrics.approved?.toLocaleString() ?? '0'],
+        [t('Completed'), metrics.completed?.toLocaleString() ?? '0'],
+        [t('In Progress'), metrics.inProgress?.toLocaleString() ?? '0'],
+        [t('Unfunded'), metrics.unfunded?.toLocaleString() ?? '0'],
+        [t('Approval Rate') + ' (%)', computed.approvedPercent],
+        [t('Completion Rate') + ' (%)', computed.completionRate.toFixed(1)],
+        [''],
+        [t('Funding Overview'), ''],
+        [t('Requested') + ' (ADA)', metrics.requestedADA?.toLocaleString() ?? '0'],
+        [t('Requested') + ' (USD)', metrics.requestedUSD?.toLocaleString() ?? '0'],
+        [t('Awarded') + ' (ADA)', metrics.awardedADA?.toLocaleString() ?? '0'],
+        [t('Awarded') + ' (USD)', metrics.awardedUSD?.toLocaleString() ?? '0'],
+        [t('Distributed') + ' (ADA)', metrics.distributedADA?.toLocaleString() ?? '0'],
+        [t('Distributed') + ' (USD)', metrics.distributedUSD?.toLocaleString() ?? '0'],
+        [t('Awarded vs Requested') + ' (%)', computed.awardedPercent],
+        [t('Distributed vs Awarded') + ' (%)', computed.distributedPercent],
+        [''],
+        [t('KPIs'), ''],
+        [t('Avg. Amount Requested') + ' (ADA)', computed.avgRequestedADA.toLocaleString()],
+        [t('Groups'), metrics.groupsCount?.toLocaleString() ?? '0'],
+        [t('Communities'), metrics.communitiesCount?.toLocaleString() ?? '0'],
+    ];
+
+    const csvContent = rows.map(row => row.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `proposal-analytics-${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+
 type AnalyticsHeaderProps = {
+    metrics: ProposalMetrics;
     onClose?: () => void;
 };
 
-const AnalyticsHeader: React.FC<AnalyticsHeaderProps> = ({ onClose }) => {
+const AnalyticsHeader: React.FC<AnalyticsHeaderProps> = ({ metrics, onClose }) => {
     const { t } = useLaravelReactI18n();
     const chartsUrl = useLocalizedRoute('charts.proposals');
     return (
@@ -111,11 +153,14 @@ const AnalyticsHeader: React.FC<AnalyticsHeaderProps> = ({ onClose }) => {
             </div>
             <div className="flex justify-center items-center gap-1">
                 <div className="flex justify-end items-center gap-2.5">
-                    <div className="px-2.5 py-2 bg-[var(--cx-background-gradient-1-dark)] rounded-md flex justify-start items-center gap-2.5">
-                        <div className="text-content-light/80 text-xs font-normal leading-3">
+                    <button
+                        onClick={() => exportMetricsToCSV(metrics, t)}
+                        className="px-2.5 py-2 bg-[var(--cx-background-gradient-1-dark)] rounded-md flex justify-start items-center gap-2.5 cursor-pointer transition-colors"
+                    >
+                        <span className="text-content-light/80 text-xs font-normal leading-3">
                             {t('Export CSV')}
-                        </div>
-                    </div>
+                        </span>
+                    </button>
                 </div>
                 <div className="flex justify-end items-center gap-2.5">
                     <div className="px-2.5 py-2 bg-[var(--cx-background-gradient-1-dark)] rounded-md flex justify-start items-center gap-1">
@@ -476,7 +521,7 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({ metrics, isMobile = false
 
     return (
         <>
-            <AnalyticsHeader onClose={onClose} />
+            <AnalyticsHeader metrics={metrics} onClose={onClose} />
             <div className="w-full inline-flex justify-start items-stretch gap-2.5 px-6 py-4">
                 <StatusDistributionCard metrics={metrics} />
                 <FundingOverviewCard
