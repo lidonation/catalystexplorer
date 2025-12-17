@@ -2,7 +2,6 @@ import React from 'react';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ProposalMetrics } from '@/types/proposal-metrics';
-import Checkbox from '@/Components/atoms/Checkbox';
 import { shortNumber } from '@/utils/shortNumber';
 import PercentageProgressBar from '@/Components/PercentageProgressBar';
 import ShareArrowIcon from '@/Components/svgs/ShareArrowIcon';
@@ -197,15 +196,15 @@ const StatusDistributionCard: React.FC<StatusDistributionCardProps> = ({
                             <div key={item.id} className="flex flex-col gap-0.5">
                                 <div className="flex items-center gap-2">
                                     <span className={`w-2.5 h-2.5 rounded-full ${item.colorClass}`} />
-                                    <span className="text-content-light text-sm">
+                                    <span className="text-content-light text-4">
                                     {item.label}
                                     </span>
                                 </div>
                                 <div>
-                                    <span className="text-content-light text-sm font-semibold">
+                                    <span className="text-content-light text-4 font-semibold">
                                     {item.value.toLocaleString()}
                                     </span>
-                                    <span className="text-content-light text-sm opacity-80 ml-1">
+                                    <span className="text-content-light text-4 opacity-80 ml-1">
                                     ({percent}%)
                                     </span>
                                 </div>
@@ -245,11 +244,11 @@ const StatusDistributionCard: React.FC<StatusDistributionCardProps> = ({
             >
               <div className="flex items-center gap-3">
                 <span className={`w-3 h-3 rounded-full ${item.colorClass}`} />
-                <span className="text-white text-base">
+                <span className="text-white text-4">
                   {item.label}
                 </span>
               </div>
-              <span className="text-white text-base font-semibold whitespace-nowrap">
+              <span className="text-white text-4 font-semibold whitespace-nowrap">
                 {item.value.toLocaleString()} ({percent}%)
               </span>
             </div>
@@ -280,26 +279,22 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
 
     const wrapperClasses = isMobile
         ? 'self-stretch flex flex-col justify-start items-start gap-2.5'
-        : 'flex-1 p-2.5 bg-[var(--cx-background-gradient-1-dark)]  dark:bg-[var(--cx-background-gradient-2-dark)] rounded-xl inline-flex flex-col justify-start items-start gap-3';
+        : 'flex-1 p-2.5 bg-[var(--cx-background-gradient-1-dark)]  dark:bg-[var(--cx-background-gradient-2-dark)] rounded-xl inline-flex flex-col justify-start items-start gap-8';
 
 
     return (
         <div className={wrapperClasses}>
-            <div className="inline-flex justify-start items-start gap-6">
+            <div className="inline-flex justify-start items-start gap-10">
                 <div className='text-content-light text-lg lg:text-xl font-semibold leading-7 '>{t('Funding Overview')}</div>
             </div>
-
-            <div className="self-stretch flex flex-col justify-start items-start gap-2">
+            <div className="self-stretch flex flex-col justify-start items-start gap-1">
                 <div className="self-stretch inline-flex justify-between items-start">
-                    <div className={`text-base font-normal leading-5`}>
-                        {t('Distributed')}
+                    <div className={`text-4 font-normal leading-5`}>
+                        {t('Distributed vs Awarded')}
                     </div>
                     <div className="flex justify-start items-center gap-1">
-                        <div className={`text-xs font-semibold leading-5`}>
-                            {shortNumber(metrics.distributedADA || 0, 2)} ₳
-                        </div>
-                        <div className="lg:hidden text-xs text-dark font-normal leading-5">
-                            {distributedPercent}% {t('of awarded')}
+                        <div className={`text-4 font-semibold leading-5`}>
+                            {shortNumber(metrics.distributedADA || 0, 2)} ₳ / {shortNumber(metrics.awardedADA || 0, 2)} ₳
                         </div>
                     </div>
                 </div>
@@ -311,25 +306,20 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
                         secondaryBackgroudColor='bg-primary'
                     />
                 </div>
-                <div className="hidden lg:flex self-stretch justify-end">
-                    <div className={`text-xs text-dark font-normal leading-5`}>
-                        {distributedPercent}% {t('of awarded')}
+                <div className="self-stretch flex justify-end">
+                    <div className={`text-5 text-dark font-normal leading-5`}>
+                        {distributedPercent}% {t('distributed')}
                     </div>
                 </div>
             </div>
-
-            {/* Awarded */}
             <div className="self-stretch flex flex-col justify-start items-start gap-1">
                 <div className="self-stretch inline-flex justify-between items-start">
-                    <div className={`text-base font-normal leading-5`}>
-                        {t('Awarded')}
+                    <div className={`text-4 font-normal leading-5`}>
+                        {t('Awarded vs Requested')}
                     </div>
-                    <div className="flex justify-start items-center gap-2">
-                        <div className={`text-xs font-semibold leading-5`}>
-                            {shortNumber(metrics.awardedADA || 0, 2)} ₳
-                        </div>
-                        <div className="lg:hidden text-xs text-dark font-normal leading-5">
-                            {awardedPercent}% {t('of requested')}
+                    <div className="flex justify-start items-center gap-1">
+                        <div className={`text-4 font-semibold leading-5`}>
+                            {shortNumber(metrics.awardedADA || 0, 2)} ₳ / {shortNumber(metrics.requestedADA || 0, 2)} ₳
                         </div>
                     </div>
                 </div>
@@ -341,51 +331,21 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
                         secondaryBackgroudColor='bg-primary'
                     />
                 </div>
-                <div className="hidden lg:flex self-stretch justify-end">
-                    <div className={`text-xs text-dark font-normal leading-5`}>
-                        {awardedPercent}% {t('of requested')}
-                    </div>
-                </div>
-            </div>
-
-            {/* Requested */}
-            <div className="self-stretch flex flex-col justify-start items-start gap-1">
-                <div className="self-stretch inline-flex justify-between items-start">
-                    <div className={`text-base font-normal leading-5`}>
-                        {t('Requested')}
-                    </div>
-                    <div className="flex justify-start items-center gap-1">
-                        <div className={`text-xs font-semibold leading-5`}>
-                            {shortNumber(metrics.requestedADA || 0, 2)} ₳
-                        </div>
-                        <div className="lg:hidden text-xs text-dark font-normal leading-5">
-                            {t('Total demand')}
-                        </div>
-                    </div>
-                </div>
-                <div className='self-stretch'>
-                    <PercentageProgressBar
-                        value={metrics.requestedADA || 0}
-                        total={metrics.requestedADA || 1}
-                        primaryBackgroundColor="bg-gray-100/80"
-                        secondaryBackgroudColor='bg-primary'
-                    />
-                </div>
-                <div className="hidden lg:flex self-stretch justify-end">
-                    <div className={`text-xs text-dark font-normal leading-5`}>
-                        {t('Total demand')}
+                <div className="self-stretch flex justify-end">
+                    <div className={`text-5 text-dark font-normal leading-5`}>
+                        {awardedPercent}% {t('awarded')}
                     </div>
                 </div>
             </div>
             {!isMobile && (
                 <div className="self-stretch flex flex-col justify-center items-center mt-4 border-t">
-                    <div className="text-dark text-xs font-normal mt-2 leading-5">
+                    <div className="text-dark text-[8px] font-normal mt-2 leading-5">
                         {t('Success Rate')}
                     </div>
-                    <div className="text-content-light text-xl font-bold leading-5">
+                    <div className="text-content-light text-1 font-bold leading-5">
                         {approvedPercent}%
                     </div>
-                    <div className="text-center text-success text-xs font-medium leading-5">
+                    <div className="text-center text-success text-5 font-medium leading-5">
                         {t('Approval Rate')}
                     </div>
                 </div>
@@ -393,13 +353,13 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
 
             {isMobile && (
                 <div className="self-stretch flex flex-col justify-center items-center mt-2">
-                    <div className="text-dark text-xs font-normal leading-5">
+                    <div className="text-dark text-[8px] font-normal leading-5">
                         {t('Success Rate')}
                     </div>
-                    <div className="text-content-light text-xl font-bold leading-5">
+                    <div className="text-content-light text-1 font-bold leading-5">
                         {approvedPercent}%
                     </div>
-                    <div className="text-center text-success text-xs font-medium leading-5">
+                    <div className="text-center text-success text-5 font-medium leading-5">
                         {t('Approval Rate')}
                     </div>
                 </div>
@@ -432,14 +392,14 @@ const KpisCard: React.FC<KpisCardProps> = ({ metrics, completionRate, avgRequest
                 {/* AVG. AMOUNT REQUESTED */}
                 <div className="self-stretch flex flex-col justify-center items-start">
                     <div
-                        className={` text-xs text-dark font-normal leading-5 whitespace-nowrap`}
+                        className={` text-5 text-dark font-normal leading-5 whitespace-nowrap`}
                     >
                         {t('AVG. AMOUNT REQUESTED')}
                     </div>
-                    <div className={` text-xl font-bold leading-5`}>
+                    <div className={` text-1 font-bold leading-5`}>
                         {shortNumber(avgRequestedADA, 2)} ₳
                     </div>
-                    <div className={` text-xs text-dark font-normal leading-5`}>
+                    <div className={` text-5 text-dark font-normal leading-5`}>
                         {t('Per submitted proposal')}
                     </div>
                 </div>
@@ -447,34 +407,44 @@ const KpisCard: React.FC<KpisCardProps> = ({ metrics, completionRate, avgRequest
                 {/* COMPLETION RATE */}
                 <div className="self-stretch flex flex-col justify-center items-start ">
                     <div
-                        className={` text-xs text-dark font-normal leading-5`}
+                        className={` text-5 text-dark font-normal leading-5`}
                     >
                         {t('COMPLETION RATE')}
                     </div>
-                    <div className={` text-xl font-bold leading-5`}>
+                    <div className={` text-1 font-bold leading-5`}>
                         {completionRate.toFixed(1)}%
                     </div>
                     <div
-                        className={` text-xs text-dark font-normal leading-5`}
+                        className={` text-5 text-dark font-normal leading-5`}
                     >
                         {t('Of approved proposals')}
                     </div>
                 </div>
-
-                {/* ADA DISTRIBUTED */}
                 <div className="self-stretch flex flex-col justify-center items-start">
                     <div
-                        className={` text-xs text-dark font-normal leading-5`}
+                        className={` text-5 text-dark font-normal leading-5`}
                     >
-                        {t('ADA DISTRIBUTED')}
+                        {t('GROUPS')}
                     </div>
-                    <div className={` text-xl font-bold leading-5`}>
-                        {shortNumber(metrics.distributedADA || 0, 2)} ₳
+                    <div className={` text-1 font-bold leading-5`}>
+                        {(metrics.groupsCount || 0).toLocaleString()}
                     </div>
                     <div
-                        className={` text-xs text-dark font-normal leading-5`}
+                        className={` text-5 text-dark font-normal leading-5`}
                     >
-                        {t('Total distributed amount')}
+                        {t('Teams supported')}
+                    </div>
+                </div>
+
+                {/* COMMUNITIES */}
+                <div className="self-stretch flex flex-col justify-center items-start">
+                    <div
+                        className={` text-5 text-dark font-normal leading-5`}
+                    >
+                        {t('COMMUNITIES')}
+                    </div>
+                    <div className={` text-1 font-bold leading-5`}>
+                        {(metrics.communitiesCount || 0).toLocaleString()}
                     </div>
                 </div>
             </div>

@@ -85,6 +85,10 @@ class ProposalsController extends Controller
 
     public int $unfundedProposals = 0;
 
+    public int $groupsCount = 0;
+
+    public int $communitiesCount = 0;
+
     public function __construct(
         private readonly WalletInfoService $walletInfoService
     ) {}
@@ -127,6 +131,8 @@ class ProposalsController extends Controller
                         : 0,
                     'inProgress' => $this->inProgressProposals,
                     'unfunded' => $this->unfundedProposals,
+                    'groupsCount' => $this->groupsCount,
+                    'communitiesCount' => $this->communitiesCount,
                 ],
             ]
         );
@@ -851,6 +857,14 @@ class ProposalsController extends Controller
 
         if (isset($facets['impact_proposal'])) {
             $this->cohortData['impact_proposal'] = $facets['impact_proposal'];
+        }
+
+        if (isset($facets['groups.id'])) {
+            $this->groupsCount = count($facets['groups.id']);
+        }
+
+        if (isset($facets['communities.id'])) {
+            $this->communitiesCount = count($facets['communities.id']);
         }
     }
 

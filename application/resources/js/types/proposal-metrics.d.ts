@@ -13,4 +13,6 @@ export type ProposalMetrics = {
     completionRate?: number;
     avgRequestedADA?: number;
     avgRequestedUSD?: number;
+    groupsCount?: number;
+    communitiesCount?: number;
 };
