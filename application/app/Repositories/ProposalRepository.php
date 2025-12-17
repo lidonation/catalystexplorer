@@ -112,6 +112,8 @@ class ProposalRepository extends Repository
                     'created_at',
                     'created_at_timestamp',
                     'funded_at',
+                    'groups.id',
+                    'communities.id',
                 ];
 
                 //                if ((bool) $this->sortBy && (bool) $this->sortOrder) {
