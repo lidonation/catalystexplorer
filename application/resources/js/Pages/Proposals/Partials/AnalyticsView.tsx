@@ -412,14 +412,15 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
                     ))}
                 </div>
             </div>
+            {/* Distributed vs Awarded */}
             <div className="self-stretch flex flex-col justify-start items-start gap-1">
                 <div className="self-stretch inline-flex justify-between items-start">
                     <div className={`text-4 font-normal leading-5`}>
-                        {t('Distributed')}
+                        {t('Distributed vs Awarded')}
                     </div>
                     <div className="flex justify-start items-center gap-1">
                         <div className={`text-4 font-semibold leading-5`}>
-                            {symbol}{shortNumber(distributed, 2)}{suffix}
+                            {symbol}{shortNumber(distributed, 2)}{suffix} / {symbol}{shortNumber(awarded, 2)}{suffix}
                         </div>
                     </div>
                 </div>
@@ -433,7 +434,7 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
                 </div>
                 <div className="self-stretch flex justify-end">
                     <div className={`text-5 text-content-light/80 font-normal leading-5`}>
-                        {currencyDistributedPercent}% {t('of awarded')}
+                        {currencyDistributedPercent}% {t('distributed')}
                     </div>
                 </div>
             </div>
@@ -442,11 +443,11 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
             <div className="self-stretch flex flex-col justify-start items-start gap-1">
                 <div className="self-stretch inline-flex justify-between items-start">
                     <div className={`text-4 font-normal leading-5`}>
-                        {t('Awarded')}
+                        {t('Awarded vs Requested')}
                     </div>
                     <div className="flex justify-start items-center gap-1">
                         <div className={`text-4 font-semibold leading-5`}>
-                            {symbol}{shortNumber(awarded, 2)}{suffix}
+                            {symbol}{shortNumber(awarded, 2)}{suffix} / {symbol}{shortNumber(requested, 2)}{suffix}
                         </div>
                     </div>
                 </div>
@@ -460,7 +461,7 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
                 </div>
                 <div className="self-stretch flex justify-end">
                     <div className={`text-5 text-content-light/80 font-normal leading-5`}>
-                        {currencyAwardedPercent}% {t('of requested')}
+                        {currencyAwardedPercent}% {t('awarded')}
                     </div>
                 </div>
             </div>
@@ -532,6 +533,8 @@ type KpisCardProps = {
 
 const KpisCard: React.FC<KpisCardProps> = ({ metrics, completionRate, avgRequestedADA, avgRequestedUSD, isMobile = false }) => {
     const { t } = useLaravelReactI18n();
+    const groupsUrl = useLocalizedRoute('groups.index');
+    const communitiesUrl = useLocalizedRoute('communities.index');
 
     const wrapperClasses = isMobile
         ? 'self-stretch inline-flex flex-col justify-start items-center gap-2.5'
@@ -595,9 +598,9 @@ const KpisCard: React.FC<KpisCardProps> = ({ metrics, completionRate, avgRequest
                     >
                         {t('GROUPS')}
                     </div>
-                    <div className={` text-1 font-bold leading-5`}>
+                    <Link href={groupsUrl} className={`text-1 font-bold leading-5 hover:text-primary transition-colors`}>
                         {(metrics.groupsCount || 0).toLocaleString()}
-                    </div>
+                    </Link>
                     <div
                         className={` text-5 text-content-light/80 font-normal leading-5`}
                     >
@@ -612,9 +615,9 @@ const KpisCard: React.FC<KpisCardProps> = ({ metrics, completionRate, avgRequest
                     >
                         {t('COMMUNITIES')}
                     </div>
-                    <div className={` text-1 font-bold leading-5`}>
+                    <Link href={communitiesUrl} className={`text-1 font-bold leading-5 hover:text-primary transition-colors`}>
                         {(metrics.communitiesCount || 0).toLocaleString()}
-                    </div>
+                    </Link>
                 </div>
             </div>
         </div>
