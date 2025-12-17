@@ -14,9 +14,13 @@ use App\Nova\Actions\MakeSearchable;
 use App\Nova\Actions\SyncProposalFromCatalyst;
 use App\Nova\Actions\SyncVotingResults;
 use App\Nova\Actions\UpdateModelMedia;
+use App\Nova\Filters\FundFilter;
 use App\Nova\Filters\FundingStatusBooleanFilter;
 use App\Nova\Filters\QuickPitchFilter;
 use App\Nova\Filters\StatusBooleanFilter;
+use App\Nova\Metrics\ProposalCompletionProgress;
+use App\Nova\Metrics\ProposalFundingStatusPartition;
+use App\Nova\Metrics\ProposalProjectStatusPartition;
 use Illuminate\Support\Str;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Exceptions\HelperNotSupported;
@@ -396,8 +400,7 @@ class Proposals extends Resource
 
             // Foreign Keys and Relationships
             BelongsTo::make(__('Fund'), 'fund', Funds::class)
-                ->searchable()
-                ->filterable(),
+                ->searchable(),
 
             BelongsTo::make(__('Campaign'), 'campaign', Campaigns::class)
                 ->nullable()
@@ -455,6 +458,20 @@ class Proposals extends Resource
     }
 
     /**
+     * Get the cards available for the resource.
+     *
+     * @return array<int, \Laravel\Nova\Card>
+     */
+    public function cards(NovaRequest $request): array
+    {
+        return [
+            (new ProposalCompletionProgress)->refreshWhenFiltersChange(),
+            (new ProposalFundingStatusPartition)->refreshWhenFiltersChange(),
+            (new ProposalProjectStatusPartition)->refreshWhenFiltersChange(),
+        ];
+    }
+
+    /**
      * Get the filters available for the resource.
      *
      * @return array<int, Filter>
@@ -462,6 +479,7 @@ class Proposals extends Resource
     public function filters(NovaRequest $request): array
     {
         return [
+            new FundFilter,
             new StatusBooleanFilter,
             new FundingStatusBooleanFilter,
             new QuickPitchFilter,

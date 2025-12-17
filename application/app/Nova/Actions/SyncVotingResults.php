@@ -15,7 +15,6 @@ use Laravel\Nova\Actions\ActionResponse;
 use Laravel\Nova\Fields\ActionFields;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\Select;
-use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class SyncVotingResults extends Action implements ShouldQueue
@@ -39,19 +38,30 @@ class SyncVotingResults extends Action implements ShouldQueue
      */
     public function handle(ActionFields $fields, Collection $models): ActionResponse|array
     {
-        $fundNumber = $fields->get('fund_number');
         $fundId = $fields->get('fund_id');
         $updateProposalDetails = $fields->get('update_proposal_details', false);
 
-        if (! $fundNumber || ! $fundId) {
-            return Action::danger('Fund number and fund ID are required.');
+        if (! $fundId) {
+            return Action::danger('Fund ID is required.');
         }
+
+        // Find fund by ID
+        $fund = Fund::find($fundId);
+        if (! $fund) {
+            return Action::danger("Fund not found: {$fundId}");
+        }
+
+        // Extract fund number from slug (e.g., "fund-14" -> "14")
+        if (! preg_match('/fund-(\d+)/', $fund->slug, $matches)) {
+            return Action::danger("Invalid fund slug format: {$fund->slug}. Expected format: fund-{{number}} (e.g., fund-14)");
+        }
+        $fundNumber = $matches[1];
 
         $challenges = $this->getFundChallenges($fundNumber);
         $jobsDispatched = 0;
 
         foreach ($challenges as $challengeSlug => $campaignSlug) {
-            SyncVotingResultsJob::dispatch($challengeSlug, $fundNumber, $fundId, $challengeSlug, $updateProposalDetails);
+            SyncVotingResultsJob::dispatch($challengeSlug, $fundNumber, $fund->id, $challengeSlug, $updateProposalDetails);
             $jobsDispatched++;
         }
 
@@ -69,7 +79,7 @@ class SyncVotingResults extends Action implements ShouldQueue
     {
         // Get fund options for the select field
         $funds = Fund::orderBy('created_at', 'desc')->get()->mapWithKeys(function ($fund) {
-            return [$fund->id => $fund->title.' ('.$fund->id.')'];
+            return [$fund->id => $fund->title.' ('.$fund->slug.')'];
         });
 
         return [
@@ -77,11 +87,6 @@ class SyncVotingResults extends Action implements ShouldQueue
                 ->options($funds->toArray())
                 ->displayUsingLabels()
                 ->help('Select the fund to sync voting results for')
-                ->rules('required'),
-
-            Text::make('Fund Number', 'fund_number')
-                ->help('Enter the fund number (e.g., "14" for Fund 14)')
-                ->placeholder('14')
                 ->rules('required'),
 
             Boolean::make('Update Proposal Details', 'update_proposal_details')
