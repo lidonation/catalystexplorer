@@ -2,6 +2,7 @@ import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 import useEscapeKey from '@/useHooks/useEscapeKey';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ReactNode, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import Button from '../atoms/Button';
 import CatalystLogo from '../atoms/CatalystLogo';
 import Title from '../atoms/Title';
@@ -48,14 +49,14 @@ function Modal({
         }
     }, [isOpen]);
 
-    return (
+    const modalContent = (
         <aside
             id="sidebar-modal"
             role="dialog"
             aria-labelledby="modal-sidebar-title"
             aria-modal="true"
             ref={sidebarRef}
-            className={`fixed inset-0 z-60 ${isOpen ? 'block' : 'hidden'}`}
+            className={`fixed inset-0 z-[100] ${isOpen ? 'block' : 'hidden'}`}
         >
             {/* Background Overlay */}
             <div
@@ -76,7 +77,7 @@ function Modal({
                 tabIndex={0}
             >
                 <div
-                    className={`bg-background fixed z-50 rounded-lg shadow-lg focus:outline-hidden overflow-y-auto ${!centered ? 'top-0 right-0 h-full' : ''} ${contentClasses}`}
+                    className={`bg-background fixed z-[100] rounded-lg shadow-lg focus:outline-hidden overflow-y-auto ${!centered ? 'top-0 right-0 h-full' : ''} ${contentClasses}`}
                 >
                     {!centered && (
                         <header className="border-border-primary flex items-center justify-between border-b px-6 py-4">
@@ -112,5 +113,11 @@ function Modal({
             </div>
         </aside>
     );
+
+    if (typeof document !== 'undefined') {
+        return createPortal(modalContent, document.body);
+    }
+
+    return modalContent;
 }
 export default Modal;
