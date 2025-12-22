@@ -2,6 +2,7 @@ import { useConnectWallet } from '@/Context/ConnectWalletSliderContext';
 import useEscapeKey from '@/useHooks/useEscapeKey';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { ReactNode, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import Button from '../atoms/Button';
 import CatalystLogo from '../atoms/CatalystLogo';
 import Title from '../atoms/Title';
@@ -48,7 +49,7 @@ function Modal({
         }
     }, [isOpen]);
 
-    return (
+    const modalContent = (
         <aside
             id="sidebar-modal"
             role="dialog"
@@ -112,5 +113,11 @@ function Modal({
             </div>
         </aside>
     );
+
+    if (typeof document !== 'undefined') {
+        return createPortal(modalContent, document.body);
+    }
+
+    return modalContent;
 }
 export default Modal;
