@@ -4,6 +4,7 @@ export
 sail := ./application/vendor/bin/sail
 compose := docker-compose exec -T catalystexplorer.com
 nodeVersion := 24.3.0
+COMPOSE_FLAGS ?=
 
 .PHONY: init
 init:
@@ -153,7 +154,11 @@ status:
 
 .PHONY: up
 up:
-	$(sail) up -d --remove-orphans
+	$(sail) up -d --remove-orphans $(COMPOSE_FLAGS)
+
+.PHONY: up-ext
+up-ext:
+	$(sail) up -d --remove-orphans $(filter-out $@,$(MAKECMDGOALS))
 
 .PHONY: vite
 vite:
@@ -161,7 +166,11 @@ vite:
 
 .PHONY: watch
 watch:
-	docker compose  up -d --remove-orphans && $(sail) npx vite --force -- --unsafe-perm=true
+	docker compose up -d --remove-orphans $(COMPOSE_FLAGS) && $(sail) npx vite --force -- --unsafe-perm=true
+
+.PHONY: watch-ext
+watch-ext:
+	docker compose up -d --remove-orphans $(filter-out $@,$(MAKECMDGOALS)) && $(sail) npx vite --force -- --unsafe-perm=true
 
 .PHONY: test-backend
 test-backend:
