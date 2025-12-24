@@ -12,6 +12,7 @@ use Spatie\Enum\Laravel\Enum;
  * @method static self leftover()
  * @method static self over_budget()
  * @method static self not_approved()
+ * @method static self withdrawn()
  */
 final class ProposalFundingStatus extends Enum
 {
