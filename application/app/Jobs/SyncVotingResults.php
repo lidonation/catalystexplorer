@@ -36,12 +36,6 @@ class SyncVotingResults implements ShouldQueue
     public function handle(): void
     {
         try {
-            Log::info('Starting voting results sync', [
-                'challenge' => $this->challengeSlug,
-                'fund' => $this->fundNumber,
-                'fund_id' => $this->fundId,
-            ]);
-
             $connector = new ProjectCatalystConnector;
             $request = new GetChallengeVotingDataRequest($this->challengeSlug, $this->fundNumber);
             $response = $connector->send($request);
@@ -117,17 +111,11 @@ class SyncVotingResults implements ShouldQueue
 
         $votingData = $project['voting'];
         $this->updateProposalVotingData($proposal, $votingData, $campaignSlug, $updateProposalDetails, $project);
-
-        Log::info('Updated proposal voting data', [
-            'proposal_id' => $proposal->id,
-            'project_name' => $project['projectName'],
-            'funding_status' => $proposal->funding_status,
-        ]);
     }
 
     protected function updateProposalVotingData(Proposal $proposal, array $votingData, ?string $campaignSlug, bool $updateProposalDetails = false, array $project = []): void
     {
-        // Update vote counts (convert from micro-ADA to ADA)
+        // Update vote counts (convert from lovelaces to ADA)
         $proposal->yes_votes_count = isset($votingData['yes']['amount'])
             ? $votingData['yes']['amount'] / 1000000
             : null;
@@ -181,22 +169,11 @@ class SyncVotingResults implements ShouldQueue
 
     protected function updateProposalDetails(Proposal &$proposal, array $project, ?string $campaignSlug, string $fundNumber): void
     {
-        $updated = false;
-        // Update campaign ID if we have a campaign slug and it's different from current
         if ($campaignSlug) {
-            // Append fund number to campaign slug (e.g., 'cardano-open-developers' becomes 'cardano-open-developers-f12')
             $fullCampaignSlug = $campaignSlug.'-f'.$fundNumber;
             $campaign = Campaign::where('slug', $fullCampaignSlug)->first();
             if ($campaign && $proposal->campaign_id !== $campaign->id) {
                 $proposal->campaign_id = $campaign->id;
-                $updated = true;
-                Log::info('Updated proposal campaign', [
-                    'proposal_id' => $proposal->id,
-                    'old_campaign_id' => $proposal->getOriginal('campaign_id'),
-                    'new_campaign_id' => $campaign->id,
-                    'original_campaign_slug' => $campaignSlug,
-                    'full_campaign_slug' => $fullCampaignSlug,
-                ]);
             } elseif (! $campaign) {
                 Log::debug('Campaign not found with full slug', [
                     'proposal_id' => $proposal->id,
@@ -207,13 +184,13 @@ class SyncVotingResults implements ShouldQueue
             }
         }
 
-        // update the project status
-        $proposal->status = match (strtolower($project['projectStatus'])) {
-            'active' => 'in_progress',
-            'completed' => 'complete',
-            'notapproved' => 'unfunded',
-            default => strtolower($project['projectStatus'])
-        };
+        // @todo restore when catalyst api is returning correct data
+        //        $proposal->status = match (strtolower($project['projectStatus'])) {
+        //            'active' => 'in_progress',
+        //            'completed' => 'complete',
+        //            'notapproved' => 'unfunded',
+        //            default => strtolower($project['projectStatus'])
+        //        };
 
         // Update amount received from distributedToDate
         if (isset($project['completed']['date'])) {
@@ -230,13 +207,6 @@ class SyncVotingResults implements ShouldQueue
                 if ($proposal->amount_received !== $amountReceived) {
                     $proposal->amount_received = $amountReceived;
                     $proposal->funding_updated_at = now();
-                    $updated = true;
-                    Log::info('Updated proposal amount received', [
-                        'proposal_id' => $proposal->id,
-                        'old_amount' => $proposal->getOriginal('amount_received'),
-                        'new_amount' => $amountReceived,
-                        'raw_amount' => $rawAmount,
-                    ]);
                 }
             } else {
                 Log::debug('Skipping amount received update - invalid value', [
@@ -249,17 +219,10 @@ class SyncVotingResults implements ShouldQueue
             }
         }
 
-        // Update projectcatalyst_io_link if we have the necessary data
         if ($campaignSlug && isset($project['projectSlug'])) {
             $projectCatalystUrl = "https://projectcatalyst.io/funds/{$fundNumber}/{$campaignSlug}/{$project['projectSlug']}";
             if ($proposal->projectcatalyst_io_link !== $projectCatalystUrl) {
                 $proposal->projectcatalyst_io_link = $projectCatalystUrl;
-                $updated = true;
-                Log::info('Updated proposal projectcatalyst.io link', [
-                    'proposal_id' => $proposal->id,
-                    'old_link' => $proposal->getOriginal('projectcatalyst_io_link'),
-                    'new_link' => $projectCatalystUrl,
-                ]);
             }
         } elseif ($campaignSlug || isset($project['projectSlug'])) {
             Log::debug('Cannot generate projectcatalyst.io link - missing required data', [
@@ -268,13 +231,6 @@ class SyncVotingResults implements ShouldQueue
                 'has_project_slug' => isset($project['projectSlug']),
                 'campaign_slug' => $campaignSlug,
                 'project_slug' => $project['projectSlug'] ?? null,
-            ]);
-        }
-
-        if ($updated) {
-            Log::info('Proposal details updated', [
-                'proposal_id' => $proposal->id,
-                'project_name' => $project['projectName'] ?? 'Unknown',
             ]);
         }
     }

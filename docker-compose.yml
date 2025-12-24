@@ -83,6 +83,9 @@ services:
     networks:
       - catalystexplorer-net
       - shared-network
+    profiles:
+      - cardano
+
   catalystexplorer.cardanodb:
     container_name: catalystexplorer.cardanodb
     image: postgres:16.3-alpine3.19
@@ -103,6 +106,8 @@ services:
     networks:
       - catalystexplorer-net
       - shared-network
+    profiles:
+      - cardano
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U carp -d carp_preview -p 5434"]
       interval: 10s
@@ -120,6 +125,9 @@ services:
     networks:
       - catalystexplorer-net
       - shared-network
+    profiles:
+      - testing
+
   catalystexplorer.queue:
     image: catalystexplorer
     container_name: catalystexplorer.queue
@@ -277,6 +285,7 @@ services:
       - catalystexplorer-net
     profiles:
       - testing
+
   createbuckets:
     image: minio/mc
     environment:
