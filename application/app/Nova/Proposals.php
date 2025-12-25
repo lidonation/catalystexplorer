@@ -426,6 +426,7 @@ class Proposals extends Resource
 
             DateTime::make(__('Funded At'), 'funded_at')
                 ->nullable()
+                ->filterable()
                 ->hideFromIndex(),
 
             DateTime::make(__('Funding Updated At'), 'funding_updated_at')

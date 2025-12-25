@@ -151,7 +151,7 @@
     "completed": "مكتمل",
     "description": "وصف",
     "loginPrompt": "قم بتسجيل الدخول للبدء",
-    "ballotSupportBanner": "يرجى دعم هذه الأداة في بطاقة الاقتراع. ابحث عن: 'All-in-One Catalyst' أو 'lido'",
+    "ballotSupportBanner": "يرجى البحث عن 'lido' لدعمنا في الاقتراع، إذا كنت تجد هذه الأداة مفيدة!",
     "back": "العودة",
     "pdf.header.defaultTitle": "عنوان المستند",
     "pdf.header.defaultSubtitle": "تصدير قائمة التصويت",

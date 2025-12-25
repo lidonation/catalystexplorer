@@ -142,7 +142,7 @@
     "completed": "已完成",
     "description": "描述",
     "loginPrompt": "登录开始",
-    "ballotSupportBanner": "请在投票中支持这个工具。搜索：'All-in-One Catalyst' 或 'lido'",
+    "ballotSupportBanner": "如果您觉得这个工具有用，请搜索 'lido' 在投票中支持我们！",
     "back": "返回",
     "pdf.header.defaultTitle": "文档标题",
     "pdf.header.defaultSubtitle": "投票列表导出",

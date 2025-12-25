@@ -132,7 +132,7 @@
     "completed": "ተጠናቅቋል",
     "loginPrompt": "ልማወማረ ጋባ",
     "description": "መግለጫ",
-    "ballotSupportBanner": "እባክዎ ይህን ማርያ በባሎት ውስጥ ይድጋቱ። ይፈልጉ፡ 'All-in-One Catalyst' ወይም 'lido'",
+    "ballotSupportBanner": "እባክዎ 'lido' ይፈልጉ በድምጽ ወረቀት ላይ እንዲደግፉን፣ ይህን መሳሪያ ጠቃሚ የሚያገኙት ከሆነ!",
     "back": "ተመለስ",
     "pdf.header.defaultTitle": "የሰነድ ርዕስ",
     "pdf.header.defaultSubtitle": "የመምረጫ ዝርዝር ወደ ውጭ መላክ",
