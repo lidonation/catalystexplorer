@@ -28,7 +28,7 @@ const ProposalPaginatedList: React.FC<ProposalProps> = ({
 }) => {
     return (
         <>
-            <section className="proposals-wrapper container mt-3 w-full pb-8 px-0">
+            <section className="proposals-wrapper mt-3 w-full pb-8">
                 {disableInertiaLoading ? (
                     // Direct render without WhenVisible for streaming data
                     proposals?.data.length ? (
@@ -97,7 +97,6 @@ const ProposalPaginatedList: React.FC<ProposalProps> = ({
                 )}
             </section>
             <section
-                className="container"
                 data-testid="proposal-paginator-container"
             >
                 {proposals && <Paginator pagination={proposals} />}
