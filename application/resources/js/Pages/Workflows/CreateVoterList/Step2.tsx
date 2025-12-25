@@ -77,19 +77,12 @@ const Step2: React.FC<Step2Props> = ({
             newErrors.fund_slug = t('workflows.voterList.errors.fundRequired');
         }
 
-        if (form.data.content.length < 69) {
-            newErrors.content = t(
-                'workflows.voterList.errors.descriptionLength',
-            );
-        }
-
         setErrors(newErrors);
 
         setIsFormValid(
             Object.keys(newErrors).length === 0 &&
                 !!form.data.title &&
-                !!form.data.fund_slug &&
-                form.data.content.length >= 69,
+                !!form.data.fund_slug,
         );
     };
 
@@ -158,14 +151,14 @@ const Step2: React.FC<Step2Props> = ({
 
                         <div className="mt-3">
                             <ValueLabel className="text-content">
-                                {t('workflows.voterList.description')}
+                                Description/Rationale
                             </ValueLabel>
                             <Textarea
                                 id="content"
                                 name="content"
-                                minLengthValue={69}
-                                minLengthEnforced
-                                required
+                                placeholder={t(
+                                    'workflows.voterList.rationale.placeholder',
+                                )}
                                 value={form.data.content}
                                 onChange={(e) =>
                                     (form.setData as any)('content', e.target.value)

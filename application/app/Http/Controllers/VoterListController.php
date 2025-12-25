@@ -24,7 +24,6 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -225,45 +224,6 @@ class VoterListController extends Controller
 
     public function step4(Request $request): Response
     {
-        $bookmarkHash = $request->input(QueryParamsEnum::BOOKMARK_COLLECTION()->value) ?? $request->input('bookmarkId');
-        $bookmarkId = null;
-
-        if ($bookmarkHash) {
-            $bookmarkId = $bookmarkHash;
-        }
-
-        $selectedProposals = [];
-        $rationale = null;
-
-        if ($bookmarkId) {
-            $selectedProposals = DB::table('bookmark_items')
-                ->where('bookmark_collection_id', $bookmarkId)
-                ->where('user_id', $request->user()->id)
-                ->pluck('model_id')
-                ->toArray();
-
-            $bookmarkCollection = BookmarkCollection::allVisibilities()
-                ->find($bookmarkId);
-
-            $rationale = $bookmarkCollection->comments()
-                ->where('commentator_id', $bookmarkCollection->user_id)
-                ->whereJsonContains('extra->type', 'rationale')
-                ->latest()
-                ->first()?->original_text;
-        }
-
-        return Inertia::render('Workflows/CreateVoterList/Step4', [
-            'stepDetails' => $this->getStepDetails(),
-            'activeStep' => intval($request->step),
-            'selectedProposals' => $selectedProposals,
-            'rationale' => $rationale,
-            'bookmarkHash' => $bookmarkHash,
-            'bookmarkId' => $bookmarkHash,
-        ]);
-    }
-
-    public function step5(Request $request): Response
-    {
         $bookmarkHash = $request->input(QueryParamsEnum::BOOKMARK_COLLECTION()->value);
 
         $bookmarkCollection = null;
@@ -280,7 +240,7 @@ class VoterListController extends Controller
         ]);
     }
 
-    public function step6(Request $request): Response
+    public function step5(Request $request): Response
     {
         $bookmarkHash = $request->input(key: QueryParamsEnum::BOOKMARK_COLLECTION()->value) ?? $request->input('bookmarkId');
 
@@ -308,7 +268,7 @@ class VoterListController extends Controller
         ]);
     }
 
-    public function step7(Request $request): Response
+    public function step6(Request $request): Response
     {
         $bookmarkHash = $request->input(key: QueryParamsEnum::BOOKMARK_COLLECTION()->value);
 
@@ -319,7 +279,7 @@ class VoterListController extends Controller
         ]);
     }
 
-    public function step8(Request $request): Response
+    public function step7(Request $request): Response
     {
         $bookmarkHash = $request->input(key: QueryParamsEnum::BOOKMARK_COLLECTION()->value);
 
@@ -332,7 +292,7 @@ class VoterListController extends Controller
         ]);
     }
 
-    public function step9(Request $request): Response
+    public function step8(Request $request): Response
     {
         $bookmarkHash = $request->input(key: QueryParamsEnum::BOOKMARK_COLLECTION()->value);
 
@@ -358,6 +318,11 @@ class VoterListController extends Controller
                 QueryParamsEnum::BOOKMARK_COLLECTION()->value => $bookmarkHash,
             ],
         ]);
+    }
+
+    public function step9(Request $request): Response
+    {
+        return Inertia::render('Workflows/CreateVoterList/Success');
     }
 
     public function success(Request $request): Response
@@ -404,7 +369,7 @@ class VoterListController extends Controller
         ]);
 
         return to_route('workflows.createVoterList.index', [
-            'step' => 8,
+            'step' => 7,
             QueryParamsEnum::BOOKMARK_COLLECTION()->value => $list->eid,
         ]);
     }
@@ -594,10 +559,6 @@ class VoterListController extends Controller
             [
                 'title' => 'workflows.voterList.steps.proposals',
                 'info' => 'workflows.voterList.steps.proposalsInfo',
-            ],
-            [
-                'title' => 'workflows.voterList.steps.rationale',
-                'info' => 'workflows.voterList.steps.rationaleInfo',
             ],
             [
                 'title' => 'workflows.voterList.steps.listCreated',

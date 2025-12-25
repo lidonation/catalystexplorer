@@ -175,7 +175,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
     const { auth } = usePage().props;
     const user = bookmarkCollection?.author;
     const isAuthor = auth?.user?.id == user?.id;
-    
+
     // Get the delete route at component level (following Rules of Hooks)
     const deleteRoute = useLocalizedRoute('my.bookmarks.collections.destroy', {
         id: bookmarkCollection.id,
@@ -515,7 +515,6 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                 )}
 
 
-
                 {/* Show dropdown menu based on mode and authorship */}
                 {showAuthorControls && (
                     <DropdownMenu
@@ -527,7 +526,7 @@ const BookmarkCollectionContent = (props: BookmarkCollectionPageProps) => {
                 )}
             </div>
 
-            <div className="mx-auto my-8">{component}</div>
+            <div className="container my-8">{component}</div>
 
             {/* Edit List Modal */}
             <Modal
