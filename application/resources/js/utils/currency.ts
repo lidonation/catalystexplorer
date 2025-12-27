@@ -9,6 +9,8 @@ export function currency(
     switch (currency) {
         case 'ADA':
             return shortNumber(value, maximumFractionDigits) + ' ₳';
+        case 'USDM':
+            return shortNumber(value, maximumFractionDigits) + ' USDM';
         case 'NO_CURRENCY':
             return value;
         default:

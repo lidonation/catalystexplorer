@@ -84,6 +84,9 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                                 campaign?.currency ?? fund?.currency ?? '',
                             )}
                         />
+
+                        {campaign?.currency === 'USDM' && (<img className='w-8 h-8 -ml-12' src='/img/usdm-icon.png' alt='usd icon' />) }
+
                         <KeyValue
                             valueKey="Total Proposals"
                             value={campaign.proposals_count ?? 0}

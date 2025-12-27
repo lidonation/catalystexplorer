@@ -90,6 +90,7 @@ export default function Fund({
                                             campaign={campaign}
                                             fund={fund}
                                         />
+
                                     )}
                                 </CampaignList>
                             </WhenVisible>
