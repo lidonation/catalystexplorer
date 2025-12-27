@@ -702,6 +702,7 @@ viewMini: Array<any>;
 viewTable: Array<any>;
 proposalPdfColumns: Array<any>;
 groupByCategories: boolean;
+preferredCurrency: string | null;
 };
 export type VoterData = {
 id?: string;

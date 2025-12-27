@@ -23,5 +23,6 @@ class UserSettingData extends Data
         public array $viewTable,
         public array $proposalPdfColumns,
         public bool $groupByCategories,
+        public ?string $preferredCurrency = null,
     ) {}
 }

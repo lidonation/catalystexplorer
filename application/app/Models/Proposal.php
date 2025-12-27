@@ -121,11 +121,15 @@ class Proposal extends Model implements IHasMetaData
             'status',
             'votes_cast',
             'amount_requested_USD',
+            'amount_requested_USDM',
             'amount_requested_ADA',
             'amount_received_ADA',
             'amount_received_USD',
+            'amount_received_USDM',
             'amount_awarded_ADA',
             'amount_awarded_USD',
+            'amount_awarded_USDM',
+            'completed_amount_paid_USDM',
             'completed_amount_paid_USD',
             'completed_amount_paid_ADA',
             'campaign_id',
@@ -272,17 +276,19 @@ class Proposal extends Model implements IHasMetaData
         );
     }
 
-    public function amountReceived(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => ($this->schedule?->funds_distributed ?? $value)
-        );
-    }
-
     public function amountRequestedUsd(): Attribute
     {
         return Attribute::make(
             get: fn () => $this->currency === CatalystCurrencies::USD()->value
+                ? intval($this->amount_requested ?? 0)
+                : 0
+        );
+    }
+
+    public function amountRequestedUsdm(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->currency === CatalystCurrencies::USDM()->value
                 ? intval($this->amount_requested ?? 0)
                 : 0
         );
@@ -297,10 +303,26 @@ class Proposal extends Model implements IHasMetaData
         );
     }
 
+    public function amountReceived(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => ($this->schedule?->funds_distributed ?? $value)
+        );
+    }
+
     public function amountReceivedUsd(): Attribute
     {
         return Attribute::make(
             get: fn () => $this->currency === CatalystCurrencies::USD()->value
+                ? intval($this->amount_received ?? 0)
+                : 0
+        );
+    }
+
+    public function amountReceivedUsdm(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->currency === CatalystCurrencies::USDM()->value
                 ? intval($this->amount_received ?? 0)
                 : 0
         );
@@ -319,6 +341,15 @@ class Proposal extends Model implements IHasMetaData
     {
         return Attribute::make(
             get: fn () => ($this->funded_at && $this->currency === CatalystCurrencies::USD()->value)
+                ? intval($this->amount_requested ?? 0)
+                : 0
+        );
+    }
+
+    public function amountAwardedUsdm(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => ($this->funded_at && $this->currency === CatalystCurrencies::USDM()->value)
                 ? intval($this->amount_requested ?? 0)
                 : 0
         );
@@ -570,9 +601,12 @@ class Proposal extends Model implements IHasMetaData
             'amount_requested' => $this->amount_requested ? intval($this->amount_requested) : 0,
             'amount_received' => $this->amount_received ? intval($this->amount_received) : 0,
             'amount_requested_USD' => $this->amount_requested_usd,
+            'amount_requested_USDM' => $this->amount_requested_usdm,
             'amount_requested_ADA' => $this->amount_requested_ada,
             'amount_received_USD' => $this->amount_received_usd,
+            'amount_received_USDM' => $this->amount_received_usdm,
             'amount_received_ADA' => $this->amount_received_ada,
+            'amount_awarded_USDM' => $this->amount_awarded_usdm,
             'amount_awarded_USD' => $this->amount_awarded_usd,
             'amount_awarded_ADA' => $this->amount_awarded_ada,
             'link' => $this->link,

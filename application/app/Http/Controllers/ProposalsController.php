@@ -71,13 +71,19 @@ class ProposalsController extends Controller
 
     public int $sumBudgetsUSD = 0;
 
+    public int $sumBudgetsUSDM = 0;
+
     public int $sumApprovedADA = 0;
 
     public int $sumApprovedUSD = 0;
 
+    public int $sumApprovedUSDM = 0;
+
     public int $sumDistributedADA = 0;
 
     public int $sumDistributedUSD = 0;
+
+    public int $sumDistributedUSDM = 0;
 
     public int $sumCompletedUSD = 0;
 
@@ -118,10 +124,13 @@ class ProposalsController extends Controller
                     'completed' => $this->completedProposals,
                     'requestedUSD' => $this->sumBudgetsUSD,
                     'requestedADA' => $this->sumBudgetsADA,
+                    'requestedUSDM' => $this->sumBudgetsUSDM,
                     'awardedUSD' => $this->sumApprovedUSD,
                     'awardedADA' => $this->sumApprovedADA,
+                    'awardedUSDM' => $this->sumApprovedUSDM,
                     'distributedUSD' => $this->sumDistributedUSD,
                     'distributedADA' => $this->sumDistributedADA,
+                    'distributedUSDM' => $this->sumDistributedUSDM,
                     'completionRate' => $this->approvedProposals > 0
                         ? round(($this->completedProposals / $this->approvedProposals) * 100, 1)
                         : 0,
@@ -130,6 +139,9 @@ class ProposalsController extends Controller
                         : 0,
                     'avgRequestedUSD' => $this->submittedProposals > 0
                         ? round($this->sumBudgetsUSD / $this->submittedProposals)
+                        : 0,
+                    'avgRequestedUSDM' => $this->submittedProposals > 0
+                        ? round($this->sumBudgetsUSDM / $this->submittedProposals)
                         : 0,
                     'inProgress' => $this->inProgressProposals,
                     'unfunded' => $this->unfundedProposals,
@@ -787,6 +799,24 @@ class ProposalsController extends Controller
         if (isset($facets['amount_requested_USD'])) {
             foreach ($facets['amount_requested_USD'] as $key => $value) {
                 $this->sumBudgetsUSD += intval($key * $value);
+            }
+        }
+
+        if (isset($facets['amount_requested_USDM'])) {
+            foreach ($facets['amount_requested_USDM'] as $key => $value) {
+                $this->sumBudgetsUSDM += intval($key * $value);
+            }
+        }
+
+        if (isset($facets['amount_awarded_USDM'])) {
+            foreach ($facets['amount_awarded_USDM'] as $key => $value) {
+                $this->sumApprovedUSDM += intval($key * $value);
+            }
+        }
+
+        if (isset($facets['amount_received_USDM'])) {
+            foreach ($facets['amount_received_USDM'] as $key => $value) {
+                $this->sumDistributedUSDM += intval($key * $value);
             }
         }
 

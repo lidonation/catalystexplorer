@@ -226,6 +226,7 @@ class Proposals extends Resource
                 ->options([
                     'ADA' => 'ADA',
                     'USD' => 'USD',
+                    'USDM' => 'USDM',
                 ])
                 ->displayUsingLabels(),
 

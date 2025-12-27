@@ -35,8 +35,6 @@ const IDFilters = React.memo(
         filter: FilteredItem;
         setFilters: (filter: FilteredItem) => void;
     }) => {
-        console.log({ filter });
-
         const domain =
             domainMap[filter.param] || labels[filter.param as LabelKeys];
         const { setUuids, options } = useSearchOptions<any>(domain);
