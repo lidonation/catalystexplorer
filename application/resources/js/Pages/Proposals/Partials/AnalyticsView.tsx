@@ -409,11 +409,35 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
         ? ((awarded / requested) * 100).toFixed(1)
         : '0';
 
+    // Check if a currency has any data
+    const hasCurrencyData = (currency: CurrencyType): boolean => {
+        switch (currency) {
+            case 'ADA':
+                return !!(metrics.distributedADA || metrics.awardedADA || metrics.requestedADA);
+            case 'USD':
+                return !!(metrics.distributedUSD || metrics.awardedUSD || metrics.requestedUSD);
+            case 'USDM':
+                return !!(metrics.distributedUSDM || metrics.awardedUSDM || metrics.requestedUSDM);
+            default:
+                return false;
+        }
+    };
+
     const currencyOptions: { value: CurrencyType; label: string; disabled?: boolean }[] = [
-        { value: 'ADA', label: 'ADA (₳)' },
-        { value: 'USD', label: 'Dollars ($)' },
-        { value: 'USDM', label: 'USDM ($)' },
+        { value: 'ADA', label: 'ADA (₳)', disabled: !hasCurrencyData('ADA') },
+        { value: 'USD', label: 'Dollars ($)', disabled: !hasCurrencyData('USD') },
+        { value: 'USDM', label: 'USDM ($)', disabled: !hasCurrencyData('USDM') },
     ];
+
+    // Auto-switch to a currency with data if current selection is disabled
+    useEffect(() => {
+        if (!hasCurrencyData(selectedCurrency)) {
+            const availableCurrency = currencyOptions.find(opt => !opt.disabled)?.value;
+            if (availableCurrency && availableCurrency !== selectedCurrency) {
+                handleCurrencyChange(availableCurrency);
+            }
+        }
+    }, [metrics]);
 
     return (
         <div className={wrapperClasses}>
