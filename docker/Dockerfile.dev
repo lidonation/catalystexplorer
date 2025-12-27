@@ -135,7 +135,7 @@ RUN apt-get update; \
     && apt-get -y autoremove \
     && apt-get clean \
     && docker-php-source delete \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
  # Install chromium
 RUN npx puppeteer browsers install chrome

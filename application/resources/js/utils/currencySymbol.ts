@@ -1,3 +1,11 @@
 export function currencySymbol(currency: string) {
-    return currency == 'USD' ? '$' : '₳';
+    switch (currency.toUpperCase()) {
+        case 'USD':
+        case 'USDM':
+            return '$';
+        case 'ADA':
+            return '₳';
+        default:
+            return '$';
+    }
 }

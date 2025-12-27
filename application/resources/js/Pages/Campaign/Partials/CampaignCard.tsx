@@ -54,7 +54,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
         return input; // Return original if format is incorrect
     };
     return (
-        <div className={className} data-testid="campaign-card">
+        <div className={className} data-testid="campaign-card flex flex-col gap-4 h-full">
             <div className="bg-content-light h-60 overflow-hidden rounded-lg">
                 {heroImageUrl ? (
                     <img
@@ -69,14 +69,14 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                 )}
             </div>
 
-            <div className="mt-4">
+            <div className="">
                 <SegmentedBar segments={segments} tooltipSegments={segments} />
             </div>
 
-            <div className="pt-6">
+            <div className="flex flex-col">
                 <Title
                     level="3"
-                    className="mb-2 flex items-center justify-between text-lg font-semibold"
+                    className="mb-2 flex items-center justify-between text-lg font-semibold h-16"
                 >
                     <Link
                         href={useLocalizedRoute(

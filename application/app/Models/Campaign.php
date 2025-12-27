@@ -56,13 +56,6 @@ class Campaign extends Model implements HasMedia
         );
     }
 
-    public function currency(): Attribute
-    {
-        return Attribute::make(
-            get: fn () => $this->currency ?? $this->fund?->currency
-        );
-    }
-
     public function totalRequested(): Attribute
     {
         return Attribute::make(

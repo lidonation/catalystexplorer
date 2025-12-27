@@ -9,13 +9,14 @@ use Spatie\Enum\Laravel\Enum;
 /**
  * @method static self ADA()
  * @method static self USD()
+ * @method static self USDM()
  * @method static self NO_CURRENCY()
  */
 final class CatalystCurrencies extends Enum
 {
     public static function toValues(): array
     {
-        return ['ADA', 'USD'];
+        return ['ADA', 'USD', 'USDM'];
     }
 
     public static function values(): \Closure
