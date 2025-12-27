@@ -110,6 +110,10 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                             campaign?.currency?.toUpperCase() ?? 'USD',
                         )}
                     </div>
+                    <div className="bg-background text-content rounded-md border pr-2 pl-2">
+                        {t('proposals.proposals')}:{' '}
+                        {campaign.proposals_count}
+                    </div>
                 </div>
 
                 <div className="mt-6">

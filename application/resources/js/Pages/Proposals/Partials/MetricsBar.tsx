@@ -456,7 +456,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                                 <ValueLabel className="text-content-light font-semibold block text-5 text-nowrap uppercase">
                                     ₳ {t('distributed')}
                                 </ValueLabel>
-                                <span className="text-1 font-bold mt-2 leading-tight">
+                                <span className="text-1 font-bold leading-tight">
                                     ₳{shortNumber(metrics.distributedADA, 2)}
                                 </span>
                                 <div className="inline-flex justify-center items-center mt-1 h-4">
@@ -473,7 +473,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                                 <ValueLabel className="text-content-light block font-semibold text-5 text-nowrap uppercase">
                                     ₳ {t('awarded')}
                                 </ValueLabel>
-                                <span className="text-1 font-bold mt-2 leading-tight">
+                                <span className="text-1 font-bold leading-tight">
                                     ₳{shortNumber(metrics.awardedADA, 2)}
                                 </span>
                                 <div className="inline-flex justify-center items-center mt-1 h-4">
@@ -490,7 +490,7 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
                                 <ValueLabel className="text-content-light font-semibold block text-5 text-nowrap uppercase">
                                     ₳ {t('requested')}
                                 </ValueLabel>
-                                <span className="text-1 font-bold mt-2 leading-tight">
+                                <span className="text-1 font-bold leading-tight">
                                     ₳{shortNumber(metrics.requestedADA, 2)}
                                 </span>
                                 <div className="inline-flex justify-center items-center mt-1 h-4">

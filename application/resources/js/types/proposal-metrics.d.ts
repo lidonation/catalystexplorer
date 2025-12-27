@@ -7,13 +7,17 @@ export type ProposalMetrics = {
     funded?: number;
     requestedUSD?: number;
     requestedADA?: number;
+    requestedUSDM?: number;
     awardedUSD?: number;
     awardedADA?: number;
+    awardedUSDM?: number;
     distributedUSD?: number;
     distributedADA?: number;
+    distributedUSDM?: number;
     completionRate?: number;
     avgRequestedADA?: number;
     avgRequestedUSD?: number;
+    avgRequestedUSDM?: number;
     groupsCount?: number;
     communitiesCount?: number;
 };

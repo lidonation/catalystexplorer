@@ -53,6 +53,7 @@ export function useUserSetting<T = any>(
                     viewTable: false,
                     proposalPdfColumns: null,
                     groupByCategories: false,
+                    preferredCurrency: 'ADA',
                 };
             }
 

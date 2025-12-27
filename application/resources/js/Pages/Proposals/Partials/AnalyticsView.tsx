@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { useUserSetting } from '@/useHooks/useUserSettings';
 import { ProposalMetrics } from '@/types/proposal-metrics';
 import { shortNumber } from '@/utils/shortNumber';
 import PercentageProgressBar from '@/Components/PercentageProgressBar';
@@ -29,6 +30,7 @@ function computeAnalytics(metrics: ProposalMetrics): AnalyticsCalculated & {
     completionRate: number;
     avgRequestedADA: number;
     avgRequestedUSD: number;
+    avgRequestedUSDM: number;
 } {
     const totalProposals = metrics.submitted || 1;
 
@@ -64,6 +66,10 @@ function computeAnalytics(metrics: ProposalMetrics): AnalyticsCalculated & {
         ? metrics.requestedUSD / metrics.submitted
         : 0;
 
+    const avgRequestedUSDM = metrics.submitted && metrics.submitted > 0 && metrics.requestedUSDM
+        ? metrics.requestedUSDM / metrics.submitted
+        : 0;
+
     return {
         totalProposals,
         completedPercent,
@@ -73,7 +79,8 @@ function computeAnalytics(metrics: ProposalMetrics): AnalyticsCalculated & {
         awardedPercent,
         completionRate,
         avgRequestedADA,
-        avgRequestedUSD
+        avgRequestedUSD,
+        avgRequestedUSDM
     };
 }
 
@@ -94,16 +101,21 @@ function exportMetricsToCSV(metrics: ProposalMetrics, t: (key: string) => string
         [t('Funding Overview'), ''],
         [t('Requested') + ' (ADA)', metrics.requestedADA?.toLocaleString() ?? '0'],
         [t('Requested') + ' (USD)', metrics.requestedUSD?.toLocaleString() ?? '0'],
+        [t('Requested') + ' (USDM)', metrics.requestedUSDM?.toLocaleString() ?? '0'],
         [t('Awarded') + ' (ADA)', metrics.awardedADA?.toLocaleString() ?? '0'],
         [t('Awarded') + ' (USD)', metrics.awardedUSD?.toLocaleString() ?? '0'],
+        [t('Awarded') + ' (USDM)', metrics.awardedUSDM?.toLocaleString() ?? '0'],
         [t('Distributed') + ' (ADA)', metrics.distributedADA?.toLocaleString() ?? '0'],
         [t('Distributed') + ' (USD)', metrics.distributedUSD?.toLocaleString() ?? '0'],
+        [t('Distributed') + ' (USDM)', metrics.distributedUSDM?.toLocaleString() ?? '0'],
         [t('Awarded vs Requested') + ' (%)', computed.awardedPercent],
         [t('Distributed vs Awarded') + ' (%)', computed.distributedPercent],
         [t('Funded vs Approved') + ' (%)', computed.fundedPercent],
         [''],
         [t('KPIs'), ''],
         [t('Avg. Amount Requested') + ' (ADA)', computed.avgRequestedADA.toLocaleString()],
+        [t('Avg. Amount Requested') + ' (USD)', computed.avgRequestedUSD.toLocaleString()],
+        [t('Avg. Amount Requested') + ' (USDM)', computed.avgRequestedUSDM.toLocaleString()],
         [t('Groups'), metrics.groupsCount?.toLocaleString() ?? '0'],
         [t('Communities'), metrics.communitiesCount?.toLocaleString() ?? '0'],
     ];
@@ -338,29 +350,54 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
     isMobile = false
 }) => {
     const { t } = useLaravelReactI18n();
-    const [selectedCurrency, setSelectedCurrency] = useState<CurrencyType>('ADA');
+    const { value: preferredCurrency, setValue: setPreferredCurrency } = useUserSetting<CurrencyType>('preferredCurrency', 'ADA');
+    const [selectedCurrency, setSelectedCurrency] = useState<CurrencyType>(preferredCurrency || 'ADA');
+
+    // Sync selectedCurrency with persisted preference
+    useEffect(() => {
+        if (preferredCurrency) {
+            setSelectedCurrency(preferredCurrency);
+        }
+    }, [preferredCurrency]);
+
+    // Update persisted preference when currency changes
+    const handleCurrencyChange = (currency: CurrencyType) => {
+        setSelectedCurrency(currency);
+        setPreferredCurrency(currency);
+    };
 
     const wrapperClasses = isMobile
         ? 'self-stretch flex flex-col justify-start items-start gap-2.5'
         : 'flex-1 p-2.5 bg-[var(--cx-background-gradient-1-dark)]  dark:bg-[var(--cx-background-gradient-2-dark)] rounded-xl inline-flex flex-col justify-start items-start gap-4';
 
     const getCurrencyValues = () => {
-        if (selectedCurrency === 'USD') {
-            return {
-                distributed: metrics.distributedUSD || 0,
-                awarded: metrics.awardedUSD || 0,
-                requested: metrics.requestedUSD || 0,
-                symbol: '$',
-                suffix: '',
-            };
+        switch (selectedCurrency) {
+            case 'USD':
+                return {
+                    distributed: metrics.distributedUSD || 0,
+                    awarded: metrics.awardedUSD || 0,
+                    requested: metrics.requestedUSD || 0,
+                    symbol: '$',
+                    suffix: '',
+                };
+            case 'USDM':
+                return {
+                    distributed: metrics.distributedUSDM || 0,
+                    awarded: metrics.awardedUSDM || 0,
+                    requested: metrics.requestedUSDM || 0,
+                    symbol: '$',
+                    suffix: '',
+                };
+            case 'ADA':
+            default:
+                return {
+                    distributed: metrics.distributedADA || 0,
+                    awarded: metrics.awardedADA || 0,
+                    requested: metrics.requestedADA || 0,
+                    symbol: '',
+                    suffix: ' ₳',
+                };
         }
-        return {
-            distributed: metrics.distributedADA || 0,
-            awarded: metrics.awardedADA || 0,
-            requested: metrics.requestedADA || 0,
-            symbol: '',
-            suffix: ' ₳',
-        };
     };
 
     const { distributed, awarded, requested, symbol, suffix } = getCurrencyValues();
@@ -373,9 +410,9 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
         : '0';
 
     const currencyOptions: { value: CurrencyType; label: string; disabled?: boolean }[] = [
-        { value: 'ADA', label: 'ADA(₳)' },
-        { value: 'USD', label: 'Dollars($)' },
-        { value: 'USDM', label: 'USDM', disabled: true },
+        { value: 'ADA', label: 'ADA (₳)' },
+        { value: 'USD', label: 'Dollars ($)' },
+        { value: 'USDM', label: 'USDM ($)' },
     ];
 
     return (
@@ -386,7 +423,7 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
                     {currencyOptions.map((option) => (
                         <button
                             key={option.value}
-                            onClick={() => !option.disabled && setSelectedCurrency(option.value)}
+                            onClick={() => !option.disabled && handleCurrencyChange(option.value)}
                             disabled={option.disabled}
                             className={`flex items-center gap-1.5 text-5 transition-colors ${
                                 option.disabled
@@ -412,6 +449,7 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
                     ))}
                 </div>
             </div>
+
             {/* Distributed vs Awarded */}
             <div className="self-stretch flex flex-col justify-start items-start gap-1">
                 <div className="self-stretch inline-flex justify-between items-start">
@@ -466,11 +504,11 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
                 </div>
             </div>
 
-            {/* Funded vs Approved */}
-            <div className="self-stretch flex flex-col justify-start items-start gap-1">
+            {/* Funded vs Approved (Count-based metric) */}
+            <div className="self-stretch flex flex-col justify-start items-start gap-1 pt-3 mt-3 border-t border-content-light/10">
                 <div className="self-stretch inline-flex justify-between items-start">
                     <div className={`text-4 font-normal leading-5`}>
-                        {t('Funded vs Approved')}
+                        {t('Funded vs Approved')} <span className="text-content-light/60 text-[10px]">({t('proposals')})</span>
                     </div>
                     <div className="flex justify-start items-center gap-1">
                         <div className={`text-4 font-semibold leading-5`}>
@@ -528,10 +566,11 @@ type KpisCardProps = {
     completionRate: number;
     avgRequestedADA: number;
     avgRequestedUSD: number;
+    avgRequestedUSDM: number;
     isMobile?: boolean;
 };
 
-const KpisCard: React.FC<KpisCardProps> = ({ metrics, completionRate, avgRequestedADA, avgRequestedUSD, isMobile = false }) => {
+const KpisCard: React.FC<KpisCardProps> = ({ metrics, completionRate, avgRequestedADA, avgRequestedUSD, avgRequestedUSDM, isMobile = false }) => {
     const { t } = useLaravelReactI18n();
     const groupsUrl = useLocalizedRoute('groups.index');
     const communitiesUrl = useLocalizedRoute('communities.index');
@@ -542,6 +581,7 @@ const KpisCard: React.FC<KpisCardProps> = ({ metrics, completionRate, avgRequest
 
     const hasADA = avgRequestedADA > 0;
     const hasUSD = avgRequestedUSD > 0;
+    const hasUSDM = avgRequestedUSDM > 0;
 
     return (
         <div className={wrapperClasses}>
@@ -554,7 +594,7 @@ const KpisCard: React.FC<KpisCardProps> = ({ metrics, completionRate, avgRequest
                     <div
                         className={` text-5 text-content-light/80 font-normal leading-5 whitespace-nowrap`}
                     >
-                        {t('AVG. AMOUNT REQUESTED')}
+                        {t('AVG. AMOUNT REQUESTED')} ({t('per submitted proposal')})
                     </div>
                     <div className="flex flex-col gap-2">
                         {hasADA && (
@@ -563,16 +603,18 @@ const KpisCard: React.FC<KpisCardProps> = ({ metrics, completionRate, avgRequest
                             </div>
                         )}
                         {hasUSD && (
-                            <div className={`${hasADA ? 'text-1 ' : 'text-1'} font-bold leading-5`}>
+                            <div className={`text-1 font-bold leading-5`}>
                                 ${shortNumber(avgRequestedUSD, 2)}
                             </div>
                         )}
-                        {!hasADA && !hasUSD && (
+                        {hasUSDM && (
+                            <div className={`text-1 font-bold leading-5`}>
+                                ${shortNumber(avgRequestedUSDM, 2)} USDM
+                            </div>
+                        )}
+                        {!hasADA && !hasUSD && !hasUSDM && (
                             <div className={`text-1 font-bold leading-5`}>0</div>
                         )}
-                    </div>
-                    <div className={` text-5 text-content-light/80 font-normal leading-5`}>
-                        {t('Per submitted proposal')}
                     </div>
                 </div>
 
@@ -581,15 +623,10 @@ const KpisCard: React.FC<KpisCardProps> = ({ metrics, completionRate, avgRequest
                     <div
                         className={` text-5 text-content-light/80 font-normal leading-5`}
                     >
-                        {t('COMPLETION RATE')}
+                        {t('COMPLETION RATE')} ({t('of approved proposals')})
                     </div>
                     <div className={` text-1 font-bold leading-5`}>
                         {completionRate.toFixed(1)}%
-                    </div>
-                    <div
-                        className={` text-5 text-content-light/80 font-normal leading-5`}
-                    >
-                        {t('Of approved proposals')}
                     </div>
                 </div>
                 <div className="self-stretch flex flex-col justify-center items-start">
@@ -625,7 +662,7 @@ const KpisCard: React.FC<KpisCardProps> = ({ metrics, completionRate, avgRequest
 };
 
 const AnalyticsView: React.FC<AnalyticsViewProps> = ({ metrics, isMobile = false, onClose }) => {
-    const { approvedPercent, fundedPercent, distributedPercent, awardedPercent, completionRate, avgRequestedADA, avgRequestedUSD } =
+    const { approvedPercent, fundedPercent, distributedPercent, awardedPercent, completionRate, avgRequestedADA, avgRequestedUSD, avgRequestedUSDM } =
         computeAnalytics(metrics);
 
     if (isMobile) {
@@ -642,7 +679,7 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({ metrics, isMobile = false
                     isMobile
                 />
 
-                <KpisCard metrics={metrics} completionRate={completionRate} avgRequestedADA={avgRequestedADA} avgRequestedUSD={avgRequestedUSD} isMobile />
+                <KpisCard metrics={metrics} completionRate={completionRate} avgRequestedADA={avgRequestedADA} avgRequestedUSD={avgRequestedUSD} avgRequestedUSDM={avgRequestedUSDM} isMobile />
             </div>
         );
     }
@@ -659,7 +696,7 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({ metrics, isMobile = false
                     fundedPercent={fundedPercent}
                     approvedPercent={approvedPercent}
                 />
-                <KpisCard metrics={metrics} completionRate={completionRate} avgRequestedADA={avgRequestedADA} avgRequestedUSD={avgRequestedUSD} />
+                <KpisCard metrics={metrics} completionRate={completionRate} avgRequestedADA={avgRequestedADA} avgRequestedUSD={avgRequestedUSD} avgRequestedUSDM={avgRequestedUSDM} />
             </div>
         </>
     );
