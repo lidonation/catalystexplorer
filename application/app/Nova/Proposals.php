@@ -106,8 +106,18 @@ class Proposals extends Resource
 
             // Core Content Fields
             Text::make(__('Title'), 'title')
-                ->required()
                 ->sortable()
+                ->displayUsing(function ($value) {
+                    if (strlen($value) > 30) {
+                        return substr($value, 0, 30) . '...';
+                    }
+                    return $value;
+                }),
+
+
+            Text::make(__('Title'), 'title')
+                ->required()
+                ->hideFromIndex()
                 ->withMeta([
                     'extraAttributes' => [
                         'autocomplete' => 'off',
@@ -148,7 +158,8 @@ class Proposals extends Resource
             Text::make(__('Comment Prompt'), 'comment_prompt')
                 ->hideFromIndex(),
 
-            Number::make(__('projectcatalyst.io link'), 'projectcatalyst_io_link'),
+            Number::make(__('projectcatalyst.io link'), 'projectcatalyst_io_link')
+                ->hideFromIndex(),
 
             // Financial Fields
             Number::make(__('Amount Requested'), 'amount_requested')

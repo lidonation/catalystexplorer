@@ -60,10 +60,11 @@ class ProjectSchedules extends Resource
             ID::make()->sortable(),
 
             Text::make(__('Title'))
+                ->hideFromIndex()
                 ->sortable()
                 ->required(),
 
-            Boolean::make('completed', fn () => $this->completed),
+            Boolean::make('completed', fn() => $this->completed),
 
             Text::make(__('Url'), 'url')->hideFromIndex(),
 
@@ -73,6 +74,12 @@ class ProjectSchedules extends Resource
                 ->sortable(),
 
             BelongsTo::make(__('Proposal'), 'proposal', Proposals::class),
+//                ->displayUsing(function ($proposal) {
+//                    if (strlen($proposal->titl) > 30) {
+//                        return substr($value, 0, 30) . '...';
+//                    }
+//                    return $value;
+//                }),
 
             BelongsTo::make(__('Fund'), 'fund', Funds::class),
 
