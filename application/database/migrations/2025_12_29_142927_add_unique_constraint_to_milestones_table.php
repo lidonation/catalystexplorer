@@ -12,13 +12,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // First, remove any duplicate milestones before adding the constraint
-        DB::statement("
-            DELETE FROM milestones a USING milestones b 
-            WHERE a.id > b.id 
-            AND a.project_schedule_id = b.project_schedule_id 
-            AND a.milestone = b.milestone
-        ");
+        // Only delete duplicates in production environment
+        if (app()->environment('production')) {
+            DB::statement("
+                DELETE FROM milestones a USING milestones b 
+                WHERE a.id > b.id 
+                AND a.project_schedule_id = b.project_schedule_id 
+                AND a.milestone = b.milestone
+            ");
+        }
 
         Schema::table('milestones', function (Blueprint $table) {
             // Add unique constraint on project_schedule_id and milestone number

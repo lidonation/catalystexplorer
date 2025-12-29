@@ -14,18 +14,20 @@ return new class extends Migration
         DB::statement("ALTER TABLE milestone_poas_reviews ADD COLUMN milestone_poas_uuid uuid");
         DB::statement("ALTER TABLE milestone_poas_signoffs ADD COLUMN milestone_poas_uuid uuid");
 
-        // Update the UUID columns by looking up the UUID from milestone_poas via api_id
-        DB::statement(
-            "UPDATE milestone_poas_reviews SET milestone_poas_uuid = milestone_poas.id "
-            . "FROM milestone_poas "
-            . "WHERE milestone_poas.api_id = milestone_poas_reviews.milestone_poas_id"
-        );
+        // Update the UUID columns by looking up the UUID from milestone_poas via api_id (only in production)
+        if (app()->environment('production')) {
+            DB::statement(
+                "UPDATE milestone_poas_reviews SET milestone_poas_uuid = milestone_poas.id "
+                . "FROM milestone_poas "
+                . "WHERE milestone_poas.api_id = milestone_poas_reviews.milestone_poas_id"
+            );
 
-        DB::statement(
-            "UPDATE milestone_poas_signoffs SET milestone_poas_uuid = milestone_poas.id "
-            . "FROM milestone_poas "
-            . "WHERE milestone_poas.api_id = milestone_poas_signoffs.milestone_poas_id"
-        );
+            DB::statement(
+                "UPDATE milestone_poas_signoffs SET milestone_poas_uuid = milestone_poas.id "
+                . "FROM milestone_poas "
+                . "WHERE milestone_poas.api_id = milestone_poas_signoffs.milestone_poas_id"
+            );
+        }
 
         // Drop the old bigint columns
         DB::statement("ALTER TABLE milestone_poas_reviews DROP COLUMN milestone_poas_id");
@@ -35,9 +37,11 @@ return new class extends Migration
         DB::statement("ALTER TABLE milestone_poas_reviews RENAME COLUMN milestone_poas_uuid TO milestone_poas_id");
         DB::statement("ALTER TABLE milestone_poas_signoffs RENAME COLUMN milestone_poas_uuid TO milestone_poas_id");
 
-        // Make them NOT NULL
-        DB::statement("ALTER TABLE milestone_poas_reviews ALTER COLUMN milestone_poas_id SET NOT NULL");
-        DB::statement("ALTER TABLE milestone_poas_signoffs ALTER COLUMN milestone_poas_id SET NOT NULL");
+        // Make them NOT NULL (only in production where data exists)
+        if (app()->environment('production')) {
+            DB::statement("ALTER TABLE milestone_poas_reviews ALTER COLUMN milestone_poas_id SET NOT NULL");
+            DB::statement("ALTER TABLE milestone_poas_signoffs ALTER COLUMN milestone_poas_id SET NOT NULL");
+        }
     }
 
     /**

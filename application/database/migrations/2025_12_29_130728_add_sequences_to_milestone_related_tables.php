@@ -21,9 +21,10 @@ return new class extends Migration
             // Create sequence
             DB::statement("CREATE SEQUENCE IF NOT EXISTS {$table}_id_seq");
             
-            // Set the sequence to start after the max existing id
+            // Set the sequence to start after the max existing id (minimum 1 for PostgreSQL)
             $maxId = DB::table($table)->max('id') ?? 0;
-            DB::statement("SELECT setval('{$table}_id_seq', {$maxId})");
+            $sequenceValue = max(1, $maxId);
+            DB::statement("SELECT setval('{$table}_id_seq', {$sequenceValue})");
             
             // Set the column default to use the sequence
             DB::statement("ALTER TABLE {$table} ALTER COLUMN id SET DEFAULT nextval('{$table}_id_seq')");
