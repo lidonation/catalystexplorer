@@ -75,9 +75,9 @@ class SyncCatalystMilestoneJob implements ShouldQueue
         $milestoneConnector = new CatalystMilestoneModuleConnector;
         $results = [];
         $milestoneNum = 1;
-        $maxMilestones = 50; // Safety limit to prevent infinite loops
+        $maxMilestones = 50;
         $consecutiveEmpty = 0;
-        $maxConsecutiveEmpty = 3; // Stop after 3 consecutive empty responses
+        $maxConsecutiveEmpty = 3;
 
         // Fetch milestones sequentially until we get empty responses
         while ($milestoneNum <= $maxMilestones && $consecutiveEmpty < $maxConsecutiveEmpty) {
@@ -101,14 +101,12 @@ class SyncCatalystMilestoneJob implements ShouldQueue
 
                 // Process each milestone submission (API returns array of submissions)
                 if (is_array($data) && ! isset($data['milestone'])) {
-                    // Array of multiple submissions for this milestone number
                     foreach ($data as $submission) {
                         if (isset($submission['milestone']) && ! empty($submission['title'])) {
                             $results[] = $submission;
                         }
                     }
                 } elseif (isset($data['milestone']) && ! empty($data['title'])) {
-                    // Single submission
                     $results[] = $data;
                 }
 
@@ -117,7 +115,6 @@ class SyncCatalystMilestoneJob implements ShouldQueue
                 // Small delay between requests (200ms)
                 usleep(200000);
             } catch (\Exception $e) {
-                // Log error and continue to next milestone
                 logger()->error(
                     "Failed to fetch milestone {$milestoneNum} for api_proposal_id {$api_proposal_id}: "
                     .$e->getMessage()
@@ -136,13 +133,18 @@ class SyncCatalystMilestoneJob implements ShouldQueue
      */
     protected function processMilestone(array $milestone, ?string $proposal_id): void
     {
+        // Normalize the created_at timestamp to match database format (remove microseconds)
+        // API returns: "2025-04-16T20:02:51.123456+00:00" or "2025-04-16 20:02:51"
+        // We need: "2025-04-16 20:02:51" for consistent matching
+        $createdAt = \Carbon\Carbon::parse($milestone['created_at'])->format('Y-m-d H:i:s');
+
         // Use project_schedule_id, milestone number, and created_at as unique identifier
         // to distinguish between multiple submissions of the same milestone number
         $savedMilestone = Milestone::updateOrCreate(
             [
                 'project_schedule_id' => $this->projectSchedule['project_schedule_id'],
                 'milestone' => $milestone['milestone'],
-                'created_at' => $milestone['created_at'],
+                'created_at' => $createdAt,
             ],
             [
                 'title' => $milestone['title'],
@@ -153,6 +155,7 @@ class SyncCatalystMilestoneJob implements ShouldQueue
                 'month' => (int) $milestone['month'],
                 'cost' => $milestone['cost'],
                 'completion_percent' => $milestone['completion'],
+                'created_at' => $createdAt, // Use API's timestamp
                 'proposal_id' => $proposal_id,
                 'fund_id' => $this->projectSchedule['fund_id'] ?? null,
             ]
@@ -168,11 +171,13 @@ class SyncCatalystMilestoneJob implements ShouldQueue
     protected function saveSomReviews(array $somReviews, string|int $milestoneId): void
     {
         foreach ($somReviews as $somReview) {
+            $createdAt = \Carbon\Carbon::parse($somReview['created_at'])->format('Y-m-d H:i:s');
+
             MilestoneSomReview::updateOrCreate(
                 [
                     'milestone_id' => $milestoneId,
                     'user_id' => $somReview['user_id'],
-                    'created_at' => $somReview['created_at'],
+                    'created_at' => $createdAt,
                 ],
                 [
                     'api_id' => $somReview['id'] ?? null,
@@ -182,6 +187,7 @@ class SyncCatalystMilestoneJob implements ShouldQueue
                     'success_criteria_comment' => $somReview['success_criteria_comment'],
                     'evidence_approves' => $somReview['evidence_approves'],
                     'evidence_comment' => $somReview['evidence_comment'],
+                    'created_at' => $createdAt, // Use API's timestamp
                     'current' => $somReview['current'],
                     'role' => MilestoneRoleEnum::from($somReview['role'])->role(),
                 ]
@@ -195,14 +201,17 @@ class SyncCatalystMilestoneJob implements ShouldQueue
     protected function savePoa(array $poas, string|int $milestoneId): void
     {
         foreach ($poas as $value) {
+            $createdAt = \Carbon\Carbon::parse($value['created_at'])->format('Y-m-d H:i:s');
+
             $savedPoa = MilestonePoa::updateOrCreate(
                 [
                     'milestone_id' => $milestoneId,
-                    'created_at' => $value['created_at'],
+                    'created_at' => $createdAt,
                 ],
                 [
                     'api_id' => $value['id'] ?? null,
                     'content' => $value['content'],
+                    'created_at' => $createdAt, // Use API's timestamp
                     'current' => $value['current'],
                 ]
             );
@@ -217,16 +226,19 @@ class SyncCatalystMilestoneJob implements ShouldQueue
     protected function savePoaReviews(array $reviews, string|int $poaId): void
     {
         foreach ($reviews as $review) {
+            $createdAt = \Carbon\Carbon::parse($review['created_at'])->format('Y-m-d H:i:s');
+
             MilestonePoasReview::updateOrCreate(
                 [
                     'milestone_poas_id' => $poaId,
                     'user_id' => $review['user_id'],
-                    'created_at' => $review['created_at'],
+                    'created_at' => $createdAt,
                 ],
                 [
                     'api_id' => $review['id'] ?? null,
                     'content_approved' => $review['content_approved'],
                     'content_comment' => $review['content_comment'],
+                    'created_at' => $createdAt, // Use API's timestamp
                     'role' => MilestoneRoleEnum::from($review['role'])->role(),
                     'current' => $review['current'],
                 ]
@@ -240,14 +252,17 @@ class SyncCatalystMilestoneJob implements ShouldQueue
     protected function savePoaSignOffs(array $signoffs, string|int $poaId): void
     {
         foreach ($signoffs as $signoff) {
+            $createdAt = \Carbon\Carbon::parse($signoff['created_at'])->format('Y-m-d H:i:s');
+
             MilestonePoasSignoff::updateOrCreate(
                 [
                     'milestone_poas_id' => $poaId,
                     'user_id' => $signoff['user_id'],
-                    'created_at' => $signoff['created_at'],
+                    'created_at' => $createdAt,
                 ],
                 [
                     'api_id' => $signoff['id'] ?? null,
+                    'created_at' => $createdAt, // Use API's timestamp
                 ]
             );
         }
