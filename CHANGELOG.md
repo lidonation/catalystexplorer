@@ -1,3 +1,10 @@
+## [1.53.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.53.1...v1.53.2) (2025-12-27)
+
+
+### Bug Fixes
+
+* add support usdm ([f6bd12a](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/f6bd12af0ee7f2b3d85b3537cc8a61be47a30636))
+
 ## [1.53.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.53.0...v1.53.1) (2025-12-16)
 
 
