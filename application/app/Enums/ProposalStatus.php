@@ -7,11 +7,12 @@ namespace App\Enums;
 use Spatie\Enum\Laravel\Enum;
 
 /**
- * @method static self pending()
  * @method static self complete()
  * @method static self in_progress()
- * @method static self unfunded()
  * @method static self onboarding()
+ * @method static self pending()
+ * @method static self terminated()
+ * @method static self unfunded()
  */
 final class ProposalStatus extends Enum
 {

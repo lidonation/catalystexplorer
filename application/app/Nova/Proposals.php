@@ -11,6 +11,7 @@ use App\Nova\Actions\AddQuickPitch;
 use App\Nova\Actions\EditModel;
 use App\Nova\Actions\GenerateProposalLinks;
 use App\Nova\Actions\MakeSearchable;
+use App\Nova\Actions\SyncMilestoneFromCatalyst;
 use App\Nova\Actions\SyncProposalFromCatalyst;
 use App\Nova\Actions\SyncVotingResults;
 use App\Nova\Actions\UpdateModelMedia;
@@ -29,6 +30,7 @@ use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
+use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Slug;
@@ -156,71 +158,6 @@ class Proposals extends Resource
             Number::make(__('Amount Received'), 'amount_received')
                 ->sortable()
                 ->displayUsing(fn ($value) => number_format($value ?? 0)),
-
-            // Currency conversion fields (computed from model attributes)
-            Number::make(__('Amount Requested USD'), function () {
-                return $this->amount_requested_usd ?? 0;
-            })->hideFromIndex()
-                ->readonly()
-                ->hideWhenCreating()
-                ->hideWhenUpdating()
-                ->displayUsing(fn ($value) => '$'.number_format($value ?? 0)),
-
-            Number::make(__('Amount Requested ADA'), function () {
-                return $this->amount_requested_ada ?? 0;
-            })->hideFromIndex()
-                ->readonly()
-                ->hideWhenCreating()
-                ->hideWhenUpdating()
-                ->displayUsing(fn ($value) => number_format($value ?? 0).' ₳'),
-
-            Number::make(__('Amount Received USD'), function () {
-                return $this->amount_received_usd ?? 0;
-            })->hideFromIndex()
-                ->readonly()
-                ->hideWhenCreating()
-                ->hideWhenUpdating()
-                ->displayUsing(fn ($value) => '$'.number_format($value ?? 0)),
-
-            Number::make(__('Amount Received ADA'), function () {
-                return $this->amount_received_ada ?? 0;
-            })->hideFromIndex()
-                ->readonly()
-                ->hideWhenCreating()
-                ->hideWhenUpdating()
-                ->displayUsing(fn ($value) => number_format($value ?? 0).' ₳'),
-
-            Number::make(__('Amount Awarded USD'), function () {
-                return $this->amount_awarded_usd ?? 0;
-            })->hideFromIndex()
-                ->readonly()
-                ->hideWhenCreating()
-                ->hideWhenUpdating()
-                ->displayUsing(fn ($value) => '$'.number_format($value ?? 0)),
-
-            Number::make(__('Amount Awarded ADA'), function () {
-                return $this->amount_awarded_ada ?? 0;
-            })->hideFromIndex()
-                ->readonly()
-                ->hideWhenCreating()
-                ->hideWhenUpdating()
-                ->displayUsing(fn ($value) => number_format($value ?? 0).' ₳'),
-
-            Number::make(__('Completed Amount Paid USD'), function () {
-                return $this->completed_amount_paid_usd ?? 0;
-            })->hideFromIndex()
-                ->readonly()
-                ->hideWhenCreating()
-                ->hideWhenUpdating()
-                ->displayUsing(fn ($value) => '$'.number_format($value ?? 0)),
-
-            Number::make(__('Completed Amount Paid ADA'), function () {
-                return $this->completed_amount_paid_ada ?? 0;
-            })->hideFromIndex()
-                ->readonly()
-                ->hideWhenCreating()
-                ->hideWhenUpdating()
-                ->displayUsing(fn ($value) => number_format($value ?? 0).' ₳'),
 
             Select::make(__('Currency'), 'currency')
                 ->options([
@@ -408,8 +345,8 @@ class Proposals extends Resource
                 ->searchable()
                 ->hideFromIndex(),
 
-            // Schedule relationship removed - use HasOne relationship instead
-            // To manage schedules, edit them from the ProjectSchedules resource
+            HasOne::make(__('Project Schedule'), 'schedule', ProjectSchedules::class)
+                ->nullable(),
 
             // Timestamps
             DateTime::make(__('Created At'), 'created_at')
@@ -503,6 +440,7 @@ class Proposals extends Resource
             (new EditModel),
             (new GenerateProposalLinks),
             (new MakeSearchable),
+            (new SyncMilestoneFromCatalyst),
             (new SyncProposalFromCatalyst),
             (new SyncVotingResults),
             (new UpdateModelMedia),

@@ -9,9 +9,27 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MilestonePoa extends Model
 {
+    protected $guarded = [];
+
     public $table = 'milestone_poas';
 
-    public $timestamps = false;
+    const UPDATED_AT = 'updated_at';
+
+    const CREATED_AT = 'created_at';
+
+    /**
+     * Update the creation and update timestamps, but only set updated_at.
+     */
+    public function updateTimestamps(): void
+    {
+        $time = $this->freshTimestamp();
+
+        $updatedAtColumn = $this->getUpdatedAtColumn();
+
+        if (! is_null($updatedAtColumn) && ! $this->isDirty($updatedAtColumn)) {
+            $this->setUpdatedAt($time);
+        }
+    }
 
     protected $with = [
         'reviews',

@@ -14,15 +14,59 @@ class ProjectSchedule extends Model
 {
     use HasUuids, Searchable;
 
-    public $timestamps = false;
+    protected $guarded = [];
 
-    public $table = 'proposal_milestones';
+    public $table = 'project_schedules';
+
+    const UPDATED_AT = 'updated_at';
+
+    const CREATED_AT = 'created_at';
+
+    /**
+     * Update the model's update timestamp.
+     */
+    public function touch($attribute = null): bool
+    {
+        if ($attribute) {
+            $this->$attribute = $this->freshTimestamp();
+        } else {
+            $this->updateTimestamps();
+        }
+
+        return $this->save();
+    }
+
+    /**
+     * Update the creation and update timestamps, but only set updated_at.
+     */
+    public function updateTimestamps(): void
+    {
+        $time = $this->freshTimestamp();
+
+        $updatedAtColumn = $this->getUpdatedAtColumn();
+
+        if (! is_null($updatedAtColumn) && ! $this->isDirty($updatedAtColumn)) {
+            $this->setUpdatedAt($time);
+        }
+    }
 
     public $meiliIndexName = 'cx_project_schedule';
 
     protected $appends = [
         'on_track',
     ];
+
+    public function completed(): Attribute
+    {
+        return Attribute::make(get: function () {
+            return $this->milestones()
+                ->current()
+                ->get()
+                ->map(
+                    fn ($milestones) => $milestones->completed
+                )->every(fn ($value) => ($value === true));
+        });
+    }
 
     public static function getFilterableAttributes(): array
     {
@@ -84,7 +128,7 @@ class ProjectSchedule extends Model
 
     public function milestones(): HasMany
     {
-        return $this->hasMany(Milestone::class, 'proposal_milestone_id', 'id');
+        return $this->hasMany(Milestone::class, 'project_schedule_id', 'id');
     }
 
     protected function onTrack(): Attribute

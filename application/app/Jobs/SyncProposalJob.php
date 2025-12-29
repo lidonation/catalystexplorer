@@ -651,6 +651,11 @@ class SyncProposalJob implements ShouldQueue
                 continue;
             }
 
+            // Skip photo/image file types
+            if (preg_match('/\.(jpg|jpeg|png|gif|webp|avif|svg|bmp|ico|tiff|tif)$/i', $url)) {
+                continue;
+            }
+
             // Skip localhost and internal URLs in production
             if (preg_match('/\b(localhost|127\.0\.0\.1|192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/', $url)) {
                 continue;
