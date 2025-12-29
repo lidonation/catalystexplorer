@@ -25,8 +25,10 @@ return new class extends Migration
                 $table->bigInteger('api_id')->nullable()->after('id');
             });
 
-            // Step 2: Copy existing id values to api_id
-            DB::statement("UPDATE {$table} SET api_id = id");
+            // Step 2: Copy existing id values to api_id (only in production)
+            if (app()->environment('production')) {
+                DB::statement("UPDATE {$table} SET api_id = id");
+            }
 
             // Step 3: Drop the sequence default from id column
             DB::statement("ALTER TABLE {$table} ALTER COLUMN id DROP DEFAULT");
@@ -56,12 +58,19 @@ return new class extends Migration
             // Recreate sequence
             DB::statement("CREATE SEQUENCE IF NOT EXISTS {$table}_id_seq");
 
-            // Restore id from api_id and convert back to bigint
-            DB::statement("ALTER TABLE {$table} ALTER COLUMN id TYPE bigint USING api_id");
-
-            // Set the sequence default
-            $maxId = DB::table($table)->max('api_id') ?? 0;
-            DB::statement("SELECT setval('{$table}_id_seq', {$maxId})");
+            // Restore id from api_id and convert back to bigint (only in production)
+            if (app()->environment('production')) {
+                DB::statement("ALTER TABLE {$table} ALTER COLUMN id TYPE bigint USING api_id");
+                
+                // Set the sequence default (PostgreSQL sequences must be >= 1)
+                $maxId = DB::table($table)->max('api_id') ?? 0;
+                $sequenceValue = max(1, $maxId);
+                DB::statement("SELECT setval('{$table}_id_seq', {$sequenceValue})");
+            } else {
+                DB::statement("ALTER TABLE {$table} ALTER COLUMN id TYPE bigint");
+                DB::statement("SELECT setval('{$table}_id_seq', 1)");
+            }
+            
             DB::statement("ALTER TABLE {$table} ALTER COLUMN id SET DEFAULT nextval('{$table}_id_seq')");
             DB::statement("ALTER SEQUENCE {$table}_id_seq OWNED BY {$table}.id");
 

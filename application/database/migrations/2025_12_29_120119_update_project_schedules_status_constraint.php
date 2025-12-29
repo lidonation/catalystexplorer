@@ -13,12 +13,15 @@ return new class extends Migration
         // Drop the old constraint (still named with old table name)
         DB::statement('ALTER TABLE project_schedules DROP CONSTRAINT IF EXISTS proposal_milestones_status_check');
         
-        // Clean up invalid status values before applying new constraint
-        // Convert string 'null' and actual NULLs to 'active' as default
-        DB::statement(
-            "UPDATE project_schedules SET status = 'active' "
-            . "WHERE status IS NULL OR status = 'null' OR status NOT IN ('active', 'paused', 'terminated', 'completed')"
-        );
+        // Only clean up invalid data in production environment
+        if (app()->environment('production')) {
+            // Clean up invalid status values before applying new constraint
+            // Convert string 'null' and actual NULLs to 'active' as default
+            DB::statement(
+                "UPDATE project_schedules SET status = 'active' "
+                . "WHERE status IS NULL OR status = 'null' OR status NOT IN ('active', 'paused', 'terminated', 'completed')"
+            );
+        }
         
         // Add new constraint with updated status values
         DB::statement(
