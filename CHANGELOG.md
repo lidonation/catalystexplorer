@@ -1,3 +1,11 @@
+# [1.54.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.53.2...v1.54.0) (2025-12-29)
+
+
+### Features
+
+* syncing milestone data ([f39139b](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/f39139bb52eab2807f7365418737cdf98ebe1749))
+* syncing milestone data ([8cc279c](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/8cc279c3d5e1972f1198ec99555b01ec9aac8fb3))
+
 ## [1.53.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.53.1...v1.53.2) (2025-12-27)
 
 
