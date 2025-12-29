@@ -339,13 +339,16 @@ class ProposalsController extends Controller
 
     public function proposalSchedule(Request $request, $slug)
     {
-        $proposal = Proposal::with(['schedule.milestones'])
+        $proposal = Proposal::with(['schedule.milestones', 'author', 'fund', 'campaign'])
             ->where('slug', $slug)->firstOrFail();
+
+        $this->getProps($request);
+        $proposalData = ProposalData::from($proposal);
 
         return Inertia::render(
             'Proposals/Schedule/Index',
             [
-                'proposal' => $this->getProposalBaseData($request, $proposal),
+                'proposal' => $proposalData,
             ]
         );
     }

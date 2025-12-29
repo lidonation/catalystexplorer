@@ -82,7 +82,7 @@ class SyncProposalFromCatalyst extends Action
         if ($proposalId && is_string($proposalId) && $proposalId !== 'all') {
             $proposalIds = explode(',', $proposalId);
             if (count($proposalIds) > 0 && $proposalIds[0] !== 'all') {
-                $proposal = \App\Models\Proposal::find($proposalIds[0]);
+                $proposal = Proposal::find($proposalIds[0]);
                 $defaultDocumentId = $proposal?->catalyst_document_id;
                 $defaultFund = $proposal?->fund_id;
             }

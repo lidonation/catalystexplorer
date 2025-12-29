@@ -62,4 +62,8 @@ return [
     'vimeo' => [
         'access_token' => env('VIMEO_ACCESS_TOKEN'),
     ],
+
+    'catalystMilestone' => [
+        'key' => env('CATALYST_MILESTONE_API_KEY'),
+    ],
 ];

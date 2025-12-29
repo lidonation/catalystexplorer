@@ -27,6 +27,8 @@ class Milestones extends Resource
 
     public static $group = 'Milestone';
 
+    public static $perPageViaRelationship = 25;
+
     /**
      * The single value that should be used to represent the resource when being displayed.
      *

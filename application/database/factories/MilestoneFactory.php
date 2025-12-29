@@ -41,7 +41,7 @@ class MilestoneFactory extends Factory
             'fund_id' => function() {
                 return Fund::inRandomOrder()->value('id');
             },
-            'proposal_milestone_id' => function() {
+'project_schedule_id' => function() {
                 return ProjectSchedule::inRandomOrder()->value('id');
             },
         ];

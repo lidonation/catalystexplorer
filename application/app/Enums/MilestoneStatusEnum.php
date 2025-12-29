@@ -10,13 +10,15 @@ enum MilestoneStatusEnum: int
 
     case ZERO = 0;
     case ONE = 1;
+    case TWO = 2;
     case THREE = 3;
 
     public function status(): string
     {
         return match ($this) {
-            self::ZERO => 'null',
+            self::ZERO => 'active',
             self::ONE => 'paused',
+            self::TWO => 'terminated',
             self::THREE => 'completed',
         };
     }

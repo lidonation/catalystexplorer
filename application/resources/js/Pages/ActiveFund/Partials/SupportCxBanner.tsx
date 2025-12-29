@@ -19,7 +19,7 @@ export default function SupportCxBanner() {
                         {t('activeFund.supportUsSubtitle')}
                     </Paragraph>
                 </div>
-                
+
                 {/* Stats Grid Container */}
                 <div className="self-stretch flex flex-col justify-center items-center gap-4 sm:gap-6 lg:gap-7">
                     {/* First Row - 4 items */}
@@ -53,7 +53,7 @@ export default function SupportCxBanner() {
                             />
                         </div>
                     </div>
-                    
+
                     {/* Second Row - 4 items */}
                     <div className="w-full max-w-none sm:max-w-2xl lg:max-w-5xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
                         <div className="px-3 sm:px-3.5 py-4 sm:py-5 bg-card-light rounded-lg flex flex-col justify-center items-center gap-3 sm:gap-5 border border-content-light">
@@ -87,7 +87,7 @@ export default function SupportCxBanner() {
                     </div>
                 </div>
             </div>
-            
+
             {/* Bottom Section */}
             <div className="self-stretch flex flex-col justify-center items-center gap-4 sm:gap-5">
                 <div className="self-stretch flex flex-col justify-start items-center gap-2 sm:gap-2.5">
@@ -103,7 +103,7 @@ export default function SupportCxBanner() {
                         className="text-center"
                         target="_blank"
                         href={useLocalizedRoute('proposals.proposal.details', {
-                            slug: 'all-in-one-catalyst-notifications-ai-lists-portfolios-f14',
+                            slug: 'support-wwwcatalystexplorercom-by-lido-f15',
                         })}
                     >
                         {t('activeFund.supportUsSeeProposal')}
