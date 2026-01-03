@@ -29,11 +29,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Stringable;
 use Inertia\Inertia;
 use Inertia\Response;
 use Laravel\Scout\Builder;
+use Spatie\Browsershot\Browsershot;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 class ProposalsController extends Controller
@@ -1259,5 +1261,171 @@ class ProposalsController extends Controller
         }
 
         return $multiSeriesData;
+    }
+
+    /**
+     * Generate Open Graph image for social media sharing
+     */
+    public function generateOgImage(string $slug)
+    {
+        // Use default configured disk (respects FILESYSTEM_DISK env var)
+        $disk = Storage::disk();
+        $imagePath = "og-images/{$slug}.png";
+
+        // Return cached image if it exists and is less than 24 hours old
+        try {
+            if ($disk->exists($imagePath)) {
+                $lastModified = $disk->lastModified($imagePath);
+                if (now()->timestamp - $lastModified < 86400) { // 24 hours
+                    return response($disk->get($imagePath))
+                        ->header('Content-Type', 'image/png')
+                        ->header('Cache-Control', 'public, max-age=86400');
+                }
+            }
+        } catch (\Exception $e) {
+            // If we can't check existence (e.g., S3 issues), just regenerate
+            Log::warning('Could not check OG image existence, regenerating', [
+                'slug' => $slug,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        // Fetch proposal
+        $proposal = Proposal::with(['fund', 'campaign', 'team.model'])
+            ->where('slug', $slug)
+            ->firstOrFail();
+
+        // Determine status text and color
+        [$statusText, $statusColor] = $this->getProposalStatusInfo($proposal);
+
+        // Format budget
+        $formattedBudget = $this->formatBudget($proposal->amount_requested, $proposal->currency);
+
+        // Format project length
+        $formattedLength = $this->formatProjectLength($proposal->project_length);
+
+        // Render Blade view
+        $html = view('components.proposal-og-card', [
+            'proposal' => $proposal,
+            'statusText' => $statusText,
+            'statusColor' => $statusColor,
+            'formattedBudget' => $formattedBudget,
+            'formattedLength' => $formattedLength,
+        ])->render();
+
+        // Generate image using Browsershot
+        try {
+            $png = Browsershot::html($html)
+                ->setChromePath('/usr/bin/chromium')
+                ->deviceScaleFactor(2)
+                ->windowSize(1200, 630)
+                ->margins(0, 0, 0, 0)
+                ->format('png')
+                ->timeout(120)
+                ->addChromiumArguments([
+                    'no-sandbox',
+                    'disable-dev-shm-usage',
+                    'disable-gpu',
+                    'headless=new',
+                    'disable-extensions',
+                    'disable-plugins',
+                    'disable-default-apps',
+                    'no-default-browser-check',
+                    'disable-background-timer-throttling',
+                    'disable-backgrounding-occluded-windows',
+                    'disable-renderer-backgrounding',
+                    'disable-features=TranslateUI,VizDisplayCompositor',
+                    'font-render-hinting=none',
+                    'disable-font-subpixel-positioning',
+                    'force-color-profile=srgb',
+                    'disable-web-security',
+                    'font-config-path=/etc/fonts',
+                ])
+                ->screenshot();
+
+            // Store the image using configured disk
+            $disk->put($imagePath, $png);
+
+            return response($png)
+                ->header('Content-Type', 'image/png')
+                ->header('Cache-Control', 'public, max-age=86400');
+        } catch (\Exception $e) {
+            Log::error('Failed to generate OG image for proposal', [
+                'slug' => $slug,
+                'error' => $e->getMessage(),
+            ]);
+
+            // Return a 500 error
+            abort(500, 'Failed to generate image');
+        }
+    }
+
+    /**
+     * Get proposal status information (text and color)
+     */
+    private function getProposalStatusInfo(Proposal $proposal): array
+    {
+        $status = $proposal->status;
+        $fundingStatus = $proposal->funding_status;
+
+        if ($status === 'pending') {
+            return ['Vote Pending', 'bg-blue-500'];
+        } elseif ($fundingStatus === 'withdrawn') {
+            return ['Withdrawn', 'bg-gray-400'];
+        } elseif ($status === 'complete') {
+            return ['Complete', 'bg-green-500'];
+        } elseif ($status === 'in_progress') {
+            return ['In Progress', 'bg-blue-500'];
+        } elseif ($status === 'unfunded') {
+            return ['Unfunded', 'bg-orange-500'];
+        }
+
+        return ['Pending', 'bg-gray-500'];
+    }
+
+    /**
+     * Format budget amount with currency
+     */
+    private function formatBudget(?float $amount, mixed $currency = null): string
+    {
+        if ($amount === null) {
+            return 'N/A';
+        }
+
+        // Handle CatalystCurrencies enum
+        $currencyValue = null;
+        if ($currency instanceof \App\Enums\CatalystCurrencies) {
+            $currencyValue = $currency->value;
+        } elseif (is_string($currency)) {
+            $currencyValue = $currency;
+        }
+
+        // Format with thousands separator
+        $formatted = number_format($amount, 0, '.', ',');
+
+        // Add currency symbol (₳ for ADA)
+        if ($currencyValue === 'ADA') {
+            return "₳{$formatted}";
+        } elseif ($currencyValue) {
+            return "{$currencyValue} {$formatted}";
+        }
+
+        return $formatted;
+    }
+
+    /**
+     * Format project length in months
+     */
+    private function formatProjectLength(?int $months): string
+    {
+        if ($months === null || $months === 0) {
+            return 'N/A';
+        }
+
+        if ($months === 1) {
+            return '1 month';
+        }
+
+        return "{$months} months";
     }
 }

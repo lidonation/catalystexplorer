@@ -628,6 +628,10 @@ Route::localized(
 
 );
 
+// OG Image generation for social media cards (outside localized routes for better compatibility)
+Route::get('/og-image/proposals/{slug}', [ProposalsController::class, 'generateOgImage'])
+    ->name('proposals.og-image');
+
 Route::prefix('language')->as('language.')->group(function () {
     Route::post('/user', [\App\Http\Controllers\UserLanguageController::class, 'updateLanguage'])
         ->middleware('auth')

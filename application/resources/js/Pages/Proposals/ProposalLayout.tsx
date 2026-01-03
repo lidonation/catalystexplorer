@@ -22,6 +22,11 @@ const ProposalLayout = ({
 }: ProposalLayoutProps) => {
     const { t } = useLaravelReactI18n();
 
+    // Construct Open Graph image URL
+    const ogImageUrl = `${window.location.origin}/og-image/proposals/${proposal.slug}`;
+    const proposalUrl = window.location.href;
+    const description = proposal.social_excerpt || proposal.excerpt || proposal.title || '';
+
     const [userSelected, setUserSelected] =
         useState<App.DataTransferObjects.IdeascaleProfileData | null>(null);
 
@@ -119,7 +124,20 @@ const ProposalLayout = ({
 
     return (
         <div className="mt-10 flex flex-col gap-4 px-8 sm:px-4 md:px-6 lg:flex-row lg:px-8">
-            <Head title={`${proposal.title} - Proposal`} />
+            <Head title={`${proposal.title} - Proposal`}>
+                {/* Open Graph meta tags */}
+                <meta property="og:title" content={proposal.title || ''} />
+                <meta property="og:description" content={description} />
+                <meta property="og:image" content={ogImageUrl} />
+                <meta property="og:url" content={proposalUrl} />
+                <meta property="og:type" content="website" />
+                
+                {/* Twitter Card meta tags */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={proposal.title || ''} />
+                <meta name="twitter:description" content={description} />
+                <meta name="twitter:image" content={ogImageUrl} />
+            </Head>
 
             <div className="mt-7 mb-4 w-full md:w-3/4 lg:sticky lg:top-4 lg:mx-0 lg:w-1/3 lg:self-start xl:w-1/4">
                 <ProposalExtendedCard {...layoutProps} />
