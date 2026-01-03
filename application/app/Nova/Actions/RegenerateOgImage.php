@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Nova\Actions;
 
+use App\Jobs\GenerateProposalOgImage;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
@@ -29,23 +30,24 @@ class RegenerateOgImage extends Action
     public function handle(ActionFields $fields, Collection $models)
     {
         $disk = Storage::disk();
-        $deletedCount = 0;
+        $queuedCount = 0;
         $failedCount = 0;
 
         foreach ($models as $proposal) {
             $imagePath = "og-images/{$proposal->slug}.png";
 
             try {
+                // Delete existing cached image if it exists
                 if ($disk->exists($imagePath)) {
                     $disk->delete($imagePath);
-                    $deletedCount++;
-                } else {
-                    // Image doesn't exist, consider it successful (will be generated on next access)
-                    $deletedCount++;
                 }
+
+                // Dispatch job to generate new image in background
+                GenerateProposalOgImage::dispatch($proposal->slug);
+                $queuedCount++;
             } catch (\Exception $e) {
                 $failedCount++;
-                \Log::error('Failed to delete OG image', [
+                \Log::error('Failed to queue OG image regeneration', [
                     'proposal_id' => $proposal->id,
                     'slug' => $proposal->slug,
                     'error' => $e->getMessage(),
@@ -54,10 +56,10 @@ class RegenerateOgImage extends Action
         }
 
         if ($failedCount > 0) {
-            return Action::danger("Regenerated {$deletedCount} OG image(s), but {$failedCount} failed. Check logs for details.");
+            return Action::danger("Queued {$queuedCount} OG image(s) for regeneration, but {$failedCount} failed. Check logs for details.");
         }
 
-        return Action::message("Successfully regenerated {$deletedCount} OG image(s). Images will be generated on next access.");
+        return Action::message("Successfully queued {$queuedCount} OG image(s) for regeneration. Images will be generated in the background.");
     }
 
     /**
