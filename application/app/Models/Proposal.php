@@ -76,6 +76,7 @@ class Proposal extends Model implements IHasMetaData
         'link',
         'currency',
         'quickpitch_thumbnail',
+        'is_claimed',
     ];
 
     public $meiliIndexName = 'cx_proposals';
