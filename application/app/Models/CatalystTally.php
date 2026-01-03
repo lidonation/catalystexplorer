@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Interfaces\IHasMetaData;
-use App\Traits\HasMetaData;
-use App\Traits\HasModel;
+use App\Concerns\HasMetaData;
+use App\Concerns\HasModel;
+use App\Contracts\IHasMetaData;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;

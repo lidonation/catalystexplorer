@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Traits\HasAuthor;
-use App\Traits\HasIpfsFiles;
-use App\Traits\HasSignatures;
+use App\Concerns\HasAuthor;
+use App\Concerns\HasIpfsFiles;
+use App\Concerns\HasSignatures;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -97,7 +97,7 @@ class CatalystDrep extends Model
                         WHERE cvp.consumed = true
                         AND cs.model_id IS NOT NULL
                         AND reg.stake_pub = ?
-                        GROUP BY reg.stake_pub,funds.created_at,funds.title,cvp.voting_power,cs.model_id 
+                        GROUP BY reg.stake_pub,funds.created_at,funds.title,cvp.voting_power,cs.model_id
                         ORDER BY funds.created_at desc
             ', [$this->stake_address]);
             }

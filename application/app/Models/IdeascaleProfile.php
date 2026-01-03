@@ -4,22 +4,24 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Concerns\HasCatalystProposers;
+use App\Concerns\HasConnections;
+use App\Concerns\HasMetaData;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalStatus;
-use App\Traits\HasConnections;
-use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
 use Laravolt\Avatar\Facade as Avatar;
+use Spatie\Image\Enums\CropPosition;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Translatable\HasTranslations;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
@@ -27,7 +29,14 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 // #[ScopedBy(new LimitScope(64))]
 class IdeascaleProfile extends Model implements HasMedia
 {
-    use HasConnections, HasMetaData, HasRelationships, HasTranslations, HasUuids, InteractsWithMedia, Searchable;
+    use HasCatalystProposers,
+        HasConnections,
+        HasMetaData,
+        HasRelationships,
+        HasTranslations,
+        HasUuids,
+        InteractsWithMedia,
+        Searchable;
 
     public int $maxValuesPerFacet = 8000;
 
@@ -292,21 +301,6 @@ class IdeascaleProfile extends Model implements HasMedia
     //        )->where('type', 'proposal');
     //    }
 
-    /**
-     * Get all proposals using the polymorphic relationship.
-     * Fixed with proper type casting to handle UUID/string type mismatches.
-     */
-    public function proposals(): MorphToMany
-    {
-        return $this->morphToMany(
-            Proposal::class,
-            'profile',
-            'proposal_profiles',
-            'profile_id',
-            'proposal_id'
-        )->where('proposals.type', 'proposal');
-    }
-
     public function groups(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -347,18 +341,6 @@ class IdeascaleProfile extends Model implements HasMedia
                 return collect(range(1, 5))->mapWithKeys(fn ($rating) => [$rating => 0])->all();
             }
         );
-    }
-
-    /**
-     * Get the users who have claimed this ideascale profile through pivot table
-     * Reverse relationship of User::claimed_ideascale_profiles()
-     */
-    public function claimed_by_users()
-    {
-        return $this->belongsToMany(User::class, 'claimed_profiles', 'claimable_id', 'user_id')
-            ->where('claimable_type', static::class)
-            ->withPivot(['claimed_at'])
-            ->withTimestamps();
     }
 
     public function nfts(): HasMany
@@ -444,6 +426,23 @@ class IdeascaleProfile extends Model implements HasMedia
 
             return 0;
         }
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumbnail')
+            ->width(150)
+            ->height(150)
+            ->withResponsiveImages()
+            ->crop(150, 150, CropPosition::Top)
+            ->performOnCollections('profile');
+
+        $this->addMediaConversion('large')
+            ->width(1080)
+            ->height(1350)
+            ->crop(1080, 1350, CropPosition::Top)
+            ->withResponsiveImages()
+            ->performOnCollections('profile');
     }
 
     /**

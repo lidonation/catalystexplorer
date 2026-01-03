@@ -113,11 +113,12 @@ delegators_count: number | null;
 created_at: string | null;
 };
 export type CatalystProfileData = {
-id: string | null;
-name: string | null;
-username: string | null;
-claimed_by: string | null;
-catalyst_id: string | null;
+id?: string;
+name?: string;
+username?: string;
+claimed_by?: string;
+catalyst_id?: string;
+hero_img_url?: string;
 };
 export type CatalystTallyData = {
 id: string | null;
@@ -551,6 +552,7 @@ quickpitch?: string;
 quickpitch_length?: number;
 project_length?: number;
 users: any | null;
+team: any | null;
 reviews: any | null;
 fund: App.DataTransferObjects.FundData | null;
 opensource: boolean | null;
@@ -564,6 +566,11 @@ connections_count?: number;
 completed_proposals_count?: number;
 outstanding_proposals_count?: number;
 links?: any;
+};
+export type ProposalProfileData = {
+id?: string;
+proposal?: App.DataTransferObjects.ProposalData;
+model: App.DataTransferObjects.IdeascaleProfileData | App.DataTransferObjects.CatalystProfileData;
 };
 export type RankingData = {
 id?: string;

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Traits\HasAuthor;
-use App\Traits\HasModel;
+use App\Concerns\HasAuthor;
+use App\Concerns\HasModel;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 
 class Tx extends Model

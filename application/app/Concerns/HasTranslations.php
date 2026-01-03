@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 declare(strict_types=1);
 
-namespace App\Traits;
+namespace App\Concerns;
 
 use App;
 use App\Enums\StatusEnum;

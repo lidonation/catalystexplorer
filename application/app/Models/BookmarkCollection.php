@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Concerns\HasAuthor;
+use App\Concerns\HasIpfsFiles;
+use App\Concerns\HasMetaData;
+use App\Concerns\HasSignatures;
 use App\Enums\BookmarkVisibility;
 use App\Enums\VoteEnum;
 use App\Models\Scopes\PublicVisibilityScope;
 use App\Models\Scopes\PublishedScope;
-use App\Traits\HasAuthor;
-use App\Traits\HasIpfsFiles;
-use App\Traits\HasMetaData;
-use App\Traits\HasSignatures;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;

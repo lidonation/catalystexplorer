@@ -126,6 +126,10 @@ final class ProposalData extends Data
         #[DataCollectionOf(IdeascaleProfileData::class)]
         public ?DataCollection $users,
 
+        #[MapOutputName('team')]
+        #[DataCollectionOf(ProposalProfileData::class)]
+        public ?DataCollection $team,
+
         #[MapOutputName('reviews')]
         #[DataCollectionOf(ReviewData::class)]
         public ?DataCollection $reviews,

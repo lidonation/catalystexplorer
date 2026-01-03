@@ -49,8 +49,8 @@ export default function UserAvatar({
                 className={'rounded-full ' + size}
                 aria-label="User avatar"
             />
-            <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 transform opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                <div className="rounded border-2 border-black bg-white px-2 py-1 text-xs whitespace-nowrap text-black shadow-md">
+            <div className="pointer-events-none absolute bottom-full left-1/2 z-999 mb-2 -translate-x-1/2 transform opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                <div className="rounded border-2 border-black bg-white px-2 py-1 text-xs whitespace-nowrap text-black shadow-md relative">
                     {name}
                 </div>
             </div>

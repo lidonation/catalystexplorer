@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Traits\HasAuthor;
-use App\Traits\HasLinks;
-use App\Traits\HasMetaData;
-use App\Traits\HasModel;
-use App\Traits\HasTranslations;
+use App\Concerns\HasAuthor;
+use App\Concerns\HasLinks;
+use App\Concerns\HasMetaData;
+use App\Concerns\HasModel;
+use App\Concerns\HasTranslations;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;

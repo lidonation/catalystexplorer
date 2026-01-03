@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Traits\HasMetaData;
-use App\Traits\HasModel;
+use App\Concerns\HasMetaData;
+use App\Concerns\HasModel;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 
 class Meta extends Model

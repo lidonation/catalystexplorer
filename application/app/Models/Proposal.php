@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Concerns\HasAuthor;
+use App\Concerns\HasConnections;
+use App\Concerns\HasDto;
+use App\Concerns\HasMetaData;
+use App\Concerns\HasSignatures;
+use App\Concerns\HasTaxonomies;
+use App\Concerns\HasTranslations;
+use App\Contracts\IHasMetaData;
 use App\Enums\CatalystCurrencies;
-use App\Interfaces\IHasMetaData;
 use App\Models\Pivot\ProposalProfile;
 use App\Models\Scopes\ProposalTypeScope;
 use App\Services\VideoService;
-use App\Traits\HasAuthor;
-use App\Traits\HasConnections;
-use App\Traits\HasDto;
-use App\Traits\HasMetaData;
-use App\Traits\HasSignatures;
-use App\Traits\HasTaxonomies;
-use App\Traits\HasTranslations;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;

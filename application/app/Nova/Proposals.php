@@ -109,11 +109,11 @@ class Proposals extends Resource
                 ->sortable()
                 ->displayUsing(function ($value) {
                     if (strlen($value) > 30) {
-                        return substr($value, 0, 30) . '...';
+                        return substr($value, 0, 30).'...';
                     }
+
                     return $value;
                 }),
-
 
             Text::make(__('Title'), 'title')
                 ->required()

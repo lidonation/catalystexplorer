@@ -2,38 +2,43 @@ import Title from '@/Components/atoms/Title';
 import UserAvatar from '@/Components/UserAvatar';
 import { PageProps } from '@/types';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
+import ProposalProfileData = App.DataTransferObjects.ProposalProfileData;
+import CatalystProfileData = App.DataTransferObjects.CatalystProfileData;
 
 interface ProposalUsers extends Record<string, unknown> {
-    users: App.DataTransferObjects.IdeascaleProfileData[];
-    onUserClick: (user: App.DataTransferObjects.IdeascaleProfileData) => void;
+    team: ProposalProfileData[];
+    onUserClick: (user: App.DataTransferObjects.IdeascaleProfileData | CatalystProfileData) => void;
     className?: string;
 }
 
 export default function ProposalUsers({
-    users,
+    team,
     onUserClick,
     className,
 }: PageProps<ProposalUsers>) {
     const { t } = useLaravelReactI18n();
 
+    console.log({team});
+
     // Limit the users array to the first 5
-    const visibleUsers = users?.slice(0, 5);
-    const remainingCount = users?.length - visibleUsers?.length;
+    const visibleUsers = team?.slice(0, 5);
+    const remainingCount = team?.length - visibleUsers?.length;
 
     return (
         <section
-            className={`flex items-center justify-between pt-3 ${className}`}
+            className={`flex items-center justify-between pt-3 w-full ${className}`}
             aria-labelledby="team-heading"
         >
             <Title level="5" id="team-heading">
                 {t('teams')}
             </Title>
             <ul className="flex cursor-pointer -space-x-2 py-1.5">
-                {visibleUsers?.map((user) => (
-                    <li key={user.id} onClick={() => onUserClick(user)}>
+                {visibleUsers?.map((profile) => (
+                    <li key={profile?.id} onClick={() => onUserClick(profile.model)}>
                         <UserAvatar
                             size="size-8"
-                            imageUrl={user.hero_img_url}
+                            name={profile?.model?.name}
+                            imageUrl={profile?.model?.hero_img_url}
                         />
                     </li>
                 ))}

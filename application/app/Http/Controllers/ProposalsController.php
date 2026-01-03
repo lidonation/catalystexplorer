@@ -17,7 +17,6 @@ use App\Models\Fund;
 use App\Models\IdeascaleProfile;
 use App\Models\Metric;
 use App\Models\Proposal;
-use App\Models\User;
 use App\Repositories\ProposalRepository;
 use App\Services\VideoService;
 use App\Services\WalletInfoService;
