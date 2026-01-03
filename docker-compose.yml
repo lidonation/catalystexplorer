@@ -26,9 +26,14 @@ services:
       - "host.docker.internal:host-gateway"
     ports:
       - "${APP_PORT:-80}:8000"
+      - "${APP_SSL_PORT:-443}:443"
+      - "${APP_SSL_PORT:-443}:443/udp"
       - "${VITE_PORT:-5173}:${VITE_PORT:-5173}"
     environment:
       CONTAINER_ROLE: "app"
+      CADDY_SERVER_SERVER_NAME: "${CADDY_SERVER_SERVER_NAME:-localhost:8000}"
+      CADDY_SERVER_TLS_CONFIG: "${CADDY_SERVER_TLS_CONFIG:-}"
+      FRANKENPHP_PORT: "${FRANKENPHP_PORT:-8000}"
       IGNITION_LOCAL_SITES_PATH: "${PWD}"
       LARAVEL_SAIL: 1
       PHP_OPCACHE_ENABLE: 0
@@ -43,6 +48,7 @@ services:
     volumes:
       - ./application:/var/www
       - ./docker/scripts:/scripts
+      - ./docker/certs:/etc/caddy/certs:ro
       - ./data/app/data:/data
     networks:
       - catalystexplorer-net

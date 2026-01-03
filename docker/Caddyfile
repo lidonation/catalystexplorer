@@ -10,7 +10,13 @@
 	metrics
 }
 
-{$CADDY_SERVER_SERVER_NAME} {
+{$CADDY_SERVER_SERVER_NAME:localhost:8000} {
+	# Bind to both TCP and UDP for HTTP/3 support
+	bind 0.0.0.0
+	
+	# TLS configuration for HTTPS/HTTP2/HTTP3 (optional, only if certs are provided)
+	{$CADDY_SERVER_TLS_CONFIG:}
+	
 	log {
 		level WARN
 

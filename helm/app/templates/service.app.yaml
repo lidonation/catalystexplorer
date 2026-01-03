@@ -11,6 +11,14 @@ spec:
       name: app
       targetPort: app
       protocol: TCP
+    - port: 443
+      name: https
+      targetPort: 443
+      protocol: TCP
+    - port: 443
+      name: http3
+      targetPort: 443
+      protocol: UDP
     - port: 13714
       name: ssr
       targetPort: ssr

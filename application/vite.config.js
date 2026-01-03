@@ -3,7 +3,44 @@ import laravel from 'laravel-vite-plugin';
 import react from '@vitejs/plugin-react';
 import wasm from "vite-plugin-wasm";
 import path from "node:path";
+import fs from "node:fs";
 import i18n from 'laravel-react-i18n/vite';
+
+/**
+ * Detect server configuration based on available certificates
+ * If local development certificates exist, enable HTTPS
+ */
+function detectServerConfig() {
+    const certPath = path.resolve(__dirname, '../docker/certs/catalystexplorer.local.crt');
+    const keyPath = path.resolve(__dirname, '../docker/certs/catalystexplorer.local.key');
+    
+    // Check if certificates exist for HTTPS
+    const hasCerts = fs.existsSync(certPath) && fs.existsSync(keyPath);
+    
+    if (hasCerts) {
+        console.log('🔒 HTTPS enabled for Vite dev server');
+        return {
+            host: '0.0.0.0',
+            https: {
+                cert: fs.readFileSync(certPath),
+                key: fs.readFileSync(keyPath),
+            },
+            hmr: {
+                host: 'catalystexplorer.local',
+                protocol: 'wss',
+            },
+        };
+    }
+    
+    // Fallback to HTTP
+    console.log('⚠️  HTTP mode - generate certificates for HTTPS/HTTP2/HTTP3 support');
+    return {
+        host: '0.0.0.0',
+        hmr: {
+            host: 'localhost',
+        },
+    };
+}
 
 export default defineConfig({
     plugins: [
@@ -29,12 +66,7 @@ export default defineConfig({
         },
         extensions: ['.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json'],
     },
-    // server: {
-    //     hmr: {
-    //         host: 'localhost',
-    //     },
-    //     host: '0.0.0.0',
-    // },
+    server: detectServerConfig(),
     ssr: {
         noExternal: ['@inertiajs/server'],
         external: [

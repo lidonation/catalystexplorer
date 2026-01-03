@@ -14,6 +14,90 @@ CatalystExplorer is a Laravel-based platform for exploring Project Catalyst prop
 
 ## Development Setup Commands
 
+### HTTP/3 Setup
+
+The application supports HTTP/3 (QUIC) for improved performance and latency.
+
+#### Local Development Setup
+```bash
+# Generate long-lived self-signed certificates (10-year validity)
+./docker/scripts/generate-local-certs.sh
+
+# Install the generated certificate on your system
+# macOS:
+sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain ./docker/certs/catalystexplorer.local.crt
+
+# Linux (Ubuntu/Debian):
+sudo cp ./docker/certs/catalystexplorer.local.crt /usr/local/share/ca-certificates/
+sudo update-ca-certificates
+
+# Update docker/Caddyfile (line 13) with your domain and certificates:
+catalystexplorer.local:443 {
+	tls /etc/caddy/certs/catalystexplorer.local.crt /etc/caddy/certs/catalystexplorer.local.key
+
+# Update application/.env file:
+APP_URL=https://catalystexplorer.local
+APP_SSL_PORT=443
+FRANKENPHP_PORT=443
+
+# Add to /etc/hosts:
+echo "127.0.0.1 catalystexplorer.local" | sudo tee -a /etc/hosts
+
+# Rebuild and restart Docker containers:
+docker-compose build catalystexplorer.com
+make restart
+```
+
+**Note:** Vite will automatically detect the certificates and enable HTTPS for the dev server and HMR (Hot Module Replacement).
+
+**Verify HTTP/3 Support:**
+```bash
+# Test HTTP/3 connection (requires curl with HTTP/3 support)
+curl --http3 https://catalystexplorer.local
+
+# Check Alt-Svc header
+curl -I https://catalystexplorer.local | grep -i alt-svc
+```
+
+#### Remote/Production Setup
+
+HTTP/3 is automatically configured in production via:
+- **FrankenPHP**: HTTP/3 is enabled by default when using HTTPS (no additional config needed)
+- **Traefik**: Middleware adds `Alt-Svc` header for HTTP/3 advertisement
+- **Kubernetes**: Service exposes UDP port 443 for QUIC traffic
+- **Certificates**: Let's Encrypt certificates via cert-manager (already configured)
+
+**Traefik Configuration Required:**
+
+Your cluster administrator needs to:
+
+1. Deploy the HTTP/3 middleware:
+   ```bash
+   kubectl apply -f helm/traefik/http3-middleware.yaml -n traefik
+   ```
+
+2. Update Traefik's static configuration to enable HTTP/3 entry points:
+   ```yaml
+   entryPoints:
+     websecure:
+       address: ":443"
+       http3:
+         advertisedPort: 443
+     websecure-udp:
+       address: ":443/udp"
+   ```
+
+3. Ensure Traefik service exposes UDP port 443:
+   ```bash
+   kubectl get svc traefik -n traefik -o yaml
+   # Should include port 443/UDP
+   ```
+
+**Notes:**
+- HTTP/3 requires Traefik v2.7+ and modern browsers
+- Certificates are automatically injected via the `wildcard-catalystexplorer-ssl` secret
+- The application falls back to HTTP/2 if HTTP/3 is unavailable
+
 ### Initial Setup
 ```bash
 # Clone and setup the project

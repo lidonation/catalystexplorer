@@ -9,13 +9,16 @@ else
     php -d variables_order=EGPCS /var/www/artisan horizon
     ;;
   app | a)
+    # Use FRANKENPHP_PORT env var or default to 8000
+    FRANKENPHP_PORT="${FRANKENPHP_PORT:-8000}"
+    
     if [ "$OCTANE_WATCH" = "true" ]; then
       # Enable watch mode for Octane
-      php /var/www/artisan octane:frankenphp --workers=3 --max-requests=10 --host=0.0.0.0 --port=8000 --admin-port=2019 --caddyfile=/etc/caddy/Caddyfile --watch
+      php /var/www/artisan octane:frankenphp --workers=3 --max-requests=10 --host=0.0.0.0 --port=$FRANKENPHP_PORT --admin-port=2019 --caddyfile=/etc/caddy/Caddyfile --watch
     else
       php /var/www/artisan search:index create
       # Run without watch mode
-      php /var/www/artisan octane:frankenphp --workers=2 --max-requests=50 --host=0.0.0.0 --port=8000 --admin-port=2019 --caddyfile=/etc/caddy/Caddyfile --watch
+      php /var/www/artisan octane:frankenphp --workers=2 --max-requests=50 --host=0.0.0.0 --port=$FRANKENPHP_PORT --admin-port=2019 --caddyfile=/etc/caddy/Caddyfile --watch
     fi
     ;;
   *)
