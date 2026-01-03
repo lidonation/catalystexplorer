@@ -13,19 +13,27 @@ interface ProposalLayoutProps {
     proposal: App.DataTransferObjects.ProposalData;
     globalQuickPitchView: boolean;
     setGlobalQuickPitchView?: (value: boolean) => void;
+    ogMeta?: {
+        ogImageUrl: string;
+        proposalUrl: string;
+        description: string;
+    };
 }
 
 const ProposalLayout = ({
     children,
     proposal,
     globalQuickPitchView,
+    ogMeta,
 }: ProposalLayoutProps) => {
     const { t } = useLaravelReactI18n();
 
-    // Construct Open Graph image URL
-    const ogImageUrl = `${window.location.origin}/og-image/proposals/${proposal.slug}`;
-    const proposalUrl = window.location.href;
-    const description = proposal.social_excerpt || proposal.excerpt || proposal.title || '';
+    // Use server-side OG meta data if available (for SSR), otherwise construct client-side
+    const ogImageUrl = ogMeta?.ogImageUrl ??
+        (typeof window !== 'undefined' ? `${window.location.origin}/og-image/proposals/${proposal.slug}` : '');
+    const proposalUrl = ogMeta?.proposalUrl ??
+        (typeof window !== 'undefined' ? window.location.href : '');
+    const description = (ogMeta?.description ?? proposal.social_excerpt )|| proposal.excerpt || proposal.title || '';
 
     const [userSelected, setUserSelected] =
         useState<App.DataTransferObjects.IdeascaleProfileData | null>(null);
@@ -131,7 +139,7 @@ const ProposalLayout = ({
                 <meta property="og:image" content={ogImageUrl} />
                 <meta property="og:url" content={proposalUrl} />
                 <meta property="og:type" content="website" />
-                
+
                 {/* Twitter Card meta tags */}
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={proposal.title || ''} />

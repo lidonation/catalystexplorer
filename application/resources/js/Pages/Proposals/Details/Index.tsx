@@ -25,6 +25,11 @@ interface IndexProps {
         favoriteCount: number;
         duration?: number;
     } | null;
+    ogMeta?: {
+        ogImageUrl: string;
+        proposalUrl: string;
+        description: string;
+    };
 }
 
 const Index = ({
@@ -37,6 +42,7 @@ const Index = ({
     userHasProfileInProposal = false,
     isInActiveFund = false,
     quickpitchMetadata = null,
+    ogMeta,
 }: IndexProps) => {
     const { t } = useLaravelReactI18n();
 
@@ -69,6 +75,7 @@ const Index = ({
             proposal={proposal}
             globalQuickPitchView={globalQuickPitchView}
             setGlobalQuickPitchView={setGlobalQuickPitchView}
+            ogMeta={ogMeta}
         >
             <div className="bg-background shadow-cx-box-shadow flex flex-col items-start justify-between gap-5 self-stretch overflow-x-auto rounded-xl p-4 sm:flex-row sm:gap-2 sm:p-6">
                 <div className="flex w-120 items-center justify-start gap-4 overflow-x-auto">

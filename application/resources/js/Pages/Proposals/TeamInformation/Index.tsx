@@ -9,6 +9,11 @@ interface ConnectionPageProps {
     proposal: ProposalData;
     globalQuickPitchView: boolean;
     setGlobalQuickPitchView?: (value: boolean) => void;
+    ogMeta?: {
+        ogImageUrl: string;
+        proposalUrl: string;
+        description: string;
+    };
 }
 
 export default function Connections({
@@ -16,12 +21,14 @@ export default function Connections({
     proposal,
     globalQuickPitchView,
     setGlobalQuickPitchView,
+    ogMeta,
 }: ConnectionPageProps) {
     return (
         <ProposalLayout
             proposal={proposal}
             globalQuickPitchView={globalQuickPitchView}
             setGlobalQuickPitchView={setGlobalQuickPitchView}
+            ogMeta={ogMeta}
         >
             <Head title={`${proposal.title} - Connections`} />
 

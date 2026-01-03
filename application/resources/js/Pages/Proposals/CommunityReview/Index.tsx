@@ -15,6 +15,11 @@ interface CommunityReviewIndexProps {
     setGlobalQuickPitchView?: (value: boolean) => void;
     reviews: PaginatedData<ReviewData[]>;
     aggregatedRatings: { [s: string]: number } | ArrayLike<number>;
+    ogMeta?: {
+        ogImageUrl: string;
+        proposalUrl: string;
+        description: string;
+    };
 }
 
 const Index = ({
@@ -23,6 +28,7 @@ const Index = ({
     setGlobalQuickPitchView,
     reviews,
     aggregatedRatings,
+    ogMeta,
 }: CommunityReviewIndexProps) => {
     const { t } = useLaravelReactI18n();
 
@@ -31,6 +37,7 @@ const Index = ({
             proposal={proposal}
             globalQuickPitchView={globalQuickPitchView}
             setGlobalQuickPitchView={setGlobalQuickPitchView}
+            ogMeta={ogMeta}
         >
             <Head title={`${proposal.title} - ${t('reviews')}`} />
             <WhenVisible data="reviews" fallback={<div>Loading Reviews</div>}>

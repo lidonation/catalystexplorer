@@ -23,12 +23,18 @@ interface IndexProps {
     userCompleteProposalsCount?: number;
     userOutstandingProposalsCount?: number;
     catalystConnectionsCount?: number;
+    ogMeta?: {
+        ogImageUrl: string;
+        proposalUrl: string;
+        description: string;
+    };
 }
 
 const Index: React.FC<IndexProps> = ({
     proposal,
     globalQuickPitchView,
-    setGlobalQuickPitchView
+    setGlobalQuickPitchView,
+    ogMeta,
 }) => {
     const { t } = useLaravelReactI18n();
 
@@ -91,6 +97,7 @@ const Index: React.FC<IndexProps> = ({
             proposal={proposal}
             globalQuickPitchView={globalQuickPitchView}
             setGlobalQuickPitchView={setGlobalQuickPitchView}
+            ogMeta={ogMeta}
         >
             <div className="bg-background shadow-cx-box-shadow flex flex-col items-start justify-between gap-5 self-stretch rounded-xl p-4 sm:flex-row sm:gap-2 sm:p-6">
                 <div className="flex w-full items-center justify-start gap-4 overflow-x-auto">

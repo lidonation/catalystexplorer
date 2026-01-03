@@ -22,6 +22,11 @@ class ProposalCompletionProgress extends Progress
         $completed = (clone $query)->where('status', ProposalStatus::complete()->value)->count();
         $funded = (clone $query)->whereNotNull('funded_at')->count();
 
+        // Avoid division by zero when there are no funded proposals
+        if ($funded === 0) {
+            return $this->result(0, 1)->suffix('/ 0');
+        }
+
         return $this->result($completed, $funded)->suffix("/ {$funded}");
     }
 
@@ -36,6 +41,7 @@ class ProposalCompletionProgress extends Progress
 
             foreach ($filters as $filter) {
                 foreach ($filter as $filterClass => $value) {
+                    // Skip if value is empty
                     if (empty($value) && $value !== false && $value !== 0 && $value !== '0') {
                         continue;
                     }
@@ -47,8 +53,21 @@ class ProposalCompletionProgress extends Progress
                         }
                     }
 
-                    $filterInstance = new $filterClass;
-                    $query = $filterInstance->apply($request, $query, $value);
+                    // Validate that $filterClass is actually a class name (not a field like "DateTime:funded_at")
+                    if (! class_exists($filterClass)) {
+                        continue;
+                    }
+
+                    try {
+                        $filterInstance = new $filterClass;
+                        $query = $filterInstance->apply($request, $query, $value);
+                    } catch (\Throwable $e) {
+                        // Skip this filter if it fails to apply
+                        \Log::warning('Failed to apply filter in ProposalCompletionProgress', [
+                            'filter' => $filterClass,
+                            'error' => $e->getMessage(),
+                        ]);
+                    }
                 }
             }
         }

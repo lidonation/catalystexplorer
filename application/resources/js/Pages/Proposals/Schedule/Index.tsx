@@ -8,12 +8,18 @@ interface IndexProps {
     proposal: App.DataTransferObjects.ProposalData;
     globalQuickPitchView: boolean;
     setGlobalQuickPitchView?: (value: boolean) => void;
+    ogMeta?: {
+        ogImageUrl: string;
+        proposalUrl: string;
+        description: string;
+    };
 }
 
 const Index = ({
     proposal,
     globalQuickPitchView,
     setGlobalQuickPitchView,
+    ogMeta,
 }: IndexProps) => {
     const { t } = useLaravelReactI18n();
 
@@ -22,6 +28,7 @@ const Index = ({
             proposal={proposal}
             globalQuickPitchView={globalQuickPitchView}
             setGlobalQuickPitchView={setGlobalQuickPitchView}
+            ogMeta={ogMeta}
         >
             <div>
                 <WhenVisible

@@ -261,8 +261,17 @@ class ProposalsController extends Controller
 
         $teamConnections = $this->generateTeamNetworkData($proposal);
 
+        $ogImageUrl = url("/og-image/proposals/{$proposal->slug}");
+        $proposalUrl = url("/{$request->segment(1)}/proposals/{$proposal->slug}/{$request->segment(4)}");
+        $description = $proposal->social_excerpt ?? $proposal->excerpt ?? $proposal->title ?? '';
+
         $props = [
             'proposal' => ProposalData::from($proposal),
+            'ogMeta' => [
+                'ogImageUrl' => $ogImageUrl,
+                'proposalUrl' => $proposalUrl,
+                'description' => $description,
+            ],
             'proposals' => Inertia::optional(
                 fn () => Cache::remember(
                     "proposal:{$proposalId}:proposals:page:{$currentPage}",
