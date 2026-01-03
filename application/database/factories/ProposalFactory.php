@@ -34,13 +34,14 @@ class ProposalFactory extends Factory
             'https://vimeo.com/857039562',
         ];
 
+        $titleText = $this->faker->words($this->faker->numberBetween(4, 12), true);
+
         return [
             'user_id' => null,
-            
             'campaign_id' => Campaign::inRandomOrder()->value('id'),
-            'fund_id' => Fund::inRandomOrder()->value('id'),        
-            'title' => json_encode(['en' => $this->faker->words($this->faker->numberBetween(4, 12), true)]),
-            'slug' => $this->faker->unique()->slug(),
+            'fund_id' => Fund::inRandomOrder()->value('id'),
+            'title' => ['en' => $titleText],
+            'slug' => Str::slug($titleText) . '-' . $this->faker->unique()->numberBetween(1000, 9999),
             'website' => $this->faker->url(),
             'excerpt' => $this->faker->text(200),
             'amount_requested' => $this->faker->numberBetween(0, 10000000),
@@ -77,7 +78,7 @@ class ProposalFactory extends Factory
                     return Arr::random($sections)();
                 })
                 ->implode("\n\n")]),
-                
+
             'currency' => $this->faker->randomElement(CatalystCurrencies::toArray()),
             'opensource' => $this->faker->boolean(),
             'ranking_total' => $this->faker->numberBetween(0, 100),

@@ -45,7 +45,7 @@ const Index = ({
     const canCreateQuickPitch =
         !proposal?.quickpitch && userHasProfileInProposal && isInActiveFund;
 
-    const showQuickPitch = isInActiveFund && proposal?.quickpitch && isClaimed && quickpitchMetadata;    
+    const showQuickPitch = !!proposal?.quickpitch;
 
     const formatDuration = (seconds?: number | string): string => {
         if (seconds === undefined || seconds === null) return '00:00:00';
