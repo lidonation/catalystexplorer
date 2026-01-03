@@ -1,3 +1,10 @@
+## [1.54.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.54.0...v1.54.1) (2026-01-03)
+
+
+### Bug Fixes
+
+* **k8s:** use named target ports for HTTP/3 service ([a135559](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/a1355594597ceb3cca27ebba5df1bbd511e8ec94))
+
 # [1.54.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.53.2...v1.54.0) (2025-12-29)
 
 
