@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Jobs;
 
 use App\Models\Campaign;
+use App\Models\IdeascaleProfile;
 use App\Models\Meta;
+use App\Models\Pivot\ProposalProfile;
 use App\Models\Proposal;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
@@ -28,9 +30,8 @@ class SeedProposalsForCampaign implements ShouldQueue
 
     public function handle(): void
     {
-        $proposals = Proposal::factory()
+        Proposal::factory()
             ->count($this->count)
-            ->hasAttached($this->ideascaleProfiles->random(fake()->randomElement([0, 1, 3, 4])))
             ->state([
                 'campaign_id' => $this->campaign->id,
                 'fund_id' => $this->campaign->fund->id,
@@ -41,6 +42,19 @@ class SeedProposalsForCampaign implements ShouldQueue
                 'model_type' => Proposal::class,
             ]))
             ->hasAttached($this->tags->random(), ['model_type' => Proposal::class])
-            ->create();
+            ->create()
+            ->each(function (Proposal $proposal) {
+                // Create 1-7 team members (ProposalProfile records)
+                $teamSize = fake()->numberBetween(1, 7);
+                $selectedProfiles = $this->ideascaleProfiles->random(min($teamSize, $this->ideascaleProfiles->count()));
+
+                foreach ($selectedProfiles as $profile) {
+                    ProposalProfile::create([
+                        'proposal_id' => $proposal->id,
+                        'profile_id' => $profile->id,
+                        'profile_type' => IdeascaleProfile::class,
+                    ]);
+                }
+            });
     }
 }
