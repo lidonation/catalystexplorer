@@ -14,6 +14,7 @@ spec:
   entryPoints:
     - web
     - websecure
+    - websecure-udp
   tls:
     secretName: wildcard-catalystexplorer-ssl
   routes:
@@ -27,10 +28,13 @@ spec:
           namespace: traefik
         - name: traefik-default-headers@kubernetescrd
           namespace: traefik
+        - name: traefik-http3-headers@kubernetescrd
+          namespace: traefik
       services:
         - name: "{{ $.Chart.Name }}-app-service"
           namespace: {{ .Values.namespace }}
           port: 8000
+          scheme: h2c
 {{- end -}}
 {{- if eq .Values.services.app.environment "preview" -}}
 apiVersion: traefik.io/v1alpha1
@@ -48,6 +52,7 @@ spec:
   entryPoints:
     - web
     - websecure
+    - websecure-udp
   tls:
     secretName: wildcard-catalystexplorer-ssl
   routes:
@@ -59,9 +64,12 @@ spec:
           namespace: traefik
         - name: traefik-default-headers@kubernetescrd
           namespace: traefik
+        - name: traefik-http3-headers@kubernetescrd
+          namespace: traefik
       services:
         - name: "{{ $.Chart.Name }}-app-service"
           namespace: {{ .Values.namespace }}
           passHostHeader: true
           port: 8000
+          scheme: h2c
 {{- end -}}

@@ -84,6 +84,12 @@ spec:
             - name: app
               containerPort: 8000
               protocol: TCP
+            - name: https
+              containerPort: 443
+              protocol: TCP
+            - name: http3
+              containerPort: 443
+              protocol: UDP
           volumeMounts:
             - name: "{{ .Values.namespace }}-web-storage-pv"
               mountPath: {{ .Values.services.app.persistence.mountPath }}
