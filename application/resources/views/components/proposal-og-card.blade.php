@@ -21,7 +21,7 @@
     </style>
 </head>
 <body>
-    <div class="w-full h-full flex items-center justify-center p-8">
+    <div class="w-full h-full flex items-center justify-center px-8 py-16">
         <header class="text-white min-h-[10rem] w-full rounded-xl {{ $proposal->status === 'complete' ? 'gradient-complete' : 'gradient-default' }} flex flex-col justify-between p-8">
             <div class="flex items-center justify-between mb-6">
                 <!-- Badges (Left) -->
