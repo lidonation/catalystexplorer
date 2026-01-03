@@ -810,6 +810,7 @@ class Proposal extends Model implements IHasMetaData
                     return false;
                 }
 
+                // Check if ANY team member is claimed
                 foreach ($teamMembers as $teamMember) {
                     $profile = $teamMember->model;
 
@@ -817,18 +818,27 @@ class Proposal extends Model implements IHasMetaData
                         continue;
                     }
 
+                    // Check claimed_by_uuid field for IdeascaleProfile
+                    if (isset($profile->claimed_by_uuid) && ! is_null($profile->claimed_by_uuid)) {
+                        return true;
+                    }
+
+                    // Check claimed_by field for CatalystProfile
+                    if (isset($profile->claimed_by) && ! is_null($profile->claimed_by)) {
+                        return true;
+                    }
+
+                    // Check claimed_by_users relationship (pivot table)
                     if (method_exists($profile, 'claimed_by_users')) {
                         $claimedUsersCount = $profile->claimed_by_users()->count();
-
-                        if ($claimedUsersCount === 0) {
-                            return false;
+                        if ($claimedUsersCount > 0) {
+                            return true;
                         }
-                    } else {
-                        return false;
                     }
                 }
 
-                return true;
+                // No team member is claimed
+                return false;
             }
         );
     }
