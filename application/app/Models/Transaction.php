@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Interfaces\IHasMetaData;
-use App\Traits\HasMetaData;
+use App\Concerns\HasMetaData;
+use App\Contracts\IHasMetaData;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Laravel\Scout\Searchable;

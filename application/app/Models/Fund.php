@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Concerns\HasMetaData;
 use App\Enums\CatalystCurrencies;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalFundingStatus;
 use App\Enums\ProposalStatus;
 use App\Models\Scopes\OrderByLaunchedDateScope;
-use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;

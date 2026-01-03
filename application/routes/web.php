@@ -459,6 +459,8 @@ Route::localized(
         Route::prefix('lists')->as('lists.')->group(function () {
             Route::get('/', [BookmarksController::class, 'index'])
                 ->name('index');
+
+            Route::get('/{bookmarkCollection}', fn(string $bookmarkCollection) => redirect(route('lists.view', ['bookmarkCollection' => $bookmarkCollection, 'type' => 'proposals'])));
             Route::get('/{bookmarkCollection}/{type}/download-pdf', [BookmarksController::class, 'downloadPdf'])
                 ->name('downloadPdf');
             Route::get('/{bookmarkCollection}/{type}/download-png', [BookmarksController::class, 'downloadPng'])
@@ -466,6 +468,7 @@ Route::localized(
             Route::get('/{bookmarkCollection}/{type?}', [BookmarksController::class, 'view'])
                 ->name('view')
                 ->where('bookmarkCollection', '[0-9a-fA-F-]+');
+
             Route::post('/{bookmarkCollectionId}/stream', [BookmarksController::class, 'streamBookmarkItems'])
                 ->name('stream')
                 ->where('bookmarkCollectionId', '[0-9a-fA-F-]+');

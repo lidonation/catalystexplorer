@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Concerns\HasMetaData;
 use App\Enums\ProposalSearchParams;
-use App\Traits\HasMetaData;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

@@ -13,6 +13,7 @@ import ProposalFundingStatus from './ProposalFundingStatus';
 import ProposalSolution from './ProposalSolution';
 import ProposalProblem from './ProposalProblem';
 import ProposalProjectStatus from './ProposalProjectStatus';
+import ProposalUsers from '@/Pages/Proposals/Partials/ProposalUsers.tsx';
 
 export default function ProposalExtendedCard({
     proposal,
@@ -167,13 +168,9 @@ export default function ProposalExtendedCard({
                     className={`flex items-center justify-between pt-3`}
                     aria-labelledby="team-heading"
                 >
-                    <Title level="4" id="team-heading" className="font-medium">
-                        {t('teams')}
-                    </Title>
-                    <IdeascaleProfileUsers
-                        users={proposal?.users}
+                    <ProposalUsers
+                        team={proposal?.team}
                         onUserClick={wrappedHandleUserClick}
-                        className="bg-content-light"
                         toolTipProps={t('proposals.viewTeam')}
                     />
                 </div>

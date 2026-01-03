@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Concerns\HasSignatures;
 use App\Mail\PasswordResetMail;
 use App\Mail\WelcomeEmailMail;
 use App\Models\Pivot\ClaimedProfile;
-use App\Traits\HasSignatures;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;

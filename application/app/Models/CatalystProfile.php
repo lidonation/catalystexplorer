@@ -4,38 +4,35 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Concerns\HasCatalystProposers;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Spatie\Image\Enums\CropPosition;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class CatalystProfile extends Model
+class CatalystProfile extends Model implements HasMedia
 {
-    use HasUuids;
+    use HasCatalystProposers, HasUuids, InteractsWithMedia;
 
     public $guarded = [];
 
-    /**
-     * Get all proposals that are associated with this catalyst profile.
-     */
-    public function proposals(): MorphToMany
-    {
-        return $this->morphToMany(
-            Proposal::class,
-            'profile',
-            'proposal_profiles',
-            'profile_id',
-            'proposal_id'
-        );
-    }
+    protected $appends = ['hero_img_url'];
 
-    /**
-     * Get the users who have claimed this catalyst profile through pivot table
-     * Reverse relationship of User::claimed_catalyst_profiles()
-     */
-    public function claimed_by_users()
+    public function registerMediaConversions(?Media $media = null): void
     {
-        return $this->belongsToMany(User::class, 'claimed_profiles', 'claimable_id', 'user_id')
-            ->where('claimable_type', static::class)
-            ->withPivot(['claimed_at'])
-            ->withTimestamps();
+        $this->addMediaConversion('thumbnail')
+            ->width(150)
+            ->height(150)
+            ->withResponsiveImages()
+            ->crop(150, 150, CropPosition::Top)
+            ->performOnCollections('profile');
+
+        $this->addMediaConversion('large')
+            ->width(1080)
+            ->height(1350)
+            ->crop(1080, 1350, CropPosition::Top)
+            ->withResponsiveImages()
+            ->performOnCollections('profile');
     }
 }

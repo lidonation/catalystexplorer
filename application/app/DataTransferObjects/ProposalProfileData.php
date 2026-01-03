@@ -9,25 +9,15 @@ use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 #[TypeScript]
-class CatalystProfileData extends Data
+final class ProposalProfileData extends Data
 {
     public function __construct(
         #[TypeScriptOptional]
         public ?string $id,
 
         #[TypeScriptOptional]
-        public ?string $name,
+        public ?ProposalData $proposal,
 
-        #[TypeScriptOptional]
-        public ?string $username,
-
-        #[TypeScriptOptional]
-        public ?string $claimed_by,
-
-        #[TypeScriptOptional]
-        public ?string $catalyst_id,
-
-        #[TypeScriptOptional]
-        public ?string $hero_img_url,
+        public IdeascaleProfileData|CatalystProfileData $model
     ) {}
 }

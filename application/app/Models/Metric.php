@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Concerns\HasRules;
 use App\Enums\MetricCountBy;
 use App\Enums\MetricQueryTypes;
 use App\Enums\MetricTypes;
 use App\Enums\StatusEnum;
 use App\Repositories\ProposalRepository;
-use App\Traits\HasRules;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\MorphMany;

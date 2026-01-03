@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Concerns\HasAuthor;
 use App\Observers\AnnouncementObserver;
-use App\Traits\HasAuthor;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
