@@ -93,10 +93,21 @@ Your cluster administrator needs to:
    # Should include port 443/UDP
    ```
 
+**Deploy/Update Application:**
+   ```bash
+   # Deploy to production
+   helm upgrade www-catalystexplorer.mainnet ./helm/app -n catalystexplorer -f values/production.yaml
+   
+   # Deploy to preview
+   helm upgrade www-catalystexplorer.preview ./helm/app -n catalystexplorer-preview -f values/preview.yaml
+   ```
+
 **Notes:**
 - HTTP/3 requires Traefik v2.7+ and modern browsers
 - Certificates are automatically injected via the `wildcard-catalystexplorer-ssl` secret
 - The application falls back to HTTP/2 if HTTP/3 is unavailable
+- The service uses named target ports (`https` and `http3`) to support both TCP and UDP on port 443
+- If using Cloudflare, enable HTTP/3 in Network settings for full support
 
 ### Initial Setup
 ```bash
