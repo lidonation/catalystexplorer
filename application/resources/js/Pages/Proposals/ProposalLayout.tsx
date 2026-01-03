@@ -65,6 +65,9 @@ const ProposalLayout = ({
     const tabs = useMemo(() => generateTabs(t, tabConfig), [t, tabConfig]);
 
     useEffect(() => {
+        // Skip during SSR
+        if (typeof window === 'undefined') return;
+
         const currentPath = window.location.pathname;
 
         const matchingTab = tabs.find((tab) => {

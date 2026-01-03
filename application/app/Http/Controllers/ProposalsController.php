@@ -262,7 +262,7 @@ class ProposalsController extends Controller
         $teamConnections = $this->generateTeamNetworkData($proposal);
 
         $ogImageUrl = url("/og-image/proposals/{$proposal->slug}");
-        $proposalUrl = url("/{$request->segment(1)}/proposals/{$proposal->slug}/{$request->segment(4)}");
+        $proposalUrl = $request->url(); // Use the actual current request URL
         $description = $proposal->social_excerpt ?? $proposal->excerpt ?? $proposal->title ?? '';
 
         $props = [
