@@ -31,7 +31,7 @@
                         <span class="font-medium">Budget</span>
                         <span class="font-medium">{{ $formattedBudget }}</span>
                     </div>
-                    
+
                     <!-- Open Source Badge -->
                     @if($proposal->opensource)
                     <div class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-lg" style="background-color: rgba(34, 197, 94, 0.3);">
@@ -103,27 +103,6 @@
                     @endif
                 </div>
             </div>
-
-            <!-- Links to Ideascale / ProjectCatalyst -->
-            @if($proposal->ideascale_link || $proposal->projectcatalyst_io_link)
-            <nav class="flex items-center justify-evenly rounded-b-xl p-4 font-semibold text-lg" style="background-color: rgba(255, 255, 255, 0.25);">
-                @if($proposal->ideascale_link)
-                <div class="flex items-center justify-center {{ $proposal->projectcatalyst_io_link ? 'w-1/2' : 'w-full' }}">
-                    <span>Ideascale</span>
-                </div>
-                @endif
-
-                @if($proposal->ideascale_link && $proposal->projectcatalyst_io_link)
-                <div class="mx-2 h-8 border-r border-white/40"></div>
-                @endif
-
-                @if($proposal->projectcatalyst_io_link)
-                <div class="flex items-center justify-center {{ $proposal->ideascale_link ? 'w-1/2' : 'w-full' }}">
-                    <span>Project Catalyst</span>
-                </div>
-                @endif
-            </nav>
-            @endif
         </header>
     </div>
 </body>
