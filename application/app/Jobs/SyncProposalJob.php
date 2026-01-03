@@ -116,6 +116,8 @@ class SyncProposalJob implements ShouldQueue
                 'amount_requested' => $proposalSummary->budget->requestedFunds ?? 0,
                 'campaign_id' => $campaign->id,
                 'slug' => $slug,
+                'project_length' => $proposalSummary->time->duration ?? null,
+                'opensource' => $proposalSummary->open_source->isOpenSource ?? false,
                 'updated_at' => now(),
             ];
 
@@ -138,9 +140,7 @@ class SyncProposalJob implements ShouldQueue
 
             // Process comprehensive metadata, tags, and author
             $this->processMetas(
-                $proposalSummary->time->duration ?? null,
-                $this->proposalDetail->setup->proposer->type ?? null,
-                $proposalSummary->open_source->isOpenSource ?? null
+                $this->proposalDetail->setup->proposer->type ?? null
             );
 
             $this->processPrimaryAuthor($this->proposalDetail->setup->proposer ?? null, $this->signatures);
@@ -246,7 +246,7 @@ class SyncProposalJob implements ShouldQueue
         }
     }
 
-    protected function processMetas($project_length, $applicant_type, $opensource): void
+    protected function processMetas($applicant_type): void
     {
         try {
             $proposal = Proposal::find($this->proposalId);
@@ -255,14 +255,8 @@ class SyncProposalJob implements ShouldQueue
             }
 
             // Save project metadata
-            if ($project_length !== null) {
-                $proposal->saveMeta('project_length', $project_length, $proposal, true);
-            }
             if ($applicant_type !== null) {
                 $proposal->saveMeta('applicant_type', $applicant_type, $proposal, true);
-            }
-            if ($opensource !== null) {
-                $proposal->saveMeta('opensource', $opensource, $proposal, true);
             }
 
             // Add catalyst document ID if provided

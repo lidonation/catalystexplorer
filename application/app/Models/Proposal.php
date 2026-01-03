@@ -378,6 +378,10 @@ class Proposal extends Model implements IHasMetaData
     {
         return Attribute::make(
             get: function ($value) {
+                if ($value !== null && $value !== '') {
+                    return is_numeric($value) ? (int) $value : $value;
+                }
+
                 $metaValue = $this->meta_info?->project_length ?? null;
 
                 if ($metaValue === null || $metaValue === '') {
@@ -390,7 +394,33 @@ class Proposal extends Model implements IHasMetaData
                     return is_numeric($metaValue) ? (int) $metaValue : $metaValue;
                 }
 
-                return $value;
+                return null;
+            }
+        );
+    }
+
+    public function opensource(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                if ($value !== null) {
+                    return (bool) $value;
+                }
+
+                $metaValue = $this->meta_info?->opensource ?? null;
+
+                // If not in meta_info, query metas relation
+                if ($metaValue === null || $metaValue === '') {
+                    $metaValue = $this->metas()
+                        ->where('key', 'opensource')
+                        ->value('content');
+                }
+
+                if ($metaValue !== null && $metaValue !== '') {
+                    return (bool) $metaValue;
+                }
+
+                return false;
             }
         );
     }
