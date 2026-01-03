@@ -1,3 +1,10 @@
+## [1.54.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.54.1...v1.54.2) (2026-01-03)
+
+
+### Bug Fixes
+
+*  quickpitch not showing for unclaimed proposals ([cb846a5](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/cb846a58eb1b5c09d3bc5e23faaf1bb599078048))
+
 ## [1.54.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.54.0...v1.54.1) (2026-01-03)
 
 
