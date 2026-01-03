@@ -34,7 +34,6 @@ spec:
         - name: "{{ $.Chart.Name }}-app-service"
           namespace: {{ .Values.namespace }}
           port: 8000
-          scheme: h2c
 {{- end -}}
 {{- if eq .Values.services.app.environment "preview" -}}
 apiVersion: traefik.io/v1alpha1
@@ -71,5 +70,4 @@ spec:
           namespace: {{ .Values.namespace }}
           passHostHeader: true
           port: 8000
-          scheme: h2c
 {{- end -}}
