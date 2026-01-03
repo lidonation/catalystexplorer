@@ -1,3 +1,10 @@
+# [1.55.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.54.2...v1.55.0) (2026-01-03)
+
+
+### Features
+
+* adding open graph metadata ([97a0b57](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/97a0b57afa16c20cbffa968ccd440b7127e9ce0a))
+
 ## [1.54.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.54.1...v1.54.2) (2026-01-03)
 
 
