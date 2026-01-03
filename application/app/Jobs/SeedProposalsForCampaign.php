@@ -22,13 +22,14 @@ class SeedProposalsForCampaign implements ShouldQueue
     public function __construct(
         public Campaign $campaign,
         public Collection $tags,
-        public Collection $ideascaleProfiles
+        public Collection $ideascaleProfiles,
+        public int $count = 10
     ) {}
 
     public function handle(): void
     {
         $proposals = Proposal::factory()
-            ->count($count)
+            ->count($this->count)
             ->hasAttached($this->ideascaleProfiles->random(fake()->randomElement([0, 1, 3, 4])))
             ->state([
                 'campaign_id' => $this->campaign->id,
