@@ -11,6 +11,7 @@ use App\Nova\Actions\AddQuickPitch;
 use App\Nova\Actions\EditModel;
 use App\Nova\Actions\GenerateProposalLinks;
 use App\Nova\Actions\MakeSearchable;
+use App\Nova\Actions\RegenerateOgImage;
 use App\Nova\Actions\SyncMilestoneFromCatalyst;
 use App\Nova\Actions\SyncProposalFromCatalyst;
 use App\Nova\Actions\SyncVotingResults;
@@ -31,6 +32,7 @@ use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\HasOne;
+use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Slug;
@@ -208,6 +210,25 @@ class Proposals extends Resource
                 ->readonly()
                 ->hideWhenCreating()
                 ->hideWhenUpdating(),
+
+            Image::make(__('Social Media Card'), function () {
+                // Generate the OG image URL using the proposal's slug
+                if ($this->slug) {
+                    return url("/og-image/proposals/{$this->slug}");
+                }
+
+                return null;
+            })->preview(function () {
+                if ($this->slug) {
+                    return url("/og-image/proposals/{$this->slug}");
+                }
+
+                return null;
+            })->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating()
+                ->help('Generated social media preview card (Open Graph/Twitter Card)'),
 
             // Status Fields
             Select::make(__('Status'), 'status')
@@ -451,6 +472,7 @@ class Proposals extends Resource
             (new EditModel),
             (new GenerateProposalLinks),
             (new MakeSearchable),
+            (new RegenerateOgImage),
             (new SyncMilestoneFromCatalyst),
             (new SyncProposalFromCatalyst),
             (new SyncVotingResults),
