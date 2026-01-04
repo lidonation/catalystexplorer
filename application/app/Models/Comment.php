@@ -12,6 +12,20 @@ class Comment extends \Spatie\Comments\Models\Comment
 {
     use HasUuids;
 
+    /**
+     * The data type of the auto-incrementing ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+
     public function commentator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'commentator_id');
@@ -20,5 +34,10 @@ class Comment extends \Spatie\Comments\Models\Comment
     public function nestedComments(): HasMany
     {
         return $this->hasMany(static::class, 'parent_id');
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(static::class, 'parent_id');
     }
 }

@@ -179,6 +179,9 @@ class BookmarkCollections extends Resource
 
             HasMany::make(__('Items'), 'items', BookmarkItems::class)
                 ->sortable(),
+
+            HasMany::make(__('Comments'), 'comments', Comments::class)
+                ->sortable(),
         ];
     }
 
