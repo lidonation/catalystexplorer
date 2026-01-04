@@ -32,14 +32,32 @@ const Index = ({
 }: CommunityReviewIndexProps) => {
     const { t } = useLaravelReactI18n();
 
+    // Use server-side OG meta data if available (for SSR)
+    const ogImageUrl = ogMeta?.ogImageUrl ?? 
+        (typeof window !== 'undefined' ? `${window.location.origin}/og-image/proposals/${proposal.slug}` : '');
+    const proposalUrl = ogMeta?.proposalUrl ?? 
+        (typeof window !== 'undefined' ? window.location.href : '');
+    const description = ogMeta?.description ?? (proposal.social_excerpt || proposal.excerpt || proposal.title || '');
+
     return (
-        <ProposalLayout
-            proposal={proposal}
-            globalQuickPitchView={globalQuickPitchView}
-            setGlobalQuickPitchView={setGlobalQuickPitchView}
-            ogMeta={ogMeta}
-        >
-            <Head title={`${proposal.title} - ${t('reviews')}`} />
+        <>
+            <Head title={`${proposal.title} - ${t('reviews')}`}>
+                <meta property="og:title" content={proposal.title || ''} />
+                <meta property="og:description" content={description} />
+                <meta property="og:image" content={ogImageUrl} />
+                <meta property="og:url" content={proposalUrl} />
+                <meta property="og:type" content="website" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={proposal.title || ''} />
+                <meta name="twitter:description" content={description} />
+                <meta name="twitter:image" content={ogImageUrl} />
+            </Head>
+            <ProposalLayout
+                proposal={proposal}
+                globalQuickPitchView={globalQuickPitchView}
+                setGlobalQuickPitchView={setGlobalQuickPitchView}
+                ogMeta={ogMeta}
+            >
             <WhenVisible data="reviews" fallback={<div>Loading Reviews</div>}>
                 <div className="container">
                     {reviews?.total > 0 ? (
@@ -67,7 +85,8 @@ const Index = ({
                     )}
                 </div>
             </WhenVisible>
-        </ProposalLayout>
+            </ProposalLayout>
+        </>
     );
 };
 

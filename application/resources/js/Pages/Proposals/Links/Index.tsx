@@ -1,4 +1,5 @@
 import React from 'react';
+import { Head } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import ProposalLayout from '../ProposalLayout';
 import LinkCard from '@/Components/atoms/LinkCard';
@@ -37,6 +38,13 @@ const Index: React.FC<IndexProps> = ({
     ogMeta,
 }) => {
     const { t } = useLaravelReactI18n();
+
+    // Use server-side OG meta data if available (for SSR)
+    const ogImageUrl = ogMeta?.ogImageUrl ?? 
+        (typeof window !== 'undefined' ? `${window.location.origin}/og-image/proposals/${proposal.slug}` : '');
+    const proposalUrl = ogMeta?.proposalUrl ?? 
+        (typeof window !== 'undefined' ? window.location.href : '');
+    const description = ogMeta?.description ?? (proposal.social_excerpt || proposal.excerpt || proposal.title || '');
 
     const links = proposal.links || [];
     const activeLinks = links.filter((link: { valid: any; status: string; }) => link.valid && link.status === 'published');
@@ -93,12 +101,24 @@ const Index: React.FC<IndexProps> = ({
     ];
 
     return (
-        <ProposalLayout
-            proposal={proposal}
-            globalQuickPitchView={globalQuickPitchView}
-            setGlobalQuickPitchView={setGlobalQuickPitchView}
-            ogMeta={ogMeta}
-        >
+        <>
+            <Head title={`${proposal.title} - Links`}>
+                <meta property="og:title" content={proposal.title || ''} />
+                <meta property="og:description" content={description} />
+                <meta property="og:image" content={ogImageUrl} />
+                <meta property="og:url" content={proposalUrl} />
+                <meta property="og:type" content="website" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={proposal.title || ''} />
+                <meta name="twitter:description" content={description} />
+                <meta name="twitter:image" content={ogImageUrl} />
+            </Head>
+            <ProposalLayout
+                proposal={proposal}
+                globalQuickPitchView={globalQuickPitchView}
+                setGlobalQuickPitchView={setGlobalQuickPitchView}
+                ogMeta={ogMeta}
+            >
             <div className="bg-background shadow-cx-box-shadow flex flex-col items-start justify-between gap-5 self-stretch rounded-xl p-4 sm:flex-row sm:gap-2 sm:p-6">
                 <div className="flex w-full items-center justify-start gap-4 overflow-x-auto">
                     <div className="inline-flex flex-1 flex-col items-start justify-start gap-1">
@@ -224,6 +244,7 @@ const Index: React.FC<IndexProps> = ({
                 )}
             </div>
         </ProposalLayout>
+        </>
     );
 };
 

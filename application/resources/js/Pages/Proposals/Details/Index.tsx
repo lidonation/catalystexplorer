@@ -3,6 +3,7 @@ import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import DurationIcon from '@/Components/svgs/DurationIcon';
 import QuickpitchVideoPlayer from '@/Pages/My/Proposals/partials/QuickPitchVideoPlayer';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
+import { Head } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import ProposalContent from '../Partials/ProposalContent';
 import ProposalLayout from '../ProposalLayout';
@@ -46,6 +47,13 @@ const Index = ({
 }: IndexProps) => {
     const { t } = useLaravelReactI18n();
 
+    // Use server-side OG meta data if available (for SSR), otherwise construct client-side
+    const ogImageUrl = ogMeta?.ogImageUrl ?? 
+        (typeof window !== 'undefined' ? `${window.location.origin}/og-image/proposals/${proposal.slug}` : '');
+    const proposalUrl = ogMeta?.proposalUrl ?? 
+        (typeof window !== 'undefined' ? window.location.href : '');
+    const description = ogMeta?.description ?? (proposal.social_excerpt || proposal.excerpt || proposal.title || '');
+
     const isClaimed = proposal?.is_claimed === true;
 
     const canCreateQuickPitch =
@@ -71,12 +79,24 @@ const Index = ({
     };
 
     return (
-        <ProposalLayout
-            proposal={proposal}
-            globalQuickPitchView={globalQuickPitchView}
-            setGlobalQuickPitchView={setGlobalQuickPitchView}
-            ogMeta={ogMeta}
-        >
+        <>
+            <Head title={`${proposal.title} - Proposal`}>
+                <meta property="og:title" content={proposal.title || ''} />
+                <meta property="og:description" content={description} />
+                <meta property="og:image" content={ogImageUrl} />
+                <meta property="og:url" content={proposalUrl} />
+                <meta property="og:type" content="website" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={proposal.title || ''} />
+                <meta name="twitter:description" content={description} />
+                <meta name="twitter:image" content={ogImageUrl} />
+            </Head>
+            <ProposalLayout
+                proposal={proposal}
+                globalQuickPitchView={globalQuickPitchView}
+                setGlobalQuickPitchView={setGlobalQuickPitchView}
+                ogMeta={ogMeta}
+            >
             <div className="bg-background shadow-cx-box-shadow flex flex-col items-start justify-between gap-5 self-stretch overflow-x-auto rounded-xl p-4 sm:flex-row sm:gap-2 sm:p-6">
                 <div className="flex w-120 items-center justify-start gap-4 overflow-x-auto">
                     <div className="inline-flex flex-1 flex-col items-start justify-start gap-1">
@@ -173,7 +193,8 @@ const Index = ({
             )}
 
             <ProposalContent content={proposal.content} />
-        </ProposalLayout>
+            </ProposalLayout>
+        </>
     );
 };
 

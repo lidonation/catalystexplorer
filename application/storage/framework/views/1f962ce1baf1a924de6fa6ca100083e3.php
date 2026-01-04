@@ -5,7 +5,21 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
-        <title inertia><?php echo e(config('app.name', 'Laravel')); ?></title>
+        <title inertia><?php echo e(isset($page['props']['proposal']['title']) ? $page['props']['proposal']['title'] . ' - Proposal' : config('app.name', 'CatalystExplorer')); ?></title>
+        
+        <?php if(isset($page['props']['ogMeta'])): ?>
+        
+        <meta property="og:title" content="<?php echo e($page['props']['proposal']['title'] ?? config('app.name')); ?>" inertia>
+        <meta property="og:description" content="<?php echo e($page['props']['ogMeta']['description'] ?? 'Explore Project Catalyst proposals'); ?>" inertia>
+        <meta property="og:image" content="<?php echo e($page['props']['ogMeta']['ogImageUrl'] ?? ''); ?>" inertia>
+        <meta property="og:url" content="<?php echo e($page['props']['ogMeta']['proposalUrl'] ?? url()->current()); ?>" inertia>
+        <meta property="og:type" content="website" inertia>
+        
+        <meta name="twitter:card" content="summary_large_image" inertia>
+        <meta name="twitter:title" content="<?php echo e($page['props']['proposal']['title'] ?? config('app.name')); ?>" inertia>
+        <meta name="twitter:description" content="<?php echo e($page['props']['ogMeta']['description'] ?? 'Explore Project Catalyst proposals'); ?>" inertia>
+        <meta name="twitter:image" content="<?php echo e($page['props']['ogMeta']['ogImageUrl'] ?? ''); ?>" inertia>
+        <?php endif; ?>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -25,7 +39,7 @@
         <?php endif; ?>
     </head>
     <body class="font-sans antialiased">
-        <?php if (!isset($__inertiaSsrDispatched)) { $__inertiaSsrDispatched = true; $__inertiaSsrResponse = app(\Inertia\Ssr\Gateway::class)->dispatch($page); }  if ($__inertiaSsrResponse) { echo $__inertiaSsrResponse->body; } else { ?><div id="app" data-page="<?php echo e(json_encode($page)); ?>"></div><?php } ?>
+        <?php if (!isset($__inertiaSsrDispatched)) { $__inertiaSsrDispatched = true; $__inertiaSsrResponse = app(\Inertia\Ssr\Gateway::class)->dispatch($page); }  if ($__inertiaSsrResponse) { echo $__inertiaSsrResponse->body; } elseif (config('inertia.use_script_element_for_initial_page')) { ?><script data-page="app" type="application/json"><?php echo json_encode($page); ?></script><div id="app"></div><?php } else { ?><div id="app" data-page="<?php echo e(json_encode($page)); ?>"></div><?php } ?>
     </body>
 </html>
 <?php /**PATH /var/www/resources/views/app.blade.php ENDPATH**/ ?>

@@ -53,7 +53,7 @@ createServer(async (page) => {
                     <LaravelReactI18nProvider
                         locale={locale}
                         fallbackLocale="en"
-                        files={import.meta.glob('/lang/*.json')}
+                        files={import.meta.glob('../lang/*.json', { eager: true })}
                     >
                         <ModalStackProvider>
                             <StrictMode>
