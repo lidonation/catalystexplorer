@@ -21,4 +21,9 @@ class Comment extends \Spatie\Comments\Models\Comment
     {
         return $this->hasMany(static::class, 'parent_id');
     }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(static::class, 'parent_id');
+    }
 }
