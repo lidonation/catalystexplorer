@@ -25,6 +25,9 @@ const RTL_LANGS = ['ar'];
 
 // Function to update document direction
 const updateDocumentDirection = (locale: string) => {
+    // Skip during SSR
+    if (typeof document === 'undefined') return;
+    
     const isRTL = RTL_LANGS.includes(locale);
     document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
     document.documentElement.lang = locale;
@@ -42,6 +45,8 @@ export default function LangSwitcher() {
     useEffect(() => {
         if (!selectedLang || typeof selectedLang !== 'string') return;
         if (currentLocale() === selectedLang) return;
+        // Skip during SSR
+        if (typeof window === 'undefined') return;
 
         setLocale(selectedLang);
         updateDocumentDirection(selectedLang);

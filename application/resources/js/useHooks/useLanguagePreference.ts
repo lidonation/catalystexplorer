@@ -10,6 +10,9 @@ export const useLanguagePreference = () => {
 
     const updateUserLanguagePreference = useCallback(async (language: string) => {
         try {
+            // Skip during SSR
+            if (typeof document === 'undefined') return;
+            
             const endpoint = user ? '/language/user' : '/language/guest';
             
             // Get CSRF token for the request
