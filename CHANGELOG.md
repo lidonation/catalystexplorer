@@ -1,3 +1,10 @@
+# [1.56.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.55.0...v1.56.0) (2026-01-04)
+
+
+### Features
+
+* open graph and twitter card support ([823e5d1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/823e5d1c16def285391eafcac0718142cec1d0bd))
+
 # [1.55.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.54.2...v1.55.0) (2026-01-03)
 
 
