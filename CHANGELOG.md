@@ -1,3 +1,10 @@
+# [1.57.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.56.0...v1.57.0) (2026-01-07)
+
+
+### Features
+
+* proposal bookmark cleanup ([59402a2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/59402a24612cc53326b03c5da11e6a62774f001b))
+
 # [1.56.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.55.0...v1.56.0) (2026-01-04)
 
 
