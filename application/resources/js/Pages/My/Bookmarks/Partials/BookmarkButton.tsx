@@ -1,12 +1,15 @@
 import BookmarkOffIcon from '@/Components/svgs/BookmarkOffIcon';
 import BookmarkOnIcon from '@/Components/svgs/BookmarkOnIcon';
 import ToolTipHover from '@/Components/ToolTipHover';
+import { useList } from '@/Context/ListContext';
 import useBookmark from '@/useHooks/useBookmark';
 import BookmarkPage1 from '@/Pages/My/Lists/Partials/ListCreateFromBookmarkSave/Step1';
 import BookmarkPage2 from '@/Pages/My/Lists/Partials/ListCreateFromBookmarkSave/Step2';
 import BookmarkPage3 from '@/Pages/My/Lists/Partials/ListCreateFromBookmarkSave/Step3';
 import TransitionMenu from '@/Pages/My/Lists/Partials/TransitionMenu';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { useRef, useState } from 'react';
+import { toast } from 'react-toastify';
 
 interface BookmarkButtonProps {
     modelType: string;
@@ -27,6 +30,7 @@ export default function BookmarkButton({
     dataTestId = 'bookmark-button',
     buttonTheme = 'text-white',
 }: BookmarkButtonProps) {
+    const { t } = useLaravelReactI18n();
     const {
         isBookmarked,
         toggleBookmark,
@@ -37,13 +41,30 @@ export default function BookmarkButton({
         bookmarkId,
         associatedCollection,
     } = useBookmark({ modelType, itemId });
+    const { getPreferredList, addBookmarkToList } = useList();
 
     const buttonRef = useRef<HTMLButtonElement>(null);
+    const [isHovered, setIsHovered] = useState(false);
 
     const handleOpenChange = async (open: boolean) => {
         setIsOpen(open);
         if (open && !isBookmarked) {
-            await createBookmark();
+            const newBookmarkId = await createBookmark();
+            const preferredList = getPreferredList();
+            
+            if (preferredList && newBookmarkId) {
+                try {
+                    await addBookmarkToList(preferredList.listId, newBookmarkId, preferredList.listTitle);
+                    toast.success(
+                        t('Added to ') + preferredList.listTitle,
+                        {
+                            toastId: 'auto-add-toast',
+                        }
+                    );
+                } catch (error) {
+                    console.error('Error auto-adding to preferred list:', error);
+                }
+            }
         } else {
             setIsOpen(open);
         }
@@ -54,7 +75,6 @@ export default function BookmarkButton({
     const handleClose = () => {
         handleOpenChange(false);
     };
-    const [isHovered, setIsHovered] = useState(false);
 
     const pages = [
         <BookmarkPage1

@@ -101,6 +101,7 @@ Route::as('api.')->group(function () {
                 ->middleware(['web', 'auth'])
                 ->name('remove');
             Route::get('/{modelType}/{uuid}/status', [MyBookmarksController::class, 'status'])
+                ->middleware(['web', 'auth'])
                 ->name('status');
         });
 

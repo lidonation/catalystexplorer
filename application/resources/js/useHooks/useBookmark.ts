@@ -32,7 +32,7 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
         }
     };
 
-    const createBookmark = async () => {
+    const createBookmark = async (): Promise<string | null> => {
         try {
             const response = await axiosClient.post(
                 route('api.bookmarks.store', { modelType, uuid: itemId }),
@@ -47,9 +47,12 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
                     className: 'bg-gray-800 text-white',
                     toastId: 'bookmark-created',
                 });
+                return response.data.bookmarkId;
             }
+            return null;
         } catch (error) {
             console.error('Error creating bookmark:', error);
+            return null;
         }
     };
 

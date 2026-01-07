@@ -32,6 +32,7 @@ const BookmarkPage1 = ({
         fetchLists,
         addBookmarkToList,
         removeBookmarkFromList,
+        getPreferredList,
     } = useList();
 
     const [isLoading, setIsLoading] = useState(false);
@@ -51,6 +52,13 @@ const BookmarkPage1 = ({
             setSelectedListId(associateCollectionId);
         }
     }, [associateCollectionId, lists]);
+
+    useEffect(() => {
+        const preferredList = getPreferredList();
+        if (preferredList && !selectedListId) {
+            setSelectedListId(preferredList.listId);
+        }
+    }, []);
 
     // Filter lists based on search query
     const filteredLists = useMemo(() => {

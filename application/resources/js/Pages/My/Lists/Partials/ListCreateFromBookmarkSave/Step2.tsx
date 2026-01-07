@@ -163,8 +163,9 @@ const BookmarkPage2 = ({ onNavigate }: TransitionListPageProps) => {
                     <textarea
                         id="list-description"
                         name="description"
+                        rows={4}
                         placeholder={t('listQuickCreate.addDescPlaceholder')}
-                        className="border-border-primary border-opacity-40 bg-background text-content focus:border-primary w-full rounded-md border p-2 text-sm shadow-xs"
+                        className="border-border-primary border-opacity-40 bg-background text-content focus:border-primary w-full rounded-md border p-2 text-sm shadow-xs resize-none"
                         value={formState.description}
                         onChange={handleDescriptionChange}
                         onKeyDown={handleTextareaKeyDown}
