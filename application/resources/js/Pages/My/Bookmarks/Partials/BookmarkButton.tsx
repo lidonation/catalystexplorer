@@ -104,7 +104,7 @@ export default function BookmarkButton({
             side="right"
             align="start"
             alignOffset={40}
-            width="240px"
+            width="360px"
             open={isOpen}
             onOpenChange={handleOpenChange}
             data-testid="bookmark-popup"

@@ -4,8 +4,8 @@ import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import { useList } from '@/Context/ListContext';
 import { TransitionListPageProps } from '@/types/general';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { List, Loader, PlusIcon, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { List, Loader, PlusIcon, Search, X } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
 interface BookmarkPage1Props extends TransitionListPageProps {
@@ -39,6 +39,7 @@ const BookmarkPage1 = ({
         associateCollectionId || null,
     );
     const [loadingListId, setLoadingListId] = useState<string | null>(null);
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         fetchLists();
@@ -50,6 +51,14 @@ const BookmarkPage1 = ({
             setSelectedListId(associateCollectionId);
         }
     }, [associateCollectionId, lists]);
+
+    // Filter lists based on search query
+    const filteredLists = useMemo(() => {
+        if (!searchQuery.trim()) return lists;
+        return lists.filter((list) =>
+            list.title.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    }, [lists, searchQuery]);
 
     const handleAddAllClick = () => {
         toast.info(t('comingSoon'));
@@ -169,26 +178,46 @@ const BookmarkPage1 = ({
                 ) : lists.length === 0 ? (
                     <NoListsState />
                 ) : (
-                    <div className="no-scrollbar flex max-h-24 flex-col gap-2 overflow-y-scroll" data-testid="bookmark-lists-container">
-                        {/* Add All option (button, not checkbox) */}
-                        <button
-                            onClick={handleAddAllClick}
-                            className={`flex items-center text-left ${isLoading
-                                ? 'cursor-not-allowed opacity-70'
-                                : 'cursor-pointer'
-                                }`}
-                            disabled={isLoading}
-                        >
-                            <Paragraph
-                                size="md"
-                                className="text-primary font-medium"
-                            >
-                                {t('listQuickCreate.addAll')}
-                            </Paragraph>
-                        </button>
+                    <>
+                        {/* Search input */}
+                        <div className="relative mb-2">
+                            <Search size={14} className="text-content absolute left-2 top-1/2 -translate-y-1/2" />
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder={t('Search lists...')}
+                                className="bg-background text-content border-gray-light focus:ring-primary focus:border-primary w-full rounded-md border border-opacity-40 py-1.5 pl-7 pr-2 text-sm shadow-xs focus:outline-none"
+                                data-testid="bookmark-list-search"
+                                onKeyDown={(e) => {
+                                    if (e.key === ' ') {
+                                        e.stopPropagation();
+                                    }
+                                }}
+                            />
+                        </div>
+                        <div className="no-scrollbar flex max-h-36 flex-col gap-2 overflow-y-scroll" data-testid="bookmark-lists-container">
+                            {/* Add All option (button, not checkbox) */}
+                            {!searchQuery && (
+                                <button
+                                    onClick={handleAddAllClick}
+                                    className={`flex items-center text-left ${isLoading
+                                        ? 'cursor-not-allowed opacity-70'
+                                        : 'cursor-pointer'
+                                        }`}
+                                    disabled={isLoading}
+                                >
+                                    <Paragraph
+                                        size="md"
+                                        className="text-primary font-medium"
+                                    >
+                                        {t('listQuickCreate.addAll')}
+                                    </Paragraph>
+                                </button>
+                            )}
 
-                        {/* List options with checkbox that behaves like radio buttons */}
-                        {lists.map((list) => (
+                            {/* List options with checkbox that behaves like radio buttons */}
+                            {filteredLists.map((list) => (
                             <label
                                 key={list.id}
                                 htmlFor={list.id}
@@ -220,7 +249,13 @@ const BookmarkPage1 = ({
                                 />
                             </label>
                         ))}
-                    </div>
+                            {filteredLists.length === 0 && searchQuery && (
+                                <Paragraph size="sm" className="text-gray-500 text-center py-2">
+                                    {t('No lists found')}
+                                </Paragraph>
+                            )}
+                        </div>
+                    </>
                 )}
 
                 <PrimaryButton
