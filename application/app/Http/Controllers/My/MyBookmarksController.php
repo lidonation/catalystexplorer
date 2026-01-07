@@ -280,7 +280,7 @@ class MyBookmarksController extends Controller
         $page = $this->queryParams[ProposalSearchParams::PAGE()->value] ?? 1;
         $perPage = $this->queryParams[ProposalSearchParams::LIMIT()->value] ?? 12;
         $search = $this->queryParams[ProposalSearchParams::QUERY()->value] ?? null;
-        $sort = $this->queryParams[ProposalSearchParams::SORTS()->value] ?? '-created_at';
+        $sort = $this->queryParams[ProposalSearchParams::SORTS()->value] ?? '-latest_bookmarks';
 
         // Explicitly query only non-deleted collections
         $query = BookmarkCollection::allVisibilities()
@@ -291,7 +291,13 @@ class MyBookmarksController extends Controller
                         $query->where('user_id', $userId);
                     });
             })
-            ->with(['author', 'collaborators']);
+            ->with(['author', 'collaborators'])
+            ->addSelect(['latest_item_at' => BookmarkItem::select('created_at')
+                ->whereColumn('bookmark_collection_id', 'bookmark_collections.id')
+                ->orderByDesc('created_at')
+                ->limit(1),
+            ]);
+
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'ILIKE', "%{$search}%")
@@ -308,6 +314,19 @@ class MyBookmarksController extends Controller
                 break;
             case 'updated_at':
                 $query->orderBy('updated_at', $sortDirection);
+                break;
+            case 'latest_bookmarks':
+                // Sort by latest item created, then by collection created_at
+                $query->orderByRaw("
+                    COALESCE(
+                        (SELECT created_at FROM bookmark_items 
+                         WHERE bookmark_collection_id = bookmark_collections.id 
+                         AND bookmark_items.deleted_at IS NULL
+                         ORDER BY created_at DESC LIMIT 1),
+                        bookmark_collections.created_at
+                    ) {$sortDirection}
+                ")
+                    ->orderBy('bookmark_collections.created_at', $sortDirection);
                 break;
             case 'created_at':
             default:
@@ -453,6 +472,16 @@ class MyBookmarksController extends Controller
                 })
                 ->withCount('items')
                 ->with(['author', 'contributors'])
+                ->orderByRaw('
+                    COALESCE(
+                        (SELECT created_at FROM bookmark_items 
+                         WHERE bookmark_collection_id = bookmark_collections.id 
+                         AND bookmark_items.deleted_at IS NULL
+                         ORDER BY created_at DESC LIMIT 1),
+                        bookmark_collections.created_at
+                    ) DESC
+                ')
+                ->orderBy('bookmark_collections.created_at', 'desc')
                 ->get();
 
             return response()->json([
