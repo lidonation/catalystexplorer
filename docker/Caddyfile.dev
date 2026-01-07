@@ -10,7 +10,14 @@
 	metrics
 }
 
-{$CADDY_SERVER_SERVER_NAME} {
+https://{$CADDY_SERVER_HOST:localhost}:{$APP_SSL_PORT:443} {
+	# Bind to both TCP and UDP for HTTP/3 support
+	bind 0.0.0.0
+	
+	# TLS configuration for HTTPS/HTTP2/HTTP3
+	# tls {$CADDY_CERT_PATH:/etc/caddy/certs/catalystexplorer.local.crt} {$CADDY_KEY_PATH:/etc/caddy/certs/catalystexplorer.local.key}
+	{$CADDY_SERVER_TLS_CONFIG}
+																													 
 	log {
 		level WARN
 
