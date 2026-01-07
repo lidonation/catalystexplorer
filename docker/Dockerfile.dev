@@ -187,7 +187,7 @@ RUN mkdir -p \
     bootstrap/cache && chmod -R a+rw storage
 
 COPY --link --chown=${WWWUSER}:${WWWUSER} healthcheck /usr/local/bin/healthcheck
-COPY --link --chown=${WWWUSER}:${WWWUSER} Caddyfile /etc/caddy/Caddyfile
+COPY --link --chown=${WWWUSER}:${WWWUSER} Caddyfile.dev /etc/caddy/Caddyfile
 COPY --link --chown=${WWWUSER}:${WWWUSER} start-container /usr/local/bin/start-container
 COPY --link --chown=${WWWUSER}:${WWWUSER} supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY --link --chown=${WWWUSER}:${WWWUSER} php.ini ${PHP_INI_DIR}/conf.d/99-octane.ini
