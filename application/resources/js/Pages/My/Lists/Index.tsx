@@ -51,6 +51,10 @@ export default function Index({ bookmarkCollections, searchParams }: Props) {
                         onFiltersToggle={setShowFilters}
                         sortOptions={[
                             {
+                                label: t('Latest Bookmarks'),
+                                value: '-latest_bookmarks',
+                            },
+                            {
                                 label: t('Recently Updated'),
                                 value: '-updated_at',
                             },
