@@ -5,14 +5,41 @@ import { useLaravelReactI18n } from 'laravel-react-i18n';
 import React, { createContext, useContext, useState } from 'react';
 import { List, ListContextState } from '../types/general';
 
+const PREFERRED_LIST_KEY = 'bookmark_preferred_list';
+const CONSECUTIVE_THRESHOLD = 2;
+
+interface PreferredListData {
+    listId: string;
+    listTitle: string;
+    count: number;
+}
+
+// Helper to get preferred list from sessionStorage
+const getStoredPreferredList = (): PreferredListData | null => {
+    try {
+        const stored = sessionStorage.getItem(PREFERRED_LIST_KEY);
+        if (stored) {
+            const data = JSON.parse(stored) as PreferredListData;
+            if (data.count >= CONSECUTIVE_THRESHOLD) {
+                return data;
+            }
+        }
+    } catch (e) {
+        console.error('Error reading preferred list:', e);
+    }
+    return null;
+};
+
 interface ListContextValue extends ListContextState {
     fetchLists: () => Promise<void>;
     addList: (data: Omit<List, 'id' | 'createdAt'>) => Promise<void>;
-    addBookmarkToList: (listId: string, bookmarkId: string) => Promise<void>;
+    addBookmarkToList: (listId: string, bookmarkId: string, listTitle?: string) => Promise<void>;
     removeBookmarkFromList: (
         listId: string,
         bookmarkId: string,
     ) => Promise<void>;
+    getPreferredList: () => PreferredListData | null;
+    clearPreferredList: () => void;
 }
 
 const ListContext = createContext<ListContextValue | undefined>(undefined);
@@ -26,6 +53,37 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
         error: null,
         latestAddedList: null,
     });
+    // Update preferred list in sessionStorage
+    const updatePreferredList = (listId: string, listTitle: string) => {
+        try {
+            const stored = sessionStorage.getItem(PREFERRED_LIST_KEY);
+            let data: PreferredListData;
+
+            if (stored) {
+                const existing = JSON.parse(stored) as PreferredListData;
+                if (existing.listId === listId) {
+                    data = { listId, listTitle, count: existing.count + 1 };
+                } else {
+                    data = { listId, listTitle, count: 1 };
+                }
+            } else {
+                data = { listId, listTitle, count: 1 };
+            }
+
+            sessionStorage.setItem(PREFERRED_LIST_KEY, JSON.stringify(data));
+        } catch (e) {
+            console.error('Error updating preferred list:', e);
+        }
+    };
+
+    // Get preferred list (reads fresh from sessionStorage each time)
+    const getPreferredList = (): PreferredListData | null => {
+        return getStoredPreferredList();
+    };
+
+    const clearPreferredList = () => {
+        sessionStorage.removeItem(PREFERRED_LIST_KEY);
+    };
 
     const fetchLists = async () => {
         setState((prev) => ({ ...prev, isLoadingLists: true, error: null }));
@@ -117,7 +175,7 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
-    const addBookmarkToList = async (listId: string, bookmarkId: string) => {
+    const addBookmarkToList = async (listId: string, bookmarkId: string, listTitle?: string) => {
         try {
             const res = await api.post(route('api.collections.bookmarks.add'), {
                 bookmark_collection_id: listId,
@@ -125,6 +183,10 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
             });
 
             if (res.data?.type === 'success') {
+                // Find list title from state, param, or fallback
+                const list = state.lists.find((l) => l.id === listId);
+                const title = listTitle || list?.title || 'List';
+                updatePreferredList(listId, title);
                 setState((prev) => ({
                     ...prev,
                     isAddingList: false,
@@ -240,6 +302,8 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
         addList: createList,
         addBookmarkToList,
         removeBookmarkFromList,
+        getPreferredList,
+        clearPreferredList,
     };
 
     return (
