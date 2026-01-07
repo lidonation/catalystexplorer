@@ -14,7 +14,6 @@ interface PreferredListData {
     count: number;
 }
 
-// Helper to get preferred list from sessionStorage
 const getStoredPreferredList = (): PreferredListData | null => {
     try {
         const stored = sessionStorage.getItem(PREFERRED_LIST_KEY);
@@ -53,7 +52,6 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
         error: null,
         latestAddedList: null,
     });
-    // Update preferred list in sessionStorage
     const updatePreferredList = (listId: string, listTitle: string) => {
         try {
             const stored = sessionStorage.getItem(PREFERRED_LIST_KEY);
@@ -76,7 +74,6 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
-    // Get preferred list (reads fresh from sessionStorage each time)
     const getPreferredList = (): PreferredListData | null => {
         return getStoredPreferredList();
     };
@@ -183,7 +180,6 @@ export function ListProvider({ children }: { children: React.ReactNode }) {
             });
 
             if (res.data?.type === 'success') {
-                // Find list title from state, param, or fallback
                 const list = state.lists.find((l) => l.id === listId);
                 const title = listTitle || list?.title || 'List';
                 updatePreferredList(listId, title);

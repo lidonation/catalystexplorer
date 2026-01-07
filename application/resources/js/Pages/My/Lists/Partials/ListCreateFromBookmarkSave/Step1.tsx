@@ -53,7 +53,6 @@ const BookmarkPage1 = ({
         }
     }, [associateCollectionId, lists]);
 
-    // Sync with preferred list (for auto-add feature)
     useEffect(() => {
         const preferredList = getPreferredList();
         if (preferredList && !selectedListId) {

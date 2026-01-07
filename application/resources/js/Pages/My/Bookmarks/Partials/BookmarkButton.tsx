@@ -50,8 +50,6 @@ export default function BookmarkButton({
         setIsOpen(open);
         if (open && !isBookmarked) {
             const newBookmarkId = await createBookmark();
-            
-            // Check for preferred list (reads fresh from sessionStorage)
             const preferredList = getPreferredList();
             
             if (preferredList && newBookmarkId) {
