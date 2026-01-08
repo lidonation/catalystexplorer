@@ -38,6 +38,10 @@ use App\Http\Controllers\WalletController;
 use App\Http\Controllers\LinksController;
 use CodeZero\LocalizedRoutes\Controllers\FallbackController;
 
+Route::get('/og-image/proposals/{slug}', [ProposalsController::class, 'generateOgImage'])
+    ->name('proposals.og-image');
+
+
 Route::localized(
     function () {
         Route::get('/', [HomeController::class, 'index'])
@@ -62,6 +66,7 @@ Route::localized(
 
             Route::post('/og-logo-upload', [ProposalsController::class, 'uploadOgLogo'])
                 ->name('og-logo-upload');
+
 
             Route::match(['get', 'post'], '/{slug}/og-image', [ProposalsController::class, 'generateOgImage'])
                 ->name('og-image');
