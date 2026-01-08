@@ -33,8 +33,9 @@ class Comments extends Resource
     public function title()
     {
         $text = $this->text ?? '';
+
         // Use mb_substr for proper UTF-8 handling
-        return mb_substr(strip_tags($text), 0, 50) . (mb_strlen(strip_tags($text)) > 50 ? '...' : '');
+        return mb_substr(strip_tags($text), 0, 50).(mb_strlen(strip_tags($text)) > 50 ? '...' : '');
     }
 
     /**
