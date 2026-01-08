@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Jobs;
 
 use App\Models\Proposal;
+use GuzzleHttp\Client;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class GenerateProposalOgImage implements ShouldQueue
@@ -40,12 +40,21 @@ class GenerateProposalOgImage implements ShouldQueue
                 return;
             }
 
-            // Generate the OG image by making an internal HTTP request to the route
-            $url = url("/og-image/proposals/{$proposal->slug}");
+            $locale = config('localized-routes.fallback_locale', config('app.locale'));
+            $url = rtrim(config('app.url'), '/').'/'.$locale.'/proposals/'.$proposal->slug.'/og-image';
 
-            $response = Http::timeout(60)->get($url);
+            $client = new Client([
+                'verify' => false,
+                'timeout' => 60,
+                'curl' => [
+                    CURLOPT_SSL_VERIFYPEER => false,
+                    CURLOPT_SSL_VERIFYHOST => 0,
+                ],
+            ]);
 
-            if ($response->successful()) {
+            $response = $client->get($url);
+
+            if ($response->getStatusCode() === 200) {
                 Log::info('OG image generated successfully', [
                     'proposal_id' => $proposal->id,
                     'slug' => $proposal->slug,
@@ -54,7 +63,7 @@ class GenerateProposalOgImage implements ShouldQueue
                 Log::error('Failed to generate OG image', [
                     'proposal_id' => $proposal->id,
                     'slug' => $proposal->slug,
-                    'status' => $response->status(),
+                    'status' => $response->getStatusCode(),
                 ]);
             }
         } catch (\Throwable $e) {

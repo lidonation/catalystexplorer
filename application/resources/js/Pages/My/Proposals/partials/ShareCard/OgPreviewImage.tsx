@@ -42,7 +42,6 @@ export default function OgPreviewImage({
                 callToActionText: config.callToActionText,
                 logoUrl: config.logoUrl,
                 voteChoice: voteChoice,
-                preview: true,
             },
             {
                 preserveState: true,
