@@ -11,4 +11,5 @@ export enum userSettingEnums {
     VIEW_TABLE = 'viewTable',
     PROPOSAL_PDF_COLUMNS = 'proposalPdfColumns',
     GROUP_BY_CATEGORIES = 'groupByCategories',
+    OG_CARD_CONFIG = 'ogCardConfig',
 }
