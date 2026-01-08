@@ -24,5 +24,6 @@ class UserSettingData extends Data
         public array $proposalPdfColumns,
         public bool $groupByCategories,
         public ?string $preferredCurrency = null,
+        public ?array $ogCardConfig = null,
     ) {}
 }

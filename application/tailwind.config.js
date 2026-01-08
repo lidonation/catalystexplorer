@@ -126,6 +126,29 @@ export default {
                 'purple-light': 'var(--cx-purple-light)',
                 'content-darker': 'var(--cx-content-darker)',
 
+
+                'og-navy-teal-start': 'var(--og-navy-teal-start)',
+                'og-navy-teal-end': 'var(--og-navy-teal-end)',
+                'og-magenta-rose-start': 'var(--og-magenta-rose-start)',
+                'og-magenta-rose-end': 'var(--og-magenta-rose-end)',
+                'og-royal-blue-start': 'var(--og-royal-blue-start)',
+                'og-royal-blue-end': 'var(--og-royal-blue-end)',
+                'og-emerald-green-start': 'var(--og-emerald-green-start)',
+                'og-emerald-green-end': 'var(--og-emerald-green-end)',
+                'og-teal-cyan-start': 'var(--og-teal-cyan-start)',
+                'og-teal-cyan-end': 'var(--og-teal-cyan-end)',
+                'og-sunset-orange-start': 'var(--og-sunset-orange-start)',
+                'og-sunset-orange-end': 'var(--og-sunset-orange-end)',
+                'og-lime-yellow-start': 'var(--og-lime-yellow-start)',
+                'og-lime-yellow-end': 'var(--og-lime-yellow-end)',
+                'og-amber-orange-start': 'var(--og-amber-orange-start)',
+                'og-amber-orange-end': 'var(--og-amber-orange-end)',
+
+                // Social Platform Colors
+                'social-twitter': 'var(--social-twitter)',
+                'social-facebook': 'var(--social-facebook)',
+                'social-linkedin': 'var(--social-linkedin)',
+
                 'table-header-bg': 'var(--cx-table-header-bg)',
                 'table-header-text': 'var(--cx-table-header-text)',
 

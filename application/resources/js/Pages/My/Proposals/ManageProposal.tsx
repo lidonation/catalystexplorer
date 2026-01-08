@@ -8,6 +8,7 @@ import { useState } from 'react';
 import ProposalMetadataWidget from './partials/ProposalMetadataWidget';
 import QuickPitchWidget from './partials/QuickPitchWidget';
 import WalletsSection from './partials/WalletsSection';
+import ShareConfigurator from './partials/ShareCard/ShareCardConfigurator';
 
 interface WalletStats {
     all_time_votes: number;
@@ -54,6 +55,10 @@ export default function ManageProposal({
     >({});
     const { t } = useLaravelReactI18n();
 
+    const proposalUrl = useLocalizedRoute('proposals.proposal.details', {
+        slug: proposal?.slug,
+    });
+    
     const handleCopy = (value: string) => {
         navigator.clipboard.writeText(value).then(() => {
             setCopySuccesses((prev) => ({ ...prev, [value]: true }));
@@ -86,7 +91,7 @@ export default function ManageProposal({
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2">
                         <div className="grid w-full grid-cols-1 gap-6">
                             <ProposalMetadataWidget proposal={proposal} />
 
@@ -118,12 +123,17 @@ export default function ManageProposal({
                                 </Card>
                             )}
                         </div>
-                        <div className="w-full">
+                        <div className="flex w-full flex-col gap-6">
                             <QuickPitchWidget
                                 proposal={proposal}
                                 quickpitchMetadata={quickpitchMetadata ?? null}
                             />
+                            <ShareConfigurator
+                                proposal={proposal}
+                                proposalUrl={proposalUrl}
+                            />
                         </div>
+                        
                     </div>
                 </div>
             </div>

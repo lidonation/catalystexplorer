@@ -477,6 +477,8 @@ class ProposalsController extends Controller
             'quickpitchMetadata' => $metadata,
             'linkedWallet' => $linkedWallet,
             'hasMoreThanOneWallet' => $hasMoreThanOneWallet,
+            'ogPreviewData' => session('ogPreviewData'),
+            'ogLogo' => session('ogLogo')
         ]);
     }
 
@@ -1275,28 +1277,54 @@ class ProposalsController extends Controller
     /**
      * Generate Open Graph image for social media sharing
      */
-    public function generateOgImage(string $slug)
+    public function generateOgImage(string $slug, Request $request)
     {
-        // Use default configured disk (respects FILESYSTEM_DISK env var)
+        $defaults = [
+            'visibleElements' => ['myVote', 'logo', 'totalVotes', 'campaignTitle', 'openSourceBadge'],
+            'selectedThemeId' => 'navy-teal',
+            'customColor' => null,
+            'customMessage' => '',
+            'callToActionText' => 'View Proposal',
+            'logoUrl' => null,
+            'voteChoice' => null,
+            'preview' => false,
+            'download' => false,
+        ];
+
+        $validated = $request->validate([
+            'visibleElements' => ['sometimes', 'array'],
+            'visibleElements.*' => ['string', 'in:myVote,logo,totalVotes,campaignTitle,openSourceBadge'],
+            'selectedThemeId' => ['sometimes', 'string'],
+            'customColor' => ['nullable', 'string', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            'customMessage' => ['nullable', 'string', 'max:500'],
+            'logoUrl' => ['nullable', 'string'],
+            'voteChoice' => ['nullable', 'string', 'in:yes,no,abstain'],
+            'preview' => ['sometimes', 'boolean'],
+            'download' => ['sometimes', 'boolean'],
+        ]);
+
+        $config = array_merge($defaults, $validated);
+
+        $isPreview = $request->isMethod('post') || $request->boolean('preview');
+        $isDownload = $request->boolean('download');
+
         $disk = Storage::disk();
         $imagePath = "og-images/{$slug}.png";
 
-        // Return cached image if it exists and is less than 24 hours old
-        try {
-            if ($disk->exists($imagePath)) {
+        if (! $isPreview && ! $isDownload && $disk->exists($imagePath)) {
+            try {
                 $lastModified = $disk->lastModified($imagePath);
                 if (now()->timestamp - $lastModified < 86400) { // 24 hours
                     return response($disk->get($imagePath))
                         ->header('Content-Type', 'image/png')
                         ->header('Cache-Control', 'public, max-age=86400');
                 }
+            } catch (\Exception $e) {
+                Log::warning('Could not check OG image existence', [
+                    'slug' => $slug,
+                    'error' => $e->getMessage(),
+                ]);
             }
-        } catch (\Exception $e) {
-            // If we can't check existence (e.g., S3 issues), just regenerate
-            Log::warning('Could not check OG image existence, regenerating', [
-                'slug' => $slug,
-                'error' => $e->getMessage(),
-            ]);
         }
 
         // Fetch proposal
@@ -1304,33 +1332,43 @@ class ProposalsController extends Controller
             ->where('slug', $slug)
             ->firstOrFail();
 
-        // Determine status text and color
-        [$statusText, $statusColor] = $this->getProposalStatusInfo($proposal);
+        $theme = $this->getOgThemeGradient(
+            $config['selectedThemeId'],
+            $config['customColor']
+        );
 
-        // Format budget
         $formattedBudget = $this->formatBudget($proposal->amount_requested, $proposal->currency);
-
-        // Format project length
         $formattedLength = $this->formatProjectLength($proposal->project_length);
+        
+        $team = $proposal->team ? $proposal->team->map(fn($member) => $member->model)->filter() : collect();
+        $firstTeamMember = $team->first();
+        $hasCustomLogo = !empty($config['logoUrl']);
+        $teamNames = $team->map(fn($member) => $member->name ?? $member->username)->filter()->implode(', ');
+        $totalVotes = ($proposal->yes_votes_count ?? 0) + ($proposal->no_votes_count ?? 0);
 
         // Render Blade view
         $html = view('components.proposal-og-card', [
             'proposal' => $proposal,
-            'statusText' => $statusText,
-            'statusColor' => $statusColor,
+            'config' => $config,
+            'theme' => $theme,
             'formattedBudget' => $formattedBudget,
             'formattedLength' => $formattedLength,
+            'firstTeamMember' => $firstTeamMember,
+            'totalVotes' => $totalVotes,
+            'textColorClass' => $theme['textColorClass'],
+            'teamNames' => $teamNames,
+            'shouldShowLogo' => $hasCustomLogo,
         ])->render();
 
         // Generate image using Browsershot
         try {
-            $png = Browsershot::html($html)
+            $browsershot = Browsershot::html($html)
                 ->setChromePath('/usr/bin/chromium')
                 ->deviceScaleFactor(2)
                 ->windowSize(1200, 630)
                 ->margins(0, 0, 0, 0)
                 ->format('png')
-                ->timeout(120)
+                ->timeout(60)
                 ->addChromiumArguments([
                     'no-sandbox',
                     'disable-dev-shm-usage',
@@ -1349,24 +1387,135 @@ class ProposalsController extends Controller
                     'force-color-profile=srgb',
                     'disable-web-security',
                     'font-config-path=/etc/fonts',
-                ])
-                ->screenshot();
+                ]);
+            
+            $png = $browsershot->screenshot();
 
-            // Store the image using configured disk
+            if ($isDownload) {
+                return response()->streamDownload(function () use ($png) {
+                    echo $png;
+                }, "{$slug}-og-card.png");
+            }
+
+            if ($isPreview) {
+                // Store in Minio/Disk with unique hash
+                $hash = md5($slug . json_encode($config) . time());
+                $previewPath = "og-previews/{$slug}/{$hash}.png";
+                $disk->put($previewPath, $png, 'public');
+                $previewUrl = $disk->url($previewPath);
+
+                session()->flash('ogPreviewData', [
+                    'url' => $previewUrl,
+                    'path' => $previewPath,
+                ]);
+
+                return back();
+            }
+
+            // Standard Mode (Save to cache)
             $disk->put($imagePath, $png);
 
             return response($png)
                 ->header('Content-Type', 'image/png')
                 ->header('Cache-Control', 'public, max-age=86400');
         } catch (\Exception $e) {
-            Log::error('Failed to generate OG image for proposal', [
+            Log::error('Failed to generate OG image', [
                 'slug' => $slug,
                 'error' => $e->getMessage(),
             ]);
 
-            // Return a 500 error
+            if ($isPreview) {
+                session()->flash('ogPreviewData', ['error' => 'Failed to generate preview']);
+                return back();
+            }
+            
             abort(500, 'Failed to generate image');
         }
+    }
+
+
+
+    private function getOgThemeGradient(string $themeId, ?string $customColor = null): array
+    {
+        if ($customColor) {
+            $darker = $this->adjustColorBrightness($customColor, -30);
+            return [
+                'start' => $customColor,
+                'end' => $darker,
+                'css' => "linear-gradient(135deg, {$customColor} 0%, {$darker} 100%)",
+                'textColorClass' => $this->getTextColorClass($customColor),
+            ];
+        }
+
+        $themes = [
+            'navy-teal' => ['start' => '#182230', 'end' => '#475467'],
+            'magenta-rose' => ['start' => '#D300EE', 'end' => '#790088'],
+            'royal-blue' => ['start' => '#026BFF', 'end' => '#133C76'],
+            'emerald-green' => ['start' => '#02FF28', 'end' => '#1A7613'],
+            'teal-cyan' => ['start' => '#02B7FF', 'end' => '#13762A'],
+            'sunset-orange' => ['start' => '#EE0000', 'end' => '#790088'],
+            'lime-yellow' => ['start' => '#EED300', 'end' => '#B0950E'],
+            'amber-orange' => ['start' => '#FF7802', 'end' => '#765613'],
+        ];
+
+        $theme = $themes[$themeId] ?? $themes['navy-teal'];
+        $theme['css'] = "linear-gradient(135deg, {$theme['start']} 0%, {$theme['end']} 100%)";
+        $primaryColor = $customColor ?? $theme['start'];
+        $theme['textColorClass'] = $this->getTextColorClass($primaryColor);
+
+        return $theme;
+    }
+
+    private function adjustColorBrightness(string $hex, int $percent): string
+    {
+        $hex = ltrim($hex, '#');
+        $r = max(0, min(255, hexdec(substr($hex, 0, 2)) + round(2.55 * $percent)));
+        $g = max(0, min(255, hexdec(substr($hex, 2, 2)) + round(2.55 * $percent)));
+        $b = max(0, min(255, hexdec(substr($hex, 4, 2)) + round(2.55 * $percent)));
+
+        return sprintf('#%02x%02x%02x', $r, $g, $b);
+    }
+
+    private function calculateLuminance(string $hexColor): float
+    {
+        $hex = ltrim($hexColor, '#');
+        $r = hexdec(substr($hex, 0, 2));
+        $g = hexdec(substr($hex, 2, 2));
+        $b = hexdec(substr($hex, 4, 2));
+
+        return (0.299 * $r) + (0.587 * $g) + (0.114 * $b);
+    }
+
+    private function getTextColorClass(string $hexColor): string
+    {
+        $luminance = $this->calculateLuminance($hexColor);
+        return $luminance >= 128 ? 'dark' : 'light';
+    }
+
+
+    public function uploadOgLogo(Request $request)
+    {
+        $validated = $request->validate([
+            'logo' => ['required', 'image', 'mimes:png,jpg,jpeg', 'max:2048'],
+        ]);
+
+        $file = $request->file('logo');
+        $disk = Storage::disk();
+
+        $hash = md5($file->getClientOriginalName() . time() . uniqid());
+        $extension = $file->getClientOriginalExtension();
+        $filename = "og-logos/{$hash}.{$extension}";
+
+        $disk->put($filename, file_get_contents($file->getRealPath()), 'public');
+        
+        $url = $disk->url($filename);
+
+        session()->flash('ogLogo', [
+            'url' => $url,
+            'path' => $filename,
+        ]);
+
+        return back();
     }
 
     /**

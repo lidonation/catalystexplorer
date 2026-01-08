@@ -710,6 +710,7 @@ viewTable: Array<any>;
 proposalPdfColumns: Array<any>;
 groupByCategories: boolean;
 preferredCurrency: string | null;
+ogCardConfig: Array<any> | null;
 };
 export type VoterData = {
 id?: string;
