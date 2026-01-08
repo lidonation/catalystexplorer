@@ -60,6 +60,12 @@ Route::localized(
             Route::get('/csvs', fn() => Inertia::render('ComingSoon', ['context' => 'CSVs']))
                 ->name('csvs');
 
+            Route::post('/og-logo-upload', [ProposalsController::class, 'uploadOgLogo'])
+                ->name('og-logo-upload');
+
+            Route::match(['get', 'post'], '/{slug}/og-image', [ProposalsController::class, 'generateOgImage'])
+                ->name('og-image');
+
             Route::get('/{slug}', function ($slug) {
                 return redirect()->route('proposals.proposal.details', ['slug' => $slug]);
             })->name('redirect');
@@ -628,9 +634,7 @@ Route::localized(
 
 );
 
-// OG Image generation for social media cards (outside localized routes for better compatibility)
-Route::get('/og-image/proposals/{slug}', [ProposalsController::class, 'generateOgImage'])
-    ->name('proposals.og-image');
+
 
 Route::prefix('language')->as('language.')->group(function () {
     Route::post('/user', [\App\Http\Controllers\UserLanguageController::class, 'updateLanguage'])
