@@ -1,3 +1,10 @@
+# [1.58.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.57.0...v1.58.0) (2026-01-08)
+
+
+### Features
+
+* **proposal:** removed new image creation when generating og preview and also... ([369ad2c](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/369ad2c24e9f832a195592cf8a958cdb02c1bf6d))
+
 # [1.57.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.56.0...v1.57.0) (2026-01-07)
 
 
