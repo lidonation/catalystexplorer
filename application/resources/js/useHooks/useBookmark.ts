@@ -1,3 +1,4 @@
+import { usePage } from '@inertiajs/react';
 import axiosClient from '@/utils/axiosClient';
 import EventBus from '@/utils/eventBus';
 import { useEffect, useState } from 'react';
@@ -9,6 +10,7 @@ interface UseBookmarkProps {
 }
 
 export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
+    const user = usePage().props?.auth?.user;
     const [isBookmarked, setIsBookmarked] = useState(false);
     const [bookmarkId, setBookmarkId] = useState<string | null>(null);
     const [associatedCollection, setAssociatedCollection] = useState<
@@ -17,8 +19,10 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
     const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
-        fetchBookmarkStatus().then();
-    }, [modelType, itemId]);
+        if (user) {
+            fetchBookmarkStatus().then();
+        }
+    }, [modelType, itemId, user]);
     const fetchBookmarkStatus = async () => {
         try {
             const response = await axiosClient.get(
