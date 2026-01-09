@@ -1,3 +1,10 @@
+# [1.59.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.58.0...v1.59.0) (2026-01-09)
+
+
+### Features
+
+* fix typescript errors in catalyst profile components ([cfa9ed0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/cfa9ed05cb7f62715824254c9e5a882d4d83dd24))
+
 # [1.58.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.57.0...v1.58.0) (2026-01-08)
 
 
