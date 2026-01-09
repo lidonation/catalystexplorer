@@ -137,9 +137,11 @@ class AuthenticatedSessionController extends Controller
     {
         $invalidPaths = ['/login', '/register', '/logout', '/password', '/email'];
 
-        if (array_any($invalidPaths, fn ($invalidPath) => str_starts_with($path, $invalidPath) ||
-            preg_match('/^\/[a-z]{2}'.preg_quote($invalidPath, '/').'/', $path))) {
-            return false;
+        foreach ($invalidPaths as $invalidPath) {
+            if (str_starts_with($path, $invalidPath) ||
+                preg_match('/^\/[a-z]{2}'.preg_quote($invalidPath, '/').'/', $path)) {
+                return false;
+            }
         }
 
         if (str_starts_with($path, '/api/')) {

@@ -21,7 +21,7 @@ class TransactionData extends Data
         public ?int $total_output,
         public ?string $stake_pub,
         public mixed $json_metadata,
-        public null|object|array $raw_metadata,
+        public mixed $raw_metadata,
         public string $created_at,
         /** @var array<TransactionInputData> */
         public array $inputs,

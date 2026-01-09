@@ -33,7 +33,7 @@ final class ProposalData extends Data
         public ?string $excerpt,
 
         #[TypeScriptOptional]
-        public string|array|null $content,
+        public mixed $content,
 
         #[TypeScriptOptional]
         public ?float $amount_requested,
