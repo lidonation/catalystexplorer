@@ -8,7 +8,7 @@ import BookmarkPage2 from '@/Pages/My/Lists/Partials/ListCreateFromBookmarkSave/
 import BookmarkPage3 from '@/Pages/My/Lists/Partials/ListCreateFromBookmarkSave/Step3';
 import TransitionMenu from '@/Pages/My/Lists/Partials/TransitionMenu';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 
 interface BookmarkButtonProps {
@@ -40,21 +40,36 @@ export default function BookmarkButton({
         setIsOpen,
         bookmarkId,
         associatedCollection,
+        collections,
+        collectionsCount,
+        refetchStatus,
     } = useBookmark({ modelType, itemId });
     const { getPreferredList, addBookmarkToList } = useList();
 
     const buttonRef = useRef<HTMLButtonElement>(null);
     const [isHovered, setIsHovered] = useState(false);
+    const [popupMode, setPopupMode] = useState<'add' | 'remove'>('add');
+
+    // Track the mode based on whether it was bookmarked when the popup opened
+    useEffect(() => {
+        if (!isOpen) {
+            // Reset mode when popup closes
+            setPopupMode('add');
+        }
+    }, [isOpen]);
 
     const handleOpenChange = async (open: boolean) => {
-        setIsOpen(open);
         if (open && !isBookmarked) {
+            // Creating new bookmark - add mode
+            setPopupMode('add');
             const newBookmarkId = await createBookmark();
             const preferredList = getPreferredList();
             
             if (preferredList && newBookmarkId) {
                 try {
                     await addBookmarkToList(preferredList.listId, newBookmarkId, preferredList.listTitle);
+                    // Refetch status so UI shows the list as checked
+                    await refetchStatus();
                     toast.success(
                         t('Added to ') + preferredList.listTitle,
                         {
@@ -65,6 +80,10 @@ export default function BookmarkButton({
                     console.error('Error auto-adding to preferred list:', error);
                 }
             }
+        } else if (open && isBookmarked) {
+            // Already bookmarked - remove mode
+            setPopupMode('remove');
+            setIsOpen(open);
         } else {
             setIsOpen(open);
         }
@@ -82,8 +101,11 @@ export default function BookmarkButton({
             bookmarkId={bookmarkId as string}
             isBookmarked={isBookmarked}
             handleRemoveBookmark={removeBookmark}
-            associateCollectionId={associatedCollection as string}
+            collections={collections}
+            collectionsCount={collectionsCount}
+            onRefetch={refetchStatus}
             onClose={handleClose}
+            mode={popupMode}
         />,
         <BookmarkPage2 key="priority" />,
         <BookmarkPage3 key="new-list" />,

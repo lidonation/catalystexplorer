@@ -183,18 +183,35 @@ class MyBookmarksController extends Controller
         $modelClass = BookmarkableType::toArray()[$modelType];
         $modelName = class_basename($modelClass);
 
-        $bookmarkItem = BookmarkItem::where('user_id', Auth::id())
+        $bookmarkItems = BookmarkItem::where('user_id', Auth::id())
             ->where('model_id', $id)
             ->where(
                 fn ($query) => $query->where('model_type', $modelClass)
                     ->orWhere('model_type', $modelName)
-            )->first();
+                // )->first();
+            )->get();
 
-        if ($bookmarkItem) {
+        if ($bookmarkItems->isNotEmpty()) {
+            $primaryBookmarkItem = $bookmarkItems->whereNull('bookmark_collection_id')->first()
+                ?? $bookmarkItems->first();
+
+            $collections = $bookmarkItems
+                ->filter(fn ($item) => $item->bookmark_collection_id != null)
+                ->map(fn ($item) => [
+                    'bookmarkItemId' => $item->id,
+                    'collectionId' => $item->bookmark_collection_id,
+                    'title' => $this->getBookmarkItemCollection($item->bookmark_collection_id)?->title,
+                ])
+                ->filter(fn ($item) => $item['title'] != null)
+                ->values()
+                ->toArray();
+
             return response()->json([
                 'isBookmarked' => true,
-                'id' => $bookmarkItem->id,
-                'collection' => $this->getBookmarkItemCollection($bookmarkItem->bookmark_collection_id),
+                'id' => $primaryBookmarkItem->id,
+                'collection' => $this->getBookmarkItemCollection($primaryBookmarkItem->bookmark_collection_id),
+                'collections' => $collections,
+                'collectionsCount' => count($collections),
             ]);
         }
 
@@ -202,6 +219,8 @@ class MyBookmarksController extends Controller
             'isBookmarked' => false,
             'id' => null,
             'collection' => null,
+            'collections' => [],
+            'collectionsCount' => 0,
         ]);
     }
 
@@ -382,9 +401,26 @@ class MyBookmarksController extends Controller
                 ], SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY);
             }
 
-            BookmarkItem::whereIn('id', $decoded_bookmark_ids)
-                ->where('user_id', Auth::id())
-                ->update(['bookmark_collection_id' => $decoded_collection_id]);
+            $createdCount = 0;
+            foreach ($bookmarks as $bookmark) {
+                // Check if this model is already in this collection
+                $existingInCollection = BookmarkItem::where('user_id', Auth::id())
+                    ->where('bookmark_collection_id', $decoded_collection_id)
+                    ->where('model_id', $bookmark->model_id)
+                    ->where('model_type', $bookmark->model_type)
+                    ->exists();
+
+                if (! $existingInCollection) {
+                    // Create a new bookmark item for this collection
+                    BookmarkItem::create([
+                        'user_id' => Auth::id(),
+                        'bookmark_collection_id' => $decoded_collection_id,
+                        'model_id' => $bookmark->model_id,
+                        'model_type' => $bookmark->model_type,
+                    ]);
+                    $createdCount++;
+                }
+            }
 
             DB::commit();
 
@@ -393,7 +429,7 @@ class MyBookmarksController extends Controller
             return response()->json([
                 'type' => 'success',
                 'message' => 'Bookmarks added to collection successfully',
-                'count' => $bookmarks->count(),
+                'count' => $createdCount,
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
