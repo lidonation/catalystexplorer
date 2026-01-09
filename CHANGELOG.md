@@ -1,3 +1,10 @@
+## [1.59.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.59.0...v1.59.1) (2026-01-09)
+
+
+### Bug Fixes
+
+* fixing bookmark status fetching issue ([557c431](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/557c431b010517a83240adac230a71aedfafee05))
+
 # [1.59.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.58.0...v1.59.0) (2026-01-09)
 
 
