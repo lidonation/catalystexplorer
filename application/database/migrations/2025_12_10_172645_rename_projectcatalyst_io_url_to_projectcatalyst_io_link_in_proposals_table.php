@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('proposals', function (Blueprint $table) {
-            $table->renameColumn('projectcatalyst_io_url', 'projectcatalyst_io_link');
-        });
+        if (Schema::hasTable('proposals') && Schema::hasColumn('proposals', 'projectcatalyst_io_url')) {
+            Schema::table('proposals', function (Blueprint $table) {
+                $table->renameColumn('projectcatalyst_io_url', 'projectcatalyst_io_link');
+            });
+        }
     }
 
     /**
@@ -21,8 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('proposals', function (Blueprint $table) {
-            $table->renameColumn('projectcatalyst_io_link', 'projectcatalyst_io_url');
-        });
+        if (Schema::hasTable('proposals') && Schema::hasColumn('proposals', 'projectcatalyst_io_link')) {
+            Schema::table('proposals', function (Blueprint $table) {
+                $table->renameColumn('projectcatalyst_io_link', 'projectcatalyst_io_url');
+            });
+        }
     }
 };

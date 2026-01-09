@@ -26,6 +26,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\CatalystDrepController;
 use App\Http\Controllers\VoterHistoriesController;
 use App\Http\Controllers\IdeascaleProfilesController;
+use App\Http\Controllers\CatalystProfilesController;
 use App\Http\Controllers\SignatureWorkflowController;
 use App\Http\Controllers\TinderProposalWorkflowController;
 use App\Http\Controllers\CompletedProjectNftsController;
@@ -408,6 +409,31 @@ Route::localized(
             ->name('profile.photo.update');
         Route::delete('/profile/photo', [ProfileController::class, 'destroyPhoto'])
             ->name('profile.photo.destroy');
+
+        Route::prefix('/catalyst-profiles')->as('catalystProfiles.')->group(function () {
+            Route::get('/', [CatalystProfilesController::class, 'index'])
+                ->name('index');
+
+            Route::prefix('/{catalystProfile}')->group(function () {
+                Route::get('/', [CatalystProfilesController::class, 'show'])
+                    ->name('show');
+
+                Route::get('/proposals', [CatalystProfilesController::class, 'show'])
+                    ->name('proposals');
+
+                Route::get('/connections', [CatalystProfilesController::class, 'show'])
+                    ->name('connections');
+
+                Route::get('/groups', [CatalystProfilesController::class, 'show'])
+                    ->name('groups');
+
+                Route::get('/communities', [CatalystProfilesController::class, 'show'])
+                    ->name('communities');
+
+                Route::get('/campaigns', [CatalystProfilesController::class, 'show'])
+                    ->name('campaigns');
+            });
+        });
 
         Route::prefix('/ideascale-profiles')->as('ideascaleProfiles.')->group(function () {
             Route::get('/', [IdeascaleProfilesController::class, 'index'])

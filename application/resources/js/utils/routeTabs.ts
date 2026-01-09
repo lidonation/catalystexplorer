@@ -34,7 +34,7 @@ export function generateTabs(
 
         const pathSuffix = tab.path ?? routeSuffix;
         const href = `/${pathPrefix}${pathSuffix ? `/${pathSuffix}` : ''}`;
-        
+
         return {
             name: t(
                 `${config.translationPrefix}.${tab.translationKey || tab.key}`,
@@ -79,7 +79,7 @@ export const groupTabs: TabConfig = {
     ],
 };
 
-export const ideascaleProfileTabs: TabConfig = {
+export const proposalProfileTabs: TabConfig = {
     translationPrefix: 'ideascaleProfiles.tabs',
     routePrefix: 'ideascale-profiles/{hash}',
     tabs: [

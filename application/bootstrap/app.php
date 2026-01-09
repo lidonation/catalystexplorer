@@ -16,11 +16,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(append: [
-            \CodeZero\LocalizedRoutes\Middleware\SetLocale::class,
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
-            \App\Http\Middleware\CaptureIntendedUrl::class,
             \Illuminate\Session\Middleware\StartSession::class,
+            \CodeZero\LocalizedRoutes\Middleware\SetLocale::class,
+            \App\Http\Middleware\CaptureIntendedUrl::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class
         ]);
         $middleware->trustProxies(at: '*');

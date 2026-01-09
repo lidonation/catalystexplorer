@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -13,6 +14,15 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Skip for SQLite (constraints are handled differently)
+        if (DB::getDriverName() === 'sqlite') {
+            return;
+        }
+        
+        if (!Schema::hasTable('campaigns')) {
+            return;
+        }
+        
         // Drop the existing constraint
         DB::statement('ALTER TABLE campaigns DROP CONSTRAINT IF EXISTS campaigns_currency_check');
         
@@ -30,6 +40,15 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Skip for SQLite (constraints are handled differently)
+        if (DB::getDriverName() === 'sqlite') {
+            return;
+        }
+        
+        if (!Schema::hasTable('campaigns')) {
+            return;
+        }
+        
         // Drop the new constraint
         DB::statement('ALTER TABLE campaigns DROP CONSTRAINT IF EXISTS campaigns_currency_check');
         

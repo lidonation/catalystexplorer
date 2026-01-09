@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('proposals', function (Blueprint $table) {
-            $table->timestamp('completed_at')->nullable()->after('updated_at');
-        });
+        if (Schema::hasTable('proposals') && !Schema::hasColumn('proposals', 'completed_at')) {
+            Schema::table('proposals', function (Blueprint $table) {
+                $table->timestamp('completed_at')->nullable()->after('updated_at');
+            });
+        }
     }
 
     /**
@@ -21,8 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('proposals', function (Blueprint $table) {
-            $table->dropColumn('completed_at');
-        });
+        if (Schema::hasTable('proposals') && Schema::hasColumn('proposals', 'completed_at')) {
+            Schema::table('proposals', function (Blueprint $table) {
+                $table->dropColumn('completed_at');
+            });
+        }
     }
 };

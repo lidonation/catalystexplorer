@@ -90,6 +90,16 @@ function AppNavigation() {
             hideOnMyRoute: true,
         },
         {
+            href: useLocalizedRoute('catalystProfiles.index'),
+            title: t('catalystProfiles.catalystProfiles'),
+            icon: (isActive: boolean) => (
+                <PeopleIcon
+                    className={isActive ? 'text-primary-100' : 'text-dark'}
+                />
+            ),
+            hideOnMyRoute: true,
+        },
+        {
             href: useLocalizedRoute('ideascaleProfiles.index'),
             title: t('ideascaleProfiles.ideascaleProfiles'),
             icon: (isActive: boolean) => (
