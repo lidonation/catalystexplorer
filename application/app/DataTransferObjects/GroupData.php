@@ -26,7 +26,7 @@ final class GroupData extends Data
         public ?string $hero_img_url,
 
         #[TypeScriptOptional]
-        public array|string|null $bio,
+        public mixed $bio,
 
         #[TypeScriptOptional]
         public ?string $banner_img_url,

@@ -54,7 +54,10 @@ export default defineConfig({
             refresh: true,
         }),
         react(),
-        i18n(),
+        i18n({
+            langDir: 'lang',
+            phpDir: 'lang'
+        }),
         wasm(),
     ],
     resolve: {

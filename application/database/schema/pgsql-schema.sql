@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict oWavAJDYiAG8TUYGYJXwFGj6LF0jY1dRMbhcn1ZHYhQfXobdupvYFgs8QPNafGU
+\restrict f4J1ODjVZ7lSIJ4LAbcx93P7J4j5snLGatj7ZAa7ZmYt1ugocSZGAtPUSUgaNzx
 
 -- Dumped from database version 17.5
 -- Dumped by pg_dump version 17.7 (Debian 17.7-3.pgdg13+1)
@@ -70,13 +70,14 @@ CREATE TABLE public.proposals (
     quickpitch_length integer,
     abstain_votes_count bigint,
     project_length integer,
-    projectcatalyst_io_url character varying(255),
+    projectcatalyst_io_link character varying(255),
     iog_hash bigint,
     vote_casts bigint,
     fund_id uuid,
     campaign_id uuid,
     id uuid NOT NULL,
-    old_id bigint
+    old_id bigint,
+    completed_at timestamp(0) without time zone
 );
 
 
@@ -291,7 +292,7 @@ CREATE TABLE public.campaigns (
     fund_id uuid,
     id uuid NOT NULL,
     user_id uuid,
-    CONSTRAINT campaigns_currency_check CHECK (((currency IS NULL) OR ((currency)::text = ANY (ARRAY[('ADA'::character varying)::text, ('USD'::character varying)::text]))))
+    CONSTRAINT campaigns_currency_check CHECK (((currency IS NULL) OR ((currency)::text = ANY ((ARRAY['ADA'::character varying, 'USD'::character varying, 'USDM'::character varying])::text[]))))
 );
 
 
@@ -1130,12 +1131,14 @@ ALTER SEQUENCE public.migrations_id_seq OWNED BY public.migrations.id;
 --
 
 CREATE TABLE public.milestone_poas (
-    id bigint NOT NULL,
+    id uuid NOT NULL,
     proposal_id bigint,
     content text NOT NULL,
     created_at timestamp(0) without time zone NOT NULL,
     current boolean NOT NULL,
-    milestone_id uuid NOT NULL
+    milestone_id uuid NOT NULL,
+    api_id bigint,
+    updated_at timestamp(0) without time zone
 );
 
 
@@ -1144,8 +1147,7 @@ CREATE TABLE public.milestone_poas (
 --
 
 CREATE TABLE public.milestone_poas_reviews (
-    id bigint NOT NULL,
-    milestone_poas_id bigint NOT NULL,
+    id uuid NOT NULL,
     proposal_id bigint,
     content_approved boolean NOT NULL,
     content_comment text NOT NULL,
@@ -1153,6 +1155,9 @@ CREATE TABLE public.milestone_poas_reviews (
     created_at timestamp(0) without time zone NOT NULL,
     user_id character varying(255) NOT NULL,
     current boolean NOT NULL,
+    api_id bigint,
+    milestone_poas_id uuid NOT NULL,
+    updated_at timestamp(0) without time zone,
     CONSTRAINT milestone_poas_reviews_role_check CHECK (((role)::text = ANY (ARRAY[('Milestone reviewer'::character varying)::text, ('Milestone reviewer'::character varying)::text, ('Catalyst team reviewer'::character varying)::text, ('Catalyst team reviewer'::character varying)::text, ('Catalyst Team reviewer'::character varying)::text])))
 );
 
@@ -1162,11 +1167,13 @@ CREATE TABLE public.milestone_poas_reviews (
 --
 
 CREATE TABLE public.milestone_poas_signoffs (
-    id bigint NOT NULL,
-    milestone_poas_id bigint,
+    id uuid NOT NULL,
     proposal_id bigint,
     created_at timestamp(0) without time zone NOT NULL,
-    user_id character varying(255) NOT NULL
+    user_id character varying(255) NOT NULL,
+    api_id bigint,
+    milestone_poas_id uuid NOT NULL,
+    updated_at timestamp(0) without time zone
 );
 
 
@@ -1175,7 +1182,7 @@ CREATE TABLE public.milestone_poas_signoffs (
 --
 
 CREATE TABLE public.milestone_som_reviews (
-    id bigint NOT NULL,
+    id uuid NOT NULL,
     proposal_id bigint,
     outputs_approves boolean NOT NULL,
     outputs_comment text,
@@ -1188,6 +1195,8 @@ CREATE TABLE public.milestone_som_reviews (
     user_id character varying(255) NOT NULL,
     created_at timestamp(0) without time zone NOT NULL,
     milestone_id uuid NOT NULL,
+    api_id bigint,
+    updated_at timestamp(0) without time zone,
     CONSTRAINT milestone_som_reviews_role_check CHECK (((role)::text = ANY (ARRAY[('Milestone reviewer'::character varying)::text, ('Milestone reviewer'::character varying)::text, ('Catalyst team reviewer'::character varying)::text, ('Catalyst team reviewer'::character varying)::text, ('Catalyst Team reviewer'::character varying)::text])))
 );
 
@@ -1210,8 +1219,9 @@ CREATE TABLE public.milestones (
     id uuid NOT NULL,
     old_id bigint,
     proposal_id text,
-    proposal_milestone_id uuid,
-    fund_id uuid
+    project_schedule_id uuid,
+    fund_id uuid,
+    updated_at timestamp(0) without time zone
 );
 
 
@@ -1305,9 +1315,9 @@ CREATE TABLE public.model_has_roles (
 
 CREATE TABLE public.model_links (
     id bigint NOT NULL,
-    link_id bigint NOT NULL,
     model_id uuid NOT NULL,
-    model_type character varying(255) NOT NULL
+    model_type character varying(255) NOT NULL,
+    link_id uuid NOT NULL
 );
 
 
@@ -1711,10 +1721,10 @@ ALTER SEQUENCE public.permissions_id_seq OWNED BY public.permissions.id;
 
 
 --
--- Name: proposal_milestones; Type: TABLE; Schema: public; Owner: -
+-- Name: project_schedules; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.proposal_milestones (
+CREATE TABLE public.project_schedules (
     title text NOT NULL,
     url text NOT NULL,
     project_id bigint NOT NULL,
@@ -1729,7 +1739,9 @@ CREATE TABLE public.proposal_milestones (
     old_id bigint,
     fund_id uuid,
     proposal_id uuid,
-    CONSTRAINT proposal_milestones_status_check CHECK (((status)::text = ANY (ARRAY[('null'::character varying)::text, ('paused'::character varying)::text, ('completed'::character varying)::text])))
+    updated_at timestamp(0) without time zone,
+    api_proposal_id bigint,
+    CONSTRAINT project_schedules_status_check CHECK (((status)::text = ANY ((ARRAY['active'::character varying, 'paused'::character varying, 'terminated'::character varying, 'completed'::character varying])::text[])))
 );
 
 
@@ -3072,6 +3084,14 @@ ALTER TABLE ONLY public.milestones
 
 
 --
+-- Name: milestones milestones_schedule_milestone_created_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.milestones
+    ADD CONSTRAINT milestones_schedule_milestone_created_unique UNIQUE (project_schedule_id, milestone, created_at);
+
+
+--
 -- Name: model_categories model_categories_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3248,10 +3268,10 @@ ALTER TABLE ONLY public.permissions
 
 
 --
--- Name: proposal_milestones proposal_milestones_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: project_schedules proposal_milestones_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.proposal_milestones
+ALTER TABLE ONLY public.project_schedules
     ADD CONSTRAINT proposal_milestones_pkey PRIMARY KEY (id);
 
 
@@ -3857,17 +3877,17 @@ CREATE INDEX milestones_id_index ON public.milestones USING btree (id);
 
 
 --
+-- Name: milestones_project_schedule_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX milestones_project_schedule_id_index ON public.milestones USING btree (project_schedule_id);
+
+
+--
 -- Name: milestones_proposal_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX milestones_proposal_id_index ON public.milestones USING btree (proposal_id);
-
-
---
--- Name: milestones_proposal_milestone_id_index; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX milestones_proposal_milestone_id_index ON public.milestones USING btree (proposal_milestone_id);
 
 
 --
@@ -4046,10 +4066,17 @@ CREATE INDEX nova_pending_field_attachments_draft_id_index ON public.nova_pendin
 
 
 --
+-- Name: project_schedules_api_proposal_id_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX project_schedules_api_proposal_id_index ON public.project_schedules USING btree (api_proposal_id);
+
+
+--
 -- Name: proposal_milestones_id_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX proposal_milestones_id_index ON public.proposal_milestones USING btree (id);
+CREATE INDEX proposal_milestones_id_index ON public.project_schedules USING btree (id);
 
 
 --
@@ -4542,10 +4569,10 @@ ALTER TABLE ONLY public.monthly_reports
 
 
 --
--- Name: proposal_milestones proposal_milestones_fund_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: project_schedules proposal_milestones_fund_id_foreign; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.proposal_milestones
+ALTER TABLE ONLY public.project_schedules
     ADD CONSTRAINT proposal_milestones_fund_id_foreign FOREIGN KEY (fund_id) REFERENCES public.funds(id) ON DELETE SET NULL;
 
 
@@ -4673,13 +4700,13 @@ ALTER TABLE ONLY public.voting_powers
 -- PostgreSQL database dump complete
 --
 
-\unrestrict oWavAJDYiAG8TUYGYJXwFGj6LF0jY1dRMbhcn1ZHYhQfXobdupvYFgs8QPNafGU
+\unrestrict f4J1ODjVZ7lSIJ4LAbcx93P7J4j5snLGatj7ZAa7ZmYt1ugocSZGAtPUSUgaNzx
 
 --
 -- PostgreSQL database dump
 --
 
-\restrict hDuu8qEKeprRssKODF56pUswAG6zTmNrZiN6K1tKX8h5fyFNBh79PhXifWqzfd6
+\restrict dIEDjHtxO5qh2Nd0G1UDTMkY4v0944iBhDKfava0y02oc2EQXoWRUj4mVS50atU
 
 -- Dumped from database version 17.5
 -- Dumped by pg_dump version 17.7 (Debian 17.7-3.pgdg13+1)
@@ -4967,6 +4994,20 @@ COPY public.migrations (id, migration, batch) FROM stdin;
 366	2025_12_07_145740_delete_orphaned_catalyst_document_id_metas	50
 367	2025_12_08_074158_soft_delete_74_fund15_proposals_not_in_csv	50
 368	2025_12_08_110533_add_missing_fund15_proposals	50
+369	2025_12_10_140503_update_model_links_to_use_uuid_link_id	51
+370	2025_12_10_172645_rename_projectcatalyst_io_url_to_projectcatalyst_io_link_in_proposals_table	51
+371	2025_12_17_130917_add_completed_at_to_proposals_table	52
+372	2025_12_27_073104_update_campaigns_currency_enum_to_match_catalyst_currencies	53
+373	2025_12_29_111021_rename_proposal_milestones_to_project_schedules_table	54
+374	2025_12_29_120119_update_project_schedules_status_constraint	54
+375	2025_12_29_122306_rename_milestones_proposal_milestone_id_to_project_schedule_id	54
+376	2025_12_29_130728_add_sequences_to_milestone_related_tables	54
+377	2025_12_29_131004_convert_milestone_tables_to_uuid_with_api_id	54
+378	2025_12_29_131204_update_milestone_foreign_keys_to_uuid	54
+379	2025_12_29_131812_add_updated_at_to_milestone_tables	54
+380	2025_12_29_142927_add_unique_constraint_to_milestones_table	54
+381	2025_12_29_145858_add_api_proposal_id_to_project_schedules_table	54
+382	2025_12_29_151525_update_milestones_unique_constraint_to_include_created_at	54
 \.
 
 
@@ -4974,12 +5015,12 @@ COPY public.migrations (id, migration, batch) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 368, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 382, true);
 
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict hDuu8qEKeprRssKODF56pUswAG6zTmNrZiN6K1tKX8h5fyFNBh79PhXifWqzfd6
+\unrestrict dIEDjHtxO5qh2Nd0G1UDTMkY4v0944iBhDKfava0y02oc2EQXoWRUj4mVS50atU
 
