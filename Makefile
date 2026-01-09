@@ -231,7 +231,7 @@ seed-index:
 
 .PHONY: create-index import-index flush-index
 
-MODELS = App\\Models\\Voter App\\Models\\BookmarkCollection App\\Models\\ProjectSchedule App\\Models\\Community  App\\Models\\Proposal App\\Models\\IdeascaleProfile App\\Models\\Group App\\Models\\Review App\\Models\\MonthlyReport App\\Models\\Transaction App\\Models\\VoterHistory
+MODELS = App\\Models\\Voter App\\Models\\BookmarkCollection App\\Models\\ProjectSchedule App\\Models\\Community  App\\Models\\Proposal App\\Models\\CatalystProfile App\\Models\\IdeascaleProfile App\\Models\\Group App\\Models\\Review App\\Models\\MonthlyReport App\\Models\\Transaction App\\Models\\VoterHistory
 
 create-index:
 	@model_filter="$(filter-out $@,$(MAKECMDGOALS))"; \
@@ -281,7 +281,7 @@ flush-index:
 
 .PHONY: delete-index
 
-INDEXES = cx_bookmark_collections cx_proposals cx_communities cx_ideascale_profiles cx_monthly_reports cx_review cx_groups cx_transactions cx_communities cx_voter_histories
+INDEXES = cx_bookmark_collections cx_proposals cx_communities cx_catalyst_profiles cx_ideascale_profiles cx_monthly_reports cx_review cx_groups cx_transactions cx_communities cx_voter_histories
 
 delete-index:
 	@index_filter="$(filter-out $@,$(MAKECMDGOALS))"; \

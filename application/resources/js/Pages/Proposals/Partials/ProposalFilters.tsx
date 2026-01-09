@@ -334,6 +334,31 @@ const ProposalFilters = () => {
 
                     <div
                         className="col-span-1 flex flex-col gap-2 pb-4"
+                        data-testid="catalyst-profiles-filter"
+                    >
+                        <span>{t('proposals.filters.catalystProposers')}</span>
+                        <SearchSelect
+                            domain={'catalystProfiles.index'}
+                            selected={
+                                getFilter(ParamsEnum.CATALYST_PROFILES) ?? []
+                            }
+                            onChange={(value) =>
+                                setFilters({
+                                    label: t('proposals.filters.catalystProposers'),
+                                    value,
+                                    param: ParamsEnum.CATALYST_PROFILES,
+                                })
+                            }
+                            placeholder="Select"
+                            multiple={true}
+                            valueField={'id'}
+                            labelField={'name'}
+                            dataTestId="catalyst-profiles-filter-search-select"
+                        />
+                    </div>
+
+                    <div
+                        className="col-span-1 flex flex-col gap-2 pb-4"
                         data-testid="ideascale-profiles-filter"
                     >
                         <span>{t('proposals.filters.proposers')}</span>

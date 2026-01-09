@@ -26,6 +26,7 @@ export enum ParamsEnum {
     PAGE = 'p',
     PROPOSALS = 'pro',
     IDEASCALE_PROFILES = 'ip',
+    CATALYST_PROFILES = 'cap',
     PROJECT_STATUS = 'ps',
     REVIEWER_IDS = 'ri',
     RATINGS = 'r',

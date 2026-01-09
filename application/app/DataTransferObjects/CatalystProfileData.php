@@ -29,5 +29,53 @@ class CatalystProfileData extends Data
 
         #[TypeScriptOptional]
         public ?string $hero_img_url,
+
+        #[TypeScriptOptional]
+        public ?string $bio,
+
+        #[TypeScriptOptional]
+        public ?string $twitter,
+
+        #[TypeScriptOptional]
+        public ?string $linkedin,
+
+        #[TypeScriptOptional]
+        public ?string $discord,
+
+        #[TypeScriptOptional]
+        public ?int $completed_proposals_count,
+
+        #[TypeScriptOptional]
+        public ?int $funded_proposals_count,
+
+        #[TypeScriptOptional]
+        public ?int $proposals_count,
+
+        #[TypeScriptOptional]
+        public ?int $own_proposals_count,
+
+        #[TypeScriptOptional]
+        public ?int $collaborating_proposals_count,
+
+        #[TypeScriptOptional]
+        public ?float $amount_requested_ada,
+
+        #[TypeScriptOptional]
+        public ?float $amount_requested_usd,
+
+        #[TypeScriptOptional]
+        public ?float $amount_awarded_ada,
+
+        #[TypeScriptOptional]
+        public ?float $amount_awarded_usd,
+
+        #[TypeScriptOptional]
+        public ?float $amount_distributed_ada,
+
+        #[TypeScriptOptional]
+        public ?float $amount_distributed_usd,
+
+        #[TypeScriptOptional]
+        public mixed $groups = null,
     ) {}
 }

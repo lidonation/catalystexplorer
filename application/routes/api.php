@@ -20,6 +20,7 @@ use App\Http\Controllers\My\MyBookmarksController;
 use App\Http\Controllers\VoterHistoriesController;
 use App\Http\Controllers\CompletedProjectNftsController;
 use App\Http\Controllers\Api\IdeascaleProfilesController;
+use App\Http\Controllers\Api\CatalystProfilesController;
 use App\Http\Controllers\CardanoBudgetProposalController;
 use App\Http\Controllers\CatalystDrepController;
 use App\Http\Controllers\UserLanguageController;
@@ -32,6 +33,7 @@ Route::as('api.')->group(function () {
     Route::get('/groups/{group:id}', [GroupController::class, 'group'])->name('group');
     Route::get('/groups/{uuid}/connections', [GroupController::class, 'connections'])->name('groups.connections');
     Route::get('/groups/incremental-connections', [GroupController::class, 'incrementalConnections'])->name('groups.incremental-connections');
+    Route::get('catalyst-profiles/incremental-connections', [CatalystProfilesController::class, 'incrementalConnections'])->name('catalystProfiles.incremental-connections');
     Route::get('ideascale-profiles/incremental-connections', [IdeascaleProfilesController::class, 'incrementalConnections'])->name('ideascaleProfiles.incremental-connections');
     Route::get('/choices', [VoterHistoriesController::class, 'getChoices'])->name('choices');
 
@@ -124,6 +126,12 @@ Route::as('api.')->group(function () {
                         ->name('remove');
                 });
         });
+
+    Route::prefix('catalyst-profiles')->as('catalystProfiles.')->group(function () {
+        Route::get('/', [CatalystProfilesController::class, 'catalystProfiles'])->name('index');
+        Route::get('/{catalystProfile:id}', [CatalystProfilesController::class, 'catalyst_profile'])->name('show');
+        Route::get('/{uuid}/connections', [CatalystProfilesController::class, 'connections'])->name('connections');
+    });
 
     Route::prefix('ideascale-profiles')->as('ideascaleProfiles.')->group(function () {
         Route::get('/', [IdeascaleProfilesController::class, 'ideascaleProfiles'])->name('index');

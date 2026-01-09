@@ -730,6 +730,7 @@
             "campaigns": "Campaigns",
             "communities": "Communities",
             "communityCohort": "Community Cohort",
+            "catalystProposers": "Catalyst Proposers",
             "proposers": "Proposers",
             "groups": "Groups",
             "budgets": "Budgets",
@@ -797,6 +798,25 @@
             "details": "Details",
             "community": "Community Review",
             "team": "Team Information"
+        }
+    },
+    "catalystProfiles": {
+        "catalystProfiles": "Catalyst Profiles",
+        "ownProposals": "Own Proposals",
+        "coProposals": "Co-Proposals",
+        "pageSubtitle": "Explore Catalyst profiles associated with funded projects and community members",
+        "noCatalystProfiles": "No Catalyst Profiles Found",
+        "totalProposals": "Total Proposals",
+        "options": {
+            "alphabeticallyAsc": "Alphabetically: A to Z",
+            "alphabeticallyDesc": "Alphabetically: Z to A"
+        },
+        "tabs": {
+            "proposals": "Proposals",
+            "connections": "Connections",
+            "groups": "Groups",
+            "communities": "Communities",
+            "campaigns": "Campaigns"
         }
     },
     "ideascaleProfiles": {

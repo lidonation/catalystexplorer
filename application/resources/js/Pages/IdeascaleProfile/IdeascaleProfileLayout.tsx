@@ -1,6 +1,6 @@
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import { SearchParams } from '@/types/search-params';
-import { generateTabs, ideascaleProfileTabs } from '@/utils/routeTabs';
+import { generateTabs, proposalProfileTabs } from '@/utils/routeTabs';
 import { PageProps as InertiaPageProps } from '@inertiajs/core';
 import { usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
@@ -31,7 +31,7 @@ export default function IdeascaleProfileLayout({
     const [activeTab, setActiveTab] = useState('');
 
     const tabConfig = {
-        ...ideascaleProfileTabs,
+        ...proposalProfileTabs,
         routePrefix: `ideascale-profiles/${ideascaleProfile.id}`,
     };
     const tabs = generateTabs(t, tabConfig);
