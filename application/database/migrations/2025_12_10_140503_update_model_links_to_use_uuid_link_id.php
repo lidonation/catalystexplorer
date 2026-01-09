@@ -12,23 +12,41 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // First, clear existing data since we're changing the data type
-        DB::table('model_links')->truncate();
+        // First, clear existing data since we're changing the data type (only if table exists)
+        if (Schema::hasTable('model_links')) {
+            DB::table('model_links')->truncate();
+        }
         
         // Drop the existing foreign key constraint if it exists
-        Schema::table('model_links', function (Blueprint $table) {
-            $table->dropIndex(['link_id']); // Drop any existing index
-        });
+        if (Schema::hasTable('model_links')) {
+            try {
+                Schema::table('model_links', function (Blueprint $table) {
+                    $table->dropIndex(['link_id']); // Drop any existing index
+                });
+            } catch (\Exception $e) {
+                // Index doesn't exist, continue
+            }
+        }
         
         // Change link_id from bigint to uuid
-        Schema::table('model_links', function (Blueprint $table) {
-            $table->dropColumn('link_id');
-        });
-        
-        Schema::table('model_links', function (Blueprint $table) {
-            $table->uuid('link_id')->after('id');
-            $table->index('link_id');
-        });
+        if (Schema::hasTable('model_links')) {
+            try {
+                Schema::table('model_links', function (Blueprint $table) {
+                    $table->dropColumn('link_id');
+                });
+            } catch (\Exception $e) {
+                // Column doesn't exist, continue
+            }
+            
+            try {
+                Schema::table('model_links', function (Blueprint $table) {
+                    $table->uuid('link_id')->after('id');
+                    $table->index('link_id');
+                });
+            } catch (\Exception $e) {
+                // Unable to add column, continue
+            }
+        }
     }
 
     /**
@@ -36,18 +54,32 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Clear data before reverting
-        DB::table('model_links')->truncate();
+        // Clear data before reverting (only if table exists)
+        if (Schema::hasTable('model_links')) {
+            DB::table('model_links')->truncate();
+        }
         
         // Revert link_id back to bigint
-        Schema::table('model_links', function (Blueprint $table) {
-            $table->dropIndex(['link_id']);
-            $table->dropColumn('link_id');
-        });
+        if (Schema::hasTable('model_links')) {
+            try {
+                Schema::table('model_links', function (Blueprint $table) {
+                    $table->dropIndex(['link_id']);
+                    $table->dropColumn('link_id');
+                });
+            } catch (\Exception $e) {
+                // Table/Index doesn't exist, continue
+            }
+        }
         
-        Schema::table('model_links', function (Blueprint $table) {
-            $table->bigInteger('link_id')->after('id');
-            $table->index('link_id');
-        });
+        if (Schema::hasTable('model_links')) {
+            try {
+                Schema::table('model_links', function (Blueprint $table) {
+                    $table->bigInteger('link_id')->after('id');
+                    $table->index('link_id');
+                });
+            } catch (\Exception $e) {
+                // Unable to add column, continue
+            }
+        }
     }
 };
