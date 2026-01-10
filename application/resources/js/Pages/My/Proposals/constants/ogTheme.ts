@@ -69,11 +69,9 @@ export const OG_THEMES: OgTheme[] = [
 export const DEFAULT_THEME_ID = 'navy-teal';
 
 export const DEFAULT_VISIBLE_ELEMENTS: App.ShareCard.VisibleElement[] = [
-    'myVote',
     'logo',
     'campaignTitle',
     'openSourceBadge',
-    'totalVotes'
 ];
 
 export const DEFAULT_CONFIG: App.ShareCard.ConfiguratorState = {

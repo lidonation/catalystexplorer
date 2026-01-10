@@ -39,6 +39,7 @@ interface ManageProposalProps {
     } | null;
     linkedWallet?: WalletData;
     hasMoreThanOneWallet?: boolean;
+    existingOgImageUrl?: string | null;
 }
 
 export default function ManageProposal({
@@ -46,6 +47,7 @@ export default function ManageProposal({
     quickpitchMetadata,
     linkedWallet,
     hasMoreThanOneWallet,
+    existingOgImageUrl,
 }: ManageProposalProps) {
     const [copySuccesses, setCopySuccesses] = useState<Record<string, boolean>>(
         {},
@@ -131,6 +133,7 @@ export default function ManageProposal({
                             <ShareConfigurator
                                 proposal={proposal}
                                 proposalUrl={proposalUrl}
+                                existingOgImageUrl={existingOgImageUrl}
                             />
                         </div>
                         

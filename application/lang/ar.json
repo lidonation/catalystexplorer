@@ -1801,8 +1801,9 @@
   "shareCard.logoSizeInfo": "PNG أو JPG حتى 2 ميغابايت",
   "emails.welcome.greeting": "مرحباً",
   "workflows.linkWallet.walletDetails": "تفاصيل المحفظة",
-  "filters.title": "Title",
-  "filters.fund": "Fund",
-  "searchBar.searchProposals": "Search proposals",
-  "moderatedProposals.description": "Proposals that have been moderated and will not be appearing on the ballot."
+  "shareCard.changesSaved": "تم حفظ التغييرات بنجاح!",
+  "filters.title": "العنوان",
+  "filters.fund": "الصندوق",
+  "searchBar.searchProposals": "ابحث في المقترحات",
+  "moderatedProposals.description": "المقترحات التي تم تعديلها ولن تظهر في ورقة الاقتراع."
 }
