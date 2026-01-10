@@ -17,15 +17,11 @@ import CompletedProjectNftsIcon from '../svgs/CompletedProjectNftsIcon';
 import ConnectionsIcon from '../svgs/ConnectionsIcon';
 import DrepIcon from '../svgs/DrepIcon';
 import HomeIcon from '../svgs/HomeIcon';
-import LinkIcon from '../svgs/LinkIcon';
 import MoreIcon from '../svgs/MoreIcon';
 import NoteIcon from '../svgs/NoteIcon';
 import NotificationBoxIcon from '../svgs/NotificationBoxIcon';
 import NumbersIcon from '../svgs/NumbersIcon';
 import PeopleIcon from '../svgs/PeopleIcon';
-import ConnectIcon from '@/Components/svgs/ConnectIcon.tsx';
-import PlusIcon from '@/Components/svgs/PlusIcon.tsx';
-import StarIcon from '@/Components/svgs/StarIcon.tsx';
 
 function AppNavigation() {
     const { t } = useLaravelReactI18n();
@@ -426,7 +422,7 @@ function AppNavigation() {
                                                     active={false}
                                                     data-testid="numbers-charts-link"
                                                 ></NavLinkItem>
-                                                
+
                                                 <NavLinkItem
                                                     href={useLocalizedRoute(
                                                         'numbers.impact',
@@ -448,7 +444,7 @@ function AppNavigation() {
                                                     active={false}
                                                     data-testid="numbers-spending-link"
                                                 ></NavLinkItem>
-                   
+
                                             </div>
                                         )}
                                     </div>

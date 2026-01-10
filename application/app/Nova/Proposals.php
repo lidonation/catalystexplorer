@@ -12,6 +12,7 @@ use App\Nova\Actions\EditModel;
 use App\Nova\Actions\GenerateProposalLinks;
 use App\Nova\Actions\MakeSearchable;
 use App\Nova\Actions\RegenerateOgImage;
+use App\Nova\Actions\RemoveFromSearchIndex;
 use App\Nova\Actions\SyncMilestoneFromCatalyst;
 use App\Nova\Actions\SyncProposalFromCatalyst;
 use App\Nova\Actions\SyncVotingResults;
@@ -472,6 +473,7 @@ class Proposals extends Resource
             (new EditModel),
             (new GenerateProposalLinks),
             (new MakeSearchable),
+            (new RemoveFromSearchIndex),
             (new RegenerateOgImage),
             (new SyncMilestoneFromCatalyst),
             (new SyncProposalFromCatalyst),
