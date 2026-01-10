@@ -33,7 +33,7 @@ class SupportController extends Controller
         ]);
 
         try {
-            Mail::to('support@catalystexplorer.com')
+            Mail::to('hello@lidonation.com')
                 ->send(new SupportRequestMail(
                     $validated['name'],
                     $validated['email'],

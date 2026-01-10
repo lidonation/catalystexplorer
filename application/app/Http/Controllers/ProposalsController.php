@@ -469,7 +469,7 @@ class ProposalsController extends Controller
 
         $wallets = $walletsPaginator->getCollection();
 
-        $linkedWallet = $wallets->filter(fn($wallet) => $wallet->linked)->first();
+        $linkedWallet = $wallets->filter(fn ($wallet) => $wallet->linked)->first();
 
         $hasMoreThanOneWallet = $wallets->count() > 1;
 
@@ -557,7 +557,7 @@ class ProposalsController extends Controller
 
         $proposalIds = collect($validated['proposal_ids'])
             ->filter()
-            ->map(static fn($id) => (string) $id)
+            ->map(static fn ($id) => (string) $id)
             ->unique()
             ->values();
 
@@ -574,25 +574,25 @@ class ProposalsController extends Controller
                     ->orderByDesc('updated_at')
                     ->get(['model_id', 'vote', 'updated_at'])
                     ->groupBy('model_id')
-                    ->map(static fn($items) => $items->first()?->vote?->value);
+                    ->map(static fn ($items) => $items->first()?->vote?->value);
 
-                return $ids->mapWithKeys(static fn($id) => [$id => $votesByProposal->get($id)]);
+                return $ids->mapWithKeys(static fn ($id) => [$id => $votesByProposal->get($id)]);
             },
         ];
 
         $properties = collect($validated['properties'] ?? ['vote'])
-            ->map(static fn($prop) => strtolower($prop))
-            ->filter(static fn($prop) => isset($propertyResolvers[$prop]))
+            ->map(static fn ($prop) => strtolower($prop))
+            ->filter(static fn ($prop) => isset($propertyResolvers[$prop]))
             ->unique()
             ->values();
 
         if ($properties->isEmpty()) {
             return response()->json(
-                $proposalIds->mapWithKeys(static fn($id) => [$id => []])
+                $proposalIds->mapWithKeys(static fn ($id) => [$id => []])
             );
         }
 
-        $results = $proposalIds->mapWithKeys(static fn($id) => [$id => []]);
+        $results = $proposalIds->mapWithKeys(static fn ($id) => [$id => []]);
 
         foreach ($properties as $property) {
             /** @var Collection $values */
@@ -618,7 +618,7 @@ class ProposalsController extends Controller
         if ($referer) {
             $parsedUrl = parse_url($referer);
             if (isset($parsedUrl['query'])) {
-                $refererParams = SymfonyRequest::create('?' . $parsedUrl['query'])->query->all();
+                $refererParams = SymfonyRequest::create('?'.$parsedUrl['query'])->query->all();
             }
         }
 
@@ -1322,7 +1322,7 @@ class ProposalsController extends Controller
         $formattedBudget = $this->formatBudget($proposal->amount_requested, $proposal->currency);
         $formattedLength = $this->formatProjectLength($proposal->project_length);
 
-        $team = $proposal->team ? $proposal->team->map(fn($member) => $member->model)->filter() : collect();
+        $team = $proposal->team ? $proposal->team->map(fn ($member) => $member->model)->filter() : collect();
         $firstTeamMember = $team->first();
         $hasCustomLogo = ! empty($config['logoUrl']);
         $teamNames = $team->map(fn ($member) => $member->name ?? $member->username)->filter()->implode(', ');
