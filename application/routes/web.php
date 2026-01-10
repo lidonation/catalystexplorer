@@ -37,6 +37,7 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\PublishToIpfsController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\LinksController;
+use App\Http\Controllers\SupportController;
 use CodeZero\LocalizedRoutes\Controllers\FallbackController;
 
 Route::get('/og-image/proposals/{slug}', [ProposalsController::class, 'generateOgImage'])
@@ -101,10 +102,6 @@ Route::localized(
 
         Route::get('/proposals', [ProposalsController::class, 'index'])
             ->name('proposals.index');
-
-        //routes for demoing routing pages onto modals
-        //        Route::get('/proposals/charts', [ProposalsController::class, 'charts'])
-        //            ->name('charts');
 
         Route::prefix('/funds')->as('funds.')->group(function () {
             Route::get('/', [FundsController::class, 'index'])
@@ -180,8 +177,6 @@ Route::localized(
                 ->name('index');
         });
 
-        // Bookmark invitation acceptance route (DEPRECATED - kept for backwards compatibility)
-        // New invitations should use the workflow route: workflows.acceptInvitation.index
         Route::get('/bookmark-invitation/accept', [BookmarksController::class, 'acceptInvitation'])
             ->middleware('signed')
             ->name('bookmark.invitation.accept');
@@ -469,6 +464,13 @@ Route::localized(
             });
         });
 
+        Route::prefix('/support')->as('support.')->group(function () {
+            Route::get('/', [SupportController::class, 'index'])
+                ->name('index');
+            Route::post('/', [SupportController::class, 'submit'])
+                ->name('submit');
+        });
+
         Route::prefix('/milestones')->as('milestones.')->group(function () {
             Route::get('/', fn() => Inertia::render('ComingSoon', ['context' => 'Milestones Lists']))
                 ->name('index');
@@ -661,11 +663,6 @@ Route::localized(
             ->group(function () {
                 Route::get('/', fn() => Inertia::render('ComingSoon', ['context' => 'CCV4 Data']))->name('index');
             });
-
-        // Arabic Test Route
-        Route::get('/arabic-test', fn() => Inertia::render('ArabicTest'))
-            ->name('arabic-test');
-
     }
 
 );

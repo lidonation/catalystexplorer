@@ -1724,5 +1724,17 @@
     "filters.title": "Kichwa",
     "filters.fund": "Mfuko",
     "searchBar.searchProposals": "Tafuta mapendekezo",
-    "moderatedProposals.description": "Mapendekezo ambayo yamekaguliwa na hayatakuwa yakionekana kwenye kura."
+    "moderatedProposals.description": "Mapendekezo ambayo yamekaguliwa na hayatakuwa yakionekana kwenye kura.",
+    "support.title": "Wasiliana na Usaidizi",
+    "support.subtitle": "Tuko hapa kusaidia. Wasiliana nasi kupitia njia zetu za kijamii au jaza fomu hapa chini.",
+    "support.connectWithUs": "Unganisha Nasi",
+    "support.sendMessage": "Tutumie Ujumbe",
+    "support.name": "Jina",
+    "support.namePlaceholder": "Jina lako",
+    "support.email": "Barua Pepe",
+    "support.emailPlaceholder": "barua.pepe@mfano.com",
+    "support.message": "Ujumbe",
+    "support.messagePlaceholder": "Je, tunaweza kukusaidiaje?",
+    "support.sendButton": "Tuma Ujumbe",
+    "support.successMessage": "Ujumbe wako umetumwa kwa mafanikio. Tutawasiliana nawe hivi karibuni!"
 }

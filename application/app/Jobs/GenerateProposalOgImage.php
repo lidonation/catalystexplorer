@@ -43,7 +43,7 @@ class GenerateProposalOgImage implements ShouldQueue
             $locale = config('localized-routes.fallback_locale', config('app.locale'));
 
             $hostname = parse_url(config('app.url'), PHP_URL_HOST);
-            $resolvedIp = gethostbyname(env('APP_SERVICE', $hostname));
+            $resolvedIp = gethostbyname(config('app.service', $hostname));
             $url = sprintf('https://%s:443/%s/proposals/%s/og-image', $hostname, $locale, $proposal->slug);
 
             $client = new Client([
