@@ -68,26 +68,23 @@ try {
     echo str_repeat('-', 80) . "\n";
 
     while (($row = fgetcsv($csvHandle, 0, ',', '"', '\\')) !== false) {
-        // Skip empty rows
         if (empty(array_filter($row))) {
             continue;
         }
 
         $processedRows++;
 
-        // Extract data from CSV
         $proposalId = $row[$headerMap['proposal_id']] ?? null;
         $moderatedReason = $row[$headerMap['moderated_reason']] ?? null;
         $catalystAppUrl = $row[$headerMap['catalyst_app_url']] ?? null;
         $title = $row[$headerMap['title']] ?? 'Unknown';
-        $fundsRequested = $row[$headerMap['funds_requested']] ?? null;
+        $fundsRequested = $row[$headerMap['amount_requested']] ?? null;
 
         if (!$proposalId) {
             echo "Row {$processedRows}: Skipping - No proposal_id\n";
             continue;
         }
 
-        // Find proposal by matching catalyst_document_id in metas
         $proposal = $db->table('proposals')
             ->select('proposals.id', 'proposals.title', 'proposals.deleted_at')
             ->join('metas', function($join) {
@@ -98,25 +95,30 @@ try {
             ->where('metas.content', '=', $proposalId)
             ->first();
 
-        // If not found by catalyst_document_id, try finding by title and budget
         if (!$proposal && $fundsRequested) {
-            // Parse the budget amount from funds_requested (e.g., "29,610 $ADA" -> 29610)
             $budgetAmount = null;
-            if (preg_match('/([\d,]+)\s*\$?(ADA|USD|USDM)/', $fundsRequested, $matches)) {
-                $budgetAmount = (int) str_replace(',', '', $matches[1]);
+            $cleanAmount = preg_replace('/[^\d,]/', '', $fundsRequested);
+            $cleanAmount = str_replace(',', '', $cleanAmount);
+
+            if (!empty($cleanAmount) && is_numeric($cleanAmount)) {
+                $budgetAmount = (int) $cleanAmount;
             }
 
             if ($budgetAmount) {
-                // Search by title and amount_requested
                 $proposal = $db->table('proposals')
                     ->select('id', 'title', 'deleted_at')
-                    ->where('title', '=', $title)
-                    ->where('amount_requested', '=', $budgetAmount)
+                    ->whereRaw("CAST(title AS TEXT) = ?", [$title])
+                    ->where('amount_requested', $budgetAmount)
                     ->first();
 
                 if ($proposal) {
                     echo "Row {$processedRows}: FOUND BY TITLE+BUDGET - {$title} (amount: {$budgetAmount})\n";
+                } else {
+                    // Debug output to help identify the issue
+                    echo "Row {$processedRows}: NOT FOUND BY TITLE+BUDGET - {$title} (parsed amount: {$budgetAmount} from '{$fundsRequested}')\n";
                 }
+            } else {
+                echo "Row {$processedRows}: Could not parse amount from '{$fundsRequested}'\n";
             }
         }
 
@@ -132,7 +134,6 @@ try {
             continue;
         }
 
-        // Insert or update moderated_reason meta if provided
         if ($moderatedReason && trim($moderatedReason) !== '') {
             $existingMeta = $db->table('metas')
                 ->where('model_id', '=', $proposal->id)
@@ -149,7 +150,6 @@ try {
                         'updated_at' => now(),
                     ]);
             } else {
-                // Insert new meta
                 $db->table('metas')->insert([
                     'id' => Str::uuid()->toString(),
                     'model_id' => $proposal->id,
@@ -162,7 +162,6 @@ try {
             }
         }
 
-        // Insert or update catalyst_app_url meta if provided
         if ($catalystAppUrl && trim($catalystAppUrl) !== '') {
             $existingUrl = $db->table('metas')
                 ->where('model_id', '=', $proposal->id)
@@ -192,7 +191,6 @@ try {
             }
         }
 
-        // Soft delete the proposal
         $db->table('proposals')
             ->where('id', $proposal->id)
             ->update([
@@ -200,11 +198,13 @@ try {
                 'updated_at' => now(),
             ]);
 
-        // Remove from search index using Eloquent model
         try {
-            $eloquentProposal = Proposal::withTrashed()->find($proposal->id);
-            if ($eloquentProposal) {
-                $eloquentProposal->unsearchable();
+            $proposalModel = new Proposal();
+            $proposalModel->id = $proposal->id;
+            $proposalModel->exists = true;
+
+            if (method_exists($proposalModel, 'unsearchable')) {
+                $proposalModel->unsearchable();
             }
         } catch (\Exception $e) {
             echo "Warning: Failed to remove from search index: {$e->getMessage()}\n";
