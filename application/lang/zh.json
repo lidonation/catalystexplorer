@@ -1691,5 +1691,17 @@
     "filters.title": "标题",
     "filters.fund": "基金",
     "searchBar.searchProposals": "搜索提案",
-    "moderatedProposals.description": "已被审核且不会出现在选票上的提案。"
+    "moderatedProposals.description": "已被审核且不会出现在选票上的提案。",
+    "support.title": "联系支持",
+    "support.subtitle": "我们随时提供帮助。通过任何社交渠道与我们联系，或填写下面的表单。",
+    "support.connectWithUs": "与我们连接",
+    "support.sendMessage": "给我们留言",
+    "support.name": "姓名",
+    "support.namePlaceholder": "您的姓名",
+    "support.email": "电子邮件",
+    "support.emailPlaceholder": "your.email@example.com",
+    "support.message": "消息",
+    "support.messagePlaceholder": "我们如何帮助您？",
+    "support.sendButton": "发送消息",
+    "support.successMessage": "您的消息已成功发送。我们将尽快与您联系！"
 }

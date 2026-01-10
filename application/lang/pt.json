@@ -1725,5 +1725,17 @@
     "filters.title": "Título",
     "filters.fund": "Fundo",
     "searchBar.searchProposals": "Pesquisar propostas",
-    "moderatedProposals.description": "Propostas que foram moderadas e não aparecerão na cédula."
+    "moderatedProposals.description": "Propostas que foram moderadas e não aparecerão na cédula.",
+    "support.title": "Contatar Suporte",
+    "support.subtitle": "Estamos aqui para ajudar. Entre em contato através de qualquer um dos nossos canais sociais ou preencha o formulário abaixo.",
+    "support.connectWithUs": "Conecte-se Conosco",
+    "support.sendMessage": "Envie-nos uma Mensagem",
+    "support.name": "Nome",
+    "support.namePlaceholder": "Seu nome",
+    "support.email": "Email",
+    "support.emailPlaceholder": "seu.email@exemplo.com",
+    "support.message": "Mensagem",
+    "support.messagePlaceholder": "Como podemos ajudá-lo?",
+    "support.sendButton": "Enviar Mensagem",
+    "support.successMessage": "Sua mensagem foi enviada com sucesso. Entraremos em contato em breve!"
 }

@@ -1460,6 +1460,7 @@ class ProposalsController extends Controller
     private function getTextColorClass(string $hexColor): string
     {
         $luminance = $this->calculateLuminance($hexColor);
+
         return $luminance >= 180 ? 'dark' : 'light';
     }
 

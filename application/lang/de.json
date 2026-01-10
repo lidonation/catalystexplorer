@@ -1727,5 +1727,17 @@
     "filters.title": "Titel",
     "filters.fund": "Fonds",
     "searchBar.searchProposals": "Vorschläge suchen",
-    "moderatedProposals.description": "Vorschläge, die moderiert wurden und nicht auf dem Stimmzettel erscheinen werden." 
+    "moderatedProposals.description": "Vorschläge, die moderiert wurden und nicht auf dem Stimmzettel erscheinen werden.",
+    "support.title": "Support kontaktieren",
+    "support.subtitle": "Wir sind hier, um zu helfen. Kontaktieren Sie uns über einen unserer Social-Media-Kanäle oder füllen Sie das Formular unten aus.",
+    "support.connectWithUs": "Verbinden Sie sich mit uns",
+    "support.sendMessage": "Senden Sie uns eine Nachricht",
+    "support.name": "Name",
+    "support.namePlaceholder": "Ihr Name",
+    "support.email": "E-Mail",
+    "support.emailPlaceholder": "ihre.email@beispiel.de",
+    "support.message": "Nachricht",
+    "support.messagePlaceholder": "Wie können wir Ihnen helfen?",
+    "support.sendButton": "Nachricht senden",
+    "support.successMessage": "Ihre Nachricht wurde erfolgreich gesendet. Wir werden uns bald bei Ihnen melden!"
 }

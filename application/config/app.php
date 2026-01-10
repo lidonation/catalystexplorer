@@ -15,6 +15,8 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    'service' => env('APP_SERVICE', 'catalystexplorer.com'),
+
     'super_admin' => [
         'name' => env('SUPER_ADMIN_NAME', 'Explorer Dora'),
         'email' => env('SUPER_ADMIN_EMAIL', 'admin@catalystexplorer.com'),

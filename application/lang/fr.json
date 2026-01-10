@@ -1740,5 +1740,17 @@
     "filters.title": "Titre",
     "filters.fund": "Fonds",
     "searchBar.searchProposals": "Rechercher des propositions",
-    "moderatedProposals.description": "Propositions qui ont été modérées et ne figureront pas sur le bulletin."
+    "moderatedProposals.description": "Propositions qui ont été modérées et ne figureront pas sur le bulletin.",
+    "support.title": "Contacter le Support",
+    "support.subtitle": "Nous sommes là pour vous aider. Contactez-nous via nos réseaux sociaux ou remplissez le formulaire ci-dessous.",
+    "support.connectWithUs": "Connectez-vous avec Nous",
+    "support.sendMessage": "Envoyez-nous un Message",
+    "support.name": "Nom",
+    "support.namePlaceholder": "Votre nom",
+    "support.email": "Email",
+    "support.emailPlaceholder": "votre.email@exemple.com",
+    "support.message": "Message",
+    "support.messagePlaceholder": "Comment pouvons-nous vous aider?",
+    "support.sendButton": "Envoyer le Message",
+    "support.successMessage": "Votre message a été envoyé avec succès. Nous vous répondrons bientôt!"
 }
