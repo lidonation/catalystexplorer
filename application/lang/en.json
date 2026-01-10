@@ -1809,5 +1809,6 @@
     "shareCard.shareOnLinkedIn": "Share on LinkedIn",
     "shareCard.copyLink": "Copy Link",
     "shareCard.linkCopied": "Link copied!",
-    "shareCard.logoSizeInfo": "PNG, JPG up to 2MB"
+    "shareCard.logoSizeInfo": "PNG, JPG up to 2MB",
+    "shareCard.changesSaved": "Changes saved successfully!"
 }

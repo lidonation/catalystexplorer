@@ -469,9 +469,13 @@ class ProposalsController extends Controller
 
         $wallets = $walletsPaginator->getCollection();
 
-        $linkedWallet = $wallets->filter(fn ($wallet) => $wallet->linked)->first();
+        $linkedWallet = $wallets->filter(fn($wallet) => $wallet->linked)->first();
 
         $hasMoreThanOneWallet = $wallets->count() > 1;
+
+        $existingOgImageUrl = Storage::disk()->exists("og-images/{$proposal->slug}.png")
+            ? Storage::disk()->url("og-images/{$proposal->slug}.png")
+            : null;
 
         return Inertia::render('My/Proposals/ManageProposal', [
             'proposal' => ProposalData::from($proposal),
@@ -480,6 +484,7 @@ class ProposalsController extends Controller
             'hasMoreThanOneWallet' => $hasMoreThanOneWallet,
             'ogPreviewData' => session('ogPreviewData'),
             'ogLogo' => session('ogLogo'),
+            'existingOgImageUrl' => $existingOgImageUrl,
         ]);
     }
 
@@ -552,7 +557,7 @@ class ProposalsController extends Controller
 
         $proposalIds = collect($validated['proposal_ids'])
             ->filter()
-            ->map(static fn ($id) => (string) $id)
+            ->map(static fn($id) => (string) $id)
             ->unique()
             ->values();
 
@@ -569,25 +574,25 @@ class ProposalsController extends Controller
                     ->orderByDesc('updated_at')
                     ->get(['model_id', 'vote', 'updated_at'])
                     ->groupBy('model_id')
-                    ->map(static fn ($items) => $items->first()?->vote?->value);
+                    ->map(static fn($items) => $items->first()?->vote?->value);
 
-                return $ids->mapWithKeys(static fn ($id) => [$id => $votesByProposal->get($id)]);
+                return $ids->mapWithKeys(static fn($id) => [$id => $votesByProposal->get($id)]);
             },
         ];
 
         $properties = collect($validated['properties'] ?? ['vote'])
-            ->map(static fn ($prop) => strtolower($prop))
-            ->filter(static fn ($prop) => isset($propertyResolvers[$prop]))
+            ->map(static fn($prop) => strtolower($prop))
+            ->filter(static fn($prop) => isset($propertyResolvers[$prop]))
             ->unique()
             ->values();
 
         if ($properties->isEmpty()) {
             return response()->json(
-                $proposalIds->mapWithKeys(static fn ($id) => [$id => []])
+                $proposalIds->mapWithKeys(static fn($id) => [$id => []])
             );
         }
 
-        $results = $proposalIds->mapWithKeys(static fn ($id) => [$id => []]);
+        $results = $proposalIds->mapWithKeys(static fn($id) => [$id => []]);
 
         foreach ($properties as $property) {
             /** @var Collection $values */
@@ -613,7 +618,7 @@ class ProposalsController extends Controller
         if ($referer) {
             $parsedUrl = parse_url($referer);
             if (isset($parsedUrl['query'])) {
-                $refererParams = SymfonyRequest::create('?'.$parsedUrl['query'])->query->all();
+                $refererParams = SymfonyRequest::create('?' . $parsedUrl['query'])->query->all();
             }
         }
 
@@ -1281,7 +1286,7 @@ class ProposalsController extends Controller
     public function generateOgImage(string $slug, Request $request)
     {
         $defaults = [
-            'visibleElements' => ['myVote', 'logo', 'totalVotes', 'campaignTitle', 'openSourceBadge'],
+            'visibleElements' => ['logo', 'campaignTitle', 'openSourceBadge'],
             'selectedThemeId' => 'navy-teal',
             'customColor' => null,
             'customMessage' => '',
@@ -1305,15 +1310,6 @@ class ProposalsController extends Controller
         $disk = Storage::disk();
         $imagePath = "og-images/{$slug}.png";
 
-        // Check if cached image exists and return it (unless POST request which forces regeneration)
-        if (! $request->isMethod('post') && $disk->exists($imagePath)) {
-            $cachedImage = $disk->get($imagePath);
-
-            return response($cachedImage)
-                ->header('Content-Type', 'image/png')
-                ->header('Cache-Control', 'public, max-age=86400');
-        }
-
         $proposal = Proposal::with(['fund', 'campaign', 'team.model'])
             ->where('slug', $slug)
             ->firstOrFail();
@@ -1326,7 +1322,7 @@ class ProposalsController extends Controller
         $formattedBudget = $this->formatBudget($proposal->amount_requested, $proposal->currency);
         $formattedLength = $this->formatProjectLength($proposal->project_length);
 
-        $team = $proposal->team ? $proposal->team->map(fn ($member) => $member->model)->filter() : collect();
+        $team = $proposal->team ? $proposal->team->map(fn($member) => $member->model)->filter() : collect();
         $firstTeamMember = $team->first();
         $hasCustomLogo = ! empty($config['logoUrl']);
         $teamNames = $team->map(fn ($member) => $member->name ?? $member->username)->filter()->implode(', ');
@@ -1464,8 +1460,7 @@ class ProposalsController extends Controller
     private function getTextColorClass(string $hexColor): string
     {
         $luminance = $this->calculateLuminance($hexColor);
-
-        return $luminance >= 128 ? 'dark' : 'light';
+        return $luminance >= 180 ? 'dark' : 'light';
     }
 
     public function uploadOgLogo(Request $request)

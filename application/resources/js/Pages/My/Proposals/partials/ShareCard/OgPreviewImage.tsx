@@ -7,26 +7,30 @@ import { generateLocalizedRoute } from "@/utils/localizedRoute";
 interface OgPreviewImageProps {
     proposal: App.DataTransferObjects.ProposalData;
     config: App.ShareCard.ConfiguratorState;
-    voteChoice?: App.ShareCard.VoteChoice;
     onFirstLoadComplete?: () => void;
+    initialImageUrl?: string | null;
+    isConfigSettled?: boolean;
 }
 
 export default function OgPreviewImage({
     proposal,
     config,
-    voteChoice,
-    onFirstLoadComplete
+    onFirstLoadComplete,
+    initialImageUrl = null,
+    isConfigSettled = false,
 }: OgPreviewImageProps) {
     const { t } = useLaravelReactI18n();
-    const [imageUrl, setImageUrl] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [imageUrl, setImageUrl] = useState<string | null>(initialImageUrl);
+    const [isLoading, setIsLoading] = useState(!initialImageUrl);
     const [error, setError] = useState<string | null>(null);
     const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
     const requestIdRef = useRef<number>(0);
     const hasNotifiedFirstLoad = useRef<boolean>(false);
+    const isInitialLoadComplete = useRef<boolean>(false);
+    const previousConfigRef = useRef<App.ShareCard.ConfiguratorState | null>(null);
 
-    const generatePreview = useCallback(() => {
-       
+    const generatePreview = useCallback((configToUse: App.ShareCard.ConfiguratorState) => {
+
         const currentRequestId = ++requestIdRef.current;
 
         setIsLoading(true);
@@ -35,21 +39,20 @@ export default function OgPreviewImage({
         router.post(
             generateLocalizedRoute('proposals.og-image', { slug: proposal.slug }),
             {
-                visibleElements: config.visibleElements,
-                selectedThemeId: config.selectedThemeId,
-                customColor: config.customColor,
-                customMessage: config.customMessage,
-                callToActionText: config.callToActionText,
-                logoUrl: config.logoUrl,
-                voteChoice: voteChoice,
+                visibleElements: configToUse.visibleElements,
+                selectedThemeId: configToUse.selectedThemeId,
+                customColor: configToUse.customColor,
+                customMessage: configToUse.customMessage,
+                callToActionText: configToUse.callToActionText,
+                logoUrl: configToUse.logoUrl,
             },
             {
                 preserveState: true,
                 preserveScroll: true,
                 onSuccess: (page) => {
-                   
+
                     if (currentRequestId !== requestIdRef.current) return;
-                   
+
                     const data = (page.props as { ogPreviewData?: { url?: string; error?: string } }).ogPreviewData;
                     if (data?.url) {
                         setImageUrl(`${data.url}?t=${Date.now()}`);
@@ -74,16 +77,36 @@ export default function OgPreviewImage({
                 },
             }
         );
-    }, [proposal.slug, config, voteChoice, t]);
+    }, [proposal.slug, t]);
 
     // Debounced effect to regenerate preview on config changes
     useEffect(() => {
+    
+        if (!isConfigSettled) {
+            return;
+        }
+
+        if (!isInitialLoadComplete.current) {
+            isInitialLoadComplete.current = true;
+            previousConfigRef.current = config;
+
+            if (initialImageUrl) {
+                return;
+            }
+        }
+
+        if (previousConfigRef.current && JSON.stringify(previousConfigRef.current) === JSON.stringify(config)) {
+            return;
+        }
+
+        previousConfigRef.current = config;
+
         if (debounceTimerRef.current) {
             clearTimeout(debounceTimerRef.current);
         }
 
         debounceTimerRef.current = setTimeout(() => {
-            generatePreview();
+            generatePreview(config);
         }, 500);
 
         return () => {
@@ -91,7 +114,7 @@ export default function OgPreviewImage({
                 clearTimeout(debounceTimerRef.current);
             }
         };
-    }, [config, voteChoice, proposal.slug, generatePreview]);
+    }, [config, isConfigSettled, generatePreview, initialImageUrl]);
 
     if (error) {
         return (
@@ -113,8 +136,8 @@ export default function OgPreviewImage({
                 <div className={`${imageUrl ? 'absolute inset-0 z-10' : 'p-8'} flex animate-pulse items-center justify-center rounded-xl bg-light-gray-persist/50`}>
                     <div className="flex flex-col items-center gap-2">
                         <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-                        <Paragraph className="text-sm text-gray-persist">
-                            {t('shareCard.generatingPreview') || 'Generating preview...'}
+                        <Paragraph className="text-sm text-content">
+                            {t('shareCard.generatingPreview')}
                         </Paragraph>
                     </div>
                 </div>

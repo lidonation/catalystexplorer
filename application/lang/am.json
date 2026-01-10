@@ -1577,8 +1577,9 @@
   "shareCard.copyLink": "አገናኝ ይቅዱ",
   "shareCard.linkCopied": "አገናኙ ተቀድቷል!",
   "shareCard.logoSizeInfo": "PNG, JPG እስከ 2MB",
-  "filters.title": "Title",
-  "filters.fund": "Fund",
-  "searchBar.searchProposals": "Search proposals",
-  "moderatedProposals.description": "Proposals that have been moderated and will not be appearing on the ballot."
+  "shareCard.changesSaved": "ለውጦች በተሳካ ሁኔታ ተቀምጠዋል!",
+  "filters.title": "ርዕስ",
+  "filters.fund": "ፈንድ",
+  "searchBar.searchProposals": "ሀሳቦችን ፈልግ",
+  "moderatedProposals.description": "ተቆጣጠሩ እና በድምጽ ወረቀት ላይ የማይታዩ ሀሳቦች።"
 }
