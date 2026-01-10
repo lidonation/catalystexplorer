@@ -1580,6 +1580,18 @@
   "shareCard.changesSaved": "ለውጦች በተሳካ ሁኔታ ተቀምጠዋል!",
   "filters.title": "ርዕስ",
   "filters.fund": "ፈንድ",
-  "searchBar.searchProposals": "ሀሳቦችን ፈልግ",
-  "moderatedProposals.description": "ተቆጣጠሩ እና በድምጽ ወረቀት ላይ የማይታዩ ሀሳቦች።"
+  "searchBar.searchProposals": "ሀሳቦችን ፍልግ",
+  "moderatedProposals.description": "ተቆጣጠሩ እና በድምጽ ወረቀት ላይ የማይታዩ ሀሳቦች።",
+  "support.title": "የእገሳ አገልግሎትን ያጋጡ",
+  "support.subtitle": "ለመግዛት እን዁ ነን። አማራጭን በመደበኛ አገልግሎታችን ይካምቱ ወይም የታች መቃፙን ይሞሉ።",
+  "support.connectWithUs": "ከእን ጋር ይደራበጡ",
+  "support.sendMessage": "ሜሳጀ ይላኩት",
+  "support.name": "ስም",
+  "support.namePlaceholder": "የእርስዎ ስም",
+  "support.email": "ኢመይል",
+  "support.emailPlaceholder": "email@example.com",
+  "support.message": "ሜሳጀ",
+  "support.messagePlaceholder": "እንዴት ልንእገዛዎት?",
+  "support.sendButton": "ሜሳጀ ላክ",
+  "support.successMessage": "ሜሳጄዎ በተሳካ ተላደቀ። በከራ እንደጋበዎትናለን!"
 }

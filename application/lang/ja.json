@@ -1681,5 +1681,17 @@
     "filters.title": "タイトル",
     "filters.fund": "ファンド",
     "searchBar.searchProposals": "提案を検索",
-    "moderatedProposals.description": "モデレートされ、投票用紙に表示されない提案。"
+    "moderatedProposals.description": "モデレートされ、投票用紙に表示されない提案。",
+    "support.title": "サポートに連絡",
+    "support.subtitle": "お手伝いいたします。SNSチャンネルからお問い合わせいただくか、下記のフォームにご記入ください。",
+    "support.connectWithUs": "私たちとつながる",
+    "support.sendMessage": "メッセージを送る",
+    "support.name": "名前",
+    "support.namePlaceholder": "お名前",
+    "support.email": "メールアドレス",
+    "support.emailPlaceholder": "your.email@example.com",
+    "support.message": "メッセージ",
+    "support.messagePlaceholder": "どのようにお手伝いできますか？",
+    "support.sendButton": "メッセージを送信",
+    "support.successMessage": "メッセージが正常に送信されました。近日中にご連絡いたします！"
 }

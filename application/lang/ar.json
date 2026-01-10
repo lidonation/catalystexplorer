@@ -1805,5 +1805,17 @@
   "filters.title": "العنوان",
   "filters.fund": "الصندوق",
   "searchBar.searchProposals": "ابحث في المقترحات",
-  "moderatedProposals.description": "المقترحات التي تم تعديلها ولن تظهر في ورقة الاقتراع."
+  "moderatedProposals.description": "المقترحات التي تم تعديلها ولن تظهر في ورقة الاقتراع.",
+  "support.title": "اتصل بالدعم",
+  "support.subtitle": "نحن هنا للمساعدة. تواصل معنا عبر أي من قنواتنا الاجتماعية أو املأ النموذج أدناه.",
+  "support.connectWithUs": "تواصل معنا",
+  "support.sendMessage": "أرسل لنا رسالة",
+  "support.name": "الاسم",
+  "support.namePlaceholder": "اسمك",
+  "support.email": "البريد الإلكتروني",
+  "support.emailPlaceholder": "your.email@example.com",
+  "support.message": "رسالة",
+  "support.messagePlaceholder": "كيف يمكننا مساعدتك؟",
+  "support.sendButton": "إرسال رسالة",
+  "support.successMessage": "تم إرسال رسالتك بنجاح. سنعود إليك قريبًا!"
 }

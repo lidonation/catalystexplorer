@@ -1803,5 +1803,17 @@
     "filters.title": "Tiêu đề",
     "filters.fund": "Quỹ",
     "searchBar.searchProposals": "Tìm kiếm đề xuất",
-    "moderatedProposals.description": "Các đề xuất đã được kiểm duyệt và sẽ không xuất hiện trên phiếu bầu."
+    "moderatedProposals.description": "Các đề xuất đã được kiểm duyệt và sẽ không xuất hiện trên phiếu bầu.",
+    "support.title": "Liên hệ Hỗ trợ",
+    "support.subtitle": "Chúng tôi sẵn sàng giúp đỡ. Liên hệ với chúng tôi qua bất kỳ kênh truyền thông xã hội nào hoặc điền vào mẫu dưới đây.",
+    "support.connectWithUs": "Kết nối với Chúng tôi",
+    "support.sendMessage": "Gửi cho chúng tôi Tin nhắn",
+    "support.name": "Tên",
+    "support.namePlaceholder": "Tên của bạn",
+    "support.email": "Email",
+    "support.emailPlaceholder": "email.cua.ban@example.com",
+    "support.message": "Tin nhắn",
+    "support.messagePlaceholder": "Chúng tôi có thể giúp gì cho bạn?",
+    "support.sendButton": "Gửi Tin nhắn",
+    "support.successMessage": "Tin nhắn của bạn đã được gửi thành công. Chúng tôi sẽ liên hệ với bạn sớm!"
 }
