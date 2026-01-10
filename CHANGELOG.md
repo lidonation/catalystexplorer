@@ -1,3 +1,11 @@
+# [1.63.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.62.0...v1.63.0) (2026-01-10)
+
+
+### Features
+
+* **proposal:** removed new image creation when generating og preview and also... ([4ae6314](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/4ae6314c0bab3b2660f6c215a3cd3b74d83c9425))
+* **proposal:** removed new image creation when generating og preview and also... ([a2a9571](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/a2a9571eaf98b7bff714ec78f544e6a2240cec67))
+
 # [1.62.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.61.0...v1.62.0) (2026-01-10)
 
 
