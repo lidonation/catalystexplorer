@@ -801,7 +801,7 @@
 
     "proposals.filters.projectLength": "Urefu wa Mradi (miezi)",
     "proposals.filters.filters": "Vichunjo",
-    "proposals.filters.catalystProposers": "Wapendekeza wa Catalyst",
+    "proposals.filters.catalystProposers": "Wasifu wa Catalyst",
     "proposals.filters.ideascaleProfiles": "Wasifu wa Ideascale",
     "proposals.filters.numberOfProposals": "Idadi ya Mapendekezo",
     "proposals.filters.awardedAda": "Iliyotolewa (ADA)",
@@ -1592,7 +1592,7 @@
     "proposals.filters.campaigns": "Kampeni",
     "proposals.filters.communities": "Jamii",
     "proposals.filters.communityCohort": "Kundi la Jamii",
-    "proposals.filters.proposers": "Wapendekeza",
+    "proposals.filters.proposers": "Wasifu wa Ideascale",
     "proposals.filters.groups": "Vikundi",
     "proposals.filters.budgets": "Bajeti",
     "proposals.filters.budget": "Bajeti",
