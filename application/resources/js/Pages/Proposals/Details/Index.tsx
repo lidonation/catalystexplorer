@@ -48,9 +48,9 @@ const Index = ({
     const { t } = useLaravelReactI18n();
 
     // Use server-side OG meta data if available (for SSR), otherwise construct client-side
-    const ogImageUrl = ogMeta?.ogImageUrl ?? 
+    const ogImageUrl = ogMeta?.ogImageUrl ??
         (typeof window !== 'undefined' ? `${window.location.origin}/og-image/proposals/${proposal.slug}` : '');
-    const proposalUrl = ogMeta?.proposalUrl ?? 
+    const proposalUrl = ogMeta?.proposalUrl ??
         (typeof window !== 'undefined' ? window.location.href : '');
     const description = ogMeta?.description ?? (proposal.social_excerpt || proposal.excerpt || proposal.title || '');
 
@@ -97,43 +97,43 @@ const Index = ({
                 setGlobalQuickPitchView={setGlobalQuickPitchView}
                 ogMeta={ogMeta}
             >
-            <div className="bg-background shadow-cx-box-shadow flex flex-col items-start justify-between gap-5 self-stretch overflow-x-auto rounded-xl p-4 sm:flex-row sm:gap-2 sm:p-6">
-                <div className="flex w-120 items-center justify-start gap-4 overflow-x-auto">
-                    <div className="inline-flex flex-1 flex-col items-start justify-start gap-1">
-                        <div className="text-gray-persist text-sm">
-                            {t('proposals.outstanding')}
-                        </div>
-                        <div className="text-content text-base">
-                            {userOutstandingProposalsCount &&
-                            userOutstandingProposalsCount > 0
-                                ? userOutstandingProposalsCount
-                                : '-'}
-                        </div>
-                    </div>
-                    <div className="inline-flex flex-1 flex-col items-start justify-start gap-1">
-                        <div className="text-gray-persist text-sm">
-                            {t('proposals.completed')}
-                        </div>
-                        <div className="text-content text-base">
-                            {userCompleteProposalsCount &&
-                            userCompleteProposalsCount > 0
-                                ? userCompleteProposalsCount
-                                : '-'}
-                        </div>
-                    </div>
-                    <div className="inline-flex flex-1 flex-col items-start justify-start gap-1">
-                        <div className="text-gray-persist text-sm">
-                            {t('proposals.catalystConnection')}
-                        </div>
-                        <div className="text-content text-base">
-                            {catalystConnectionsCount &&
-                            catalystConnectionsCount > 0
-                                ? catalystConnectionsCount
-                                : '-'}
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {/*<div className="bg-background shadow-cx-box-shadow flex flex-col items-start justify-between gap-5 self-stretch overflow-x-auto rounded-xl p-4 sm:flex-row sm:gap-2 sm:p-6">*/}
+            {/*    <div className="flex w-120 items-center justify-start gap-4 overflow-x-auto">*/}
+            {/*        <div className="inline-flex flex-1 flex-col items-start justify-start gap-1">*/}
+            {/*            <div className="text-gray-persist text-sm">*/}
+            {/*                {t('proposals.outstanding')}*/}
+            {/*            </div>*/}
+            {/*            <div className="text-content text-base">*/}
+            {/*                {userOutstandingProposalsCount &&*/}
+            {/*                userOutstandingProposalsCount > 0*/}
+            {/*                    ? userOutstandingProposalsCount*/}
+            {/*                    : '-'}*/}
+            {/*            </div>*/}
+            {/*        </div>*/}
+            {/*        <div className="inline-flex flex-1 flex-col items-start justify-start gap-1">*/}
+            {/*            <div className="text-gray-persist text-sm">*/}
+            {/*                {t('proposals.completed')}*/}
+            {/*            </div>*/}
+            {/*            <div className="text-content text-base">*/}
+            {/*                {userCompleteProposalsCount &&*/}
+            {/*                userCompleteProposalsCount > 0*/}
+            {/*                    ? userCompleteProposalsCount*/}
+            {/*                    : '-'}*/}
+            {/*            </div>*/}
+            {/*        </div>*/}
+            {/*        <div className="inline-flex flex-1 flex-col items-start justify-start gap-1">*/}
+            {/*            <div className="text-gray-persist text-sm">*/}
+            {/*                {t('proposals.catalystConnection')}*/}
+            {/*            </div>*/}
+            {/*            <div className="text-content text-base">*/}
+            {/*                {catalystConnectionsCount &&*/}
+            {/*                catalystConnectionsCount > 0*/}
+            {/*                    ? catalystConnectionsCount*/}
+            {/*                    : '-'}*/}
+            {/*            </div>*/}
+            {/*        </div>*/}
+            {/*    </div>*/}
+            {/*</div>*/}
             {canCreateQuickPitch && (
                 <div className="bg-background shadow-cx-box-shadow mt-4 flex items-center justify-center rounded-xl p-4">
                     <PrimaryLink
