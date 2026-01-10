@@ -1,3 +1,10 @@
+# [1.60.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.59.1...v1.60.0) (2026-01-10)
+
+
+### Features
+
+* adding a script to remove moderated out proposals ([fdc65a6](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/fdc65a614b8f8fce9df33bb8e9047e34e81c0fc7))
+
 ## [1.59.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.59.0...v1.59.1) (2026-01-09)
 
 
