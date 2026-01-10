@@ -47,7 +47,7 @@ class ModeratedProposalsController extends Controller
 
         $funds = Cache::remember(
             'moderated_proposals:funds_list',
-            now()->addHour(),
+            now()->addDay(),
             fn () => Fund::select('id', 'title', 'label')
                 ->orderBy('launched_at', 'desc')
                 ->get()
