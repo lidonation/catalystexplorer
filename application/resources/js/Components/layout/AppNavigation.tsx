@@ -505,6 +505,16 @@ function AppNavigation() {
 
                                                 <NavLinkItem
                                                     href={useLocalizedRoute(
+                                                        'moderatedProposals.index',
+                                                    )}
+                                                    title="Moderated Proposals"
+                                                    ariaLabel={`${t('moderatedProposals')} ${t('link')}`}
+                                                    active={false}
+                                                    data-testid="moderated-proposals-link"
+                                                ></NavLinkItem>
+
+                                                <NavLinkItem
+                                                    href={useLocalizedRoute(
                                                         'reviews.index',
                                                     )}
                                                     title="Proposal Reviews"
