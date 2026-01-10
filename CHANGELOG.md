@@ -1,3 +1,10 @@
+# [1.61.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.60.0...v1.61.0) (2026-01-10)
+
+
+### Features
+
+* added moderated proposals page ([0de99a5](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/0de99a5510ba373f372511ff8bd6d5ebc1a8f13d))
+
 # [1.60.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.59.1...v1.60.0) (2026-01-10)
 
 
