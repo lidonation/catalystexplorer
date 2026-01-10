@@ -14,28 +14,29 @@ import ShareButtonsBar from "./ShareButtonBar";
 import { useUserSetting } from "@/useHooks/useUserSettings";
 import { userSettingEnums } from '@/enums/user-setting-enums';
 import { generateLocalizedRoute } from "@/utils/localizedRoute";
+import { toast } from "react-toastify";
 
 interface ShareCardConfiguratorProps {
     proposal: App.DataTransferObjects.ProposalData;
     initialConfig?: Partial<App.ShareCard.ConfiguratorState>;
-    voteChoice?: App.ShareCard.VoteChoice;
     onSave?: (config: App.ShareCard.ConfiguratorState) => Promise<void>;
     onReset?: () => void;
     proposalUrl: string;
+    existingOgImageUrl?: string | null;
 }
 
 
 export default function ShareConfigurator(
     { proposal,
         initialConfig,
-        voteChoice,
         onSave,
         onReset,
-        proposalUrl, }: ShareCardConfiguratorProps
+        proposalUrl,
+        existingOgImageUrl, }: ShareCardConfiguratorProps
 ) {
     const { t } = useLaravelReactI18n();
     const [isSaving, setIsSaving] = useState(false);
-    const { value: savedConfig, setValue: saveConfig } = useUserSetting<App.ShareCard.ConfiguratorState>(
+    const { value: savedConfig, setValue: saveConfig, isLoading: isConfigLoading } = useUserSetting<App.ShareCard.ConfiguratorState>(
         userSettingEnums.OG_CARD_CONFIG as keyof App.DataTransferObjects.UserSettingData,
         DEFAULT_CONFIG
     );
@@ -47,6 +48,9 @@ export default function ShareConfigurator(
         ...initialConfig,
     }));
 
+
+    const [isConfigSettled, setIsConfigSettled] = useState(false);
+
     useEffect(() => {
         if (savedConfig && !initialConfig) {
             setConfig(prev => ({
@@ -54,7 +58,11 @@ export default function ShareConfigurator(
                 ...savedConfig,
             }));
         }
-    }, [savedConfig, initialConfig]);
+       
+        if (!isConfigLoading) {
+            setIsConfigSettled(true);
+        }
+    }, [savedConfig, initialConfig, isConfigLoading]);
 
     const handleVisibilityToggle = useCallback(
         (element: App.ShareCard.VisibleElement, checked: boolean) => {
@@ -149,14 +157,15 @@ export default function ShareConfigurator(
     const handleSave = useCallback(async () => {
         setIsSaving(true);
         try {
-            await saveConfig(config); 
+            await saveConfig(config);
             if (onSave) {
                 await onSave(config);
             }
+            toast.success(t('shareCard.changesSaved') );
         } finally {
             setIsSaving(false);
         }
-    }, [config, saveConfig, onSave]);
+    }, [config, saveConfig, onSave, t]);
     
 
 
@@ -170,7 +179,8 @@ export default function ShareConfigurator(
             <OgPreviewImage
                 proposal={proposal}
                 config={config}
-                voteChoice={voteChoice}
+                initialImageUrl={existingOgImageUrl}
+                isConfigSettled={isConfigSettled}
             />
 
             <VisibilityToggleList
@@ -241,11 +251,11 @@ export default function ShareConfigurator(
             <div className="h-px w-full bg-light-gray-persist/20" />
 
             {/* Share Buttons */}
-           {/* <ShareButtonsBar
+            <ShareButtonsBar
                 proposalUrl={proposalUrl}
                 proposalTitle={proposal.title || ''}
                 customMessage={config.customMessage}
-            />*/}
+            />
         </div>
     )
 }
