@@ -474,6 +474,11 @@ Route::localized(
                 ->name('index');
         });
 
+        Route::prefix('/moderated-proposals')->as('moderatedProposals.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\ModeratedProposalsController::class, 'index'])
+                ->name('index');
+        });
+
         Route::prefix('/reviews')->as('reviews.')->group(function () {
 
             Route::prefix('/{review:id}')->middleware(['auth'])->group(function () {
