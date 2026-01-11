@@ -473,9 +473,13 @@ class ProposalsController extends Controller
 
         $hasMoreThanOneWallet = $wallets->count() > 1;
 
-        $existingOgImageUrl = Storage::disk()->exists("og-images/{$proposal->slug}.png")
-            ? Storage::disk()->url("og-images/{$proposal->slug}.png")
-            : null;
+        $imagePath = "og-images/{$proposal->slug}.png";
+        $existingOgImageUrl = null;
+
+        if (Storage::disk()->exists($imagePath)) {
+            $lastModified = Storage::disk()->lastModified($imagePath);
+            $existingOgImageUrl = Storage::disk()->url($imagePath).'?t='.$lastModified;
+        }
 
         return Inertia::render('My/Proposals/ManageProposal', [
             'proposal' => ProposalData::from($proposal),
@@ -1289,9 +1293,13 @@ class ProposalsController extends Controller
         $imagePath = "og-images/{$slug}.png";
 
         if ($request->isMethod('get') && $disk->exists($imagePath)) {
+            $lastModified = $disk->lastModified($imagePath);
+
             return response($disk->get($imagePath))
                 ->header('Content-Type', 'image/png')
-                ->header('Cache-Control', 'public, max-age=86400');
+                ->header('Cache-Control', 'public, max-age=3600, must-revalidate')
+                ->header('ETag', '"'.hash('sha256', $lastModified.$imagePath).'"')
+                ->header('Last-Modified', gmdate('D, d M Y H:i:s', $lastModified).' GMT');
         }
 
         $defaults = [
@@ -1394,7 +1402,7 @@ class ProposalsController extends Controller
 
             return response($png)
                 ->header('Content-Type', 'image/png')
-                ->header('Cache-Control', 'public, max-age=86400');
+                ->header('Cache-Control', 'public, max-age=3600, must-revalidate');
         } catch (\Exception $e) {
             Log::error('Failed to generate OG image', [
                 'slug' => $slug,
