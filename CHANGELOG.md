@@ -1,3 +1,10 @@
+# [1.64.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.63.1...v1.64.0) (2026-01-11)
+
+
+### Features
+
+* combine ideascale & catalyst profiles filter with OR instead of AND when both filters are used ([e5b57b4](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/e5b57b4ccc74dc0d18dcef5206aac8a6788c882c))
+
 ## [1.63.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.63.0...v1.63.1) (2026-01-10)
 
 
