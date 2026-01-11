@@ -43,7 +43,6 @@ export default function ShareConfigurator(
 
     const [config, setConfig] = useState<App.ShareCard.ConfiguratorState>(() => ({
         ...DEFAULT_CONFIG,
-        customMessage: t('shareCard.defaultMessage'),
         ...savedConfig,
         ...initialConfig,
     }));
@@ -148,10 +147,9 @@ export default function ShareConfigurator(
     const handleReset = useCallback(
         () => {
             setConfig({
-                ...DEFAULT_CONFIG,
-                customMessage: t('shareCard.defaultMessage'),
+                ...DEFAULT_CONFIG
             });
-        }, [t]
+        }, []
     )
 
     const handleSave = useCallback(async () => {

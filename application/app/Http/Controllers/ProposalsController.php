@@ -1285,6 +1285,15 @@ class ProposalsController extends Controller
      */
     public function generateOgImage(string $slug, Request $request)
     {
+        $disk = Storage::disk();
+        $imagePath = "og-images/{$slug}.png";
+
+        if ($request->isMethod('get') && $disk->exists($imagePath)) {
+            return response($disk->get($imagePath))
+                ->header('Content-Type', 'image/png')
+                ->header('Cache-Control', 'public, max-age=86400');
+        }
+
         $defaults = [
             'visibleElements' => ['logo', 'campaignTitle', 'openSourceBadge'],
             'selectedThemeId' => 'navy-teal',
@@ -1306,9 +1315,6 @@ class ProposalsController extends Controller
         ]);
 
         $config = array_merge($defaults, $validated);
-
-        $disk = Storage::disk();
-        $imagePath = "og-images/{$slug}.png";
 
         $proposal = Proposal::with(['fund', 'campaign', 'team.model'])
             ->where('slug', $slug)
