@@ -1,3 +1,10 @@
+# [1.65.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.64.0...v1.65.0) (2026-01-11)
+
+
+### Features
+
+* funding progress my proposal widget ([180aca4](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/180aca4602731004f2d0552731bd27c94a28e0be))
+
 # [1.64.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.63.1...v1.64.0) (2026-01-11)
 
 

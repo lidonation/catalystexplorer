@@ -1,5 +1,6 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
+import CopyButton from '@/Components/atoms/CopyButton';
 import Card from '@/Components/Card';
 import FundingPercentages from '@/Components/FundingPercentages';
 import SegmentedBar from '@/Components/SegmentedBar';
@@ -9,6 +10,7 @@ import { ListProvider } from '@/Context/ListContext';
 import BookmarkButton from '@/Pages/My/Bookmarks/Partials/BookmarkButton';
 import { Segments } from '@/types/segments';
 import { currency } from '@/utils/currency';
+import { getCatalystIdDisplayData } from '@/utils/catalystId';
 import { useLocalizedRoute } from '@/utils/localizedRoute';
 import { Link } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
@@ -295,6 +297,35 @@ const CatalystProfileCard: React.FC<CatalystProfileProps> = ({
                         </Paragraph>
                     </div>
                 </div>
+
+                {/* Catalyst ID display */}
+                {catalystProfile?.catalyst_id && (() => {
+                    const catalystIdData = getCatalystIdDisplayData(catalystProfile.catalyst_id);
+                    return (
+                        <div className="mt-4 pt-4 border-t border-gray-persist">
+                            <div className="flex items-start justify-between gap-2">
+                                <div className="flex-1 min-w-0">
+                                    <Paragraph size="sm" className="text-highlight mb-1">
+                                        <span className="font-bold">{t('catalystProfiles.catalystId')}:</span>
+                                    </Paragraph>
+                                    <Paragraph 
+                                        size="sm" 
+                                        className="font-mono text-content break-all leading-relaxed"
+                                        title={catalystIdData.isLong ? catalystIdData.fullText : undefined}
+                                    >
+                                        {catalystIdData.displayText}
+                                    </Paragraph>
+                                </div>
+                                <CopyButton
+                                    textToCopy={catalystIdData.fullText}
+                                    className="flex-shrink-0 mt-1"
+                                    iconSize={14}
+                                    ariaLabel={`Copy catalyst ID: ${catalystIdData.displayText}`}
+                                />
+                            </div>
+                        </div>
+                    );
+                })()}
             </div>
         </Card>
     );

@@ -9,6 +9,7 @@ import ProposalMetadataWidget from './partials/ProposalMetadataWidget';
 import QuickPitchWidget from './partials/QuickPitchWidget';
 import WalletsSection from './partials/WalletsSection';
 import ShareConfigurator from './partials/ShareCard/ShareCardConfigurator';
+import FundingProgressWidget from './partials/FundingProgressWidget';
 
 interface WalletStats {
     all_time_votes: number;
@@ -96,6 +97,7 @@ export default function ManageProposal({
                     <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2">
                         <div className="grid w-full grid-cols-1 gap-6">
                             <ProposalMetadataWidget proposal={proposal} />
+                            <FundingProgressWidget proposal={proposal} />
 
                             {linkedWallet ? (
                                 <WalletsSection
