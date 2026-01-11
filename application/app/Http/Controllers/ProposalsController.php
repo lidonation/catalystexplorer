@@ -450,7 +450,7 @@ class ProposalsController extends Controller
 
     public function manageProposal(Request $request, Proposal $proposal): Response
     {
-        $proposal->load(['fund', 'campaign']);
+        $proposal->load(['fund', 'campaign', 'schedule.milestones']);
 
         Gate::authorize('manage', $proposal);
 

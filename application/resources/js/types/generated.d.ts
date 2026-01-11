@@ -527,7 +527,7 @@ currency: string;
 status: string;
 on_track: boolean;
 proposal: App.DataTransferObjects.ProposalData | null;
-milestones: any | null;
+milestones: App.DataTransferObjects.MilestoneData[];
 };
 export type ProposalData = {
 id: string;
