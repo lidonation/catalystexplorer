@@ -1802,7 +1802,7 @@
     "shareCard.visibility.campaignTitle": "Campaign Title",
     "shareCard.visibility.openSourceBadge": "Open Source Badge",
     "shareCard.customMessage": "Call to Action",
-    "shareCard.messagePlaceholder": "Add a custom message to your share card...",
+    "shareCard.messagePlaceholder": "Add a call to action to your share card...",
     "shareCard.defaultMessage": "Check out this proposal on Catalyst Explorer!",
     "shareCard.backgroundTheme": "Background Theme",
     "shareCard.customColor": "Custom Color",

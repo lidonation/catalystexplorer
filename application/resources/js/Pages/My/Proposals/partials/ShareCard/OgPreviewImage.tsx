@@ -81,7 +81,7 @@ export default function OgPreviewImage({
 
     // Debounced effect to regenerate preview on config changes
     useEffect(() => {
-    
+
         if (!isConfigSettled) {
             return;
         }
@@ -91,8 +91,12 @@ export default function OgPreviewImage({
             previousConfigRef.current = config;
 
             if (initialImageUrl) {
+                setIsLoading(false);
                 return;
             }
+
+            generatePreview(config);
+            return;
         }
 
         if (previousConfigRef.current && JSON.stringify(previousConfigRef.current) === JSON.stringify(config)) {
