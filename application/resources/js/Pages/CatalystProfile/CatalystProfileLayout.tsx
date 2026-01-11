@@ -1,6 +1,6 @@
 import RecordsNotFound from '@/Layouts/RecordsNotFound';
 import { SearchParams } from '@/types/search-params';
-import { generateTabs, proposalProfileTabs } from '@/utils/routeTabs';
+import { generateTabs, catalystProfileTabs } from '@/utils/routeTabs';
 import { PageProps as InertiaPageProps } from '@inertiajs/core';
 import { usePage } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
@@ -31,8 +31,8 @@ export default function CatalystProfileLayout({
     const [activeTab, setActiveTab] = useState('');
 
     const tabConfig = {
-        ...proposalProfileTabs,
-        routePrefix: `catalyst.profiles/${catalystProfile.id}`,
+        ...catalystProfileTabs,
+        routePrefix: `catalyst-profiles/${catalystProfile.id}`,
     };
     const tabs = generateTabs(t, tabConfig);
 
