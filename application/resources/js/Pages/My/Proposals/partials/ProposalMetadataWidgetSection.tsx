@@ -15,7 +15,7 @@ export default function ProposalMetadataWidgetSection({
   return (
     <div className='w-full flex gap-6 border-t border-content/20 last:border-b py-4'>
       <Paragraph className="md:min-w-[10rem] min-w-[5rem] text-content/60">{label}</Paragraph>
-      <div className="font-semibold">{value}</div>
+      <Paragraph className="font-semibold" size="sm">{value}</Paragraph>
     </div>
   );
 }
