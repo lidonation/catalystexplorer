@@ -9,7 +9,7 @@ import ProposalsData = App.DataTransferObjects.ProposalData;
 
 interface DashboardPageProps {
     community: CommunityData;
-    proposals: PaginatedData<ProposalsData[]>;
+    proposals: PaginatedData<ProposalsData[]> | undefined;
     ownProposals: number;
     collaboratingProposals: number;
 }

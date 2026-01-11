@@ -33,7 +33,7 @@ const ROUTE_MAPPINGS: Record<string, RouteConfig> = {
 };
 
 interface RelatedProposalsProps extends HTMLAttributes<HTMLDivElement> {
-    proposals: PaginatedData<ProposalData[]>;
+    proposals: PaginatedData<ProposalData[]> | undefined;
     routeParam: { [x: string]: string[] | string | null };
     proposalWrapperClassName?: string;
 }
@@ -46,12 +46,17 @@ const RelatedProposals: React.FC<RelatedProposalsProps> = ({
 }) => {
     const { t } = useLaravelReactI18n();
 
+    // Handle case where proposals might be undefined (lazy loading)
+    if (!proposals || !proposals.data) {
+        return <ProposalMiniCardLoader />;
+    }
+
     const showViewMore = proposals.total > proposals.per_page;
 
     return (
         <WhenVisible fallback={<ProposalMiniCardLoader />} data="proposals">
             <div {...props}>
-                {typeof proposals.data !== 'undefined' &&
+                {proposals.data.length > 0 &&
                     proposals.data.map((proposal) => (
                         <div
                             key={proposal.id}
