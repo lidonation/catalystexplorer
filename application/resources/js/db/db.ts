@@ -1,27 +1,41 @@
 import Dexie, { Table } from 'dexie';
 import { DbModels, TABLE_INDEXES } from './generated-db-schema';
 
-const addOrderIndex = (indexes: Record<string, string>) => {
+const ensureOrderIndex = (indexes: Record<string, string>) => {
     const result: Record<string, string> = {};
     for (const [table, indexStr] of Object.entries(indexes)) {
         const fields = indexStr.split(',').map((i) => i.trim());
         if (!fields.includes('order')) fields.push('order');
-        result[table] = fields.join(',');
+        result[table] = fields.join(', ');
     }
     return result;
 };
 
-const CURRENT_SCHEMA = addOrderIndex(TABLE_INDEXES);
+const CURRENT_SCHEMA = ensureOrderIndex(TABLE_INDEXES);
 const SCHEMA_VERSION = parseInt(import.meta.env.VITE_DB_VERSION || '1', 10);
 
 class Cx_db extends Dexie {
     constructor() {
         super('Cx_db');
 
+        // Version 2: Previous schema with all fields as indexes (broken)
+        // Version 3: Fixed schema with only necessary indexes
+        //
+        // Migration strategy:
+        // - proposal_comparisons: Clear and recreate (temporary data, acceptable loss)
+        // - user_setting: Preserve existing settings (schema compatible)
         this.version(SCHEMA_VERSION)
             .stores(CURRENT_SCHEMA)
             .upgrade(async (tx) => {
-                await this.fixProposalTypeDuplicates(tx);
+                try {
+                    const proposalComparisons = tx.table('proposal_comparisons');
+                    await proposalComparisons.clear();
+                    console.info('[Cx_db] Cleared proposal_comparisons during schema upgrade');
+                } catch (error) {
+                    console.info('[Cx_db] proposal_comparisons table not found during upgrade, skipping');
+                }
+
+                 await this.fixProposalTypeDuplicates(tx);
             });
 
         this.on('ready', async () => {
