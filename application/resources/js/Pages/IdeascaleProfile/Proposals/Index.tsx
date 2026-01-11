@@ -9,7 +9,7 @@ import ProposalData = App.DataTransferObjects.ProposalData;
 
 interface ProposalsPageProps {
     ideascaleProfile: IdeascaleProfileData;
-    proposals: PaginatedData<ProposalData[]>;
+    proposals: PaginatedData<ProposalData[]> | undefined;
 }
 
 export default function Proposals({
