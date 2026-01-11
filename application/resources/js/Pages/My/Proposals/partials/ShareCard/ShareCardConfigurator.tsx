@@ -38,7 +38,8 @@ export default function ShareConfigurator(
     const [isSaving, setIsSaving] = useState(false);
     const { value: savedConfig, setValue: saveConfig, isLoading: isConfigLoading } = useUserSetting<App.ShareCard.ConfiguratorState>(
         userSettingEnums.OG_CARD_CONFIG as keyof App.DataTransferObjects.UserSettingData,
-        DEFAULT_CONFIG
+        DEFAULT_CONFIG,
+        String(proposal.id)
     );
 
     const [config, setConfig] = useState<App.ShareCard.ConfiguratorState>(() => ({
