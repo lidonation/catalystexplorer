@@ -1,3 +1,18 @@
+# [1.64.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.63.1...v1.64.0) (2026-01-11)
+
+
+### Features
+
+* combine ideascale & catalyst profiles filter with OR instead of AND when both filters are used ([e5b57b4](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/e5b57b4ccc74dc0d18dcef5206aac8a6788c882c))
+
+## [1.63.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.63.0...v1.63.1) (2026-01-10)
+
+
+### Bug Fixes
+
+* add caching to moderated proposals to speed up page ([54381b9](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/54381b94f009aec7cde87c402dfc79fb4fb0742f))
+* add caching to moderated proposals to speed up page ([86bcbd5](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/86bcbd5960830e489b3773924386038d6e7d9ba5))
+
 # [1.63.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.62.0...v1.63.0) (2026-01-10)
 
 

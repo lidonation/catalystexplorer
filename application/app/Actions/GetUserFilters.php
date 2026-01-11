@@ -51,14 +51,22 @@ class GetUserFilters
             $filters[] = '('.implode(' OR ', array_map(fn ($c) => "tags.id = {$c}", $tagIds)).')';
         }
 
+        // Combine ideascale_profiles and catalyst_profiles with OR logic
+        // so that selecting profiles from either type returns proposals from any of them
+        $profileFilters = [];
+
         if ($request->filled(ProposalSearchParams::IDEASCALE_PROFILES()->value)) {
             $ideascaleProfileIds = implode(',', (array) $request->input(ProposalSearchParams::IDEASCALE_PROFILES()->value, []));
-            $filters[] = "users.id IN [{$ideascaleProfileIds}]";
+            $profileFilters[] = "users.id IN [{$ideascaleProfileIds}]";
         }
 
         if ($request->filled(ProposalSearchParams::CATALYST_PROFILES()->value)) {
             $catalystProfileIds = implode(',', (array) $request->input(ProposalSearchParams::CATALYST_PROFILES()->value, []));
-            $filters[] = "claimed_catalyst_profiles.id IN [{$catalystProfileIds}]";
+            $profileFilters[] = "claimed_catalyst_profiles.id IN [{$catalystProfileIds}]";
+        }
+
+        if (! empty($profileFilters)) {
+            $filters[] = '('.implode(' OR ', $profileFilters).')';
         }
 
         if ($request->filled(ProposalSearchParams::GROUPS()->value)) {
