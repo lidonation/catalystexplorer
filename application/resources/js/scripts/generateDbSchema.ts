@@ -40,4 +40,4 @@ ${modelLines.join('\n')}
 `;
 
 fs.writeFileSync(outputFile, output);
-console.log('✅ DB schema generated yes.');
+console.log('✅ DB schema generate.');
