@@ -67,7 +67,7 @@ export default function FundingProgressWidget({ proposal }: FundingProgressWidge
                             <>
                                 {currency(upcomingPayment, 2, proposal.currency)}
                                 {upcomingPaymentDate && (
-                                    <span className="opacity-60"> ({upcomingPaymentDate})</span>
+                                    <span className="opacity-50"> ({upcomingPaymentDate})</span>
                                 )}
                             </>
                         )
