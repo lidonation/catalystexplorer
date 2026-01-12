@@ -176,7 +176,7 @@ const Show = ({
                     <section className="text-content-lighter relative z-0 mt-4 w-full flex-grow overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] sm:mt-0 [&::-webkit-scrollbar]:hidden">
                         <ProposalTab tabs={tabs} activeTab={activeTab} />
                     </section>
-                    <div className="bg-background flex flex-shrink-0 items-center justify-center gap-1 self-end overflow-hidden rounded-lg px-3 py-1 shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] sm:ml-2 sm:self-auto">
+                    <div className="bg-background flex flex-shrink-0 items-center justify-center gap-1 self-end  rounded-lg px-3 py-1 shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] sm:ml-2 sm:self-auto">
                         <ListProvider>
                             {proposal.id && (
                                 <>
