@@ -1,7 +1,13 @@
 export function formatTimeAgo(timestamp: string | Date | undefined): string {
     if (!timestamp) return 'Never';
 
+    // Parse timestamp - to handle ISO strings with timezone correctly
     const date = new Date(timestamp);
+
+    if (isNaN(date.getTime())) {
+        return 'Invalid date';
+    }
+
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 

@@ -1,3 +1,10 @@
+# [1.66.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.65.0...v1.66.0) (2026-01-12)
+
+
+### Features
+
+* **manage:** manage-my-list functionality ([4f1b75d](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/4f1b75d98352a5c90a33a458119bce3f2357452f))
+
 # [1.65.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.64.0...v1.65.0) (2026-01-11)
 
 

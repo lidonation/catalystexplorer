@@ -51,8 +51,9 @@ Route::localized(
                 Route::prefix('lists')->name('lists.')->group(function () {
                     Route::get('/', [MyBookmarksController::class, 'collectionIndex'])->name('index');
                     Route::get('/{list}', [MyBookmarksController::class, 'showCollection'])->name('show');
-                    Route::get('/{bookmarkCollection}/manage/{type?}', [BookmarksController::class, 'manage'])
-                        ->name('manage');
+                    Route::get('/{bookmarkCollection}/{type}', [MyBookmarksController::class, 'manageListProposals'])
+                        ->name('manage')
+                        ->where('bookmarkCollection', '[0-9a-fA-F-]+');
                     Route::post('/{bookmarkCollection}/manage/stream', [BookmarksController::class, 'streamBookmarkItems'])
                         ->name('manage.stream');
                 });
