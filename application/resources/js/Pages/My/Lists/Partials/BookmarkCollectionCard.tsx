@@ -107,7 +107,7 @@ const BookmarkCollectionCard = ({
                 <div className="space-y-2">
                     <div className="flex items-center gap-3">
                         <Link
-                            href={useLocalizedRoute('lists.view', {
+                            href={useLocalizedRoute('my.lists.manage', {
                                 bookmarkCollection: collection?.id,
                                 type: 'proposals'
                             })}

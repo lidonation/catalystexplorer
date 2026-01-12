@@ -6,6 +6,7 @@ namespace App\Http\Controllers\My;
 
 use App\DataTransferObjects\BookmarkCollectionData;
 use App\DataTransferObjects\BookmarkItemData;
+use App\DataTransferObjects\ProposalData;
 use App\Enums\BookmarkableType;
 use App\Enums\BookmarkStatus;
 use App\Enums\BookmarkVisibility;
@@ -13,12 +14,15 @@ use App\Enums\ProposalSearchParams;
 use App\Http\Controllers\Controller;
 use App\Models\BookmarkCollection;
 use App\Models\BookmarkItem;
+use App\Models\Fund;
 use App\Models\Group;
 use App\Models\IdeascaleProfile;
 use App\Models\Proposal;
 use App\Models\Review;
+use App\Models\Scopes\PublicVisibilityScope;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -372,6 +376,133 @@ class MyBookmarksController extends Controller
     {
         return Inertia::render('My/Lists/BookmarkCollection', [
             'bookmarkCollection' => BookmarkCollectionData::from($bookmarkCollection),
+        ]);
+    }
+
+    public function manageListProposals(string $bookmarkCollection, Request $request, ?string $type = 'proposals'): InertiaResponse
+    {
+        // Find collection bypassing global scopes to access private collections
+        $bookmarkCollectionModel = BookmarkCollection::withoutGlobalScope(PublicVisibilityScope::class)
+            ->find($bookmarkCollection);
+
+        if (! $bookmarkCollectionModel) {
+            abort(404);
+        }
+
+        // Authorize that the user can manage this collection
+        Gate::authorize('update', $bookmarkCollectionModel);
+
+        $perPage = (int) $request->input('l', 45);
+        $currentPage = (int) $request->input('p', 1);
+        $search = $request->input('q', null);
+        $fundId = $request->input('fund_id', null);
+
+        // Get proposal IDs from the bookmark collection
+        $bookmarkItemIds = $bookmarkCollectionModel->items
+            ->where('model_type', Proposal::class)
+            ->pluck('model_id')
+            ->toArray();
+
+        // If no proposals in the collection, return empty result
+        if (empty($bookmarkItemIds)) {
+            $emptyPagination = new LengthAwarePaginator(
+                [],
+                0,
+                $perPage,
+                $currentPage,
+                [
+                    'path' => $request->url(),
+                    'query' => $request->query(),
+                ]
+            );
+
+            return Inertia::render('My/Lists/ListProposals', [
+                'proposals' => $emptyPagination->toArray(),
+                'bookmarkCollection' => BookmarkCollectionData::from($bookmarkCollectionModel),
+                'funds' => [],
+                'fundsCount' => [],
+                'filters' => [
+                    'q' => $search,
+                    'fund_id' => $fundId,
+                    'p' => $currentPage,
+                    'l' => $perPage,
+                ],
+            ]);
+        }
+
+        // Build the query for proposals in this collection
+        $query = Proposal::whereIn('id', $bookmarkItemIds)
+            ->with(['fund', 'campaign']);
+
+        if ($search) {
+            $query->where('proposals.title', 'ILIKE', '%'.$search.'%');
+        }
+
+        if ($fundId) {
+            $query->where('proposals.fund_id', $fundId);
+        }
+
+        $query->orderBy('proposals.created_at', 'desc');
+
+        $proposals = $query->paginate($perPage, ['*'], 'page', $currentPage);
+
+        // Get funds that exist in this collection's proposals
+        $fundIds = Proposal::whereIn('id', $bookmarkItemIds)
+            ->pluck('fund_id')
+            ->unique()
+            ->filter()
+            ->toArray();
+
+        $funds = Fund::select('id', 'title', 'label')
+            ->whereIn('id', $fundIds)
+            ->orderBy('launched_at', 'desc')
+            ->get()
+            ->map(function ($fund) {
+                return [
+                    'id' => $fund->id,
+                    'label' => $fund->label,
+                    'title' => $fund->title,
+                ];
+            });
+
+        // Get counts per fund for this collection
+        $fundsCount = Proposal::whereIn('proposals.id', $bookmarkItemIds)
+            ->join('funds', 'proposals.fund_id', '=', 'funds.id')
+            ->selectRaw('funds.id, funds.label, funds.title, count(proposals.id) as count')
+            ->groupBy('funds.id', 'funds.label', 'funds.title')
+            ->get()
+            ->keyBy('id')
+            ->map(fn ($fund) => [
+                'label' => $fund->label,
+                'title' => $fund->title,
+                'count' => $fund->count,
+            ])
+            ->toArray();
+
+        $proposalsData = ProposalData::collect($proposals->items());
+
+        $paginatedProposals = new LengthAwarePaginator(
+            $proposalsData,
+            $proposals->total(),
+            $proposals->perPage(),
+            $proposals->currentPage(),
+            [
+                'path' => $request->url(),
+                'query' => $request->query(),
+            ]
+        );
+
+        return Inertia::render('My/Lists/ListProposals', [
+            'proposals' => $paginatedProposals->toArray(),
+            'bookmarkCollection' => BookmarkCollectionData::from($bookmarkCollectionModel),
+            'funds' => $funds,
+            'fundsCount' => $fundsCount,
+            'filters' => [
+                'q' => $search,
+                'fund_id' => $fundId,
+                'p' => $currentPage,
+                'l' => $perPage,
+            ],
         ]);
     }
 
