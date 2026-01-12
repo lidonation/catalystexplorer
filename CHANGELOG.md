@@ -1,3 +1,10 @@
+## [1.66.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.66.0...v1.66.1) (2026-01-12)
+
+
+### Bug Fixes
+
+* lists fixes ([6c309cb](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/6c309cb364a6b64b1e130c0bce7554c1d4453b46))
+
 # [1.66.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.65.0...v1.66.0) (2026-01-12)
 
 
