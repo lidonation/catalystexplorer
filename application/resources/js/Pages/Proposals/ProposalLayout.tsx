@@ -143,7 +143,7 @@ const ProposalLayout = ({
                     <section className="text-content-lighter relative z-0 mt-4 w-full flex-grow overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] sm:mt-0 [&::-webkit-scrollbar]:hidden">
                         <ProposalTab tabs={tabs} activeTab={activeTab} />
                     </section>
-                    <div className="bg-background inline-flex flex-shrink-0 items-center justify-center self-end overflow-hidden rounded-lg p-2 shadow-md sm:ml-2">
+                    <div className="bg-background inline-flex flex-shrink-0 items-center justify-center self-end  rounded-lg p-2 shadow-md sm:ml-2">
                         <ListProvider>
                             {proposal.id && (
                                 <>
