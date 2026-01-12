@@ -41,7 +41,11 @@ class GenerateProposalOgImage implements ShouldQueue
             }
 
             $locale = config('localized-routes.fallback_locale', config('app.locale'));
-            $url = rtrim(config('app.url'), '/').'/'.$locale.'/proposals/'.$proposal->slug.'/og-image';
+
+            $hostname = parse_url(config('app.url'), PHP_URL_HOST);
+            $baseUrl = rtrim(config('app.url'), '/');
+            $resolvedIp = gethostbyname(config('app.service', $hostname));
+            $url = "{$baseUrl}/{$locale}/proposals/{$proposal->slug}/og-image";
 
             $client = new Client([
                 'verify' => false,
@@ -49,6 +53,7 @@ class GenerateProposalOgImage implements ShouldQueue
                 'curl' => [
                     CURLOPT_SSL_VERIFYPEER => false,
                     CURLOPT_SSL_VERIFYHOST => 0,
+                    CURLOPT_RESOLVE => ["{$hostname}:443:{$resolvedIp}"],
                 ],
             ]);
 

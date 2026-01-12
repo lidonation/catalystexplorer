@@ -169,5 +169,8 @@ final class ProposalData extends Data
         #[DataCollectionOf(LinkData::class)]
         public ?DataCollection $links,
 
+        #[TypeScriptOptional]
+        public mixed $meta_info,
+
     ) {}
 }

@@ -36,6 +36,8 @@ export function useSearchOptions<T>(domain?: string, fundId?: string | null) {
 
             if (domain === 'ideascale-profiles') {
                 routeName = 'api.ideascaleProfiles.index';
+            } else if (domain === 'catalystProfiles.index') {
+                routeName = 'api.catalystProfiles.index';
             } else if (domain === 'funds') {
                 routeName = 'api.funds.legacy';
             }

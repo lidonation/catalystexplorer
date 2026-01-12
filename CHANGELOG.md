@@ -1,3 +1,61 @@
+# [1.65.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.64.0...v1.65.0) (2026-01-11)
+
+
+### Features
+
+* funding progress my proposal widget ([180aca4](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/180aca4602731004f2d0552731bd27c94a28e0be))
+
+# [1.64.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.63.1...v1.64.0) (2026-01-11)
+
+
+### Features
+
+* combine ideascale & catalyst profiles filter with OR instead of AND when both filters are used ([e5b57b4](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/e5b57b4ccc74dc0d18dcef5206aac8a6788c882c))
+
+## [1.63.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.63.0...v1.63.1) (2026-01-10)
+
+
+### Bug Fixes
+
+* add caching to moderated proposals to speed up page ([54381b9](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/54381b94f009aec7cde87c402dfc79fb4fb0742f))
+* add caching to moderated proposals to speed up page ([86bcbd5](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/86bcbd5960830e489b3773924386038d6e7d9ba5))
+
+# [1.63.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.62.0...v1.63.0) (2026-01-10)
+
+
+### Features
+
+* **proposal:** removed new image creation when generating og preview and also... ([4ae6314](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/4ae6314c0bab3b2660f6c215a3cd3b74d83c9425))
+* **proposal:** removed new image creation when generating og preview and also... ([a2a9571](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/a2a9571eaf98b7bff714ec78f544e6a2240cec67))
+
+# [1.62.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.61.0...v1.62.0) (2026-01-10)
+
+
+### Features
+
+* **proposal:** removed new image creation when generating og preview and also... ([7eb5342](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/7eb53427740d64501bc1e71775ea2a5b36b6cc2c))
+
+# [1.61.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.60.0...v1.61.0) (2026-01-10)
+
+
+### Features
+
+* added moderated proposals page ([0de99a5](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/0de99a5510ba373f372511ff8bd6d5ebc1a8f13d))
+
+# [1.60.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.59.1...v1.60.0) (2026-01-10)
+
+
+### Features
+
+* adding a script to remove moderated out proposals ([fdc65a6](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/fdc65a614b8f8fce9df33bb8e9047e34e81c0fc7))
+
+## [1.59.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.59.0...v1.59.1) (2026-01-09)
+
+
+### Bug Fixes
+
+* fixing bookmark status fetching issue ([557c431](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/557c431b010517a83240adac230a71aedfafee05))
+
 # [1.59.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.58.0...v1.59.0) (2026-01-09)
 
 

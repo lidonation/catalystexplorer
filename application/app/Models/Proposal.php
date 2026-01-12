@@ -674,6 +674,13 @@ class Proposal extends Model implements IHasMetaData
                 'username' => $profile->username,
                 'catalyst_id' => $profile->catalyst_id,
             ]),
+            'ideascale_profiles' => $this->ideascale_profiles->map(fn ($profile) => [
+                'id' => $profile->id,
+                'name' => $profile->name,
+                'claimed_by' => $profile->claimed_by,
+                'username' => $profile->username,
+                'catalyst_id' => $profile->catalyst_id,
+            ]),
             'claimed_catalyst_profiles' => $this->catalyst_profiles
                 ->filter(fn ($profile) => ! is_null($profile->claimed_by))
                 ->map(fn ($profile) => [

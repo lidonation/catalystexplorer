@@ -41,7 +41,7 @@ const Graph: React.FC<GraphProps> = ({ graphData }) => {
         useState<string>('');
 
     const routeName =
-        graphData.rootNodeType == CatalystConnectionsEnum.GROUP
+        graphData?.rootNodeType == CatalystConnectionsEnum.GROUP
             ? 'api.groups.connections'
             : graphData.rootNodeType == CatalystConnectionsEnum.COMMUNITY
               ? 'api.communities.connections'

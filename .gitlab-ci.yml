@@ -65,7 +65,6 @@ composer:
     GIT_SUBMODULE_STRATEGY: normal
   script: |-
     set -vx
-    echo "$ENV_FILE"
     cp "$ENV_FILE" application/.env
     export PATH=$PATH:/usr/local/bin
     export COMPOSER_MAX_PARALLEL_HTTP=24

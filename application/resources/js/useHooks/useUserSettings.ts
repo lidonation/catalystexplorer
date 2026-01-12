@@ -13,6 +13,7 @@ interface UseUserSettingReturn<T> {
 export function useUserSetting<T = any>(
     key: UserSettingKey,
     defaultValue?: T,
+    scope?: string,
 ): UseUserSettingReturn<T> {
     const [isLoading, setIsLoading] = useState(true);
 
@@ -28,12 +29,39 @@ export function useUserSetting<T = any>(
         }
     }, []);
 
-    const value =
-        userSetting &&
-        userSetting[key] !== undefined &&
-        userSetting[key] !== null
-            ? (userSetting[key] as T)
-            : (defaultValue ?? null);
+    // Compute value with scope support
+    const value = (() => {
+        if (!userSetting) {
+            return defaultValue ?? null;
+        }
+
+        const storedValue = userSetting[key];
+
+        if (storedValue === undefined || storedValue === null) {
+            return defaultValue ?? null;
+        }
+
+        if (!scope) {
+            return storedValue as T;
+        }
+
+        if (typeof storedValue === 'object' && !Array.isArray(storedValue)) {
+            const nested = storedValue as Record<string, T>;
+
+            if (scope in nested) {
+                return nested[scope];
+            }
+            if ('_default' in nested) {
+                return nested['_default'];
+            }
+        }
+
+        if (isConfiguratorState(storedValue)) {
+            return storedValue as T;
+        }
+
+        return defaultValue ?? null;
+    })();
 
     const setValue = useCallback(async (newValue: T) => {
         try {
@@ -57,20 +85,57 @@ export function useUserSetting<T = any>(
                 };
             }
 
+            let updatedValue: any = newValue;
+
+            if (scope) {
+                const existingValue = currentSetting[key];
+                let nestedObject: Record<string, T> = {};
+
+                if (existingValue && typeof existingValue === 'object' && !Array.isArray(existingValue)) {
+        
+                    if (!isConfiguratorState(existingValue)) {
+                        nestedObject = { ...(existingValue as Record<string, T>) };
+                    } else {
+                        
+                        nestedObject = { '_default': existingValue as T };
+                    }
+                }
+
+                nestedObject[scope] = newValue;
+                updatedValue = nestedObject;
+            }
+
             const updatedSetting = {
                 ...currentSetting,
-                [key]: newValue,
+                [key]: updatedValue,
             };
 
             await db.user_setting.put(updatedSetting);
         } catch (error) {
             console.error(`Failed to save user setting for ${key}:`, error);
         }
-    }, [key]);
+    }, [key, scope]);
 
     return {
         value,
         setValue,
         isLoading,
     };
+}
+
+/**
+ * Type guard to check
+ */
+function isConfiguratorState(value: unknown): value is App.ShareCard.ConfiguratorState {
+    if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+        return false;
+    }
+
+    const obj = value as Record<string, unknown>;
+
+    return (
+        'visibleElements' in obj &&
+        'selectedThemeId' in obj &&
+        Array.isArray(obj.visibleElements)
+    );
 }

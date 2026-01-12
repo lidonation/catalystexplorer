@@ -139,7 +139,7 @@ const MetaData = ({ nft, isOwner }: MetaDataProps) => {
                 }
 
                 const nmkrMeta = nft.metas?.find(
-                    (m) => m.key === 'nmkr_metadata',
+                    (m: any) => m.key === 'nmkr_metadata',
                 );
                 if (nmkrMeta?.content) {
                     const meta = safeJsonParse(nmkrMeta.content, {});

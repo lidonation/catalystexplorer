@@ -473,6 +473,14 @@ class ProposalsController extends Controller
 
         $hasMoreThanOneWallet = $wallets->count() > 1;
 
+        $imagePath = "og-images/{$proposal->slug}.png";
+        $existingOgImageUrl = null;
+
+        if (Storage::disk()->exists($imagePath)) {
+            $lastModified = Storage::disk()->lastModified($imagePath);
+            $existingOgImageUrl = Storage::disk()->url($imagePath).'?t='.$lastModified;
+        }
+
         return Inertia::render('My/Proposals/ManageProposal', [
             'proposal' => ProposalData::from($proposal),
             'quickpitchMetadata' => $metadata,
@@ -480,6 +488,7 @@ class ProposalsController extends Controller
             'hasMoreThanOneWallet' => $hasMoreThanOneWallet,
             'ogPreviewData' => session('ogPreviewData'),
             'ogLogo' => session('ogLogo'),
+            'existingOgImageUrl' => $existingOgImageUrl,
         ]);
     }
 
@@ -1280,8 +1289,21 @@ class ProposalsController extends Controller
      */
     public function generateOgImage(string $slug, Request $request)
     {
+        $disk = Storage::disk();
+        $imagePath = "og-images/{$slug}.png";
+
+        if ($request->isMethod('get') && $disk->exists($imagePath)) {
+            $lastModified = $disk->lastModified($imagePath);
+
+            return response($disk->get($imagePath))
+                ->header('Content-Type', 'image/png')
+                ->header('Cache-Control', 'public, max-age=3600, must-revalidate')
+                ->header('ETag', '"'.hash('sha256', $lastModified.$imagePath).'"')
+                ->header('Last-Modified', gmdate('D, d M Y H:i:s', $lastModified).' GMT');
+        }
+
         $defaults = [
-            'visibleElements' => ['myVote', 'logo', 'totalVotes', 'campaignTitle', 'openSourceBadge'],
+            'visibleElements' => ['logo', 'campaignTitle', 'openSourceBadge'],
             'selectedThemeId' => 'navy-teal',
             'customColor' => null,
             'customMessage' => '',
@@ -1301,18 +1323,6 @@ class ProposalsController extends Controller
         ]);
 
         $config = array_merge($defaults, $validated);
-
-        $disk = Storage::disk();
-        $imagePath = "og-images/{$slug}.png";
-
-        // Check if cached image exists and return it (unless POST request which forces regeneration)
-        if (! $request->isMethod('post') && $disk->exists($imagePath)) {
-            $cachedImage = $disk->get($imagePath);
-
-            return response($cachedImage)
-                ->header('Content-Type', 'image/png')
-                ->header('Cache-Control', 'public, max-age=86400');
-        }
 
         $proposal = Proposal::with(['fund', 'campaign', 'team.model'])
             ->where('slug', $slug)
@@ -1392,7 +1402,7 @@ class ProposalsController extends Controller
 
             return response($png)
                 ->header('Content-Type', 'image/png')
-                ->header('Cache-Control', 'public, max-age=86400');
+                ->header('Cache-Control', 'public, max-age=3600, must-revalidate');
         } catch (\Exception $e) {
             Log::error('Failed to generate OG image', [
                 'slug' => $slug,
@@ -1465,7 +1475,7 @@ class ProposalsController extends Controller
     {
         $luminance = $this->calculateLuminance($hexColor);
 
-        return $luminance >= 128 ? 'dark' : 'light';
+        return $luminance >= 180 ? 'dark' : 'light';
     }
 
     public function uploadOgLogo(Request $request)

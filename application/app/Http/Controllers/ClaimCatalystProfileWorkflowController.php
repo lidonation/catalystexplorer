@@ -64,7 +64,23 @@ class ClaimCatalystProfileWorkflowController extends Controller
 
         $stakeAddress = $request->stakeAddress;
 
-        $transaction = Transaction::where('stake_key', $stakeAddress)
+        // First, try to find the signature for this user to get the stake_key
+        $signature = Signature::where('stake_address', $stakeAddress)
+            ->where('user_id', Auth::id())
+            ->first();
+
+        if (! $signature) {
+            return Inertia::render('Workflows/ClaimCatalystProfile/Step3', [
+                'stepDetails' => $this->getStepDetails(),
+                'activeStep' => intval($request->step),
+                'catalystProfile' => null,
+                'stakeAddress' => $stakeAddress,
+                'context' => $context,
+                'proposal' => null,
+            ]);
+        }
+
+        $transaction = Transaction::where('stake_key', $signature->stake_key)
             ->where('type', 'x509_envelope')
             ->first();
 
@@ -278,7 +294,7 @@ class ClaimCatalystProfileWorkflowController extends Controller
     {
         // Check if current user already claimed this profile
         $claimedByCurrentUser = $user->claimed_catalyst_profiles()
-            ->where('claimable_id', $catalystProfile->id)
+            ->where('catalyst_profiles.id', $catalystProfile->id)
             ->exists();
 
         // Check if profile is claimed by others

@@ -17,13 +17,11 @@ export default function ShareButtonsBar({
 }: ShareButtonsBarProps) {
     const { t } = useLaravelReactI18n();
 
-    const shareText = customMessage || proposalTitle;
     const encodedUrl = encodeURIComponent(proposalUrl);
-    const encodedText = encodeURIComponent(shareText);
 
     const handleTwitterShare = () => {
         window.open(
-            `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`,
+            `https://twitter.com/intent/tweet?url=${encodedUrl}`,
             '_blank',
             'noopener,noreferrer'
         );

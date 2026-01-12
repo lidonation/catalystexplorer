@@ -11,13 +11,10 @@ const TOGGLE_ITEMS: {
     id: App.ShareCard.VisibleElement;
     labelKey: string;
 }[] = [
-        { id: 'myVote', labelKey: 'shareCard.visibility.myVote' },
         { id: 'logo', labelKey: 'shareCard.visibility.logo' },
         { id: 'totalVotes', labelKey: 'shareCard.visibility.totalVotes' },
         { id: 'campaignTitle', labelKey: 'shareCard.visibility.campaignTitle' },
         { id: 'openSourceBadge', labelKey: 'shareCard.visibility.openSourceBadge' },
-        
-
     ]
 
 export default function VisibilityToggleList(
