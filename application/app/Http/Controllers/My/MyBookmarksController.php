@@ -206,12 +206,15 @@ class MyBookmarksController extends Controller
                 ->values()
                 ->toArray();
 
+            $allBookmarkItemIds = $bookmarkItems->pluck('id')->toArray();
+
             return response()->json([
                 'isBookmarked' => true,
                 'id' => $primaryBookmarkItem->id,
                 'collection' => $this->getBookmarkItemCollection($primaryBookmarkItem->bookmark_collection_id),
                 'collections' => $collections,
                 'collectionsCount' => count($collections),
+                'allBookmarkItemIds' => $allBookmarkItemIds,
             ]);
         }
 
@@ -301,9 +304,8 @@ class MyBookmarksController extends Controller
         $search = $this->queryParams[ProposalSearchParams::QUERY()->value] ?? null;
         $sort = $this->queryParams[ProposalSearchParams::SORTS()->value] ?? '-latest_bookmarks';
 
-        // Explicitly query only non-deleted collections
         $query = BookmarkCollection::allVisibilities()
-            ->whereNull('deleted_at') // Explicitly exclude soft-deleted collections
+            ->whereNull('deleted_at')
             ->where(function ($query) use ($userId) {
                 $query->where('user_id', $userId)
                     ->orWhereHas('collaborators', function ($query) use ($userId) {

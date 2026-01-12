@@ -20,11 +20,10 @@ interface BookmarkPage1Props extends TransitionListPageProps {
     isBookmarked?: boolean;
     handleRemoveBookmark?: (bookmarkItemId?: string) => void;
     collections?: BookmarkCollection[];
-    collectionsCount?: number;
+    setCollections?: React.Dispatch<React.SetStateAction<BookmarkCollection[]>>;
     onRefetch?: () => Promise<void>;
     onNavigate?: (pageIndex: number) => void;
     onClose?: () => void;
-    mode?: 'add' | 'remove';
 }
 
 const BookmarkPage1 = ({
@@ -32,12 +31,10 @@ const BookmarkPage1 = ({
     onNavigate,
     isBookmarked,
     handleRemoveBookmark,
-    associateCollectionId,
     collections = [],
-    collectionsCount = 0,
+    setCollections,
     onRefetch,
     onClose,
-    mode = 'add',
 }: BookmarkPage1Props) => {
     const { t } = useLaravelReactI18n();
     const {
@@ -47,12 +44,8 @@ const BookmarkPage1 = ({
         addBookmarkToList,
     } = useList();
 
-    const [isLoading, setIsLoading] = useState(false);
     const [loadingListId, setLoadingListId] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedForRemoval, setSelectedForRemoval] = useState<Set<string>>(new Set());
-
-    const isRemoveMode = mode === 'remove';
 
     // Create a map of collectionId -> bookmarkItemId for quick lookup
     const collectionToBookmarkMap = useMemo(() => {
@@ -62,98 +55,62 @@ const BookmarkPage1 = ({
     }, [collections]);
 
     useEffect(() => {
-        if (!isRemoveMode) {
-            fetchLists();
-        }
-    }, [isRemoveMode]);
+        fetchLists();
+    }, []);
 
-    // For remove mode: show only collections the item belongs to
-    // For add mode: show all lists
-    const displayLists = useMemo(() => {
-        if (isRemoveMode) {
-            return collections.map(col => ({
-                id: col.collectionId,
-                title: col.title,
-                bookmarkItemId: col.bookmarkItemId,
-            }));
-        }
-        return lists;
-    }, [isRemoveMode, collections, lists]);
-
-    // Filter based on search query
     const filteredLists = useMemo(() => {
-        if (!searchQuery.trim()) return displayLists;
-        return displayLists.filter((list) =>
+        if (!searchQuery.trim()) return lists;
+        return lists.filter((list) =>
             list.title.toLowerCase().includes(searchQuery.toLowerCase())
         );
-    }, [displayLists, searchQuery]);
+    }, [lists, searchQuery]);
 
-    // Check if a list contains this bookmark (for add mode)
     const isInList = (listId: string) => collectionToBookmarkMap.has(listId);
+
+    const getBookmarkItemId = (listId: string) => collectionToBookmarkMap.get(listId);
 
     const handleAddAllClick = () => {
         toast.info(t('comingSoon'));
     };
 
-    // Toggle selection for removal (remove mode)
-    const toggleRemovalSelection = (bookmarkItemId: string) => {
-        setSelectedForRemoval(prev => {
-            const newSet = new Set(prev);
-            if (newSet.has(bookmarkItemId)) {
-                newSet.delete(bookmarkItemId);
-            } else {
-                newSet.add(bookmarkItemId);
-            }
-            return newSet;
-        });
-    };
-
-    // Handle adding to a list (add mode)
-    const handleAddToList = async (listId: string) => {
-        if (isInList(listId)) return;
-        
-        setIsLoading(true);
+    const handleToggleList = async (listId: string, listTitle: string) => {
         setLoadingListId(listId);
 
         try {
-            await addBookmarkToList(listId, bookmarkId);
-            toast.success(t('Bookmark Added To List'), {
-                className: 'bg-gray-800 text-white',
-                toastId: 'bookmark-added-to-list',
-            });
-            await onRefetch?.();
+            if (isInList(listId)) {
+                const bookmarkItemId = getBookmarkItemId(listId);
+                if (bookmarkItemId) {
+                    await handleRemoveBookmark?.(bookmarkItemId);
+                    toast.success(t('Removed from list'), {
+                        className: 'bg-gray-800 text-white',
+                        toastId: 'bookmark-removed-from-list',
+                    });
+                }
+            } else {
+                const tempId = `temp-${Date.now()}`;
+                setCollections?.(prev => [...prev, {
+                    bookmarkItemId: tempId,
+                    collectionId: listId,
+                    title: listTitle,
+                }]);
+                
+                try {
+                    await addBookmarkToList(listId, bookmarkId);
+                    toast.success(t('Bookmark Added To List'), {
+                        className: 'bg-gray-800 text-white',
+                        toastId: 'bookmark-added-to-list',
+                    });
+                    await onRefetch?.();
+                } catch (error) {
+                    setCollections?.(prev => prev.filter(c => c.bookmarkItemId !== tempId));
+                    throw error;
+                }
+            }
         } catch (error) {
-            console.error('Error adding to list', error);
+            console.error('Error updating list', error);
             toast.error(t('listQuickCreate.errorUpdating'));
         } finally {
             setLoadingListId(null);
-            setIsLoading(false);
-        }
-    };
-
-    // Handle removing selected items (remove mode)
-    const handleRemoveSelected = async () => {
-        if (selectedForRemoval.size === 0) {
-            toast.warning(t('Please select at least one list'));
-            return;
-        }
-
-        setIsLoading(true);
-        try {
-            for (const bookmarkItemId of selectedForRemoval) {
-                await handleRemoveBookmark?.(bookmarkItemId);
-            }
-            toast.success(t('Removed from selected lists'), {
-                className: 'bg-gray-800 text-white',
-                toastId: 'bookmark-removed-from-lists',
-            });
-            setSelectedForRemoval(new Set());
-            await onRefetch?.();
-        } catch (error) {
-            console.error('Error removing from lists', error);
-            toast.error(t('listQuickCreate.errorUpdating'));
-        } finally {
-            setIsLoading(false);
         }
     };
 
@@ -207,7 +164,7 @@ const BookmarkPage1 = ({
                     size="md"
                     className="text-content-black-persist px-3 py-2 pr-10 font-bold"
                 >
-                    {isRemoveMode ? t('Remove from Lists') : t('listQuickCreate.addBookmark')}
+                    {t('listQuickCreate.addBookmark')}
                 </Paragraph>
                 <button
                     onClick={onClose}
@@ -233,9 +190,9 @@ const BookmarkPage1 = ({
                     </button>
                 </div>
 
-                {isLoadingLists && !isRemoveMode ? (
+                {isLoadingLists ? (
                     <SkeletonLoader />
-                ) : displayLists.length === 0 ? (
+                ) : lists.length === 0 ? (
                     <NoListsState />
                 ) : (
                     <>
@@ -257,15 +214,15 @@ const BookmarkPage1 = ({
                             />
                         </div>
                         <div className="no-scrollbar flex max-h-36 flex-col gap-2 overflow-y-scroll" data-testid="bookmark-lists-container">
-                            {/* Add All option - only in add mode */}
-                            {!isRemoveMode && !searchQuery && (
+                            {/* Add All option */}
+                            {!searchQuery && (
                                 <button
                                     onClick={handleAddAllClick}
-                                    className={`flex items-center text-left ${isLoading
+                                    className={`flex items-center text-left ${loadingListId
                                         ? 'cursor-not-allowed opacity-70'
                                         : 'cursor-pointer'
                                         }`}
-                                    disabled={isLoading}
+                                    disabled={!!loadingListId}
                                 >
                                     <Paragraph
                                         size="md"
@@ -276,43 +233,31 @@ const BookmarkPage1 = ({
                                 </button>
                             )}
 
-                            {/* List options */}
+                            {/* List options - checked if item is in list */}
                             {filteredLists.map((list: any) => (
                                 <label
                                     key={list.id}
                                     htmlFor={list.id}
                                     data-testid={`bookmark-list-item-${list.id}`}
-                                    className={`flex items-center justify-between ${isLoading
+                                    className={`flex items-center justify-between ${loadingListId
                                         ? 'cursor-not-allowed'
                                         : 'cursor-pointer'
                                     }`}
                                 >
                                     <Paragraph size="md">{list.title}</Paragraph>
-                                    {isRemoveMode ? (
-                                        <Checkbox
-                                            type="checkbox"
-                                            id={list.id}
-                                            name={list.id}
-                                            checked={selectedForRemoval.has(list.bookmarkItemId)}
-                                            onChange={() => toggleRemovalSelection(list.bookmarkItemId)}
-                                            disabled={isLoading}
-                                            data-testid={`bookmark-list-checkbox-${list.id}`}
-                                        />
-                                    ) : (
-                                        <CheckboxWithLoading
-                                            type="checkbox"
-                                            id={list.id}
-                                            name={list.id}
-                                            checked={isInList(list.id)}
-                                            onChange={() => handleAddToList(list.id)}
-                                            isLoading={loadingListId === list.id}
-                                            disabled={isLoading || loadingListId !== null}
-                                            style={{
-                                                pointerEvents: isLoading ? 'none' : 'auto',
-                                            }}
-                                            data-testid={`bookmark-list-checkbox-${list.id}`}
-                                        />
-                                    )}
+                                    <CheckboxWithLoading
+                                        type="checkbox"
+                                        id={list.id}
+                                        name={list.id}
+                                        checked={isInList(list.id)}
+                                        onChange={() => handleToggleList(list.id, list.title)}
+                                        isLoading={loadingListId === list.id}
+                                        disabled={!!loadingListId}
+                                        style={{
+                                            pointerEvents: loadingListId ? 'none' : 'auto',
+                                        }}
+                                        data-testid={`bookmark-list-checkbox-${list.id}`}
+                                    />
                                 </label>
                             ))}
                             {filteredLists.length === 0 && searchQuery && (
@@ -324,31 +269,17 @@ const BookmarkPage1 = ({
                     </>
                 )}
 
-                {isRemoveMode ? (
-                    <PrimaryButton
-                        className="my-2 flex w-full items-center justify-center rounded-lg text-center capitalize"
-                        onClick={handleRemoveSelected}
-                        disabled={isLoading || selectedForRemoval.size === 0}
-                        data-testid="remove-selected-button"
-                    >
-                        {isLoading && <Loader size={16} className="animate-spin mr-2" />}
-                        <Paragraph size="md">
-                            {t('Remove')} {selectedForRemoval.size > 0 && `(${selectedForRemoval.size})`}
-                        </Paragraph>
-                    </PrimaryButton>
-                ) : (
-                    <PrimaryButton
-                        className="my-2 flex w-full items-center justify-center rounded-lg text-center capitalize"
-                        onClick={() => onNavigate?.(1)}
-                        disabled={isLoading}
-                        data-testid="add-list-button"
-                    >
-                        <PlusIcon size={16} className="mr-2" />
-                        <Paragraph size="md">
-                            {t('listQuickCreate.addList')}
-                        </Paragraph>
-                    </PrimaryButton>
-                )}
+                <PrimaryButton
+                    className="my-2 flex w-full items-center justify-center rounded-lg text-center capitalize"
+                    onClick={() => onNavigate?.(1)}
+                    disabled={!!loadingListId}
+                    data-testid="add-list-button"
+                >
+                    <PlusIcon size={16} className="mr-2" />
+                    <Paragraph size="md">
+                        {t('listQuickCreate.addList')}
+                    </Paragraph>
+                </PrimaryButton>
             </section>
         </div>
     );

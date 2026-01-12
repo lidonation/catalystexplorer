@@ -21,8 +21,9 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
         string | null
     >(null);
     const [collections, setCollections] = useState<BookmarkCollection[]>([]);
-    const [collectionsCount, setCollectionsCount] = useState(0);
+    const [allBookmarkItemIds, setAllBookmarkItemIds] = useState<string[]>([]);
     const [isOpen, setIsOpen] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const fetchBookmarkStatus = useCallback(async () => {
         try {
@@ -33,7 +34,7 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
             setBookmarkId(response.data.id || null);
             setAssociatedCollection(response.data?.collection?.id || null);
             setCollections(response.data?.collections || []);
-            setCollectionsCount(response.data?.collectionsCount || 0);
+            setAllBookmarkItemIds(response.data?.allBookmarkItemIds || []);
         } catch (error) {
             console.error('Error fetching bookmark status', error);
         }
@@ -43,10 +44,11 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
         fetchBookmarkStatus();
     }, [fetchBookmarkStatus]);
 
-    // Listen for bookmark changes from other components to stay in sync
     useEffect(() => {
-        const handleBookmarkChange = () => {
-            fetchBookmarkStatus();
+        const handleBookmarkChange = (eventItemId?: string) => {
+            if (!isDeleting && eventItemId === itemId) {
+                fetchBookmarkStatus();
+            }
         };
 
         EventBus.on('listItem-added', handleBookmarkChange);
@@ -56,7 +58,7 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
             EventBus.off('listItem-added', handleBookmarkChange);
             EventBus.off('listItem-removed', handleBookmarkChange);
         };
-    }, [fetchBookmarkStatus]);
+    }, [fetchBookmarkStatus, isDeleting, itemId]);
 
     const createBookmark = async (): Promise<string | null> => {
         try {
@@ -68,7 +70,7 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
                 setIsBookmarked(response.data.isBookmarked || true);
                 setBookmarkId(response.data.bookmarkId);
                 setIsOpen(true);
-                EventBus.emit('listItem-added');
+                EventBus.emit('listItem-added', itemId);
                 toast.success('Bookmark created successfully!', {
                     className: 'bg-gray-800 text-white',
                     toastId: 'bookmark-created',
@@ -82,80 +84,87 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
         }
     };
 
+    const addToCollection = async (collectionId: string, collectionTitle: string) => {
+
+        const tempBookmarkItemId = `temp-${Date.now()}`;
+        setCollections(prev => [...prev, {
+            bookmarkItemId: tempBookmarkItemId,
+            collectionId,
+            title: collectionTitle,
+        }]);
+
+        try {
+            return tempBookmarkItemId;
+        } catch (error) {
+            // Revert on error
+            setCollections(prev => prev.filter(c => c.bookmarkItemId !== tempBookmarkItemId));
+            throw error;
+        }
+    };
+    const updateCollectionAfterAdd = async () => {
+        await fetchBookmarkStatus();
+    };
+
     const removeBookmark = async (specificBookmarkId?: string) => {
         try {
-            const idToRemove = specificBookmarkId || bookmarkId;
-            if (idToRemove) {
+            const isRemovingFromList = !!specificBookmarkId;
+            
+            if (isRemovingFromList) {
+                setCollections(prev => prev.filter(c => c.bookmarkItemId !== specificBookmarkId));
+                
                 await axiosClient.delete(
                     route('api.bookmarks.remove', {
-                        bookmarkItem: idToRemove,
+                        bookmarkItem: specificBookmarkId,
                     }),
                 );
                 
-                // If removing a specific collection bookmark, refresh status
-                if (specificBookmarkId) {
-                    await fetchBookmarkStatus();
-                } else {
-                    setIsBookmarked(false);
-                    setCollections([]);
-                    setCollectionsCount(0);
+                EventBus.emit('listItem-removed', itemId);
+            } else {
+                const idsToDelete = allBookmarkItemIds.length > 0 
+                    ? allBookmarkItemIds 
+                    : [bookmarkId].filter(Boolean);
+                
+                if (idsToDelete.length === 0) {
+                    return;
                 }
                 
+                setIsDeleting(true);
+                
+                setIsBookmarked(false);
+                setCollections([]);
+                setAllBookmarkItemIds([]);
+                setBookmarkId(null);
                 setIsOpen(false);
+                
+                for (const id of idsToDelete) {
+                    try {
+                        await axiosClient.delete(
+                            route('api.bookmarks.remove', {
+                                bookmarkItem: id,
+                            }),
+                        );
+                    } catch (err) {
+                        console.warn('Failed to delete bookmark item:', id, err);
+                    }
+                }
+                
+                setIsDeleting(false);
                 toast.success('Bookmark removed successfully!', {
                     className: 'bg-gray-800 text-white',
                     toastId: 'bookmark-removed',
                 });
-                EventBus.emit('listItem-removed');
+                EventBus.emit('listItem-removed', itemId);
             }
         } catch (error) {
             console.error('Error removing bookmark:', error);
-            toast.error('Failed to remove bookmark.');
-        }
-    };
-
-    // Remove bookmark from all collections completely
-    const removeAllBookmarks = async () => {
-        try {
-            // Remove primary bookmark
-            if (bookmarkId) {
-                await axiosClient.delete(
-                    route('api.bookmarks.remove', { bookmarkItem: bookmarkId }),
-                );
-            }
-            
-            // Remove all collection bookmarks
-            for (const col of collections) {
-                await axiosClient.delete(
-                    route('api.bookmarks.remove', { bookmarkItem: col.bookmarkItemId }),
-                );
-            }
-            
-            setIsBookmarked(false);
-            setCollections([]);
-            setCollectionsCount(0);
-            setIsOpen(false);
-            
-            toast.success('Bookmark removed from all lists!', {
-                className: 'bg-gray-800 text-white',
-                toastId: 'bookmark-removed-all',
-            });
-            EventBus.emit('listItem-removed');
-        } catch (error) {
-            console.error('Error removing all bookmarks:', error);
+            await fetchBookmarkStatus();
             toast.error('Failed to remove bookmark.');
         }
     };
 
     const toggleBookmark = async () => {
         if (isBookmarked) {
-            // If not in any collections, remove immediately
-            if (collectionsCount === 0) {
-                await removeBookmark();
-            } else {
-                // Show popup to let user choose which collections to remove from
-                setIsOpen(true);
-            }
+            setIsOpen(true);
         } else {
             await createBookmark();
         }
@@ -165,11 +174,13 @@ export default function useBookmark({ modelType, itemId }: UseBookmarkProps) {
         bookmarkId,
         associatedCollection,
         collections,
-        collectionsCount,
+        setCollections,
         isBookmarked,
         toggleBookmark,
         createBookmark,
         removeBookmark,
+        addToCollection,
+        updateCollectionAfterAdd,
         refetchStatus: fetchBookmarkStatus,
         isOpen,
         setIsOpen,
