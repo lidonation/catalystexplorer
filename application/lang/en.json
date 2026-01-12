@@ -1092,6 +1092,7 @@
     "proposals.manageProposal.fundingProgress": "Funding Progress",
     "proposals.manageProposal.paid": "Paid",
     "proposals.manageProposal.upcomingPayment": "Upcoming Payment",
+    "proposals.manageProposal.milestoneModule": "View in Milestone Module",
     "catalystProfiles.catalystProfiles": "Catalyst Profiles",
     "catalystProfiles.ownProposals": "Own Proposals",
     "catalystProfiles.coProposals": "Co-Proposals",

@@ -325,6 +325,7 @@
     "proposalComparison.tableHeaders.problem": "Problema",
     "proposalComparison.tableHeaders.openSource": "Código Abierto",
     "proposals.manageProposal.fundingProgress": "Progreso de financiación",
+    "proposals.manageProposal.milestoneModule": "Ver en el módulo de hitos",
     "proposals.manageProposal.paid": "Pagado",
     "proposals.manageProposal.upcomingPayment": "Pago próximo",
     "workflows.claimIdeascale.selectProfile": "Seleccionar Perfil",
