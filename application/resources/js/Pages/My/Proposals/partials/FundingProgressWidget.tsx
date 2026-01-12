@@ -18,7 +18,29 @@ export default function FundingProgressWidget({ proposal }: FundingProgressWidge
         ? ((proposal.amount_received ?? 0) / proposal.amount_requested) * 100
         : 0;
 
+<<<<<<< HEAD
     const ledger = getUpcomingPaymentData(proposal);
+=======
+    const currentMilestone = proposal?.schedule?.milestones?.find((m: App.DataTransferObjects.MilestoneData) => m.current === true);
+
+
+    const upcomingPayment = currentMilestone
+        ? currentMilestone.cost - ((currentMilestone.cost * (currentMilestone.completion_percent ?? 0)) / 100)
+        : 0;
+
+    const upcomingPaymentDate = currentMilestone && proposal?.schedule?.starting_date
+        ? (() => {
+            const startDate = new Date(proposal.schedule.starting_date);
+            const paymentDate = new Date(startDate);
+            paymentDate.setMonth(startDate.getMonth() + (currentMilestone.month ?? 0));
+            return paymentDate.toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
+            });
+        })()
+        : null;
+>>>>>>> 4588909a (chore: cleanup)
 
     return (
         <Card className="w-full bg-background">

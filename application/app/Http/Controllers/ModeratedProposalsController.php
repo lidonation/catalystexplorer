@@ -17,7 +17,7 @@ class ModeratedProposalsController extends Controller
 {
     public function index(Request $request): Response
     {
-        $perPage = (int) $request->input('l', 60);
+        $perPage = (int) $request->input('l', 45);
         $currentPage = (int) $request->input('p', 1);
         $search = $request->input('q', null);
         $fundId = $request->input('fund_id', null);
