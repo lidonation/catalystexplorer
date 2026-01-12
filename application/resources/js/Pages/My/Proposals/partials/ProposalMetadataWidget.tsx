@@ -6,6 +6,7 @@ import IdeascaleLogo from '@/Components/svgs/IdeascaleLogo';
 import ProjectCatalystLogo from '@/Components/svgs/ProjectCatalystLogo';
 import ThumbsDownIcon from '@/Components/svgs/ThumbsDownIcon';
 import ThumbsUpIcon from '@/Components/svgs/ThumbsUpIcon';
+import { linksEnum } from '@/enums/links-enum';
 import ProposalMetadataWidgetSection from '@/Pages/My/Proposals/partials/ProposalMetadataWidgetSection';
 import ProposalFundingStatus from '@/Pages/Proposals/Partials/ProposalFundingStatus';
 import { currency } from '@/utils/currency';
@@ -111,6 +112,12 @@ export default function ProposalMetadataWidget({
                                         'pdf.table.columns.projectCatalystLink',
                                     )}
                                 </Paragraph>
+                                <ProjectCatalystLogo className="text-white" />
+                                <Paragraph className=" text-white">
+                                    {t(
+                                        'pdf.table.columns.projectCatalystLink',
+                                    )}
+                                </Paragraph>
                             </a>
                         )}
                         {proposal?.ideascale_link && (
@@ -128,7 +135,7 @@ export default function ProposalMetadataWidget({
                         )}
                         {proposal?.schedule?.milestones && (
                             <a
-                                href={`https://milestones.projectcatalyst.io/projects/${proposal?.schedule?.project_id}`}
+                               href={`${linksEnum.PROPOSAL_MILESTONE_MODULE}${proposal?.schedule?.project_id}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="bg-primary flex items-center justify-center gap-1 rounded-lg px-3 py-2"
