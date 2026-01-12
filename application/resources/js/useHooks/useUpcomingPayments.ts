@@ -25,16 +25,13 @@ export const getUpcomingPaymentData = (proposal: App.DataTransferObjects.Proposa
 
     
     let batchMonthOffset = 0;
-    let label = "Initial Payment";
     
     const completion = currentMilestone.completion_percent ?? 0;
 
     if (completion >= 80) {
         batchMonthOffset = duration; 
-        label = "Completion Holdback";
     } else if (completion > 0) {
         batchMonthOffset = Math.floor((completion / 80) * duration) + 1;
-        label = `Month ${batchMonthOffset} Installment`;
     }
 
    
@@ -44,7 +41,6 @@ export const getUpcomingPaymentData = (proposal: App.DataTransferObjects.Proposa
 
     return {
         amount: completion < 80 ? batchAmount : holdbackAmount,
-        label: label,
         date: paymentDate.toLocaleDateString('en-GB', {
             day: 'numeric',
             month: 'short',

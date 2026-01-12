@@ -38,7 +38,9 @@ class CommentController extends Controller
             })
             ->get();
 
-        return CommentData::collect($comments);
+        return $comments->map(function (Comment $comment) {
+            return CommentData::fromComment($comment);
+        });
     }
 
     public function store(Request $request)
@@ -86,9 +88,15 @@ class CommentController extends Controller
                 'commentable_id' => $model->id,
             ])
             ->whereNull('parent_id')
+            ->where(function ($query) {
+                $query->whereNull('extra')
+                    ->orWhereJsonDoesntContain('extra->type', 'rationale');
+            })
             ->get();
 
-        return CommentData::collect($comments);
+        return $comments->map(function (Comment $comment) {
+            return CommentData::fromComment($comment);
+        });
     }
 
     public function getCommentableModelClass(string $type): string

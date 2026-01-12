@@ -162,7 +162,8 @@ up-ext:
 
 .PHONY: vite
 vite:
-	$(sail) npx vite --force
+	@echo "Starting Vite with increased memory limit..."
+	$(sail) node --max-old-space-size=4096 ./node_modules/.bin/vite --force
 
 .PHONY: watch
 watch:

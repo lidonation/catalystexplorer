@@ -2,9 +2,8 @@ x-logging: &default-logging
   driver: "json-file"
   options:
     max-size: "50m"
-    max-file: 6
+    max-file: "6"
 services:
-  # app
   catalystexplorer.com:
     build:
       context: "./docker"
@@ -59,68 +58,68 @@ services:
       - catalystexplorer.redis
 
   catalystexplorer.cardanonode:
-    container_name: catalystexplorer.cardanonode
-    image: ghcr.io/intersectmbo/cardano-node:10.1.4
-    command:
-      [
-        "run",
-        "--config",
-        "/config/config.json",
-        "--database-path",
-        "/data/db",
-        "--socket-path",
-        "/ipc/node.socket",
-        "--topology",
-        "/config/topology.json",
-      ]
-    volumes:
-      - ./cardanonode/config/network/${CARDANO_NETWORK:-preview}/cardano-node:/config
-      - ./cardanonode/config/network/${CARDANO_NETWORK:-preview}/genesis:/genesis
-      - node-db:/data
-      - node-ipc:/ipc
-    restart: on-failure
-    environment:
-      CARDANO_NODE_SOCKET_PATH: /ipc/node.socket
-    healthcheck:
-      test: ["CMD", "stat", "/ipc/node.socket"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    networks:
-      - catalystexplorer-net
-      - shared-network
-    profiles:
-      - cardano
+     container_name: catalystexplorer.cardanonode
+     image: ghcr.io/intersectmbo/cardano-node:10.1.4
+     command:
+       [
+         "run",
+         "--config",
+         "/config/config.json",
+         "--database-path",
+         "/data/db",
+         "--socket-path",
+         "/ipc/node.socket",
+         "--topology",
+         "/config/topology.json",
+       ]
+     volumes:
+       - ./cardanonode/config/network/${CARDANO_NETWORK:-preview}/cardano-node:/config
+       - ./cardanonode/config/network/${CARDANO_NETWORK:-preview}/genesis:/genesis
+       - node-db:/data
+       - node-ipc:/ipc
+     restart: on-failure
+     environment:
+       CARDANO_NODE_SOCKET_PATH: /ipc/node.socket
+     healthcheck:
+       test: ["CMD", "stat", "/ipc/node.socket"]
+       interval: 30s
+       timeout: 10s
+       retries: 3
+     networks:
+       - catalystexplorer-net
+       - shared-network
+     profiles:
+       - cardano
 
   catalystexplorer.cardanodb:
-    container_name: catalystexplorer.cardanodb
-    image: postgres:16.3-alpine3.19
-    environment:
-      - POSTGRES_LOGGING=true
-      - POSTGRES_DB=${POSTGRES_DB:-carp_preview} # dynamic based on network, default to carp_preview
-      - POSTGRES_USER=${PGUSER:-carp}
-      - POSTGRES_PASSWORD=${PGPASSWORD:-v8hlDV0yMAHHlIurYupj}
-      - PGPASSFILE=/run/secrets/.pgpass
-    secrets:
-      - source: pgpass
-        target: .pgpass
-    ports:
-      - ${POSTGRES_PORT:-5434}:5434 # Expose the database on a different port
-    volumes:
-      - carp-db-data:/var/lib/postgresql/data
-    restart: on-failure
-    networks:
-      - catalystexplorer-net
-      - shared-network
-    profiles:
-      - cardano
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U carp -d carp_preview -p 5434"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    command: >
-      postgres -c port=5434 ${POSTGRES_ARGS:--c maintenance_work_mem=1GB -c max_parallel_maintenance_workers=4}
+     container_name: catalystexplorer.cardanodb
+     image: postgres:16.3-alpine3.19
+     environment:
+       - POSTGRES_LOGGING=true
+       - POSTGRES_DB=${POSTGRES_DB:-carp_preview} # dynamic based on network, default to carp_preview
+       - POSTGRES_USER=${PGUSER:-carp}
+       - POSTGRES_PASSWORD=${PGPASSWORD:-v8hlDV0yMAHHlIurYupj}
+       - PGPASSFILE=/run/secrets/.pgpass
+     secrets:
+       - source: pgpass
+         target: .pgpass
+     ports:
+       - ${POSTGRES_PORT:-5434}:5434 # Expose the database on a different port
+     volumes:
+       - carp-db-data:/var/lib/postgresql/data
+     restart: on-failure
+     networks:
+       - catalystexplorer-net
+       - shared-network
+     healthcheck:
+       test: ["CMD-SHELL", "pg_isready -U carp -d carp_preview -p 5434"]
+       interval: 10s
+       timeout: 5s
+       retries: 5
+     command: >
+       postgres -c port=5434 ${POSTGRES_ARGS:--c maintenance_work_mem=1GB -c max_parallel_maintenance_workers=4}
+     profiles:
+       - cardano
 
   catalystexplorer.adminer:
     image: adminer:4.8.1
@@ -168,11 +167,11 @@ services:
       args: {}
       dockerfile: ./Dockerfile.dev
     volumes:
-      - type: volume
-        source: node-ipc
-        target: /ipc
-        volume:
-          nocopy: true
+      # - type: volume
+        # source: node-ipc
+        # target: /ipc
+        # volume:
+          # nocopy: true
       - ./application:/var/www:cached
     networks:
       - catalystexplorer-net
