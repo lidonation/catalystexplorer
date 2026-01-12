@@ -103,15 +103,14 @@ export default function ProposalMetadataWidget({
                                 href={proposal?.projectcatalyst_io_link}
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                className="bg-primary flex items-center justify-center gap-1 rounded-lg px-3 py-1"
                             >
-                                <Link className="bg-primary flex items-center gap-1 rounded-lg px-3 py-1">
-                                    <ProjectCatalystLogo className="text-white" />
-                                    <Paragraph className=" text-white">
-                                        {t(
-                                            'pdf.table.columns.projectCatalystLink',
-                                        )}
-                                    </Paragraph>
-                                </Link>
+                                <ProjectCatalystLogo className="text-white" />
+                                <Paragraph className=" text-white">
+                                    {t(
+                                        'pdf.table.columns.projectCatalystLink',
+                                    )}
+                                </Paragraph>
                             </a>
                         )}
                         {proposal?.ideascale_link && (
@@ -119,12 +118,29 @@ export default function ProposalMetadataWidget({
                                 href={proposal?.ideascale_link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="bg-primary flex items-center gap-1 rounded-lg px-3 py-2"
+                                className="bg-primary flex items-center justify-center gap-1 rounded-lg px-3 py-2"
                             >
                                 <IdeascaleLogo />
                                 <Paragraph className=" text-white">
                                     {t('pdf.table.columns.ideascaleLink')}
                                 </Paragraph>
+                            </a>
+                        )}
+                        {proposal?.schedule?.milestones && (
+                            <a
+                                href={`https://milestones.projectcatalyst.io/projects/${proposal?.schedule?.project_id}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="bg-primary flex items-center justify-center gap-1 rounded-lg px-3 py-2"
+                            >
+
+                                <ProjectCatalystLogo className="text-white" />
+                                <Paragraph className=" text-white">
+                                    {t(
+                                        'proposals.manageProposal.milestoneModule',
+                                    )}
+                                </Paragraph>
+
                             </a>
                         )}
                     </div>
