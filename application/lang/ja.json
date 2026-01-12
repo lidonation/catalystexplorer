@@ -957,6 +957,7 @@
     "proposals.manageProposal.fundingProgress": "資金調達の進捗",
     "proposals.manageProposal.paid": "支払済み",
     "proposals.manageProposal.upcomingPayment": "次回の支払い",
+    "proposals.manageProposal.milestoneModule": "マイルストーンモジュールで表示",
     "ideascaleProfiles.people": "人",
     "ideascaleProfiles.ideascaleProfiles": "Ideascaleプロフィール",
     "ideascaleProfiles.ownProposals": "自身の提案",
