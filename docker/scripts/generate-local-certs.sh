@@ -5,7 +5,7 @@ set -e
 # Script to generate long-lived self-signed certificates for local development
 # These certificates should be installed on developer machines to avoid browser warnings
 
-CERT_DIR="${CERT_DIR:-./docker/certs}"
+CERT_DIR="${CERT_DIR:-../certs}"
 DOMAIN="${DOMAIN:-catalystexplorer.local}"
 VALIDITY_DAYS="${VALIDITY_DAYS:-3650}" # 10 years
 
