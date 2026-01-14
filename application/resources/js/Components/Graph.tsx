@@ -40,12 +40,19 @@ const Graph: React.FC<GraphProps> = ({ graphData }) => {
     const [noConnectionsNodeName, setNoConnectionsNodeName] =
         useState<string>('');
 
-    const routeName =
-        graphData?.rootNodeType == CatalystConnectionsEnum.GROUP
-            ? 'api.groups.connections'
-            : graphData.rootNodeType == CatalystConnectionsEnum.COMMUNITY
-              ? 'api.communities.connections'
-              : 'api.ideascaleProfiles.connections';
+    const getIncrementalConnectionsRoute = (nodeType: string): string => {
+        switch (nodeType) {
+            case CatalystConnectionsEnum.GROUP:
+                return 'api.groups.incremental-connections';
+            case CatalystConnectionsEnum.COMMUNITY:
+                return 'api.communities.incremental-connections';
+            case CatalystConnectionsEnum.CATALYST_PROFILE:
+                return 'api.catalystProfiles.incremental-connections';
+            case CatalystConnectionsEnum.IDEASCALE_PROFILE:
+            default:
+                return 'api.ideascaleProfiles.incremental-connections';
+        }
+    };
 
     const handleNodeClick = async (node: Node) => {
         const id = node.id;
@@ -78,15 +85,11 @@ const Graph: React.FC<GraphProps> = ({ graphData }) => {
                 throw new Error('Node has no hash or id');
             }
 
+            const nodeRouteName = getIncrementalConnectionsRoute(node.type);
+
             const incrementalResponse = await axios
                 .get<ConnectionData>(
-                    route(
-                        routeName.replace(
-                            '.connections',
-                            '.incremental-connections',
-                        ),
-                        { hash: nodeIdentifier },
-                    ),
+                    route(nodeRouteName, { hash: nodeIdentifier }),
                     {
                         params: {
                             hash: nodeIdentifier,
