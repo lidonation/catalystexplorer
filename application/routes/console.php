@@ -16,6 +16,6 @@ Schedule::command('sync:milestones')->weekly();
 
 
 // update tally
-//Schedule::command('catalyst:process-historical-funds', [
-//    '--fund' => CatalystFunds::FOURTEEN->value
-//] )->everyTenMinutes();
+Schedule::command('catalyst:process-historical-funds', [
+    '--fund' => CatalystFunds::FOURTEEN->value
+] )->everyTenMinutes();
