@@ -6,6 +6,7 @@ import IdeascaleLogo from '@/Components/svgs/IdeascaleLogo';
 import ProjectCatalystLogo from '@/Components/svgs/ProjectCatalystLogo';
 import ThumbsDownIcon from '@/Components/svgs/ThumbsDownIcon';
 import ThumbsUpIcon from '@/Components/svgs/ThumbsUpIcon';
+import { linksEnum } from '@/enums/links-enum';
 import ProposalMetadataWidgetSection from '@/Pages/My/Proposals/partials/ProposalMetadataWidgetSection';
 import ProposalFundingStatus from '@/Pages/Proposals/Partials/ProposalFundingStatus';
 import { currency } from '@/utils/currency';
@@ -103,15 +104,20 @@ export default function ProposalMetadataWidget({
                                 href={proposal?.projectcatalyst_io_link}
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                className="bg-primary flex items-center justify-center gap-1 rounded-lg px-3 py-1"
                             >
-                                <Link className="bg-primary flex items-center gap-1 rounded-lg px-3 py-1">
-                                    <ProjectCatalystLogo className="text-white" />
-                                    <Paragraph className=" text-white">
-                                        {t(
-                                            'pdf.table.columns.projectCatalystLink',
-                                        )}
-                                    </Paragraph>
-                                </Link>
+                                <ProjectCatalystLogo className="text-white" />
+                                <Paragraph className=" text-white">
+                                    {t(
+                                        'pdf.table.columns.projectCatalystLink',
+                                    )}
+                                </Paragraph>
+                                <ProjectCatalystLogo className="text-white" />
+                                <Paragraph className=" text-white">
+                                    {t(
+                                        'pdf.table.columns.projectCatalystLink',
+                                    )}
+                                </Paragraph>
                             </a>
                         )}
                         {proposal?.ideascale_link && (
@@ -119,12 +125,29 @@ export default function ProposalMetadataWidget({
                                 href={proposal?.ideascale_link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="bg-primary flex items-center gap-1 rounded-lg px-3 py-2"
+                                className="bg-primary flex items-center justify-center gap-1 rounded-lg px-3 py-2"
                             >
                                 <IdeascaleLogo />
                                 <Paragraph className=" text-white">
                                     {t('pdf.table.columns.ideascaleLink')}
                                 </Paragraph>
+                            </a>
+                        )}
+                        {proposal?.schedule?.milestones && (
+                            <a
+                               href={`${linksEnum.PROPOSAL_MILESTONE_MODULE}${proposal?.schedule?.project_id}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="bg-primary flex items-center justify-center gap-1 rounded-lg px-3 py-2"
+                            >
+
+                                <ProjectCatalystLogo className="text-white" />
+                                <Paragraph className=" text-white">
+                                    {t(
+                                        'proposals.manageProposal.milestoneModule',
+                                    )}
+                                </Paragraph>
+
                             </a>
                         )}
                     </div>

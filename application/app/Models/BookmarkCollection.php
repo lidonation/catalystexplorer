@@ -34,7 +34,7 @@ class BookmarkCollection extends Model
         'groups',
         'reviews',
         'communities',
-        'comments',
+        'nonRationaleComments as comments_count',
     ];
 
     public $meiliIndexName = 'cx_bookmark_collections';
@@ -329,6 +329,20 @@ class BookmarkCollection extends Model
         return $this->belongsToMany(User::class, 'bookmark_collections_users')
             ->withTimestamps()
             ->with('media'); // Include user media for avatars
+    }
+
+    /**
+     * Get comments excluding rationale comments.
+     * This matches the filtering logic in CommentController.
+     */
+    public function nonRationaleComments(): HasMany
+    {
+        return $this->hasMany(Comment::class, 'commentable_id')
+            ->where('commentable_type', static::class)
+            ->where(function ($query) {
+                $query->whereNull('extra')
+                    ->orWhereJsonDoesntContain('extra->type', 'rationale');
+            });
     }
 
     /*

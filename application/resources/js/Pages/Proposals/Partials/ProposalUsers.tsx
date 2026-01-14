@@ -18,8 +18,6 @@ export default function ProposalUsers({
 }: PageProps<ProposalUsers>) {
     const { t } = useLaravelReactI18n();
 
-    console.log({team});
-
     // Limit the users array to the first 5
     const visibleUsers = team?.slice(0, 5);
     const remainingCount = team?.length - visibleUsers?.length;

@@ -62,9 +62,18 @@ const BookmarkCollectionCard = ({
         }
     };
 
-    const viewListRoute = useLocalizedRoute('lists.view', {
-        bookmarkCollection: collection?.id
-    });
+    // Determine if we're in a public or private context based on the current URL
+    const { url } = usePage();
+    const isPrivateContext = url.includes('/my/lists');
+    
+    const viewListRoute = isPrivateContext 
+        ? useLocalizedRoute('my.lists.show', {
+            list: collection?.id
+        })
+        : useLocalizedRoute('lists.view', {
+            bookmarkCollection: collection?.id,
+            type: 'proposals'
+        });
 
     const manageListRoute = useLocalizedRoute('my.lists.manage', {
         bookmarkCollection: collection?.id,
@@ -107,10 +116,7 @@ const BookmarkCollectionCard = ({
                 <div className="space-y-2">
                     <div className="flex items-center gap-3">
                         <Link
-                            href={useLocalizedRoute('lists.view', {
-                                bookmarkCollection: collection?.id,
-                                type: 'proposals'
-                            })}
+                            href={viewListRoute}
                         >
                             <Title
                                 level="4"

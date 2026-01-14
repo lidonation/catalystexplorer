@@ -237,12 +237,27 @@ class BookmarksController extends Controller
 
     protected function queryModels(string $modelType, array $constrainToIds = [], array $relationships = [], array $counts = []): array
     {
+        // If no specific IDs are provided, return empty result to avoid querying all records
+        if (empty($constrainToIds)) {
+            $pagination = new LengthAwarePaginator(
+                [],
+                0,
+                $this->perPage,
+                $this->currentPage,
+                [
+                    'pageName' => ProposalSearchParams::PAGE()->value,
+                    'path' => request()->url(),
+                    'query' => request()->query(),
+                ]
+            );
+
+            return $pagination->toArray();
+        }
+
         if ($this->search) {
             $searchBuilder = $modelType::search($this->search);
 
-            if (! empty($constrainToIds)) {
-                $searchBuilder->whereIn('id', $constrainToIds);
-            }
+            $searchBuilder->whereIn('id', $constrainToIds);
 
             if ($this->sortBy && $this->sortOrder) {
                 $searchBuilder->orderBy($this->sortBy, $this->sortOrder);
@@ -265,9 +280,7 @@ class BookmarksController extends Controller
                 $query->withCount($counts);
             }
 
-            if (! empty($constrainToIds)) {
-                $query->whereIn('id', $constrainToIds);
-            }
+            $query->whereIn('id', $constrainToIds);
 
             if ($this->sortBy && $this->sortOrder) {
                 $query->orderBy($this->sortBy, $this->sortOrder);

@@ -46,18 +46,15 @@ export function useUserSetting<T = any>(
         }
 
         if (typeof storedValue === 'object' && !Array.isArray(storedValue)) {
+            if (isConfiguratorState(storedValue)) {
+                return defaultValue ?? null;
+            }
+
             const nested = storedValue as Record<string, T>;
 
             if (scope in nested) {
                 return nested[scope];
             }
-            if ('_default' in nested) {
-                return nested['_default'];
-            }
-        }
-
-        if (isConfiguratorState(storedValue)) {
-            return storedValue as T;
         }
 
         return defaultValue ?? null;
@@ -89,20 +86,19 @@ export function useUserSetting<T = any>(
 
             if (scope) {
                 const existingValue = currentSetting[key];
-                let nestedObject: Record<string, T> = {};
+                let scopedValues: Record<string, T> = {};
 
                 if (existingValue && typeof existingValue === 'object' && !Array.isArray(existingValue)) {
-        
                     if (!isConfiguratorState(existingValue)) {
-                        nestedObject = { ...(existingValue as Record<string, T>) };
-                    } else {
-                        
-                        nestedObject = { '_default': existingValue as T };
+                    
+                        scopedValues = Object.fromEntries(
+                            Object.entries(existingValue as Record<string, T>).filter(([scopeKey]) => scopeKey !== '_default'),
+                        );
                     }
                 }
 
-                nestedObject[scope] = newValue;
-                updatedValue = nestedObject;
+                scopedValues[scope] = newValue;
+                updatedValue = scopedValues;
             }
 
             const updatedSetting = {

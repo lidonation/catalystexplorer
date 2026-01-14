@@ -2,7 +2,8 @@ import CompareIcon from '@/Components/svgs/CompareIcon';
 import ToolTipHover from '@/Components/ToolTipHover';
 import { IndexedDBService } from '@/Services/IndexDbService';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import ProposalData = App.DataTransferObjects.ProposalData;
 type CompareButtonProps = {
     model: string;
@@ -19,6 +20,8 @@ const CompareButton: React.FC<CompareButtonProps> = ({
     buttonTheme = 'text-white'
 }: CompareButtonProps) => {
     const [isHovered, setIsHovered] = useState(false);
+    const [tooltipPos, setTooltipPos] = useState<{ top: number; left: number } | null>(null);
+    const buttonRef = useRef<HTMLButtonElement | null>(null);
     const proposalId = data.id ?? '';
 
     // Live query to check if the proposal is already in the DB
@@ -40,22 +43,53 @@ const CompareButton: React.FC<CompareButtonProps> = ({
             await IndexedDBService.create('proposal_comparisons', proposalData);
         }
     };
+
+    const handleMouseEnter = () => {
+        if (typeof window === 'undefined' || !buttonRef.current) return;
+
+        const rect = buttonRef.current.getBoundingClientRect();
+
+        setTooltipPos({
+            top: rect.top,
+            left: rect.left + rect.width / 2,
+        });
+        setIsHovered(true);
+    };
+
+    const handleMouseLeave = () => {
+        setIsHovered(false);
+        setTooltipPos(null);
+    };
+
     return (
-        <button
-            type="button"
-            className={`relative hover:cursor-pointer ${alreadyExists ? 'text-success' : buttonTheme}`}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            onClick={toggleInList}
-            data-testid={dataTestId}
-        >
-            <CompareIcon exists={alreadyExists} />
-            {isHovered && (
-                <div className="absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 transform">
-                    <ToolTipHover props={tooltipDescription} />
-                </div>
-            )}
-        </button>
+        <>
+            <button
+                ref={buttonRef}
+                type="button"
+                className={`relative hover:cursor-pointer ${alreadyExists ? 'text-success' : buttonTheme}`}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onClick={toggleInList}
+                data-testid={dataTestId}
+            >
+                <CompareIcon exists={alreadyExists} />
+            </button>
+
+            {isHovered && tooltipPos && typeof document !== 'undefined' &&
+                createPortal(
+                    <div
+                        className="pointer-events-none fixed z-[9999]"
+                        style={{
+                            top: tooltipPos.top,
+                            left: tooltipPos.left,
+                            transform: 'translate(-50%, -100%) translateY(-8px)',
+                        }}
+                    >
+                        <ToolTipHover props={tooltipDescription} />
+                    </div>,
+                    document.body,
+                )}
+        </>
     );
 };
 export default CompareButton;
