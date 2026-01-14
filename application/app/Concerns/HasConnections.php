@@ -37,7 +37,7 @@ trait HasConnections
 
     private function getInitialConnectionsData($id, $rootNode): array
     {
-        $cacheKey = "connections:initial:{$rootNode->hash}:".get_class($rootNode);
+        $cacheKey = "connections:initial:{$rootNode->id}:".get_class($rootNode);
 
         return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($id, $rootNode) {
             $nodes = collect();
@@ -84,7 +84,7 @@ trait HasConnections
                 'nodes' => $uniqueNodes,
                 'links' => $uniqueLinks,
                 'rootNodeId' => $id,
-                'rootNodeHash' => $rootNode->hash,
+                'rootNodeHash' => $rootNode->id,
                 'rootNodeType' => get_class($rootNode),
             ];
         });
@@ -199,7 +199,7 @@ trait HasConnections
                 'nodes' => [],
                 'links' => [],
                 'rootNodeId' => $this->id,
-                'rootNodeHash' => $this->hash,
+                'rootNodeHash' => $this->id,
                 'rootNodeType' => get_class($this),
                 'error' => 'Failed to load connections',
             ];
@@ -209,14 +209,14 @@ trait HasConnections
             'nodes' => $nodes->unique(fn ($node): string => (string) $node['id'])->values()->all(),
             'links' => $links->unique(fn ($link): string => $link['source'].'-'.$link['target'])->values()->all(),
             'rootNodeId' => $this->id,
-            'rootNodeHash' => $this->hash,
+            'rootNodeHash' => $this->id,
             'rootNodeType' => get_class($this),
         ];
     }
 
     public function clearConnectionsCache(): void
     {
-        $cacheKey = "connections:initial:{$this->hash}:".get_class($this);
+        $cacheKey = "connections:initial:{$this->id}:".get_class($this);
         Cache::forget($cacheKey);
     }
 
@@ -228,7 +228,7 @@ trait HasConnections
                 'type' => get_class($entity),
                 'name' => $entity->name,
                 'photo' => $entity->hero_img_url,
-                'hash' => $entity->hash,
+                'hash' => $entity->id,
             ];
         }
 
