@@ -76,23 +76,33 @@ class GroupController extends Controller
         return $pagination->onEachSide(1)->toArray();
     }
 
-    public function connections(Request $request, int $id): array
+    public function connections(Request $request, string $uuid): array
     {
-        $group = Group::findOrFail($id);
+        $group = Group::findOrFail($uuid);
 
         $connections = $group->getConnectionsData($request);
 
         return $connections;
     }
 
-    public function incrementalConnections(Request $request): array
+    public function incrementalConnections(Request $request): array|Response
     {
+        $identifier = $request->get('hash');
 
-        $id = $request->get('id');
-        $group = Group::find($id);
+        if (! $identifier) {
+            return response([
+                'error' => 'Missing required parameter: hash or id',
+            ], Response::HTTP_BAD_REQUEST);
+        }
 
-        $connections = $group->getIncrementalConnectionsData($request);
+        $group = Group::find($identifier);
 
-        return $connections;
+        if (! $group) {
+            return response([
+                'error' => 'Group not found',
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        return $group->getIncrementalConnectionsData($request);
     }
 }

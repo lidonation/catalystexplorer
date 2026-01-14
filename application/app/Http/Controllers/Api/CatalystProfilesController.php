@@ -75,9 +75,9 @@ class CatalystProfilesController extends Controller
         return $pagination->onEachSide(1)->toArray();
     }
 
-    public function connections(Request $request, int $id): array
+    public function connections(Request $request, string $uuid): array
     {
-        $catalystProfile = CatalystProfile::findOrFail($id);
+        $catalystProfile = CatalystProfile::findOrFail($uuid);
 
         $connections = $catalystProfile->getConnectionsData($request);
 
@@ -86,11 +86,22 @@ class CatalystProfilesController extends Controller
 
     public function incrementalConnections(Request $request): array|Response
     {
-        $id = $request->get('id');
-        $catalystProfile = CatalystProfile::find($id);
+        $identifier = $request->get('hash');
 
-        $connections = $catalystProfile->getIncrementalConnectionsData($request);
+        if (! $identifier) {
+            return response([
+                'error' => 'Missing required parameter: hash or id',
+            ], Response::HTTP_BAD_REQUEST);
+        }
 
-        return $connections;
+        $catalystProfile = CatalystProfile::find($identifier);
+
+        if (! $catalystProfile) {
+            return response([
+                'error' => 'Catalyst Profile not found',
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        return $catalystProfile->getIncrementalConnectionsData($request);
     }
 }
