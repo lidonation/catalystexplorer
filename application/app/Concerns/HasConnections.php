@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Concerns;
 
-use App\Enums\CatalystConnectionParams;
+use App\Models\CatalystProfile;
 use App\Models\Community;
 use App\Models\Connection;
 use App\Models\Group;
@@ -27,23 +27,12 @@ trait HasConnections
     {
         $id = $this->id;
         $rootNode = $this;
+
         if (! $rootNode) {
             return ['error' => 'Root node not found'];
         }
 
-        $isInitialLoad = ! $request || (
-            empty($request->query(CatalystConnectionParams::IDEASCALEPROFILE()->value, [])) &&
-            empty($request->query(CatalystConnectionParams::GROUP()->value, [])) &&
-            empty($request->query(CatalystConnectionParams::COMMUNITY()->value, [])) &&
-            ! $request->has(CatalystConnectionParams::EXCLUDE_EXISTING()->value) &&
-            ! $request->has(CatalystConnectionParams::DEPTH()->value)
-        );
-
-        if ($isInitialLoad) {
-            return $this->getInitialConnectionsData($id, $rootNode);
-        }
-
-        return $this->getExpandedConnectionsData($request);
+        return $this->getInitialConnectionsData($id, $rootNode);
     }
 
     private function getInitialConnectionsData($id, $rootNode): array
@@ -51,41 +40,45 @@ trait HasConnections
         $cacheKey = "connections:initial:{$rootNode->hash}:".get_class($rootNode);
 
         return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($id, $rootNode) {
-            $startTime = microtime(true);
-
             $nodes = collect();
             $links = collect();
+            $visited = [];
 
-            // Get the root entity
-            $rootConnections = collect([$this]);
+            // Add root node
+            $nodes->push($this->formatNodeOrLink($this));
+            $visited[] = $this->id;
 
-            $allConnections = $this->fetchConnectionsRecursively($rootConnections, 1, 2);
+            $rootConnections = $this->getAllConnectedEntitiesBatched();
 
-            foreach ($allConnections as $entity) {
-                $nodes->push($this->formatNodeOrLink($entity));
+            // Process root's connections
+            foreach ($rootConnections as $connectionType => $entities) {
+                foreach ($entities as $entity) {
+                    if (in_array($entity->id, $visited)) {
+                        continue;
+                    }
+                    $visited[] = $entity->id;
 
-                $connections = [
-                    'connected_groups' => $entity->connected_groups,
-                    'connected_users' => $entity->connected_users,
-                    'connected_communities' => $entity->connected_communities,
-                ];
+                    $nodes->push($this->formatNodeOrLink($entity));
+                    $links->push($this->formatNodeOrLink($entity, $this));
 
-                foreach ($connections as $relationItems) {
-                    foreach ($relationItems as $item) {
-                        $nodes->push($this->formatNodeOrLink($item));
-                        $links->push($this->formatNodeOrLink($item, $entity));
+                    // Get level 2 connections (depth = 2)
+                    $level2Connections = $entity->getAllConnectedEntitiesBatched();
+
+                    foreach ($level2Connections as $l2Type => $l2Entities) {
+                        foreach ($l2Entities as $l2Entity) {
+                            $nodes->push($this->formatNodeOrLink($l2Entity));
+                            $links->push($this->formatNodeOrLink($l2Entity, $entity));
+                        }
                     }
                 }
             }
 
-            if ($nodes->isEmpty() && $links->isEmpty()) {
+            if ($nodes->isEmpty()) {
                 $nodes->push($this->formatNodeOrLink($this));
             }
 
             $uniqueNodes = $nodes->unique(fn ($node): string => (string) $node['id'])->values()->all();
             $uniqueLinks = $links->unique(fn ($link): string => $link['source'].'-'.$link['target'])->values()->all();
-
-            $executionTime = round((microtime(true) - $startTime) * 1000, 2);
 
             return [
                 'nodes' => $uniqueNodes,
@@ -97,205 +90,102 @@ trait HasConnections
         });
     }
 
-    private function getExpandedConnectionsData(Request $request): array
-    {
-        $profileIds = (array) $request->query(CatalystConnectionParams::IDEASCALEPROFILE()->value, []);
-        $groupIds = (array) $request->query(CatalystConnectionParams::GROUP()->value, []);
-        $communityIds = (array) $request->query(CatalystConnectionParams::COMMUNITY()->value, []);
-
-        $nodes = collect();
-        $links = collect();
-
-        $nodes->push($this->formatNodeOrLink($this));
-
-        // Note: connections are now loaded as attributes, not relationships
-
-        $rootConnections = [
-            'connected_groups' => $this->connected_groups,
-            'connected_users' => $this->connected_users,
-            'connected_communities' => $this->connected_communities,
-        ];
-
-        foreach ($rootConnections as $relationItems) {
-            foreach ($relationItems as $item) {
-                $nodes->push($this->formatNodeOrLink($item));
-                $links->push($this->formatNodeOrLink($item, $this));
-            }
-        }
-
-        $additionalEntities = collect();
-        if (! empty($groupIds)) {
-            $additionalEntities = $additionalEntities->merge(
-                Group::whereIn('id', $groupIds)->get()
-            );
-        }
-        if (! empty($profileIds)) {
-            $additionalEntities = $additionalEntities->merge(
-                IdeascaleProfile::whereIn('id', $profileIds)->get()
-            );
-        }
-        if (! empty($communityIds)) {
-            $additionalEntities = $additionalEntities->merge(
-                Community::whereIn('id', $communityIds)->get()
-            );
-        }
-
-        foreach ($additionalEntities as $entity) {
-            $nodes->push($this->formatNodeOrLink($entity));
-
-            $connections = [
-                'connected_groups' => $entity->connected_groups,
-                'connected_users' => $entity->connected_users,
-                'connected_communities' => $entity->connected_communities,
-            ];
-
-            foreach ($connections as $relationItems) {
-                foreach ($relationItems as $item) {
-                    $nodes->push($this->formatNodeOrLink($item));
-                    $links->push($this->formatNodeOrLink($item, $entity));
-                }
-            }
-        }
-
-        return [
-            'nodes' => $nodes->unique(fn ($node): string => (string) $node['id'])->values()->all(),
-            'links' => $links->unique(fn ($link): string => $link['source'].'-'.$link['target'])->values()->all(),
-            'rootNodeId' => $this->id,
-            'rootNodeHash' => $this->hash,
-            'rootNodeType' => get_class($this),
-        ];
-    }
-
     public function connections(): MorphMany
     {
         return $this->morphMany(Connection::class, 'previous_model', 'previous_model_type', 'previous_model_id');
     }
 
-    public function getConnectedUsersAttribute()
+    protected function getBatchedConnections(): array
     {
-        // Temporarily disabled due to data migration issues
-        // TODO: Fix connections data conversion from old numeric IDs to UUIDs
-        return collect();
-    }
+        $entityId = (string) $this->id;
+        $entityType = static::class;
 
-    public function getConnectedGroupsAttribute()
-    {
-        // Temporarily disabled due to data migration issues
-        // TODO: Fix connections data conversion from old numeric IDs to UUIDs
-        return collect();
-    }
+        // Single query to get all connections
+        $connections = Connection::where(function ($query) use ($entityId, $entityType) {
+            $query->where('previous_model_type', $entityType)
+                ->where('previous_model_id', $entityId);
+        })->orWhere(function ($query) use ($entityId, $entityType) {
+            $query->where('next_model_type', $entityType)
+                ->where('next_model_id', $entityId);
+        })->get();
 
-    public function getConnectedCommunitiesAttribute()
-    {
-        // Temporarily disabled due to data migration issues
-        // TODO: Fix connections data conversion from old numeric IDs to UUIDs
-        return collect();
-    }
+        // Group by target entity type
+        $grouped = [
+            IdeascaleProfile::class => ['ids' => [], 'model_class' => IdeascaleProfile::class],
+            Group::class => ['ids' => [], 'model_class' => Group::class],
+            Community::class => ['ids' => [], 'model_class' => Community::class],
+            CatalystProfile::class => ['ids' => [], 'model_class' => CatalystProfile::class],
+        ];
 
-    private function fetchConnectionsRecursively($entities, int $depth, int $maxDepth = 2, &$visited = []): \Illuminate\Support\Collection
-    {
-        if ($depth > $maxDepth) {
-            return collect();
-        }
-
-        $startTime = microtime(true);
-        $connections = collect();
-        $groupIds = [];
-        $profileIds = [];
-        $communityIds = [];
-
-        foreach ($entities as $entity) {
-            if (in_array($entity->id, $visited)) {
-                continue;
-            }
-            $visited[] = $entity->id;
-
-            $groupIds = array_merge($groupIds, $entity->connected_groups->pluck('id')->all());
-            $profileIds = array_merge($profileIds, $entity->connected_users->pluck('id')->all());
-            $communityIds = array_merge($communityIds, $entity->connected_communities->pluck('id')->all());
-        }
-
-        $groupIds = array_unique(array_diff($groupIds, $visited));
-        $profileIds = array_unique(array_diff($profileIds, $visited));
-        $communityIds = array_unique(array_diff($communityIds, $visited));
-
-        $fetchPromises = [];
-        if (! empty($groupIds)) {
-            $groups = $this->fetchEntitiesOptimized(Group::class, $groupIds);
-            $connections = $connections->merge($groups);
-        }
-        if (! empty($profileIds)) {
-            $profiles = $this->fetchEntitiesOptimized(IdeascaleProfile::class, $profileIds);
-            $connections = $connections->merge($profiles);
-        }
-        if (! empty($communityIds)) {
-            $communities = $this->fetchEntitiesOptimized(Community::class, $communityIds);
-            $connections = $connections->merge($communities);
-        }
-
-        $executionTime = round((microtime(true) - $startTime) * 1000, 2);
-
-        if ($depth === 1) {
-            return $connections;
-        }
-
-        return collect();
-    }
-
-    private function fetchEntitiesOptimized(string $model, array $ids)
-    {
-        if (empty($ids)) {
-            return collect();
-        }
-
-        $ids = array_unique($ids);
-        $modelName = class_basename($model);
-        $sortedIds = $ids;
-        sort($sortedIds);
-        $cacheKey = "connections:entities:{$modelName}:".hash('sha256', implode(',', $sortedIds));
-
-        return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($model, $ids) {
-            $startTime = microtime(true);
-
-            $chunkSize = 100;
-            $results = collect();
-
-            if (count($ids) > $chunkSize) {
-                $chunks = array_chunk($ids, $chunkSize);
-                foreach ($chunks as $chunk) {
-                    $chunkResults = $model::whereIn('id', $chunk)->get();
-                    $results = $results->merge($chunkResults);
-                }
+        foreach ($connections as $connection) {
+            // Determine which side of the connection is NOT this entity
+            if (
+                $connection->previous_model_type === $entityType &&
+                $connection->previous_model_id === $entityId
+            ) {
+                $targetType = $connection->next_model_type;
+                $targetId = $connection->next_model_id;
             } else {
-                $results = $model::whereIn('id', $ids)->get();
+                $targetType = $connection->previous_model_type;
+                $targetId = $connection->previous_model_id;
             }
 
-            $executionTime = round((microtime(true) - $startTime) * 1000, 2);
+            if (isset($grouped[$targetType])) {
+                $grouped[$targetType]['ids'][] = $targetId;
+            }
+        }
 
-            return $results;
-        });
+        // Remove duplicates
+        foreach ($grouped as $type => $data) {
+            $grouped[$type]['ids'] = array_unique($data['ids']);
+        }
+
+        return $grouped;
+    }
+
+    public function getAllConnectedEntitiesBatched(): array
+    {
+        $batched = $this->getBatchedConnections();
+
+        $result = [
+            'connected_users' => collect(),
+            'connected_groups' => collect(),
+            'connected_communities' => collect(),
+            'connected_catalyst_profiles' => collect(),
+        ];
+
+        if (! empty($batched[IdeascaleProfile::class]['ids'])) {
+            $result['connected_users'] = IdeascaleProfile::whereIn('id', $batched[IdeascaleProfile::class]['ids'])->get();
+        }
+
+        if (! empty($batched[Group::class]['ids'])) {
+            $result['connected_groups'] = Group::whereIn('id', $batched[Group::class]['ids'])->get();
+        }
+
+        if (! empty($batched[Community::class]['ids'])) {
+            $result['connected_communities'] = Community::whereIn('id', $batched[Community::class]['ids'])->get();
+        }
+
+        if (! empty($batched[CatalystProfile::class]['ids'])) {
+            $result['connected_catalyst_profiles'] = CatalystProfile::whereIn('id', $batched[CatalystProfile::class]['ids'])->get();
+        }
+
+        return $result;
     }
 
     public function getIncrementalConnectionsData(?Request $request = null): array
     {
-
-        $depth = $request ? (int) $request->query('depth', 1) : 1;
         $excludeExisting = $request ? (array) $request->query('exclude_existing', []) : [];
 
         $nodes = collect();
         $links = collect();
 
         try {
-            // Note: connections are now loaded as attributes, not relationships
 
-            $connections = [
-                'connected_groups' => $this->connected_groups,
-                'connected_users' => $this->connected_users,
-                'connected_communities' => $this->connected_communities,
-            ];
+            $connections = $this->getAllConnectedEntitiesBatched();
 
-            foreach ($connections as $relationItems) {
-                foreach ($relationItems as $item) {
+            foreach ($connections as $connectionType => $entities) {
+                foreach ($entities as $item) {
                     if (in_array($item->id, $excludeExisting)) {
                         continue;
                     }
@@ -304,7 +194,6 @@ trait HasConnections
                     $links->push($this->formatNodeOrLink($item, $this));
                 }
             }
-
         } catch (\Exception $e) {
             return [
                 'nodes' => [],
