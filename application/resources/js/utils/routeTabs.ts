@@ -84,7 +84,7 @@ export const proposalProfileTabs: TabConfig = {
     routePrefix: 'ideascale-profiles/{hash}',
     tabs: [
         { key: 'proposals', only: ['proposals'] },
-        // { key: 'connections', only: ['connections'] },
+        { key: 'connections', only: ['connections'] },
         { key: 'groups', only: ['groups'] },
         { key: 'communities', only: ['communities'] },
         { key: 'reviews', only: ['reviews'] },
@@ -96,10 +96,10 @@ export const proposalProfileTabs: TabConfig = {
 
 export const catalystProfileTabs: TabConfig = {
     translationPrefix: 'ideascaleProfiles.tabs',
-    routePrefix: 'ideascale-profiles/{hash}',
+    routePrefix: 'catalyst-profiles/{catalystProfile}',
     tabs: [
         { key: 'proposals', only: ['proposals'] },
-        // { key: 'connections', only: ['connections'] },
+        { key: 'connections', only: ['connections'] },
         // { key: 'groups', only: ['groups'] },
         // { key: 'communities', only: ['communities'] },
         { key: 'reviews', only: ['reviews'] },
