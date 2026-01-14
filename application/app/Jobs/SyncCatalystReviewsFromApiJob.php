@@ -156,6 +156,12 @@ class SyncCatalystReviewsFromApiJob implements ShouldQueue
                 return false; // skipped
             }
 
+            // 2b. Store proposal.row_id as review_module_id meta
+            $rowId = $reviewData['proposal']['row_id'] ?? null;
+            if ($rowId !== null) {
+                $proposal->saveMeta('review_module_id', (string) $rowId);
+            }
+
             // 3. Ensure discussions
             $discussions = $this->ensureDiscussionsExist($proposal);
 

@@ -195,7 +195,7 @@ class Review extends Model
 
     public function toSearchableArray(): array
     {
-        $this->load(['reviewer', 'model', 'rating', 'discussion']);
+        $this->load(['reviewer', 'model', 'rating', 'discussion', 'proposal', 'proposal.fund']);
 
         // Safely load relationships with error handling
         $array = $this->toArray();
@@ -293,6 +293,41 @@ class Review extends Model
             ]);
         }
 
+        // Build proposal data for search index
+        $proposalData = null;
+        try {
+            if ($this->proposal) {
+                $proposalData = [
+                    'id' => $this->proposal->id,
+                    'title' => $this->proposal->title,
+                    'slug' => $this->proposal->slug,
+                    'link' => $this->proposal->link,
+                    'fund_id' => $this->proposal->fund_id,
+                    'fund' => $this->proposal->fund ? [
+                        'id' => $this->proposal->fund->id,
+                        'title' => $this->proposal->fund->title,
+                        'label' => $this->proposal->fund->label,
+                        'slug' => $this->proposal->fund->slug,
+                    ] : null,
+                    'groups' => $this->proposal->groups?->map(fn ($g) => [
+                        'id' => $g->id,
+                        'hash' => $g->hash ?? null,
+                    ])?->toArray() ?? [],
+                    'ideascale_profiles' => $this->proposal->ideascale_profiles?->map(fn ($p) => [
+                        'id' => $p->id,
+                        'hash' => $p->hash ?? null,
+                        'name' => $p->name,
+                        'username' => $p->username,
+                    ])?->toArray() ?? [],
+                ];
+            }
+        } catch (\Exception $e) {
+            \Log::error('Error loading proposal for review in toSearchableArray', [
+                'review_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
         return array_merge($array, [
             'model_type' => 'review',
             'reviewer' => $reviewerData,
@@ -304,6 +339,7 @@ class Review extends Model
             'ranking' => $rankingData,
             'positive_rankings' => $positiveRankingsCount,
             'negative_rankings' => $negativeRankingsCount,
+            'proposal' => $proposalData,
         ]);
     }
 }
