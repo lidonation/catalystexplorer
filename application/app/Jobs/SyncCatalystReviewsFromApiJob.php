@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Console\Commands;
+namespace App\Jobs;
 
 use App\Http\Integrations\CatalystReviews\CatalystReviewsConnector;
 use App\Http\Integrations\CatalystReviews\Requests\GetFilteredProposalReviewsRequest;
@@ -12,14 +12,22 @@ use App\Models\Rating;
 use App\Models\Review;
 use App\Models\Reviewer;
 use Carbon\Carbon;
-use Illuminate\Console\Command;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class SyncReviewsFromCatalyst extends Command
+class SyncCatalystReviewsFromApiJob implements ShouldQueue
 {
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public int $timeout = 900; // 15 minutes
+
     /**
-     * Discussion templates for proposal reviews
+     * Mapping and templates (same as command)
      */
     protected const DISCUSSION_TEMPLATES = [
         'Impact' => [
@@ -36,9 +44,6 @@ class SyncReviewsFromCatalyst extends Command
         ],
     ];
 
-    /**
-     * Mapping from API fields to discussion titles
-     */
     protected const RATING_FIELD_MAP = [
         'impact_alignment_rating_given' => 'Impact',
         'feasibility_rating_given' => 'Feasibility',
@@ -51,193 +56,112 @@ class SyncReviewsFromCatalyst extends Command
         'auditability_note' => 'Value for Money',
     ];
 
-    // Legacy counters retained for sync-mode output only
-    protected array $catalystReviews = [];
+    public function __construct(
+        protected string $fundId,
+        protected int $pageSize = 50,
+        protected int $startPage = 0,
+        protected ?int $limit = null
+    ) {}
 
-    protected int $processedCount = 0;
-
-    protected int $skippedCount = 0;
-
-    protected int $errorCount = 0;
-
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'sync:reviews
-                            {fund_id : The fund ID to associate reviews with}
-                            {--sync : Run synchronously instead of dispatching to queue}
-                            {--limit= : Limit the number of reviews to process}
-                            {--page-size=50 : Number of reviews per API page}
-                            {--start-page=0 : Starting page number for pagination}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Sync proposal reviews from Catalyst Reviews API';
-
-    public function handle(): int
+    public function handle(): void
     {
-        $fundId = $this->argument('fund_id');
-        $syncMode = $this->option('sync');
-        $limit = $this->option('limit') ? (int) $this->option('limit') : null;
-        $pageSize = (int) $this->option('page-size');
-        $startPage = (int) $this->option('start-page');
+        $processed = 0;
+        $skipped = 0;
+        $errors = 0;
 
-        $this->info("Starting review sync for fund: {$fundId}");
-        if ($syncMode) {
-            // SYNC MODE: run in-process (legacy behavior)
-            $this->info('Running in SYNC mode...');
-            $this->info('Fetching reviews from Catalyst Reviews API...');
-
-            $this->fetchAllReviews($pageSize, $startPage, $limit);
-
-            if (empty($this->catalystReviews)) {
-                $this->warn('No reviews found from API.');
-
-                return Command::SUCCESS;
-            }
-
-            $count = count($this->catalystReviews);
-            $this->info("Found {$count} review(s) to process.");
-            $this->processSynchronously($fundId);
-
-            $this->newLine();
-            $this->info('Review sync completed.');
-            $this->info("Processed: {$this->processedCount}, Skipped: {$this->skippedCount}, Errors: {$this->errorCount}");
-        } else {
-            // ASYNC MODE: dispatch a job that will perform API pagination and processing in the queue
-            $this->info('Running in ASYNC mode (dispatching API fetch + processing to queue)...');
-
-            \App\Jobs\SyncCatalystReviewsFromApiJob::dispatch(
-                fundId: $fundId,
-                pageSize: $pageSize,
-                startPage: $startPage,
-                limit: $limit
-            );
-
-            $this->info('Queued job: SyncCatalystReviewsFromApiJob');
-            $this->info('Monitor progress with: tail -f storage/logs/laravel.log');
-        }
-
-        return Command::SUCCESS;
-    }
-
-    protected function fetchAllReviews(int $pageSize, int $startPage, ?int $limit): void
-    {
         $connector = new CatalystReviewsConnector;
-        $page = $startPage;
+        $page = $this->startPage;
         $totalFetched = 0;
 
         do {
-            $this->output->write("Fetching page {$page}... ");
-
             try {
-                $response = $connector->send(new GetFilteredProposalReviewsRequest($page, $pageSize));
+                $response = $connector->send(new GetFilteredProposalReviewsRequest($page, $this->pageSize));
                 $data = $response->json();
 
                 $reviews = $data['data'] ?? [];
                 $pageInfo = $data['page'] ?? [];
 
                 if (empty($reviews)) {
-                    $this->info('No more reviews.');
+                    Log::info('SyncCatalystReviewsFromApiJob: No more reviews to fetch', ['page' => $page]);
                     break;
                 }
 
-                $this->catalystReviews = array_merge($this->catalystReviews, $reviews);
-                $totalFetched += count($reviews);
+                foreach ($reviews as $reviewData) {
+                    if ($this->limit !== null && $totalFetched >= $this->limit) {
+                        break 2; // exit both foreach and do-while
+                    }
 
-                $this->info(count($reviews).' reviews fetched (total: '.$totalFetched.')');
+                    $totalFetched++;
 
-                // Check if we've hit the limit
-                if ($limit !== null && $totalFetched >= $limit) {
-                    $this->catalystReviews = array_slice($this->catalystReviews, 0, $limit);
-                    $this->info("Limit of {$limit} reached.");
-                    break;
+                    try {
+                        $ok = $this->processOneReview($reviewData, $this->fundId);
+                        if ($ok) {
+                            $processed++;
+                        } else {
+                            $skipped++;
+                        }
+                    } catch (\Throwable $e) {
+                        $errors++;
+                        Log::error('SyncCatalystReviewsFromApiJob: error processing review', [
+                            'error' => $e->getMessage(),
+                            'trace' => $e->getTraceAsString(),
+                        ]);
+                    }
                 }
 
-                // Check if we've reached the end
-                $totalPages = isset($pageInfo['total']) ? ceil($pageInfo['total'] / $pageSize) : 0;
-                if ($page >= $totalPages - 1) {
+                // Determine if there are more pages
+                $totalPages = isset($pageInfo['total']) ? (int) ceil($pageInfo['total'] / $this->pageSize) : 0;
+                if ($totalPages > 0 && $page >= $totalPages - 1) {
                     break;
                 }
 
                 $page++;
-            } catch (\Exception $e) {
-                $this->error('Failed to fetch page '.$page.': '.$e->getMessage());
-                Log::error('SyncReviewsFromCatalyst: Failed to fetch reviews', [
+            } catch (\Throwable $e) {
+                Log::error('SyncCatalystReviewsFromApiJob: failed to fetch page', [
                     'page' => $page,
                     'error' => $e->getMessage(),
                 ]);
                 break;
             }
         } while (true);
+
+        Log::info('SyncCatalystReviewsFromApiJob: completed', [
+            'processed' => $processed,
+            'skipped' => $skipped,
+            'errors' => $errors,
+            'fund_id' => $this->fundId,
+            'limit' => $this->limit,
+            'page_size' => $this->pageSize,
+            'start_page' => $this->startPage,
+        ]);
     }
 
-    protected function processSynchronously(string $fundId): void
+    /**
+     * Process a single review payload
+     */
+    protected function processOneReview(array $reviewData, string $fundId): bool
     {
-        $bar = $this->output->createProgressBar(count($this->catalystReviews));
-        $bar->start();
+        return DB::transaction(function () use ($reviewData, $fundId) {
+            // 1. Reviewer
+            $reviewer = $this->findOrCreateReviewer($reviewData['assessor'] ?? '');
 
-        foreach ($this->catalystReviews as $reviewData) {
-            try {
-                $this->processReview($reviewData, $fundId);
-                $this->processedCount++;
-            } catch (\Exception $e) {
-                $this->errorCount++;
-                Log::error('SyncReviewsFromCatalyst: Error processing review', [
-                    'review_data' => $reviewData,
-                    'error' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString(),
-                ]);
-            }
-
-            $bar->advance();
-        }
-
-        $bar->finish();
-        $this->newLine();
-    }
-
-    protected function processAsynchronously(string $fundId): void
-    {
-        // For async mode, we'd dispatch jobs. For now, we'll process synchronously
-        // but this could be refactored to use a job class
-        $this->processSynchronously($fundId);
-    }
-
-    protected function processReview(array $reviewData, string $fundId): void
-    {
-        DB::beginTransaction();
-
-        try {
-            // 1. Find or create the reviewer
-            $reviewer = $this->findOrCreateReviewer($reviewData['assessor']);
-
-            // 2. Find the proposal
+            // 2. Proposal
             $proposal = $this->findProposal($reviewData, $fundId);
-
             if (! $proposal) {
-                $this->skippedCount++;
-                $this->processedCount--;
-                Log::warning('SyncReviewsFromCatalyst: Proposal not found', [
+                Log::warning('SyncCatalystReviewsFromApiJob: Proposal not found', [
                     'pr_id' => $reviewData['proposal']['pr_id'] ?? null,
                     'title' => $reviewData['proposal']['title'] ?? null,
                 ]);
-                DB::rollBack();
 
-                return;
+                return false; // skipped
             }
 
-            // 3. Ensure discussions exist for the proposal
+            // 3. Ensure discussions
             $discussions = $this->ensureDiscussionsExist($proposal);
 
-            // 4. Create reviews and ratings for each discussion type
+            // 4. Create review + rating per facet
             foreach (self::NOTE_FIELD_MAP as $noteField => $discussionTitle) {
-                $ratingField = array_search($discussionTitle, self::RATING_FIELD_MAP);
+                $ratingField = array_search($discussionTitle, self::RATING_FIELD_MAP, true);
 
                 if (! isset($discussions[$discussionTitle])) {
                     continue;
@@ -245,35 +169,26 @@ class SyncReviewsFromCatalyst extends Command
 
                 $discussion = $discussions[$discussionTitle];
                 $noteContent = $reviewData[$noteField] ?? null;
-                $ratingValue = $reviewData[$ratingField] ?? null;
+                $ratingValue = $ratingField ? ($reviewData[$ratingField] ?? null) : null;
 
                 if ($noteContent === null && $ratingValue === null) {
                     continue;
                 }
 
-                // Create or update the review
-                $review = $this->createOrUpdateReview(
-                    $discussion,
-                    $reviewer,
-                    $noteContent,
-                    $reviewData
-                );
+                $review = $this->createOrUpdateReview($discussion, $reviewer, $noteContent, $reviewData);
 
-                // Create or update the rating
                 if ($ratingValue !== null) {
-                    $this->createOrUpdateRating($discussion, $review, $ratingValue);
+                    $this->createOrUpdateRating($discussion, $review, (int) $ratingValue);
                 }
             }
 
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
+            return true;
+        });
     }
 
     protected function findOrCreateReviewer(string $assessorId): Reviewer
     {
+        $assessorId = trim($assessorId);
         $reviewer = Reviewer::where('catalyst_reviewer_id', $assessorId)->first();
 
         if (! $reviewer) {
@@ -290,7 +205,6 @@ class SyncReviewsFromCatalyst extends Command
         $prId = $reviewData['proposal']['pr_id'] ?? null;
         $title = $reviewData['proposal']['title'] ?? null;
 
-        // First, try to find by catalyst_document_id in meta_info
         if ($prId) {
             $proposal = Proposal::whereHas('metas', function ($query) use ($prId) {
                 $query->where('key', 'catalyst_document_id')
@@ -302,20 +216,14 @@ class SyncReviewsFromCatalyst extends Command
             }
         }
 
-        // Fallback: Find by title and fund_id
-        // Title is stored as JSON, so we need to search within the JSON structure
         if ($title) {
-            // Normalize the search title for fuzzy matching
             $normalizedTitle = preg_replace('/[^a-z0-9]/i', '', strtolower(trim($title)));
 
-            // 1) Try within the given fund
+            // 1) Within fund
             $proposal = Proposal::where('fund_id', $fundId)
                 ->where(function ($query) use ($title, $normalizedTitle) {
-                    // Exact match on JSON 'en'
                     $query->whereRaw("title->>'en' = ?", [$title])
-                        // Case-insensitive contains
                         ->orWhereRaw("LOWER(title->>'en') ILIKE ?", ['%'.strtolower($title).'%'])
-                        // Normalized equality (remove punctuation/whitespace)
                         ->orWhereRaw(
                             "regexp_replace(LOWER(title->>'en'), '[^a-z0-9]', '', 'g') = ?",
                             [$normalizedTitle]
@@ -327,7 +235,7 @@ class SyncReviewsFromCatalyst extends Command
                 return $proposal;
             }
 
-            // 2) Broaden search across all funds (in case the provided fund_id doesn't match)
+            // 2) Any fund (last resort)
             $proposal = Proposal::where(function ($query) use ($title, $normalizedTitle) {
                 $query->whereRaw("title->>'en' = ?", [$title])
                     ->orWhereRaw("LOWER(title->>'en') ILIKE ?", ['%'.strtolower($title).'%'])
@@ -357,7 +265,6 @@ class SyncReviewsFromCatalyst extends Command
                 ->first();
 
             if (! $discussion) {
-                // Avoid mass-assignment by setting attributes explicitly
                 $discussion = new Discussion;
                 $discussion->model_type = Proposal::class;
                 $discussion->model_id = $proposal->id;
@@ -367,7 +274,7 @@ class SyncReviewsFromCatalyst extends Command
                 $discussion->save();
             }
 
-            $discussions[$key] = $discussion;
+            $discussions[$template['title']] = $discussion;
         }
 
         return $discussions;
@@ -379,7 +286,6 @@ class SyncReviewsFromCatalyst extends Command
         ?string $content,
         array $reviewData
     ): Review {
-        // Use 'pending' for moderated reviews (needs further action), 'published' for approved
         $status = ($reviewData['moderated'] ?? false) ? 'pending' : 'published';
         $createdAt = isset($reviewData['created_at'])
             ? Carbon::parse($reviewData['created_at'])
@@ -388,18 +294,16 @@ class SyncReviewsFromCatalyst extends Command
             ? Carbon::parse($reviewData['updated_at'])
             : now();
 
-        // Check if review already exists for this discussion + reviewer
         $review = Review::where('model_type', Discussion::class)
             ->where('model_id', $discussion->id)
             ->where('reviewer_id', $reviewer->id)
             ->first();
 
         if ($review) {
-            $review->update([
-                'content' => $content ?? '',
-                'status' => $status,
-                'updated_at' => $updatedAt,
-            ]);
+            $review->content = $content ?? '';
+            $review->status = $status;
+            $review->updated_at = $updatedAt;
+            $review->save();
         } else {
             $review = Review::create([
                 'model_type' => Discussion::class,
@@ -420,7 +324,6 @@ class SyncReviewsFromCatalyst extends Command
         Review $review,
         int $ratingValue
     ): Rating {
-        // Check if rating already exists for this review
         $rating = Rating::where('review_id', $review->id)
             ->where('model_type', Discussion::class)
             ->where('model_id', $discussion->id)
@@ -430,7 +333,6 @@ class SyncReviewsFromCatalyst extends Command
             $rating->rating = $ratingValue;
             $rating->save();
         } else {
-            // Avoid mass-assignment by setting attributes explicitly
             $rating = new Rating;
             $rating->model_type = Discussion::class;
             $rating->model_id = $discussion->id;
