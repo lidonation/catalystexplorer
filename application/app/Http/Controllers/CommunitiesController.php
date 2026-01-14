@@ -442,9 +442,9 @@ class CommunitiesController extends Controller
         $this->currentPage = (int) $request->query(CommunitySearchParams::PAGE()->value) ?? 1;
     }
 
-    public function connections(Request $request, int $id): array
+    public function connections(Request $request, string $uuid): array
     {
-        $community = Community::findOrFail($id);
+        $community = Community::findOrFail($uuid);
 
         $connections = $community->getConnectionsData($request);
 

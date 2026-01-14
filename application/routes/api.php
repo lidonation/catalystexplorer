@@ -30,9 +30,9 @@ Route::as('api.')->group(function () {
     Route::get('/', fn() => Inertia::render(component: 'ComingSoon', props: ['context' => 'API']))->name('index');
 
     Route::get('/groups', [GroupController::class, 'groups'])->name('groups');
+    Route::get('/groups/incremental-connections', [GroupController::class, 'incrementalConnections'])->name('groups.incremental-connections');
     Route::get('/groups/{group:id}', [GroupController::class, 'group'])->name('group');
     Route::get('/groups/{uuid}/connections', [GroupController::class, 'connections'])->name('groups.connections');
-    Route::get('/groups/incremental-connections', [GroupController::class, 'incrementalConnections'])->name('groups.incremental-connections');
     Route::get('catalyst-profiles/incremental-connections', [CatalystProfilesController::class, 'incrementalConnections'])->name('catalystProfiles.incremental-connections');
     Route::get('ideascale-profiles/incremental-connections', [IdeascaleProfilesController::class, 'incrementalConnections'])->name('ideascaleProfiles.incremental-connections');
     Route::get('/choices', [VoterHistoriesController::class, 'getChoices'])->name('choices');
@@ -85,10 +85,10 @@ Route::as('api.')->group(function () {
     })->name('test');
 
     Route::get('/communities', [CommunityController::class, 'communities'])->name('communities');
+    Route::get('/communities/incremental-connections', [CommunitiesController::class, 'incrementalConnections'])->name('communities.incremental-connections');
     Route::get('/communities/{community:id}', [CommunitiesController::class, 'community'])->name('community');
 
     Route::get('/communities/{uuid}/connections', [CommunitiesController::class, 'connections'])->name('communities.connections');
-    Route::get('/communities/incremental-connections', [CommunitiesController::class, 'incrementalConnections'])->name('communities.incremental-connections');
     Route::post('/communities/{uuid}/join', [CommunitiesController::class, 'join'])->name('community.join');
 
     Route::get('/proposal-charts-metrics', [ProposalsController::class, 'getProposalMetrics'])
