@@ -208,7 +208,7 @@ services:
       timeout: 5s
   # meilisearch
   catalystexplorer-search:
-    image: getmeili/meilisearch:v1.31.0
+    image: getmeili/meilisearch:v1.32.1
     container_name: catalystexplorer-search
     logging: *default-logging
     ports:

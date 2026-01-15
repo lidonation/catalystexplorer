@@ -67,7 +67,7 @@ final class ProposalSearchParams extends Enum
             'BUDGETS' => 'b',
             'CATEGORIES' => 'cat',
             'CAMPAIGNS' => 'cam',
-            'CATALYST_PROFILES' => 'cp_profiles',
+            'CATALYST_PROFILES' => 'cap',
             'COHORT' => 'coh',
             'COMMUNITIES' => 'com',
             'CHART_OPTIONS' => 'co',

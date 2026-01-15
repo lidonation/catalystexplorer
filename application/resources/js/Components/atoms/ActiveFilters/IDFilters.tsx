@@ -8,7 +8,8 @@ import labels from './FiltersLabel';
 type LabelKeys = keyof typeof labels;
 
 const domainMap: Record<string, string> = {
-    [ParamsEnum.IDEASCALE_PROFILES]: 'ideascale-profiles',
+    [ParamsEnum.CATALYST_PROFILES]: 'catalystProfiles.index',
+    [ParamsEnum.IDEASCALE_PROFILES]: 'ideascaleProfiles.index',
     [ParamsEnum.PROPOSALS]: 'proposals',
     [ParamsEnum.REVIEWER_IDS]: 'reviewers',
     [ParamsEnum.FUNDS]: 'funds',

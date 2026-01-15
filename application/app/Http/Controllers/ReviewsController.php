@@ -106,6 +106,7 @@ class ReviewsController extends Controller
             ProposalSearchParams::SORTS()->value => 'string|nullable',
             ProposalSearchParams::GROUPS()->value => 'array|nullable',
             ProposalSearchParams::IDEASCALE_PROFILES()->value => 'array|nullable',
+            ProposalSearchParams::CATALYST_PROFILES()->value => 'array|nullable',
         ]);
 
         $this->filters = $this->queryParams;
@@ -214,9 +215,24 @@ class ReviewsController extends Controller
             $filters[] = "proposal.groups.hash IN [{$groupHashes}]";
         }
 
+        // Handle profile filters with OR logic when both types are present
+        $profileFilters = [];
         if (! empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
             $ideascaleProfileHashes = implode(',', $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value]);
-            $filters[] = "proposal.ideascale_profiles.hash IN [{$ideascaleProfileHashes}]";
+            $profileFilters[] = "proposal.ideascale_profiles.id IN [{$ideascaleProfileHashes}]";
+        }
+        if (! empty($this->queryParams[ProposalSearchParams::CATALYST_PROFILES()->value])) {
+            $catalystProfileHashes = implode(',', $this->queryParams[ProposalSearchParams::CATALYST_PROFILES()->value]);
+            $profileFilters[] = "proposal.catalyst_profiles.id IN [{$catalystProfileHashes}]";
+        }
+        if (! empty($profileFilters)) {
+            if (count($profileFilters) > 1) {
+                // Multiple profile types - use OR logic
+                $filters[] = '('.implode(' OR ', $profileFilters).')';
+            } else {
+                // Single profile type - add directly
+                $filters[] = $profileFilters[0];
+            }
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::PROPOSALS()->value])) {
