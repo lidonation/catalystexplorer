@@ -295,16 +295,38 @@ class ProposalsController extends Controller
                                 )->onEachSide(0);
                             }
 
+                            // Load the necessary relationships
+                            $reviews->load(['reviewer.claimedBy', 'reviewer.reputation_scores', 'rating', 'proposal.fund']);
+
                             $reviewsData = $reviews->map(function ($review) {
                                 return [
-                                    'hash' => $review->id,
+                                    'id' => $review->id,
                                     'parent_id' => $review->parent_id,
                                     'title' => $review->title,
                                     'content' => $review->content,
                                     'status' => $review->status ?? 'published',
-                                    'rating' => null,
-                                    'proposal' => null,
-                                    'reviewer' => null,
+                                    'rating' => $review->rating ? [
+                                        'rating' => $review->rating->rating,
+                                    ] : null,
+                                    'proposal' => $review->proposal ? [
+                                        'id' => $review->proposal->id,
+                                        'title' => $review->proposal->title,
+                                        'link' => $review->proposal->link,
+                                        'fund' => $review->proposal->fund ? [
+                                            'title' => $review->proposal->fund->title,
+                                            'slug' => $review->proposal->fund->slug,
+                                        ] : null,
+                                    ] : null,
+                                    'reviewer' => $review->reviewer ? [
+                                        'id' => $review->reviewer->id,
+                                        'catalyst_reviewer_id' => $review->reviewer->catalyst_reviewer_id,
+                                        'reviews_count' => $review->reviewer->reviews_count,
+                                        'avg_reputation_score' => $review->reviewer->avg_reputation_score,
+                                        'claimed_by' => $review->reviewer->claimed_by ? [
+                                            'name' => $review->reviewer->claimed_by->name,
+                                        ] : null,
+                                        'reputation_scores' => $review->reviewer->reputation_scores,
+                                    ] : null,
                                     'ranking_total' => $review->ranking_total ?? 0,
                                     'positive_rankings' => $review->positive_rankings ?? 0,
                                     'negative_rankings' => $review->negative_rankings ?? 0,

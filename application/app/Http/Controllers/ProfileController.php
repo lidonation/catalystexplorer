@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\DataTransferObjects\ReviewData;
+use App\Models\CatalystProfile;
 use App\Models\Community;
 use App\Models\IdeascaleProfile;
 use App\Models\Location;
+use App\Models\Pivot\ClaimedProfile;
 use App\Models\User;
 use App\Repositories\IdeascaleProfileRepository;
 use App\Repositories\ReviewRepository;
@@ -345,8 +347,11 @@ class ProfileController extends Controller
         $cacheKey = "user:{$userId}:communities";
 
         $communities = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($userId) {
-
-            $ideascaleProfileIDs = IdeascaleProfile::where('claimed_by_uuid', $userId)->pluck('id')->toArray();
+            // Get claimed Ideascale profiles using polymorphic relationship
+            $ideascaleProfileIDs = ClaimedProfile::where('user_id', $userId)
+                ->where('claimable_type', IdeascaleProfile::class)
+                ->pluck('claimable_id')
+                ->toArray();
 
             return Community::query()
                 ->whereRelation('ideascale_profiles', fn ($p) => $p->whereIn('ideascale_profiles.id', $ideascaleProfileIDs))
@@ -371,22 +376,64 @@ class ProfileController extends Controller
         [
             'aggregatedRatings' => $aggregatedRatings,
             'reviews' => $reviews,
-            'ideascaleProfileHashes' => $ideascaleProfileHashes,
+            'totalReviews' => $totalReviews,
+            'ideascaleProfileIds' => $ideascaleProfileIds,
+            'catalystProfileIds' => $catalystProfileIds,
+            'profileHashes' => $profileHashes,
         ] = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($userId, $reviewRepository) {
-            $ideascaleProfile = IdeascaleProfile::where('claimed_by_uuid', $userId)->get()
-                ->map(fn ($p) => $p->hash);
+            $claimedProfiles = ClaimedProfile::where('user_id', $userId)
+                ->with('claimable')
+                ->get();
 
-            $ideascaleProfileHashes = implode(',', $ideascaleProfile->toArray());
+            $ideascaleProfileIds = [];
+            $catalystProfileIds = [];
+
+            foreach ($claimedProfiles as $claimedProfile) {
+                if ($claimedProfile->claimable_type === IdeascaleProfile::class) {
+                    $ideascaleProfileIds[] = $claimedProfile->claimable_id;
+                } elseif ($claimedProfile->claimable_type === CatalystProfile::class) {
+                    $catalystProfileIds[] = $claimedProfile->claimable_id;
+                }
+            }
+
+            $allProfileIds = array_merge($ideascaleProfileIds, $catalystProfileIds);
+            $profileHashes = implode(',', $allProfileIds);
+
+            // If no claimed profiles, return empty results
+            if (empty($allProfileIds)) {
+                return [
+                    'aggregatedRatings' => collect(),
+                    'reviews' => [],
+                    'totalReviews' => 0,
+                    'ideascaleProfileIds' => [],
+                    'catalystProfileIds' => [],
+                    'profileHashes' => '',
+                ];
+            }
+
+            $filterParts = [];
+            if (! empty($ideascaleProfileIds)) {
+                $ideascaleHashes = implode(',', $ideascaleProfileIds);
+                $filterParts[] = "proposal.ideascale_profiles.id IN [{$ideascaleHashes}]";
+            }
+            if (! empty($catalystProfileIds)) {
+                $catalystHashes = implode(',', $catalystProfileIds);
+                $filterParts[] = "proposal.catalyst_profiles.id IN [{$catalystHashes}]";
+            }
+
+            $filter = ! empty($filterParts) ? '('.implode(' OR ', $filterParts).')' : '';
 
             $args = [
-                'filter' => ["proposal.ideascale_profiles.hash IN [{$ideascaleProfileHashes}]"],
+                'filter' => [$filter],
             ];
 
             /**
              * @var \Laravel\Scout\Builder
              */
             $builder = $reviewRepository->search('', $args);
-            $reviews = $builder->raw()['hits'] ?? [];
+            $rawResults = $builder->raw();
+            $reviews = $rawResults['hits'] ?? [];
+            $totalReviews = $rawResults['estimatedTotalHits'] ?? $rawResults['nbHits'] ?? count($reviews);
 
             $ratings = collect($reviews)->map(fn ($p) => $p['rating'])->groupBy('rating');
             $aggregatedRatings = $ratings->mapWithKeys(fn ($r, $k) => [$k => $r->count()]);
@@ -394,7 +441,10 @@ class ProfileController extends Controller
             return [
                 'aggregatedRatings' => $aggregatedRatings,
                 'reviews' => $reviews,
-                'ideascaleProfileHashes' => $ideascaleProfileHashes,
+                'totalReviews' => $totalReviews,
+                'ideascaleProfileIds' => $ideascaleProfileIds,
+                'catalystProfileIds' => $catalystProfileIds,
+                'profileHashes' => $profileHashes,
             ];
         });
 
@@ -403,12 +453,13 @@ class ProfileController extends Controller
             'reviews' => Inertia::optional(
                 fn () => to_length_aware_paginator(
                     ReviewData::collect(collect($reviews)->take(11)),
-                    total: count($reviews),
+                    total: $totalReviews,
                     perPage: 11,
                     currentPage: 1
                 ),
             ),
-            'ideascaleProfileHashes' => [$ideascaleProfileHashes],
+            'ideascaleProfileHashes' => $ideascaleProfileIds,
+            'catalystProfileHashes' => $catalystProfileIds,
         ]);
     }
 }

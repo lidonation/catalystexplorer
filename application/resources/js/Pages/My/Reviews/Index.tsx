@@ -12,12 +12,14 @@ interface MyReviewsProps {
     reviews: PaginatedData<ReviewData[]>;
     aggregatedRatings: { [s: string]: number } | ArrayLike<number>;
     ideascaleProfileHashes: string[];
+    catalystProfileHashes: string[];
 }
 
 export default function MyReviews({
     reviews,
     aggregatedRatings,
     ideascaleProfileHashes,
+    catalystProfileHashes,
 }: MyReviewsProps) {
     const { t } = useLaravelReactI18n();
     const breakpointColumnsObj = {
@@ -42,8 +44,12 @@ export default function MyReviews({
                             <RelatedReviews
                                 reviews={reviews}
                                 routeParam={{
-                                    [ParamsEnum.IDEASCALE_PROFILES]:
-                                        ideascaleProfileHashes,
+                                    ...(ideascaleProfileHashes.length > 0 && {
+                                        [ParamsEnum.IDEASCALE_PROFILES]: ideascaleProfileHashes,
+                                    }),
+                                    ...(catalystProfileHashes.length > 0 && {
+                                        [ParamsEnum.CATALYST_PROFILES]: catalystProfileHashes,
+                                    }),
                                 }}
                             />
                         </div>

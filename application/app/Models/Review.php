@@ -47,7 +47,7 @@ class Review extends Model
             'proposal.title',
             'proposal.id',
             'proposal.fund_id',
-            'proposal.ideascale_profiles.id',
+            'proposal.catalyst_profiles.id',
             'proposal.ideascale_profiles.id',
             'proposal.groups.id',
         ];
@@ -68,6 +68,8 @@ class Review extends Model
             'proposal.id',
             'proposal.fund_id',
             'proposal.content',
+            'proposal.catalyst_profiles.name',
+            'proposal.catalyst_profiles.username',
             'proposal.ideascale_profiles.name',
             'proposal.ideascale_profiles.username',
             'proposal.groups.id',
@@ -206,20 +208,10 @@ class Review extends Model
         }
 
         // Initialize data arrays with safe defaults
-        $modelData = null;
         $discussionData = null;
         $parentData = null;
         $positiveRankingsCount = 0;
         $negativeRankingsCount = 0;
-
-        try {
-            $modelData = $this->model?->toArray();
-        } catch (\Exception $e) {
-            \Log::error('Error loading model for review in toSearchableArray', [
-                'review_id' => $this->id,
-                'error' => $e->getMessage(),
-            ]);
-        }
 
         try {
             $discussionData = $this->discussion?->toArray();
@@ -313,9 +305,13 @@ class Review extends Model
                         'id' => $g->id,
                         'hash' => $g->hash ?? null,
                     ])?->toArray() ?? [],
+                    'catalyst_profiles' => $this->proposal->catalyst_profiles?->map(fn ($p) => [
+                        'id' => $p->id,
+                        'name' => $p->name,
+                        'username' => $p->username,
+                    ])?->toArray() ?? [],
                     'ideascale_profiles' => $this->proposal->ideascale_profiles?->map(fn ($p) => [
                         'id' => $p->id,
-                        'hash' => $p->hash ?? null,
                         'name' => $p->name,
                         'username' => $p->username,
                     ])?->toArray() ?? [],
@@ -331,7 +327,6 @@ class Review extends Model
         return array_merge($array, [
             'model_type' => 'review',
             'reviewer' => $reviewerData,
-            'model' => $modelData,
             'discussion' => $discussionData,
             'parent' => $parentData,
             'children' => $childrenData,

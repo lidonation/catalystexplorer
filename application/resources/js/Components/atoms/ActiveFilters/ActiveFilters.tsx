@@ -20,7 +20,7 @@ export default function ActiveFilters({
     const statusFilters = ['coh', 'fs', 'ps', 'ds', 'c', 'pro', 'tt'];
     const rangeFilters = ['pl', 'b', 'aa', 'au', 'd', 'pr', 'vp', 'r', 'rs'];
     const sortFilters = ['st'];
-    const idFilters = ['t', 'cam', 'com', 'ip', 'g', 'ri', 'f'];
+    const idFilters = ['t', 'cam', 'com', 'cap', 'ip', 'g', 'ri', 'f'];
     const booleanFilters = ['op', 'h'];
 
     return (
