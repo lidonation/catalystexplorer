@@ -75,11 +75,14 @@ export default function FundingProgressWidget({
             <ProposalMetadataWidgetSection
                 label={t('campaigns.remaining')}
                 value={
-                    amountRemaining
-                        ? currency(amountRemaining, 2, proposal.currency)
-                        : '-'
+                    proposal?.schedule?.status === 'in_progress'
+                        ? '-'
+                        : amountRemaining > 0
+                          ? currency(amountRemaining, 2, proposal.currency)
+                          : '-'
                 }
             />
+
             <ProposalMetadataWidgetSection
                 label={t('charts.percentage')}
                 value={`${percentageFunded.toFixed(2)}%`}
