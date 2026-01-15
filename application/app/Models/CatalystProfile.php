@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Concerns\HasCatalystProposers;
+use App\Concerns\HasConnections;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Laravel\Scout\Searchable;
@@ -15,7 +16,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class CatalystProfile extends Model implements HasMedia
 {
-    use HasCatalystProposers, HasUuids, InteractsWithMedia, Searchable;
+    use HasCatalystProposers, HasConnections, HasUuids, InteractsWithMedia, Searchable;
 
     public $guarded = [];
 

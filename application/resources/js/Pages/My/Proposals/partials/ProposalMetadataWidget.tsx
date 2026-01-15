@@ -133,23 +133,6 @@ export default function ProposalMetadataWidget({
                                 </Paragraph>
                             </a>
                         )}
-                        {proposal?.schedule?.milestones && (
-                            <a
-                               href={`${linksEnum.PROPOSAL_MILESTONE_MODULE}${proposal?.schedule?.project_id}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="bg-primary flex items-center justify-center gap-1 rounded-lg px-3 py-2"
-                            >
-
-                                <ProjectCatalystLogo className="text-white" />
-                                <Paragraph className=" text-white">
-                                    {t(
-                                        'proposals.manageProposal.milestoneModule',
-                                    )}
-                                </Paragraph>
-
-                            </a>
-                        )}
                     </div>
                 }
             />
