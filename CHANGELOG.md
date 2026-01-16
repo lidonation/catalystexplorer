@@ -1,3 +1,10 @@
+## [1.67.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.67.0...v1.67.1) (2026-01-15)
+
+
+### Bug Fixes
+
+* fix reviews issues on dashboard ([04e5404](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/04e5404550962226fe090f7715414f7190523638))
+
 # [1.67.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.66.1...v1.67.0) (2026-01-14)
 
 

@@ -104,14 +104,8 @@ export default function ProposalMetadataWidget({
                                 href={proposal?.projectcatalyst_io_link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="bg-primary flex items-center justify-center gap-1 rounded-lg px-3 py-1"
+                                className="bg-primary flex items-center justify-center gap-1 rounded-lg px-3 py-2"
                             >
-                                <ProjectCatalystLogo className="text-white" />
-                                <Paragraph className=" text-white">
-                                    {t(
-                                        'pdf.table.columns.projectCatalystLink',
-                                    )}
-                                </Paragraph>
                                 <ProjectCatalystLogo className="text-white" />
                                 <Paragraph className=" text-white">
                                     {t(
