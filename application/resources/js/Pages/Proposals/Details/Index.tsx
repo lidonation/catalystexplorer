@@ -7,6 +7,7 @@ import { Head } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import ProposalContent from '../Partials/ProposalContent';
 import ProposalLayout from '../ProposalLayout';
+import { useTrackProposalVisit } from '@/useHooks/useTrackVisit';
 import CatalystProfileData = App.DataTransferObjects.CatalystProfileData;
 
 interface IndexProps {
@@ -77,6 +78,13 @@ const Index = ({
             secs.toString().padStart(2, '0'),
         ].join(':');
     };
+
+    useTrackProposalVisit({
+        id: proposal.id,
+        title: proposal.title ?? '',
+        slug: proposal.slug ?? '',
+        fund_label: proposal.fund?.label ?? '',
+    });
 
     return (
         <>

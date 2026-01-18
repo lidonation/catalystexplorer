@@ -23,12 +23,14 @@ use App\Http\Controllers\Api\IdeascaleProfilesController;
 use App\Http\Controllers\Api\CatalystProfilesController;
 use App\Http\Controllers\CardanoBudgetProposalController;
 use App\Http\Controllers\CatalystDrepController;
+use App\Http\Controllers\Api\QuickSearchController;
 use App\Http\Controllers\UserLanguageController;
 use Inertia\Inertia;
 
 Route::as('api.')->group(function () {
     Route::get('/', fn() => Inertia::render(component: 'ComingSoon', props: ['context' => 'API']))->name('index');
-
+    Route::get('/quick-search', QuickSearchController::class)
+    ->name('api.quickSearch');
     Route::get('/groups', [GroupController::class, 'groups'])->name('groups');
     Route::get('/groups/incremental-connections', [GroupController::class, 'incrementalConnections'])->name('groups.incremental-connections');
     Route::get('/groups/{group:id}', [GroupController::class, 'group'])->name('group');

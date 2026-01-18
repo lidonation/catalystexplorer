@@ -39,6 +39,7 @@ import GroupData = App.DataTransferObjects.GroupData;
 import IdeascaleProfileData = App.DataTransferObjects.IdeascaleProfileData;
 import ReviewData = App.DataTransferObjects.ReviewData;
 import RichContent from '@/Components/RichContent.tsx';
+import { useTrackListVisit } from '@/useHooks/useTrackVisit';
 
 type BookmarkCollectionListProps =
     | {
@@ -121,6 +122,13 @@ const BookmarkCollectionPage = (props: BookmarkCollectionPageProps) => {
                 return [{}];
         }
     };
+
+    useTrackListVisit({
+        id: bookmarkCollection.id ?? '',
+        title: bookmarkCollection.title ?? '',
+        type: bookmarkCollection.type ?? '',
+        items_count: bookmarkCollection.items_count ?? 0,
+    });
 
     return (
         <div>
