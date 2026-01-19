@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Http\Integrations\CatalystGateway\CatalystGatewayConnector;
+use App\Http\Integrations\CatalystGateway\Requests\GetDocumentIndexRequest;
 use App\Jobs\SyncDocumentPage;
 use App\Models\Proposal;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class SyncProposalsFromCatalyst extends Command
 {
@@ -99,19 +102,77 @@ class SyncProposalsFromCatalyst extends Command
 
     private function syncBatchDocuments(string $fund, int $batchSize, ?int $limit): void
     {
-        $this->warn('Batch sync functionality requires document discovery implementation.');
-        $this->info('For now, use --document-id to sync specific documents.');
+        $this->info("Starting batch sync for fund: {$fund}");
 
-        // TODO: Implement document discovery via Catalyst Gateway API
-        // This would involve:
-        // 1. Querying the gateway index for documents by fund
-        // 2. Paginating through results
-        // 3. Batching documents for processing
-        // 4. Dispatching SyncDocumentPage jobs
+        $page = 0;
+        $limitPerPage = $batchSize;
+        $connector = new CatalystGatewayConnector;
+        $totalProcessed = 0;
+        $maxRetries = 3;
+        $filters = ['type' => '7808d2ba-d511-40af-84e8-c0d1625fdfdc'];
 
-        $this->info('Example usage:');
-        $this->line('  php artisan proposals:sync-from-catalyst --proposal-id=12345678-1234-1234-1234-123456789abc');
-        $this->line('  php artisan proposals:sync-from-catalyst --document-id=abc123 --fund=fund15');
-        $this->line('  php artisan proposals:sync-from-catalyst --proposal-id=12345678-1234-1234-1234-123456789abc --document-id=def456');
+        do {
+            $this->info("Fetching page {$page} (limit: {$limitPerPage})...");
+
+            $retryCount = 0;
+            $success = false;
+            $body = null;
+            $remaining = 0;
+
+            while (! $success && $retryCount < $maxRetries) {
+                try {
+                    // Use V1 mode by passing version='v1' and page parameter
+                    $request = new GetDocumentIndexRequest(
+                        filters: $filters,
+                        limit: $limitPerPage,
+                        offset: 0, // Ignored in V1
+                        page: $page,
+                        version: 'v1'
+                    );
+                    $response = $connector->send($request);
+
+                    if ($response->failed()) {
+                        throw $response->toException();
+                    }
+
+                    $body = $response->json();
+                    $success = true;
+                } catch (\Exception $e) {
+                    $retryCount++;
+                    $this->warn("Attempt {$retryCount} failed for page {$page}: ".$e->getMessage());
+
+                    if ($retryCount >= $maxRetries) {
+                        Log::error("Failed to fetch page {$page} after {$maxRetries} attempts.", ['exception' => $e]);
+                        $this->error("Failed to fetch page {$page}. Aborting batch sync.");
+
+                        return;
+                    }
+                    sleep(2 * $retryCount);
+                }
+            }
+
+            $docs = $body['docs'] ?? [];
+            $remaining = $body['page']['remaining'] ?? 0;
+
+            if (empty($docs)) {
+                $this->info("No documents found on page {$page}.");
+                break;
+            }
+
+            $docCount = count($docs);
+            $this->info("Dispatching {$docCount} documents from page {$page}");
+
+            SyncDocumentPage::dispatch($docs, $page, $limitPerPage, $fund);
+
+            $totalProcessed += $docCount;
+            $page++;
+
+            if ($limit && $totalProcessed >= $limit) {
+                $this->info("Reached limit of {$limit} documents.");
+                break;
+            }
+        } while ($remaining > 0);
+
+        $this->info("Batch sync dispatched for {$totalProcessed} documents.");
     }
 }

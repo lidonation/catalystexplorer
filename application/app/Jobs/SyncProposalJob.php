@@ -49,117 +49,130 @@ class SyncProposalJob implements ShouldQueue
 
     public function handle(): void
     {
-        try {
-            if (! isset($this->proposalDetail->summary) ||
-                ! isset($this->proposalDetail->setup) ||
-                ! isset($this->proposalDetail->setup->title) ||
-                ! isset($this->proposalDetail->setup->proposer)) {
-                throw new \Exception('Proposal data missing required fields: summary, setup, title, or proposer');
-            }
+        // try {
+        if (
+            ! isset($this->proposalDetail->summary) ||
+            ! isset($this->proposalDetail->setup) ||
+            ! isset($this->proposalDetail->setup->title) ||
+            ! isset($this->proposalDetail->setup->proposer)
+        ) {
+            throw new \Exception('Proposal data missing required fields: summary, setup, title, or proposer');
+        }
 
-            $proposalSummary = $this->proposalDetail->summary;
-            $categoryUuid = $this->documentMeta->category_id[0] ?? null;
-            $campaignId = null;
+        $proposalSummary = $this->proposalDetail->summary;
+        $categoryUuid = $this->documentMeta->category_id[0] ?? null;
+        $campaignId = null;
 
-            // Find campaign by category UUID
-            if ($categoryUuid) {
-                $campaign = Campaign::whereHas('metas', function ($query) use ($categoryUuid) {
-                    $query->where('content', 'ilike', "%{$categoryUuid}%");
-                })->first();
-                $campaignId = $campaign?->id;
-            }
-            // Verify campaign exists and belongs to the right fund
-            $campaign = Campaign::where('id', $campaignId)
+        // Find campaign by category UUID
+        if ($categoryUuid) {
+
+            // Use whereRaw to cast the UUID to text for comparison with the polymorphic relation
+            $campaign = Campaign::whereRaw(
+                'exists (select * from "metas" where "metas"."model_id" = "campaigns"."id"::text and "metas"."model_type" = ? and "content" ilike ?)',
+                [Campaign::class, "%{$categoryUuid}%"]
+            )->first();
+            $campaignId = $campaign?->id;
+        }
+
+        // Verify campaign exists and belongs to the right fund
+        $campaign = Campaign::where('id', $campaignId)
+            // ->where('fund_id', $this->fund)
+            ->first();
+
+        if (! $campaign) {
+            throw new \Exception("Campaign not found or doesn't belong to fund {$this->fund}");
+        }
+
+        // Process content from multiple sources
+        $content = $this->processContent(
+            $this->proposalDetail->details ?? [],
+            $this->proposalDetail->campaign_category->category_questions ?? [],
+            $this->proposalDetail->pitch ?? []
+        );
+
+        $title = $this->proposalDetail->setup->title->title ?? 'Untitled';
+        $fundNumber = $this->getFundNumber($this->fund);
+        $slug = Str::slug($title.'-f'.$fundNumber);
+
+        // Find existing proposal by document ID first, then by slug
+        $proposal = null;
+
+        if ($this->documentId) {
+            // Use whereRaw to cast the UUID to text for comparison with the polymorphic relation
+            $proposal = Proposal::whereRaw(
+                'exists (select * from "metas" where "metas"."model_id" = "proposals"."id"::text and "metas"."model_type" = ? and "key" = ? and "content" = ?)',
+                [Proposal::class, 'catalyst_document_id', $this->documentId]
+            )->first();
+        }
+
+        if (! $proposal) {
+            $proposal = Proposal::where('slug', $slug)
                 ->where('fund_id', $this->fund)
                 ->first();
-
-            if (! $campaign) {
-                throw new \Exception("Campaign not found or doesn't belong to fund {$this->fund}");
-            }
-
-            // Process content from multiple sources
-            $content = $this->processContent(
-                $this->proposalDetail->details ?? [],
-                $this->proposalDetail->campaign_category->category_questions ?? [],
-                $this->proposalDetail->pitch ?? []
-            );
-
-            $title = $this->proposalDetail->setup->title->title ?? 'Untitled';
-            $fundNumber = $this->getFundNumber($this->fund);
-            $slug = Str::slug($title.'-f'.$fundNumber);
-
-            // Find existing proposal by document ID first, then by slug
-            $proposal = null;
-
-            if ($this->documentId) {
-                $proposal = Proposal::whereHas('metas', function ($query) {
-                    $query->where('key', 'catalyst_document_id')
-                        ->where('content', $this->documentId);
-                })->first();
-            }
-
-            if (! $proposal) {
-                $proposal = Proposal::where('slug', $slug)
-                    ->where('fund_id', $this->fund)
-                    ->first();
-            }
-
-            if (! $proposal) {
-                throw new \Exception("Proposal not found. Document ID: {$this->documentId}, Slug: {$slug}, Fund: {$this->fund}");
-            }
-
-            $data = [
-                'title' => ['en' => $title],
-                'problem' => ['en' => $proposalSummary->problem->statement ?? ''],
-                'solution' => ['en' => $proposalSummary->solution->summary ?? ''],
-                'content' => ['en' => $content],
-                'amount_requested' => $proposalSummary->budget->requestedFunds ?? 0,
-                'campaign_id' => $campaign->id,
-                'slug' => $slug,
-                'project_length' => $proposalSummary->time->duration ?? null,
-                'opensource' => $proposalSummary->open_source->isOpenSource ?? false,
-                'updated_at' => now(),
-            ];
-
-            $shouldUpdate = true;
-
-            if ($this->documentVersion) {
-                $existingVersion = $proposal->getMeta('catalyst_document_version');
-                if ($existingVersion) {
-                    $shouldUpdate = $this->isNewerUuidV7($this->documentVersion, $existingVersion);
-                }
-            }
-
-            if ($shouldUpdate) {
-                $proposal->update($data);
-                $this->proposalId = $proposal->id;
-                Log::info('Updated existing proposal', ['id' => $this->proposalId]);
-            } else {
-                throw new \Exception('Proposal sync skipped - existing version is newer or equal (existing: '.($existingVersion ?? 'none').', incoming: '.($this->documentVersion ?? 'none').')');
-            }
-
-            // Process comprehensive metadata, tags, and author
-            $this->processMetas(
-                $this->proposalDetail->setup->proposer->type ?? null
-            );
-
-            $this->processPrimaryAuthor($this->proposalDetail->setup->proposer ?? null, $this->signatures);
-
-            $this->processTags($this->proposalDetail->theme->theme->grouped_tag ?? []);
-
-            // Process and extract web links from proposal content and metadata
-            $this->processLinks($content, $this->proposalDetail);
-
-            // Generate projectcatalyst.io link if we have the necessary data
-            $this->generateProjectCatalystLink($proposal, $campaign, $fundNumber);
-
-        } catch (\Throwable $e) {
-            Log::error('Error syncing proposal: '.$e->getMessage(), [
-                'document_id' => $this->documentId,
-                'trace' => $e->getTraceAsString(),
-            ]);
-            throw $e;
         }
+
+        $data = [
+            'title' => ['en' => $title],
+            'problem' => ['en' => $proposalSummary->problem->statement ?? ''],
+            'solution' => ['en' => $proposalSummary->solution->summary ?? ''],
+            'content' => ['en' => $content],
+            'amount_requested' => $proposalSummary->budget->requestedFunds ?? 0,
+            'campaign_id' => $campaign->id,
+            'slug' => $slug,
+            'fund_id' => $this->fund,
+            'project_length' => $proposalSummary->time->duration ?? null,
+            'opensource' => $proposalSummary->open_source->isOpenSource ?? false,
+            'updated_at' => now(),
+            'status' => 'pending',
+        ];
+
+        if ($this->documentVersion && $proposal) {
+            $existingVersion = $proposal->getMeta('catalyst_document_version');
+            if ($existingVersion) {
+                $shouldUpdate = $this->isNewerUuidV7($this->documentVersion, $existingVersion);
+            }
+        }
+
+        if (! $proposal) {
+            $proposal = Proposal::create($data);
+            $this->proposalId = $proposal->id;
+            Log::info('Created new proposal', ['id' => $this->proposalId, 'slug' => $slug]);
+        } elseif ($shouldUpdate) {
+            $proposal->update($data);
+            $this->proposalId = $proposal->id;
+            Log::info('Updated existing proposal', ['id' => $this->proposalId]);
+        } else {
+            // Determine if we should throw or just log
+            // If it's just skipping due to version, we probably don't want to fail the job
+            Log::info('Proposal sync skipped - existing version is newer or equal', [
+                'id' => $proposal->id,
+                'existing_version' => $existingVersion ?? 'none',
+                'incoming_version' => $this->documentVersion ?? 'none',
+            ]);
+            $this->proposalId = $proposal->id; // Ensure ID is set for subsequent processing
+        }
+
+        // Process comprehensive metadata, tags, and author
+        $this->processMetas(
+            $this->proposalDetail->setup->proposer->type ?? null
+        );
+
+        $this->processPrimaryAuthor($this->proposalDetail->setup->proposer ?? null, $this->signatures);
+
+        $this->processTags($this->proposalDetail->theme->theme->grouped_tag ?? []);
+
+        // Process and extract web links from proposal content and metadata
+        $this->processLinks($content, $this->proposalDetail);
+
+        // Generate projectcatalyst.io link if we have the necessary data
+        $this->generateProjectCatalystLink($proposal, $campaign, $fundNumber);
+        // } catch (\Throwable $e) {
+        //     Log::error('Error syncing proposal: ' . $e->getMessage(), [
+        //         'document_id' => $this->documentId,
+        //         'trace' => $e->getTraceAsString(),
+        //     ]);
+        //     throw $e;
+        // }
     }
 
     protected function processContent($content, $category_questions, $pitch)
@@ -326,12 +339,44 @@ class SyncProposalJob implements ShouldQueue
             }
 
             if (! $existingProfile) {
-                $existingProfile = CatalystProfile::create([
+                // Parse Catalyst ID
+                $parser = new \App\Services\CatalystIdParser;
+                $parsedId = $parser->parse($signature->kid);
+
+                $username = $parsedId['username'] ?? Str::slug($data->applicant);
+                $name = $data->applicant;
+
+                $profileData = [
                     'id' => (string) Str::uuid(),
-                    'username' => Str::slug($data->applicant),
-                    'name' => $data->applicant,
+                    'username' => $username,
+                    'name' => $name,
                     'catalyst_id' => $signature->kid,
-                ]);
+                ];
+
+                if ($parsedId) {
+                    $profileData['catalyst_keys'] = [
+                        $parsedId,
+                    ];
+                }
+
+                $existingProfile = CatalystProfile::create($profileData);
+            } else {
+                // Update existing profile with new key info if needed
+                $parser = new \App\Services\CatalystIdParser;
+                $parsedId = $parser->parse($signature->kid);
+
+                if ($parsedId) {
+                    $currentKeys = $existingProfile->catalyst_keys ?? [];
+                    // Check if this specific key entry already exists to avoid duplicates
+                    $exists = collect($currentKeys)->contains(function ($key) use ($parsedId) {
+                        return $key['full_id'] === $parsedId['full_id'];
+                    });
+
+                    if (! $exists) {
+                        $currentKeys[] = $parsedId;
+                        $existingProfile->update(['catalyst_keys' => $currentKeys]);
+                    }
+                }
             }
 
             // Link profile to proposal
@@ -497,7 +542,6 @@ class SyncProposalJob implements ShouldQueue
             } else {
                 $proposal->links()->detach();
             }
-
         } catch (\Throwable $e) {
             Log::error('processLinks failed', [
                 'proposal_id' => $this->proposalId,
@@ -710,7 +754,6 @@ class SyncProposalJob implements ShouldQueue
             $normalizedUrl = $scheme.'://'.$host.$port.$path.$query.$fragment;
 
             return $normalizedUrl;
-
         } catch (\Throwable $e) {
             // If parsing fails, return original URL
             return $url;
@@ -814,7 +857,6 @@ class SyncProposalJob implements ShouldQueue
             }
 
             return $link;
-
         } catch (\Throwable $e) {
             Log::warning('Failed to create/update link', [
                 'url' => $urlData['url'] ?? 'unknown',
@@ -904,7 +946,6 @@ class SyncProposalJob implements ShouldQueue
                     'fund_number' => $fundNumber,
                 ]);
             }
-
         } catch (\Throwable $e) {
             Log::error('Failed to generate projectcatalyst.io link', [
                 'proposal_id' => $proposal->id ?? null,

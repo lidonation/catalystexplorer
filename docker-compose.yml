@@ -173,6 +173,7 @@ services:
         # volume:
           # nocopy: true
       - ./application:/var/www:cached
+      - ./docker/scripts:/scripts
     networks:
       - catalystexplorer-net
       - shared-network

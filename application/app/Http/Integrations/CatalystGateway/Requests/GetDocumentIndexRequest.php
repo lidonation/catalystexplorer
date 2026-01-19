@@ -21,7 +21,9 @@ class GetDocumentIndexRequest extends Request implements HasBody
     public function __construct(
         public array $filters = [],
         public int $limit = 10,
-        public int $offset = 0
+        public int $offset = 0,
+        public int $page = 0,
+        public string $version = 'v2'
     ) {}
 
     /**
@@ -29,7 +31,7 @@ class GetDocumentIndexRequest extends Request implements HasBody
      */
     public function resolveEndpoint(): string
     {
-        return '/v2/document/index';
+        return $this->version === 'v1' ? '/v1/document/index' : '/v2/document/index';
     }
 
     /**
@@ -37,6 +39,13 @@ class GetDocumentIndexRequest extends Request implements HasBody
      */
     protected function defaultQuery(): array
     {
+        if ($this->version === 'v1') {
+            return [
+                'page' => $this->page,
+                'limit' => $this->limit,
+            ];
+        }
+
         return [
             'limit' => $this->limit,
             'offset' => $this->offset,

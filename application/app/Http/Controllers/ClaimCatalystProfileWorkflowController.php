@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\DecodeTransactionMetadataKey10;
+use App\Actions\DecodeCatalystRegistrationMetadata;
 use App\Models\CatalystProfile;
 use App\Models\Proposal;
 use App\Models\Signature;
@@ -80,11 +80,11 @@ class ClaimCatalystProfileWorkflowController extends Controller
             ]);
         }
 
-        $transaction = Transaction::where('stake_key', $signature->stake_key)
+        $transactions = Transaction::where('stake_key', $signature->stake_key)
             ->where('type', 'x509_envelope')
-            ->first();
+            ->get();
 
-        if (! $transaction) {
+        if ($transactions->isEmpty()) {
             return Inertia::render('Workflows/ClaimCatalystProfile/Step3', [
                 'stepDetails' => $this->getStepDetails(),
                 'activeStep' => intval($request->step),
@@ -95,14 +95,22 @@ class ClaimCatalystProfileWorkflowController extends Controller
             ]);
         }
 
-        $metadataArray = json_decode(json_encode($transaction->raw_metadata), true);
+        $catalystProfile = null;
 
-        $decodedData = (new DecodeTransactionMetadataKey10)($metadataArray);
+        foreach ($transactions as $transaction) {
+            $metadataArray = json_decode(json_encode($transaction->raw_metadata), true);
+            $decodedData = (new DecodeCatalystRegistrationMetadata)($metadataArray);
 
-        $catalystId = rtrim($decodedData['catalyst_profile_id'] ?? '', '=');
+            $catalystId = rtrim($decodedData['catalyst_profile_id'] ?? '', '=');
 
-        $catalystProfile = CatalystProfile::where('catalyst_id', 'LIKE', "%{$catalystId}%")
-            ->first();
+            if ($catalystId) {
+                $catalystProfile = CatalystProfile::where('catalyst_id', 'LIKE', "%{$catalystId}%")->first();
+
+                if ($catalystProfile) {
+                    break;
+                }
+            }
+        }
 
         if (! $catalystProfile) {
             return Inertia::render('Workflows/ClaimCatalystProfile/Step3', [
@@ -301,13 +309,5 @@ class ClaimCatalystProfileWorkflowController extends Controller
         $claimedByOthers = $catalystProfile->claimed_by_users()->where('user_id', '!=', $user->id)->exists();
 
         return ! $claimedByOthers || $claimedByCurrentUser;
-    }
-
-    /**
-     * Check if a profile is already claimed using BelongsToMany relationship
-     */
-    private function isProfileClaimed(CatalystProfile $catalystProfile): bool
-    {
-        return $catalystProfile->claimed_by_users()->exists();
     }
 }

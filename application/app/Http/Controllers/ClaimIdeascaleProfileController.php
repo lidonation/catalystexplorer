@@ -113,7 +113,7 @@ class ClaimIdeascaleProfileController extends Controller
         $ideascaleProfile->saveMeta('claim_data', (string) json_encode($request->all()));
         $ideascaleProfile->saveMeta('ideascale_verification_code', $randomCode);
 
-        return to_route('workflows.claimIdeascaleProfile.index', ['step' => 3, 'profile' => $ideascaleProfile->hash]);
+        return to_route('workflows.claimIdeascaleProfile.index', ['step' => 3, 'profile' => $ideascaleProfile->id]);
     }
 
     public function getStepDetails(): Collection

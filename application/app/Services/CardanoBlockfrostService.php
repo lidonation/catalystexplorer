@@ -29,6 +29,11 @@ class CardanoBlockfrostService
         return $request->send();
     }
 
+    /**
+     * Get the JSON decoded body of the response as an array or scalar value.
+     *
+     * @return array<array-key, mixed>
+     */
     public static function queryBlockFrost(string $endpoint)
     {
         $request = new BlockfrostRequest($endpoint);

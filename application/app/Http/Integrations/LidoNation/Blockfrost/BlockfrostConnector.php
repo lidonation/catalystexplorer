@@ -42,7 +42,7 @@ class BlockfrostConnector extends Connector
     {
         if (! $this->isConfigured) {
             Log::error('Attempted to use Blockfrost without proper configuration', [
-                'request_endpoint' => $request->getUri(),
+                'request_endpoint' => $request->resolveEndpoint(),
                 'env_var' => 'BLOCKFROST_PROJECT_ID',
             ]);
 

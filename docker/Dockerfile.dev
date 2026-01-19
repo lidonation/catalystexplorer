@@ -137,7 +137,7 @@ RUN apt-get update; \
     && docker-php-source delete \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
- # Install chromium
+# Install chromium
 RUN npx puppeteer browsers install chrome
 
 ENV CHROME_BIN=/usr/bin/chromium-browser \
@@ -149,10 +149,10 @@ COPY ./scripts /scripts/
 # Install fonts for PDF generation (CJK and Ethiopic support)
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-       fonts-noto-cjk \
-       fonts-noto-core \
-       fonts-noto-extra \
-       fontconfig \
+    fonts-noto-cjk \
+    fonts-noto-core \
+    fonts-noto-extra \
+    fontconfig \
     && fc-cache -f -v \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -161,7 +161,7 @@ RUN mkdir /venv && chown -R 777 /venv
 
 RUN python3 -m venv /venv
 
-RUN /venv/bin/pip install --no-cache-dir blend_modes==2.0.2 numpy==1.26.3 pillow==11.3.0 cbor2 pycose brotli pycardano
+RUN /venv/bin/pip install --no-cache-dir blend_modes==2.0.2 numpy==1.26.3 pillow==11.3.0 cbor2 pycose brotli pycardano zstandard
 
 RUN userdel --remove --force www-data \
     && groupadd --force -g ${WWWGROUP} ${USER} \
