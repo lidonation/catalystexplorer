@@ -23,7 +23,6 @@ import SearchHintSection from './SearchHintSection';
 import { router, usePage } from '@inertiajs/react';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 
-// Modal dimensions
 const MODAL_WIDTH = 600;
 const MODAL_MOBILE_MARGIN = 16;
 const MODAL_MAX_HEIGHT_VH = 85;

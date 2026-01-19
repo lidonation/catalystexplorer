@@ -25,7 +25,6 @@ export default function SearchResultsSection({
     const prefersReducedMotion = useReducedMotion();
     const [hasSearchedOnce, setHasSearchedOnce] = useState(false);
 
-    // Track previous results for smooth transitions
     const previousResultsRef = useRef(results);
     useEffect(() => {
         previousResultsRef.current = results;
@@ -114,7 +113,6 @@ export default function SearchResultsSection({
         }
     }, [query]);
 
-    // Loading state with animation
     if (isLoading && !hasSearchedOnce) {
         return (
             <AnimatePresence mode="wait">
