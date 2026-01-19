@@ -52,9 +52,7 @@ export default function GlobalSearchTrigger({
 
         if (isVisible && elementRef.current) {
             registerTrigger(elementRef.current);
-        } else {
-            registerTrigger(null);
-        }
+        } 
     }, [isVisible, shouldRegister, registerTrigger]);
 
     const triggerRef = useCallback((element: HTMLElement | null) => {
