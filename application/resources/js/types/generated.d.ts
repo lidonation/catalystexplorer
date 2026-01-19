@@ -601,6 +601,22 @@ rating: number;
 review_id: string;
 model_id: string;
 };
+export type RecentlyVisitedListData = {
+id: string;
+title: string;
+slug: string;
+fund_label?: string;
+visited_at: number;
+visit_count: number;
+};
+export type RecentlyVisitedProposalData = {
+id: string;
+title: string;
+slug: string;
+fund_label?: string;
+visited_at: number;
+visit_count: number;
+};
 export type ReviewData = {
 id: string | null;
 parent_id?: number;
