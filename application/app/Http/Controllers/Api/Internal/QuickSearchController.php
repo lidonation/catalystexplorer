@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Internal;
 
 use App\Http\Controllers\Controller;
-use App\Models\BookmarkCollection;
 use App\Repositories\BookmarkCollectionRepository;
 use App\Repositories\ProposalRepository;
 use Illuminate\Http\JsonResponse;
@@ -54,6 +53,8 @@ class QuickSearchController extends Controller
                     'title' => $hit['title'] ?? '',
                     'slug' => $hit['slug'] ?? '',
                     'fund_label' => $hit['fund']['label'] ?? null,
+                    'amount_requested' => $hit['amount_requested'] ?? null,
+                    'currency' => $hit['currency'] ?? null,
                 ];
             })
             ->toArray();
@@ -64,15 +65,17 @@ class QuickSearchController extends Controller
     private function searchLists(string $searchTerm): array
     {
         $results = $this->bookmarkCollectionRepository
-            ->searchPublic($searchTerm, self::MAX_RESULTS);
+            ->search($searchTerm)
+            ->raw();
 
-        return collect($results)
-            ->map(function (BookmarkCollection $collection) {
+        return collect($results['hits'] ?? [])
+            ->take(self::MAX_RESULTS)
+            ->map(function ($hit) {
                 return [
-                    'id' => (string) $collection->id,
-                    'title' => $collection->title ?? 'Untitled List',
-                    'type' => $collection->type ?? null,
-                    'items_count' => $collection->items_count ?? 0,
+                    'id' => (string) $hit['id'],
+                    'title' => $hit['title'] ?? 'Untitled List',
+                    'type' => $hit['list_type'] ?? null,
+                    'items_count' => $hit['items_count'] ?? 0,
                 ];
             })
             ->toArray();

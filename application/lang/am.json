@@ -1620,5 +1620,9 @@
   "globalSearch.explore.listsDesc": "የተዘጋጁ የሀሳብ ዝርዝሮችን ያግኙ",
   "globalSearch.timeAgo.minutes": "ከ :count ደቂቃዎች በፊት",
   "globalSearch.timeAgo.hours": "ከ :count ሰዓታት በፊት",
-  "globalSearch.timeAgo.days": "ከ :count ቀናት በፊ"
+  "globalSearch.timeAgo.days": "ከ :count ቀናት በፊ",
+  "globalSearch.searchHint.pressEnter": "ለመፈለግ ኤንተርን ይጫኑ",
+  "globalSearch.searchHint.categories": "ሀሳቦች፣ ዝርዝሮች፣ መገለጫዎች፣ ቡድኖች፣ ግምገማዎች፣ እና አገናኞች",
+  "globalSearch.searchHint.searchIn": "በ :categories ፈልግ",
+  "globalSearch.searchHint.enterKey": "Enter"
 }

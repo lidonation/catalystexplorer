@@ -1789,5 +1789,9 @@
     "globalSearch.explore.listsDesc": "Kuratierte Vorschlagslisten entdecken",
     "globalSearch.timeAgo.minutes": "vor :count Min.",
     "globalSearch.timeAgo.hours": "vor :count Std.",
-    "globalSearch.timeAgo.days": "vor :count T."
+    "globalSearch.timeAgo.days": "vor :count T.",
+    "globalSearch.searchHint.pressEnter": "Drücken Sie die Eingabetaste, um zu suchen in",
+    "globalSearch.searchHint.categories": "Vorschläge, Listen, Profile, Gruppen, Bewertungen und Links",
+    "globalSearch.searchHint.searchIn": "Suchen in :categories",
+    "globalSearch.searchHint.enterKey": "Eingabe"
 }

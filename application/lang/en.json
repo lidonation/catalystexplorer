@@ -1872,5 +1872,9 @@
     "globalSearch.explore.listsDesc": "Discover curated proposal lists",
     "globalSearch.timeAgo.minutes": ":count m ago",
     "globalSearch.timeAgo.hours": ":count h ago",
-    "globalSearch.timeAgo.days": ":count d ago"
+    "globalSearch.timeAgo.days": ":count d ago",
+    "globalSearch.searchHint.pressEnter": "Press Enter to search in",
+    "globalSearch.searchHint.categories": "Proposals, Lists, Profiles, Groups, Reviews, and Links",
+    "globalSearch.searchHint.searchIn": "Search in :categories",
+    "globalSearch.searchHint.enterKey": "Enter"
 }
