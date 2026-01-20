@@ -77,6 +77,9 @@ class Proposal extends Model implements IHasMetaData
         'currency',
         'quickpitch_thumbnail',
         'is_claimed',
+        'alignment_score',
+        'auditability_score',
+        'feasibility_score',
     ];
 
     public $meiliIndexName = 'cx_proposals';
@@ -309,6 +312,27 @@ class Proposal extends Model implements IHasMetaData
     {
         return Attribute::make(
             get: fn ($value) => ($this->schedule?->funds_distributed ?? $value)
+        );
+    }
+
+    public function feasibilityScore(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => ($this->meta_info?->feasibility_score ?? $value)
+        );
+    }
+
+    public function alignmentScore(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => ($this->meta_info?->alignment_score ?? $value)
+        );
+    }
+
+    public function auditabilityScore(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => ($this->meta_info?->auditability_score ?? $value)
         );
     }
 
@@ -713,6 +737,9 @@ class Proposal extends Model implements IHasMetaData
                 ->filter(fn ($profile) => ! is_null($profile->claimed_by_uuid))
                 ->pluck('id')
                 ->toArray(),
+            'alignment_score' => $this->alignment_score,
+            'auditability_score' => $this->auditability_score,
+            'feasibility_score' => $this->feasibility_score,
         ]);
     }
 
