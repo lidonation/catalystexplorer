@@ -116,13 +116,17 @@ export default function GlobalSearchModal() {
             };
         }
 
+        const triggerCenterX = triggerRect.left + (triggerRect.width / 2);
+        const modalLeft = triggerCenterX - (modalWidth / 2);
+
         return {
             top: triggerRect.top,
-            left: triggerRect.left,
+            left: modalLeft,
             x: 0,
             width: modalWidth,
             initialWidth: triggerRect.width,
             initialHeight: triggerRect.height,
+            triggerCenterX,
         };
     }, [triggerRect, isMobile, modalWidth]);
 
@@ -139,7 +143,7 @@ export default function GlobalSearchModal() {
     }), [prefersReducedMotion]);
 
     const modalVariants = useMemo((): Variants => {
-      
+
         if (prefersReducedMotion) {
             return {
                 hidden: { opacity: 0, scale: 1, y: 0, width: modalWidth, height: 'auto' },
@@ -222,7 +226,7 @@ export default function GlobalSearchModal() {
 
     const handleEnterSearch = useCallback(() => {
         if (query.trim().length === 0) {
-            return; 
+            return;
         }
 
         closeSearch();
@@ -233,12 +237,20 @@ export default function GlobalSearchModal() {
     }, [query, closeSearch]);
 
     const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-        if (e.key !== 'Enter') return;
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            e.stopPropagation();
+            closeSearch();
+            return;
+        }
 
-        e.preventDefault();
-        e.stopPropagation();
-        handleEnterSearch();
-    }, [handleEnterSearch]);
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            e.stopPropagation();
+            handleEnterSearch();
+            return;
+        }
+    }, [handleEnterSearch, closeSearch]);
 
     // Compute style for positioning
     const modalStyle = useMemo(() => {
@@ -251,12 +263,15 @@ export default function GlobalSearchModal() {
             };
         }
 
+        const triggerCenterX = triggerRect.left + (triggerRect.width / 2);
+        const modalLeft = triggerCenterX - (modalWidth / 2);
+
         return {
             top: triggerRect.top,
-            left: triggerRect.left,
+            left: modalLeft,
             maxHeight: `${MODAL_MAX_HEIGHT_VH}vh`,
         };
-    }, [triggerRect, modalPosition]);
+    }, [triggerRect, modalPosition, modalWidth]);
 
     // Handle viewport edge cases
     const adjustedStyle = useMemo(() => {
@@ -281,13 +296,18 @@ export default function GlobalSearchModal() {
             return modalStyle;
         }
 
-        let adjustedLeft = triggerRect.left;
+        const triggerCenterX = triggerRect.left + (triggerRect.width / 2);
+        let adjustedLeft = triggerCenterX - (modalWidth / 2);
         let adjustedTop = triggerRect.top;
 
-        // On mobile, center the modal horizontally but keep vertical position from trigger
+        // On mobile, center the modal horizontally
         if (isMobile) {
             adjustedLeft = MODAL_MOBILE_MARGIN;
         } else {
+          
+            if (adjustedLeft < 16) {
+                adjustedLeft = 16;
+            }
             // Prevent modal from going off right edge (desktop)
             if (adjustedLeft + modalWidth > viewportWidth - 16) {
                 adjustedLeft = Math.max(16, viewportWidth - modalWidth - 16);
@@ -324,7 +344,14 @@ export default function GlobalSearchModal() {
                         />
 
                         {/* Animated Modal Content */}
-                        <DialogPrimitive.Content asChild forceMount>
+                        <DialogPrimitive.Content 
+                            asChild 
+                            forceMount
+                            onEscapeKeyDown={(e) => {
+                                e.preventDefault();
+                                closeSearch();
+                            }}
+                        >
                             <motion.div
                                 variants={modalVariants}
                                 initial="hidden"
