@@ -6,6 +6,7 @@ namespace App\Console\Commands;
 
 use App\Http\Integrations\CatalystReviews\CatalystReviewsConnector;
 use App\Http\Integrations\CatalystReviews\Requests\GetFilteredProposalReviewsRequest;
+use App\Jobs\SyncCatalystReviewsFromApiJob;
 use App\Models\Discussion;
 use App\Models\Proposal;
 use App\Models\Rating;
@@ -112,7 +113,7 @@ class SyncReviewsFromCatalyst extends Command
             // ASYNC MODE: dispatch a job that will perform API pagination and processing in the queue
             $this->info('Running in ASYNC mode (dispatching API fetch + processing to queue)...');
 
-            \App\Jobs\SyncCatalystReviewsFromApiJob::dispatch(
+            SyncCatalystReviewsFromApiJob::dispatch(
                 fundId: $fundId,
                 pageSize: $pageSize,
                 startPage: $startPage,

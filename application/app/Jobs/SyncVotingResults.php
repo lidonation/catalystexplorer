@@ -151,6 +151,119 @@ class SyncVotingResults implements ShouldQueue
             $this->updateProposalDetails($proposal, $project, $campaignSlug, $this->fundNumber);
         }
 
+        // Save proposal and additional metadata
+        $this->saveAdditionalMetadata($proposal, $votingData);
+
+        // Fetch and save proposal scores from REST API
+        $this->fetchAndSaveProposalScores($proposal);
+    }
+
+    /**
+     * Fetch proposal scores from Project Catalyst REST API and save to metadata
+     */
+    protected function fetchAndSaveProposalScores(Proposal $proposal): void
+    {
+        try {
+            $chainProposalId = $proposal->getMeta('chain_proposal_id');
+
+            if (! $chainProposalId) {
+                Log::debug('Skipping score fetch - no chain_proposal_id found', [
+                    'proposal_id' => $proposal->id,
+                ]);
+
+                return;
+            }
+
+            // Convert fund ID to fund number (e.g., "019a9c61..." -> "14")
+            $fundNumber = $this->fundNumber;
+            $fundId = 'fund'.$fundNumber;
+
+            // Fetch filtered by fund to reduce payload size
+            $response = \Illuminate\Support\Facades\Http::get('https://core.projectcatalyst.io/api/v0/proposals', [
+                'fund' => $fundId,
+            ]);
+
+            if (! $response->successful()) {
+                Log::warning('Failed to fetch proposals from REST API for scores', [
+                    'proposal_id' => $proposal->id,
+                    'status' => $response->status(),
+                ]);
+
+                return;
+            }
+
+            $proposals = json_decode($response->body(), true);
+
+            // Find matching proposal by chain_proposal_id
+            $matchingProposal = collect($proposals)->first(function ($item) use ($chainProposalId) {
+                return ($item['chain_proposal_id'] ?? null) === $chainProposalId;
+            });
+
+            if (! $matchingProposal) {
+                Log::debug('No matching proposal found in REST API by chain_proposal_id', [
+                    'proposal_id' => $proposal->id,
+                    'chain_proposal_id' => $chainProposalId,
+                ]);
+
+                return;
+            }
+
+            // Parse proposal_files_url to extract scores
+            if (! isset($matchingProposal['proposal_files_url'])) {
+                Log::debug('No proposal_files_url found in REST API data', [
+                    'proposal_id' => $proposal->id,
+                    'chain_proposal_id' => $chainProposalId,
+                ]);
+
+                return;
+            }
+
+            // Fix potential single quotes in JSON
+            $jsonString = str_replace("'", '"', $matchingProposal['proposal_files_url']);
+            $scores = json_decode($jsonString, true);
+
+            if (! $scores) {
+                Log::debug('Failed to decode proposal_files_url JSON', [
+                    'proposal_id' => $proposal->id,
+                    'chain_proposal_id' => $chainProposalId,
+                    'json_error' => json_last_error_msg(),
+                ]);
+
+                return;
+            }
+
+            // Save individual scores to metadata
+            if (isset($scores['alignment_score'])) {
+                $proposal->saveMeta('alignment_score', $scores['alignment_score']);
+            }
+
+            if (isset($scores['auditability_score'])) {
+                $proposal->saveMeta('auditability_score', $scores['auditability_score']);
+            }
+
+            if (isset($scores['feasibility_score'])) {
+                $proposal->saveMeta('feasibility_score', $scores['feasibility_score']);
+            }
+
+            Log::info('Successfully saved proposal scores', [
+                'proposal_id' => $proposal->id,
+                'chain_proposal_id' => $chainProposalId,
+                'alignment_score' => $scores['alignment_score'] ?? null,
+                'auditability_score' => $scores['auditability_score'] ?? null,
+                'feasibility_score' => $scores['feasibility_score'] ?? null,
+            ]);
+
+        } catch (\Throwable $e) {
+            Log::error('Error fetching and saving proposal scores', [
+                'proposal_id' => $proposal->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+        }
+    }
+
+    protected function saveAdditionalMetadata(Proposal $proposal, array $votingData): void
+    {
         $proposal->save();
 
         // Save additional metadata
