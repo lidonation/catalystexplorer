@@ -1,3 +1,11 @@
+## [1.67.3](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.67.2...v1.67.3) (2026-01-20)
+
+
+### Bug Fixes
+
+* cleanup quickpitches ([d4d0690](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/d4d0690d01a99be3ee1c9adac22cd34b345444e9))
+* cleanup quickpitches ([b929c3b](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/b929c3bf1ff09bdd7e394fdabc1afef11049d95b))
+
 ## [1.67.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.67.1...v1.67.2) (2026-01-20)
 
 
