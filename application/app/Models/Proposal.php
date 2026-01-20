@@ -213,6 +213,7 @@ class Proposal extends Model implements IHasMetaData
             'proposals.amount_requested',
             'proposals.currency',
             'proposals.slug',
+            'proposals.solution',
             'proposals.fund_id',
             'proposals.campaign_id',
         ]);

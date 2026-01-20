@@ -5,6 +5,8 @@ import QuickpitchVideoPlayer from '@/Pages/My/Proposals/partials/QuickPitchVideo
 import { currency } from '@/utils/currency';
 import { Link } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
+import KeyValue from '@/Components/atoms/KeyValue.tsx';
+import ValueLabel from '@/Components/atoms/ValueLabel.tsx';
 
 interface QuickPitchCardProps {
     proposal: App.DataTransferObjects.ProposalData;
@@ -33,10 +35,11 @@ export default function QuickPitchCard({
             100
         ) || 0;
     const progressBarColor = getProgressBarColor(fundingPercentage);
+    console.log(proposal);
 
     return (
         <div className={feature ? 'col-span-1 md:col-span-2' : 'col-span-1'}>
-            <Card className={`flex h-full rounded-2xl  ${feature ? 'flex-row justify-start gap-3 w-full bg-slate-200/50' : 'flex-col bg-background'}`}>
+            <Card className={`flex h-full rounded-2xl bg-background  ${feature ? 'flex-row justify-start gap-3 w-full ' : 'flex-col'}`}>
                 <div className={`flex flex-shrink-0 rounded-2xl ${feature ? 'w-3/5' : ''}`}>
                     <QuickpitchVideoPlayer
                         url={proposal.quickpitch ?? null}
@@ -62,28 +65,28 @@ export default function QuickPitchCard({
                             </Title>
                         </Link>
 
-                        <div className={`flex justify-between ${feature ? 'flex-col gap-3 mt-2' : 'flex-row mt-4'}`}>
-                            <div className={`flex ${feature ? 'flex-row gap-3 justify-between' : 'flex-col'}`}>
-                                <Paragraph size="sm" className="text-content/60">
-                                    {t('proposals.outstanding')}
-                                </Paragraph>
-                                <Paragraph>{proposal.outstanding_proposals_count ? proposal.outstanding_proposals_count : '-'}</Paragraph>
-                            </div>
-                            <div className={`flex ${feature ? 'flex-row gap-3 justify-between' : 'flex-col'}`}>
-                                <Paragraph size="sm" className="text-content/60">
-                                    {t('proposals.completed')}
-                                </Paragraph>
-                                <Paragraph>{proposal.completed_proposals_count ? proposal.completed_proposals_count :  '-'}</Paragraph>
-                            </div>
-                            <div className={`flex ${feature ? 'flex-row gap-3 justify-between' : 'flex-col'}`}>
-                                <Paragraph size="sm" className="text-content/60">
-                                    {t('proposals.catalystConnection')}
-                                </Paragraph>
-                                <Paragraph>{proposal.connections_count ? proposal.connections_count : '-'}</Paragraph>
-                            </div>
-                        </div>
+                        {/*<div className={`flex justify-between ${feature ? 'flex-col gap-3 mt-2' : 'flex-row mt-4'}`}>*/}
+                        {/*    <div className={`flex ${feature ? 'flex-row gap-3 justify-between' : 'flex-col'}`}>*/}
+                        {/*        <Paragraph size="sm" className="text-content/60">*/}
+                        {/*            {t('proposals.outstanding')}*/}
+                        {/*        </Paragraph>*/}
+                        {/*        <Paragraph>{proposal.outstanding_proposals_count ? proposal.outstanding_proposals_count : '-'}</Paragraph>*/}
+                        {/*    </div>*/}
+                        {/*    <div className={`flex ${feature ? 'flex-row gap-3 justify-between' : 'flex-col'}`}>*/}
+                        {/*        <Paragraph size="sm" className="text-content/60">*/}
+                        {/*            {t('proposals.completed')}*/}
+                        {/*        </Paragraph>*/}
+                        {/*        <Paragraph>{proposal.completed_proposals_count ? proposal.completed_proposals_count :  '-'}</Paragraph>*/}
+                        {/*    </div>*/}
+                        {/*    <div className={`flex ${feature ? 'flex-row gap-3 justify-between' : 'flex-col'}`}>*/}
+                        {/*        <Paragraph size="sm" className="text-content/60">*/}
+                        {/*            {t('proposals.catalystConnection')}*/}
+                        {/*        </Paragraph>*/}
+                        {/*        <Paragraph>{proposal.connections_count ? proposal.connections_count : '-'}</Paragraph>*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
 
-                        <div className={`${feature ? 'mt-10' : 'mt-1'}`}>
+                        <div className='mt-1'>
                             <div
                                 className="flex items-baseline justify-between gap-2"
                                 data-testid="proposal-funding-received"
@@ -105,6 +108,14 @@ export default function QuickPitchCard({
                                     {/*</span>*/}
                                 </div>
                             </div>
+
+                            {feature && (
+                                <div className='flex flex-col gap-2 mt-4'>
+                                    <ValueLabel>Solution</ValueLabel>
+                                    <Paragraph size='sm'>{proposal.solution}</Paragraph>
+                                </div>
+                            )}
+
                             {/*<div*/}
                             {/*    className="flex items-baseline justify-between gap-2 pt-2"*/}
                             {/*    data-testid="proposal-funding-requested"*/}
