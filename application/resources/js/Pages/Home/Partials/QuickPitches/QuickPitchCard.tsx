@@ -7,6 +7,7 @@ import { Link } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import KeyValue from '@/Components/atoms/KeyValue.tsx';
 import ValueLabel from '@/Components/atoms/ValueLabel.tsx';
+import ProposalSolution from '@/Pages/Proposals/Partials/ProposalSolution.tsx';
 
 interface QuickPitchCardProps {
     proposal: App.DataTransferObjects.ProposalData;
@@ -111,8 +112,12 @@ export default function QuickPitchCard({
 
                             {(feature && !!proposal.solution) && (
                                 <div className='flex flex-col gap-2 mt-4'>
-                                    <ValueLabel>Solution</ValueLabel>
-                                    <Paragraph size='sm'>{proposal.solution}</Paragraph>
+                                    <ProposalSolution
+                                        solution={proposal.solution}
+                                        slug={proposal.slug ?? 'slug'}
+                                    />
+                                    {/*<ValueLabel>Solution</ValueLabel>*/}
+                                    {/*<Paragraph size='sm'>{proposal.solution}</Paragraph>*/}
                                 </div>
                             )}
 

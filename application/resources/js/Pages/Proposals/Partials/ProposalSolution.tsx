@@ -5,6 +5,7 @@ import { PageProps } from '@/types';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import Markdown from 'marked-react';
 import { useEffect, useRef, useState } from 'react';
+import ValueLabel from '@/Components/atoms/ValueLabel.tsx';
 
 interface ProposalSolution extends Record<string, unknown> {
     solution?: string;
@@ -48,25 +49,25 @@ export default function ProposalSolution({
                 {(solution || problem) && (
                     <div className="solution-container">
                         <header className="solution-header mb-2 flex justify-between">
-                            <Title
-                                level="5"
+                            <ValueLabel
+                                // level="5"
                                 id="solution-heading"
                                 className="text-content mt-2 text-base font-medium"
                                 data-testid="proposal-solution-or-problem"
                             >
                                 {solution ? t('solution') : t('problem')}
-                            </Title>
+                            </ValueLabel>
                         </header>
 
                         <div className="text-content">
                             <ExpandableContent
                                 expanded={isHoveredSolution}
-                                lineClamp={3}
-                                collapsedHeight={120}
+                                lineClamp={4}
+                                collapsedHeight={180}
                             >
                                 <div
                                     ref={containerRef}
-                                    className={`${solutionLineCount > 3 ? 'cursor-pointer' : ''} ${isHoveredSolution ? 'bg-background relative' : ''}`}
+                                    className={`text-sm ${solutionLineCount > 3 ? 'cursor-pointer' : ''} ${isHoveredSolution ? 'bg-background relative' : ''}`}
                                     style={{
                                         paddingBottom: isHoveredSolution
                                             ? '20px'
