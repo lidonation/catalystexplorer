@@ -90,18 +90,34 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                         <MobileNavigation />
                     </Dialog>
 
+                    {/* Desktop Layout: Unified header + sidebar container */}
                     {!isAuthPage && (
-                        <div className="bg-background hidden h-full lg:fixed lg:inset-y-0 lg:z-30 lg:flex lg:w-(--sidebar-width)">
-                            <DesktopSidebar />
+                        <div className="bg-background hidden lg:flex lg:flex-col lg:fixed lg:inset-0 lg:z-20">
+                           
+                            <div className="flex h-20 items-center shrink-0">
+                                <div className="w-(--sidebar-width) shrink-0 flex items-center px-4">
+                                    <CatalystLogo className="w-full" />
+                                </div>
+                                {/* Header content - search trigger */}
+                                <div className="flex-1 flex justify-center">
+                                    <ContentHeader className="pt-0 pb-0" />
+                                </div>
+                            </div>
+                            
+                            {/* Sidebar below logo */}
+                            <div className="flex flex-1 min-h-0">
+                                
+                                <div className="w-(--sidebar-width) shrink-0 h-full overflow-y-auto">
+                                    <DesktopSidebar hideLogo />
+                                </div>
+                                
+                                <div className="flex-1" />
+                            </div>
                         </div>
                     )}
 
-                    <div className="hidden lg:flex lg:justify-center">
-                        <ContentHeader />
-                    </div>
-
                     <section
-                        className={`bg-background-lighter lg:mt-4 ${isAuthPage ? '' : 'lg:ml-(--sidebar-width) rtl:ml-0 rtl:mr-(--sidebar-width)'} ${isAuthPage ? '' : 'lg:rounded-tl-4xl'}`}
+                        className={`bg-background-lighter relative lg:z-30 ${isAuthPage ? '' : 'lg:fixed lg:top-20 lg:right-0 lg:bottom-0 lg:left-(--sidebar-width) rtl:lg:left-0 rtl:lg:right-(--sidebar-width) lg:rounded-tl-4xl lg:overflow-y-auto'}`}
                     >
                         {/* Mobile header */}
                         <header

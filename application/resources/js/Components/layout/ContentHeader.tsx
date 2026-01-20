@@ -11,7 +11,6 @@ export default function ContentHeader({ className = '' }: ContentHeaderProps) {
 
     if (
         url.includes('workflows') ||
-        url.includes('dreps') ||
         url.includes('votes') ||
         url.includes('password') ||
         url.includes('login') ||
@@ -22,7 +21,7 @@ export default function ContentHeader({ className = '' }: ContentHeaderProps) {
 
     return (
         <div
-            className={`container flex items-center justify-center px-8 pt-6 pb-2 ${className}`}
+            className={`container flex items-center justify-center px-8 pt-6 pb-6 ${className}`}
             data-testid="content-header"
         >
             <div className="max-w-sm w-full">
