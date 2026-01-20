@@ -109,7 +109,7 @@ export default function QuickPitchCard({
                                 </div>
                             </div>
 
-                            {feature && (
+                            {(feature && !!proposal.solution) && (
                                 <div className='flex flex-col gap-2 mt-4'>
                                     <ValueLabel>Solution</ValueLabel>
                                     <Paragraph size='sm'>{proposal.solution}</Paragraph>
