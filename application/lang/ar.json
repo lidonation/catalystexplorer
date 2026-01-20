@@ -1867,5 +1867,9 @@
   "globalSearch.explore.listsDesc": "اكتشف قوائم المقترحات المنسقة",
   "globalSearch.timeAgo.minutes": "منذ :count دقيقة",
   "globalSearch.timeAgo.hours": "منذ :count ساعة",
-  "globalSearch.timeAgo.days": "منذ :count يوم"
+  "globalSearch.timeAgo.days": "منذ :count يوم",
+  "globalSearch.searchHint.pressEnter": "اضغط على Enter للبحث في",
+  "globalSearch.searchHint.categories": "المقترحات، القوائم، الملفات الشخصية، المجموعات، المراجعات، والروابط",
+  "globalSearch.searchHint.searchIn": "ابحث في :categories",
+  "globalSearch.searchHint.enterKey": "Enter"
 }

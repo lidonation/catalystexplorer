@@ -6,6 +6,8 @@ interface QuickSearchProposal {
     title: string;
     slug: string;
     fund_label?: string;
+    amount_requested?: number;
+    currency?: string;
 }
 
 interface QuickSearchList {
@@ -44,7 +46,7 @@ export function useQuickSearch(query: string): UseQuickSearchReturn {
 
         try {
             const { data } = await axios.get<QuickSearchResults>(
-                '/api/quick-search',
+                '/api/internal/quick-search',
                 {
                     params: { q: searchQuery },
                 }
