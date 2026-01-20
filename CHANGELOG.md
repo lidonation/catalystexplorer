@@ -1,3 +1,10 @@
+## [1.67.4](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.67.3...v1.67.4) (2026-01-20)
+
+
+### Bug Fixes
+
+* sync review scores ([ffcb68f](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/ffcb68ff5c80161963a769ac4a1ac0d4de00ced4))
+
 ## [1.67.3](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.67.2...v1.67.3) (2026-01-20)
 
 
