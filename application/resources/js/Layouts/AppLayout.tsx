@@ -96,6 +96,10 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                         </div>
                     )}
 
+                    <div className="hidden lg:flex lg:justify-center">
+                        <ContentHeader />
+                    </div>
+
                     <section
                         className={`bg-background-lighter lg:mt-4 ${isAuthPage ? '' : 'lg:ml-(--sidebar-width) rtl:ml-0 rtl:mr-(--sidebar-width)'} ${isAuthPage ? '' : 'lg:rounded-tl-4xl'}`}
                     >
@@ -106,8 +110,13 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                         >
                             <div className="flex h-16 items-center justify-between">
                                 <CatalystLogo className="h-8" />
+                                <GlobalSearchTrigger
+                                    variant="content"
+                                    fullWidth={false}
+                                    className="w-36"
+                                />
                                 <div className="flex items-center gap-2">
-                                    <GlobalSearchTrigger variant="minimal" />
+                                    
                                     <Button
                                         onClick={() => setSidebarOpen(!sidebarOpen)}
                                         ariaLabel={
@@ -136,10 +145,6 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
 
                             <Breadcrumbs items={breadcrumbItems} />
-
-                            <div className="hidden lg:flex lg:justify-center">
-                                <ContentHeader />
-                            </div>
 
                             <PlayerProvider>
                                 <MetricsProvider>
