@@ -12,7 +12,7 @@ const CatalystIntro = () => {
             data-testid="catalyst-intro"
         >
             <div
-                className="flex w-full flex-col gap-8 pt-16 pb-4"
+                className="flex w-full flex-col gap-8 pt-16 pb-16"
                 style={{
                     backgroundImage: `url(${ConcentricCircles})`,
                     backgroundPosition: 'top',
@@ -41,9 +41,9 @@ const CatalystIntro = () => {
                     </div>
                 </section>
 
-                <section className="sticky top-12 container w-full pt-10 md:px-10 xl:px-60">
+               {/*  <section className="sticky top-12 container w-full pt-10 md:px-10 xl:px-60">
                     <GlobalSearch />
-                </section>
+                </section> */}
             </div>
         </div>
     );

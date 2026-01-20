@@ -22,10 +22,10 @@ export default function ContentHeader({ className = '' }: ContentHeaderProps) {
 
     return (
         <div
-            className={`container flex items-center justify-center px-8 pt-4 pb-2 ${className}`}
+            className={`container flex items-center justify-center px-8 pt-6 pb-2 ${className}`}
             data-testid="content-header"
         >
-            <div className="max-w-md w-full">
+            <div className="max-w-sm w-full">
                 <GlobalSearchTrigger variant="content" />
             </div>
         </div>
