@@ -15,6 +15,7 @@ use App\Nova\Actions\RegenerateOgImage;
 use App\Nova\Actions\RemoveFromSearchIndex;
 use App\Nova\Actions\SyncMilestoneFromCatalyst;
 use App\Nova\Actions\SyncProposalFromCatalyst;
+use App\Nova\Actions\SyncProposalScoresFromReviews;
 use App\Nova\Actions\SyncVotingResults;
 use App\Nova\Actions\UpdateModelMedia;
 use App\Nova\Filters\FundFilter;
@@ -477,6 +478,7 @@ class Proposals extends Resource
             (new RegenerateOgImage),
             (new SyncMilestoneFromCatalyst),
             (new SyncProposalFromCatalyst),
+            (new SyncProposalScoresFromReviews),
             (new SyncVotingResults),
             (new UpdateModelMedia),
         ];

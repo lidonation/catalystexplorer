@@ -143,7 +143,6 @@ class GenerateProposalLinks extends Action
     {
         $urls = [];
 
-        // Comprehensive URL regex pattern
         $pattern = '/(?:(?:https?:\/\/)?(?:[a-zA-Z0-9\-\_]+\.)+[a-zA-Z]{2,}(?:\/[^\s]*)?)/i';
 
         if (preg_match_all($pattern, $content, $matches)) {
@@ -179,7 +178,6 @@ class GenerateProposalLinks extends Action
         foreach ($urls as $urlData) {
             $url = $urlData['url'];
 
-            // Validate URL first
             if (! filter_var($url, FILTER_VALIDATE_URL)) {
                 continue;
             }
@@ -199,8 +197,8 @@ class GenerateProposalLinks extends Action
                 continue;
             }
 
-            // Skip localhost and internal URLs in production
-            if (preg_match('/\b(localhost|127\.0\.0\.1|192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/i', $url)) {
+            // Skip localhost and internal URLs
+            if (preg_match('/\b(gmail|localhost|127\.0\.0\.1|192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/i', $url)) {
                 continue;
             }
 

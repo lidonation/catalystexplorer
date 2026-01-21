@@ -4,54 +4,15 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Actions\ReviewSync\ProcessReviewData;
 use App\Http\Integrations\CatalystReviews\CatalystReviewsConnector;
 use App\Http\Integrations\CatalystReviews\Requests\GetFilteredProposalReviewsRequest;
 use App\Jobs\SyncCatalystReviewsFromApiJob;
-use App\Models\Discussion;
-use App\Models\Proposal;
-use App\Models\Rating;
-use App\Models\Review;
-use App\Models\Reviewer;
-use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class SyncReviewsFromCatalyst extends Command
 {
-    /**
-     * Discussion templates for proposal reviews
-     */
-    protected const DISCUSSION_TEMPLATES = [
-        'Impact' => [
-            'title' => 'Impact',
-            'comment_prompt' => 'Has this project clearly demonstrated in all aspects of the proposal that it will positively impact the cardano ecosystem?',
-        ],
-        'Feasibility' => [
-            'title' => 'Feasibility',
-            'comment_prompt' => 'Is this project feasible based on the proposal submitted? Does the plan and associated budget and milestones look achievable? Does the team have the skills, experience, capability and capacity to complete the project successfully?',
-        ],
-        'Value for Money' => [
-            'title' => 'Value for Money',
-            'comment_prompt' => 'Is the funding amount requested for this project reasonable and does it provide good Value for the Money to the Treasury?',
-        ],
-    ];
-
-    /**
-     * Mapping from API fields to discussion titles
-     */
-    protected const RATING_FIELD_MAP = [
-        'impact_alignment_rating_given' => 'Impact',
-        'feasibility_rating_given' => 'Feasibility',
-        'auditability_rating_given' => 'Value for Money',
-    ];
-
-    protected const NOTE_FIELD_MAP = [
-        'impact_alignment_note' => 'Impact',
-        'feasibility_note' => 'Feasibility',
-        'auditability_note' => 'Value for Money',
-    ];
-
     // Legacy counters retained for sync-mode output only
     protected array $catalystReviews = [];
 
@@ -110,7 +71,6 @@ class SyncReviewsFromCatalyst extends Command
             $this->info('Review sync completed.');
             $this->info("Processed: {$this->processedCount}, Skipped: {$this->skippedCount}, Errors: {$this->errorCount}");
         } else {
-            // ASYNC MODE: dispatch a job that will perform API pagination and processing in the queue
             $this->info('Running in ASYNC mode (dispatching API fetch + processing to queue)...');
 
             SyncCatalystReviewsFromApiJob::dispatch(
@@ -185,8 +145,13 @@ class SyncReviewsFromCatalyst extends Command
 
         foreach ($this->catalystReviews as $reviewData) {
             try {
-                $this->processReview($reviewData, $fundId);
-                $this->processedCount++;
+                $processReviewData = app(ProcessReviewData::class);
+                $ok = $processReviewData($reviewData, $fundId);
+                if ($ok) {
+                    $this->processedCount++;
+                } else {
+                    $this->skippedCount++;
+                }
             } catch (\Exception $e) {
                 $this->errorCount++;
                 Log::error('SyncReviewsFromCatalyst: Error processing review', [
@@ -201,252 +166,5 @@ class SyncReviewsFromCatalyst extends Command
 
         $bar->finish();
         $this->newLine();
-    }
-
-    protected function processAsynchronously(string $fundId): void
-    {
-        // For async mode, we'd dispatch jobs. For now, we'll process synchronously
-        // but this could be refactored to use a job class
-        $this->processSynchronously($fundId);
-    }
-
-    protected function processReview(array $reviewData, string $fundId): void
-    {
-        DB::beginTransaction();
-
-        try {
-            // 1. Find or create the reviewer
-            $reviewer = $this->findOrCreateReviewer($reviewData['assessor']);
-
-            // 2. Find the proposal
-            $proposal = $this->findProposal($reviewData, $fundId);
-
-            if (! $proposal) {
-                $this->skippedCount++;
-                $this->processedCount--;
-                Log::warning('SyncReviewsFromCatalyst: Proposal not found', [
-                    'pr_id' => $reviewData['proposal']['pr_id'] ?? null,
-                    'title' => $reviewData['proposal']['title'] ?? null,
-                ]);
-                DB::rollBack();
-
-                return;
-            }
-
-            // 2b. Store proposal.row_id as review_module_id meta
-            $rowId = $reviewData['proposal']['row_id'] ?? null;
-            if ($rowId !== null) {
-                $proposal->saveMeta('review_module_id', (string) $rowId);
-            }
-
-            // 3. Ensure discussions exist for the proposal
-            $discussions = $this->ensureDiscussionsExist($proposal);
-
-            // 4. Create reviews and ratings for each discussion type
-            foreach (self::NOTE_FIELD_MAP as $noteField => $discussionTitle) {
-                $ratingField = array_search($discussionTitle, self::RATING_FIELD_MAP);
-
-                if (! isset($discussions[$discussionTitle])) {
-                    continue;
-                }
-
-                $discussion = $discussions[$discussionTitle];
-                $noteContent = $reviewData[$noteField] ?? null;
-                $ratingValue = $reviewData[$ratingField] ?? null;
-
-                if ($noteContent === null && $ratingValue === null) {
-                    continue;
-                }
-
-                // Create or update the review
-                $review = $this->createOrUpdateReview(
-                    $discussion,
-                    $reviewer,
-                    $noteContent,
-                    $reviewData
-                );
-
-                // Create or update the rating
-                if ($ratingValue !== null) {
-                    $this->createOrUpdateRating($discussion, $review, $ratingValue);
-                }
-            }
-
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
-    }
-
-    protected function findOrCreateReviewer(string $assessorId): Reviewer
-    {
-        $reviewer = Reviewer::where('catalyst_reviewer_id', $assessorId)->first();
-
-        if (! $reviewer) {
-            $reviewer = Reviewer::create([
-                'catalyst_reviewer_id' => $assessorId,
-            ]);
-        }
-
-        return $reviewer;
-    }
-
-    protected function findProposal(array $reviewData, string $fundId): ?Proposal
-    {
-        $prId = $reviewData['proposal']['pr_id'] ?? null;
-        $title = $reviewData['proposal']['title'] ?? null;
-
-        // First, try to find by catalyst_document_id in meta_info
-        if ($prId) {
-            $proposal = Proposal::whereHas('metas', function ($query) use ($prId) {
-                $query->where('key', 'catalyst_document_id')
-                    ->where('content', $prId);
-            })->first();
-
-            if ($proposal) {
-                return $proposal;
-            }
-        }
-
-        // Fallback: Find by title and fund_id
-        // Title is stored as JSON, so we need to search within the JSON structure
-        if ($title) {
-            // Normalize the search title for fuzzy matching
-            $normalizedTitle = preg_replace('/[^a-z0-9]/i', '', strtolower(trim($title)));
-
-            // 1) Try within the given fund
-            $proposal = Proposal::where('fund_id', $fundId)
-                ->where(function ($query) use ($title, $normalizedTitle) {
-                    // Exact match on JSON 'en'
-                    $query->whereRaw("title->>'en' = ?", [$title])
-                        // Case-insensitive contains
-                        ->orWhereRaw("LOWER(title->>'en') ILIKE ?", ['%'.strtolower($title).'%'])
-                        // Normalized equality (remove punctuation/whitespace)
-                        ->orWhereRaw(
-                            "regexp_replace(LOWER(title->>'en'), '[^a-z0-9]', '', 'g') = ?",
-                            [$normalizedTitle]
-                        );
-                })
-                ->first();
-
-            if ($proposal) {
-                return $proposal;
-            }
-
-            // 2) Broaden search across all funds (in case the provided fund_id doesn't match)
-            $proposal = Proposal::where(function ($query) use ($title, $normalizedTitle) {
-                $query->whereRaw("title->>'en' = ?", [$title])
-                    ->orWhereRaw("LOWER(title->>'en') ILIKE ?", ['%'.strtolower($title).'%'])
-                    ->orWhereRaw(
-                        "regexp_replace(LOWER(title->>'en'), '[^a-z0-9]', '', 'g') = ?",
-                        [$normalizedTitle]
-                    );
-            })
-                ->first();
-
-            if ($proposal) {
-                return $proposal;
-            }
-        }
-
-        return null;
-    }
-
-    protected function ensureDiscussionsExist(Proposal $proposal): array
-    {
-        $discussions = [];
-
-        foreach (self::DISCUSSION_TEMPLATES as $key => $template) {
-            $discussion = Discussion::where('model_type', Proposal::class)
-                ->where('model_id', $proposal->id)
-                ->where('title', $template['title'])
-                ->first();
-
-            if (! $discussion) {
-                // Avoid mass-assignment by setting attributes explicitly
-                $discussion = new Discussion;
-                $discussion->model_type = Proposal::class;
-                $discussion->model_id = $proposal->id;
-                $discussion->title = $template['title'];
-                $discussion->comment_prompt = $template['comment_prompt'];
-                $discussion->status = 'published';
-                $discussion->save();
-            }
-
-            $discussions[$key] = $discussion;
-        }
-
-        return $discussions;
-    }
-
-    protected function createOrUpdateReview(
-        Discussion $discussion,
-        Reviewer $reviewer,
-        ?string $content,
-        array $reviewData
-    ): Review {
-        // Use 'pending' for moderated reviews (needs further action), 'published' for approved
-        $status = ($reviewData['moderated'] ?? false) ? 'pending' : 'published';
-        $createdAt = isset($reviewData['created_at'])
-            ? Carbon::parse($reviewData['created_at'])
-            : now();
-        $updatedAt = isset($reviewData['updated_at'])
-            ? Carbon::parse($reviewData['updated_at'])
-            : now();
-
-        // Check if review already exists for this discussion + reviewer
-        $review = Review::where('model_type', Discussion::class)
-            ->where('model_id', $discussion->id)
-            ->where('reviewer_id', $reviewer->id)
-            ->first();
-
-        if ($review) {
-            $review->update([
-                'content' => $content ?? '',
-                'status' => $status,
-                'updated_at' => $updatedAt,
-            ]);
-        } else {
-            $review = Review::create([
-                'model_type' => Discussion::class,
-                'model_id' => $discussion->id,
-                'reviewer_id' => $reviewer->id,
-                'content' => $content ?? '',
-                'status' => $status,
-                'created_at' => $createdAt,
-                'updated_at' => $updatedAt,
-            ]);
-        }
-
-        return $review;
-    }
-
-    protected function createOrUpdateRating(
-        Discussion $discussion,
-        Review $review,
-        int $ratingValue
-    ): Rating {
-        // Check if rating already exists for this review
-        $rating = Rating::where('review_id', $review->id)
-            ->where('model_type', Discussion::class)
-            ->where('model_id', $discussion->id)
-            ->first();
-
-        if ($rating) {
-            $rating->rating = $ratingValue;
-            $rating->save();
-        } else {
-            // Avoid mass-assignment by setting attributes explicitly
-            $rating = new Rating;
-            $rating->model_type = Discussion::class;
-            $rating->model_id = $discussion->id;
-            $rating->review_id = $review->id;
-            $rating->rating = $ratingValue;
-            $rating->status = 'published';
-            $rating->save();
-        }
-
-        return $rating;
     }
 }
