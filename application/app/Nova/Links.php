@@ -14,6 +14,8 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Links extends Resource
 {
+    public static $perPageViaRelationship = 25;
+
     /**
      * The model the resource corresponds to.
      *
