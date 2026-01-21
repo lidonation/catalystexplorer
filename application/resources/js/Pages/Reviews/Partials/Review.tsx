@@ -2,6 +2,7 @@ import Title from '@/Components/atoms/Title';
 import { Head, WhenVisible } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import ReviewHorizontalCardLoader from './ReviewHorizontalCardLoader';
+import ReviewComments from '@/Components/ReviewComments';
 import ReviewData = App.DataTransferObjects.ReviewData;
 
 interface ReviewPageProps extends Record<string, unknown> {
@@ -24,17 +25,15 @@ const Review: React.FC<ReviewPageProps> = ({ review }) => {
                 </div>
             </header>
 
-            <div className="flex h-full w-full flex-col items-center justify-center">
-                <WhenVisible
-                    fallback={<ReviewHorizontalCardLoader />}
-                    data="review"
-                >
-                    <h1>{t('comingSoon')}</h1>
-
-                    {/* <ReviewHorizontalCard /> */}
-                </WhenVisible>
-                <h1>{t('comingSoon')}</h1>
+            <div className="container">
+                <div className="mb-6">
+                    <h2 className="text-2xl font-bold">{review.content}</h2>
+                </div>
             </div>
+            <ReviewComments
+                reviewId={review.discussion_id}
+                team={review.team}
+            />
         </>
     );
 };

@@ -55,7 +55,7 @@ class Reviewer extends Model
 
     public function claimedBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'claimed_by_uuid', 'id');
+        return $this->belongsTo(User::class, 'claimed_by_id', 'id');
     }
 
     public function scopeFilter($query, array $filters)

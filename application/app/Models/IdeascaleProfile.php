@@ -9,11 +9,13 @@ use App\Concerns\HasConnections;
 use App\Concerns\HasMetaData;
 use App\Enums\CatalystCurrencySymbols;
 use App\Enums\ProposalStatus;
+use App\Models\Pivot\ClaimedProfile;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
@@ -52,7 +54,6 @@ class IdeascaleProfile extends Model implements HasMedia
         'linkedin',
         'discord',
         'ideascale',
-        'claimed_by_uuid',
         'telegram',
         'title',
     ];
@@ -123,7 +124,6 @@ class IdeascaleProfile extends Model implements HasMedia
             'own_proposals_count',
             'collaborating_proposals_count',
             'proposals_count',
-            'claimed_by_uuid',
             'first_timer',
             'proposals.campaign',
             'proposals.impact_proposal',
@@ -321,6 +321,11 @@ class IdeascaleProfile extends Model implements HasMedia
             'id',
             'id'
         );
+    }
+
+    public function claimed_profiles(): MorphMany
+    {
+        return $this->morphMany(ClaimedProfile::class, 'claimable');
     }
 
     public function reviews(): HasManyDeep

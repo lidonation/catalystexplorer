@@ -36,6 +36,8 @@ class ReviewRepository extends Repository
                             'status',
                             'proposal',
                             'created_at',
+                            'proposal.id',
+                            'proposal.team',
                         ],
                         'facets' => [
                             'rating',

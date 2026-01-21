@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Mail;
+use Spatie\Comments\Models\Concerns\Interfaces\CanComment;
 use Spatie\Image\Enums\CropPosition;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -29,7 +30,7 @@ use Spatie\Permission\Traits\HasRoles;
 /**
  * User Model with Polymorphic Profile Claims
  */
-class User extends Authenticatable implements HasMedia
+class User extends Authenticatable implements CanComment, HasMedia
 {
     use HasFactory,
         HasRoles,
@@ -38,6 +39,7 @@ class User extends Authenticatable implements HasMedia
         InteractsWithMedia,
         MustVerifyEmail,
         Notifiable;
+    use \Spatie\Comments\Models\Concerns\InteractsWithComments;
 
     /**
      * The attributes that are mass assignable.

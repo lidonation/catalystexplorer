@@ -183,7 +183,7 @@ Route::as('api.')->group(function () {
         ->group(function () {
             Route::get('/', [CommentController::class, 'index'])->name('index');
             Route::post('/', [CommentController::class, 'store'])->name('store')
-                ->middleware('throttle:15,1');
+                ->middleware(['web', 'auth', 'throttle:15,1']);
         });
 
     Route::prefix('/dreps')->as('dreps.')->middleware('auth')->group(
