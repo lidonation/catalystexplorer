@@ -1,3 +1,10 @@
+# [1.68.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.67.4...v1.68.0) (2026-01-21)
+
+
+### Features
+
+* populating overall review scores ([19b4aab](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/19b4aabd10ccb7f813f4ded9119598ae753f2a4f))
+
 ## [1.67.4](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.67.3...v1.67.4) (2026-01-20)
 
 
