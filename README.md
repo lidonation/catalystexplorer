@@ -16,6 +16,9 @@ CatalystExplorer aims to make Project Catalyst data more accessible and actionab
 
 ## Prerequisites
 
+- Docker Desktop  
+  - Make sure Docker Desktop is up to date. Outdated versions may lead to unexpected behavior.
+  - If using WSL, open Docker Desktop, go to **Settings → Resources → WSL Integration**, and ensure your default WSL distro is enabled.
 - PHP 8.3+
 - Node.js 16+
 - Composer 2.7+
@@ -36,12 +39,39 @@ The CatalystExplorer project is currently in active development.
 
 ### Get up and running
 
-1) Clone this repository: `https://gitlab.2lovelaces.io/lidonation/www.catalystexplorer.com.git`
-2) cd into the project directory: `cd www.catalystexplorer.com`
-3) copy thr example.env to the .env file `cp application/.env.example application/.env`
-4) Run `make init` to install all frontend and backend dependencies and start the docker services.
-5) Run `make vite` to start the vite dev server and watch for changes.
-6) Navigate to `http://localhost` in your browser.
+1. Clone this repository:  
+   `git clone https://gitlab.2lovelaces.io/lidonation/www.catalystexplorer.com.git`
+
+2. Change into the project directory:  
+   `cd www.catalystexplorer.com`
+
+3. Copy the example environment file:  
+   `cp application/.env.example application/.env`  
+   Edit `.env` as needed.
+
+4. Obtain your organization's `auth.json` (available on request) and place it in `application/auth.json` **before running any commands**.
+
+5. Run `make init` to install all frontend and backend dependencies, run database migrations, and start the Docker services.
+
+   > **Note for WSL users:**  
+   > If you encounter out-of-memory errors during Docker builds, increase swap space:  
+   > ```bash
+   > sudo fallocate -l 4G /swapfile
+   > sudo chmod 600 /swapfile
+   > sudo mkswap /swapfile
+   > sudo swapon /swapfile
+   > ```
+   > To make swap permanent, add this line to `/etc/fstab`:  
+   > `/swapfile none swap sw 0 0`
+
+6. (Optional, but recommended) Set up HTTP/3 and HTTPS for local development 
+    See the “HTTP/3 Setup” section in [WARP.md](WARP.md)
+  
+7. Run `make vite` to start the Vite dev server and watch for changes.
+
+8. Navigate to `https://catalystexplorer.local` in your browser (use HTTPS).  
+   - If you see a certificate warning, ensure your certificate is trusted as described above.
+
 
 # Makefile Commands
 
