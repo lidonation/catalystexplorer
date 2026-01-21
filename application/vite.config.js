@@ -11,12 +11,12 @@ import i18n from 'laravel-react-i18n/vite';
  * If local development certificates exist, enable HTTPS
  */
 function detectServerConfig() {
-    const certPath = path.resolve(__dirname, '../docker/certs/catalystexplorer.local.crt');
-    const keyPath = path.resolve(__dirname, '../docker/certs/catalystexplorer.local.key');
-    
+    let certPath = path.resolve(__dirname, '/etc/caddy/certs/catalystexplorer.local.crt');
+    let keyPath = path.resolve(__dirname, '/etc/caddy/certs/catalystexplorer.local.key');
+
     // Check if certificates exist for HTTPS
     const hasCerts = fs.existsSync(certPath) && fs.existsSync(keyPath);
-    
+
     if (hasCerts) {
         console.log('🔒 HTTPS enabled for Vite dev server');
         return {
@@ -27,11 +27,12 @@ function detectServerConfig() {
             },
             hmr: {
                 host: 'catalystexplorer.local',
+                clientPort: 5173,
                 protocol: 'wss',
             },
         };
     }
-    
+
     // Fallback to HTTP
     console.log('⚠️  HTTP mode - generate certificates for HTTPS/HTTP2/HTTP3 support');
     return {
@@ -83,4 +84,5 @@ export default defineConfig({
     build: {
         target: 'esnext',
     }
+
 });

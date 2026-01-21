@@ -9,6 +9,7 @@ COMPOSE_FLAGS ?=
 .PHONY: init
 init:
 	cp ./application/.env.example ./application/.env
+	make backend-install
 	docker run --rm --interactive --tty \
 		--volume ${PWD}:/app \
 		--workdir /app \
