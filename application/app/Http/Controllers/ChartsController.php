@@ -353,10 +353,10 @@ class ChartsController extends Controller
     {
         $query = DB::table('voting_powers as vp')
             ->selectRaw(
-                "CASE\n                WHEN voting_power BETWEEN 0 AND 450000000 THEN '25-450-1'\n                WHEN voting_power BETWEEN 450000000 AND 1000000000 THEN '450-1k-5'\n                WHEN voting_power BETWEEN 1000000000 AND 5000000000 THEN '1k-5k-7'\n                WHEN voting_power BETWEEN 5000000000 AND 10000000000 THEN '5K-10k-9'\n                WHEN voting_power BETWEEN 10000000000 AND 25000000000 THEN '10K-25k-11'\n                WHEN voting_power BETWEEN 25000000000 AND 50000000000 THEN '25k-50k-13'\n                WHEN voting_power BETWEEN 50000000000 AND 75000000000 THEN '50k-75k-15'\n                WHEN voting_power BETWEEN 75000000000 AND 100000000000 THEN '75k-100k-18'\n                WHEN voting_power BETWEEN 100000000000 AND 250000000000 THEN '100k-250k-20'\n                WHEN voting_power BETWEEN 250000000000 AND 500000000000 THEN '250k-500k-22'\n                WHEN voting_power BETWEEN 500000000000 AND 750000000000 THEN '500k-750k-24'\n                WHEN voting_power BETWEEN 750000000000 AND 1000000000000 THEN '750k-1M-26'\n                WHEN voting_power BETWEEN 1000000000000 AND 5000000000000 THEN '1M-5M-28'\n                WHEN voting_power BETWEEN 5000000000000 AND 10000000000000 THEN '5M-10M-30'\n                WHEN voting_power BETWEEN 10000000000000 AND 50000000000000 THEN '10M-50M-32'\n                WHEN voting_power BETWEEN 50000000000000 AND 100000000000000 THEN '50M-100M-35'\n                WHEN voting_power BETWEEN 100000000000000 AND 200000000000000 THEN '100M-200M-38'\n                WHEN voting_power > 200000000000000 THEN '> 200M-41'\n                END as range_key,  COUNT(*) as wallets, SUM(voting_power) as ada"
+                "CASE\n                WHEN voting_power BETWEEN 0 AND 450 THEN '25-450-1'\n                WHEN voting_power BETWEEN 450 AND 1000 THEN '450-1k-5'\n                WHEN voting_power BETWEEN 1000 AND 5000 THEN '1k-5k-7'\n                WHEN voting_power BETWEEN 5000 AND 10000 THEN '5K-10k-9'\n                WHEN voting_power BETWEEN 10000 AND 25000 THEN '10K-25k-11'\n                WHEN voting_power BETWEEN 25000 AND 50000 THEN '25k-50k-13'\n                WHEN voting_power BETWEEN 50000 AND 75000 THEN '50k-75k-15'\n                WHEN voting_power BETWEEN 75000 AND 100000 THEN '75k-100k-18'\n                WHEN voting_power BETWEEN 100000 AND 250000 THEN '100k-250k-20'\n                WHEN voting_power BETWEEN 250000 AND 500000 THEN '250k-500k-22'\n                WHEN voting_power BETWEEN 500000 AND 750000 THEN '500k-750k-24'\n                WHEN voting_power BETWEEN 750000 AND 1000000 THEN '750k-1M-26'\n                WHEN voting_power BETWEEN 1000000 AND 5000000 THEN '1M-5M-28'\n                WHEN voting_power BETWEEN 5000000 AND 10000000 THEN '5M-10M-30'\n                WHEN voting_power BETWEEN 10000000 AND 50000000 THEN '10M-50M-32'\n                WHEN voting_power BETWEEN 50000000 AND 100000000 THEN '50M-100M-35'\n                WHEN voting_power BETWEEN 100000000 AND 200000000 THEN '100M-200M-38'\n                WHEN voting_power > 200000000 THEN '> 200M-41'\n                END as range_key,  COUNT(*) as wallets, SUM(voting_power) as ada"
             )
             ->whereIn('vp.snapshot_id', $snapshotIds)
-            ->where('voting_power', '>=', 25000000)
+            ->where('voting_power', '>=', 25)
             ->when($confirmedOnly, fn ($query) => $query->where('vp.consumed', true))
             ->groupByRaw('1');
 
@@ -445,7 +445,7 @@ class ChartsController extends Controller
             return 0.0;
         }
 
-        return round($value / 1_000_000, 2);
+        return round($value, 2);
     }
 
     /**
