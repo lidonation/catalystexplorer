@@ -1,3 +1,11 @@
+## [1.68.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.68.0...v1.68.1) (2026-01-21)
+
+
+### Bug Fixes
+
+* **funds, snapshots:** update voting power ranges and improve CSV import handling ([1427f60](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/1427f60212b300be7f7b0ac8eabb6226c0241aa6))
+* **proposal, api:** handle currency formatting in ProposalResource ([f871ad6](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/f871ad64f444c18f45ada5c6b1986671ab4bfe2a))
+
 # [1.68.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.67.4...v1.68.0) (2026-01-21)
 
 
