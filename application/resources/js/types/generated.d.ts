@@ -135,6 +135,7 @@ amount_awarded_usd?: number;
 amount_distributed_ada?: number;
 amount_distributed_usd?: number;
 groups?: any;
+claimed_profiles: any | null;
 };
 export type CatalystTallyData = {
 id: string | null;
@@ -161,6 +162,11 @@ children?: Array<any>;
 services?: any;
 created_at?: string;
 updated_at?: string;
+};
+export type ClaimedProfileData = {
+id: string;
+user_id: string;
+claimed_at: string;
 };
 export type CommentData = {
 id: string;
@@ -309,6 +315,7 @@ reviews_count?: number;
 collaborating_proposals_count?: number;
 groups?: any;
 claimed_by: App.DataTransferObjects.UserData | null;
+claimed_profiles: any | null;
 reviews: any | null;
 };
 export type LinkData = {
@@ -629,6 +636,8 @@ reviewer: App.DataTransferObjects.ReviewerData | null;
 ranking_total: number | null;
 positive_rankings: number | null;
 negative_rankings: number | null;
+discussion_id?: string;
+team?: any;
 };
 export type ReviewModerationData = {
 id: string | null;

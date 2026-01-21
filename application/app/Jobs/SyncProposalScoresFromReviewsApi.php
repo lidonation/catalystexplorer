@@ -56,7 +56,7 @@ class SyncProposalScoresFromReviewsApi implements ShouldQueue
             }
 
             if (isset($scores['overall'])) {
-                $proposal->saveMeta('overall_score', $scores['overall_score']);
+                $proposal->saveMeta('overall_score', $scores['overall']);
                 $updated = true;
             }
 

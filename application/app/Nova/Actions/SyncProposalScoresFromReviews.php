@@ -36,7 +36,7 @@ class SyncProposalScoresFromReviews extends Action
     /**
      * Perform the action on the given models.
      */
-    public function handle(ActionFields $fields, Collection $models): ActionResponse
+    public function handle(ActionFields $fields, Collection $models): ActionResponse|Action
     {
         $successCount = 0;
         $errorCount = 0;

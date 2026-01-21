@@ -23,6 +23,7 @@ export default function ReplyBox({
 }: ReplyBoxProps) {
     const [text, setText] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showForm, setShowForm] = useState(false);
     const inputRef = useRef<HTMLTextAreaElement>(null);
 
     const submit = async () => {
@@ -39,14 +40,29 @@ export default function ReplyBox({
             });
 
             setText('');
+            setShowForm(false);
             onPosted(res.data);
-            inputRef.current?.focus();
         } catch (error) {
             console.error('Comment post failed', error);
         } finally {
             setLoading(false);
         }
     };
+
+    if (!showForm) {
+        return (
+            <button
+                type="button"
+                onClick={() => {
+                    setShowForm(true);
+                    inputRef.current?.focus();
+                }}
+                className="text-sm text-primary-500 hover:text-gray-900 hover:cursor-pointer"
+            >
+                Respond to review
+            </button>
+        );
+    }
 
     return (
         <div className="mt-6 ml-12 flex gap-2">

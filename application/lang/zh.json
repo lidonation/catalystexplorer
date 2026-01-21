@@ -1535,6 +1535,7 @@
     "bookmarks.noProposalsInList": "此列表中还没有提案。",
     "bookmarks.manageListDescription": "管理列表中的提案。",
     "comments.comments": "评论",
+    "comments.conversations": "对话",
     "comments.reply": "回复",
     "voter.voterDelegation": "选民委托",
     "voter.voterKey": "选民密钥",
