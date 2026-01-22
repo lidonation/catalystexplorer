@@ -38,5 +38,13 @@ class ReviewData extends Data
         public ?int $positive_rankings,
 
         public ?int $negative_rankings,
+
+        #[TypeScriptOptional]
+        public ?string $discussion_id,
+
+        #[TypeScriptOptional]
+        #[TypeScript]
+        #[DataCollectionOf(ProposalProfileData::class)]
+        public ?DataCollection $team,
     ) {}
 }

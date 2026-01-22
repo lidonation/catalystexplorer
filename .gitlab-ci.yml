@@ -31,7 +31,7 @@ stages:
 
 default:
   services:
-    - name: docker:dind
+    - name: docker:25-dind
       alias: docker
       command: [ "--tls=false" ]
   before_script:

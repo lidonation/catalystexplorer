@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Enums\CatalystCurrencies;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -105,16 +106,26 @@ class ProposalResource extends JsonResource
         // First try the actual database column value
         $directCurrency = $this->getOriginal('currency');
         if ($directCurrency) {
-            return $directCurrency;
+            return $directCurrency instanceof CatalystCurrencies
+                ? $directCurrency->value
+                : $directCurrency;
         }
 
         // Only check relationships if they're already loaded
         if ($this->relationLoaded('campaign') && $this->campaign?->currency) {
-            return $this->campaign->currency;
+            $campaignCurrency = $this->campaign->currency;
+
+            return $campaignCurrency instanceof CatalystCurrencies
+                ? $campaignCurrency->value
+                : $campaignCurrency;
         }
 
         if ($this->relationLoaded('fund') && $this->fund?->currency) {
-            return $this->fund->currency;
+            $fundCurrency = $this->fund->currency;
+
+            return $fundCurrency instanceof CatalystCurrencies
+                ? $fundCurrency->value
+                : $fundCurrency;
         }
 
         // Default fallback

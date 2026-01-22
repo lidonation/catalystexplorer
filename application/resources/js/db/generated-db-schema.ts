@@ -6,10 +6,14 @@
 
 export const TABLE_INDEXES = {
     "proposal_comparisons": "id, order",
-    "user_setting": "language"
+    "user_setting": "language",
+    "recently_visited_proposals": "id, visited_at",
+    "recently_visited_lists": "id, visited_at"
 };
 
 export interface DbModels {
     "proposal_comparisons": App.DataTransferObjects.ProposalData;
     "user_setting": App.DataTransferObjects.UserSettingData;
+    "recently_visited_proposals": App.DataTransferObjects.RecentlyVisitedProposalData;
+    "recently_visited_lists": App.DataTransferObjects.RecentlyVisitedListData;
 }

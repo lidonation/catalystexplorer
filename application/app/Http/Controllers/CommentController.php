@@ -15,7 +15,6 @@ class CommentController extends Controller
 {
     public function index(Request $request)
     {
-
         $request->validate([
             'commentable_type' => 'required|string',
             'commentable_id' => 'required|string',
@@ -62,16 +61,23 @@ class CommentController extends Controller
             return ['error' => 'Cannot save comment'];
         }
 
+        $user = auth()->user();
+
+        // Manually create comment to ensure UUID is generated before save
         $comment = new Comment([
-            'commentable_type' => $className,
-            'text' => $data['text'],
-            'parent_id' => $parentId,
-            'commentable_id' => $model->id,
             'original_text' => $data['text'],
-            'commentator_id' => auth()->user()?->id,
+            'commentator_id' => $user?->getKey(),
+            'commentator_type' => $user?->getMorphClass(),
+            'parent_id' => $parentId,
         ]);
 
+        // Set UUID before saving
+        $comment->id = (string) \Str::uuid();
+        $comment->commentable()->associate($model);
         $comment->save();
+
+        // Approve the comment automatically
+        $comment->approve();
 
         if (in_array(Searchable::class, class_uses_recursive($model))) {
             try {

@@ -1,3 +1,40 @@
+## [1.68.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.68.0...v1.68.1) (2026-01-21)
+
+
+### Bug Fixes
+
+* **funds, snapshots:** update voting power ranges and improve CSV import handling ([1427f60](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/1427f60212b300be7f7b0ac8eabb6226c0241aa6))
+* **proposal, api:** handle currency formatting in ProposalResource ([f871ad6](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/f871ad64f444c18f45ada5c6b1986671ab4bfe2a))
+
+# [1.68.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.67.4...v1.68.0) (2026-01-21)
+
+
+### Features
+
+* populating overall review scores ([19b4aab](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/19b4aabd10ccb7f813f4ded9119598ae753f2a4f))
+
+## [1.67.4](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.67.3...v1.67.4) (2026-01-20)
+
+
+### Bug Fixes
+
+* sync review scores ([ffcb68f](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/ffcb68ff5c80161963a769ac4a1ac0d4de00ced4))
+
+## [1.67.3](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.67.2...v1.67.3) (2026-01-20)
+
+
+### Bug Fixes
+
+* cleanup quickpitches ([d4d0690](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/d4d0690d01a99be3ee1c9adac22cd34b345444e9))
+* cleanup quickpitches ([b929c3b](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/b929c3bf1ff09bdd7e394fdabc1afef11049d95b))
+
+## [1.67.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.67.1...v1.67.2) (2026-01-20)
+
+
+### Bug Fixes
+
+* cleanup quickpitches ([e642874](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/e642874d4e338bd15f93e5e1f86e1731ef6e14bf))
+
 ## [1.67.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.67.0...v1.67.1) (2026-01-15)
 
 

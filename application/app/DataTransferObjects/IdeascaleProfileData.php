@@ -108,6 +108,11 @@ final class IdeascaleProfileData extends Data
 
         public ?UserData $claimed_by,
 
+        #[DataCollectionOf(
+            ClaimedProfileData::class
+        )]
+        public ?DataCollection $claimed_profiles,
+
         #[DataCollectionOf(ReviewData::class)]
         public ?DataCollection $reviews,
     ) {}

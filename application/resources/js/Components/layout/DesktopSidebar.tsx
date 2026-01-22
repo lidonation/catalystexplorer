@@ -8,11 +8,15 @@ import UserDetails from './UserDetails';
 import UserNavigation from './UserNavigation';
 import User = App.DataTransferObjects.UserData;
 
-function DesktopSidebar(props: any) {
+interface DesktopSidebarProps {
+    hideLogo?: boolean;
+    [key: string]: any;
+}
+
+function DesktopSidebar({ hideLogo = false, ...rest }: DesktopSidebarProps) {
     const { t } = useLaravelReactI18n();
     const { auth } = usePage().props;
     const { url } = usePage();
-    const { ...rest } = props;
     const isOnMyRoute = url.includes('/my/');
 
     const currentPath =
@@ -29,9 +33,11 @@ function DesktopSidebar(props: any) {
             aria-label={t('navigation.desktop.sidebar')}
             data-testid="desktop-sidebar-navigation"
         >
-            <section className="flex h-6 shrink-0 items-center sm:pt-8">
-                <CatalystLogo className="w-full" />
-            </section>
+            {!hideLogo && (
+                <section className="flex h-6 shrink-0 items-center sm:pt-8">
+                    <CatalystLogo className="w-full" />
+                </section>
+            )}
 
             <section className="h-full overflow-y-auto">
                 <section

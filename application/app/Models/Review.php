@@ -19,6 +19,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 class Review extends Model
 {
     use HasMetaData, HasRelationships, HasUuids, Searchable;
+    use \Spatie\Comments\Models\Concerns\HasComments;
 
     protected $guarded = [];
 
@@ -195,9 +196,23 @@ class Review extends Model
         }
     }
 
+    public function commentableName(): string
+    {
+        return 'Review';
+    }
+
+    public function commentUrl(): string
+    {
+        if ($this->proposal) {
+            return route('proposals.show', $this->proposal);
+        }
+
+        return route('home');
+    }
+
     public function toSearchableArray(): array
     {
-        $this->load(['reviewer', 'model', 'rating', 'discussion', 'proposal', 'proposal.fund']);
+        $this->load(['reviewer', 'model', 'rating', 'discussion', 'proposal', 'proposal.fund', 'proposal.team']);
 
         // Safely load relationships with error handling
         $array = $this->toArray();
@@ -212,6 +227,8 @@ class Review extends Model
         $parentData = null;
         $positiveRankingsCount = 0;
         $negativeRankingsCount = 0;
+        $discussionId = null;
+        $teamData = null;
 
         try {
             $discussionData = $this->discussion?->toArray();
@@ -220,6 +237,33 @@ class Review extends Model
                 'review_id' => $this->id,
                 'error' => $e->getMessage(),
             ]);
+        }
+
+        // Get discussion ID from discussion data
+        if ($discussionData && isset($discussionData['id'])) {
+            $discussionId = $discussionData['id'];
+        }
+
+        // Get team data from proposal
+        if ($this->proposal) {
+            try {
+                $teamData = $this->proposal->team?->map(fn ($teamMember) => [
+                    'id' => $teamMember->id ?? null,
+                    'model' => $teamMember->model ? [
+                        'id' => $teamMember->model->id ?? null,
+                        'name' => $teamMember->model->name ?? null,
+                        'claimed_profiles' => $teamMember->model->claimed_profiles?->map(fn ($claim) => [
+                            'user_id' => $claim->user_id ?? null,
+                            'claimed_at' => $claim->claimed_at ?? null,
+                        ])->toArray() ?? null,
+                    ] : null,
+                ])->toArray() ?? null;
+            } catch (\Exception $e) {
+                \Log::error('Error loading team for review in toSearchableArray', [
+                    'review_id' => $this->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
         }
 
         try {
@@ -334,6 +378,8 @@ class Review extends Model
             'ranking' => $rankingData,
             'positive_rankings' => $positiveRankingsCount,
             'negative_rankings' => $negativeRankingsCount,
+            'discussion_id' => $discussionId,
+            'team' => $teamData,
             'proposal' => $proposalData,
         ]);
     }
