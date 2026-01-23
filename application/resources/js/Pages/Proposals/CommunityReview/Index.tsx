@@ -33,11 +33,17 @@ const Index = ({
     const { t } = useLaravelReactI18n();
 
     // Use server-side OG meta data if available (for SSR)
-    const ogImageUrl = ogMeta?.ogImageUrl ?? 
-        (typeof window !== 'undefined' ? `${window.location.origin}/og-image/proposals/${proposal.slug}` : '');
-    const proposalUrl = ogMeta?.proposalUrl ?? 
+    const ogImageUrl =
+        ogMeta?.ogImageUrl ??
+        (typeof window !== 'undefined'
+            ? `${window.location.origin}/og-image/proposals/${proposal.slug}`
+            : '');
+    const proposalUrl =
+        ogMeta?.proposalUrl ??
         (typeof window !== 'undefined' ? window.location.href : '');
-    const description = ogMeta?.description ?? (proposal.social_excerpt || proposal.excerpt || proposal.title || '');
+    const description =
+        ogMeta?.description ??
+        (proposal.social_excerpt || proposal.excerpt || proposal.title || '');
 
     return (
         <>
@@ -58,33 +64,38 @@ const Index = ({
                 setGlobalQuickPitchView={setGlobalQuickPitchView}
                 ogMeta={ogMeta}
             >
-            <WhenVisible data="reviews" fallback={<div>Loading Reviews</div>}>
-                <div className="container">
-                    {reviews?.total > 0 ? (
-                        <div className="space-y-8">
-                            <div>
-                                <AggregatedReviewsSummary
-                                    reviews={reviews?.data}
-                                    aggregatedRatings={aggregatedRatings}
-                                    reviewsCount={reviews.total}
-                                />
+                <WhenVisible
+                    data="reviews"
+                    fallback={<div>Loading Reviews</div>}
+                >
+                    <div>
+                        {reviews?.total > 0 ? (
+                            <div className="w-full space-y-8">
+                                <div>
+                                    <AggregatedReviewsSummary
+                                        reviews={reviews?.data}
+                                        aggregatedRatings={aggregatedRatings}
+                                        reviewsCount={reviews.total}
+                                    />
+                                </div>
+                                <div className="w-full">
+                                    <RelatedReviews
+                                        reviews={reviews}
+                                        routeParam={{
+                                            [ParamsEnum.PROPOSALS]: proposal.id
+                                                ? [proposal.id]
+                                                : null,
+                                        }}
+                                    />
+                                </div>
                             </div>
-                            <RelatedReviews
-                                reviews={reviews}
-                                routeParam={{
-                                    [ParamsEnum.PROPOSALS]: proposal.id
-                                        ? [proposal.id]
-                                        : null,
-                                }}
-                            />
-                        </div>
-                    ) : (
-                        <div className="py-8 text-center">
-                            <RecordsNotFound />
-                        </div>
-                    )}
-                </div>
-            </WhenVisible>
+                        ) : (
+                            <div className="py-8 text-center">
+                                <RecordsNotFound />
+                            </div>
+                        )}
+                    </div>
+                </WhenVisible>
             </ProposalLayout>
         </>
     );

@@ -24,16 +24,15 @@ const RelatedReviews: React.FC<RelatedReviewsProps> = ({
     const { t } = useLaravelReactI18n();
 
     const breakpointColumnsObj = {
-        default: 1,
-        1100: 2,
+        default: 2,
         768: 1,
     };
 
     return (
-        <div>
+        <div className="relative z-20 w-full">
             <Masonry
                 breakpointCols={breakpointColumnsObj}
-                className="relative flex w-auto"
+                className="relative flex w-full"
                 columnClassName="pr-2"
             >
                 {reviews?.data?.map((review, index) => (
@@ -48,7 +47,7 @@ const RelatedReviews: React.FC<RelatedReviewsProps> = ({
                     </section>
                 ))}
                 {!!reviews?.data && reviews?.total > reviews?.per_page && (
-                    <div className="">
+                    <div className="relative" style={{ zIndex: 0 }}>
                         <Link
                             href={useLocalizedRoute(
                                 'reviews.index',
