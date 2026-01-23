@@ -240,52 +240,56 @@ const StatusDistributionCard: React.FC<StatusDistributionCardProps> = ({
     { id: 'unfunded', label: t('project.status.unfunded'), value: unfunded, colorClass: 'bg-[var(--cx-dark)]' },
   ];
 
-  if (isMobile) {
-    return (
-        <div className="w-full flex flex-col gap-3 ">
-            <div className="text-content-light text-base font-semibold leading-7">
-                {t('Proposal Status Distribution')}
-            </div>
+if (isMobile) {
+  return (
+    <div className="w-full flex flex-col gap-3 border-b border-content-light/20">
+      <div className="text-content-light text-base font-semibold leading-7">
+        {t('Proposal Status Distribution')}
+      </div>
 
-
-            <div className="flex w-full gap-10">
-                <div className="basis-1/2 flex items-center justify-center">
-                    <ProposalStatusPieChart
-                    completed={completed}
-                    inProgress={inProgress}
-                    unfunded={unfunded}
-                    total={total}
-                    />
-                </div>
-                <div className="basis-1/2 space-y-3 items-end justify-end">
-                    {legendItems.map((item) => {
-                        const percent =
-                            total > 0 ? ((item.value / total) * 100).toFixed(1) : '0.0';
-
-                        return (
-                            <div key={item.id} className="flex flex-col gap-0.5">
-                                <div className="flex items-center gap-2">
-                                    <span className={`w-2.5 h-2.5 rounded-full ${item.colorClass}`} />
-                                    <span className="text-content-light text-4">
-                                    {item.label}
-                                    </span>
-                                </div>
-                                <div>
-                                    <span className="text-content-light text-4 font-semibold">
-                                    {item.value.toLocaleString()}
-                                    </span>
-                                    <span className="text-content-light text-4 opacity-80 ml-1">
-                                    ({percent}%)
-                                    </span>
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
+      <div className="w-full grid grid-cols-2 gap-4 items-end py-2">
+        {/* Pie chart column */}
+        <div className="flex items-center justify-center">
+          <div className="w-38 h-38">
+            <ProposalStatusPieChart
+              completed={completed}
+              inProgress={inProgress}
+              unfunded={unfunded}
+              total={total}
+            />
+          </div>
         </div>
-    );
-  }
+
+        {/* Legend column */}
+        <div className="space-y-3">
+          {legendItems.map((item) => {
+            const percent =
+              total > 0 ? ((item.value / total) * 100).toFixed(1) : '0.0';
+
+            return (
+              <div key={item.id} className="flex flex-col gap-0.5">
+                <div className="flex items-center gap-2">
+                  <span className={`w-2.5 h-2.5 rounded-full ${item.colorClass}`} />
+                  <span className="text-content-light text-4">
+                    {item.label}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-content-light text-4 font-semibold">
+                    {item.value.toLocaleString()}
+                  </span>
+                  <span className="text-content-light text-4 opacity-80 ml-1">
+                    ({percent}%)
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
 
   return (
   <div className="flex-1 w-full rounded-xl bg-[var(--cx-background-gradient-1-dark)]  dark:bg-[var(--cx-background-gradient-2-dark)] lg:p-3 flex flex-col gap-5">
@@ -367,7 +371,7 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
     };
 
     const wrapperClasses = isMobile
-        ? 'self-stretch flex flex-col justify-start items-start gap-2.5'
+        ? 'self-stretch flex flex-col justify-start items-start gap-0.5'
         : 'flex-1 p-2.5 bg-[var(--cx-background-gradient-1-dark)]  dark:bg-[var(--cx-background-gradient-2-dark)] rounded-xl inline-flex flex-col justify-start items-start gap-4';
 
     const getCurrencyValues = () => {
@@ -529,7 +533,7 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
             </div>
 
             {/* Funded vs Approved (Count-based metric) */}
-            <div className="self-stretch flex flex-col justify-start items-start gap-1 pt-3 mt-3 border-t border-content-light/10">
+            <div className="self-stretch flex flex-col justify-start items-start gap-1 border-content-light/10">
                 <div className="self-stretch inline-flex justify-between items-start">
                     <div className={`text-4 font-normal leading-5`}>
                         {t('Funded vs Approved')} <span className="text-content-light/60 text-[10px]">({t('proposals')})</span>
@@ -555,7 +559,7 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
                 </div>
             </div>
             {!isMobile && (
-                <div className="self-stretch flex flex-col justify-center items-center mt-4 border-t">
+                <div className="self-stretch flex flex-col justify-center items-center mt-4 border-t border-content-light/20">
                     <div className="text-content-light/80 text-[8px] font-normal mt-2 leading-5">
                         {t('Success Rate')}
                     </div>
@@ -569,14 +573,14 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
             )}
 
             {isMobile && (
-                <div className="self-stretch flex flex-col justify-center items-center mt-2">
+                <div className="self-stretch flex flex-col justify-center items-center  border-b border-content-light/20">
                     <div className="text-content-light/80 text-[8px] font-normal leading-5">
                         {t('Success Rate')}
                     </div>
                     <div className="text-content-light text-1 font-bold leading-5">
                         {approvedPercent}%
                     </div>
-                    <div className="text-center text-success text-5 font-medium leading-5">
+                    <div className="text-center text-success text-5 font-medium leading-5 mb-2">
                         {t('Approval Rate')}
                     </div>
                 </div>
@@ -586,103 +590,148 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
 };
 
 type KpisCardProps = {
-    metrics: ProposalMetrics;
-    completionRate: number;
-    avgRequestedADA: number;
-    avgRequestedUSD: number;
-    avgRequestedUSDM: number;
-    isMobile?: boolean;
+  metrics: ProposalMetrics;
+  completionRate: number;
+  avgRequestedADA: number;
+  avgRequestedUSD: number;
+  avgRequestedUSDM: number;
+  isMobile?: boolean;
 };
 
-const KpisCard: React.FC<KpisCardProps> = ({ metrics, completionRate, avgRequestedADA, avgRequestedUSD, avgRequestedUSDM, isMobile = false }) => {
-    const { t } = useLaravelReactI18n();
-    const groupsUrl = useLocalizedRoute('groups.index');
-    const communitiesUrl = useLocalizedRoute('communities.index');
+const KpisCard: React.FC<KpisCardProps> = ({
+  metrics,
+  completionRate,
+  avgRequestedADA,
+  avgRequestedUSD,
+  avgRequestedUSDM,
+  isMobile = false,
+}) => {
+  const { t } = useLaravelReactI18n();
+  const groupsUrl = useLocalizedRoute('groups.index');
+  const communitiesUrl = useLocalizedRoute('communities.index');
 
-    const wrapperClasses = isMobile
-        ? 'self-stretch inline-flex flex-col justify-start items-center gap-2.5'
-        : 'flex-1 p-2.5 bg-[var(--cx-background-gradient-1-dark)]  dark:bg-[var(--cx-background-gradient-2-dark)]  rounded-xl inline-flex flex-col justify-start items-start gap-4';
+  const wrapperClasses = isMobile
+    ? 'self-stretch inline-flex flex-col justify-start items-center gap-0.5'
+    : 'flex-1 p-2.5 bg-[var(--cx-background-gradient-1-dark)] dark:bg-[var(--cx-background-gradient-2-dark)] rounded-xl inline-flex flex-col justify-start items-start gap-4';
 
-    const hasADA = avgRequestedADA > 0;
-    const hasUSD = avgRequestedUSD > 0;
-    const hasUSDM = avgRequestedUSDM > 0;
+  const hasADA = avgRequestedADA > 0;
+  const hasUSD = avgRequestedUSD > 0;
+  const hasUSDM = avgRequestedUSDM > 0;
 
-    return (
-        <div className={wrapperClasses}>
-            <div className="inline-flex justify-start items-start gap-2  w-full">
-                <div className='text-content-light text-lg lg:text-xl font-semibold leading-7'>{t('KPIs')}</div>
-            </div>
-            <div className="self-stretch flex flex-col justify-start items-start gap-3 ">
-                {/* AVG. AMOUNT REQUESTED */}
-                <div className="self-stretch flex flex-col justify-center items-start">
-                    <div
-                        className={` text-5 text-content-light/80 font-normal leading-5 whitespace-nowrap`}
-                    >
-                        {t('AVG. AMOUNT REQUESTED')} ({t('per submitted proposal')})
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        {hasADA && (
-                            <div className={`text-1 font-bold leading-5`}>
-                                {shortNumber(avgRequestedADA, 2)} ₳
-                            </div>
-                        )}
-                        {hasUSD && (
-                            <div className={`text-1 font-bold leading-5`}>
-                                ${shortNumber(avgRequestedUSD, 2)}
-                            </div>
-                        )}
-                        {hasUSDM && (
-                            <div className={`text-1 font-bold leading-5`}>
-                                ${shortNumber(avgRequestedUSDM, 2)} USDM
-                            </div>
-                        )}
-                        {!hasADA && !hasUSD && !hasUSDM && (
-                            <div className={`text-1 font-bold leading-5`}>0</div>
-                        )}
-                    </div>
-                </div>
-
-                {/* COMPLETION RATE */}
-                <div className="self-stretch flex flex-col justify-center items-start ">
-                    <div
-                        className={` text-5 text-content-light/80 font-normal leading-5`}
-                    >
-                        {t('COMPLETION RATE')} ({t('of approved proposals')})
-                    </div>
-                    <div className={` text-1 font-bold leading-5`}>
-                        {completionRate.toFixed(1)}%
-                    </div>
-                </div>
-                <div className="self-stretch flex flex-col justify-center items-start">
-                    <div
-                        className={` text-5 text-content-light/80 font-normal leading-5`}
-                    >
-                        {t('GROUPS')}
-                    </div>
-                    <Link href={groupsUrl} className={`text-1 font-bold leading-5 hover:text-primary transition-colors`}>
-                        {(metrics.groupsCount || 0).toLocaleString()}
-                    </Link>
-                    <div
-                        className={` text-5 text-content-light/80 font-normal leading-5`}
-                    >
-                        {t('Teams supported')}
-                    </div>
-                </div>
-
-                {/* COMMUNITIES */}
-                <div className="self-stretch flex flex-col justify-center items-start">
-                    <div
-                        className={` text-5 text-content-light/80 font-normal leading-5`}
-                    >
-                        {t('COMMUNITIES')}
-                    </div>
-                    <Link href={communitiesUrl} className={`text-1 font-bold leading-5 hover:text-primary transition-colors`}>
-                        {(metrics.communitiesCount || 0).toLocaleString()}
-                    </Link>
-                </div>
-            </div>
+  return (
+    <div className={wrapperClasses}>
+      <div className="inline-flex justify-start items-start gap-2 w-full">
+        <div className="text-content-light text-lg lg:text-xl font-semibold leading-7">
+          {t('KPIs')}
         </div>
-    );
+      </div>
+
+      {isMobile ? (
+        <div className="w-full grid grid-cols-2 gap-x-4 gap-y-2 items-start">
+          {/* Row 1: Titles (forced same horizontal line) */}
+          <div className="text-5 text-content-light/80 font-normal leading-5 whitespace-nowrap">
+            {t('AVG. AMOUNT REQUESTED')}
+          </div>
+          <div className="text-5 text-content-light/80 font-normal leading-5 whitespace-nowrap">
+            {t('COMPLETION RATE')}
+          </div>
+
+          {/* Row 2: Values */}
+          <div className="flex flex-col gap-2">
+            {hasADA && (
+              <div className="text-1 sm:text-3 font-bold leading-5">
+                {shortNumber(avgRequestedADA, 2)} ₳
+              </div>
+            )}
+            {hasUSD && (
+              <div className="text-1 font-bold leading-5">
+                ${shortNumber(avgRequestedUSD, 2)}
+              </div>
+            )}
+            {hasUSDM && (
+              <div className="text-1 font-bold leading-5">
+                ${shortNumber(avgRequestedUSDM, 2)} USDM
+              </div>
+            )}
+            {!hasADA && !hasUSD && !hasUSDM && (
+              <div className="text-1 font-bold leading-5">0</div>
+            )}
+          </div>
+          <div className="text-1 font-bold leading-5">
+            {completionRate.toFixed(1)}%
+          </div>
+        </div>
+      ) : (
+        <div className="self-stretch flex flex-col justify-start items-start gap-3">
+          {/* AVG. AMOUNT REQUESTED */}
+          <div className="self-stretch flex flex-col justify-center items-start">
+            <div className="text-5 text-content-light/80 font-normal leading-5 whitespace-nowrap">
+              {t('AVG. AMOUNT REQUESTED')} ({t('per submitted proposal')})
+            </div>
+            <div className="flex flex-col gap-2">
+              {hasADA && (
+                <div className="text-1 sm:text-3 font-bold leading-5">
+                  {shortNumber(avgRequestedADA, 2)} ₳
+                </div>
+              )}
+              {hasUSD && (
+                <div className="text-1 font-bold leading-5">
+                  ${shortNumber(avgRequestedUSD, 2)}
+                </div>
+              )}
+              {hasUSDM && (
+                <div className="text-1 font-bold leading-5">
+                  ${shortNumber(avgRequestedUSDM, 2)} USDM
+                </div>
+              )}
+              {!hasADA && !hasUSD && !hasUSDM && (
+                <div className="text-1 font-bold leading-5">0</div>
+              )}
+            </div>
+          </div>
+
+          {/* COMPLETION RATE */}
+          <div className="self-stretch flex flex-col justify-center items-start">
+            <div className="text-5 text-content-light/80 font-normal leading-5">
+              {t('COMPLETION RATE')} ({t('of approved proposals')})
+            </div>
+            <div className="text-1 font-bold leading-5">
+              {completionRate.toFixed(1)}%
+            </div>
+          </div>
+
+          {/* GROUPS */}
+          <div className="self-stretch flex flex-col justify-center items-start">
+            <div className="text-5 text-content-light/80 font-normal leading-5">
+              {t('GROUPS')}
+            </div>
+            <Link
+              href={groupsUrl}
+              className="text-1 font-bold leading-5 hover:text-primary transition-colors"
+            >
+              {(metrics.groupsCount || 0).toLocaleString()}
+            </Link>
+            <div className="text-5 text-content-light/80 font-normal leading-5">
+              {t('Teams supported')}
+            </div>
+          </div>
+
+          {/* COMMUNITIES */}
+          <div className="self-stretch flex flex-col justify-center items-start">
+            <div className="text-5 text-content-light/80 font-normal leading-5">
+              {t('COMMUNITIES')}
+            </div>
+            <Link
+              href={communitiesUrl}
+              className="text-1 font-bold leading-5 hover:text-primary transition-colors"
+            >
+              {(metrics.communitiesCount || 0).toLocaleString()}
+            </Link>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 const AnalyticsView: React.FC<AnalyticsViewProps> = ({ metrics, isMobile = false, onClose }) => {
@@ -691,7 +740,7 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({ metrics, isMobile = false
 
     if (isMobile) {
         return (
-            <div className="space-y-6 px-4 py-4">
+            <div className="space-y-2 px-4 py-1">
                 <StatusDistributionCard metrics={metrics} isMobile />
 
                 <FundingOverviewCard
