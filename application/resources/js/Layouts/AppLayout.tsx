@@ -155,7 +155,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                         <main
                             id="main-content"
                             data-testid="main-content"
-                            className=""
+                            className="relative z-20"
                         >
 
 

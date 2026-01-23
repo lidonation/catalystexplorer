@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { ReactNode, RefObject, useEffect, useRef, useState } from 'react';
+import { ReactNode, RefObject, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 export interface ExpandableContentAnimationProps {
     children: ReactNode;
@@ -44,11 +44,30 @@ export default function ExpandableContentAnimation({
         }
     }, [children, lineClamp, contentRef]);
 
-    useEffect(() => {
-        if (cardRef.current && !baseHeight) {
-            setBaseHeight(cardRef.current.offsetHeight);
-        }
-    }, [cardRef.current]);
+    useLayoutEffect(() => {
+        const card = cardRef.current;
+        if (!card) return;
+
+        const updateHeight = () => {
+            if (!isHovered) {
+                const height = card.offsetHeight;
+                if (height > 0) {
+                    setBaseHeight(height);
+                }
+            }
+        };
+
+        updateHeight();
+
+        const resizeObserver = new ResizeObserver(() => {
+            if (!isHovered) {
+                updateHeight();
+            }
+        });
+        resizeObserver.observe(card);
+
+        return () => resizeObserver.disconnect();
+    }, [children, lineClamp, isHovered]);
 
     const renderCardContent = () => {
         const lineHeightRem = 1.5;
@@ -84,10 +103,10 @@ export default function ExpandableContentAnimation({
         <div
             className={clsx(
                 'relative w-full',
-                isHovered && isExpandable ? 'overflow-visible' : '',
+                isHovered && isExpandable ? 'overflow-visible' : 'overflow-hidden',
             )}
             style={{
-                height: baseHeight > 0 ? baseHeight : 'auto',
+                height: baseHeight > 0 ? baseHeight : undefined,
             }}
         >
             <div
@@ -96,13 +115,14 @@ export default function ExpandableContentAnimation({
                 onMouseLeave={() => handleHoverChange(false)}
                 className={clsx(
                     'relative top-0 right-0 left-0 w-full',
-                    isHovered && isExpandable && 'absolute z-30',
+                    isHovered && isExpandable && 'absolute z-50 shadow-md',
                 )}
             >
                 <div className="w-full transition-shadow duration-300 ease-in-out">
                     {renderCardContent()}
                 </div>
             </div>
+            {baseHeight > 0 && isHovered && isExpandable && <span className="absolute bottom-0 left-0">heyyyy</span>}
         </div>
     );
 }
