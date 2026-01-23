@@ -9,6 +9,7 @@ COMPOSE_FLAGS ?=
 .PHONY: init
 init:
 	cp ./application/.env.example ./application/.env
+	make backend-install
 	docker run --rm --interactive --tty \
 		--volume ${PWD}:/app \
 		--workdir /app \
@@ -150,7 +151,7 @@ sh:
 
 .PHONY: status
 status:
-	docker compose ps
+	docker-compose ps
 
 .PHONY: up
 up:
@@ -167,12 +168,11 @@ vite:
 
 .PHONY: watch
 watch:
-	docker compose up -d --remove-orphans $(COMPOSE_FLAGS) && $(sail) npx vite --force -- --unsafe-perm=true
+	docker-compose up -d --remove-orphans $(COMPOSE_FLAGS) && $(sail) npx vite --force -- --unsafe-perm=true
 
 .PHONY: watch-ext
 watch-ext:
-	docker compose up -d --remove-orphans $(filter-out $@,$(MAKECMDGOALS)) && $(sail) npx vite --force -- --unsafe-perm=true
-
+	docker-compose up -d --remove-orphans $(filter-out $@,$(MAKECMDGOALS)) && $(sail) npx vite --force -- --unsafe-perm=true
 .PHONY: test-backend
 test-backend:
 	docker-compose -f docker-compose.testing.yml up -d && \
@@ -180,7 +180,6 @@ test-backend:
 	docker-compose -f docker-compose.testing.yml exec -T catalystexplorer_test.com vendor/bin/pest --group=arch --parallel && \
 	sleep 3 && \
  	docker-compose -f docker-compose.testing.yml down --volumes
-
 .PHONY: test-arch
 test-arch:
 	make test-backend && \
@@ -201,7 +200,7 @@ test-e2e:
 	@sleep 5
 	@echo "Installing Playwright browsers (if not already installed)..."
 	@cd ./application && npx playwright install --with-deps
-	@echo "Running Playwright E2E tests..."
+	@echo "Running Playwright E2E tests...
 	@cd ./application && \
 	if [ -n "$(FILE)" ]; then \
 		npx playwright test $(FILE); \

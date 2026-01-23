@@ -3,12 +3,13 @@ import SearchVariants from '@/Components/SearchVariants';
 import useEnterKey from '@/useHooks/useEnterKey';
 import { router } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 function GlobalSearch() {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchFilters, setSearchFilters] = useState<string[]>([]);
     const [isFocused, setIsFocused] = useState(false);
+    const formRef = useRef<HTMLFormElement>(null);
 
     const { t } = useLaravelReactI18n();
 
@@ -20,7 +21,7 @@ function GlobalSearch() {
         submit(syntheticEvent as unknown as React.FormEvent);
     };
 
-    useEnterKey(enterHandler);
+    useEnterKey(enterHandler, { targetRef: formRef });
 
     const handleSearch = (newTerm: string) => {
         setSearchTerm(newTerm);
@@ -48,6 +49,7 @@ function GlobalSearch() {
     return (
         <form
             onSubmit={submit}
+            ref={formRef}
             className={`divide-gray-light divide-border bg-background flex items-center divide-x-2 rounded-lg transition-all duration-200 ${
                 isFocused ? 'ring-primary ring-3' : ''
             }`}

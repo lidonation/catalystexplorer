@@ -17,10 +17,14 @@ class ProfileModelCast implements Cast
     public function cast(DataProperty $property, mixed $value, array $properties, CreationContext $context): IdeascaleProfileData|CatalystProfileData
     {
         if ($value instanceof IdeascaleProfile) {
+            $value->load('claimed_profiles');
+
             return IdeascaleProfileData::from($value);
         }
 
         if ($value instanceof CatalystProfile) {
+            $value->load('claimed_profiles');
+
             return CatalystProfileData::from($value);
         }
 

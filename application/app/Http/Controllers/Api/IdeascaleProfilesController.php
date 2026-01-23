@@ -77,9 +77,9 @@ class IdeascaleProfilesController extends Controller
         return $pagination->onEachSide(1)->toArray();
     }
 
-    public function connections(Request $request, int $id): array
+    public function connections(Request $request, string $uuid): array
     {
-        $ideascaleProfile = IdeascaleProfile::findOrFail($id);
+        $ideascaleProfile = IdeascaleProfile::findOrFail($uuid);
 
         $connections = $ideascaleProfile->getConnectionsData($request);
 
@@ -88,11 +88,22 @@ class IdeascaleProfilesController extends Controller
 
     public function incrementalConnections(Request $request): array|Response
     {
-        $id = $request->get('id');
-        $ideascaleProfile = IdeascaleProfile::find($id);
+        $identifier = $request->get('hash');
 
-        $connections = $ideascaleProfile->getIncrementalConnectionsData($request);
+        if (! $identifier) {
+            return response([
+                'error' => 'Missing required parameter: hash or id',
+            ], Response::HTTP_BAD_REQUEST);
+        }
 
-        return $connections;
+        $ideascaleProfile = IdeascaleProfile::find($identifier);
+
+        if (! $ideascaleProfile) {
+            return response([
+                'error' => 'Ideascale Profile not found',
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        return $ideascaleProfile->getIncrementalConnectionsData($request);
     }
 }

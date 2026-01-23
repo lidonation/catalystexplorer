@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Concerns\HasCatalystProposers;
+use App\Concerns\HasConnections;
+use App\Models\Pivot\ClaimedProfile;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Laravel\Scout\Searchable;
 use Spatie\Image\Enums\CropPosition;
 use Spatie\MediaLibrary\HasMedia;
@@ -15,7 +18,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class CatalystProfile extends Model implements HasMedia
 {
-    use HasCatalystProposers, HasUuids, InteractsWithMedia, Searchable;
+    use HasCatalystProposers, HasConnections, HasUuids, InteractsWithMedia, Searchable;
 
     public $guarded = [];
 
@@ -45,6 +48,11 @@ class CatalystProfile extends Model implements HasMedia
         );
     }
 
+    public function claimed_profiles(): MorphMany
+    {
+        return $this->morphMany(ClaimedProfile::class, 'claimable');
+    }
+
     public static function getSortableAttributes(): array
     {
         return [
@@ -70,7 +78,6 @@ class CatalystProfile extends Model implements HasMedia
         return [
             'id',
             'proposals_count',
-            'claimed_by',
             'proposals.campaign',
             'proposals.tags',
             'proposals',

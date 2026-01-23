@@ -12,7 +12,12 @@ const ensureOrderIndex = (indexes: Record<string, string>) => {
 };
 
 const CURRENT_SCHEMA = ensureOrderIndex(TABLE_INDEXES);
-const SCHEMA_VERSION = parseInt(import.meta.env.VITE_DB_VERSION || '1', 10);
+enum DbSchemaVersion {
+    Initial = 1,
+    Current = 4,
+}
+
+const SCHEMA_VERSION = DbSchemaVersion.Current;
 
 class Cx_db extends Dexie {
     constructor() {

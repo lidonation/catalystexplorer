@@ -138,11 +138,20 @@ class ImportVotingPower extends Action
                 return [$path, $headerRow];
             }
 
-            if ($this->rowLooksLikeHeader($firstRow)) {
-                $firstRow = $this->readCsvRow($inputHandle);
+            $maxHeaderRows = 10; // Safety limit
+            $headerRowsSkipped = 0;
+            $firstDataRow = $firstRow;
+
+            while (! $this->isDataRow($firstDataRow) && $headerRowsSkipped < $maxHeaderRows) {
+                $firstDataRow = $this->readCsvRow($inputHandle);
+                $headerRowsSkipped++;
+
+                if ($firstDataRow === false) {
+                    throw new \RuntimeException('Unable to find data rows in uploaded voting power file.');
+                }
             }
 
-            $headerRow = $this->resolveHeaderFromRow($firstRow, $expectedHeaders);
+            $headerRow = $this->resolveHeaderFromRow($firstDataRow, $expectedHeaders);
 
             $outputHandle = fopen('php://temp', 'w+');
 
@@ -152,8 +161,8 @@ class ImportVotingPower extends Action
 
             $this->writeCsvRow($outputHandle, $headerRow);
 
-            if ($firstRow !== false) {
-                $this->writeCsvRow($outputHandle, $firstRow);
+            if ($firstDataRow !== false) {
+                $this->writeCsvRow($outputHandle, $firstDataRow);
             }
 
             while (($row = $this->readCsvRow($inputHandle)) !== false) {
@@ -205,19 +214,12 @@ class ImportVotingPower extends Action
 
     protected function rowMatchesHeader(array $row, array $expected): bool
     {
-        $normalize = static fn (array $values) => array_map(
-            static fn ($value) => strtolower(trim((string) $value)),
+        $normalize = fn (array $values) => array_map(
+            fn ($value) => strtolower($this->cleanString((string) $value)),
             array_slice($values, 0, count($expected))
         );
 
         return $normalize($row) === $normalize($expected);
-    }
-
-    protected function rowLooksLikeHeader(array $row): bool
-    {
-        return isset($row[0], $row[1])
-            && ! is_numeric($row[0])
-            && ! is_numeric($row[1]);
     }
 
     protected function resolveHeaderFromRow(array|false $row, array $fallback): array
@@ -226,7 +228,22 @@ class ImportVotingPower extends Action
             return $fallback;
         }
 
-        return is_numeric($row[1]) ? $fallback : ['voting_power', 'stake_address'];
+        $col0 = $this->cleanString((string) ($row[0] ?? ''));
+        $col1 = $this->cleanString((string) ($row[1] ?? ''));
+
+        // Check data patterns to determine actual column order
+        if ($this->isLikelyStakeAddress($col0) && $this->isNumericValue($col1)) {
+            // Column 0 is stake_address, Column 1 is voting_power
+            return ['stake_address', 'voting_power'];
+        }
+
+        if ($this->isLikelyStakeAddress($col1) && $this->isNumericValue($col0)) {
+            // Column 0 is voting_power, Column 1 is stake_address
+            return ['voting_power', 'stake_address'];
+        }
+
+        // Cannot determine from data, use fallback
+        return $fallback;
     }
 
     protected function writeCsvRow($handle, array $row): void
@@ -236,6 +253,68 @@ class ImportVotingPower extends Action
         }
 
         fputcsv($handle, $row, self::CSV_DELIMITER, self::CSV_ENCLOSURE, self::CSV_ESCAPE);
+    }
+
+    protected function cleanString(string $value): string
+    {
+        // Remove UTF-8 BOM if present
+        $value = preg_replace('/^\xEF\xBB\xBF/', '', $value) ?? $value;
+        $value = trim($value);
+        // Remove surrounding quotes
+        $value = trim($value, "\"'");
+
+        return trim($value);
+    }
+
+    /**
+     * Check if a value looks like a stake address.
+     */
+    protected function isLikelyStakeAddress(?string $value): bool
+    {
+        if ($value === null || $value === '') {
+            return false;
+        }
+
+        return (bool) preg_match('/^(stake1|addr1|ca1)[0-9a-z]+$/i', $value);
+    }
+
+    /**
+     * Check if a value is numeric (for voting power).
+     */
+    protected function isNumericValue(mixed $value): bool
+    {
+        if ($value === null) {
+            return false;
+        }
+
+        if (is_numeric($value)) {
+            return true;
+        }
+
+        if (is_string($value)) {
+            return is_numeric($this->cleanString($value));
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if a row looks like a data row (not a header row).
+     *
+     * @param  array<int, string|null>  $row
+     */
+    protected function isDataRow(array $row): bool
+    {
+        if (count($row) < 2) {
+            return false;
+        }
+
+        $col0 = $this->cleanString((string) ($row[0] ?? ''));
+        $col1 = $this->cleanString((string) ($row[1] ?? ''));
+
+        // Data row: one column is stake address, other is numeric voting power
+        return ($this->isLikelyStakeAddress($col0) && $this->isNumericValue($col1))
+            || ($this->isLikelyStakeAddress($col1) && $this->isNumericValue($col0));
     }
 
     /**

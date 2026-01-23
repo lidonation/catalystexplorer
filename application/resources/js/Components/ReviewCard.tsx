@@ -11,6 +11,7 @@ import Card from './Card';
 import ExpandableContent from './ExpandableContent';
 import ExpandableContentAnimation from './ExpandableContentAnimation';
 import RankingButtons from './RankingButtons';
+import ReviewComments from './ReviewComments';
 import { ReviewerInfo } from './ReviewerInfo';
 import { StarRating } from './ReviewsStar';
 import Paragraph from './atoms/Paragraph';
@@ -185,6 +186,13 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                                     </Link>
                                 </div>
                             )}
+                        </section>
+
+                        <section>
+                            <ReviewComments
+                                reviewId={review.id}
+                                team={review?.proposal?.team}
+                            />
                         </section>
                     </div>
                 </Card>

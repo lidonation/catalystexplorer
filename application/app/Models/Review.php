@@ -19,6 +19,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 class Review extends Model
 {
     use HasMetaData, HasRelationships, HasUuids, Searchable;
+    use \Spatie\Comments\Models\Concerns\HasComments;
 
     protected $guarded = [];
 
@@ -47,7 +48,7 @@ class Review extends Model
             'proposal.title',
             'proposal.id',
             'proposal.fund_id',
-            'proposal.ideascale_profiles.id',
+            'proposal.catalyst_profiles.id',
             'proposal.ideascale_profiles.id',
             'proposal.groups.id',
         ];
@@ -68,6 +69,8 @@ class Review extends Model
             'proposal.id',
             'proposal.fund_id',
             'proposal.content',
+            'proposal.catalyst_profiles.name',
+            'proposal.catalyst_profiles.username',
             'proposal.ideascale_profiles.name',
             'proposal.ideascale_profiles.username',
             'proposal.groups.id',
@@ -193,9 +196,23 @@ class Review extends Model
         }
     }
 
+    public function commentableName(): string
+    {
+        return 'Review';
+    }
+
+    public function commentUrl(): string
+    {
+        if ($this->proposal) {
+            return route('proposals.show', $this->proposal);
+        }
+
+        return route('home');
+    }
+
     public function toSearchableArray(): array
     {
-        $this->load(['reviewer', 'model', 'rating', 'discussion']);
+        $this->load(['reviewer', 'model', 'rating', 'discussion', 'proposal', 'proposal.fund', 'proposal.team']);
 
         // Safely load relationships with error handling
         $array = $this->toArray();
@@ -206,20 +223,12 @@ class Review extends Model
         }
 
         // Initialize data arrays with safe defaults
-        $modelData = null;
         $discussionData = null;
         $parentData = null;
         $positiveRankingsCount = 0;
         $negativeRankingsCount = 0;
-
-        try {
-            $modelData = $this->model?->toArray();
-        } catch (\Exception $e) {
-            \Log::error('Error loading model for review in toSearchableArray', [
-                'review_id' => $this->id,
-                'error' => $e->getMessage(),
-            ]);
-        }
+        $discussionId = null;
+        $teamData = null;
 
         try {
             $discussionData = $this->discussion?->toArray();
@@ -228,6 +237,33 @@ class Review extends Model
                 'review_id' => $this->id,
                 'error' => $e->getMessage(),
             ]);
+        }
+
+        // Get discussion ID from discussion data
+        if ($discussionData && isset($discussionData['id'])) {
+            $discussionId = $discussionData['id'];
+        }
+
+        // Get team data from proposal
+        if ($this->proposal) {
+            try {
+                $teamData = $this->proposal->team?->map(fn ($teamMember) => [
+                    'id' => $teamMember->id ?? null,
+                    'model' => $teamMember->model ? [
+                        'id' => $teamMember->model->id ?? null,
+                        'name' => $teamMember->model->name ?? null,
+                        'claimed_profiles' => $teamMember->model->claimed_profiles?->map(fn ($claim) => [
+                            'user_id' => $claim->user_id ?? null,
+                            'claimed_at' => $claim->claimed_at ?? null,
+                        ])->toArray() ?? null,
+                    ] : null,
+                ])->toArray() ?? null;
+            } catch (\Exception $e) {
+                \Log::error('Error loading team for review in toSearchableArray', [
+                    'review_id' => $this->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
         }
 
         try {
@@ -293,10 +329,48 @@ class Review extends Model
             ]);
         }
 
+        // Build proposal data for search index
+        $proposalData = null;
+        try {
+            if ($this->proposal) {
+                $proposalData = [
+                    'id' => $this->proposal->id,
+                    'title' => $this->proposal->title,
+                    'slug' => $this->proposal->slug,
+                    'link' => $this->proposal->link,
+                    'fund_id' => $this->proposal->fund_id,
+                    'fund' => $this->proposal->fund ? [
+                        'id' => $this->proposal->fund->id,
+                        'title' => $this->proposal->fund->title,
+                        'label' => $this->proposal->fund->label,
+                        'slug' => $this->proposal->fund->slug,
+                    ] : null,
+                    'groups' => $this->proposal->groups?->map(fn ($g) => [
+                        'id' => $g->id,
+                        'hash' => $g->hash ?? null,
+                    ])?->toArray() ?? [],
+                    'catalyst_profiles' => $this->proposal->catalyst_profiles?->map(fn ($p) => [
+                        'id' => $p->id,
+                        'name' => $p->name,
+                        'username' => $p->username,
+                    ])?->toArray() ?? [],
+                    'ideascale_profiles' => $this->proposal->ideascale_profiles?->map(fn ($p) => [
+                        'id' => $p->id,
+                        'name' => $p->name,
+                        'username' => $p->username,
+                    ])?->toArray() ?? [],
+                ];
+            }
+        } catch (\Exception $e) {
+            \Log::error('Error loading proposal for review in toSearchableArray', [
+                'review_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
         return array_merge($array, [
             'model_type' => 'review',
             'reviewer' => $reviewerData,
-            'model' => $modelData,
             'discussion' => $discussionData,
             'parent' => $parentData,
             'children' => $childrenData,
@@ -304,6 +378,9 @@ class Review extends Model
             'ranking' => $rankingData,
             'positive_rankings' => $positiveRankingsCount,
             'negative_rankings' => $negativeRankingsCount,
+            'discussion_id' => $discussionId,
+            'team' => $teamData,
+            'proposal' => $proposalData,
         ]);
     }
 }

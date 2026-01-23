@@ -38,6 +38,7 @@ interface GraphComponentProps {
     colors?: {
         node?: string;
         groupNodeBorder?: string;
+        catalystProfileBorder?: string;
         link?: string;
         linkHover?: string;
     };
@@ -52,6 +53,7 @@ const CatalystConnectionsGraph = ({
     colors = {
         node: '--cx-primary',
         groupNodeBorder: '--success-gradient-color-2',
+        catalystProfileBorder: '--cx-accent',
         link: '--cx-primary',
         linkHover: '--cx-accent',
     },
@@ -113,8 +115,8 @@ const CatalystConnectionsGraph = ({
             },
             colors: {
                 node: colors?.node ?? '--cx-primary',
-                groupNode:
-                    colors?.groupNodeBorder ?? '--success-gradient-color-2',
+                groupNode: colors?.groupNodeBorder ?? '--success-gradient-color-2',
+                catalystProfileBorder: colors?.catalystProfileBorder ?? '--cx-accent',
                 link: colors?.link ?? '--cx-primary',
                 linkHover: colors?.linkHover ?? '--cx-accent',
             },
@@ -125,8 +127,8 @@ const CatalystConnectionsGraph = ({
     const getColor = useCallback((color: string) => {
         return color.startsWith('--')
             ? getComputedStyle(document.documentElement)
-                  .getPropertyValue(color)
-                  .trim()
+                .getPropertyValue(color)
+                .trim()
             : color;
     }, []);
 
@@ -176,18 +178,22 @@ const CatalystConnectionsGraph = ({
                 node.type === CatalystConnectionsEnum.COMMUNITY
             ) {
                 radius = config.nodeSize.group;
-            } else {
+            } else if (
+                node.type === CatalystConnectionsEnum.CATALYST_PROFILE ||
+                node.type === CatalystConnectionsEnum.IDEASCALE_PROFILE
+            ) {
+                // Profile nodes (both types)
                 if (!nodeSizes.current.has(node.id)) {
                     const size =
                         config.nodeSize.profile.min +
-                        (config.nodeSize.profile.max -
-                            config.nodeSize.profile.min) *
-                            Math.random();
+                        (config.nodeSize.profile.max - config.nodeSize.profile.min) *
+                        Math.random();
                     nodeSizes.current.set(node.id, size);
                 }
                 radius = nodeSizes.current.get(node.id)!;
+            } else {
+                radius = config.nodeSize.profile.min;
             }
-
             const img = imageCache.current.get(node.photo!);
             ctx.save();
 
@@ -243,11 +249,29 @@ const CatalystConnectionsGraph = ({
                         radius * 2,
                     );
                     ctx.restore();
+
+                    // Draw border for CatalystProfile nodes
+                    if (node.type === CatalystConnectionsEnum.CATALYST_PROFILE) {
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.arc(node.x!, node.y!, radius, 0, 2 * Math.PI);
+                        ctx.lineWidth = 2;
+                        ctx.strokeStyle = getColor(config.colors.catalystProfileBorder);
+                        ctx.stroke();
+                        ctx.restore();
+                    }
                 } else {
                     ctx.beginPath();
                     ctx.arc(node.x!, node.y!, radius, 0, 2 * Math.PI);
                     ctx.fillStyle = getColor(config.colors.node);
                     ctx.fill();
+
+                    // Draw border for CatalystProfile nodes
+                    if (node.type === CatalystConnectionsEnum.CATALYST_PROFILE) {
+                        ctx.lineWidth = 2;
+                        ctx.strokeStyle = getColor(config.colors.catalystProfileBorder);
+                        ctx.stroke();
+                    }
                 }
             }
 
@@ -297,7 +321,7 @@ const CatalystConnectionsGraph = ({
                             config.nodeSize.profile.min;
                         const distance = Math.sqrt(
                             Math.pow(pos.x - otherNode.x!, 2) +
-                                Math.pow(pos.y - otherNode.y!, 2),
+                            Math.pow(pos.y - otherNode.y!, 2),
                         );
                         if (distance < otherRadius + boxHeight) {
                             totalOverlap += 1;
@@ -390,10 +414,7 @@ const CatalystConnectionsGraph = ({
     const LoadingSpinner = () => (
         <div className="bg-background flex h-96 w-full items-center justify-center">
             <div className="text-center">
-                <div className="border-primary mx-auto mb-2 h-8 w-8 animate-spin rounded-full border-b-2"></div>
-                <Paragraph className="text-muted-foreground text-sm">
-                    {t('graph.loadingGraph')}
-                </Paragraph>
+                <div className="border-primary mx-auto mb-2 h-12 w-12 animate-spin rounded-full border-b-3"></div>
             </div>
         </div>
     );

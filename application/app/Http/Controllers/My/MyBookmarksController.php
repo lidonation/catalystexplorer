@@ -21,6 +21,7 @@ use App\Models\Proposal;
 use App\Models\Review;
 use App\Models\Scopes\PublicVisibilityScope;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
@@ -372,10 +373,12 @@ class MyBookmarksController extends Controller
         ]);
     }
 
-    public function showCollection(BookmarkCollection $bookmarkCollection): InertiaResponse|JsonResponse
+    public function showCollection(BookmarkCollection $list): RedirectResponse
     {
-        return Inertia::render('My/Lists/BookmarkCollection', [
-            'bookmarkCollection' => BookmarkCollectionData::from($bookmarkCollection),
+        // Redirect to the manage route with proposals type, similar to how public lists work
+        return redirect()->route('my.lists.manage', [
+            'bookmarkCollection' => $list->id,
+            'type' => 'proposals',
         ]);
     }
 

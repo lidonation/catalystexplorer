@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\DataTransferObjects\ProposalProfileData;
 use App\DataTransferObjects\ReviewData;
 use App\Enums\ProposalSearchParams;
 use App\Enums\QueryParamsEnum;
@@ -70,6 +71,37 @@ class ReviewsController extends Controller
 
     public function review(Request $request, Review $review): Response
     {
+        $discussion = $review->discussion;
+        $proposal = $review->proposal;
+
+        $team = $proposal ? $proposal->team : collect();
+        $teamData = ProposalProfileData::collect($team->map(function ($teamMember) {
+            $memberData = (array) ProposalProfileData::from($teamMember);
+            if ($teamMember->model) {
+                try {
+                    $memberData['model'] =
+                        array_merge(
+                            $memberData['model'] ?? [],
+                            [
+                                'claimed_profiles' => $teamMember->model->claimed_profiles?->map(function ($claim) {
+                                    return [
+                                        'user_id' => $claim->user_id,
+                                        'claimed_at' => $claim->claimed_at,
+                                    ];
+                                })->toArray() ?? null,
+                            ]
+                        );
+                } catch (\Exception $e) {
+                    \Log::error('Error loading claimed_profiles for review', [
+                        'review_id' => $review->id,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+            }
+
+            return $memberData;
+        }));
+
         return Inertia::render('Reviews/Partials/Review', [
             'review' => ReviewData::from([
                 ...$review->toArray(),
@@ -82,6 +114,8 @@ class ReviewsController extends Controller
                 'negative_rankings' => $review->negativeRankings->count() ?? 0,
                 'helpful_total' => $review->helpful_total ?? 0,
                 'not_helpful_total' => $review->not_helpful_total ?? 0,
+                'discussion_id' => $discussion?->id,
+                'team' => $teamData ?? null,
             ]),
         ]);
     }
@@ -106,6 +140,7 @@ class ReviewsController extends Controller
             ProposalSearchParams::SORTS()->value => 'string|nullable',
             ProposalSearchParams::GROUPS()->value => 'array|nullable',
             ProposalSearchParams::IDEASCALE_PROFILES()->value => 'array|nullable',
+            ProposalSearchParams::CATALYST_PROFILES()->value => 'array|nullable',
         ]);
 
         $this->filters = $this->queryParams;
@@ -214,9 +249,24 @@ class ReviewsController extends Controller
             $filters[] = "proposal.groups.hash IN [{$groupHashes}]";
         }
 
+        // Handle profile filters with OR logic when both types are present
+        $profileFilters = [];
         if (! empty($this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value])) {
             $ideascaleProfileHashes = implode(',', $this->queryParams[ProposalSearchParams::IDEASCALE_PROFILES()->value]);
-            $filters[] = "proposal.ideascale_profiles.hash IN [{$ideascaleProfileHashes}]";
+            $profileFilters[] = "proposal.ideascale_profiles.id IN [{$ideascaleProfileHashes}]";
+        }
+        if (! empty($this->queryParams[ProposalSearchParams::CATALYST_PROFILES()->value])) {
+            $catalystProfileHashes = implode(',', $this->queryParams[ProposalSearchParams::CATALYST_PROFILES()->value]);
+            $profileFilters[] = "proposal.catalyst_profiles.id IN [{$catalystProfileHashes}]";
+        }
+        if (! empty($profileFilters)) {
+            if (count($profileFilters) > 1) {
+                // Multiple profile types - use OR logic
+                $filters[] = '('.implode(' OR ', $profileFilters).')';
+            } else {
+                // Single profile type - add directly
+                $filters[] = $profileFilters[0];
+            }
         }
 
         if (! empty($this->queryParams[ProposalSearchParams::PROPOSALS()->value])) {

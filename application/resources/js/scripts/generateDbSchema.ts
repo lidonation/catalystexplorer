@@ -13,7 +13,15 @@ const tableConfig: Record<string, { type: string; indexes: string }> = {
     user_setting: {
         type: 'UserSettingData',
         indexes: 'language',
-    }
+    },
+    recently_visited_proposals: {
+        type: 'RecentlyVisitedProposalData',
+        indexes: 'id, visited_at',
+    },
+     recently_visited_lists: {
+        type: 'RecentlyVisitedListData',
+        indexes: 'id, visited_at',
+    },
 };
 
 const outputFile = path.resolve(__dirname, '../db/generated-db-schema.ts');
@@ -40,4 +48,4 @@ ${modelLines.join('\n')}
 `;
 
 fs.writeFileSync(outputFile, output);
-console.log('✅ DB schema generate.');
+console.log('✅ DB schema generated.');

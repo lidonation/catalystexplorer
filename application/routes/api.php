@@ -23,16 +23,16 @@ use App\Http\Controllers\Api\IdeascaleProfilesController;
 use App\Http\Controllers\Api\CatalystProfilesController;
 use App\Http\Controllers\CardanoBudgetProposalController;
 use App\Http\Controllers\CatalystDrepController;
+use App\Http\Controllers\Api\Internal\QuickSearchController;
 use App\Http\Controllers\UserLanguageController;
 use Inertia\Inertia;
 
 Route::as('api.')->group(function () {
     Route::get('/', fn() => Inertia::render(component: 'ComingSoon', props: ['context' => 'API']))->name('index');
-
     Route::get('/groups', [GroupController::class, 'groups'])->name('groups');
+    Route::get('/groups/incremental-connections', [GroupController::class, 'incrementalConnections'])->name('groups.incremental-connections');
     Route::get('/groups/{group:id}', [GroupController::class, 'group'])->name('group');
     Route::get('/groups/{uuid}/connections', [GroupController::class, 'connections'])->name('groups.connections');
-    Route::get('/groups/incremental-connections', [GroupController::class, 'incrementalConnections'])->name('groups.incremental-connections');
     Route::get('catalyst-profiles/incremental-connections', [CatalystProfilesController::class, 'incrementalConnections'])->name('catalystProfiles.incremental-connections');
     Route::get('ideascale-profiles/incremental-connections', [IdeascaleProfilesController::class, 'incrementalConnections'])->name('ideascaleProfiles.incremental-connections');
     Route::get('/choices', [VoterHistoriesController::class, 'getChoices'])->name('choices');
@@ -57,7 +57,7 @@ Route::as('api.')->group(function () {
         // CatalystTally API routes
         Route::apiResource('catalyst-tallies', CatalystTallyController::class)
             ->only(['index', 'show']);
-            
+
         // Additional CatalystTally endpoints
         Route::get('catalyst-tallies-funds', [CatalystTallyController::class, 'funds'])
             ->name('catalyst-tallies.funds');
@@ -85,10 +85,10 @@ Route::as('api.')->group(function () {
     })->name('test');
 
     Route::get('/communities', [CommunityController::class, 'communities'])->name('communities');
+    Route::get('/communities/incremental-connections', [CommunitiesController::class, 'incrementalConnections'])->name('communities.incremental-connections');
     Route::get('/communities/{community:id}', [CommunitiesController::class, 'community'])->name('community');
 
     Route::get('/communities/{uuid}/connections', [CommunitiesController::class, 'connections'])->name('communities.connections');
-    Route::get('/communities/incremental-connections', [CommunitiesController::class, 'incrementalConnections'])->name('communities.incremental-connections');
     Route::post('/communities/{uuid}/join', [CommunitiesController::class, 'join'])->name('community.join');
 
     Route::get('/proposal-charts-metrics', [ProposalsController::class, 'getProposalMetrics'])
@@ -114,8 +114,8 @@ Route::as('api.')->group(function () {
                 ->name('create');
             Route::post('{bookmarkCollection}/update', [MyBookmarksController::class, 'updateCollection'])
                 ->name('update');
-//            Route::post('{bookmarkCollection}/delete', [MyBookmarksController::class, 'deleteCollection'])
-//                ->name('delete');
+            //            Route::post('{bookmarkCollection}/delete', [MyBookmarksController::class, 'deleteCollection'])
+            //                ->name('delete');
             Route::get('/', [MyBookmarksController::class, 'retrieveCollections'])
                 ->name('retrieve');
             Route::prefix('bookmarks')->as('bookmarks.')
@@ -183,7 +183,7 @@ Route::as('api.')->group(function () {
         ->group(function () {
             Route::get('/', [CommentController::class, 'index'])->name('index');
             Route::post('/', [CommentController::class, 'store'])->name('store')
-                ->middleware('throttle:15,1');
+                ->middleware(['web', 'auth', 'throttle:15,1']);
         });
 
     Route::prefix('/dreps')->as('dreps.')->middleware('auth')->group(
@@ -200,5 +200,11 @@ Route::as('api.')->group(function () {
             ->name('language.update');
         Route::get('language', [UserLanguageController::class, 'getCurrentLanguage'])
             ->name('language.current');
+    });
+
+    Route::prefix('internal')->as('internal.')->group(function () {
+        Route::get('/quick-search', QuickSearchController::class)
+            ->middleware(['throttle:60,1'])
+            ->name('quickSearch');
     });
 });

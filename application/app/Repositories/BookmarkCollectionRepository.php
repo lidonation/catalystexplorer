@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Models\BookmarkCollection;
-use App\Models\Review;
+use Illuminate\Database\Eloquent\Collection;
 use Laravel\Scout\Builder;
 use Meilisearch\Endpoints\Indexes;
 
 class BookmarkCollectionRepository extends Repository
 {
-    public function __construct(Review $model)
+    public function __construct(BookmarkCollection $model)
     {
         parent::__construct($model);
     }
@@ -78,5 +78,19 @@ class BookmarkCollectionRepository extends Repository
         } catch (\Exception $e) {
             return 0;
         }
+    }
+
+    public function searchPublic(string $searchTerm, int $limit = 5): Collection
+    {
+        return $this->model
+            ->where('visibility', 'public')
+            ->where('status', 'published')
+            ->where(function ($query) use ($searchTerm) {
+                $query->where('title', 'ilike', "%{$searchTerm}%")
+                    ->orWhere('content', 'ilike', "%{$searchTerm}%");
+            })
+            ->select(['id', 'title', 'type'])
+            ->limit($limit)
+            ->get();
     }
 }
