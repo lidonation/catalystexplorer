@@ -103,7 +103,7 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
     return (
         <>
             <ExpandableContentAnimation
-                lineClamp={3}
+                lineClamp={5}
                 contentRef={contentRef}
                 onHoverChange={setIsHovered}
                 className={className}
@@ -129,10 +129,10 @@ export const ReviewCard: React.FC<ReviewItemProps> = ({
                         {review.content && (
                             <ExpandableContent
                                 expanded={isHovered}
-                                lineClamp={3}
+                                lineClamp={5}
                             >
                                 <RichContent
-                                    className={`text-gray-persist text-3 ${lineCount >= 3 ? 'cursor-pointer' : ''}`}
+                                    className={`text-gray-persist text-3 ${lineCount >= 5 ? 'cursor-pointer' : ''}`}
                                     content={review?.content}
                                     ref={contentRef}
                                 />
