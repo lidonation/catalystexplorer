@@ -37,7 +37,7 @@ export const ProposalStatusPieChart: React.FC<ProposalStatusPieChartProps> = ({
   ];
 
   return (
-    <div className="relative h-48 w-full">
+    <div className="relative w-full h-full">
       <ResponsivePie
         data={data}
         innerRadius={0.55}
@@ -52,7 +52,7 @@ export const ProposalStatusPieChart: React.FC<ProposalStatusPieChartProps> = ({
       />
 
       <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-content-light text-2xl font-bold leading-tight">
+        <span className="text-content-light lg:text-2xl  text-3 font-bold leading-tight">
           {total.toLocaleString()}
         </span>
         <span className="text-content-light/70 text-sm leading-4">
