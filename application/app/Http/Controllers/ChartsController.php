@@ -23,6 +23,8 @@ class ChartsController extends Controller
 {
     use InteractsWithFunds;
 
+    private const LOVELACE_PER_ADA = 1000000;
+
     /**
      * Display the user's profile form.
      */
@@ -351,12 +353,32 @@ class ChartsController extends Controller
 
     private function getAdaPowerRanges(array $snapshotIds, bool $confirmedOnly = false): array
     {
+        $lovelacePerAda = self::LOVELACE_PER_ADA;
+        $minAda = 25 * $lovelacePerAda;
+        $range450 = 450 * $lovelacePerAda;
+        $range1k = 1000 * $lovelacePerAda;
+        $range5k = 5000 * $lovelacePerAda;
+        $range10k = 10000 * $lovelacePerAda;
+        $range25k = 25000 * $lovelacePerAda;
+        $range50k = 50000 * $lovelacePerAda;
+        $range75k = 75000 * $lovelacePerAda;
+        $range100k = 100000 * $lovelacePerAda;
+        $range250k = 250000 * $lovelacePerAda;
+        $range500k = 500000 * $lovelacePerAda;
+        $range750k = 750000 * $lovelacePerAda;
+        $range1m = 1000000 * $lovelacePerAda;
+        $range5m = 5000000 * $lovelacePerAda;
+        $range10m = 10000000 * $lovelacePerAda;
+        $range50m = 50000000 * $lovelacePerAda;
+        $range100m = 100000000 * $lovelacePerAda;
+        $range200m = 200000000 * $lovelacePerAda;
+
         $query = DB::table('voting_powers as vp')
             ->selectRaw(
-                "CASE\n                WHEN voting_power BETWEEN 0 AND 450 THEN '25-450-1'\n                WHEN voting_power BETWEEN 450 AND 1000 THEN '450-1k-5'\n                WHEN voting_power BETWEEN 1000 AND 5000 THEN '1k-5k-7'\n                WHEN voting_power BETWEEN 5000 AND 10000 THEN '5K-10k-9'\n                WHEN voting_power BETWEEN 10000 AND 25000 THEN '10K-25k-11'\n                WHEN voting_power BETWEEN 25000 AND 50000 THEN '25k-50k-13'\n                WHEN voting_power BETWEEN 50000 AND 75000 THEN '50k-75k-15'\n                WHEN voting_power BETWEEN 75000 AND 100000 THEN '75k-100k-18'\n                WHEN voting_power BETWEEN 100000 AND 250000 THEN '100k-250k-20'\n                WHEN voting_power BETWEEN 250000 AND 500000 THEN '250k-500k-22'\n                WHEN voting_power BETWEEN 500000 AND 750000 THEN '500k-750k-24'\n                WHEN voting_power BETWEEN 750000 AND 1000000 THEN '750k-1M-26'\n                WHEN voting_power BETWEEN 1000000 AND 5000000 THEN '1M-5M-28'\n                WHEN voting_power BETWEEN 5000000 AND 10000000 THEN '5M-10M-30'\n                WHEN voting_power BETWEEN 10000000 AND 50000000 THEN '10M-50M-32'\n                WHEN voting_power BETWEEN 50000000 AND 100000000 THEN '50M-100M-35'\n                WHEN voting_power BETWEEN 100000000 AND 200000000 THEN '100M-200M-38'\n                WHEN voting_power > 200000000 THEN '> 200M-41'\n                END as range_key,  COUNT(*) as wallets, SUM(voting_power) as ada"
+                "CASE\n                WHEN voting_power BETWEEN 0 AND {$range450} THEN '25-450-1'\n                WHEN voting_power BETWEEN {$range450} AND {$range1k} THEN '450-1k-5'\n                WHEN voting_power BETWEEN {$range1k} AND {$range5k} THEN '1k-5k-7'\n                WHEN voting_power BETWEEN {$range5k} AND {$range10k} THEN '5K-10k-9'\n                WHEN voting_power BETWEEN {$range10k} AND {$range25k} THEN '10K-25k-11'\n                WHEN voting_power BETWEEN {$range25k} AND {$range50k} THEN '25k-50k-13'\n                WHEN voting_power BETWEEN {$range50k} AND {$range75k} THEN '50k-75k-15'\n                WHEN voting_power BETWEEN {$range75k} AND {$range100k} THEN '75k-100k-18'\n                WHEN voting_power BETWEEN {$range100k} AND {$range250k} THEN '100k-250k-20'\n                WHEN voting_power BETWEEN {$range250k} AND {$range500k} THEN '250k-500k-22'\n                WHEN voting_power BETWEEN {$range500k} AND {$range750k} THEN '500k-750k-24'\n                WHEN voting_power BETWEEN {$range750k} AND {$range1m} THEN '750k-1M-26'\n                WHEN voting_power BETWEEN {$range1m} AND {$range5m} THEN '1M-5M-28'\n                WHEN voting_power BETWEEN {$range5m} AND {$range10m} THEN '5M-10M-30'\n                WHEN voting_power BETWEEN {$range10m} AND {$range50m} THEN '10M-50M-32'\n                WHEN voting_power BETWEEN {$range50m} AND {$range100m} THEN '50M-100M-35'\n                WHEN voting_power BETWEEN {$range100m} AND {$range200m} THEN '100M-200M-38'\n                WHEN voting_power > {$range200m} THEN '> 200M-41'\n                END as range_key,  COUNT(*) as wallets, SUM(voting_power) as ada"
             )
             ->whereIn('vp.snapshot_id', $snapshotIds)
-            ->where('voting_power', '>=', 25)
+            ->where('voting_power', '>=', $minAda)
             ->when($confirmedOnly, fn ($query) => $query->where('vp.consumed', true))
             ->groupByRaw('1');
 
@@ -445,7 +467,7 @@ class ChartsController extends Controller
             return 0.0;
         }
 
-        return round($value, 2);
+        return round($value / self::LOVELACE_PER_ADA, 2);
     }
 
     /**
