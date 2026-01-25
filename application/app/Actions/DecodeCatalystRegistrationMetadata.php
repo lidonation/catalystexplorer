@@ -21,18 +21,22 @@ final class DecodeCatalystRegistrationMetadata
             return ['error' => 'Invalid JSON input'];
         }
 
-        // 1. Reassemble Chunks (Key "10")
+        // 1. Reassemble Chunks (Key "10") or Extract from x509_data
         // The chunks contain the inner CBOR payload structure
-        $chunks = $inputData['10'] ?? [];
-        // If '10' does not exist, return error, as this decoder is specifically for Key 10 registration
-        if (empty($chunks)) {
-            return ['error' => "Missing key '10' (chunks) in input"];
-        }
 
-        // Clean and join chunks
         $fullHex = '';
-        foreach ($chunks as $chunk) {
-            $fullHex .= str_replace('0x', '', trim($chunk));
+
+        if (isset($inputData['x509_data']['data'])) {
+            // New format: x509_envelope with raw data in x509_data.data
+            $fullHex = str_replace('0x', '', trim($inputData['x509_data']['data']));
+        } elseif (isset($inputData['10'])) {
+            // Legacy/Standard CIP-15/36 Chunks
+            $chunks = $inputData['10'];
+            foreach ($chunks as $chunk) {
+                $fullHex .= str_replace('0x', '', trim($chunk));
+            }
+        } else {
+            return ['error' => "Missing key '10' or 'x509_data' in input"];
         }
 
         try {
@@ -41,7 +45,7 @@ final class DecodeCatalystRegistrationMetadata
                 throw new \Exception('hex2bin failed');
             }
         } catch (\Exception $e) {
-            return ['error' => 'Invalid hex in chunks: '.$e->getMessage()];
+            return ['error' => 'Invalid hex in payload: '.$e->getMessage()];
         }
 
         // 2. Extract Data from Full Hex (Dates, URIs, Keys)
@@ -125,6 +129,10 @@ final class DecodeCatalystRegistrationMetadata
 
         // Previous Tx ID (Key "2")
         $prevTx = $inputData['2'] ?? null;
+        if (! $prevTx && isset($inputData['x509_envelope']['previous_transaction_id'])) {
+            $prevTx = $inputData['x509_envelope']['previous_transaction_id'];
+        }
+
         if ($prevTx) {
             $prevTx = str_replace('0x', '', $prevTx);
         }

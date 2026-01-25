@@ -105,4 +105,11 @@ class CatalystProfile extends Model implements HasMedia
             ->withResponsiveImages()
             ->performOnCollections('profile');
     }
+
+    protected function casts(): array
+    {
+        return [
+            'catalyst_keys' => 'array',
+        ];
+    }
 }

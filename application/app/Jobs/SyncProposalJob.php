@@ -37,7 +37,8 @@ class SyncProposalJob implements ShouldQueue
         public Fluent|string|null $documentVersion = null
     ) {
         // Store signatures before reassigning proposalDetail
-        $this->signatures = $proposalDetail['signatures'] ?? null;
+        // keys 0 in payload[3] (witness set) typically holds vkey witnesses list
+        $this->signatures = $proposalDetail['signatures'] ?? $proposalDetail['payload'][3][0] ?? null;
 
         $this->proposalDetail = toFluentDeep($proposalDetail['payload'][1] ?? []);
         $this->documentMeta = toFluentDeep($proposalDetail['payload'][0]['payload'] ?? []);
@@ -92,6 +93,7 @@ class SyncProposalJob implements ShouldQueue
 
         $title = $this->proposalDetail->setup->title->title ?? 'Untitled';
         $fundNumber = $this->getFundNumber($this->fund);
+
         $slug = Str::slug($title.'-f'.$fundNumber);
 
         // Find existing proposal by document ID first, then by slug
@@ -124,6 +126,7 @@ class SyncProposalJob implements ShouldQueue
             'opensource' => $proposalSummary->open_source->isOpenSource ?? false,
             'updated_at' => now(),
             'status' => 'pending',
+            'type' => 'proposal',
         ];
 
         if ($this->documentVersion && $proposal) {
@@ -247,7 +250,14 @@ class SyncProposalJob implements ShouldQueue
 
             $proposal = Proposal::find($this->proposalId);
             if ($proposal) {
-                $proposal->tags()->syncWithoutDetaching($tagIds);
+                $syncData = [];
+                foreach ($tagIds as $tagId) {
+                    $syncData[$tagId] = [
+                        'id' => (string) Str::uuid(),
+                        'model_type' => Proposal::class,
+                    ];
+                }
+                $proposal->tags()->syncWithoutDetaching($syncData);
             }
         } catch (\Throwable $e) {
             Log::error('processTags failed', [
@@ -293,6 +303,12 @@ class SyncProposalJob implements ShouldQueue
 
     protected function processPrimaryAuthor($data, $signatures): void
     {
+        Log::info('processPrimaryAuthor: processing', [
+            'proposalId' => $this->proposalId,
+            'applicant' => $data->applicant ?? 'null',
+            'signatures_present' => ! empty($signatures),
+        ]);
+
         if (! $data || ! isset($data->applicant)) {
             Log::warning('processPrimaryAuthor: no applicant data');
 
@@ -300,49 +316,69 @@ class SyncProposalJob implements ShouldQueue
         }
 
         try {
-            $existingProfile = CatalystProfile::where('name', $data->applicant)->first();
+            // 1. Extract kid from signatures first
+            $kid = null;
+            if ($signatures && (is_array($signatures) || is_object($signatures))) {
+                // Convert to array if it's a Fluent object
+                if ($signatures instanceof \Illuminate\Support\Fluent) {
+                    $signatures = $signatures->toArray();
+                }
 
-            // Check if signatures exist and are not empty
-            if (! $signatures || (! is_array($signatures) && ! is_object($signatures))) {
-                Log::warning('processPrimaryAuthor: signatures are null or invalid', [
-                    'proposalId' => $this->proposalId,
-                    'signatures_type' => gettype($signatures),
-                ]);
+                if (! empty($signatures) && isset($signatures[0])) {
+                    $signature = $signatures[0];
+                    if (is_array($signature)) {
+                        $signature = (object) $signature;
+                    }
 
-                return;
+                    $kid = $signature->kid ?? null;
+
+                    if (! $kid && isset($signature->payload)) {
+                        $payloadMap = is_array($signature->payload) ? $signature->payload : [];
+
+                        if (isset($payloadMap[4])) {
+                            $rawVal = $payloadMap[4];
+                            if (ctype_xdigit($rawVal) && strlen($rawVal) > 10) {
+                                $decoded = hex2bin($rawVal);
+                                if (str_starts_with($decoded, 'id.catalyst://') || str_starts_with($decoded, 'cipERROR')) {
+                                    $kid = $decoded;
+                                } else {
+                                    $kid = $rawVal;
+                                }
+                            } else {
+                                $kid = $rawVal;
+                            }
+                        }
+                    }
+                }
             }
 
-            // Convert to array if it's a Fluent object
-            if ($signatures instanceof \Illuminate\Support\Fluent) {
-                $signatures = $signatures->toArray();
+            if (! $kid) {
+                Log::warning('processPrimaryAuthor: signature missing kid or payload[4]');
             }
 
-            // Check if we have at least one signature
-            if (empty($signatures) || ! isset($signatures[0])) {
-                Log::warning('processPrimaryAuthor: no signatures available', [
-                    'proposalId' => $this->proposalId,
-                    'signatures_count' => is_countable($signatures) ? count($signatures) : 'not_countable',
-                ]);
+            // 2. Try to find existing profile
+            $existingProfile = null;
+            $parser = new \App\Services\CatalystIdParser;
+            $parsedId = $kid ? $parser->parse($kid) : null;
 
-                return;
+            if ($kid) {
+                // Check by catalyst_id column
+                $existingProfile = CatalystProfile::where('catalyst_id', $kid)->first();
+
+                // If not found, check by catalyst_keys JSON column
+                if (! $existingProfile && $parsedId && isset($parsedId['full_id'])) {
+                    // Postgres JSONB check for array containing object with matching full_id
+                    $existingProfile = CatalystProfile::whereRaw('catalyst_keys::jsonb @> ?', [json_encode([['full_id' => $parsedId['full_id']]])])->first();
+                }
             }
 
-            $signature = $signatures[0];
-            if (is_array($signature)) {
-                $signature = (object) $signature;
-            }
-
-            if (! isset($signature->kid)) {
-                Log::warning('processPrimaryAuthor: signature missing kid property');
-
-                return;
-            }
-
+            // Fallback: Check by name
             if (! $existingProfile) {
-                // Parse Catalyst ID
-                $parser = new \App\Services\CatalystIdParser;
-                $parsedId = $parser->parse($signature->kid);
+                $existingProfile = CatalystProfile::where('name', $data->applicant)->first();
+            }
 
+            // 3. Create or Update
+            if (! $existingProfile) {
                 $username = $parsedId['username'] ?? Str::slug($data->applicant);
                 $name = $data->applicant;
 
@@ -350,7 +386,7 @@ class SyncProposalJob implements ShouldQueue
                     'id' => (string) Str::uuid(),
                     'username' => $username,
                     'name' => $name,
-                    'catalyst_id' => $signature->kid,
+                    'catalyst_id' => $kid,
                 ];
 
                 if ($parsedId) {
@@ -362,19 +398,30 @@ class SyncProposalJob implements ShouldQueue
                 $existingProfile = CatalystProfile::create($profileData);
             } else {
                 // Update existing profile with new key info if needed
-                $parser = new \App\Services\CatalystIdParser;
-                $parsedId = $parser->parse($signature->kid);
-
                 if ($parsedId) {
                     $currentKeys = $existingProfile->catalyst_keys ?? [];
+
                     // Check if this specific key entry already exists to avoid duplicates
                     $exists = collect($currentKeys)->contains(function ($key) use ($parsedId) {
-                        return $key['full_id'] === $parsedId['full_id'];
+                        return ($key['full_id'] ?? '') === ($parsedId['full_id'] ?? '');
                     });
 
                     if (! $exists) {
                         $currentKeys[] = $parsedId;
-                        $existingProfile->update(['catalyst_keys' => $currentKeys]);
+
+                        // Prepare update data
+                        $updateData = [
+                            'catalyst_keys' => $currentKeys, // explicitly update keys
+                        ];
+
+                        if ($kid) {
+                            $updateData['catalyst_id'] = $kid;
+                        }
+                        if (isset($parsedId['username'])) {
+                            $updateData['username'] = $parsedId['username'];
+                        }
+
+                        $existingProfile->update($updateData);
                     }
                 }
             }
@@ -382,7 +429,12 @@ class SyncProposalJob implements ShouldQueue
             // Link profile to proposal
             $proposal = Proposal::find($this->proposalId);
             if ($proposal && $existingProfile) {
-                $proposal->catalyst_profiles()->syncWithoutDetaching([$existingProfile->id]);
+                $proposal->catalyst_profiles()->syncWithoutDetaching([
+                    $existingProfile->id => [
+                        'id' => (string) Str::uuid(),
+                        'profile_type' => CatalystProfile::class,
+                    ],
+                ]);
             }
         } catch (\Throwable $e) {
             Log::error('processPrimaryAuthor failed', [
@@ -529,10 +581,13 @@ class SyncProposalJob implements ShouldQueue
             }
 
             if (! empty($linkIds)) {
-                // Prepare pivot data with model_type
+                // Prepare pivot data with model_type and ID for the pivot table
                 $pivotData = [];
                 foreach ($linkIds as $linkId) {
-                    $pivotData[$linkId] = ['model_type' => Proposal::class];
+                    $pivotData[$linkId] = [
+                        'id' => (string) Str::uuid(),
+                        'model_type' => Proposal::class,
+                    ];
                 }
                 $proposal->links()->sync($pivotData);
                 Log::info('Successfully synced links for proposal', [

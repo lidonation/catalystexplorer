@@ -164,8 +164,11 @@ class SyncTransactionsFromBlockfrost extends Command
 
     public function retrieveCheckpoint()
     {
+        $labels = $this->getMetadataLabels();
+        $key = 'sync_checkpoint_'.implode('_', $labels);
+
         // Use Meta model to check checkpoint
-        $meta = Meta::where('key', 'sync_checkpoint')
+        $meta = Meta::where('key', $key)
             ->orderBy('id', 'desc')
             ->first();
 

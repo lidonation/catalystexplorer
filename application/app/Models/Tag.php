@@ -14,6 +14,8 @@ class Tag extends Taxonomy
 
     public $append = ['url'];
 
+    protected $guarded = [];
+
     public function url(): Attribute
     {
         return Attribute::make(

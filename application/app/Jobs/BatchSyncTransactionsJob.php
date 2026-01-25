@@ -18,7 +18,6 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 use Throwable;
 
 class BatchSyncTransactionsJob implements ShouldBeUnique, ShouldQueue
@@ -107,15 +106,20 @@ class BatchSyncTransactionsJob implements ShouldBeUnique, ShouldQueue
         Cache::forget($lockKey);
     }
 
+    private function getCheckpointKey(): string
+    {
+        return 'sync_checkpoint_'.implode('_', $this->metadataLabels);
+    }
+
     public function saveCheckpoint(string $page, string $txHash): void
     {
         Meta::updateOrCreate(
             [
-                'key' => 'sync_checkpoint',
+                'key' => $this->getCheckpointKey(),
                 'model_type' => Transaction::class,
             ],
             [
-                'model_id' => 1,
+                'model_id' => '00000000-0000-0000-0000-000000000000',
                 'content' => json_encode([
                     'page' => $page,
                     'tx_hash' => $txHash,
@@ -126,26 +130,12 @@ class BatchSyncTransactionsJob implements ShouldBeUnique, ShouldQueue
 
     public function ensureCheckpoint(string $page, string $txHash): void
     {
-        $meta = Meta::where('key', 'sync_checkpoint')->orderBy('id', 'desc')->first();
-        if ($meta) {
-            $meta->update([
-                'content' => json_encode(['page' => $page, 'tx_hash' => $txHash]),
-                'updated_at' => now(), // touched
-            ]);
-        } else {
-            Meta::create([
-                'id' => (string) Str::uuid(),
-                'key' => 'sync_checkpoint',
-                'model_type' => Transaction::class,
-                'model_id' => 1,
-                'content' => json_encode(['page' => $page, 'tx_hash' => $txHash]),
-            ]);
-        }
+        $this->saveCheckpoint($page, $txHash);
     }
 
     public function retrieveCheckpoint()
     {
-        $lastCheckpoint = Meta::where('key', 'sync_checkpoint')
+        $lastCheckpoint = Meta::where('key', $this->getCheckpointKey())
             ->orderBy('id', 'desc')
             ->first();
 

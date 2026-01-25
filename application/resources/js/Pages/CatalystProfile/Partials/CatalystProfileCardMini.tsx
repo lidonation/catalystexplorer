@@ -122,8 +122,8 @@ const CatalystProfileCardMini: React.FC<CatalystProfileProps> = ({
                                             },
                                         )}
                                     >
-                                        {catalystProfile?.name ??
-                                            catalystProfile?.username}
+                                        {
+                                            catalystProfile?.username??catalystProfile?.name }
                                     </Link>
                                     <TooltipContent side="bottom">
                                         <Paragraph size="sm">
