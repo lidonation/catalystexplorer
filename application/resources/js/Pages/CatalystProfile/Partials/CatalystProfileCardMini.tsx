@@ -122,12 +122,17 @@ const CatalystProfileCardMini: React.FC<CatalystProfileProps> = ({
                                             },
                                         )}
                                     >
-                                        {catalystProfile?.name ??
-                                            catalystProfile?.username}
+                                        <div className="flex flex-col">
+                                            <span>{catalystProfile?.username || catalystProfile?.name}</span>
+                                            {catalystProfile?.name && catalystProfile?.name !== catalystProfile?.username && (
+                                                <span className="text-xs text-secondary-500 font-normal">{catalystProfile.name}</span>
+                                            )}
+                                        </div>
                                     </Link>
                                     <TooltipContent side="bottom">
                                         <Paragraph size="sm">
-                                            {catalystProfile?.username}
+                                           {catalystProfile?.username || catalystProfile?.name}
+                                           {catalystProfile?.name && catalystProfile?.name !== catalystProfile?.username && ` (${catalystProfile.name})`}
                                         </Paragraph>
                                     </TooltipContent>
                                 </Tooltip>
