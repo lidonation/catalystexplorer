@@ -33,6 +33,7 @@
         "maatwebsite/excel": "^3.1",
         "meilisearch/meilisearch-php": "^1.15",
         "phpseclib/phpseclib": "^3.0",
+        "predis/predis": "^3.3",
         "saloonphp/cache-plugin": "^3.0",
         "saloonphp/laravel-plugin": "^3.6",
         "saloonphp/pagination-plugin": "^2.2",

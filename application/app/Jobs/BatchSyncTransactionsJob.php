@@ -16,9 +16,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Throwable;
 
 class BatchSyncTransactionsJob implements ShouldBeUnique, ShouldQueue
 {
@@ -72,38 +70,19 @@ class BatchSyncTransactionsJob implements ShouldBeUnique, ShouldQueue
         $checkpoint = $this->retrieveCheckpoint();
 
         $this->page = $page ?? intval($fromGenesis ? 1 : $checkpoint->page ?? 1);
-        $this->txHash = $txHash ?? $this->retrieveCheckpoint()->tx_hash ?? 'genesis';
+
+        if ($txHash) {
+            $this->txHash = $txHash;
+        } elseif ($fromGenesis) {
+            $this->txHash = 'genesis';
+        } else {
+            $this->txHash = $checkpoint->tx_hash ?? 'genesis';
+        }
     }
 
     public function uniqueId(): string
     {
-        return 'sync-transactions-'.implode('-', $this->metadataLabels);
-    }
-
-    private function acquireProcessLock(): bool
-    {
-        $metaString = implode(',', $this->metadataLabels);
-        $lockKey = "sync_process_lock_{$metaString}";
-
-        if (Cache::has($lockKey)) {
-            Log::error("[BatchSyncTransactionsJob] Another sync process is already running for labels {$metaString}");
-
-            return false;
-        }
-
-        Cache::put($lockKey, [
-            'started_at' => now()->toISOString(),
-            'pid' => getmypid(),
-        ], now()->addHours(2));
-
-        return true;
-    }
-
-    private function releaseProcessLock(): void
-    {
-        $metaString = implode(',', $this->metadataLabels);
-        $lockKey = "sync_process_lock_{$metaString}";
-        Cache::forget($lockKey);
+        return 'sync-transactions-'.implode('-', $this->metadataLabels).'-'.$this->page;
     }
 
     private function getCheckpointKey(): string
@@ -149,58 +128,8 @@ class BatchSyncTransactionsJob implements ShouldBeUnique, ShouldQueue
         return json_decode($lastCheckpoint->content);
     }
 
-    private function waitForBatchesToComplete(): void
-    {
-        $this->cleanupCompletedBatches();
-
-        while (count($this->activeBatches) >= $this->maxConcurrentBatches) {
-            Log::debug('[BatchSyncTransactionsJob] Too many active batches, waiting...');
-            sleep(5);
-            $this->cleanupCompletedBatches();
-            $this->forceCleanupOldBatches();
-        }
-    }
-
-    private function cleanupCompletedBatches(): void
-    {
-        foreach ($this->activeBatches as $key => $batchInfo) {
-            try {
-                $batch = Bus::findBatch($batchInfo['id']);
-
-                if (! $batch || $batch->finished()) {
-                    Log::debug('[BatchSyncTransactionsJob] Batch completed', ['batch_id' => $batchInfo['id']]);
-                    unset($this->activeBatches[$key]);
-                }
-            } catch (Exception $e) {
-                unset($this->activeBatches[$key]);
-            }
-        }
-    }
-
-    private function forceCleanupOldBatches(): void
-    {
-        $now = time();
-        foreach ($this->activeBatches as $key => $batchInfo) {
-            if (($now - $batchInfo['created_at']) > $this->batchWaitTimeout) {
-                Log::warning('[BatchSyncTransactionsJob] Batch timeout', ['batch_id' => $batchInfo['id']]);
-                try {
-                    $batch = Bus::findBatch($batchInfo['id']);
-                    if ($batch && ! $batch->finished()) {
-                        $batch->cancel();
-                    }
-                } catch (Exception $e) {
-                }
-                unset($this->activeBatches[$key]);
-            }
-        }
-    }
-
     public function handle(): void
     {
-        if (! $this->acquireProcessLock()) {
-            return;
-        }
-
         try {
             $blockfrostService = new CardanoBlockfrostService;
             $processedCount = 0;
@@ -208,129 +137,119 @@ class BatchSyncTransactionsJob implements ShouldBeUnique, ShouldQueue
             $errorCount = 0;
             $currentPage = $this->page;
 
-            do {
-                $this->waitForBatchesToComplete();
+            // Handle HashArray Source (Single Batch)
+            if ($this->source === SyncSource::HashArray) {
+                $jobs = collect($this->hashArray)
+                    ->map(fn ($tx_hash) => (new SyncTransactionJob(['tx_hash' => $tx_hash], $this->source, $processedCount, $skipCount, $errorCount, $this->metadataLabels)));
 
-                if ($this->source === SyncSource::HashArray) {
-                    $jobs = collect($this->hashArray)
-                        ->map(fn ($tx_hash) => (new SyncTransactionJob(['tx_hash' => $tx_hash], $this->source, $processedCount, $skipCount, $errorCount, $this->metadataLabels)));
-
-                    if ($this->testMode) {
-                        Log::debug('[BatchSyncTransactionsJob] Test mode processing');
-                        foreach ($jobs as $job) {
-                            $job->handle();
-                        }
-                    } else {
-                        $latestBatch = Bus::batch($jobs)
-                            ->name('SyncTransactionJob - hashArray')
-                            ->allowFailures(true)
-                            ->dispatch();
-
-                        $this->activeBatches[] = [
-                            'id' => $latestBatch->id,
-                            'page' => $currentPage,
-                            'created_at' => time(),
-                        ];
+                if ($this->testMode) {
+                    Log::debug('[BatchSyncTransactionsJob] Test mode processing');
+                    foreach ($jobs as $job) {
+                        $job->handle();
                     }
-
-                    return;
                 } else {
-                    if ($this->fromGenesis && $currentPage === 1 && $this->txHash === 'genesis') {
-                        Log::info('[BatchSyncTransactionsJob] Syncing from genesis...');
-                        $this->ensureCheckpoint('1', 'genesis');
-                    } else {
-                        Log::info("[BatchSyncTransactionsJob] Syncing from page: {$currentPage}");
-                    }
+                    Bus::batch($jobs)
+                        ->name('SyncTransactionJob - hashArray')
+                        ->allowFailures(true)
+                        ->dispatch();
                 }
 
-                $latestCheckpoint = $this->retrieveCheckpoint();
-                if ($currentPage < $latestCheckpoint->page) {
-                    Log::info("[BatchSyncTransactionsJob] Skipping page {$currentPage}");
-                    $currentPage++;
-
-                    continue;
-                }
-
-                // Fetch logic
-                try {
-                    $response = [];
-                    foreach ($this->metadataLabels as $label) {
-                        $batch = $blockfrostService->get("/metadata/txs/labels/{$label}", [
-                            'count' => 100,
-                            'page' => $currentPage,
-                            'order' => $this->order,
-                        ])->collect();
-                        $response = array_merge($response, $batch->toArray());
-                    }
-
-                    if (isset($response['status_code']) && $response['status_code'] >= 400) {
-                        if ($response['status_code'] == 404) {
-                            Log::info('[BatchSyncTransactionsJob] Reached end (404). Stopping.');
-                            break;
-                        }
-                        Log::error('[BatchSyncTransactionsJob] API Error: '.($response['message'] ?? 'Unknown'));
-                        if (++$errorCount >= 3) {
-                            break;
-                        }
-                        sleep(60);
-
-                        continue;
-                    }
-
-                    $votersRegistrationTransactions = collect($response);
-
-                    if ($votersRegistrationTransactions->isEmpty()) {
-                        Log::info('[BatchSyncTransactionsJob] No more transactions found.');
-                        break;
-                    }
-
-                    $lastTxHash = $votersRegistrationTransactions->last()['tx_hash'] ?? null;
-
-                    $jobs = $votersRegistrationTransactions->map(fn ($tx) => (new SyncTransactionJob($tx, $this->source, $processedCount, $skipCount, $errorCount, $this->metadataLabels)));
-
-                    if ($this->testMode) {
-                        foreach ($jobs as $job) {
-                            $job->handle();
-                        }
-                    } else {
-                        $latestBatch = Bus::batch($jobs)
-                            ->name("SyncTransactionJob - page {$currentPage}")
-                            ->allowFailures(true)
-                            ->dispatch();
-
-                        $this->activeBatches[] = ['id' => $latestBatch->id, 'page' => $currentPage, 'created_at' => time()];
-                        Log::info("[BatchSyncTransactionsJob] Batch dispatched for page {$currentPage}");
-                    }
-
-                    if ($lastTxHash) {
-                        if ($this->txHash === $lastTxHash) {
-                            Log::info('[BatchSyncTransactionsJob] No new transactions found. Stopping.');
-                            break;
-                        }
-                        $currentPage++;
-                        $this->ensureCheckpoint((string) $currentPage, $lastTxHash);
-                        $this->txHash = $lastTxHash;
-                    }
-
-                    sleep(10);
-                } catch (Exception|Throwable $e) {
-                    Log::error("[BatchSyncTransactionsJob] Error processing page {$currentPage}: ".$e->getMessage());
-                    throw $e;
-                }
-            } while ($votersRegistrationTransactions->isNotEmpty());
-
-            // Wait for remaining
-            while (count($this->activeBatches) > 0) {
-                sleep(10);
-                $this->cleanupCompletedBatches();
+                return;
             }
 
-            Log::info('[BatchSyncTransactionsJob] Job completed successfully');
+            // Handle Blockfrost Source (Page by Page)
+            if ($this->fromGenesis && $currentPage === 1 && $this->txHash === 'genesis') {
+                Log::info('[BatchSyncTransactionsJob] Syncing from genesis...');
+                $this->ensureCheckpoint('1', 'genesis');
+            } else {
+                Log::info("[BatchSyncTransactionsJob] Syncing from page: {$currentPage}");
+            }
+
+            if (! $this->fromGenesis) {
+                $latestCheckpoint = $this->retrieveCheckpoint();
+                if ($currentPage < $latestCheckpoint->page) {
+                    Log::info("[BatchSyncTransactionsJob] Skipping page {$currentPage} (already processed)");
+                    $this->dispatchNextPage($currentPage + 1, $latestCheckpoint->tx_hash);
+
+                    return;
+                }
+            }
+
+            // Fetch Logic
+            $response = [];
+            foreach ($this->metadataLabels as $label) {
+                $batch = $blockfrostService->get("/metadata/txs/labels/{$label}", [
+                    'count' => 100,
+                    'page' => $currentPage,
+                    'order' => $this->order,
+                ])->collect();
+                $response = array_merge($response, $batch->toArray());
+            }
+
+            // Handle API Errors
+            if (isset($response['status_code']) && $response['status_code'] >= 400) {
+                if ($response['status_code'] == 404) {
+                    Log::info('[BatchSyncTransactionsJob] Reached end (404). Stopping.');
+
+                    return;
+                }
+                Log::error('[BatchSyncTransactionsJob] API Error: '.($response['message'] ?? 'Unknown'));
+                // Retry this job later? Or stop? For now we throw to trigger queue retry if configured
+                throw new Exception('Blockfrost API Error: '.($response['message'] ?? 'Unknown'));
+            }
+
+            $votersRegistrationTransactions = collect($response);
+
+            if ($votersRegistrationTransactions->isEmpty()) {
+                Log::info('[BatchSyncTransactionsJob] No more transactions found. Stopping.');
+
+                return;
+            }
+
+            // Dispatch Jobs for Current Page
+            $jobs = $votersRegistrationTransactions->map(fn ($tx) => (new SyncTransactionJob($tx, $this->source, $processedCount, $skipCount, $errorCount, $this->metadataLabels)));
+
+            if ($this->testMode) {
+                foreach ($jobs as $job) {
+                    $job->handle();
+                }
+            } else {
+                Bus::batch($jobs)
+                    ->name("SyncTransactionJob - page {$currentPage}")
+                    ->allowFailures(true)
+                    ->dispatch();
+                Log::info("[BatchSyncTransactionsJob] Batch dispatched for page {$currentPage}");
+            }
+
+            // Update Checkpoint & Dispatch Next Page
+            $lastTxHash = $votersRegistrationTransactions->last()['tx_hash'] ?? null;
+            if ($lastTxHash) {
+
+                $this->ensureCheckpoint((string) $currentPage, $lastTxHash);
+
+                // Recursively dispatch the next page
+                $this->dispatchNextPage($currentPage + 1, $lastTxHash);
+            }
         } catch (Exception $e) {
             Log::error('[BatchSyncTransactionsJob] Failed: '.$e->getMessage());
             throw $e;
-        } finally {
-            $this->releaseProcessLock();
         }
+    }
+
+    protected function dispatchNextPage(int $nextPage, string $lastTxHash): void
+    {
+        $nextJob = new BatchSyncTransactionsJob(
+            $this->metadataLabels,
+            $this->fromGenesis,
+            $this->order,
+            $nextPage,
+            $lastTxHash,
+            $this->testMode,
+            $this->source,
+            $this->hashArray
+        );
+
+        dispatch($nextJob);
+        Log::info("[BatchSyncTransactionsJob] Queued next job for page {$nextPage}");
     }
 }

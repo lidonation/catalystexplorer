@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
+use App\Actions\DecodeCatalystRegistrationMetadata;
 use App\Enums\SyncSource;
 use App\Models\Transaction;
 use App\Services\CardanoBlockfrostService;
@@ -16,7 +17,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Middleware\SkipIfBatchCancelled;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Fluent;
 use Symfony\Component\Process\Process;
 
 class SyncTransactionJob implements ShouldQueue
@@ -40,7 +40,10 @@ class SyncTransactionJob implements ShouldQueue
         $blockfrostService = new CardanoBlockfrostService;
 
         $existingTx = Transaction::where('tx_hash', $txHash)->first();
-        if ($existingTx && $this->isTransactionComplete($existingTx)) {
+
+        $shouldReprocess = $existingTx && ! empty($existingTx->json_metadata) && is_null($existingTx->stake_key);
+
+        if ($existingTx && $this->isTransactionComplete($existingTx) && ! $shouldReprocess) {
             return;
         }
 
@@ -65,8 +68,8 @@ class SyncTransactionJob implements ShouldQueue
     private function getBasicTransactionData(CardanoBlockfrostService $service, string $txHash): ?array
     {
         try {
-            $txnResponse = $service->get("/txs/{$txHash}", [])->collect();
-            $utxosResponse = $service->get("/txs/{$txHash}/utxos", [])->collect();
+            $txnResponse = $this->safeGet($service, "/txs/{$txHash}");
+            $utxosResponse = $this->safeGet($service, "/txs/{$txHash}/utxos");
 
             if ($txnResponse->get('status_code') || $utxosResponse->get('status_code')) {
                 Log::error("Blockfrost API error for basic data: {$txHash}", [
@@ -74,17 +77,17 @@ class SyncTransactionJob implements ShouldQueue
                     'utxos_response' => $utxosResponse->toArray(),
                 ]);
 
-                return null;
+                throw new Exception("Blockfrost API error for basic data: {$txHash}");
             }
 
-            $blockResponse = $service->get("/blocks/{$txnResponse['block']}", [])->collect();
+            $blockResponse = $this->safeGet($service, "/blocks/{$txnResponse['block']}");
 
             if ($blockResponse->get('status_code')) {
                 Log::error("Blockfrost API error for block data: {$txHash}", [
                     'block_response' => $blockResponse->toArray(),
                 ]);
 
-                return null;
+                throw new Exception("Blockfrost API error for block data: {$txHash}");
             }
 
             return [
@@ -94,8 +97,7 @@ class SyncTransactionJob implements ShouldQueue
             ];
         } catch (Exception $e) {
             Log::error("Error fetching basic transaction data for {$txHash}: ".$e->getMessage());
-
-            return null;
+            throw $e;
         }
     }
 
@@ -103,10 +105,10 @@ class SyncTransactionJob implements ShouldQueue
     {
         try {
             if ($this->source === SyncSource::HashArray) {
-                $response = $service->get("/txs/{$txHash}/metadata", [])->collect();
+                $response = $this->safeGet($service, "/txs/{$txHash}/metadata");
 
                 if ($response->get('status_code')) {
-                    return null;
+                    throw new Exception("Blockfrost API error for metadata: {$txHash}");
                 }
 
                 $responseArray = $response->toArray();
@@ -117,8 +119,7 @@ class SyncTransactionJob implements ShouldQueue
             return $this->voterTransaction ?? null;
         } catch (Exception $e) {
             Log::warning("Error fetching metadata for {$txHash}: ".$e->getMessage());
-
-            return null;
+            throw $e;
         }
     }
 
@@ -168,44 +169,16 @@ class SyncTransactionJob implements ShouldQueue
         $transactionData = $this->processSimpleTransaction($basicData, $metadata);
 
         try {
-            $fluentTransaction = new Fluent([
-                'tx_hash' => $txHash,
-                'json_metadata' => new Fluent($metadata['json_metadata']),
-                'raw_metadata' => $metadata['json_metadata'],
-            ]);
-
-            // Path in Docker container
-            $scriptPath = '/scripts/metadata_decoder.py';
-            // Use venv python
-            $pythonPath = '/venv/bin/python3';
-
-            $process = new Process([$pythonPath, $scriptPath]);
-            $process->setInput(json_encode($fluentTransaction->toArray()));
-            $process->run();
-
-            if (! $process->isSuccessful()) {
-                Log::error("Failed to decode transaction via Python script: {$txHash}", [
-                    'error' => $process->getErrorOutput(),
-                    'output' => $process->getOutput(),
-                ]);
-
-                return $transactionData;
-            }
-
-            $decodedMetadata = json_decode($process->getOutput(), true);
-
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                Log::error("Failed to parse Python script output for {$txHash}: ".json_last_error_msg());
-
-                return $transactionData;
-            }
+            $decoder = new DecodeCatalystRegistrationMetadata;
+            $decodedMetadata = $decoder($metadata['json_metadata']);
 
             if (isset($decodedMetadata['error'])) {
-                Log::error("Python script returned error for {$txHash}: ".$decodedMetadata['error']);
+                Log::error("Decode Action returned error for {$txHash}: ".$decodedMetadata['error']);
 
                 return $transactionData;
             }
-            $stakeAddress = $decodedMetadata['stake_key'] ?? null;
+
+            $stakeAddress = $decodedMetadata['identity']['stake_address'] ?? null;
             $accountData = [];
 
             if ($stakeAddress) {
@@ -216,12 +189,12 @@ class SyncTransactionJob implements ShouldQueue
 
             $transactionData = array_merge($transactionData, [
                 'stake_key' => $stakeAddress,
-                'stake_pub' => $decodedMetadata['stake_pub'] ?? null,
+                'stake_pub' => $decodedMetadata['identity']['role0_public_key'] ?? null,
                 'json_metadata' => $decodedMetadata,
                 'witness' => $requiredSigners,
                 'status' => $accountData['active'] ?? 'unknown',
                 'controlled_amount' => $accountData['controlled_amount'] ?? 0,
-                'type' => $decodedMetadata['txType'] ?? 'catalyst_transaction',
+                'type' => $decodedMetadata['type'] ?? 'catalyst_transaction',
             ]);
 
             $transactionData = $this->processVoterDelegations($transactionData, $decodedMetadata);
@@ -235,7 +208,7 @@ class SyncTransactionJob implements ShouldQueue
     private function getAccountData(CardanoBlockfrostService $service, string $stakeAddress): array
     {
         try {
-            $response = $service->get("/accounts/{$stakeAddress}", [])->collect();
+            $response = $this->safeGet($service, "/accounts/{$stakeAddress}");
 
             return $response->toArray();
         } catch (Exception $e) {
@@ -248,7 +221,7 @@ class SyncTransactionJob implements ShouldQueue
     private function getRequiredSigners(CardanoBlockfrostService $service, string $txHash): array
     {
         try {
-            $response = $service->get("/txs/{$txHash}/required_signers", [])->collect();
+            $response = $this->safeGet($service, "/txs/{$txHash}/required_signers");
 
             return $response->toArray();
         } catch (Exception $e) {
@@ -332,7 +305,6 @@ class SyncTransactionJob implements ShouldQueue
         $requiredFields = [
             'epoch',
             'block',
-            // Add other critical fields if needed, but 'created_at' etc are usually set.
         ];
 
         foreach ($requiredFields as $field) {
@@ -341,10 +313,21 @@ class SyncTransactionJob implements ShouldQueue
             }
         }
 
-        // Also check if Inputs/Outputs are populated if that's critical?
-        // Assuming getting this far means we have basic data.
-
         return true;
+    }
+
+    private function safeGet(CardanoBlockfrostService $service, string $endpoint): \Illuminate\Support\Collection
+    {
+        $response = $service->get($endpoint, []);
+
+        try {
+            return $response->collect();
+        } catch (\JsonException $e) {
+            $status = $response->status();
+            $body = substr($response->body(), 0, 1000); // truncate for log safety
+            Log::error("Blockfrost API Invalid JSON [{$status}] for {$endpoint}: {$body}");
+            throw new Exception("Blockfrost API Invalid JSON [{$status}] for {$endpoint}");
+        }
     }
 
     public function middleware(): array
