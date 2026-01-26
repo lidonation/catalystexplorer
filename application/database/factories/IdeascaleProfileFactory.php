@@ -33,7 +33,6 @@ class IdeascaleProfileFactory extends Factory
             'linkedin' => $this->faker->name(),
             'discord' => $this->faker->name(),
             'ideascale' => $this->faker->word(),
-            'claimed_by_uuid' => User::factory(),
             'telegram' => $this->faker->name(),
             'title' => $this->faker->jobTitle(),
         ];
