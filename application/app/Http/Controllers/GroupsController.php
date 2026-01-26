@@ -12,6 +12,7 @@ use App\DataTransferObjects\ReviewData;
 use App\Enums\ProposalSearchParams;
 use App\Models\Group;
 use App\Models\IdeascaleProfile;
+use App\Models\Pivot\ClaimedProfile;
 use App\Repositories\GroupRepository;
 use App\Repositories\ReviewRepository;
 use Illuminate\Http\Request;
@@ -95,7 +96,17 @@ class GroupsController extends Controller
         $userId = $request->user()->id;
 
         $groups = Cache::remember("user-groups:{ $userId }", now()->addMinutes(10), function () use ($userId) {
-            return IdeascaleProfile::where('claimed_by_uuid', operator: $userId)->get()->flatMap(fn ($p) => $p->groupsUuid);
+            // Get claimed Ideascale profile IDs using the ClaimedProfile pivot table
+            $ideascaleProfileIDs = ClaimedProfile::where('user_id', $userId)
+                ->where('claimable_type', IdeascaleProfile::class)
+                ->pluck('claimable_id')
+                ->toArray();
+
+            if (empty($ideascaleProfileIDs)) {
+                return collect();
+            }
+
+            return IdeascaleProfile::whereIn('id', $ideascaleProfileIDs)->get()->flatMap(fn ($p) => $p->groupsUuid);
         });
 
         $props = [

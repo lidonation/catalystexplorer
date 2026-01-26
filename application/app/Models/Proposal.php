@@ -13,6 +13,7 @@ use App\Concerns\HasTaxonomies;
 use App\Concerns\HasTranslations;
 use App\Contracts\IHasMetaData;
 use App\Enums\CatalystCurrencies;
+use App\Models\Pivot\ClaimedProfile;
 use App\Models\Pivot\ProposalProfile;
 use App\Models\Scopes\ProposalTypeScope;
 use App\Services\VideoService;
@@ -715,28 +716,17 @@ class Proposal extends Model implements IHasMetaData
                     'username' => $profile->username,
                     'catalyst_id' => $profile->catalyst_id,
                 ]),
-            'claimed_ideascale_profiles' => $this->ideascale_profiles
-                ->filter(fn ($profile) => ! is_null($profile->claimed_by_uuid))
-                ->map(fn ($profile) => [
-                    'id' => $profile->id,
-                    'name' => $profile->name,
-                    'claimed_by_uuid' => $profile->claimed_by_uuid,
-                    'username' => $profile->username,
-                    'ideascale_id' => $profile->ideascale_id,
-                ]),
+            'claimed_ideascale_profiles' => $this->getClaimedIdeascaleProfiles(),
             // Convenience fields for searching claimed profiles
             'claimed_profile_ids' => array_merge(
                 $this->catalyst_profiles->filter(fn ($p) => ! is_null($p->claimed_by))->pluck('id')->toArray(),
-                $this->ideascale_profiles->filter(fn ($p) => ! is_null($p->claimed_by_uuid))->pluck('id')->toArray()
+                $this->getClaimedIdeascaleProfileIds()
             ),
             'claimed_catalyst_profile_ids' => $this->catalyst_profiles
                 ->filter(fn ($profile) => ! is_null($profile->claimed_by))
                 ->pluck('id')
                 ->toArray(),
-            'claimed_ideascale_profile_ids' => $this->ideascale_profiles
-                ->filter(fn ($profile) => ! is_null($profile->claimed_by_uuid))
-                ->pluck('id')
-                ->toArray(),
+            'claimed_ideascale_profile_ids' => $this->getClaimedIdeascaleProfileIds(),
             'alignment_score' => $this->alignment_score,
             'auditability_score' => $this->auditability_score,
             'feasibility_score' => $this->feasibility_score,
@@ -883,9 +873,14 @@ class Proposal extends Model implements IHasMetaData
                         continue;
                     }
 
-                    // Check claimed_by_uuid field for IdeascaleProfile
-                    if (isset($profile->claimed_by_uuid) && ! is_null($profile->claimed_by_uuid)) {
-                        return true;
+                    // Check if IdeascaleProfile is claimed using ClaimedProfile pivot table
+                    if ($profile instanceof IdeascaleProfile) {
+                        $claimedCount = ClaimedProfile::where('claimable_type', IdeascaleProfile::class)
+                            ->where('claimable_id', $profile->id)
+                            ->count();
+                        if ($claimedCount > 0) {
+                            return true;
+                        }
                     }
 
                     // Check claimed_by field for CatalystProfile
@@ -943,5 +938,51 @@ class Proposal extends Model implements IHasMetaData
             'updated_at' => 'datetime',
             'meta_data' => 'array',
         ];
+    }
+
+    /**
+     * Get claimed IdeascaleProfiles for this proposal using the ClaimedProfile pivot table
+     */
+    private function getClaimedIdeascaleProfiles(): array
+    {
+        $ideascaleProfileIds = $this->ideascale_profiles->pluck('id')->toArray();
+
+        if (empty($ideascaleProfileIds)) {
+            return [];
+        }
+
+        $claimedProfiles = ClaimedProfile::whereIn('claimable_id', $ideascaleProfileIds)
+            ->where('claimable_type', IdeascaleProfile::class)
+            ->with('claimable')
+            ->get();
+
+        return $claimedProfiles->map(function ($claimedProfile) {
+            $profile = $claimedProfile->claimable;
+
+            return [
+                'id' => $profile->id,
+                'name' => $profile->name,
+                'claimed_by_uuid' => $claimedProfile->user_id,
+                'username' => $profile->username,
+                'ideascale_id' => $profile->ideascale_id,
+            ];
+        })->toArray();
+    }
+
+    /**
+     * Get claimed IdeascaleProfile IDs for this proposal using the ClaimedProfile pivot table
+     */
+    private function getClaimedIdeascaleProfileIds(): array
+    {
+        $ideascaleProfileIds = $this->ideascale_profiles->pluck('id')->toArray();
+
+        if (empty($ideascaleProfileIds)) {
+            return [];
+        }
+
+        return ClaimedProfile::whereIn('claimable_id', $ideascaleProfileIds)
+            ->where('claimable_type', IdeascaleProfile::class)
+            ->pluck('claimable_id')
+            ->toArray();
     }
 }
