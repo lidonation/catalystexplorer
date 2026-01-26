@@ -182,13 +182,6 @@ class SyncTransactionsFromBlockfrost extends Command
         return json_decode($meta->content);
     }
 
-    /*
-       Note: The original retrieveCheckpoint also created the checkpoint if missing.
-       The new BatchSyncTransactionsJob handles checkpoint creation/updating.
-       Since this command is just for info display, we don't strictly need to create it here if it doesn't exist,
-       but for consistency with "Resuming from...", returning default is fine.
-    */
-
     private function cleanupRunningInstances(array $metadataLabels): int
     {
         $this->info('Starting cleanup of running sync instances...');
@@ -198,7 +191,7 @@ class SyncTransactionsFromBlockfrost extends Command
         $lockKey = "sync_process_lock_{$metaString}";
         Cache::forget($lockKey);
 
-        $runningBatches = DB::connection('pgsqlWeb')->table('job_batches')
+        $runningBatches = DB::connection('pgsql')->table('job_batches')
             ->where('name', 'ILIKE', '%SyncTransactionJob%') // Updated name pattern
             ->whereNull('finished_at')
             ->get();

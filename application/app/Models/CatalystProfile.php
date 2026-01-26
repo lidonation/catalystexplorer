@@ -22,7 +22,7 @@ class CatalystProfile extends Model implements HasMedia
 
     public $guarded = [];
 
-    protected $appends = ['hero_img_url'];
+    protected $appends = ['hero_img_url', 'claimed_by'];
 
     public string $meiliIndexName = 'cx_catalyst_profiles';
 
@@ -70,6 +70,8 @@ class CatalystProfile extends Model implements HasMedia
             'id',
             'name',
             'username',
+            'catalyst_id',
+            'stake_address',
         ];
     }
 
@@ -111,5 +113,10 @@ class CatalystProfile extends Model implements HasMedia
             ->crop(1080, 1350, CropPosition::Top)
             ->withResponsiveImages()
             ->performOnCollections('profile');
+    }
+
+    public function getClaimedByAttribute()
+    {
+        return $this->claimed_by_users->first()?->id;
     }
 }
