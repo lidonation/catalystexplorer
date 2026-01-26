@@ -1,3 +1,11 @@
+# [1.69.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.68.1...v1.69.0) (2026-01-25)
+
+
+### Features
+
+* **all charts:** Update registration data handling and improve code readability ([5b810ae](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/5b810ae41f1e2193e97f265c666b5133e6c4fcff))
+* Enhance catalyst profile username ([9c36d92](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/9c36d92604522487186d5adc4e3e66d4267cf8c7))
+
 ## [1.68.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.68.0...v1.68.1) (2026-01-21)
 
 
