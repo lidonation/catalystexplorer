@@ -168,7 +168,7 @@ vite:
 
 .PHONY: watch
 watch:
-	docker-compose up -d --remove-orphans $(COMPOSE_FLAGS) && $(sail) npx vite --force -- --unsafe-perm=true
+	docker-compose up -d --remove-orphans $(COMPOSE_FLAGS) && $(sail) npm run dev -- --force
 
 .PHONY: watch-ext
 watch-ext:

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Nova;
 
 use App\Models\CatalystProfile;
+use App\Nova\Actions\FillStakeAddressFromTransaction;
 use App\Nova\Actions\MakeSearchable;
 use App\Nova\Filters\ClaimedStatusFilter;
 use Laravel\Nova\Actions\Action;
@@ -94,6 +95,17 @@ class CatalystProfiles extends Resource
                     ],
                 ]),
 
+            Text::make('Stake Address')
+                ->sortable()
+                ->nullable()
+                ->copyable()
+                ->withMeta([
+                    'extraAttributes' => [
+                        'autocomplete' => 'off',
+                    ],
+                ])
+                ->help('Cardano stake address associated with this profile'),
+
             Text::make('Old ID')
                 ->sortable()
                 ->nullable()
@@ -158,6 +170,7 @@ class CatalystProfiles extends Resource
     {
         return [
             (new MakeSearchable),
+            (new FillStakeAddressFromTransaction),
         ];
     }
 }
