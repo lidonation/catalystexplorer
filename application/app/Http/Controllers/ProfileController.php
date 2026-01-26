@@ -229,10 +229,29 @@ class ProfileController extends Controller
             'totalsSummary' => $totalsSummary,
             'graphData' => $graphData,
         ] = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($userId) {
+            // Get claimed Ideascale profile IDs using the ClaimedProfile pivot table
+            $ideascaleProfileIDs = ClaimedProfile::where('user_id', $userId)
+                ->where('claimable_type', IdeascaleProfile::class)
+                ->pluck('claimable_id')
+                ->toArray();
+
+            // If no claimed profiles, return empty results
+            if (empty($ideascaleProfileIDs)) {
+                return [
+                    'totalsSummary' => [],
+                    'graphData' => [
+                        'amount_received' => [],
+                        'amount_awarded' => [],
+                    ],
+                ];
+            }
+
             $ideascaleProfile = app(IdeascaleProfileRepository::class);
 
+            // Create filter using profile IDs
+            $profileIds = implode(',', $ideascaleProfileIDs);
             $args = [
-                'filter' => ["claimed_by_uuid = {$userId}"],
+                'filter' => ["id IN [{$profileIds}]"],
                 'attributesToRetrieve' => [
                     'proposals',
                     'name',
