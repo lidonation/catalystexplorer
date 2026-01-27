@@ -6,54 +6,88 @@ namespace App\Jobs;
 
 use App\Models\Campaign;
 use App\Models\IdeascaleProfile;
+use App\Models\CatalystProfile;
 use App\Models\Meta;
-use App\Models\Pivot\ProposalProfile;
 use App\Models\Proposal;
-use Illuminate\Bus\Batchable;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Collection;
+use App\Models\Tag;
+use App\Models\Pivot\ProposalProfile;
 
-class SeedProposalsForCampaign implements ShouldQueue
+class SeedProposalsForCampaign
 {
-    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
     public function __construct(
         public Campaign $campaign,
-        public Collection $tags,
-        public Collection $ideascaleProfiles,
         public int $count = 10
     ) {}
 
     public function handle(): void
     {
+        $ideascaleProfiles = IdeascaleProfile::all();
+        $catalystProfiles  = CatalystProfile::all();
+        $tags = Tag::all();
+
         Proposal::factory()
             ->count($this->count)
             ->state([
                 'campaign_id' => $this->campaign->id,
-                'fund_id' => $this->campaign->fund->id,
+                'fund_id'     => $this->campaign->fund->id,
             ])
-            ->has(Meta::factory()->state(fn () => [
-                'key' => fake()->randomElement(['woman_proposal', 'impact_proposal', 'ideafest_proposal']),
-                'content' => fake()->randomElement([0, 1]),
-                'model_type' => Proposal::class,
-            ]))
-            ->hasAttached($this->tags->random(), ['model_type' => Proposal::class])
             ->create()
-            ->each(function (Proposal $proposal) {
-                // Create 1-7 team members (ProposalProfile records)
-                $teamSize = fake()->numberBetween(1, 7);
-                $selectedProfiles = $this->ideascaleProfiles->random(min($teamSize, $this->ideascaleProfiles->count()));
+            ->each(function (Proposal $proposal) use (
+                $ideascaleProfiles,
+                $catalystProfiles,
+                $tags
+            ) {
+                // ---- Meta ----
+                Meta::create([
+                    'model_type' => Proposal::class,
+                    'model_id'   => $proposal->id,
+                    'key'        => fake()->randomElement([
+                        'woman_proposal',
+                        'impact_proposal',
+                        'ideafest_proposal',
+                    ]),
+                    'content'    => fake()->randomElement([0, 1]),
+                ]);
 
-                foreach ($selectedProfiles as $profile) {
-                    ProposalProfile::create([
-                        'proposal_id' => $proposal->id,
-                        'profile_id' => $profile->id,
-                        'profile_type' => IdeascaleProfile::class,
-                    ]);
+                // ---- Tags ----
+                if ($tags->isNotEmpty()) {
+                    $proposal->tags()->attach(
+                        $tags->random(rand(1, min(3, $tags->count())))->pluck('id'),
+                        ['model_type' => Proposal::class]
+                    );
+                }
+
+                // ---- Ideascale team ----
+                if ($ideascaleProfiles->isNotEmpty()) {
+                    $ideascaleProfiles
+                        ->random(rand(1, min(7, $ideascaleProfiles->count())))
+                        ->each(function ($profile) use ($proposal) {
+                            ProposalProfile::create([
+                                'proposal_id' => $proposal->id,
+                                'profile_id'  => $profile->id,
+                                'profile_type'=> IdeascaleProfile::class,
+                            ]);
+                        });
+                }
+
+                // ---- Catalyst team ----
+                if ($catalystProfiles->isNotEmpty()) {
+                    $catalystProfiles
+                        ->random(rand(1, min(7, $catalystProfiles->count())))
+                        ->each(function ($profile) use ($proposal) {
+                            ProposalProfile::create([
+                                'proposal_id' => $proposal->id,
+                                'profile_id'  => $profile->id,
+                                'profile_type'=> CatalystProfile::class,
+                            ]);
+                        });
+                }
+
+                // ---- FAIL LOUD IF BROKEN ----
+                if ($proposal->team()->count() === 0) {
+                    throw new \RuntimeException(
+                        "Proposal {$proposal->id} has no team members"
+                    );
                 }
             });
     }
