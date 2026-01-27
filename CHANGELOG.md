@@ -1,3 +1,15 @@
+# [1.70.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.69.0...v1.70.0) (2026-01-26)
+
+
+### Bug Fixes
+
+* fix my proposal page page crashing ([4b63f2e](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/4b63f2eda9586c1d4c7ce62a053ab917e3881a83))
+
+
+### Features
+
+* port tx sync job ([30be8c8](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/30be8c8b7276279f92850df276908c393defd8fa))
+
 # [1.69.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.68.1...v1.69.0) (2026-01-25)
 
 
