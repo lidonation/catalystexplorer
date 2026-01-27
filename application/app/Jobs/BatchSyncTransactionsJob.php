@@ -22,13 +22,11 @@ class BatchSyncTransactionsJob implements ShouldBeUnique, ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tries = 0;
+    public int $tries = 0;
 
-    public $timeout = 5400;
+    public int $timeout = 5400;
 
-    public $queue = 'high';
-
-    public $uniqueFor = 7200; // 2 hours
+    public int $uniqueFor = 7200;
 
     public bool $testMode = false;
 
@@ -68,6 +66,8 @@ class BatchSyncTransactionsJob implements ShouldBeUnique, ShouldQueue
         $this->testMode = $testMode ?? false;
         $this->source = $source ?? SyncSource::Blockfrost;
         $this->hashArray = $hashArray ?? [];
+
+        $this->onQueue('high');
 
         $checkpoint = $this->retrieveCheckpoint();
 

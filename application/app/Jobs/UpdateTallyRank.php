@@ -35,8 +35,6 @@ class UpdateTallyRank implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $queue = 'high';
-
     /**
      * The number of seconds the job can run before timing out.
      */
@@ -49,7 +47,10 @@ class UpdateTallyRank implements ShouldQueue
      */
     public function __construct(
         private readonly ?string $fundId = null
-    ) {}
+    ) {
+        $this->onQueue('high');
+    }
+
 
     /**
      * Orchestrates the parallel execution of ranking jobs followed by
