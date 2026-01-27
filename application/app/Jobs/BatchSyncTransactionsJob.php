@@ -26,6 +26,8 @@ class BatchSyncTransactionsJob implements ShouldBeUnique, ShouldQueue
 
     public $timeout = 5400;
 
+    public $queue = 'high';
+
     public $uniqueFor = 7200; // 2 hours
 
     public bool $testMode = false;
