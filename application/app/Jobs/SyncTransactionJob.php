@@ -31,7 +31,7 @@ class SyncTransactionJob implements ShouldQueue
         public int $processedCount = 0,
         public int $skipCount = 0,
         public int $errorCount = 0,
-        public array $metadataLabels = ['61284']
+        public array $metadataLabels = ['61284', '509']
     ) {}
 
     public function handle(): void
@@ -39,27 +39,39 @@ class SyncTransactionJob implements ShouldQueue
         $txHash = $this->voterTransaction['tx_hash'] ?? 'unknown';
         $blockfrostService = new CardanoBlockfrostService;
 
-        $existingTx = Transaction::where('tx_hash', $txHash)->first();
+        try {
 
-        $shouldReprocess = $existingTx && ! empty($existingTx->json_metadata) && is_null($existingTx->stake_key);
+            $existingTx = Transaction::where('tx_hash', $txHash)->first();
 
-        if ($existingTx && $this->isTransactionComplete($existingTx) && ! $shouldReprocess) {
-            return;
-        }
+            $shouldReprocess = $existingTx && ! empty($existingTx->json_metadata) && is_null($existingTx->stake_key);
 
-        $basicTxData = $this->getBasicTransactionData($blockfrostService, $txHash);
-        if (! $basicTxData) {
-            return;
-        }
+            if ($existingTx && $this->isTransactionComplete($existingTx) && ! $shouldReprocess) {
+                return;
+            }
 
-        $metadata = $this->getTransactionMetadata($blockfrostService, $txHash);
+            $basicTxData = $this->getBasicTransactionData($blockfrostService, $txHash);
+            if (! $basicTxData) {
+                return;
+            }
 
-        $needsFullProcessing = ! empty($metadata['json_metadata']);
+            $metadata = $this->getTransactionMetadata($blockfrostService, $txHash);
 
-        if ($needsFullProcessing) {
-            $transactionData = $this->processTransactionWithMetadata($basicTxData, $metadata, $blockfrostService);
-        } else {
-            $transactionData = $this->processSimpleTransaction($basicTxData, $metadata);
+            $needsFullProcessing = ! empty($metadata['json_metadata']);
+
+            if ($needsFullProcessing) {
+                $transactionData = $this->processTransactionWithMetadata($basicTxData, $metadata, $blockfrostService);
+            } else {
+                $transactionData = $this->processSimpleTransaction($basicTxData, $metadata);
+            }
+        } catch (Exception $e) {
+            if ($e->getCode() === 429) {
+                Log::warning("Rate limit for {$this->voterTransaction['tx_hash']}. Releasing.");
+                $this->release(rand(60, 120));
+
+                return;
+            }
+
+            throw $e;
         }
 
         $this->saveTransaction($transactionData);
@@ -96,6 +108,9 @@ class SyncTransactionJob implements ShouldQueue
                 'block_data' => $blockResponse->toArray(),
             ];
         } catch (Exception $e) {
+            if ($e->getCode() === 429) {
+                throw $e;
+            }
             Log::error("Error fetching basic transaction data for {$txHash}: ".$e->getMessage());
             throw $e;
         }
@@ -118,6 +133,12 @@ class SyncTransactionJob implements ShouldQueue
 
             return $this->voterTransaction ?? null;
         } catch (Exception $e) {
+            if ($e->getCode() === 404) {
+                return null;
+            }
+            if ($e->getCode() === 429) {
+                throw $e;
+            }
             Log::warning("Error fetching metadata for {$txHash}: ".$e->getMessage());
             throw $e;
         }
@@ -212,6 +233,9 @@ class SyncTransactionJob implements ShouldQueue
 
             return $response->toArray();
         } catch (Exception $e) {
+            if ($e->getCode() === 429) {
+                throw $e;
+            }
             Log::warning('Error fetching account data: '.$e->getMessage());
 
             return ['active' => 'unknown', 'controlled_amount' => 0];
@@ -225,6 +249,9 @@ class SyncTransactionJob implements ShouldQueue
 
             return $response->toArray();
         } catch (Exception $e) {
+            if ($e->getCode() === 429) {
+                throw $e;
+            }
             Log::warning('Error fetching required signers: '.$e->getMessage());
 
             return [];
@@ -319,6 +346,10 @@ class SyncTransactionJob implements ShouldQueue
     private function safeGet(CardanoBlockfrostService $service, string $endpoint): \Illuminate\Support\Collection
     {
         $response = $service->get($endpoint, []);
+
+        if ($response->status() === 429) {
+            throw new Exception('Blockfrost Rate Limit', 429);
+        }
 
         try {
             return $response->collect();

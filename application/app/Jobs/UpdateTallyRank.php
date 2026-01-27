@@ -51,7 +51,6 @@ class UpdateTallyRank implements ShouldQueue
         $this->onQueue('high');
     }
 
-
     /**
      * Orchestrates the parallel execution of ranking jobs followed by
      * approval chance calculation that depends on category rankings.
