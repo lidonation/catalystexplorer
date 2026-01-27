@@ -157,12 +157,12 @@ class IdeascaleProfile extends Model implements HasMedia
 
             $this->loadCurrencyAggregates();
         } catch (\Throwable $e) {
-            Log::warning('Failed to load IdeascaleProfile aggregates via relationships, falling back to raw query.', [
+            Log::warning('Failed to load IdeascaleProfile aggregates via relationships.', [
                 'profile_id' => $this->id,
                 'error' => $e->getMessage(),
             ]);
 
-            $this->loadProfileAggregatesFallback();
+            throw $e;
         }
 
         // These are not yet computed elsewhere but the DTO expects them.
@@ -179,7 +179,10 @@ class IdeascaleProfile extends Model implements HasMedia
      */
     protected function loadCurrencyAggregates(): void
     {
+        // Use the underlying builder to avoid BelongsToMany adding pivot
+        // columns to the select list, which breaks GROUP BY queries.
         $rows = $this->proposals()
+            ->getQuery()
             ->join('funds', 'funds.id', '=', 'proposals.fund_id')
             ->selectRaw(
                 'funds.currency as currency,
@@ -200,83 +203,6 @@ class IdeascaleProfile extends Model implements HasMedia
         $this->setAttribute('amount_awarded_usd', (float) ($usd->awarded ?? 0));
         $this->setAttribute('amount_distributed_ada', (float) ($ada->distributed ?? 0));
         $this->setAttribute('amount_distributed_usd', (float) ($usd->distributed ?? 0));
-    }
-
-    /**
-     * Fallback raw query for environments where relationship queries error
-     * due to type-mismatch issues on the polymorphic pivot.
-     */
-    protected function loadProfileAggregatesFallback(): void
-    {
-        $profileId = (string) $this->id;
-
-        $baseQuery = DB::table('proposals')
-            ->join('proposal_profiles', 'proposals.id', '=', 'proposal_profiles.proposal_id')
-            ->where('proposal_profiles.profile_type', static::class)
-            ->whereRaw('CAST(proposal_profiles.profile_id AS VARCHAR) = ?', [$profileId])
-            ->whereNull('proposals.deleted_at')
-            ->whereRaw("proposals.type::text = 'proposal'");
-
-        $this->setAttribute('proposals_count', (int) (clone $baseQuery)->count());
-        $this->setAttribute(
-            'funded_proposals_count',
-            (int) (clone $baseQuery)->whereNotNull('proposals.funded_at')->count()
-        );
-        $this->setAttribute(
-            'unfunded_proposals_count',
-            (int) (clone $baseQuery)->whereNull('proposals.funded_at')->count()
-        );
-        $this->setAttribute(
-            'completed_proposals_count',
-            (int) (clone $baseQuery)->where('proposals.status', ProposalStatus::complete()->value)->count()
-        );
-
-        $this->setAttribute(
-            'amount_requested_ada',
-            (float) (clone $baseQuery)
-                ->join('funds', 'funds.id', '=', 'proposals.fund_id')
-                ->where('funds.currency', CatalystCurrencySymbols::ADA->name)
-                ->sum('proposals.amount_requested')
-        );
-        $this->setAttribute(
-            'amount_requested_usd',
-            (float) (clone $baseQuery)
-                ->join('funds', 'funds.id', '=', 'proposals.fund_id')
-                ->where('funds.currency', CatalystCurrencySymbols::USD->name)
-                ->sum('proposals.amount_requested')
-        );
-        $this->setAttribute(
-            'amount_awarded_ada',
-            (float) (clone $baseQuery)
-                ->join('funds', 'funds.id', '=', 'proposals.fund_id')
-                ->where('funds.currency', CatalystCurrencySymbols::ADA->name)
-                ->whereNotNull('proposals.funded_at')
-                ->sum('proposals.amount_requested')
-        );
-        $this->setAttribute(
-            'amount_awarded_usd',
-            (float) (clone $baseQuery)
-                ->join('funds', 'funds.id', '=', 'proposals.fund_id')
-                ->where('funds.currency', CatalystCurrencySymbols::USD->name)
-                ->whereNotNull('proposals.funded_at')
-                ->sum('proposals.amount_requested')
-        );
-        $this->setAttribute(
-            'amount_distributed_ada',
-            (float) (clone $baseQuery)
-                ->join('funds', 'funds.id', '=', 'proposals.fund_id')
-                ->where('funds.currency', CatalystCurrencySymbols::ADA->name)
-                ->whereNotNull('proposals.funded_at')
-                ->sum('proposals.amount_received')
-        );
-        $this->setAttribute(
-            'amount_distributed_usd',
-            (float) (clone $baseQuery)
-                ->join('funds', 'funds.id', '=', 'proposals.fund_id')
-                ->where('funds.currency', CatalystCurrencySymbols::USD->name)
-                ->whereNotNull('proposals.funded_at')
-                ->sum('proposals.amount_received')
-        );
     }
 
     public function amountRequestedAda(): Attribute
