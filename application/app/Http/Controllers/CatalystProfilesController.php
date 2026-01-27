@@ -23,8 +23,6 @@ use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
-use Illuminate\Support\Facades\DB;
-use App\Enums\CatalystCurrencySymbols;
 
 
 class CatalystProfilesController extends Controller
@@ -50,208 +48,122 @@ class CatalystProfilesController extends Controller
         ]);
     }
 
-   public function show(Request $request, CatalystProfile $catalystProfile): Response
-{
-    $this->getProps($request);
-    $profileId = $catalystProfile->id;
+    public function show(Request $request, CatalystProfile $catalystProfile): Response
+    {
+        $this->getProps($request);
+        $profileId = $catalystProfile->id;
 
-    $cacheKey = "catalyst_profile:{$profileId}:base_data";
+        $cacheKey = "catalyst_profile:{$profileId}:base_data";
 
-    $catalystProfileData = Cache::remember(
-        $cacheKey,
-        now()->addMinutes(10),
-        function () use ($catalystProfile, $profileId) {
+        $catalystProfileData = Cache::remember(
+            $cacheKey,
+            now()->addMinutes(10),
+            function () use ($catalystProfile) {
+                $catalystProfile->load(['groupsUuid']);
+                $catalystProfile->appendProfileStats();
 
-            // --------------------------------------------------
-            // Base query (this mirrors Ideascale's logic exactly)
-            // --------------------------------------------------
-            $baseQuery = DB::table('proposals')
-                ->join('proposal_profiles', 'proposals.id', '=', 'proposal_profiles.proposal_id')
-                ->where('proposal_profiles.profile_type', CatalystProfile::class)
-                ->whereRaw(
-                    'CAST(proposal_profiles.profile_id AS VARCHAR) = ?',
-                    [(string) $profileId]
-                )
-                ->whereNull('proposals.deleted_at')
-                ->whereRaw("proposals.type::text = 'proposal'");
+                return [
+                    ...$catalystProfile->toArray(),
+                    'groups' => $catalystProfile->groupsUuid->toArray(),
+                ];
+            }
+        );
 
-            // ----------------
-            // Proposal counts
-            // ----------------
-            $proposalsCount = (clone $baseQuery)->count();
+        $currentPage = 1;
 
-            $fundedCount = (clone $baseQuery)
-                ->whereNotNull('proposals.funded_at')
-                ->count();
+        $props = [
+            'catalystProfile' => CatalystProfileData::from($catalystProfileData),
 
-            $completedCount = (clone $baseQuery)
-                ->where('proposals.status', 'complete')
-                ->count();
-
-            // ----------------
-            // Money aggregates
-            // ----------------
-            $requestedAda = (float) (clone $baseQuery)
-                ->join('funds', 'funds.id', '=', 'proposals.fund_id')
-                ->where('funds.currency', CatalystCurrencySymbols::ADA->name)
-                ->sum('proposals.amount_requested');
-
-            $requestedUsd = (float) (clone $baseQuery)
-                ->join('funds', 'funds.id', '=', 'proposals.fund_id')
-                ->where('funds.currency', CatalystCurrencySymbols::USD->name)
-                ->sum('proposals.amount_requested');
-
-            $awardedAda = (float) (clone $baseQuery)
-                ->join('funds', 'funds.id', '=', 'proposals.fund_id')
-                ->where('funds.currency', CatalystCurrencySymbols::ADA->name)
-                ->whereNotNull('proposals.funded_at')
-                ->sum('proposals.amount_requested');
-
-            $awardedUsd = (float) (clone $baseQuery)
-                ->join('funds', 'funds.id', '=', 'proposals.fund_id')
-                ->where('funds.currency', CatalystCurrencySymbols::USD->name)
-                ->whereNotNull('proposals.funded_at')
-                ->sum('proposals.amount_requested');
-
-            $distributedAda = (float) (clone $baseQuery)
-                ->join('funds', 'funds.id', '=', 'proposals.fund_id')
-                ->where('funds.currency', CatalystCurrencySymbols::ADA->name)
-                ->whereNotNull('proposals.funded_at')
-                ->sum('proposals.amount_received');
-
-            $distributedUsd = (float) (clone $baseQuery)
-                ->join('funds', 'funds.id', '=', 'proposals.fund_id')
-                ->where('funds.currency', CatalystCurrencySymbols::USD->name)
-                ->whereNotNull('proposals.funded_at')
-                ->sum('proposals.amount_received');
-
-            // ----------------
-            // Load relations
-            // ----------------
-            $catalystProfile->load(['groups']);
-
-            // ----------------
-            // FINAL payload
-            // ----------------
-            return [
-                ...$catalystProfile->toArray(),
-                'groups' => $catalystProfile->groupsUuid->toArray(),
-
-                // Counts
-                'proposals_count' => (int) $proposalsCount,
-                'funded_proposals_count' => (int) $fundedCount,
-                'completed_proposals_count' => (int) $completedCount,
-
-                // Amounts
-                'amount_requested_ada' => $requestedAda,
-                'amount_requested_usd' => $requestedUsd,
-                'amount_awarded_ada' => $awardedAda,
-                'amount_awarded_usd' => $awardedUsd,
-                'amount_distributed_ada' => $distributedAda,
-                'amount_distributed_usd' => $distributedUsd,
-
-                // Safe defaults
-                'own_proposals_count' => 0,
-                'collaborating_proposals_count' => 0,
-            ];
-        }
-    );
-
-    $currentPage = 1;
-
-    $props = [
-        'catalystProfile' => CatalystProfileData::from($catalystProfileData),
-
-        'proposals' => Inertia::optional(
-            fn () => Cache::remember(
-                "catalyst_profile:{$profileId}:proposals:page:{$currentPage}",
-                now()->addMinutes(10),
-                fn () => to_length_aware_paginator(
-                    ProposalData::collect(
-                        $catalystProfile->proposals()
-                            ->with(['users', 'fund'])
-                            ->paginate(11, ['*'], 'p', $currentPage)
+            'proposals' => Inertia::optional(
+                fn () => Cache::remember(
+                    "catalyst_profile:{$profileId}:proposals:page:{$currentPage}",
+                    now()->addMinutes(10),
+                    fn () => to_length_aware_paginator(
+                        ProposalData::collect(
+                            $catalystProfile->proposals()
+                                ->with(['users', 'fund'])
+                                ->paginate(11, ['*'], 'p', $currentPage)
+                        )
                     )
                 )->onEachSide(0)
-            )
-        ),
+            ),
 
-        'groups' => Inertia::optional(
-            fn () => Cache::remember(
-                "catalyst_profile:{$profileId}:groups:page:{$currentPage}",
-                now()->addMinutes(10),
-                fn () => to_length_aware_paginator(
-                    GroupData::collect(
-                        $catalystProfile->groupsUuid()
+            'groups' => Inertia::optional(
+                fn () => Cache::remember(
+                    "catalyst_profile:{$profileId}:groups:page:{$currentPage}",
+                    now()->addMinutes(10),
+                    fn () => to_length_aware_paginator(
+                        GroupData::collect(
+                            $catalystProfile->groupsUuid()
+                                ->withCount([
+                                    'completed_proposals',
+                                    'unfunded_proposals',
+                                    'funded_proposals',
+                                    'proposals',
+                                ])
+                                ->paginate(12, ['*'], 'p', $currentPage)
+                        )
+                    )
+                )
+            ),
+
+            'connections' => Inertia::optional(
+                fn () => $catalystProfile->connected_items
+            ),
+
+            'communities' => Inertia::optional(
+                fn () => Cache::remember(
+                    "catalyst_profile:{$profileId}:communities:page:{$currentPage}",
+                    now()->addMinutes(10),
+                    fn () => CommunityData::collect(
+                        to_length_aware_paginator(
+                            items: Community::query()
+                                ->whereRelation('catalyst_profiles', 'catalyst_profiles.id', $profileId)
+                                ->with([
+                                    'catalyst_profiles' => fn (HasManyDeep $q) => $q->limit(5),
+                                    'catalyst_profiles.media',
+                                ])
+                                ->withCount(['proposals', 'catalyst_profiles'])
+                                ->paginate(12, ['*'], 'p', $currentPage)
+                        )
+                    )
+                )
+            ),
+
+            'campaigns' => Inertia::optional(
+                fn () => Cache::remember(
+                    "catalyst_profile:{$profileId}:campaigns",
+                    now()->addMinutes(10),
+                    fn () => CampaignData::collect(
+                        Campaign::whereIn('id', $catalystProfile->proposals()->select('campaign_id'))
                             ->withCount([
                                 'completed_proposals',
                                 'unfunded_proposals',
                                 'funded_proposals',
-                                'proposals',
                             ])
-                            ->paginate(12, ['*'], 'p', $currentPage)
+                            ->get()
                     )
                 )
-            )
-        ),
+            ),
+        ];
 
-        'connections' => Inertia::optional(
-            fn () => $catalystProfile->connected_items
-        ),
+        return match (true) {
+            str_contains($request->path(), '/connections') =>
+                Inertia::render('CatalystProfile/Connections/Index', $props),
 
-        'communities' => Inertia::optional(
-            fn () => Cache::remember(
-                "catalyst_profile:{$profileId}:communities:page:{$currentPage}",
-                now()->addMinutes(10),
-                fn () => CommunityData::collect(
-                    to_length_aware_paginator(
-                        items: Community::query()
-                            ->whereRelation('catalyst_profiles', 'catalyst_profiles.id', $profileId)
-                            ->with([
-                                'catalyst_profiles' => fn (HasManyDeep $q) => $q->limit(5),
-                                'catalyst_profiles.media',
-                            ])
-                            ->withCount(['proposals', 'catalyst_profiles'])
-                            ->paginate(12, ['*'], 'p', $currentPage)
-                    )
-                )
-            )
-        ),
+            str_contains($request->path(), '/groups') =>
+                Inertia::render('CatalystProfile/Groups/Index', $props),
 
-        'campaigns' => Inertia::optional(
-            fn () => Cache::remember(
-                "catalyst_profile:{$profileId}:campaigns",
-                now()->addMinutes(10),
-                fn () => CampaignData::collect(
-                    Campaign::whereIn('id', $catalystProfile->proposals()->pluck('campaign_id'))
-                        ->withCount([
-                            'completed_proposals',
-                            'unfunded_proposals',
-                            'funded_proposals',
-                        ])
-                        ->get()
-                )
-            )
-        ),
-    ];
+            str_contains($request->path(), '/communities') =>
+                Inertia::render('CatalystProfile/Communities/Index', $props),
 
-    return match (true) {
-        str_contains($request->path(), '/connections') =>
-            Inertia::render('CatalystProfile/Connections/Index', $props),
+            str_contains($request->path(), '/campaigns') =>
+                Inertia::render('CatalystProfile/Campaigns/Index', $props),
 
-        str_contains($request->path(), '/groups') =>
-            Inertia::render('CatalystProfile/Groups/Index', $props),
-
-        str_contains($request->path(), '/communities') =>
-            Inertia::render('CatalystProfile/Communities/Index', $props),
-
-        str_contains($request->path(), '/campaigns') =>
-            Inertia::render('CatalystProfile/Campaigns/Index', $props),
-
-        default =>
-            Inertia::render('CatalystProfile/Proposals/Index', $props),
-    };
-}
+            default =>
+                Inertia::render('CatalystProfile/Proposals/Index', $props),
+        };
+    }
 
 
     protected function query($returnBuilder = false, $attrs = null, $filters = [])
@@ -272,6 +184,16 @@ class CatalystProfilesController extends Controller
                 'claimed_by',
                 'hero_img_url',
                 'proposals_count',
+                'funded_proposals_count',
+                'completed_proposals_count',
+                'own_proposals_count',
+                'collaborating_proposals_count',
+                'amount_requested_ada',
+                'amount_requested_usd',
+                'amount_awarded_ada',
+                'amount_awarded_usd',
+                'amount_distributed_ada',
+                'amount_distributed_usd',
             ],
         ];
 
