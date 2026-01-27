@@ -1,3 +1,10 @@
+# [1.71.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.70.0...v1.71.0) (2026-01-27)
+
+
+### Features
+
+* added high and low priority queues ([467eb1d](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/467eb1dac4c94f48c11ad7979a476480e85cd81d))
+
 # [1.70.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.69.0...v1.70.0) (2026-01-26)
 
 
