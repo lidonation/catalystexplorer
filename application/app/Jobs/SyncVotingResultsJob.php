@@ -21,6 +21,8 @@ class SyncVotingResultsJob implements ShouldQueue
 {
     use Dispatchable, GetImageLink, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $queue = 'high';
+
     public function __construct(
     ) {}
 

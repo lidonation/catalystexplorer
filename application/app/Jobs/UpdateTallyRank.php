@@ -35,6 +35,8 @@ class UpdateTallyRank implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $queue = 'high';
+
     /**
      * The number of seconds the job can run before timing out.
      */
