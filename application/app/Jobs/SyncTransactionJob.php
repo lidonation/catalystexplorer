@@ -66,7 +66,7 @@ class SyncTransactionJob implements ShouldQueue
         } catch (Exception $e) {
             if ($e->getCode() === 429) {
                 Log::warning("Rate limit for {$this->voterTransaction['tx_hash']}. Releasing.");
-                $this->release(rand(60, 120));
+                $this->release(120);
 
                 return;
             }
