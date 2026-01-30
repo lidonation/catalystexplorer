@@ -242,15 +242,15 @@ const StatusDistributionCard: React.FC<StatusDistributionCardProps> = ({
 
 if (isMobile) {
   return (
-    <div className="w-full flex flex-col gap-3 border-b border-content-light/20">
-      <div className="text-content-light text-base font-semibold leading-7">
+    <div className="w-full flex flex-col gap-2.5 border-b border-content-light/20 pt-6">
+      <div className="text-content-light text-sm font-semibold leading-5">
         {t('Proposal Status Distribution')}
       </div>
 
-      <div className="w-full grid grid-cols-2 gap-4 items-end py-2">
+      <div className="w-full grid grid-cols-2 gap-2 items-center py-0">
         {/* Pie chart column */}
         <div className="flex items-center justify-center">
-          <div className="w-38 h-38">
+          <div className="w-28 h-28">
             <ProposalStatusPieChart
               completed={completed}
               inProgress={inProgress}
@@ -261,24 +261,24 @@ if (isMobile) {
         </div>
 
         {/* Legend column */}
-        <div className="space-y-3">
+        <div className="space-y-1.5">
           {legendItems.map((item) => {
             const percent =
               total > 0 ? ((item.value / total) * 100).toFixed(1) : '0.0';
 
             return (
-              <div key={item.id} className="flex flex-col gap-0.5">
-                <div className="flex items-center gap-2">
-                  <span className={`w-2.5 h-2.5 rounded-full ${item.colorClass}`} />
-                  <span className="text-content-light text-4">
+              <div key={item.id} className="flex flex-col ml-4.5">
+                <div className="flex items-center gap-1.5">
+                  <span className={`w-2 h-2 rounded-full ${item.colorClass}`} />
+                  <span className="text-content-light text-5">
                     {item.label}
                   </span>
                 </div>
-                <div>
-                  <span className="text-content-light text-4 font-semibold">
+                <div className="ml-2.5 ">
+                  <span className="text-content-light text-5 font-semibold">
                     {item.value.toLocaleString()}
                   </span>
-                  <span className="text-content-light text-4 opacity-80 ml-1">
+                  <span className="text-content-light  font-semibold text-5 ">
                     ({percent}%)
                   </span>
                 </div>
@@ -293,7 +293,7 @@ if (isMobile) {
 
   return (
   <div className="flex-1 w-full rounded-xl bg-[var(--cx-background-gradient-1-dark)]  dark:bg-[var(--cx-background-gradient-2-dark)] lg:p-3 flex flex-col gap-5">
-    <div className="text-content-light text-lg lg:text-xl font-semibold leading-7">
+    <div className="text-content-light text-5 lg:text-xl font-semibold leading-7">
       {t('Proposal Status Distribution')}
     </div>
     <div className="flex flex-col items-center gap-6">
@@ -371,7 +371,7 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
     };
 
     const wrapperClasses = isMobile
-        ? 'self-stretch flex flex-col justify-start items-start gap-0.5'
+        ? 'self-stretch flex flex-col justify-start items-start gap-0.5 py-1'
         : 'flex-1 p-2.5 bg-[var(--cx-background-gradient-1-dark)]  dark:bg-[var(--cx-background-gradient-2-dark)] rounded-xl inline-flex flex-col justify-start items-start gap-4';
 
     const getCurrencyValues = () => {
@@ -428,26 +428,27 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
     };
 
     const currencyOptions: { value: CurrencyType; label: string; disabled?: boolean }[] = [
-        { value: 'ADA', label: 'ADA (₳)', disabled: !hasCurrencyData('ADA') },
-        { value: 'USD', label: 'Dollars ($)', disabled: !hasCurrencyData('USD') },
-        { value: 'USDM', label: 'USDM ($)', disabled: !hasCurrencyData('USDM') },
+        { value: 'ADA', label: 'ADA (₳)', disabled: isMobile ? false : !hasCurrencyData('ADA') },
+        { value: 'USD', label: 'Dollars ($)', disabled: isMobile ? false : !hasCurrencyData('USD') },
+        { value: 'USDM', label: 'USDM ($)', disabled: isMobile ? false : !hasCurrencyData('USDM') },
     ];
 
     // Auto-switch to a currency with data if current selection is disabled
     useEffect(() => {
+        if (isMobile) return;
         if (!hasCurrencyData(selectedCurrency)) {
             const availableCurrency = currencyOptions.find(opt => !opt.disabled)?.value;
             if (availableCurrency && availableCurrency !== selectedCurrency) {
                 handleCurrencyChange(availableCurrency);
             }
         }
-    }, [metrics]);
+    }, [metrics, isMobile]);
 
     return (
         <div className={wrapperClasses}>
-            <div className="w-full flex flex-col gap-2">
-                <div className='text-content-light text-lg lg:text-xl font-semibold leading-7'>{t('Funding Overview')}</div>
-                <div className="flex items-center gap-6">
+            <div className="w-full flex flex-col gap-1">
+                <div className={`text-content-light font-semibold ${isMobile ? 'text-sm leading-5' : 'text-lg lg:text-xl leading-7'}`}>{t('Funding Overview')}</div>
+                <div className={`flex items-center ${isMobile ? 'gap-3' : 'gap-6'}`}>
                     {currencyOptions.map((option) => (
                         <button
                             key={option.value}
@@ -481,11 +482,11 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
             {/* Distributed vs Awarded */}
             <div className="self-stretch flex flex-col justify-start items-start gap-1">
                 <div className="self-stretch inline-flex justify-between items-start">
-                    <div className={`text-4 font-normal leading-5`}>
+                    <div className={`lg:text-4  text-5 font-normal leading-5`}>
                         {t('Distributed vs Awarded')}
                     </div>
                     <div className="flex justify-start items-center gap-1">
-                        <div className={`text-4 font-semibold leading-5`}>
+                        <div className={`lg:text-4  text-5 font-semibold leading-5`}>
                             {symbol}{shortNumber(distributed, 2)}{suffix} / {symbol}{shortNumber(awarded, 2)}{suffix}
                         </div>
                     </div>
@@ -508,11 +509,11 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
             {/* Awarded vs Requested */}
             <div className="self-stretch flex flex-col justify-start items-start gap-1">
                 <div className="self-stretch inline-flex justify-between items-start">
-                    <div className={`text-4 font-normal leading-5`}>
+                    <div className={`lg:text-4  text-5 font-normal leading-5`}>
                         {t('Awarded vs Requested')}
                     </div>
                     <div className="flex justify-start items-center gap-1">
-                        <div className={`text-4 font-semibold leading-5`}>
+                        <div className={`lg:text-4  text-5 semibold leading-5`}>
                             {symbol}{shortNumber(awarded, 2)}{suffix} / {symbol}{shortNumber(requested, 2)}{suffix}
                         </div>
                     </div>
@@ -535,11 +536,11 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
             {/* Funded vs Approved (Count-based metric) */}
             <div className="self-stretch flex flex-col justify-start items-start gap-1 border-content-light/10">
                 <div className="self-stretch inline-flex justify-between items-start">
-                    <div className={`text-4 font-normal leading-5`}>
+                    <div className={`lg:text-4  text-5 font-normal leading-5`}>
                         {t('Funded vs Approved')} <span className="text-content-light/60 text-[10px]">({t('proposals')})</span>
                     </div>
                     <div className="flex justify-start items-center gap-1">
-                        <div className={`text-4 font-semibold leading-5`}>
+                        <div className={`lg:text-4  text-5 font-semibold leading-5`}>
                             {(metrics.funded || 0).toLocaleString()} / {(metrics.approved || 0).toLocaleString()}
                         </div>
                     </div>
@@ -553,7 +554,7 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
                     />
                 </div>
                 <div className="self-stretch flex justify-end">
-                    <div className={`text-5 text-content-light/80 font-normal leading-5`}>
+                    <div className={`lg:text-4  text-5 text-content-light/80 font-normal leading-5`}>
                         {fundedPercent}% {t('funded')}
                     </div>
                 </div>
@@ -573,14 +574,14 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
             )}
 
             {isMobile && (
-                <div className="self-stretch flex flex-col justify-center items-center  border-b border-content-light/20">
-                    <div className="text-content-light/80 text-[8px] font-normal leading-5">
+                <div className="self-stretch flex flex-col justify-center items-center border-b border-content-light/20 py-1">
+                    <div className="text-content-light/80 text-[8px] font-normal leading-4">
                         {t('Success Rate')}
                     </div>
-                    <div className="text-content-light text-1 font-bold leading-5">
+                    <div className="text-content-light text-2 font-bold leading-5">
                         {approvedPercent}%
                     </div>
-                    <div className="text-center text-success text-5 font-medium leading-5 mb-2">
+                    <div className="text-center text-success text-6 font-medium leading-4 mb-1">
                         {t('Approval Rate')}
                     </div>
                 </div>
@@ -611,7 +612,7 @@ const KpisCard: React.FC<KpisCardProps> = ({
   const communitiesUrl = useLocalizedRoute('communities.index');
 
   const wrapperClasses = isMobile
-    ? 'self-stretch inline-flex flex-col justify-start items-center gap-0.5'
+    ? 'self-stretch inline-flex flex-col justify-start items-center gap-0.5 py-2'
     : 'flex-1 p-2.5 bg-[var(--cx-background-gradient-1-dark)] dark:bg-[var(--cx-background-gradient-2-dark)] rounded-xl inline-flex flex-col justify-start items-start gap-4';
 
   const hasADA = avgRequestedADA > 0;
@@ -621,43 +622,45 @@ const KpisCard: React.FC<KpisCardProps> = ({
   return (
     <div className={wrapperClasses}>
       <div className="inline-flex justify-start items-start gap-2 w-full">
-        <div className="text-content-light text-lg lg:text-xl font-semibold leading-7">
+        <div className={`text-content-light font-semibold ${isMobile ? 'text-sm leading-5' : 'text-lg lg:text-xl leading-7'}`}>
           {t('KPIs')}
         </div>
       </div>
 
       {isMobile ? (
-        <div className="w-full grid grid-cols-2 gap-x-4 gap-y-2 items-start">
+        <div className="w-full grid grid-cols-2 gap-x-3 gap-y-1 items-start">
           {/* Row 1: Titles (forced same horizontal line) */}
-          <div className="text-5 text-content-light/80 font-normal leading-5 whitespace-nowrap">
-            {t('AVG. AMOUNT REQUESTED')}
+          <div className="text-5 text-content-light/80 font-normal leading-4 whitespace-nowrap">
+            {t('AVERAGE AMOUNT')}
+            <br></br>
+            {t('REQUESTED')}
           </div>
-          <div className="text-5 text-content-light/80 font-normal leading-5 whitespace-nowrap">
+          <div className="text-5 text-content-light/80 font-normal leading-4 whitespace-nowrap">
             {t('COMPLETION RATE')}
           </div>
 
           {/* Row 2: Values */}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-0.5">
             {hasADA && (
-              <div className="text-1 sm:text-3 font-bold leading-5">
+              <div className="text-2 font-bold leading-5">
                 {shortNumber(avgRequestedADA, 2)} ₳
               </div>
             )}
             {hasUSD && (
-              <div className="text-1 font-bold leading-5">
+              <div className="text-2 font-bold leading-5">
                 ${shortNumber(avgRequestedUSD, 2)}
               </div>
             )}
             {hasUSDM && (
-              <div className="text-1 font-bold leading-5">
+              <div className="text-2 font-bold leading-5">
                 ${shortNumber(avgRequestedUSDM, 2)} USDM
               </div>
             )}
             {!hasADA && !hasUSD && !hasUSDM && (
-              <div className="text-1 font-bold leading-5">0</div>
+              <div className="text-2 font-bold leading-5">0</div>
             )}
           </div>
-          <div className="text-1 font-bold leading-5">
+          <div className="text-2 font-bold leading-5">
             {completionRate.toFixed(1)}%
           </div>
         </div>
@@ -740,7 +743,7 @@ const AnalyticsView: React.FC<AnalyticsViewProps> = ({ metrics, isMobile = false
 
     if (isMobile) {
         return (
-            <div className="space-y-2 px-4 py-1">
+            <div className="space-y-1 px-3 py-1">
                 <StatusDistributionCard metrics={metrics} isMobile />
 
                 <FundingOverviewCard
