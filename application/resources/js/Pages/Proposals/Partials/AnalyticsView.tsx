@@ -428,20 +428,21 @@ const FundingOverviewCard: React.FC<FundingOverviewCardProps> = ({
     };
 
     const currencyOptions: { value: CurrencyType; label: string; disabled?: boolean }[] = [
-        { value: 'ADA', label: 'ADA (₳)', disabled: !hasCurrencyData('ADA') },
-        { value: 'USD', label: 'Dollars ($)', disabled: !hasCurrencyData('USD') },
-        { value: 'USDM', label: 'USDM ($)', disabled: !hasCurrencyData('USDM') },
+        { value: 'ADA', label: 'ADA (₳)', disabled: isMobile ? false : !hasCurrencyData('ADA') },
+        { value: 'USD', label: 'Dollars ($)', disabled: isMobile ? false : !hasCurrencyData('USD') },
+        { value: 'USDM', label: 'USDM ($)', disabled: isMobile ? false : !hasCurrencyData('USDM') },
     ];
 
     // Auto-switch to a currency with data if current selection is disabled
     useEffect(() => {
+        if (isMobile) return;
         if (!hasCurrencyData(selectedCurrency)) {
             const availableCurrency = currencyOptions.find(opt => !opt.disabled)?.value;
             if (availableCurrency && availableCurrency !== selectedCurrency) {
                 handleCurrencyChange(availableCurrency);
             }
         }
-    }, [metrics]);
+    }, [metrics, isMobile]);
 
     return (
         <div className={wrapperClasses}>
