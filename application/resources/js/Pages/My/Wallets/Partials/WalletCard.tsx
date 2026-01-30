@@ -15,6 +15,7 @@ interface WalletStats {
     funds_participated: string[];
     balance: string;
     status?: boolean;
+    drep_status?: boolean;
 }
 
 interface WalletData {
@@ -222,12 +223,12 @@ const WalletCard: React.FC<WalletCardProps> = ({
                     <WalletItem label={t('transactions.drepStatus')}>
                         <span
                             className={`rounded-md px-2 py-0.5 text-xs font-medium outline outline-1 outline-offset-[-1px] ${
-                                stats?.status
+                                stats?.drep_status
                                     ? 'bg-green-100 text-green-600 outline-green-300/50'
                                     : 'bg-red-100 text-red-600 outline-red-300/50'
                             }`}
                         >
-                            {stats?.status ? 'Active' : 'Inactive'}
+                            {stats?.drep_status ? 'Active' : 'Inactive'}
                         </span>
                     </WalletItem>
                 </div>
