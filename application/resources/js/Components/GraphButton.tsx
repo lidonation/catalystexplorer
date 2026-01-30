@@ -91,7 +91,7 @@ const GraphButton = () => {
                             leave="transition-all duration-200 ease-in"
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95"
-                            className="w-full max-w-full mb-0 max-h-[85vh]"
+                            className="w-full max-w-full mb-0 max-h-[95vh]"
                         >
                             {metrics && <MetricsBar isConnected={false} />}
                         </Transition.Child>
