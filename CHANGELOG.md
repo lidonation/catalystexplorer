@@ -1,3 +1,30 @@
+# [1.71.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.70.0...v1.71.0) (2026-01-27)
+
+
+### Features
+
+* added high and low priority queues ([467eb1d](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/467eb1dac4c94f48c11ad7979a476480e85cd81d))
+
+# [1.70.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.69.0...v1.70.0) (2026-01-26)
+
+
+### Bug Fixes
+
+* fix my proposal page page crashing ([4b63f2e](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/4b63f2eda9586c1d4c7ce62a053ab917e3881a83))
+
+
+### Features
+
+* port tx sync job ([30be8c8](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/30be8c8b7276279f92850df276908c393defd8fa))
+
+# [1.69.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.68.1...v1.69.0) (2026-01-25)
+
+
+### Features
+
+* **all charts:** Update registration data handling and improve code readability ([5b810ae](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/5b810ae41f1e2193e97f265c666b5133e6c4fcff))
+* Enhance catalyst profile username ([9c36d92](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/9c36d92604522487186d5adc4e3e66d4267cf8c7))
+
 ## [1.68.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.68.0...v1.68.1) (2026-01-21)
 
 

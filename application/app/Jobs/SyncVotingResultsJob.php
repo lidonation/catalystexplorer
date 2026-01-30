@@ -22,7 +22,9 @@ class SyncVotingResultsJob implements ShouldQueue
     use Dispatchable, GetImageLink, InteractsWithQueue, Queueable, SerializesModels;
 
     public function __construct(
-    ) {}
+    ) {
+        $this->onQueue('high');
+    }
 
     /**
      * @throws ConnectionException

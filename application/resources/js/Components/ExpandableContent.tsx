@@ -15,21 +15,29 @@ const ExpandableContent: React.FC<ExpandableContentProps> = ({
     children,
     expanded = false,
     lineClamp,
-    collapsedHeight = 100,
+    collapsedHeight,
     transitionDuration = '0.4s',
 }) => {
     const contentRef = useRef<HTMLDivElement>(null);
-    const [height, setHeight] = useState<number | undefined>(collapsedHeight);
+    const innerRef = useRef<HTMLDivElement>(null);
+    const [height, setHeight] = useState<number | undefined>(undefined);
+    const [initialHeight, setInitialHeight] = useState<number | undefined>(undefined);
+
+    useEffect(() => {
+        if (innerRef.current && initialHeight === undefined) {
+            setInitialHeight(innerRef.current.offsetHeight);
+        }
+    }, [initialHeight]);
 
     useEffect(() => {
         if (contentRef.current) {
             if (expanded) {
                 setHeight(contentRef.current.scrollHeight);
             } else {
-                setHeight(collapsedHeight);
+                setHeight(collapsedHeight ?? initialHeight);
             }
         }
-    }, [expanded, children, collapsedHeight]);
+    }, [expanded, children, collapsedHeight, initialHeight]);
 
     return (
         <div className={clsx('overflow-visible', className)}>
@@ -38,10 +46,11 @@ const ExpandableContent: React.FC<ExpandableContentProps> = ({
                 style={{
                     maxHeight: height,
                     overflow: 'hidden',
-                    transition: `max-height ${transitionDuration} ease-in-out`,
+                    transition: height !== undefined ? `max-height ${transitionDuration} ease-in-out` : undefined,
                 }}
             >
                 <div
+                    ref={innerRef}
                     className={clsx(
                         !expanded && lineClamp ? `line-clamp-${lineClamp}` : '',
                     )}

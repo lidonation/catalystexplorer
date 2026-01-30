@@ -7,6 +7,7 @@ namespace App\Services;
 use App\DataTransferObjects\WalletDTO;
 use App\Http\Integrations\LidoNation\Blockfrost\BlockfrostConnector;
 use App\Http\Integrations\LidoNation\Blockfrost\Requests\BlockfrostRequest;
+use App\Models\CatalystDrep;
 use App\Models\Signature;
 use App\Repositories\VoterHistoryRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -36,6 +37,7 @@ class WalletInfoService
                 'funds_participated' => [],
                 'payment_addresses' => [],
                 'status' => false,
+                'drep_status' => false,
                 'stakeAddress' => '',
             ];
         }
@@ -59,6 +61,7 @@ class WalletInfoService
                 'funds_participated' => [],
                 'payment_addresses' => [],
                 'status' => false,
+                'drep_status' => $this->isDrep($stakeAddress),
                 'stakeAddress' => $stakeAddress,
             ];
         }
@@ -88,6 +91,7 @@ class WalletInfoService
             return [
                 'balance' => 'N/A',
                 'status' => false,
+                'drep_status' => $this->isDrep($stakeAddress),
                 'stakeAddress' => $stakeAddress,
                 'payment_addresses' => [],
             ];
@@ -122,6 +126,7 @@ class WalletInfoService
         $isDelegated = false;
         $stake_address = $stakeAddress;
         $paymentAddresses = [];
+        $drepStatus = $this->isDrep($stake_address);
 
         try {
             $accountData = $accountResponse->json();
@@ -144,6 +149,7 @@ class WalletInfoService
         return [
             'balance' => $ada,
             'status' => $isDelegated,
+            'drep_status' => $drepStatus,
             'stakeAddress' => $stake_address,
             'payment_addresses' => $paymentAddresses,
         ];
@@ -223,6 +229,13 @@ class WalletInfoService
             $page,
             ['pageName' => 'page']
         );
+    }
+
+    public function isDrep(string $stakeAddress): bool
+    {
+        return CatalystDrep::whereHas('signatures', function ($query) use ($stakeAddress) {
+            $query->where('stake_address', $stakeAddress);
+        })->exists();
     }
 
     private function createEmptyPaginator(int $limit, int $page): LengthAwarePaginator
