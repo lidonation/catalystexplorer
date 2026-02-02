@@ -31,15 +31,29 @@ class SyncProposalJob implements ShouldQueue
     private $signatures;
 
     public function __construct(
-        public $proposalDetail,
-        public string $fund,
+        public $proposalDetail = null, // Added default
+        public ?string $fund = null,   // Added default
         public ?string $documentId = null,
         public Fluent|string|null $documentVersion = null
     ) {
+        // Only process if proposalDetail is provided (handle serialization gracefully)
+        if ($proposalDetail === null || (is_array($proposalDetail) && empty($proposalDetail))) {
+            return;
+        }
+
+        // Validate structure if proposalDetail is provided
+        if (! isset($proposalDetail['payload']) || ! is_array($proposalDetail['payload'])) {
+            return;
+        }
+
+        if (! isset($proposalDetail['payload'][1])) {
+            return;
+        }
+
         // Store signatures before reassigning proposalDetail
         $this->signatures = $proposalDetail['signatures'] ?? null;
 
-        $this->proposalDetail = toFluentDeep($proposalDetail['payload'][1] ?? []);
+        $this->proposalDetail = toFluentDeep($proposalDetail['payload'][1]);
         $this->documentMeta = toFluentDeep($proposalDetail['payload'][0]['payload'] ?? []);
 
         if ($this->documentVersion !== null && ! is_string($this->documentVersion)) {
@@ -50,13 +64,35 @@ class SyncProposalJob implements ShouldQueue
     public function handle(): void
     {
         try {
-            if (! isset($this->proposalDetail->summary) ||
-                ! isset($this->proposalDetail->setup) ||
-                ! isset($this->proposalDetail->setup->title) ||
-                ! isset($this->proposalDetail->setup->proposer)) {
-                throw new \Exception('Proposal data missing required fields: summary, setup, title, or proposer');
+            // Validate that we have proposal data
+            if ($this->proposalDetail === null || (is_object($this->proposalDetail) && empty($this->proposalDetail->toArray()))) {
+                throw new \Exception('SyncProposalJob: No proposal data available. Job was likely instantiated without required proposalDetail.');
             }
 
+            $requiredFields = [
+                'summary' => $this->proposalDetail->summary ?? null,
+                'setup' => $this->proposalDetail->setup ?? null,
+                'title' => $this->proposalDetail->setup?->title ?? null,
+                'proposer' => $this->proposalDetail->setup?->proposer ?? null,
+            ];
+
+            $missingFields = [];
+            foreach ($requiredFields as $field => $value) {
+                if (is_null($value)) {
+                    $missingFields[] = $field;
+                }
+            }
+
+            if (! empty($missingFields)) {
+                Log::error('Proposal data missing required fields', [
+                    'document_id' => $this->documentId,
+                    'fund_id' => $this->fund,
+                    'missing_fields' => $missingFields,
+                    'proposal_detail_keys' => $this->proposalDetail instanceof Fluent ? array_keys($this->proposalDetail->toArray()) : gettype($this->proposalDetail),
+                    'setup_keys' => $this->proposalDetail->setup ? array_keys($this->proposalDetail->setup->toArray()) : [],
+                ]);
+                throw new \Exception('Proposal data missing required fields: '.implode(', ', $missingFields));
+            }
             $proposalSummary = $this->proposalDetail->summary;
             $categoryUuid = $this->documentMeta->category_id[0] ?? null;
             $campaignId = null;
@@ -152,7 +188,6 @@ class SyncProposalJob implements ShouldQueue
 
             // Generate projectcatalyst.io link if we have the necessary data
             $this->generateProjectCatalystLink($proposal, $campaign, $fundNumber);
-
         } catch (\Throwable $e) {
             Log::error('Error syncing proposal: '.$e->getMessage(), [
                 'document_id' => $this->documentId,
@@ -268,6 +303,9 @@ class SyncProposalJob implements ShouldQueue
             if ($this->documentVersion) {
                 $proposal->saveMeta('catalyst_document_version', $this->documentVersion, $proposal, true);
             }
+
+            // NEW: Process additional metadata fields
+            $this->processExtendedMetadata($proposal);
         } catch (\Throwable $e) {
             Log::error('processMetas failed', [
                 'proposalId' => $this->proposalId,
@@ -275,6 +313,81 @@ class SyncProposalJob implements ShouldQueue
                 'trace' => $e->getTraceAsString(),
             ]);
             throw $e;
+        }
+    }
+
+    protected function processExtendedMetadata(Proposal $proposal): void
+    {
+        try {
+            $autoTranslated = $this->proposalDetail->setup->title->auto_translated ?? null;
+            if ($autoTranslated !== null) {
+                $proposal->saveMeta('auto_translated', (bool) $autoTranslated, $proposal, true);
+            }
+
+            $originalLanguage = $this->proposalDetail->setup->title->original_language ?? null;
+            if ($originalLanguage !== null) {
+                $proposal->saveMeta('original_language', $originalLanguage, $proposal, true);
+            }
+
+            $ipDetails = $this->proposalDetail->summary->open_source->ipDetails ?? null;
+            if ($ipDetails !== null) {
+                $proposal->saveMeta('open_source_ip_details', $ipDetails, $proposal, true);
+            }
+
+            $dependencies = $this->proposalDetail->summary->dependencies->dependencies ?? null;
+            if ($dependencies !== null) {
+                $dependenciesValue = is_array($dependencies) || is_object($dependencies)
+                    ? json_encode($dependencies)
+                    : $dependencies;
+                $proposal->saveMeta('dependencies', $dependenciesValue, $proposal, true);
+            }
+
+            $dependenciesDescription = $this->proposalDetail->summary->dependencies->description ?? null;
+            if ($dependenciesDescription !== null) {
+                $proposal->saveMeta('dependencies_description', $dependenciesDescription, $proposal, true);
+            }
+
+            $fundingCommitments = $this->proposalDetail->summary->budget->fundingCommitments ?? null;
+            if ($fundingCommitments !== null) {
+                $fundingCommitmentsValue = is_array($fundingCommitments) || is_object($fundingCommitments)
+                    ? json_encode($fundingCommitments)
+                    : $fundingCommitments;
+                $proposal->saveMeta('funding_commitments', $fundingCommitmentsValue, $proposal, true);
+            }
+
+            $keyPerformanceMetrics = $this->proposalDetail->summary->performance->keyMetrics ?? null;
+            if ($keyPerformanceMetrics !== null) {
+                $keyMetricsValue = is_array($keyPerformanceMetrics) || is_object($keyPerformanceMetrics)
+                    ? json_encode($keyPerformanceMetrics)
+                    : $keyPerformanceMetrics;
+                $proposal->saveMeta('key_performance_metrics', $keyMetricsValue, $proposal, true);
+            }
+
+            $checklistConfirmations = $this->proposalDetail->checklist ?? null;
+            if ($checklistConfirmations !== null) {
+                $checklistValue = is_array($checklistConfirmations) || is_object($checklistConfirmations)
+                    ? json_encode($checklistConfirmations)
+                    : $checklistConfirmations;
+                $proposal->saveMeta('checklist_confirmations', $checklistValue, $proposal, true);
+            }
+
+            Log::info('Processed extended metadata', [
+                'proposal_id' => $proposal->id,
+                'has_auto_translated' => $autoTranslated !== null,
+                'has_original_language' => $originalLanguage !== null,
+                'has_ip_details' => $ipDetails !== null,
+                'has_dependencies' => $dependencies !== null,
+                'has_dependencies_description' => $dependenciesDescription !== null,
+                'has_funding_commitments' => $fundingCommitments !== null,
+                'has_key_metrics' => $keyPerformanceMetrics !== null,
+                'has_checklist' => $checklistConfirmations !== null,
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('processExtendedMetadata failed', [
+                'proposal_id' => $proposal->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
         }
     }
 
@@ -497,7 +610,6 @@ class SyncProposalJob implements ShouldQueue
             } else {
                 $proposal->links()->detach();
             }
-
         } catch (\Throwable $e) {
             Log::error('processLinks failed', [
                 'proposal_id' => $this->proposalId,
@@ -710,7 +822,6 @@ class SyncProposalJob implements ShouldQueue
             $normalizedUrl = $scheme.'://'.$host.$port.$path.$query.$fragment;
 
             return $normalizedUrl;
-
         } catch (\Throwable $e) {
             // If parsing fails, return original URL
             return $url;
@@ -814,7 +925,6 @@ class SyncProposalJob implements ShouldQueue
             }
 
             return $link;
-
         } catch (\Throwable $e) {
             Log::warning('Failed to create/update link', [
                 'url' => $urlData['url'] ?? 'unknown',
@@ -904,7 +1014,6 @@ class SyncProposalJob implements ShouldQueue
                     'fund_number' => $fundNumber,
                 ]);
             }
-
         } catch (\Throwable $e) {
             Log::error('Failed to generate projectcatalyst.io link', [
                 'proposal_id' => $proposal->id ?? null,

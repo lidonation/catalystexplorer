@@ -40,6 +40,14 @@ class ProposalResource extends JsonResource
             'opensourced' => $this->opensourced,
             'funded_at' => $this->funded_at,
             'link' => $this->link,
+            'auto_translated' => $this->when($this->relationLoaded('meta_data'), $this->meta_info?->auto_translated),
+            'original_language' => $this->when($this->relationLoaded('meta_data'), $this->meta_info?->original_language),
+            'open_source_ip_details' => $this->when($this->relationLoaded('meta_data'), $this->meta_info?->open_source_ip_details),
+            'dependencies' => $this->when($this->relationLoaded('meta_data'), $this->meta_info?->dependencies),
+            'dependencies_description' => $this->when($this->relationLoaded('meta_data'), $this->meta_info?->dependencies_description),
+            'funding_commitments' => $this->when($this->relationLoaded('meta_data'), $this->meta_info?->funding_commitments),
+            'key_performance_metrics' => $this->when($this->relationLoaded('meta_data'), $this->meta_info?->key_performance_metrics),
+            'checklist_confirmations' => $this->when($this->relationLoaded('meta_data'), $this->meta_info?->checklist_confirmations),
 
             // Relationships
             'campaign' => $this->when($this->relationLoaded('campaign'), new CampaignResource($this->campaign)),
