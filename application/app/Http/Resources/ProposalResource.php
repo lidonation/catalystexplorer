@@ -41,6 +41,10 @@ class ProposalResource extends JsonResource
             'funded_at' => $this->funded_at,
             'link' => $this->link,
 
+            'alignment_score' => $this->alignment_score,
+            'feasibility_score' => $this->feasibility_score,
+            'auditability_score' => $this->auditability_score,
+
             // Relationships
             'campaign' => $this->when($this->relationLoaded('campaign'), new CampaignResource($this->campaign)),
             'fund' => $this->when($this->relationLoaded('fund'), new FundResource($this->fund)),
@@ -83,11 +87,11 @@ class ProposalResource extends JsonResource
                 //                'email' => $model->email ?? null,
                 'name' => $model->name ?? null,
                 'bio' => $model->bio ?? null,
-                //                'twitter' => $model->twitter ?? null,
-                //                'linkedin' => $model->linkedin ?? null,
-                //                'discord' => $model->discord ?? null,
-                //                'ideascale' => $model->ideascale ?? null,
-                //                'telegram' => $model->telegram ?? null,
+                'twitter' => $model->twitter ?? null,
+                'linkedin' => $model->linkedin ?? null,
+                'discord' => $model->discord ?? null,
+                'ideascale' => $model->ideascale ?? null,
+                'telegram' => $model->telegram ?? null,
                 'title' => $model->title ?? null,
                 'proposals_count' => $model->proposals_count ?? null,
                 'hero_img_url' => $model->hero_img_url ?? null,

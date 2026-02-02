@@ -127,6 +127,8 @@ class ProposalController extends Controller
 
         $proposal = $queryBuilder->findOrFail($id);
 
+        $proposal->load('metas');
+
         // Remove currency from appends to prevent automatic relationship loading
         $proposal->makeHidden(['currency']);
 
