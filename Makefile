@@ -2,7 +2,7 @@ include ./application/.env
 export
 
 sail := ./application/vendor/bin/sail
-compose := docker compose exec -T catalystexplorer.com
+compose := docker-compose exec -T catalystexplorer.com
 nodeVersion := 24.3.0
 COMPOSE_FLAGS ?=
 
@@ -175,13 +175,13 @@ watch-ext:
 	docker-compose up -d --remove-orphans $(filter-out $@,$(MAKECMDGOALS)) && $(sail) npx vite --force -- --unsafe-perm=true
 .PHONY: test-backend
 test-backend:
-	docker compose -f docker-compose.testing.yml up -d && \
+	docker-compose -f docker-compose.testing.yml up -d && \
     sleep 3 && \
-	docker compose -f docker-compose.testing.yml exec -T catalystexplorer_test.com vendor/bin/pest --group=arch --parallel && \
+	docker-compose -f docker-compose.testing.yml exec -T catalystexplorer_test.com vendor/bin/pest --group=arch --parallel && \
 	sleep 3 && \
  	docker-compose -f docker-compose.testing.yml down --volumes
 .PHONY: test-arch
-test-arch:
+test-arch:docker-compose
 	make test-backend && \
 	make up 
 
@@ -189,13 +189,13 @@ test-arch:
 test-e2e:
 	@echo "Starting End-to-End Testing Workflow..."
 	@echo "Stopping Allure service if running..."
-	@docker compose stop catalystexplorer.allure 2>/dev/null || true
+	@docker-compose stop catalystexplorer.allure 2>/dev/null || true
 	@echo "Cleaning previous test results..."
 	@rm -rf ./application/allure-results ./application/allure-report ./application/allure-reports ./application/playwright-report 2>/dev/null || true
 	@echo "Creating fresh directories..."
 	@mkdir -p ./application/allure-results ./application/allure-reports
 	@echo "Starting Allure reporting service..."
-	@docker compose up -d catalystexplorer.allure
+	@docker-compose up -d catalystexplorer.allure
 	@echo "Waiting for Allure service to be ready..."
 	@sleep 5
 	@echo "Installing Playwright browsers (if not already installed)..."
@@ -214,7 +214,7 @@ test-e2e:
 .PHONY: test-e2e-stop
 test-e2e-stop:
 	@echo "Stopping Allure reporting service..."
-	@docker compose stop catalystexplorer.allure
+	@docker-compose stop catalystexplorer.allure
 
 
 .PHONY: image-build-playwright
