@@ -35,6 +35,13 @@ class ProposalResource extends JsonResource
             'solution' => $this->solution,
             'experience' => $this->experience,
             'content' => $this->when($request->boolean('include_content'), $this->content),
+
+            // Parsed content sections (available when include_content=true)
+            'impact' => $this->when($request->boolean('include_content'), fn () => $this->parseContentSection('IMPACT')),
+            'feasibility' => $this->when($request->boolean('include_content'), fn () => $this->parseContentSection('CAPABILITY') ?? $this->parseContentSection('FEASIBILITY')),
+            'budget_costs' => $this->when($request->boolean('include_content'), fn () => $this->parseContentSection('BUDGET')),
+            'value_for_money' => $this->when($request->boolean('include_content'), fn () => $this->parseContentSection('VALUE FOR MONEY')),
+
             'website' => $this->website,
             'quickpitch' => $this->quickpitch,
             'project_length' => $this->project_length,
@@ -139,6 +146,35 @@ class ProposalResource extends JsonResource
             'completed' => $completed,
             'by_fund' => $byFund,
         ];
+    }
+
+    /**
+     * Parse a specific section from the markdown content
+     */
+    private function parseContentSection(string $sectionName): ?string
+    {
+        if (! $this->content) {
+            return null;
+        }
+
+        $escapedName = preg_quote($sectionName, '/');
+
+        // Match: ### \[Section Name\] or ### [Section Name] with optional text after
+        // \\? matches optional literal backslash
+        $pattern = '/###\s*\\\\?\['.$escapedName.'[^\]]*\\\\?\][^\n]*\n(.*?)(?=###|$)/si';
+
+        if (preg_match($pattern, $this->content, $matches)) {
+            return trim($matches[1]);
+        }
+
+        // Fallback: try without brackets (older format like ### Detailed Plan)
+        $patternNoBrackets = "/###\s*{$escapedName}[^\n]*\n(.*?)(?=###|$)/si";
+
+        if (preg_match($patternNoBrackets, $this->content, $matches)) {
+            return trim($matches[1]);
+        }
+
+        return null;
     }
 
     /**
