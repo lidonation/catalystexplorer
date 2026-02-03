@@ -7,6 +7,7 @@ namespace App\Http\Resources;
 use App\Enums\CatalystCurrencies;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\DB;
 
 class ProposalResource extends JsonResource
 {
@@ -41,9 +42,12 @@ class ProposalResource extends JsonResource
             'funded_at' => $this->funded_at,
             'link' => $this->link,
 
+            // Scores
             'alignment_score' => $this->alignment_score,
             'feasibility_score' => $this->feasibility_score,
             'auditability_score' => $this->auditability_score,
+
+            'reviews_count' => $this->whenCounted('reviews'),
 
             // Relationships
             'campaign' => $this->when($this->relationLoaded('campaign'), new CampaignResource($this->campaign)),
@@ -77,6 +81,7 @@ class ProposalResource extends JsonResource
             if (! $model) {
                 return null;
             }
+            $proposalStats = $this->getTeamMemberProposalStats($model);
 
             // Create a unified format for both IdeascaleProfile and CatalystProfile
             return [
@@ -84,7 +89,6 @@ class ProposalResource extends JsonResource
                 'ideascale_id' => $model->ideascale_id ?? null,
                 'catalyst_id' => $model->catalyst_id ?? null,
                 'username' => $model->username ?? null,
-                //                'email' => $model->email ?? null,
                 'name' => $model->name ?? null,
                 'bio' => $model->bio ?? null,
                 'twitter' => $model->twitter ?? null,
@@ -93,13 +97,48 @@ class ProposalResource extends JsonResource
                 'ideascale' => $model->ideascale ?? null,
                 'telegram' => $model->telegram ?? null,
                 'title' => $model->title ?? null,
-                'proposals_count' => $model->proposals_count ?? null,
                 'hero_img_url' => $model->hero_img_url ?? null,
-                //                'profile_type' => get_class($model), // Include the profile type for reference
+                // Proposal statistics
+                'proposals_count' => $proposalStats['total'],
+                'open_proposals_count' => $proposalStats['open'],
+                'funded_proposals_count' => $proposalStats['funded'],
+                'completed_proposals_count' => $proposalStats['completed'],
+                'proposals_by_fund' => $proposalStats['by_fund'],
             ];
         })->filter(); // Remove any null models
 
         return $profiles->values(); // Reset array keys
+    }
+
+    private function getTeamMemberProposalStats($model): array
+    {
+        $proposals = $model->proposals();
+
+        $total = $proposals->count();
+        $open = $proposals->clone()->whereIn('status', ['pending', 'in_progress', 'onboarding'])->count();
+        $funded = $proposals->clone()->whereNotNull('funded_at')->count();
+        $completed = $proposals->clone()->where('status', 'complete')->count();
+
+        $byFund = $proposals->clone()
+            ->select('fund_id', DB::raw('count(*) as count'))
+            ->groupBy('fund_id')
+            ->with('fund:id,title,label')
+            ->get()
+            ->map(fn ($item) => [
+                'fund_id' => $item->fund_id,
+                'fund_title' => $item->fund?->title,
+                'fund_label' => $item->fund?->label,
+                'count' => $item->count,
+            ])
+            ->toArray();
+
+        return [
+            'total' => $total,
+            'open' => $open,
+            'funded' => $funded,
+            'completed' => $completed,
+            'by_fund' => $byFund,
+        ];
     }
 
     /**
