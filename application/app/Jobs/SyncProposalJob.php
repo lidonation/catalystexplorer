@@ -108,6 +108,17 @@ class SyncProposalJob implements ShouldQueue
                 throw new \Exception("Proposal not found. Document ID: {$this->documentId}, Slug: {$slug}, Fund: {$this->fund}");
             }
 
+            // Extract self_assessment data if present
+            $selfAssessment = null;
+            if (isset($this->proposalDetail->self_assessment)) {
+                $selfAssessmentData = $this->proposalDetail->self_assessment;
+                if ($selfAssessmentData instanceof Fluent) {
+                    $selfAssessment = $selfAssessmentData->toArray();
+                } elseif (is_array($selfAssessmentData)) {
+                    $selfAssessment = $selfAssessmentData;
+                }
+            }
+
             $data = [
                 'title' => ['en' => $title],
                 'problem' => ['en' => $proposalSummary->problem->statement ?? ''],
@@ -118,6 +129,7 @@ class SyncProposalJob implements ShouldQueue
                 'slug' => $slug,
                 'project_length' => $proposalSummary->time->duration ?? null,
                 'opensource' => $proposalSummary->open_source->isOpenSource ?? false,
+                'self_assessment' => $selfAssessment,
                 'updated_at' => now(),
             ];
 

@@ -42,6 +42,16 @@ class ProposalResource extends JsonResource
             'budget_costs' => $this->when($request->boolean('include_content'), fn () => $this->parseContentSection('BUDGET')),
             'value_for_money' => $this->when($request->boolean('include_content'), fn () => $this->parseContentSection('VALUE FOR MONEY')),
 
+            // Pitch sections (available when include_content=true)
+            'pitch_team' => $this->when($request->boolean('include_content'), fn () => $this->parseContentSection('TEAM')),
+            'pitch_budget' => $this->when($request->boolean('include_content'), fn () => $this->parseContentSection('BUDGET')),
+            'pitch_value' => $this->when($request->boolean('include_content'), fn () => $this->parseContentSection('VALUE')),
+
+            // Category questions (available when include_content=true)
+            'category_target' => $this->when($request->boolean('include_content'), fn () => $this->parseContentSection('TARGET')),
+            'category_activities' => $this->when($request->boolean('include_content'), fn () => $this->parseContentSection('ACTIVITIES')),
+            'category_performance_metrics' => $this->when($request->boolean('include_content'), fn () => $this->parseContentSection('PERFORMANCE METRICS')),
+
             'website' => $this->website,
             'quickpitch' => $this->quickpitch,
             'project_length' => $this->project_length,
@@ -53,6 +63,27 @@ class ProposalResource extends JsonResource
             'alignment_score' => $this->alignment_score,
             'feasibility_score' => $this->feasibility_score,
             'auditability_score' => $this->auditability_score,
+
+            // Blockchain references
+            'ideascale_id' => $this->ideascale_id,
+            'chain_proposal_id' => $this->chain_proposal_id,
+            'chain_proposal_index' => $this->chain_proposal_index,
+
+            // Vote statistics
+            'unique_wallets' => $this->unique_wallets,
+            'yes_wallets' => $this->yes_wallets,
+            'no_wallets' => $this->no_wallets,
+
+            // Translation metadata
+            'is_auto_translated' => $this->is_auto_translated,
+            'original_language' => $this->original_language,
+
+            // Dependencies
+            'has_dependencies' => $this->has_dependencies,
+            'dependencies_description' => $this->dependencies_description,
+
+            // Self assessment checklist
+            'self_assessment' => $this->self_assessment,
 
             'reviews_count' => $this->whenCounted('reviews'),
 
@@ -70,6 +101,7 @@ class ProposalResource extends JsonResource
                 ];
             }),
             'links' => $this->when($this->relationLoaded('links'), LinkResource::collection($this->links)),
+            'theme' => $this->when($request->boolean('include_content'), fn () => $this->parseTheme()),
             'meta_data' => $this->when($this->relationLoaded('meta_data'), $this->meta_info),
 
             // Computed attributes
@@ -175,6 +207,51 @@ class ProposalResource extends JsonResource
         }
 
         return null;
+    }
+
+    /**
+     * Parse theme from content (group and tag)
+     */
+    private function parseTheme(): ?array
+    {
+        if (! $this->content) {
+            return null;
+        }
+
+        // Theme is stored in tags relationship with group and tag values
+        // Try to extract from content section header pattern
+        $group = null;
+        $tag = null;
+
+        // Look for theme section patterns in content
+        // The theme data might be in a [Theme] section or similar
+        if (preg_match('/###\s*\[?Theme[^\]]*\]?[^\n]*\n(.*?)(?=###|$)/si', $this->content, $matches)) {
+            $themeContent = trim($matches[1]);
+            // Try to extract group and tag from content
+            if (preg_match('/group[:\s]+([^\n]+)/i', $themeContent, $groupMatch)) {
+                $group = trim($groupMatch[1]);
+            }
+            if (preg_match('/tag[:\s]+([^\n]+)/i', $themeContent, $tagMatch)) {
+                $tag = trim($tagMatch[1]);
+            }
+        }
+
+        // Fallback: check if tags relationship is loaded and extract from there
+        if ((! $group || ! $tag) && $this->relationLoaded('tags') && $this->tags->isNotEmpty()) {
+            $tags = $this->tags->pluck('title')->toArray();
+            // First tag is typically the group, second is the specific tag
+            $group = $group ?? ($tags[0] ?? null);
+            $tag = $tag ?? ($tags[1] ?? $tags[0] ?? null);
+        }
+
+        if (! $group && ! $tag) {
+            return null;
+        }
+
+        return [
+            'group' => $group,
+            'tag' => $tag,
+        ];
     }
 
     /**
