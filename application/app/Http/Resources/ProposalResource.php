@@ -36,21 +36,15 @@ class ProposalResource extends JsonResource
             'experience' => $this->experience,
             'content' => $this->when($request->boolean('include_content'), $this->content),
 
-            // Parsed content sections (available when include_content=true)
-            'impact' => $this->when($request->boolean('include_content'), fn () => $this->parseContentSection('IMPACT')),
-            'feasibility' => $this->when($request->boolean('include_content'), fn () => $this->parseContentSection('CAPABILITY') ?? $this->parseContentSection('FEASIBILITY')),
-            'budget_costs' => $this->when($request->boolean('include_content'), fn () => $this->parseContentSection('BUDGET')),
-            'value_for_money' => $this->when($request->boolean('include_content'), fn () => $this->parseContentSection('VALUE FOR MONEY')),
+            // Structured content from JSONB columns (available when include_content=true)
+            // Project details: solution, impact, feasibility
+            'project_details' => $this->when($request->boolean('include_content'), $this->project_details),
 
-            // Pitch sections (available when include_content=true)
-            'pitch_team' => $this->when($request->boolean('include_content'), fn () => $this->parseContentSection('TEAM')),
-            'pitch_budget' => $this->when($request->boolean('include_content'), fn () => $this->parseContentSection('BUDGET')),
-            'pitch_value' => $this->when($request->boolean('include_content'), fn () => $this->parseContentSection('VALUE')),
+            // Pitch sections: team, budget, value
+            'pitch' => $this->when($request->boolean('include_content'), $this->pitch),
 
-            // Category questions (available when include_content=true)
-            'category_target' => $this->when($request->boolean('include_content'), fn () => $this->parseContentSection('TARGET')),
-            'category_activities' => $this->when($request->boolean('include_content'), fn () => $this->parseContentSection('ACTIVITIES')),
-            'category_performance_metrics' => $this->when($request->boolean('include_content'), fn () => $this->parseContentSection('PERFORMANCE METRICS')),
+            // Category questions: target, activities, performance_metrics
+            'category_questions' => $this->when($request->boolean('include_content'), $this->category_questions),
 
             'website' => $this->website,
             'quickpitch' => $this->quickpitch,
@@ -85,7 +79,9 @@ class ProposalResource extends JsonResource
             // Self assessment checklist
             'self_assessment' => $this->self_assessment,
 
+            // Reviews
             'reviews_count' => $this->whenCounted('reviews'),
+            'reviewer_ids' => $this->when($this->relationLoaded('reviews'), fn () => $this->getReviewerIds()),
 
             // Relationships
             'campaign' => $this->when($this->relationLoaded('campaign'), new CampaignResource($this->campaign)),
@@ -101,7 +97,7 @@ class ProposalResource extends JsonResource
                 ];
             }),
             'links' => $this->when($this->relationLoaded('links'), LinkResource::collection($this->links)),
-            'theme' => $this->when($request->boolean('include_content'), fn () => $this->parseTheme()),
+            'theme' => $this->when($request->boolean('include_content'), $this->theme),
             'meta_data' => $this->when($this->relationLoaded('meta_data'), $this->meta_info),
 
             // Computed attributes
@@ -181,77 +177,16 @@ class ProposalResource extends JsonResource
     }
 
     /**
-     * Parse a specific section from the markdown content
+     * Get unique reviewer IDs for this proposal's reviews
      */
-    private function parseContentSection(string $sectionName): ?string
+    private function getReviewerIds(): array
     {
-        if (! $this->content) {
-            return null;
-        }
-
-        $escapedName = preg_quote($sectionName, '/');
-
-        // Match: ### \[Section Name\] or ### [Section Name] with optional text after
-        // \\? matches optional literal backslash
-        $pattern = '/###\s*\\\\?\['.$escapedName.'[^\]]*\\\\?\][^\n]*\n(.*?)(?=###|$)/si';
-
-        if (preg_match($pattern, $this->content, $matches)) {
-            return trim($matches[1]);
-        }
-
-        // Fallback: try without brackets (older format like ### Detailed Plan)
-        $patternNoBrackets = "/###\s*{$escapedName}[^\n]*\n(.*?)(?=###|$)/si";
-
-        if (preg_match($patternNoBrackets, $this->content, $matches)) {
-            return trim($matches[1]);
-        }
-
-        return null;
-    }
-
-    /**
-     * Parse theme from content (group and tag)
-     */
-    private function parseTheme(): ?array
-    {
-        if (! $this->content) {
-            return null;
-        }
-
-        // Theme is stored in tags relationship with group and tag values
-        // Try to extract from content section header pattern
-        $group = null;
-        $tag = null;
-
-        // Look for theme section patterns in content
-        // The theme data might be in a [Theme] section or similar
-        if (preg_match('/###\s*\[?Theme[^\]]*\]?[^\n]*\n(.*?)(?=###|$)/si', $this->content, $matches)) {
-            $themeContent = trim($matches[1]);
-            // Try to extract group and tag from content
-            if (preg_match('/group[:\s]+([^\n]+)/i', $themeContent, $groupMatch)) {
-                $group = trim($groupMatch[1]);
-            }
-            if (preg_match('/tag[:\s]+([^\n]+)/i', $themeContent, $tagMatch)) {
-                $tag = trim($tagMatch[1]);
-            }
-        }
-
-        // Fallback: check if tags relationship is loaded and extract from there
-        if ((! $group || ! $tag) && $this->relationLoaded('tags') && $this->tags->isNotEmpty()) {
-            $tags = $this->tags->pluck('title')->toArray();
-            // First tag is typically the group, second is the specific tag
-            $group = $group ?? ($tags[0] ?? null);
-            $tag = $tag ?? ($tags[1] ?? $tags[0] ?? null);
-        }
-
-        if (! $group && ! $tag) {
-            return null;
-        }
-
-        return [
-            'group' => $group,
-            'tag' => $tag,
-        ];
+        return $this->reviews
+            ->pluck('reviewer_id')
+            ->filter()
+            ->unique()
+            ->values()
+            ->toArray();
     }
 
     /**

@@ -92,6 +92,10 @@ class Proposal extends Model implements IHasMetaData
         'is_auto_translated' => 'boolean',
         'has_dependencies' => 'boolean',
         'self_assessment' => 'array',
+        'pitch' => 'array',
+        'project_details' => 'array',
+        'category_questions' => 'array',
+        'theme' => 'array',
     ];
 
     public $meiliIndexName = 'cx_proposals';
