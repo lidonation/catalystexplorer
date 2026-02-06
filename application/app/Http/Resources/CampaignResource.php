@@ -26,6 +26,12 @@ class CampaignResource extends JsonResource
             'awarded_at' => $this->awarded_at,
             'color' => $this->color,
             'label' => $this->label,
+
+            // Full content (only when include_content=true)
+            'content' => $this->when($request->boolean('include_content'), $this->content),
+
+            // Structured category details from JSONB column (only when include_content=true)
+            'category_details' => $this->when($request->boolean('include_content'), $this->category_details),
         ];
     }
 }

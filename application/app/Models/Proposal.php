@@ -78,9 +78,24 @@ class Proposal extends Model implements IHasMetaData
         'currency',
         'quickpitch_thumbnail',
         'is_claimed',
-        'alignment_score',
-        'auditability_score',
-        'feasibility_score',
+    ];
+
+    protected $casts = [
+        'alignment_score' => 'decimal:1',
+        'feasibility_score' => 'decimal:1',
+        'auditability_score' => 'decimal:1',
+        'ideascale_id' => 'integer',
+        'chain_proposal_index' => 'integer',
+        'unique_wallets' => 'integer',
+        'yes_wallets' => 'integer',
+        'no_wallets' => 'integer',
+        'is_auto_translated' => 'boolean',
+        'has_dependencies' => 'boolean',
+        'self_assessment' => 'array',
+        'pitch' => 'array',
+        'project_details' => 'array',
+        'category_questions' => 'array',
+        'theme' => 'array',
     ];
 
     public $meiliIndexName = 'cx_proposals';
@@ -319,21 +334,21 @@ class Proposal extends Model implements IHasMetaData
     public function feasibilityScore(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => ($this->meta_info?->feasibility_score ?? $value)
+            get: fn ($value) => $value ?? $this->meta_info?->feasibility_score
         );
     }
 
     public function alignmentScore(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => ($this->meta_info?->alignment_score ?? $value)
+            get: fn ($value) => $value ?? $this->meta_info?->alignment_score
         );
     }
 
     public function auditabilityScore(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => ($this->meta_info?->auditability_score ?? $value)
+            get: fn ($value) => $value ?? $this->meta_info?->auditability_score
         );
     }
 

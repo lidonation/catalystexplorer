@@ -108,6 +108,31 @@ class SyncProposalJob implements ShouldQueue
                 throw new \Exception("Proposal not found. Document ID: {$this->documentId}, Slug: {$slug}, Fund: {$this->fund}");
             }
 
+            // Extract self_assessment data if present
+            $selfAssessment = null;
+            if (isset($this->proposalDetail->self_assessment)) {
+                $selfAssessmentData = $this->proposalDetail->self_assessment;
+                if ($selfAssessmentData instanceof Fluent) {
+                    $selfAssessment = $selfAssessmentData->toArray();
+                } elseif (is_array($selfAssessmentData)) {
+                    $selfAssessment = $selfAssessmentData;
+                }
+            }
+
+            // Extract pitch data (team, budget, value)
+            $pitch = $this->extractStructuredData($this->proposalDetail->pitch ?? null);
+
+            // Extract project details from the details section
+            $projectDetails = $this->extractStructuredData($this->proposalDetail->details ?? null);
+
+            // Extract category questions
+            $categoryQuestions = $this->extractStructuredData(
+                $this->proposalDetail->campaign_category->category_questions ?? null
+            );
+
+            // Extract theme data
+            $theme = $this->extractThemeData($this->proposalDetail->theme ?? null);
+
             $data = [
                 'title' => ['en' => $title],
                 'problem' => ['en' => $proposalSummary->problem->statement ?? ''],
@@ -118,6 +143,11 @@ class SyncProposalJob implements ShouldQueue
                 'slug' => $slug,
                 'project_length' => $proposalSummary->time->duration ?? null,
                 'opensource' => $proposalSummary->open_source->isOpenSource ?? false,
+                'self_assessment' => $selfAssessment,
+                'pitch' => $pitch,
+                'project_details' => $projectDetails,
+                'category_questions' => $categoryQuestions,
+                'theme' => $theme,
                 'updated_at' => now(),
             ];
 
@@ -207,6 +237,100 @@ class SyncProposalJob implements ShouldQueue
 
             return $converter->convert($html);
         })->implode("\n\n");
+    }
+
+    /**
+     * Extract structured data from Fluent object or array
+     */
+    protected function extractStructuredData($data): ?array
+    {
+        if ($data === null) {
+            return null;
+        }
+
+        if ($data instanceof Fluent) {
+            // Recursively convert Fluent objects to arrays
+            return $this->fluentToArray($data);
+        }
+
+        if (is_array($data)) {
+            return $this->normalizeArrayData($data);
+        }
+
+        return null;
+    }
+
+    /**
+     * Recursively convert Fluent object to array
+     */
+    protected function fluentToArray(Fluent $fluent): array
+    {
+        $result = [];
+        foreach ($fluent->getAttributes() as $key => $value) {
+            if ($value instanceof Fluent) {
+                $result[$key] = $this->fluentToArray($value);
+            } elseif (is_array($value)) {
+                $result[$key] = $this->normalizeArrayData($value);
+            } else {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Normalize array data, converting any nested Fluent objects
+     */
+    protected function normalizeArrayData(array $data): array
+    {
+        $result = [];
+        foreach ($data as $key => $value) {
+            if ($value instanceof Fluent) {
+                $result[$key] = $this->fluentToArray($value);
+            } elseif (is_array($value)) {
+                $result[$key] = $this->normalizeArrayData($value);
+            } else {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Extract theme data from proposal theme section
+     */
+    protected function extractThemeData($themeData): ?array
+    {
+        if ($themeData === null) {
+            return null;
+        }
+
+        $data = $this->extractStructuredData($themeData);
+
+        if (! $data) {
+            return null;
+        }
+
+        // Theme structure: {theme: {grouped_tag: {group: "...", tag: "..."}}}
+        $groupedTag = $data['theme']['grouped_tag'] ?? null;
+        if ($groupedTag) {
+            return [
+                'group' => $groupedTag['group'] ?? null,
+                'tag' => $groupedTag['tag'] ?? null,
+            ];
+        }
+
+        // Alternative flat structure
+        if (isset($data['group']) || isset($data['tag'])) {
+            return [
+                'group' => $data['group'] ?? null,
+                'tag' => $data['tag'] ?? null,
+            ];
+        }
+
+        return null;
     }
 
     protected function processTags($groupTags): void
