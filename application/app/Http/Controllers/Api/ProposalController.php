@@ -64,6 +64,7 @@ class ProposalController extends Controller
                 AllowedInclude::relationship('schedule.milestones'),
                 AllowedInclude::relationship('links'),
                 AllowedInclude::relationship('meta_data'),
+                AllowedInclude::relationship('reviews'),
             ])
             ->allowedSorts([
                 AllowedSort::field('title'),
@@ -113,6 +114,7 @@ class ProposalController extends Controller
                 AllowedInclude::relationship('schedule.milestones'),
                 AllowedInclude::relationship('links'),
                 AllowedInclude::relationship('meta_data'),
+                AllowedInclude::relationship('reviews'),
             ]);
 
         // Check if any relations are being included and ensure they're loaded
@@ -126,6 +128,10 @@ class ProposalController extends Controller
         }
 
         $proposal = $queryBuilder->findOrFail($id);
+
+        // Load metas and reviews
+        $proposal->load('metas', 'reviews');
+        $proposal->loadCount('reviews');
 
         // Remove currency from appends to prevent automatic relationship loading
         $proposal->makeHidden(['currency']);
