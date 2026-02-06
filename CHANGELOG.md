@@ -1,3 +1,17 @@
+# [1.72.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.71.0...v1.72.0) (2026-01-30)
+
+
+### Bug Fixes
+
+* wrong drep status showing ([9efcd77](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/9efcd770b2bd0719aea495a1c820802c7273ca8a))
+
+
+### Features
+
+* Add new metadata label and implement Blockfrost API rate limit handling with job release. ([0ac356a](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/0ac356a2818b3a175825f90568baf914d37d4221))
+* Add new metadata label and implement Blockfrost API rate limit handling with job release. ([85c14c1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/85c14c1b996ddad52148ec7d87b206484a518c6d))
+* Add new metadata label and implement Blockfrost API rate limit handling with job release. ([8854aa7](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/8854aa7426cbfe8a016319a0439993b39e1922d0))
+
 # [1.71.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.70.0...v1.71.0) (2026-01-27)
 
 

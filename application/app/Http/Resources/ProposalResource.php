@@ -34,12 +34,12 @@ class ProposalResource extends JsonResource
             'problem' => $this->problem,
             'solution' => $this->solution,
             'experience' => $this->experience,
+            'theme' => $this->theme,
             'content' => $this->when($request->boolean('include_content'), $this->content),
 
             'pitch' => $this->pitch,
             'project_details' => $this->project_details,
             'category_questions' => $this->category_questions,
-            'theme' => $this->theme,
 
             'website' => $this->website,
             'quickpitch' => $this->quickpitch,
@@ -118,6 +118,7 @@ class ProposalResource extends JsonResource
                 'ideascale_id' => $model->ideascale_id ?? null,
                 'catalyst_id' => $model->catalyst_id ?? null,
                 'username' => $model->username ?? null,
+                //                'email' => $model->email ?? null,
                 'name' => $model->name ?? null,
                 'bio' => $model->bio ?? null,
                 'twitter' => $model->twitter ?? null,
