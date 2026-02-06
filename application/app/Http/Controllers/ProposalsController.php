@@ -354,6 +354,7 @@ class ProposalsController extends Controller
                 fn () => $proposalData['aggregated_ratings'] ?? []
             ),
             'connections' => $teamConnections,
+            'teamStats' => $this->getTeamStats($proposal),
             'userCompleteProposalsCount' => $proposalData['userCompleteProposalsCount'] ?? 0,
             'userOutstandingProposalsCount' => $proposalData['userOutstandingProposalsCount'] ?? 0,
             'catalystConnectionsCount' => $proposalData['catalystConnectionsCount'] ?? 0,
@@ -1051,6 +1052,74 @@ class ProposalsController extends Controller
                 'userCompleteProposalsCount' => 0,
                 'userOutstandingProposalsCount' => 0,
                 'catalystConnectionCount' => 0,
+            ];
+        }
+    }
+
+    /**
+     * Get aggregated statistics for all team members of a proposal
+     */
+    private function getTeamStats(Proposal $proposal): array
+    {
+        try {
+            $team = $proposal->team;
+
+            if (! $team || $team->isEmpty()) {
+                return [
+                    'totalProposals' => 0,
+                    'completedProposals' => 0,
+                    'outstandingProposals' => 0,
+                    'fundedProposals' => 0,
+                ];
+            }
+
+            // Collect all profile IDs by type
+            $ideascaleIds = [];
+            $catalystIds = [];
+
+            foreach ($team as $teamMember) {
+                if ($teamMember->profile_type === IdeascaleProfile::class) {
+                    $ideascaleIds[] = $teamMember->profile_id;
+                } elseif ($teamMember->profile_type === CatalystProfile::class) {
+                    $catalystIds[] = $teamMember->profile_id;
+                }
+            }
+
+            // Build base query for proposals that have any of these team members
+            $baseQuery = fn () => Proposal::where(function ($query) use ($ideascaleIds, $catalystIds) {
+                if (! empty($ideascaleIds)) {
+                    $query->orWhereHas('team', function ($teamQuery) use ($ideascaleIds) {
+                        $teamQuery->where('profile_type', IdeascaleProfile::class)
+                            ->whereIn('profile_id', $ideascaleIds);
+                    });
+                }
+                if (! empty($catalystIds)) {
+                    $query->orWhereHas('team', function ($teamQuery) use ($catalystIds) {
+                        $teamQuery->where('profile_type', CatalystProfile::class)
+                            ->whereIn('profile_id', $catalystIds);
+                    });
+                }
+            });
+
+            $totalProposals = $baseQuery()->count();
+            $completedProposals = $baseQuery()->where('status', 'complete')->count();
+            $outstandingProposals = $baseQuery()->whereIn('status', ['pending', 'in_progress', 'onboarding'])->count();
+            $fundedProposals = $baseQuery()->whereNotNull('funded_at')->count();
+
+            return [
+                'totalProposals' => $totalProposals,
+                'completedProposals' => $completedProposals,
+                'outstandingProposals' => $outstandingProposals,
+                'fundedProposals' => $fundedProposals,
+            ];
+        } catch (\Exception $e) {
+            \Log::error('Error calculating team stats: '.$e->getMessage());
+
+            return [
+                'totalProposals' => 0,
+                'completedProposals' => 0,
+                'outstandingProposals' => 0,
+                'fundedProposals' => 0,
             ];
         }
     }

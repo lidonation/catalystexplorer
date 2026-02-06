@@ -168,6 +168,7 @@ class Campaign extends Model implements HasMedia
             'currency' => CatalystCurrencies::class.':nullable',
             'updated_at' => 'datetime',
             'meta_data' => 'array',
+            'category_details' => 'array',
         ];
     }
 }

@@ -19,14 +19,18 @@ class MilestoneResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
+            'milestone' => $this->milestone,
             'description' => $this->description,
             'status' => $this->status,
+            'current' => $this->current,
             'outputs' => $this->outputs,
-            'acceptance_criteria' => $this->acceptance_criteria,
+            'acceptance_criteria1' => $this->acceptance_criteria,
+            'acceptance_criteria' => $this->success_criteria,
             'evidence' => $this->evidence,
             'month' => $this->month,
             'cost' => $this->cost,
             'completion_date' => $this->completion_date,
+            'completion_percent' => $this->completion_percent,
 
             // Relationships
             'proposal' => $this->when($this->relationLoaded('proposal'), function () {
