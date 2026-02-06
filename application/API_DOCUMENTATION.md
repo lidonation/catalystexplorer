@@ -483,6 +483,60 @@ All proposal fields are included in the response:
 - `meta_data` - Proposal metadata (when included)
 - `link` - Full URL to proposal page
 
+### Structured Content Fields (Always Included)
+These fields contain structured data extracted from the Catalyst API Gateway. They are always included in responses without needing any query parameter. Note: These fields may be `null` for older proposals that haven't been synced from the Catalyst API.
+
+- `pitch` - Pitch section data containing:
+  - `team` - Team description and qualifications
+  - `budget` - Budget breakdown and justification
+  - `value` - Value proposition
+- `project_details` - Project details containing:
+  - `solution` - Detailed solution description
+  - `impact` - Expected impact and outcomes
+  - `feasibility` - Feasibility assessment
+- `category_questions` - Category-specific questions containing:
+  - `target` - Target audience/beneficiaries
+  - `activities` - Planned activities
+  - `performance_metrics` - Success metrics and KPIs
+- `theme` - Proposal theme/category containing:
+  - `group` - Theme group (e.g., "Development & Tools")
+  - `tag` - Theme tag (e.g., "Analytics")
+- `self_assessment` - Self-assessment checklist responses (array)
+
+### Content Field (Conditional)
+- `content` - Full raw proposal content (only included when `?include_content=true`)
+
+### Example with Structured Fields
+```json
+{
+  "data": {
+    "id": "00e72c2e-b661-4afb-b2fb-3603469d3d30",
+    "title": "AI-Powered Blockchain Explorer",
+    "pitch": {
+      "team": { "value": "Our team has 10+ years combined experience..." },
+      "budget": { "value": "Development: $50,000, Marketing: $10,000..." },
+      "value": { "value": "This tool will enable faster analysis..." }
+    },
+    "project_details": {
+      "solution": { "value": "We will build a comprehensive explorer..." },
+      "impact": { "value": "Expected to serve 10,000+ users..." },
+      "feasibility": { "value": "Using proven technologies..." }
+    },
+    "category_questions": {
+      "target": { "value": "Developers and analysts..." },
+      "activities": { "value": "Phase 1: Research, Phase 2: Development..." },
+      "performance_metrics": { "value": "Monthly active users, API calls..." }
+    },
+    "theme": {
+      "group": "Development & Tools",
+      "tag": "Analytics"
+    },
+    "self_assessment": ["checkbox_1", "checkbox_3"],
+    ...
+  }
+}
+```
+
 ## Team Relation
 
 The `team` relationship provides access to the team members associated with a proposal. This includes project leads, developers, advisors, and other contributors.
