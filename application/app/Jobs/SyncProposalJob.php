@@ -358,7 +358,10 @@ class SyncProposalJob implements ShouldQueue
 
             $proposal = Proposal::find($this->proposalId);
             if ($proposal) {
-                $proposal->tags()->syncWithoutDetaching($tagIds);
+                $syncData = $tagIds->mapWithKeys(function ($tagId) {
+                    return [$tagId => ['model_type' => Proposal::class]];
+                })->toArray();
+                $proposal->tags()->syncWithoutDetaching($syncData);
             }
         } catch (\Throwable $e) {
             Log::error('processTags failed', [

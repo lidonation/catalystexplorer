@@ -36,15 +36,10 @@ class ProposalResource extends JsonResource
             'experience' => $this->experience,
             'content' => $this->when($request->boolean('include_content'), $this->content),
 
-            // Structured content from JSONB columns (available when include_content=true)
-            // Project details: solution, impact, feasibility
-            'project_details' => $this->when($request->boolean('include_content'), $this->project_details),
-
-            // Pitch sections: team, budget, value
-            'pitch' => $this->when($request->boolean('include_content'), $this->pitch),
-
-            // Category questions: target, activities, performance_metrics
-            'category_questions' => $this->when($request->boolean('include_content'), $this->category_questions),
+            'pitch' => $this->pitch,
+            'project_details' => $this->project_details,
+            'category_questions' => $this->category_questions,
+            'theme' => $this->theme,
 
             'website' => $this->website,
             'quickpitch' => $this->quickpitch,
@@ -97,7 +92,6 @@ class ProposalResource extends JsonResource
                 ];
             }),
             'links' => $this->when($this->relationLoaded('links'), LinkResource::collection($this->links)),
-            'theme' => $this->when($request->boolean('include_content'), $this->theme),
             'meta_data' => $this->when($this->relationLoaded('meta_data'), $this->meta_info),
 
             // Computed attributes
