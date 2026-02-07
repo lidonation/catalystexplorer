@@ -98,7 +98,7 @@ spec:
         compression: "gzip"
         jobs: 4                          # Parallel data backup jobs
 
-{{- if .Values.services.db.bootstrap.migration.enabled }}
+{{- .Values.services.db.migration.enabled }}
   bootstrap:
     pg_basebackup:
       source: {{ $.Chart.Name }}-db-source
@@ -137,7 +137,7 @@ spec:
     inProgress: false
     reusePVC: true
 
-{{- if .Values.services.db.bootstrap.migration.enabled }}
+{{- if (default false (dig "services" "db" "bootstrap" "migration" "enabled" .Values)) }}
   externalClusters:
   - name: {{ $.Chart.Name }}-db-source
     connectionParameters:
