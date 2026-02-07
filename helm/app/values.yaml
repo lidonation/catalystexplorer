@@ -52,7 +52,7 @@ services:
     replicaCount: 1
   ollama:
     persistence:
-      size: 20Gb
+      size: 20Gi
   meili:
     MEILISEARCH_KEY:
     persistence:
