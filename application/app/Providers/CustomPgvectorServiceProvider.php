@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
@@ -23,7 +25,7 @@ class CustomPgvectorServiceProvider extends ServiceProvider
         Schema::register();
 
         $this->publishes([
-            base_path('vendor/pgvector/pgvector/src/laravel/migrations') => database_path('migrations')
+            base_path('vendor/pgvector/pgvector/src/laravel/migrations') => database_path('migrations'),
         ], 'pgvector-migrations');
     }
 }
