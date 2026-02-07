@@ -112,6 +112,10 @@ spec:
       encoding: "UTF8"
       localeCollate: "en_US.UTF-8"
       localeCType: "en_US.UTF-8"
+{{- if .Values.services.db.bootstrap.enablePgvector }}
+      postInitApplicationSQL:
+        - "CREATE EXTENSION IF NOT EXISTS vector;"
+{{- end }}
 {{- end }}
 
   superuserSecret:

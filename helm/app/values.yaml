@@ -33,6 +33,7 @@ services:
       database:
         database: explorerweb
         owner: catalystexplorer
+      enablePgvector: true
       migration:
         enabled: false
         sourceHost: cx-web-db-postgresql-ha-pgpool
