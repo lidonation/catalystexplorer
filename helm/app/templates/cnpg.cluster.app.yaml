@@ -165,7 +165,7 @@ spec:
   schedule: "{{ .Values.backup.schedule.cron }}"
   cluster:
     name: {{ $.Chart.Name }}-cnpg
-  immediate: true
+  immediate: false
   suspend: false
   method: plugin
   pluginConfiguration:
