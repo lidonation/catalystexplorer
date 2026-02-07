@@ -178,7 +178,7 @@ services:
       - shared-network
   # database
   catalystexplorer.db:
-    image: postgres:17.1-bookworm
+    image: pgvector/pgvector:pg17
     container_name: catalystexplorer.db
     logging: *default-logging
     ports:
@@ -191,7 +191,6 @@ services:
       - POSTGRES_POSTGRES_PASSWORD=alj2340aaALJAF2341408AUUZLJK
     volumes:
       - "catalystexplorer-db:/var/lib/postgresql/data"
-      # - './vendor/laravel/sail/database/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
     networks:
       - catalystexplorer-net
       - shared-network
@@ -206,6 +205,21 @@ services:
         - "catalystexplorer"
       retries: 3
       timeout: 5s
+
+  # one-shot init to enable extensions in explorerweb
+  catalystexplorer.db-init:
+    image: postgres:17-bookworm
+    container_name: catalystexplorer.db-init
+    depends_on:
+      - catalystexplorer.db
+    networks:
+      - catalystexplorer-net
+    entrypoint: ["/bin/sh","-c"]
+    command: >
+      "until pg_isready -h catalystexplorer.db -U catalystexplorer -d explorerweb; do echo waiting for db; sleep 1; done;
+      PGPASSWORD=ASLJ023470AlserLFH psql -h catalystexplorer.db -U catalystexplorer -d explorerweb -v ON_ERROR_STOP=1 -c 'CREATE EXTENSION IF NOT EXISTS vector';
+      echo 'pgvector enabled';"
+    restart: "no"
   # meilisearch
   catalystexplorer-search:
     image: getmeili/meilisearch:v1.35.0
