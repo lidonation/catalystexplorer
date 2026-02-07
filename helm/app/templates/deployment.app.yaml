@@ -39,6 +39,8 @@ spec:
                 sleep 2s
               done
 
+              ls database/migrations/*
+
               php artisan package:discover
 
               php artisan view:clear
