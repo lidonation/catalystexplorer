@@ -5,7 +5,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name:{{ $.Chart.Name }}-cnpg-migration-job
+  name: "{{ $.Chart.Name }}-cnpg-migration-job"
   namespace: {{ .Values.namespace }}
   labels:
     app.kubernetes.io/name: {{ $.Chart.Name }}-cnpg-migration
@@ -127,7 +127,7 @@ spec:
 
         # Target database (CNPG cluster)
         - name: TARGET_HOST
-          value: "{{ $.Chart.Name }}-cnpg-cluster-rw"  # CNPG read-write service
+          value: "{{ $.Chart.Name }}-cnpg-cluster-rw" 
         - name: TARGET_PORT
           value: "5432"
         - name: TARGET_USER
