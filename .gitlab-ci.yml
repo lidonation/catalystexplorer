@@ -271,7 +271,7 @@ pest:
       else
         export APP_REPLICAS="1"
         export QUEUE_REPLICAS="1"
-      export DB_MIGRATION_ENABLED=false
+      export DB_MIGRATION_ENABLED=true
       fi
 
       helm upgrade $DEPLOYMENT_NAME ./helm/app \
