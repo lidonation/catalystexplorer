@@ -1,10 +1,10 @@
-{{- if .Values.db.monitoring.enabled }}
+{{- if .Values.services.db.monitoring.enabled }}
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ $.Chart.Name }}-cnpg-service-monitor
-  namespace: {{ .Values.global.namespace }}
+  namespace: {{ .Values.namespace }}
   labels:
     app.kubernetes.io/component: monitoring
 spec:
@@ -22,7 +22,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name:  {{ $.Chart.Name }}-cnpg-pooler-service-monitor
-  namespace: {{ .Values.global.namespace }}
+  namespace: {{ .Values.namespace }}
   labels:
     app.kubernetes.io/component: monitoring
 spec:
@@ -41,7 +41,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: {{ $.Chart.Name }}-cnpg-alerts
-  namespace: {{ .Values.global.namespace }}
+  namespace: {{ .Values.namespace }}
   labels:
     app.kubernetes.io/component: monitoring
 spec:
@@ -149,7 +149,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ include "gitlab-db.fullname" . }}-dashboard
-  namespace: {{ .Values.global.namespace }}
+  namespace: {{ .Values.namespace }}
   labels:
     {{- include "gitlab-db.labels" . | nindent 4 }}
     app.kubernetes.io/component: monitoring
