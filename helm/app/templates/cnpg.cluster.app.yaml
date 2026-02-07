@@ -108,7 +108,7 @@ spec:
       database: "{{ .Values.services.db.bootstrap.database.database }}"
       owner: "{{ .Values.services.db.bootstrap.database.owner }}"
       secret:
-        name: {{ $.Chart.Name }}-cnpg-bootstrap
+        name: "{{ $.Chart.Name }}-cnpg-credentials"
       encoding: "UTF8"
       localeCollate: "en_US.UTF-8"
       localeCType: "en_US.UTF-8"
