@@ -35,8 +35,8 @@ services:
         owner: explorerdbuser
       enablePgvector: true
     migration:
-      enabled: false
-      sourceHost: cx-web-db-postgresql-ha-pgpool.catalystexplorer-preview.svc.cluster.local
+      enabled: true
+      sourceHost: cx-web-db-postgresql-ha-pgpool
       sourcePort: 5432
       sourceUser: postgres
       sourcePassword:
