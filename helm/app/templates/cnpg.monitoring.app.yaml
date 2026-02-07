@@ -133,7 +133,7 @@ spec:
     
     # PgBouncer Alerts
     - alert: GitLabPgBouncerDown
-      expr: pgbouncer_up{job=~".*{{ include "gitlab-db.poolerName" . }}.*"} == 0
+      expr: pgbouncer_up{job=~".*catalystexplorer-cnpg-cluster.*"} == 0
       for: 1m
       labels:
         severity: critical
@@ -143,15 +143,16 @@ spec:
         summary: "GitLab PgBouncer is down"
         description: "GitLab PgBouncer instance {{`{{ $labels.pod }}`}} has been down for more than 1 minute"
 
-{{- if .Values.monitoring.grafanaDashboard.enabled }}
+{{- if .Values.services.db.monitoring.enabled }}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "gitlab-db.fullname" . }}-dashboard
+  name: {{ .Chart.Name }}-cnpg-dashboard
   namespace: {{ .Values.namespace }}
   labels:
-    {{- include "gitlab-db.labels" . | nindent 4 }}
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: monitoring
     grafana_dashboard: "1"
 data:
@@ -172,7 +173,7 @@ data:
             "type": "stat",
             "targets": [
               {
-                "expr": "cnpg_collector_up{cluster=\"{{ include "gitlab-db.clusterName" . }}\"}",
+                "expr": "cnpg_collector_up{cluster=\"{{ .Chart.Name }}-cnpg-cluster\"}",
                 "legendFormat": "Cluster Up"
               }
             ],
@@ -195,7 +196,7 @@ data:
             "type": "timeseries",
             "targets": [
               {
-                "expr": "cnpg_pg_stat_database_numbackends{cluster=\"{{ include "gitlab-db.clusterName" . }}\"}",
+                "expr": "cnpg_pg_stat_database_numbackends{cluster=\"{{ .Chart.Name }}-cnpg-cluster\"}",
                 "legendFormat": "Connections - {{`{{datname}}`}}"
               }
             ]

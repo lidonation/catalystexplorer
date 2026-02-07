@@ -57,4 +57,7 @@ services:
   redis:
     password: 
     host: redis-headless
-    
+
+backup:
+  schedule:
+    cron: "0 2 * * *"  # Daily at 2am
