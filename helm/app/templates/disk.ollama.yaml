@@ -1,0 +1,12 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "{{ .Values.namespace }}-ollma-pvc"
+  namespace: {{ .Values.namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{.Values.services.meili.persistence.storageClass}}
+  resources:
+    requests:
+      storage: {{.Values.services.ollama.persistence.size}}

@@ -43,15 +43,18 @@ services:
       sourceDatabase: explorerweb
     secrets:
       DB_NAME: catalystexplorer
-      DB_USERNAME: catalystexplorer
+      DB_USERNAME: explorerdbuser
       DB_PASSWORD:
       DEFAULT_REGION: us-east-1
       POSTGRES_USER: postgres
       POSTGRES_USER_PASSWORD:
   queue:
     replicaCount: 1
+  ollama:
+    persistence:
+      size: 20Gb
   meili:
-    MEILISEARCH_KEY: 
+    MEILISEARCH_KEY:
     persistence:
       size: 320Gi
       storageClass: longhorn
