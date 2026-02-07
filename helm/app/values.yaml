@@ -26,6 +26,25 @@ services:
       accessMode: ReadWriteMany
       subPath: "uploads"
       mountPath: "/var/www/storage/app"
+  db:
+    bootstrap:
+      database:
+        database: explorerweb
+        owner: catalystexplorer
+      migration:
+        enabled: false
+        sourceHost: cx-web-db-postgresql-ha-pgpool
+        sourcePort: 5432
+        sourceUser: catalystexplorer
+        sourceDatabase: explorerweb
+      secrets:
+        ACCESS_KEY_ID: catalystexplorer
+        DB_USERNAME: catalystexplorer
+        DB_PASSWORD:
+        DEFAULT_REGION: us-east-1
+        POSTGRES_USER: postgres
+        POSTGRES_USER_PASSWORD:
+        SECRET_ACCESS_KEY:
   queue:
     replicaCount: 1
   meili:

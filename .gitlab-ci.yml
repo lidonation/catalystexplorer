@@ -267,9 +267,11 @@ pest:
       if [ "${CI_ENVIRONMENT_NAME}" == "mainnet" ]; then
         export APP_REPLICAS="3"
         export QUEUE_REPLICAS="5"
+        export DB_MIGRATION_ENABLED=true
       else
         export APP_REPLICAS="1"
         export QUEUE_REPLICAS="1"
+      export DB_MIGRATION_ENABLED=false
       fi
 
       helm upgrade $DEPLOYMENT_NAME ./helm/app \
@@ -283,6 +285,10 @@ pest:
         --set services.app.POSTGRESQL_WEB_DB_HOST=$POSTGRESQL_WEB_DB_HOST \
         --set services.meili.MEILISEARCH_KEY=$MEILISEARCH_KEY \
         --set services.app.environment=$APP_ENV \
+        --set services.db.migration.enabled=$DB_MIGRATION_ENABLED \
+        --set services.db.secrets.ACCESS_KEY_ID=$SECRET_ACCESS_KEY \
+        --set services.db.secrets.DB_PASSWORD=$DB_PASSWORD \
+        --set services.db.secrets.POSTGRES_USER_PASSWORD=$POSTGRES_USER_PASSWORD \
         --set services.redis.password=$REDIS_PASSWORD \
         --set services.app.replicaCount=$APP_REPLICAS \
         --set services.queue.replicaCount=$QUEUE_REPLICAS \

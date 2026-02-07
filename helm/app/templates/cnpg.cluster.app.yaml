@@ -1,0 +1,224 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ $.Chart.Name }}-cnpg-cluster
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ $.Chart.Name }}-cnpg
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: {{ $.Chart.Name }}
+spec:
+  instances: 3
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.1-system-trixie
+
+  postgresql:
+    parameters:
+      # Memory settings optimized for GitLab workload (assuming up to 64GB of ram is available)
+      shared_buffers: "1GB"
+      effective_cache_size: "36GB"
+      maintenance_work_mem: "2GB"         # Large maintenance operations
+      work_mem: "64MB"                    # Per-connection memory (adjusted for GitLab)
+      max_connections: "1000"
+      max_locks_per_transaction: "256"    # Standard for GitLab
+
+      # CPU settings optimized for available cores
+      max_worker_processes: "24"          # Reasonable for GitLab workload
+      max_parallel_workers: "16"          # Parallel query capability
+      max_parallel_workers_per_gather: "8" # Half of max_parallel_workers
+      max_parallel_maintenance_workers: "6" # Maintenance workers
+
+      # WAL configuration for high availability and continuous archiving
+      wal_buffers: "32MB"                # WAL buffer size
+      min_wal_size: "4GB"                # Minimum WAL size
+      max_wal_size: "16GB"               # Maximum WAL size
+      checkpoint_completion_target: "0.9"
+      checkpoint_timeout: "10min"
+
+      # WAL archiving settings for continuous backup
+      archive_timeout: "300"             # Force WAL switch every 5 minutes
+      wal_level: "replica"               # Required for WAL archiving
+      max_wal_senders: "10"              # Allow WAL streaming to replicas and backup
+      wal_keep_size: "1GB"               # Keep WAL files for replication lag
+
+      # I/O optimization for Longhorn storage
+      random_page_cost: "1.1"            # Optimized for Longhorn/SSD
+      effective_io_concurrency: "200"     # High I/O concurrency
+      maintenance_io_concurrency: "50"
+
+      # Logging for monitoring (log_destination managed by CNPG)
+      log_checkpoints: "on"
+      log_connections: "off"              # Can be noisy in production
+      log_disconnections: "off"
+      log_lock_waits: "on"
+      log_min_duration_statement: "2000"  # Log slow queries (2s+)
+      log_statement: "none"               # Disable DDL logging to prevent migration conflicts
+      log_temp_files: "1024"
+
+      # Memory management
+      huge_pages: "try"
+
+      # Performance tuning for web application workload
+      seq_page_cost: "1.0"               # Sequential page cost for SSD
+      cpu_tuple_cost: "0.01"             # CPU cost per tuple
+      cpu_index_tuple_cost: "0.005"      # CPU cost per index tuple
+      cpu_operator_cost: "0.0025"        # CPU cost per operator
+
+  monitoring:
+    enablePodMonitor: true
+    podMonitorMetricRelabelings:
+      - sourceLabels: [ __name__ ]
+        regex: cnpg_.*
+        targetLabel: __tmp_name
+        replacement: $1
+      - sourceLabels: [ __tmp_name ]
+        targetLabel: __name__
+
+  backup:
+    retentionPolicy: "14d"
+    barmanObjectStore:
+      destinationPath: "s3://{{ .Values.namespace }}/db-backups"
+      s3Credentials:
+        accessKeyId:
+          name: "{{ $.Chart.Name }}-cnpg-credentials"
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: "{{ $.Chart.Name }}-cnpg-credentials"
+          key: SECRET_ACCESS_KEY
+        region:
+          name: "{{ $.Chart.Name }}-cnpg-credentials"
+          key: DEFAULT_REGION
+      endpointURL: "https://s3.2lovelaces.com"
+      wal:
+        compression: "gzip"
+        maxParallel: 8                   # Parallel WAL upload
+        archiveTimeout: "60s"            # Upload WAL every minute
+        maxRetentionTime: "14d"          # Keep WAL files for 14 days
+      data:
+        compression: "gzip"
+        jobs: 4                          # Parallel data backup jobs
+
+{{- if .Values.db.bootstrap.migration.enabled }}
+  bootstrap:
+    pg_basebackup:
+      source: {{ $.Chart.Name }}-db-source
+{{- else }}
+  bootstrap:
+    initdb:
+      database: "{{ .Values.db.bootstrap.database.database }}"
+      owner: "{{ .Values.db.bootstrap.database.owner }}"
+      secret:
+        name: {{ $.Chart.Name }}-cnpg-bootstrap
+      encoding: "UTF8"
+      localeCollate: "en_US.UTF-8"
+      localeCType: "en_US.UTF-8"
+{{- end }}
+
+  superuserSecret:
+    name: {{ $.Chart.Name }}-cnpg-superuser
+
+  storage:
+    storageClass: "longhorn"
+    size: "50Gi"
+
+  resources:
+    requests:
+      memory: "2Gi"
+      cpu: "300m"
+    limits:
+      memory: "64Gi"
+      cpu: "8"
+
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: true
+
+{{- if .Values.db.bootstrap.migration.enabled }}
+  externalClusters:
+  - name: {{ $.Chart.Name }}-db-source
+    connectionParameters:
+      host: "{{ .Values.db.bootstrap.migration.sourceHost }}"
+      port: "{{ .Values.db.bootstrap.migration.sourcePort }}"
+      user: "{{ .Values.db.bootstrap.migration.sourceUser }}"
+      dbname: "{{ .Values.db.bootstrap.migration.sourceDatabase }}"
+    password:
+      name: {{ $.Chart.Name }}-db-migration-source
+      key: PGPASSWORD
+{{- end }}
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: {{ $.Chart.Name }}-app
+spec:
+  name: {{ .Values.db.bootstrap.database.database }}
+  owner: {{ .Values.db.bootstrap.database.owner }}
+  cluster:
+    name: {{ $.Chart.Name }}-cnpg
+  extensions:
+    - name: vector
+
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: {{ $.Chart.Name }}-cnpg-daily-backup
+  namespace: {{ $.Chart.Name }}-cnpg
+  labels:
+    app.kubernetes.io/name: {{ $.Chart.Name }}-cnpg-backup
+    app.kubernetes.io/component: backup
+    app.kubernetes.io/part-of: {{ $.Chart.Name }}
+spec:
+  schedule: "{{ .Values.backup.schedule.cron }}"
+  cluster:
+    name: {{ $.Chart.Name }}-cnpg
+  immediate: true
+  suspend: false
+
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Pooler
+metadata:
+  name: {{ $.Chart.Name }}-cnpg-pooler
+  namespace: {{ $.Chart.Name }}-cnpg
+  labels:
+    app.kubernetes.io/name: {{ $.Chart.Name }}-cnpg-pooler
+    app.kubernetes.io/component: pooler
+spec:
+  cluster:
+    name: {{ $.Chart.Name }}-cnpg
+  instances: 3
+  type: rw
+  pgbouncer:
+    parameters:
+      max_client_conn: "1000"
+      default_pool_size: "25"
+      min_pool_size: "5"
+      reserve_pool_size: "5"
+      reserve_pool_timeout: "3"
+      server_connect_timeout: "15"
+      server_idle_timeout: "600"
+      server_lifetime: "3600"
+      client_idle_timeout: "300"
+      client_login_timeout: "60"
+      query_timeout: "1800"
+      query_wait_timeout: "120"
+      server_check_delay: "10"
+      server_fast_close: "1"
+      log_connections: "1"
+      log_disconnections: "1"
+      listen_backlog: "128"
+      stats_period: "60"
+  template:
+    spec:
+      containers:
+        - name: pgbouncer
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "2Gi"
+              cpu: "4000m"
+  monitoring:
+    enablePodMonitor: true

@@ -1,0 +1,207 @@
+{{- if .Values.monitoring.enabled }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ $.Chart.Name }}-cnpg-service-monitor
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/component: monitoring
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/cluster: {{ $.Chart.Name }}-cnpg-cluster
+  endpoints:
+  - port: metrics
+    interval: "30s"
+    scrapeTimeout: "10s"
+    path: /metrics
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name:  {{ $.Chart.Name }}-cnpg-pooler-service-monitor
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/component: monitoring
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/poolerName: {{ $.Chart.Name }}-cnpg-pooler
+  endpoints:
+  - port: metrics
+    interval: "30s"
+    scrapeTimeout: "10s"
+    path: /metrics
+
+---
+# PrometheusRule for GitLab CNPG database alerts
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ $.Chart.Name }}-cnpg-alerts
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/component: monitoring
+spec:
+  groups:
+  - name: cnpg-gitlab-db.rules
+    interval: 30s
+    rules:
+    
+    # Cluster Health Alerts
+    - alert: GitLabCNPGClusterDown
+      expr: cnpg_collector_up{job=~".*catalystexplorer-cnpg-cluster.*"} == 0
+      for: 1m
+      labels:
+        severity: critical
+        service: gitlab-database
+        component: cnpg-cluster
+      annotations:
+        summary: "GitLab CNPG cluster is down"
+        description: "GitLab CNPG cluster catalystexplorer-cnpg-cluster has been down for more than 1 minute"
+    
+    - alert: GitLabCNPGInstanceDown
+      expr: cnpg_pg_postmaster_start_time{job=~".*catalystexplorer-cnpg-cluster.*"} == 0
+      for: 2m
+      labels:
+        severity: warning
+        service: gitlab-database
+        component: cnpg-instance
+      annotations:
+        summary: "GitLab CNPG instance is down"
+        description: "GitLab CNPG instance {{`{{ $labels.pod }}`}} in cluster {{`{{ $labels.cluster }}`}} has been down for more than 2 minutes"
+    
+    # Resource Usage Alerts
+    - alert: GitLabCNPGHighConnectionCount
+      expr: cnpg_pg_stat_database_numbackends{job=~".*catalystexplorer-cnpg-cluster.*"} > 500
+      for: 2m
+      labels:
+        severity: warning
+        service: gitlab-database
+        component: cnpg-connections
+      annotations:
+        summary: "GitLab CNPG high connection count"
+        description: "GitLab CNPG cluster {{`{{ $labels.cluster }}`}} has {{`{{ $value }}`}} active connections (threshold: 500)"
+    
+    # Replication Alerts
+    - alert: GitLabCNPGReplicationLag
+      expr: cnpg_pg_stat_replication_replay_lag{job=~".*catalystexplorer-cnpg-cluster.*"} > 60
+      for: 3m
+      labels:
+        severity: warning
+        service: gitlab-database
+        component: cnpg-replication
+      annotations:
+        summary: "GitLab CNPG replication lag is high"
+        description: "GitLab CNPG replica {{`{{ $labels.replica }}`}} has replication lag of {{`{{ $value }}`}}s (threshold: 60s)"
+    
+    - alert: GitLabCNPGReplicationBroken
+      expr: cnpg_pg_stat_replication_state{job=~".*catalystexplorer-cnpg-cluster.*"} != 1
+      for: 1m
+      labels:
+        severity: critical
+        service: gitlab-database
+        component: cnpg-replication
+      annotations:
+        summary: "GitLab CNPG replication is broken"
+        description: "GitLab CNPG replica {{`{{ $labels.replica }}`}} replication state is not streaming"
+    
+    # Backup Alerts
+    - alert: GitLabCNPGBackupFailed
+      expr: increase(cnpg_pg_backup_failed_total{job=~".*catalystexplorer-cnpg-cluster.*"}[1h]) > 0
+      for: 0s
+      labels:
+        severity: critical
+        service: gitlab-database
+        component: cnpg-backup
+      annotations:
+        summary: "GitLab CNPG backup failed"
+        description: "GitLab CNPG backup for cluster {{`{{ $labels.cluster }}`}} has failed"
+    
+    - alert: GitLabCNPGBackupNotRunning
+      expr: (time() - cnpg_pg_backup_last_successful_timestamp{job=~".*catalystexplorer-cnpg-cluster.*"}) > 86400
+      for: 1h
+      labels:
+        severity: warning
+        service: gitlab-database
+        component: cnpg-backup
+      annotations:
+        summary: "GitLab CNPG backup is overdue"
+        description: "GitLab CNPG backup for cluster {{`{{ $labels.cluster }}`}} has not run successfully in the last 24 hours"
+    
+    # PgBouncer Alerts
+    - alert: GitLabPgBouncerDown
+      expr: pgbouncer_up{job=~".*{{ include "gitlab-db.poolerName" . }}.*"} == 0
+      for: 1m
+      labels:
+        severity: critical
+        service: gitlab-database
+        component: pgbouncer
+      annotations:
+        summary: "GitLab PgBouncer is down"
+        description: "GitLab PgBouncer instance {{`{{ $labels.pod }}`}} has been down for more than 1 minute"
+
+{{- if .Values.monitoring.grafanaDashboard.enabled }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "gitlab-db.fullname" . }}-dashboard
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "gitlab-db.labels" . | nindent 4 }}
+    app.kubernetes.io/component: monitoring
+    grafana_dashboard: "1"
+data:
+  gitlab-cnpg-dashboard.json: |
+    {
+      "dashboard": {
+        "title": "GitLab CNPG Database Monitoring",
+        "tags": ["gitlab", "cnpg", "postgresql", "database"],
+        "timezone": "browser",
+        "refresh": "30s",
+        "time": {
+          "from": "now-1h",
+          "to": "now"
+        },
+        "panels": [
+          {
+            "title": "Cluster Health",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "cnpg_collector_up{cluster=\"{{ include "gitlab-db.clusterName" . }}\"}",
+                "legendFormat": "Cluster Up"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "thresholds": {
+                  "steps": [
+                    {"color": "red", "value": 0},
+                    {"color": "green", "value": 1}
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "title": "Active Connections",
+            "type": "timeseries",
+            "targets": [
+              {
+                "expr": "cnpg_pg_stat_database_numbackends{cluster=\"{{ include "gitlab-db.clusterName" . }}\"}",
+                "legendFormat": "Connections - {{`{{datname}}`}}"
+              }
+            ]
+          }
+        ]
+      }
+    }
+{{- end }}
+{{- end }}
