@@ -133,8 +133,9 @@ spec:
     connectionParameters:
       host: "{{ .Values.services.db.migration.sourceHost }}"
       port: "{{ .Values.services.db.migration.sourcePort }}"
-      user: "{{ .Values.services.db.migration.sourceUser }}"
+      user: "postgres"
       dbname: "{{ .Values.services.db.migration.sourceDatabase }}"
+      sslmode: "{{ .Values.services.db.migration.sslmode | default "disable" }}"
     password:
       name: "{{ $.Chart.Name }}-cnpg-migration-credentials"
       key: PGPASSWORD

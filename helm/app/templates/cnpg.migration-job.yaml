@@ -25,6 +25,9 @@ spec:
       containers:
       - name: migration
         image: postgres:18.1
+        env:
+        - name: PGSSLMODE
+          value: "disable"
         command:
         - /bin/bash
         - -c
