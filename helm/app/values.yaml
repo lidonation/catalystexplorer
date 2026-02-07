@@ -36,7 +36,7 @@ services:
       enablePgvector: true
     migration:
       enabled: false
-      sourceHost: cx-web-db-postgresql-ha-pgpool
+      sourceHost: cx-web-db-postgresql-ha-pgpool.catalystexplorer-preview.svc.cluster.local
       sourcePort: 5432
       sourceUser: postgres
       sourcePassword:
