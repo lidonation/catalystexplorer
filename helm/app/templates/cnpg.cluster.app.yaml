@@ -171,7 +171,6 @@ spec:
   pluginConfiguration:
     name: barman-cloud.cloudnative-pg.io
 ---
----
 apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
 metadata:
@@ -183,17 +182,16 @@ spec:
     endpointURL: "https://s3.2lovelaces.com"
     s3Credentials:
       accessKeyId:
-        name: "{{ $.Chart.Name }}-cnpg-credentials"
-        key: ACCESS_KEY_ID
+        name: "{{ $.Chart.Name }}-secrets"
+        key: AWS_ACCESS_KEY_ID
       secretAccessKey:
-        name: "{{ $.Chart.Name }}-cnpg-credentials"
-        key: SECRET_ACCESS_KEY
+        name: "{{ $.Chart.Name }}-secrets"
+        key: AWS_SECRET_ACCESS_KEY
       region:
-        name: "{{ $.Chart.Name }}-cnpg-credentials"
-        key: DEFAULT_REGION
+        name: "{{ $.Chart.Name }}-secrets"
+        key: AWS_DEFAULT_REGION
     wal:
       compression: gzip
-  # Optional: instance sidecar tuning (inherits sane defaults if omitted)
   instanceSidecarConfiguration: {}
 ---
 apiVersion: postgresql.cnpg.io/v1
