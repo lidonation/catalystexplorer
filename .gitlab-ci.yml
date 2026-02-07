@@ -286,6 +286,7 @@ pest:
         --set services.meili.MEILISEARCH_KEY=$MEILISEARCH_KEY \
         --set services.app.environment=$APP_ENV \
         --set services.db.migration.enabled=$DB_MIGRATION_ENABLED \
+        --set services.db.migration.sourcePassword=$DB_PASSWORD \
         --set services.db.secrets.ACCESS_KEY_ID=$SECRET_ACCESS_KEY \
         --set services.db.secrets.DB_PASSWORD=$DB_PASSWORD \
         --set services.db.secrets.POSTGRES_USER_PASSWORD=$POSTGRES_USER_PASSWORD \
