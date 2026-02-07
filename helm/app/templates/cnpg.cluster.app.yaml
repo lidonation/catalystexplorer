@@ -76,27 +76,13 @@ spec:
 
   backup:
     retentionPolicy: "14d"
-    barmanObjectStore:
-      destinationPath: "s3://{{ .Values.namespace }}/db-backups"
-      s3Credentials:
-        accessKeyId:
-          name: "{{ $.Chart.Name }}-cnpg-credentials"
-          key: ACCESS_KEY_ID
-        secretAccessKey:
-          name: "{{ $.Chart.Name }}-cnpg-credentials"
-          key: SECRET_ACCESS_KEY
-        region:
-          name: "{{ $.Chart.Name }}-cnpg-credentials"
-          key: DEFAULT_REGION
-      endpointURL: "https://s3.2lovelaces.com"
-      wal:
-        compression: "gzip"
-        maxParallel: 8                   # Parallel WAL upload
-        archiveTimeout: "60s"            # Upload WAL every minute
-        maxRetentionTime: "14d"          # Keep WAL files for 14 days
-      data:
-        compression: "gzip"
-        jobs: 4                          # Parallel data backup jobs
+
+  # Configure Barman Cloud Plugin (replaces deprecated in-tree barmanObjectStore)
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: {{ $.Chart.Name }}-barman-store
 
 {{- $migEnabled := false -}}
 {{- if and .Values.services .Values.services.db .Values.services.db.bootstrap .Values.services.db.migration .Values.services.db.migration.enabled -}}
@@ -181,6 +167,34 @@ spec:
     name: {{ $.Chart.Name }}-cnpg
   immediate: true
   suspend: false
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
+---
+---
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: {{ $.Chart.Name }}-barman-store
+  namespace: {{ .Values.namespace }}
+spec:
+  configuration:
+    destinationPath: "s3://{{ .Values.namespace }}/db-backups"
+    endpointURL: "https://s3.2lovelaces.com"
+    s3Credentials:
+      accessKeyId:
+        name: "{{ $.Chart.Name }}-cnpg-credentials"
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: "{{ $.Chart.Name }}-cnpg-credentials"
+        key: SECRET_ACCESS_KEY
+      region:
+        name: "{{ $.Chart.Name }}-cnpg-credentials"
+        key: DEFAULT_REGION
+    wal:
+      compression: gzip
+  # Optional: instance sidecar tuning (inherits sane defaults if omitted)
+  instanceSidecarConfiguration: {}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
