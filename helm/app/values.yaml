@@ -42,7 +42,7 @@ services:
       sourcePassword:
       sourceDatabase: explorerweb
     secrets:
-      DB_RNAME: catalystexplorer
+      DB_NAME: catalystexplorer
       DB_USERNAME: catalystexplorer
       DB_PASSWORD:
       DEFAULT_REGION: us-east-1
