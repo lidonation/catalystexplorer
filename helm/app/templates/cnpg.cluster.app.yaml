@@ -98,7 +98,11 @@ spec:
         compression: "gzip"
         jobs: 4                          # Parallel data backup jobs
 
-{{- .Values.services.db.migration.enabled }}
+{{- $migEnabled := false -}}
+{{- if and .Values.services .Values.services.db .Values.services.db.bootstrap .Values.services.db.migration .Values.services.db.migration.enabled -}}
+  {{- $migEnabled = .Values.services.db.migration.enabled -}}
+{{- end -}}
+{{- if $migEnabled }}
   bootstrap:
     pg_basebackup:
       source: {{ $.Chart.Name }}-db-source
@@ -137,16 +141,16 @@ spec:
     inProgress: false
     reusePVC: true
 
-{{- if (default false (dig "services" "db" "bootstrap" "migration" "enabled" .Values)) }}
+{{- if $migEnabled }}
   externalClusters:
   - name: {{ $.Chart.Name }}-db-source
     connectionParameters:
-      host: "{{ .Values.services.db.bootstrap.migration.sourceHost }}"
-      port: "{{ .Values.services.db.bootstrap.migration.sourcePort }}"
-      user: "{{ .Values.services.db.bootstrap.migration.sourceUser }}"
-      dbname: "{{ .Values.services.db.bootstrap.migration.sourceDatabase }}"
+      host: "{{ .Values.services.db.migration.sourceHost }}"
+      port: "{{ .Values.services.db.migration.sourcePort }}"
+      user: "{{ .Values.services.db.migration.sourceUser }}"
+      dbname: "{{ .Values.services.db.migration.sourceDatabase }}"
     password:
-      name: {{ $.Chart.Name }}-db-migration-source
+      name: "{{ $.Chart.Name }}-cnpg-migration-credentials"
       key: PGPASSWORD
 {{- end }}
 ---
@@ -161,7 +165,6 @@ spec:
     name: {{ $.Chart.Name }}-cnpg
   extensions:
     - name: vector
-
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup
@@ -178,7 +181,6 @@ spec:
     name: {{ $.Chart.Name }}-cnpg
   immediate: true
   suspend: false
-
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
