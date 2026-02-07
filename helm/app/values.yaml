@@ -27,6 +27,7 @@ services:
       subPath: "uploads"
       mountPath: "/var/www/storage/app"
   db:
+    monitoring: true
     bootstrap:
       database:
         database: explorerweb
