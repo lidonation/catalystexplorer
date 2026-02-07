@@ -38,7 +38,7 @@ services:
       enabled: false
       sourceHost: cx-web-db-postgresql-ha-pgpool
       sourcePort: 5432
-      sourceUser: catalystexplorer
+      sourceUser: postgres
       sourcePassword:
       sourceDatabase: explorerweb
     secrets:
