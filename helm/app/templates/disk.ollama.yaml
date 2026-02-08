@@ -1,16 +1,12 @@
-{{/*kind: PersistentVolumeClaim*/}}
-{{/*apiVersion: v1*/}}
-{{/*metadata:*/}}
-{{/*  name: "{{ .Values.namespace }}-ollma-pvc"*/}}
-{{/*  namespace: {{ .Values.namespace }}*/}}
-{{/*spec:*/}}
-{{/*  accessModes:*/}}
-{{/*    - ReadWriteOnce*/}}
-{{/*  storageClassName: {{ .Values.services.ollama.persistence.storageClass | default "longhorn" }}*/}}
-{{/*  resources:*/}}
-{{/*    requests:*/}}
-{{/*      storage: {{- $raw := ( .Values.services.ollama.persistence.size | default "20Gi" ) -}}*/}}
-{{/*        {{- $n1 := regexReplaceAll "(?i)gb" $raw "Gi" -}}*/}}
-{{/*        {{- $n2 := regexReplaceAll "(?i)mb" $n1 "Mi" -}}*/}}
-{{/*        {{- $n3 := regexReplaceAll "(?i)kb" $n2 "Ki" -}}*/}}
-{{/*        "{{ $n3 }}"*/}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "{{ .Values.namespace }}-ollma-pvc"
+  namespace: {{ .Values.namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: "longhorn"
+  resources:
+    requests:
+      storage: {{ .Values.services.ollama.persistence.size | default "20Gi" }}
