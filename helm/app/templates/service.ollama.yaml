@@ -8,7 +8,6 @@ metadata:
     app: "{{ $.Chart.Name }}"
     service: "{{ $.Chart.Name }}-ollama"
 spec:
-  type: {{ .Values.services.ollama.service.type | default "ClusterIP" }}
   ports:
     - port: {{ .Values.services.ollama.service.port | default 11434 }}
       name: http
