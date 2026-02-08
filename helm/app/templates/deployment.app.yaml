@@ -70,6 +70,8 @@ spec:
           env:
             - name: POSTGRESQL_WEB_DB_HOST
               value: "{{ .Values.services.app.POSTGRESQL_WEB_DB_HOST }}"
+            - name: OLLAMA_HOST
+              value: "http://{{ $.Chart.Name }}-ollama-service:11434"
             - name: PHP_MEMORY_LIMIT
               value: 8192M
             - name: PHP_OPCACHE_ENABLE
@@ -142,6 +144,8 @@ spec:
           env:
             - name: POSTGRESQL_WEB_DB_HOST
               value: "{{ .Values.services.app.POSTGRESQL_WEB_DB_HOST }}"
+            - name: OLLAMA_HOST
+              value: "http://{{ $.Chart.Name }}-ollama-service:11434"
             - name: CONTAINER_ROLE
               value: app
             - name: PHP_MEMORY_LIMIT

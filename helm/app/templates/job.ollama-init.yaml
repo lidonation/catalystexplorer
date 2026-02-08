@@ -43,7 +43,7 @@ spec:
               echo "Ollama service is ready!"
               
               # Set the model to pull
-              MODEL_NAME="{{ .Values.services.ollama.model | default "llama3.3:70b" }}"
+              MODEL_NAME="{{ .Values.services.ollama.model | default "llama3.3.1:8b" }}"
               
               # Pull the model
               echo "Pulling model: $MODEL_NAME (this may take a while...)"
