@@ -1,3 +1,10 @@
+## [1.73.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.73.0...v1.73.1) (2026-02-08)
+
+
+### Bug Fixes
+
+* update Ollama service configuration and add named routes to CatalystChatbox ([aba16fc](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/aba16fc9b8d5a29055dfd7e310e863178c45c4ef))
+
 # [1.73.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.72.0...v1.73.0) (2026-02-08)
 
 
