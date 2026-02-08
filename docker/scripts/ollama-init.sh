@@ -9,7 +9,7 @@ echo "Starting Ollama initialization..."
 
 # Wait for Ollama service to be ready
 echo "Waiting for Ollama service to start..."
-until curl -s http://localhost:11434/api/health >/dev/null 2>&1; do
+until curl -s http://localhost:11434 >/dev/null 2>&1; do
     echo "Ollama service not ready, waiting..."
     sleep 5
 done
