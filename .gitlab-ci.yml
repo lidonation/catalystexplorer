@@ -290,7 +290,8 @@ pest:
         --set services.meili.MEILISEARCH_KEY=$MEILISEARCH_KEY \
         --set services.app.environment=$APP_ENV \
         --set services.ollama.enabled=$OLLAMA_ENABLED \
-        --set services.db.migration.enabled=$OLLAMA_SIZE \
+        --set services.ollama.persistence.size=$OLLAMA_SIZE \
+        --set services.db.migration.enabled=$DB_MIGRATION_ENABLED \
         --set services.db.migration.sourcePassword=$POSTGRES_PASSWORD \
         --set services.db.secrets.ACCESS_KEY_ID=$SECRET_ACCESS_KEY \
         --set services.db.secrets.SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY \
