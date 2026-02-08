@@ -10,17 +10,14 @@ metadata:
 data:
   ollama-init.sh: |
     #!/bin/bash
-    
-    # Ollama initialization script for Kubernetes
-    # This script ensures the configured model is available in the container
-    
+
     set -e
     
     echo "Starting Ollama initialization...".
     
     # Wait for Ollama service to be ready
     echo "Waiting for Ollama service to start..."
-    until curl -s http://localhost:11434/ >/dev/null 2>&1; do
+    until curl -s "catalystexplorer-ollama-service:11434" >/dev/null 2>&1; do
         echo "Ollama service not ready, waiting..."
         sleep 5
     done
