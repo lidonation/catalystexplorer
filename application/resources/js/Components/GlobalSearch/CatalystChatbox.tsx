@@ -52,17 +52,14 @@ export default function CatalystChatbox({ onBack }: CatalystChatboxProps) {
     const inputRef = useRef<HTMLInputElement>(null);
     const abortControllerRef = useRef<AbortController | null>(null);
 
-    // Auto-focus input on mount
     useEffect(() => {
         inputRef.current?.focus();
     }, []);
 
-    // Auto-scroll to bottom when messages change
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
-    // Initialize messages from localStorage or create welcome message
     useEffect(() => {
         const savedMessages = localStorage.getItem(STORAGE_KEY);
         if (savedMessages) {
@@ -73,7 +70,6 @@ export default function CatalystChatbox({ onBack }: CatalystChatboxProps) {
             }
         }
 
-        // Create welcome message if no saved messages
         const welcomeMessage: Message = {
             id: 'welcome',
             role: 'assistant',
@@ -83,7 +79,6 @@ export default function CatalystChatbox({ onBack }: CatalystChatboxProps) {
         setMessages([welcomeMessage]);
     }, [t]);
 
-    // Save messages to localStorage whenever messages change
     useEffect(() => {
         if (messages.length > 0) {
             localStorage.setItem(STORAGE_KEY, serializeMessages(messages));
