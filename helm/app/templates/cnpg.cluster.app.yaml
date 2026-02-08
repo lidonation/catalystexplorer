@@ -175,7 +175,7 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
 metadata:
   name: {{ $.Chart.Name }}-cnpg-pooler
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ .Values.namespace }}
   labels:
     app.kubernetes.io/name: {{ $.Chart.Name }}-cnpg-pooler
     app.kubernetes.io/component: pooler
