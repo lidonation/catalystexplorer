@@ -1,3 +1,11 @@
+# [1.73.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.72.0...v1.73.0) (2026-02-08)
+
+
+### Features
+
+* v1 of catalyst ai ([c0842e1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/c0842e1637bf55386373e2845967628a2f671f2b))
+* v1 of catalyst ai\n\nCo-Authored-By: Warp <agent@warp.dev> ([32169be](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/32169beae2932c3022b0ecc7b4219b6e32943ca1))
+
 # [1.72.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.71.0...v1.72.0) (2026-01-30)
 
 
