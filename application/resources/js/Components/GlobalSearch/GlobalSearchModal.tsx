@@ -18,8 +18,9 @@ import * as DialogPrimitive from '@radix-ui/react-dialog';
 import SearchResultsSection from './SearchResultsSection';
 import PlacesSection from './PlacesSection';
 import RecentlyVisitedSection from './RecentlyVisitedSection';
-import NullStateSection from './NullStateSection';
+import ToolsSection from './ToolsSection.tsx';
 import SearchHintSection from './SearchHintSection';
+import CatalystChatbox from './CatalystChatbox';
 import { router, usePage } from '@inertiajs/react';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 
@@ -34,6 +35,7 @@ export default function GlobalSearchModal() {
     const { isOpen, closeSearch, query, setQuery, triggerRect, updateTriggerRect } = useGlobalSearch();
     const { recentProposals, recentLists, isLoading } = useRecentlyVisited();
     const [debouncedQuery, setDebouncedQuery] = useState('');
+    const [showChatbox, setShowChatbox] = useState(false);
     const prefersReducedMotion = useReducedMotion();
     const commandListRef = useRef<HTMLDivElement>(null);
     const [isMobile, setIsMobile] = useState(
@@ -95,6 +97,15 @@ export default function GlobalSearchModal() {
         closeSearch();
     }, [closeSearch]);
 
+    const handleOpenChatbox = useCallback(() => {
+        setShowChatbox(true);
+        setQuery(''); // Clear search when opening chatbox
+    }, [setQuery]);
+
+    const handleCloseChatbox = useCallback(() => {
+        setShowChatbox(false);
+    }, []);
+
     const hasRecentItems = recentProposals.length > 0 || recentLists.length > 0;
     const showSearchResults = debouncedQuery.length >= 2;
 
@@ -143,7 +154,6 @@ export default function GlobalSearchModal() {
     }), [prefersReducedMotion]);
 
     const modalVariants = useMemo((): Variants => {
-
         if (prefersReducedMotion) {
             return {
                 hidden: { opacity: 0, scale: 1, y: 0, width: modalWidth, height: 'auto' },
@@ -304,7 +314,7 @@ export default function GlobalSearchModal() {
         if (isMobile) {
             adjustedLeft = MODAL_MOBILE_MARGIN;
         } else {
-          
+
             if (adjustedLeft < 16) {
                 adjustedLeft = 16;
             }
@@ -344,8 +354,8 @@ export default function GlobalSearchModal() {
                         />
 
                         {/* Animated Modal Content */}
-                        <DialogPrimitive.Content 
-                            asChild 
+                        <DialogPrimitive.Content
+                            asChild
                             forceMount
                             onEscapeKeyDown={(e) => {
                                 e.preventDefault();
@@ -362,8 +372,13 @@ export default function GlobalSearchModal() {
                                 data-testid="global-search-modal"
                             >
                                 <DialogTitle hidden>
-                                    {t('globalSearch.search')}
+                                    {showChatbox ? t('catalyst.chatbox.title') : t('globalSearch.search')}
                                 </DialogTitle>
+                                {showChatbox ? (
+                                    <div className="h-[60vh]">
+                                        <CatalystChatbox onBack={handleCloseChatbox} />
+                                    </div>
+                                ) : (
                                 <div onKeyDown={handleKeyDown}>
                                     <Command
                                         className="[&_[cmdk-group-heading]]:text-primary [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-sm [&_[cmdk-group-heading]]:font-bold"
@@ -384,6 +399,7 @@ export default function GlobalSearchModal() {
                                             <SearchHintSection
                                                 isVisible={query.length >= 1}
                                             />
+
                                             {showSearchResults && (
                                                 <>
                                                     <SearchResultsSection
@@ -395,24 +411,27 @@ export default function GlobalSearchModal() {
                                             )}
 
                                             <PlacesSection onSelect={handleSelect} />
+
                                             <CommandSeparator />
 
                                             {isLoading ? (
                                                 <div className="text-gray-persist p-4 text-center text-sm">
                                                     {t('globalSearch.loading')}
                                                 </div>
-                                            ) : hasRecentItems ? (
+                                            ) : hasRecentItems && (
                                                 <RecentlyVisitedSection
                                                     recentProposals={recentProposals}
                                                     recentLists={recentLists}
                                                     onSelect={handleSelect}
                                                 />
-                                            ) : (
-                                                <NullStateSection onSelect={handleSelect} />
                                             )}
+
+                                            <ToolsSection onSelect={handleSelect} onOpenChatbox={handleOpenChatbox} />
+
                                         </CommandList>
                                     </Command>
                                 </div>
+                                )}
                             </motion.div>
                         </DialogPrimitive.Content>
                     </DialogPortal>
