@@ -121,6 +121,7 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
   name: {{ $.Chart.Name }}-app
+  namespace: {{ .Values.namespace }}
 spec:
   name: {{ .Values.services.db.bootstrap.database.database }}
   owner: {{ .Values.services.db.bootstrap.database.owner }}
@@ -133,7 +134,7 @@ apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup
 metadata:
   name: {{ $.Chart.Name }}-cnpg-daily-backup
-  namespace: {{ $.Chart.Name }}
+  namespace: {{ .Values.namespace }}
   labels:
     app.kubernetes.io/name: {{ $.Chart.Name }}-cnpg-backup
     app.kubernetes.io/component: backup
