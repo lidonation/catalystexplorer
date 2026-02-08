@@ -60,7 +60,7 @@ return [
      * This can be overridden by specific agent configurations.
      * Example: 'gemini-pro', 'gpt-4-turbo', 'claude-3-opus-20240229'
      */
-    'default_model' => env('VIZRA_ADK_DEFAULT_MODEL', 'llama3.3:70b'),
+    'default_model' => env('VIZRA_ADK_DEFAULT_MODEL', 'llama3.1:8b'),
 
     /**
      * Default generation parameters for LLM requests.
@@ -112,6 +112,7 @@ return [
         ],
         'ollama' => [
             'base_url' => env('OLLAMA_HOST', 'http://catalystexplorer.ollama:11434'),
+            'url' => env('OLLAMA_HOST', 'http://catalystexplorer.ollama:11434'),
             'timeout' => env('OLLAMA_TIMEOUT', 300),
             'keep_alive' => env('OLLAMA_KEEP_ALIVE', '24h'),
         ],
