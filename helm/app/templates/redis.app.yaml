@@ -1,5 +1,5 @@
 apiVersion: redis.redis.opstreelabs.in/v1beta2
-kind: RedisCluster
+kind: Redis
 metadata:
   name: "{{ .Values.namespace }}-redis-cluster"
   namespace: {{ .Values.namespace }}
