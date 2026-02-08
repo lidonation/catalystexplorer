@@ -114,7 +114,7 @@ export default function CatalystChatbox({ onBack }: CatalystChatboxProps) {
 
             let chatUrl: string;
             try {
-                chatUrl = route('api.vizra-adk.chat.completions');
+                chatUrl = route('vizra.api.openai.chat.completions');
             } catch {
                 chatUrl = '/api/vizra-adk/chat/completions';
             }
