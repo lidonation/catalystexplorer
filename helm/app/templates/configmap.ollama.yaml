@@ -1,0 +1,43 @@
+{{- if .Values.services.ollama.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ $.Chart.Name }}-ollama-init"
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: "{{ $.Chart.Name }}"
+    service: "{{ $.Chart.Name }}-ollama"
+data:
+  ollama-init.sh: |
+    #!/bin/bash
+    
+    # Ollama initialization script for Kubernetes
+    # This script ensures the configured model is available in the container
+    
+    set -e
+    
+    echo "Starting Ollama initialization...".
+    
+    # Wait for Ollama service to be ready
+    echo "Waiting for Ollama service to start..."
+    until curl -s http://localhost:11434/api/health >/dev/null 2>&1; do
+        echo "Ollama service not ready, waiting..."
+        sleep 5
+    done
+    
+    echo "Ollama service is ready!"
+    
+    # Get configured model from environment or use default
+    MODEL_NAME="{{ .Values.services.ollama.model | default "llama3.3:70b" }}"
+    
+    # Check if the model is already pulled
+    if ollama list | grep -q "$MODEL_NAME"; then
+        echo "Model $MODEL_NAME is already available"
+    else
+        echo "Pulling $MODEL_NAME model... This may take a while depending on your internet connection."
+        ollama pull "$MODEL_NAME"
+        echo "Model $MODEL_NAME successfully pulled!"
+    fi
+    
+    echo "Ollama initialization completed!"
+{{- end }}
