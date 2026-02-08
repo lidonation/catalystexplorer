@@ -9,8 +9,4 @@ spec:
   storageClassName: {{ .Values.services.meili.persistence.storageClass | default "longhorn" }}
   resources:
     requests:
-      storage: {{- $raw := ( .Values.services.meili.persistence.size | default "320Gi" ) -}}
-        {{- $n1 := regexReplaceAll "(?i)gb" $raw "Gi" -}}
-        {{- $n2 := regexReplaceAll "(?i)mb" $n1 "Mi" -}}
-        {{- $n3 := regexReplaceAll "(?i)kb" $n2 "Ki" -}}
-        "{{ $n3 }}"
+      storage: {{ .Values.services.meili.persistence.size | default "320Gi" }}

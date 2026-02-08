@@ -43,14 +43,14 @@ spec:
 
               php /var/www/artisan horizon
           lifecycle:
-              preStop:
+            preStop:
               exec:
-                  command: ["php", "/var/www/artisan", "horizon:terminate"]
+                command: ["php", "/var/www/artisan", "horizon:terminate"]
           resources:
-              limits:
+            limits:
               memory: 9216Mi
-              cpu: 5
-              requests:
+              cpu: "5"
+            requests:
               cpu: 120m
               memory: 512Mi
           envFrom:

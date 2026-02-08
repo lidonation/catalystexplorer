@@ -37,7 +37,7 @@ services:
     migration:
       enabled: true
       sourceHost: cx-web-db-postgresql-ha-pgpool
-      sourcePort: 5432
+      sourcePort: "5432"
       sourceUser: postgres
       sourcePassword:
       sourceDatabase: catalystexplorer
@@ -52,11 +52,11 @@ services:
     replicaCount: 1
   ollama:
     persistence:
-      size: 20Gi
+      size: "20Gi"
   meili:
     MEILISEARCH_KEY:
     persistence:
-      size: 320Gi
+      size: "320Gi"
       storageClass: longhorn
   redis:
     password: 
