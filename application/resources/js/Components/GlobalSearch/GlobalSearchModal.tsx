@@ -42,7 +42,6 @@ export default function GlobalSearchModal() {
         typeof window !== 'undefined' ? window.innerWidth < MOBILE_BREAKPOINT : false
     );
 
-    // Track viewport size for responsive modal width
     useEffect(() => {
         const handleResize = () => {
             setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
@@ -52,7 +51,6 @@ export default function GlobalSearchModal() {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // Calculate responsive modal width
     const modalWidth = useMemo(() => {
         if (typeof window === 'undefined') return MODAL_WIDTH;
         if (isMobile) {
@@ -61,7 +59,6 @@ export default function GlobalSearchModal() {
         return MODAL_WIDTH;
     }, [isMobile]);
 
-    // Debounce search query
     useEffect(() => {
         const timer = setTimeout(() => {
             setDebouncedQuery(query);
@@ -79,7 +76,6 @@ export default function GlobalSearchModal() {
         }
     }, [query]);
 
-    // Update trigger position on scroll/resize while modal is open
     useEffect(() => {
         if (!isOpen) return;
 
@@ -99,7 +95,7 @@ export default function GlobalSearchModal() {
 
     const handleOpenChatbox = useCallback(() => {
         setShowChatbox(true);
-        setQuery(''); // Clear search when opening chatbox
+        setQuery('');
     }, [setQuery]);
 
     const handleCloseChatbox = useCallback(() => {
@@ -200,7 +196,6 @@ export default function GlobalSearchModal() {
             };
         }
 
-        // Fallback: slide-down animation (no trigger - mobile or desktop)
         return {
             hidden: {
                 opacity: 0,
@@ -262,7 +257,6 @@ export default function GlobalSearchModal() {
         }
     }, [handleEnterSearch, closeSearch]);
 
-    // Compute style for positioning
     const modalStyle = useMemo(() => {
         if (!triggerRect) {
             return {
@@ -283,7 +277,6 @@ export default function GlobalSearchModal() {
         };
     }, [triggerRect, modalPosition, modalWidth]);
 
-    // Handle viewport edge cases
     const adjustedStyle = useMemo(() => {
         if (typeof window === 'undefined') {
             return modalStyle;
@@ -292,7 +285,6 @@ export default function GlobalSearchModal() {
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
 
-        // On mobile without trigger, use centered positioning
         if (isMobile && !triggerRect) {
             return {
                 top: '10%',
@@ -310,7 +302,6 @@ export default function GlobalSearchModal() {
         let adjustedLeft = triggerCenterX - (modalWidth / 2);
         let adjustedTop = triggerRect.top;
 
-        // On mobile, center the modal horizontally
         if (isMobile) {
             adjustedLeft = MODAL_MOBILE_MARGIN;
         } else {
@@ -318,13 +309,11 @@ export default function GlobalSearchModal() {
             if (adjustedLeft < 16) {
                 adjustedLeft = 16;
             }
-            // Prevent modal from going off right edge (desktop)
             if (adjustedLeft + modalWidth > viewportWidth - 16) {
                 adjustedLeft = Math.max(16, viewportWidth - modalWidth - 16);
             }
         }
 
-        // Prevent modal from going off bottom edge
         const maxModalHeight = viewportHeight * (MODAL_MAX_HEIGHT_VH / 100);
         if (adjustedTop + maxModalHeight > viewportHeight - 16) {
             adjustedTop = Math.max(16, viewportHeight - maxModalHeight - 16);
