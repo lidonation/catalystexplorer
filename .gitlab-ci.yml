@@ -266,10 +266,14 @@ pest:
 
       if [ "${CI_ENVIRONMENT_NAME}" == "mainnet" ]; then
         export APP_REPLICAS="3"
+        export OLLAMA_SIZE="100Gi"
         export QUEUE_REPLICAS="5"
+        export DB_MIGRATION_ENABLED=true
       else
         export APP_REPLICAS="1"
         export QUEUE_REPLICAS="1"
+        export OLLAMA_SIZE="10Gi"
+        export DB_MIGRATION_ENABLED=true
       fi
 
       helm upgrade $DEPLOYMENT_NAME ./helm/app \
@@ -283,6 +287,13 @@ pest:
         --set services.app.POSTGRESQL_WEB_DB_HOST=$POSTGRESQL_WEB_DB_HOST \
         --set services.meili.MEILISEARCH_KEY=$MEILISEARCH_KEY \
         --set services.app.environment=$APP_ENV \
+        --set services.ollama.persistence.size=$DB_MIGRATION_ENABLED \
+        --set services.db.migration.enabled=$OLLAMA_SIZE \
+        --set services.db.migration.sourcePassword=$POSTGRES_PASSWORD \
+        --set services.db.secrets.ACCESS_KEY_ID=$SECRET_ACCESS_KEY \
+        --set services.db.secrets.SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY \
+        --set services.db.secrets.DB_PASSWORD=$DB_PASSWORD \
+        --set services.db.secrets.POSTGRES_USER_PASSWORD=$POSTGRES_PASSWORD \
         --set services.redis.password=$REDIS_PASSWORD \
         --set services.app.replicaCount=$APP_REPLICAS \
         --set services.queue.replicaCount=$QUEUE_REPLICAS \

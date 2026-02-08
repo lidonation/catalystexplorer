@@ -1,0 +1,95 @@
+apiVersion: redis.redis.opstreelabs.in/v1beta2
+kind: RedisCluster
+metadata:
+  name: "{{ .Values.namespace }}-redis-cluster"
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.namespace }}-redis
+    app.kubernetes.io/instance: {{ .Values.namespace }}
+    app.kubernetes.io/component: cache
+spec:
+  clusterSize: 1
+  clusterVersion: v8
+  clusterMode: Standalone
+
+  # Disable followers - only masters
+  redisFollower:
+    replicas: 0
+
+  podSecurityContext:
+    runAsUser: 1000
+    fsGroup: 1000
+
+  persistenceEnabled: true
+
+  kubernetesConfig:
+    image: quay.io/opstree/redis:v8.4.0
+    imagePullPolicy: IfNotPresent
+
+    # Resource allocation for production cluster
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "2Gi"
+      limits:
+        cpu: "2"
+        memory: "8Gi"
+
+    redisSecret:
+      name: "{{ $.Chart.Name }}-secrets"
+      key: REDIS_PASSWORD
+
+  storage:
+    volumeClaimTemplate:
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: "longhorn"
+        resources:
+          requests:
+            storage: 10Gi  # Increased for production
+
+  # Redis configuration optimized for maximum speed
+  redisConfig:
+    # Memory management - prioritize speed over durability
+    maxmemory-policy: "allkeys-lru"      # Evict least recently used keys
+
+    # Persistence settings - optimized for speed
+    save: ""                            # Disable RDB snapshots for speed
+    appendonly: "yes"                   # Enable AOF for some durability
+    appendfsync: "no"                   # No fsync - maximum speed, less durability
+    no-appendfsync-on-rewrite: "yes"    # Don't fsync during rewrites
+    auto-aof-rewrite-percentage: "100"   # Rewrite AOF when 100% larger
+    auto-aof-rewrite-min-size: "64mb"   # Minimum size for rewrite
+
+    # Network optimization
+    tcp-keepalive: "60"                 # TCP keepalive
+    timeout: "0"                        # Disable client timeout
+
+    # Memory and performance
+    hash-max-ziplist-entries: "512"     # Optimize small hashes
+    hash-max-ziplist-value: "64"        # Optimize small hash values
+    list-max-ziplist-size: "-2"         # Optimize small lists
+    set-max-intset-entries: "512"       # Optimize small sets
+    zset-max-ziplist-entries: "128"     # Optimize small sorted sets
+    zset-max-ziplist-value: "64"        # Optimize small sorted set values
+
+    # Cluster settings
+    cluster-enabled: "yes"
+    cluster-config-file: "nodes.conf"
+    cluster-node-timeout: "15000"       # 15 seconds
+    cluster-replica-validity-factor: "10"
+
+    # Performance tuning
+    hz: "100"                           # Higher frequency for background tasks
+
+  # Monitoring
+  redisExporter:
+    enabled: true
+    image: oliver006/redis_exporter:v1.55.0
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "64Mi"
+      limits:
+        cpu: "200m"
+        memory: "256Mi"

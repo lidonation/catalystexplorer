@@ -1,0 +1,11 @@
+{
+    "agents": [
+        "claude_code"
+    ],
+    "editors": [
+        "phpstorm"
+    ],
+    "guidelines": [
+        "saloonphp/laravel-plugin"
+    ]
+}
