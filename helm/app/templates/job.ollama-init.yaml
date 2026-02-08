@@ -1,0 +1,78 @@
+{{- if .Values.services.ollama.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ $.Chart.Name }}-ollama-init-{{ .Release.Revision }}"
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: "{{ $.Chart.Name }}"
+    service: "{{ $.Chart.Name }}-ollama-init"
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 300
+  template:
+    metadata:
+      labels:
+        app: "{{ $.Chart.Name }}"
+        service: "{{ $.Chart.Name }}-ollama-init"
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: ollama-init
+          image: "{{ .Values.services.ollama.image.repository }}:{{ .Values.services.ollama.image.tag }}"
+          imagePullPolicy: {{ .Values.services.ollama.image.pullPolicy | default "IfNotPresent" }}
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              set -e
+              echo "Starting Ollama model initialization..."
+              
+              # Wait for Ollama service to be ready
+              OLLAMA_HOST="{{ $.Chart.Name }}-ollama-service:11434"
+              echo "Waiting for Ollama service at $OLLAMA_HOST to be ready..."
+              
+              until curl -s http://$OLLAMA_HOST/api/health >/dev/null 2>&1; do
+                  echo "Ollama service not ready, waiting..."
+                  sleep 10
+              done
+              
+              echo "Ollama service is ready!"
+              
+              # Set the model to pull
+              MODEL_NAME="{{ .Values.services.ollama.model | default "llama3.3:70b" }}"
+              
+              # Pull the model
+              echo "Pulling model: $MODEL_NAME (this may take a while...)"
+              OLLAMA_HOST=http://$OLLAMA_HOST ollama pull "$MODEL_NAME"
+              
+              echo "Model $MODEL_NAME successfully initialized!"
+              
+              # Verify the model is available
+              echo "Verifying model availability..."
+              if OLLAMA_HOST=http://$OLLAMA_HOST ollama list | grep -q "$MODEL_NAME"; then
+                  echo "✅ Model $MODEL_NAME is available and ready"
+              else
+                  echo "❌ Model $MODEL_NAME verification failed"
+                  exit 1
+              fi
+              
+              echo "Ollama initialization completed successfully!"
+          env:
+            - name: OLLAMA_KEEP_ALIVE
+              value: "{{ .Values.services.ollama.keepAlive | default "24h" }}"
+          resources:
+            limits:
+              memory: 2Gi
+              cpu: "1"
+            requests:
+              cpu: 100m
+              memory: 256Mi
+      {{- with .Values.services.ollama.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

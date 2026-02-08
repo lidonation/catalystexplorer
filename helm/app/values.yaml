@@ -51,8 +51,45 @@ services:
   queue:
     replicaCount: 1
   ollama:
+    enabled: false
+    replicaCount: 1
+    model: "llama3.3:70b"
+    keepAlive: "24h"
+    
+    image:
+      repository: ollama/ollama
+      tag: "0.6.2"
+      pullPolicy: IfNotPresent
+    
+    service:
+      type: ClusterIP
+      port: 11434
+    
+    resources:
+      limits:
+        memory: 96Gi
+        cpu: "12"
+      requests:
+        cpu: "2"
+        memory: 16Gi
+    
     persistence:
-      size: "20Gi"
+      size: 250Gi
+      storageClass: longhorn
+    
+    # GPU configuration (set to true if GPU nodes are available)
+    gpu:
+      enabled: false
+    
+    # Node placement preferences
+    nodeSelector: {}
+    
+    # Tolerations for dedicated nodes
+    tolerations: []
+    
+    # Affinity rules
+    affinity: {}
+
   meili:
     MEILISEARCH_KEY:
     persistence:

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0f5c34c7b08688eb4098c5ca09ca74e2",
+    "content-hash": "05485afaf34af67159011cfa81a1c970",
     "packages": [
         {
             "name": "aaronfrancis/fast-paginate",
@@ -4603,6 +4603,82 @@
                 "lido-nation"
             ],
             "time": "2025-07-12T09:21:48+00:00"
+        },
+        {
+            "name": "livewire/livewire",
+            "version": "v3.7.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/livewire/livewire.git",
+                "reference": "112b27e41e87e89d828a96e37b257aff2a058c7a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/livewire/livewire/zipball/112b27e41e87e89d828a96e37b257aff2a058c7a",
+                "reference": "112b27e41e87e89d828a96e37b257aff2a058c7a",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^10.0|^11.0|^12.0",
+                "illuminate/routing": "^10.0|^11.0|^12.0",
+                "illuminate/support": "^10.0|^11.0|^12.0",
+                "illuminate/validation": "^10.0|^11.0|^12.0",
+                "laravel/prompts": "^0.1.24|^0.2|^0.3",
+                "league/mime-type-detection": "^1.9",
+                "php": "^8.1",
+                "symfony/console": "^6.0|^7.0",
+                "symfony/http-kernel": "^6.2|^7.0"
+            },
+            "require-dev": {
+                "calebporzio/sushi": "^2.1",
+                "laravel/framework": "^10.15.0|^11.0|^12.0",
+                "mockery/mockery": "^1.3.1",
+                "orchestra/testbench": "^8.21.0|^9.0|^10.0",
+                "orchestra/testbench-dusk": "^8.24|^9.1|^10.0",
+                "phpunit/phpunit": "^10.4|^11.5",
+                "psy/psysh": "^0.11.22|^0.12"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Livewire": "Livewire\\Livewire"
+                    },
+                    "providers": [
+                        "Livewire\\LivewireServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "Livewire\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Caleb Porzio",
+                    "email": "calebporzio@gmail.com"
+                }
+            ],
+            "description": "A front-end framework for Laravel.",
+            "support": {
+                "issues": "https://github.com/livewire/livewire/issues",
+                "source": "https://github.com/livewire/livewire/tree/v3.7.9"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/livewire",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-02-05T23:27:27+00:00"
         },
         {
             "name": "maatwebsite/excel",
@@ -12840,6 +12916,100 @@
                 "source": "https://github.com/tijsverkoyen/CssToInlineStyles/tree/v2.4.0"
             },
             "time": "2025-12-02T11:56:42+00:00"
+        },
+        {
+            "name": "vizra/vizra-adk",
+            "version": "0.0.45",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vizra-ai/vizra-adk.git",
+                "reference": "d450734ec49f3d11b7b016be8aaa225988790728"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vizra-ai/vizra-adk/zipball/d450734ec49f3d11b7b016be8aaa225988790728",
+                "reference": "d450734ec49f3d11b7b016be8aaa225988790728",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^11.0|^12.0",
+                "league/csv": "^9.23",
+                "livewire/livewire": "^3.0",
+                "php": "^8.2",
+                "prism-php/prism": "^0.99.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^9.0",
+                "pestphp/pest": "^3.0",
+                "pestphp/pest-plugin-laravel": "^3.0"
+            },
+            "type": "laravel-package",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Agent": "Vizra\\VizraADK\\Facades\\Agent",
+                        "Workflow": "Vizra\\VizraADK\\Facades\\Workflow"
+                    },
+                    "providers": [
+                        "Vizra\\VizraADK\\Providers\\AgentServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Vizra\\VizraADK\\": "src/",
+                    "Vizra\\VizraADK\\Examples\\": "examples/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Aaron Lumsden",
+                    "email": "aaronlumsden@me.com"
+                }
+            ],
+            "description": "Vizra Agent Development Kit - A comprehensive Laravel package for building intelligent AI agents.",
+            "keywords": [
+                "Gemini",
+                "agent-framework",
+                "agents",
+                "ai",
+                "ai-agents",
+                "ai-development-kit",
+                "ai-tools",
+                "ai-workflows",
+                "anthropic",
+                "claude",
+                "conversational-ai",
+                "embedding",
+                "gpt",
+                "intelligent-agents",
+                "laravel",
+                "llm",
+                "mcp",
+                "meilisearch",
+                "memory-persistence",
+                "model-context-protocol",
+                "openai",
+                "prism-php",
+                "rag",
+                "vector-memory",
+                "workflow"
+            ],
+            "support": {
+                "issues": "https://github.com/vizra-ai/vizra-adk/issues",
+                "source": "https://github.com/vizra-ai/vizra-adk/tree/v0.0.45"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/aaronlumsden",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-02-06T15:43:19+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
