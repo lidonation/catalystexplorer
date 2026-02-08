@@ -84,15 +84,6 @@ spec:
       parameters:
         barmanObjectName: {{ $.Chart.Name }}-barman-store
 
-{{- $migEnabled := false -}}
-{{- if and .Values.services .Values.services.db .Values.services.db.bootstrap .Values.services.db.migration .Values.services.db.migration.enabled -}}
-  {{- $migEnabled = .Values.services.db.migration.enabled -}}
-{{- end -}}
-{{- if $migEnabled }}
-  bootstrap:
-    pg_basebackup:
-      source: {{ $.Chart.Name }}-db-source
-{{- else }}
   bootstrap:
     initdb:
       database: "{{ .Values.services.db.bootstrap.database.database }}"
@@ -105,7 +96,6 @@ spec:
 {{- if .Values.services.db.bootstrap.enablePgvector }}
       postInitApplicationSQL:
         - "CREATE EXTENSION IF NOT EXISTS vector;"
-{{- end }}
 {{- end }}
 
   superuserSecret:
@@ -126,20 +116,6 @@ spec:
   nodeMaintenanceWindow:
     inProgress: false
     reusePVC: true
-
-{{- if $migEnabled }}
-  externalClusters:
-  - name: {{ $.Chart.Name }}-db-source
-    connectionParameters:
-      host: "{{ .Values.services.db.migration.sourceHost }}"
-      port: "{{ .Values.services.db.migration.sourcePort }}"
-      user: "postgres"
-      dbname: "{{ .Values.services.db.migration.sourceDatabase }}"
-      sslmode: "{{ .Values.services.db.migration.sslmode | default "disable" }}"
-    password:
-      name: "{{ $.Chart.Name }}-cnpg-migration-credentials"
-      key: PGPASSWORD
-{{- end }}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
