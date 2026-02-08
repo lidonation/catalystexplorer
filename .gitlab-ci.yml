@@ -275,7 +275,7 @@ pest:
         export QUEUE_REPLICAS="1"
         export OLLAMA_SIZE="10Gi"
         export DB_MIGRATION_ENABLED=true
-        export OLLAMA_ENABLED=true
+        export OLLAMA_ENABLED=false
       fi
 
       helm upgrade $DEPLOYMENT_NAME ./helm/app \
