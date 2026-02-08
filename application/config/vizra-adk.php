@@ -111,8 +111,8 @@ return [
             'app_name' => env('OPENROUTER_APP_NAME', config('app.name')),
         ],
         'ollama' => [
-            'base_url' => env('OLLAMA_HOST', 'http://catalystexplorer.ollama:11434'),
-            'url' => env('OLLAMA_HOST', 'http://catalystexplorer.ollama:11434'),
+            'base_url' => env('OLLAMA_HOST', 'http://catalystexplorer-ollama-service:11434'),
+            'url' => env('OLLAMA_HOST', 'http://catalystexplorer-ollama-service:11434'),
             'timeout' => env('OLLAMA_TIMEOUT', 300),
             'keep_alive' => env('OLLAMA_KEEP_ALIVE', '24h'),
         ],
