@@ -51,9 +51,9 @@ services:
   queue:
     replicaCount: 1
   ollama:
-    enabled: false
-    replicaCount: 1
-    model: "llama3.3:70b"
+    enabled: true
+    replicaCount: 2
+    model: "llama3.1:8b"
     keepAlive: "24h"
     
     image:
@@ -68,26 +68,22 @@ services:
     resources:
       limits:
         memory: 96Gi
-        cpu: "12"
+        cpu: "14"
       requests:
-        cpu: "2"
-        memory: 16Gi
+        cpu: "1"
+        memory: 4Gi
     
     persistence:
-      size: 250Gi
+      size: 20Gi
       storageClass: longhorn
     
-    # GPU configuration (set to true if GPU nodes are available)
     gpu:
       enabled: false
     
-    # Node placement preferences
     nodeSelector: {}
     
-    # Tolerations for dedicated nodes
     tolerations: []
     
-    # Affinity rules
     affinity: {}
 
   meili:
@@ -101,4 +97,4 @@ services:
 
 backup:
   schedule:
-    cron: "0 2 * * *"  # Daily at 2am
+    cron: "0 2 * * *"

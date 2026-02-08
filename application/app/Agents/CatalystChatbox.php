@@ -29,11 +29,16 @@ class CatalystChatbox extends BaseLlmAgent
      */
     protected string $instructions = 'You are Catalyst Chatbox. See resources/prompts/catalyst_chatbox/default.blade.php for full instructions.';
 
-    protected string $model = 'ollama:llama3.3:70b';
+    protected string $model = '';
 
-    protected array $tools = [
-        // Example: YourTool::class,
-    ];
+    public function __construct()
+    {
+        $this->model = config('vizra-adk.default_model', 'llama3.1:8b');
+
+        parent::__construct();
+    }
+
+    protected array $tools = [];
 
     /*
 
