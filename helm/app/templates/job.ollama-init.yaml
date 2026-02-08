@@ -35,7 +35,7 @@ spec:
               OLLAMA_HOST="{{ $.Chart.Name }}-ollama-service:11434"
               echo "Waiting for Ollama service at $OLLAMA_HOST to be ready..."
               
-              until curl -s http://$OLLAMA_HOST/api/health >/dev/null 2>&1; do
+              until curl -s http://$OLLAMA_HOST/ >/dev/null 2>&1; do
                   echo "Ollama service not ready, waiting..."
                   sleep 10
               done
