@@ -70,12 +70,6 @@ spec:
           env:
             - name: POSTGRESQL_WEB_DB_HOST
               value: "{{ .Values.services.app.POSTGRESQL_WEB_DB_HOST }}"
-            - name: REDIS_PASSWORD
-              value: "{{ .Values.services.redis.password }}"
-            - name: REDIS_HOST
-              value: "{{ .Values.services.redis.host }}"
-            - name: CONTAINER_ROLE
-              value: app
             - name: PHP_MEMORY_LIMIT
               value: 8192M
             - name: PHP_OPCACHE_ENABLE
