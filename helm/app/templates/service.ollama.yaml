@@ -1,0 +1,19 @@
+{{- if .Values.services.ollama.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ $.Chart.Name }}-ollama-service"
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: "{{ $.Chart.Name }}"
+    service: "{{ $.Chart.Name }}-ollama"
+spec:
+  type: {{ .Values.services.ollama.service.type | default "ClusterIP" }}
+  ports:
+    - port: {{ .Values.services.ollama.service.port | default 11434 }}
+      name: http
+      targetPort: http
+      protocol: TCP
+  selector:
+    service: "{{ $.Chart.Name }}-ollama"
+{{- end }}

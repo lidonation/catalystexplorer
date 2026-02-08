@@ -305,6 +305,29 @@ services:
     profiles:
       - testing
 
+  # ollama AI service
+  catalystexplorer.ollama:
+    image: ollama/ollama:0.6.2
+    container_name: catalystexplorer.ollama
+    ports:
+      - "${FORWARD_OLLAMA_PORT:-11434}:11434"
+    volumes:
+      - "catalystexplorer-ollama:/root/.ollama"
+      - "./docker/scripts/ollama-init.sh:/ollama-init.sh"
+    networks:
+      - catalystexplorer-net
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+      - OLLAMA_HOST=0.0.0.0
+    restart: unless-stopped
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
   createbuckets:
     image: minio/mc
     depends_on:
@@ -333,6 +356,8 @@ volumes:
   catalystexplorer-search:
     driver: local
   catalystexplorer-redis:
+    driver: local
+  catalystexplorer-ollama:
     driver: local
   test_catalystexplorer-db:
     driver: local

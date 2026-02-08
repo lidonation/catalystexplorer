@@ -1,29 +1,91 @@
+{{- if .Values.services.ollama.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "{{ $.Chart.Name }}-ollama"
   namespace: {{ .Values.namespace }}
+  labels:
+    app: "{{ $.Chart.Name }}"
+    service: "{{ $.Chart.Name }}-ollama"
 spec:
-  replicas: 2
+  replicas: {{ .Values.services.ollama.replicaCount | default 1 }}
   selector:
     matchLabels:
-      app: "{{ $.Chart.Name }}-ollama"
+      app: "{{ $.Chart.Name }}"
+      service: "{{ $.Chart.Name }}-ollama"
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
-        app: "{{ $.Chart.Name }}-ollama"
+        app: "{{ $.Chart.Name }}"
+        service: "{{ $.Chart.Name }}-ollama"
     spec:
       containers:
-        - name: "{{ $.Chart.Name }}-ollama"
-          image: ollama/ollama:0.15.6
+        - name: ollama
+          image: "{{ .Values.services.ollama.image.repository }}:{{ .Values.services.ollama.image.tag }}"
+          imagePullPolicy: {{ .Values.services.ollama.image.pullPolicy | default "IfNotPresent" }}
           ports:
-            - containerPort: 11434
+            - name: http
+              containerPort: 11434
+              protocol: TCP
+          env:
+            - name: OLLAMA_KEEP_ALIVE
+              value: "{{ .Values.services.ollama.keepAlive | default "24h" }}"
+            - name: OLLAMA_HOST
+              value: "0.0.0.0"
+            - name: OLLAMA_ORIGINS
+              value: "*"
+            {{- if .Values.services.ollama.gpu.enabled }}
+            - name: NVIDIA_VISIBLE_DEVICES
+              value: "all"
+            {{- end }}
           resources:
-            limits: {}
+            {{- toYaml .Values.services.ollama.resources | nindent 12 }}
           volumeMounts:
-            - name: "{{ $.Chart.Name }}-ollama-storage"
+            - name: ollama-storage
               mountPath: /root/.ollama
+            - name: ollama-init-script
+              mountPath: /ollama-init.sh
+              subPath: ollama-init.sh
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 11434
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 11434
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+          {{- if .Values.services.ollama.lifecycle }}
+          lifecycle:
+            {{- toYaml .Values.services.ollama.lifecycle | nindent 12 }}
+          {{- end }}
       volumes:
-        - name: "{{ $.Chart.Name }}-ollama-storage"
+        - name: ollama-storage
           persistentVolumeClaim:
-            claimName: "{{ .Values.namespace }}-ollma-pvc"
+            claimName: "{{ .Values.namespace }}-ollama-pvc"
+        - name: ollama-init-script
+          configMap:
+            name: "{{ $.Chart.Name }}-ollama-init"
+            defaultMode: 0755
+      {{- with .Values.services.ollama.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.services.ollama.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.services.ollama.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

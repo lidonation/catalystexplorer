@@ -1,12 +1,21 @@
-kind: PersistentVolumeClaim
+{{- if .Values.services.ollama.enabled }}
 apiVersion: v1
+kind: PersistentVolumeClaim
 metadata:
-  name: "{{ .Values.namespace }}-ollma-pvc"
+  name: "{{ .Values.namespace }}-ollama-pvc"
   namespace: {{ .Values.namespace }}
+  labels:
+    app: "{{ $.Chart.Name }}"
+    service: "{{ $.Chart.Name }}-ollama"
 spec:
   accessModes:
-    - ReadWriteOnce
-  storageClassName: "longhorn"
+    - ReadWriteMany
+  storageClassName: {{ .Values.services.ollama.persistence.storageClass | default "longhorn" | quote }}
   resources:
     requests:
-      storage: {{ .Values.services.ollama.persistence.size | default "20Gi" }}
+      storage: {{ .Values.services.ollama.persistence.size | default "50Gi" }}
+  {{- if .Values.services.ollama.persistence.selector }}
+  selector:
+    {{- toYaml .Values.services.ollama.persistence.selector | nindent 4 }}
+  {{- end }}
+{{- end }}
