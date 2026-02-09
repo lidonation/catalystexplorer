@@ -1,3 +1,10 @@
+# [1.74.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.73.1...v1.74.0) (2026-02-09)
+
+
+### Features
+
+* add rag tool to inject proposal specific data ([fd2ed97](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/fd2ed9746d5eb7bc0f76528bc9fd884214e5187d))
+
 ## [1.73.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.73.0...v1.73.1) (2026-02-08)
 
 
