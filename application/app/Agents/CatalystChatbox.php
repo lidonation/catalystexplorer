@@ -15,13 +15,14 @@ class CatalystChatbox extends BaseLlmAgent
 
     protected string $description = 'AI assistant for Project Catalyst community with semantic search capabilities for proposals, funding information, and community resources.';
 
-    protected string $instructions = 'You are Catalyst Chatbox with RAG capabilities. See resources/prompts/catalyst_chatbox/default.blade.php for full instructions.';
+    protected string $instructions = 'You are a friendly AI assistant for Project Catalyst. Answer conversational queries naturally. Only use search tools when users specifically ask about proposals, projects, or funding examples. For greetings and general questions, respond normally without tools.';
 
     protected string $model = '';
 
     public function __construct()
     {
-        $this->model = config('vizra-adk.default_model', 'llama3.1:8b');
+        // Use a more capable model for better tool calling and conversation
+        $this->model = 'llama3.2:3b'; // More capable than 1b but still reasonably fast
 
         parent::__construct();
     }
@@ -31,6 +32,8 @@ class CatalystChatbox extends BaseLlmAgent
         ProposalDetailsTool::class,
     ];
 
+    /*
+    // Temporarily disabled to isolate issue
     public function beforeLlmCall(array $inputMessages, AgentContext $context): array
     {
         // Check if the user's message seems to be asking about proposals
@@ -52,7 +55,7 @@ class CatalystChatbox extends BaseLlmAgent
             'proposal', 'project about', 'funding', 'funded project', 'grant',
             'show me proposal', 'find proposal', 'search proposal', 'proposal example',
             'what proposals exist', 'proposals about', 'catalyst project',
-            'ai proposal', 'defi proposal', 'education proposal',
+            'ai proposal', 'defi proposal', 'education proposal'
         ];
 
         // More specific patterns that indicate proposal searches
@@ -76,7 +79,7 @@ class CatalystChatbox extends BaseLlmAgent
         }
 
         // Check patterns if keywords didn't match
-        if (! $needsTools) {
+        if (!$needsTools) {
             foreach ($proposalPatterns as $pattern) {
                 if (preg_match($pattern, $lastUserMessage)) {
                     $needsTools = true;
@@ -88,15 +91,16 @@ class CatalystChatbox extends BaseLlmAgent
         if ($needsTools) {
             $toolInstructions = [
                 'role' => 'system',
-                'content' => '🚨 This query appears to be about Project Catalyst proposals. You MUST:\n'.
-                    '1. Use search_proposals tool with appropriate keywords from the user query\n'.
-                    '2. Base your answer ONLY on tool results\n'.
-                    '3. Do not use training data for proposal examples\n'.
-                    '4. If no results found, say "I searched but found no proposals matching your query"',
+                'content' => '🚨 This query appears to be about Project Catalyst proposals. You MUST:\n' .
+                    '1. Use search_proposals tool with appropriate keywords from the user query\n' .
+                    '2. Base your answer ONLY on tool results\n' .
+                    '3. Do not use training data for proposal examples\n' .
+                    '4. If no results found, say "I searched but found no proposals matching your query"'
             ];
             $inputMessages[] = $toolInstructions;
         }
 
         return parent::beforeLlmCall($inputMessages, $context);
     }
+    */
 }
