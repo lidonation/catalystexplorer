@@ -68,10 +68,10 @@ services:
     resources:
       limits:
         memory: 96Gi
-        cpu: "14"
+        cpu: "38"
       requests:
-        cpu: "1"
-        memory: 4Gi
+        cpu: "4"
+        memory: 8Gi
     
     persistence:
       size: 20Gi
