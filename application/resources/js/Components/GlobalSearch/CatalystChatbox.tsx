@@ -126,7 +126,7 @@ export default function CatalystChatbox({ onBack }: CatalystChatboxProps) {
                     'Accept': 'text/event-stream',
                 },
                 body: JSON.stringify({
-                    model: 'catalyst_chatbox',
+                    model: 'catalyst-chatbox',
                     messages: [
                         ...messages.filter(m => m.id !== 'welcome').map(m => ({
                             role: m.role,
