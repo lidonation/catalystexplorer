@@ -4,30 +4,18 @@ declare(strict_types=1);
 
 namespace App\Agents;
 
-use Prism\Prism\Structured\PendingRequest as StructuredPendingRequest;
-use Prism\Prism\Text\PendingRequest as TextPendingRequest;
+use App\Tools\ProposalDetailsTool;
+use App\Tools\ProposalSearchTool;
 use Vizra\VizraADK\Agents\BaseLlmAgent;
 use Vizra\VizraADK\System\AgentContext;
 
-// use App\Tools\YourTool; // Example: Import your tool
-
 class CatalystChatbox extends BaseLlmAgent
 {
-    protected string $name = 'catalyst_chatbox';
+    protected string $name = 'catalyst-chatbox';
 
-    protected string $description = 'AI assistant for Project Catalyst community, providing help with proposals, funding, and community resources.';
+    protected string $description = 'AI assistant for Project Catalyst community with semantic search capabilities for proposals, funding information, and community resources.';
 
-    /**
-     * Agent instructions hierarchy (first found wins):
-     * 1. Runtime: $agent->setPromptOverride('...')
-     * 2. Database: agent_prompt_versions table (if enabled)
-     * 3. File: resources/prompts/catalyst_chatbox/default.blade.php
-     * 4. Fallback: This property
-     *
-     * The prompt file has been created for you at:
-     * resources/prompts/catalyst_chatbox/default.blade.php
-     */
-    protected string $instructions = 'You are Catalyst Chatbox. See resources/prompts/catalyst_chatbox/default.blade.php for full instructions.';
+    protected string $instructions = 'You are Catalyst Chatbox with RAG capabilities. See resources/prompts/catalyst_chatbox/default.blade.php for full instructions.';
 
     protected string $model = '';
 
@@ -38,34 +26,77 @@ class CatalystChatbox extends BaseLlmAgent
         parent::__construct();
     }
 
-    protected array $tools = [];
-
-    /*
-
-    Optional hook methods to override:
+    protected array $tools = [
+        ProposalSearchTool::class,
+        ProposalDetailsTool::class,
+    ];
 
     public function beforeLlmCall(array $inputMessages, AgentContext $context): array
     {
-        // $context->setState('custom_data_for_llm', 'some_value');
-        // $inputMessages[] = ['role' => 'system', 'content' => 'Additional system note for this call.'];
+        // Check if the user's message seems to be asking about proposals
+        $lastUserMessage = '';
+        for ($i = count($inputMessages) - 1; $i >= 0; $i--) {
+            $message = $inputMessages[$i];
+            // Handle both array and object formats
+            if (is_array($message) && isset($message['role']) && $message['role'] === 'user') {
+                $lastUserMessage = strtolower($message['content'] ?? '');
+                break;
+            } elseif (is_object($message) && method_exists($message, 'role') && $message->role === 'user') {
+                $lastUserMessage = strtolower($message->content ?? '');
+                break;
+            }
+        }
+
+        // More specific keywords that clearly indicate proposal queries
+        $proposalKeywords = [
+            'proposal', 'project about', 'funding', 'funded project', 'grant',
+            'show me proposal', 'find proposal', 'search proposal', 'proposal example',
+            'what proposals exist', 'proposals about', 'catalyst project',
+            'ai proposal', 'defi proposal', 'education proposal',
+        ];
+
+        // More specific patterns that indicate proposal searches
+        $proposalPatterns = [
+            '/show me.*proposal/',
+            '/find.*proposal/',
+            '/proposals? (about|on|for)/',
+            '/what.*proposals?.*exist/',
+            '/catalyst.*project/',
+            '/project catalyst/',
+        ];
+
+        $needsTools = false;
+
+        // Check keywords
+        foreach ($proposalKeywords as $keyword) {
+            if (strpos($lastUserMessage, $keyword) !== false) {
+                $needsTools = true;
+                break;
+            }
+        }
+
+        // Check patterns if keywords didn't match
+        if (! $needsTools) {
+            foreach ($proposalPatterns as $pattern) {
+                if (preg_match($pattern, $lastUserMessage)) {
+                    $needsTools = true;
+                    break;
+                }
+            }
+        }
+
+        if ($needsTools) {
+            $toolInstructions = [
+                'role' => 'system',
+                'content' => '🚨 This query appears to be about Project Catalyst proposals. You MUST:\n'.
+                    '1. Use search_proposals tool with appropriate keywords from the user query\n'.
+                    '2. Base your answer ONLY on tool results\n'.
+                    '3. Do not use training data for proposal examples\n'.
+                    '4. If no results found, say "I searched but found no proposals matching your query"',
+            ];
+            $inputMessages[] = $toolInstructions;
+        }
+
         return parent::beforeLlmCall($inputMessages, $context);
     }
-
-    public function afterLlmResponse(mixed $response, AgentContext $context, TextPendingRequest|StructuredPendingRequest|null $request = null): mixed {
-
-         return parent::afterLlmResponse($response, $context, $request);
-
-    }
-
-    public function beforeToolCall(string $toolName, array $arguments, AgentContext $context): array {
-
-        return parent::beforeToolCall($toolName, $arguments, $context);
-
-    }
-
-    public function afterToolResult(string $toolName, string $result, AgentContext $context): string {
-
-        return parent::afterToolResult($toolName, $result, $context);
-
-    } */
 }
