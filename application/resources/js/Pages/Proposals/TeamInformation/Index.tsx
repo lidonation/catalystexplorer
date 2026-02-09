@@ -1,14 +1,23 @@
 import Graph from '@/Components/Graph';
 import { Head, WhenVisible } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import ProposalLayout from '../ProposalLayout';
 import ConnectionData = App.DataTransferObjects.ConnectionData;
 import ProposalData = App.DataTransferObjects.ProposalData;
+
+interface TeamStats {
+    totalProposals: number;
+    completedProposals: number;
+    outstandingProposals: number;
+    fundedProposals: number;
+}
 
 interface ConnectionPageProps {
     connections: ConnectionData;
     proposal: ProposalData;
     globalQuickPitchView: boolean;
     setGlobalQuickPitchView?: (value: boolean) => void;
+    teamStats?: TeamStats;
     ogMeta?: {
         ogImageUrl: string;
         proposalUrl: string;
@@ -21,8 +30,11 @@ export default function Connections({
     proposal,
     globalQuickPitchView,
     setGlobalQuickPitchView,
+    teamStats,
     ogMeta,
 }: ConnectionPageProps) {
+    const { t } = useLaravelReactI18n();
+
     // Use server-side OG meta data if available (for SSR)
     const ogImageUrl = ogMeta?.ogImageUrl ?? 
         (typeof window !== 'undefined' ? `${window.location.origin}/og-image/proposals/${proposal.slug}` : '');
@@ -49,6 +61,52 @@ export default function Connections({
                 setGlobalQuickPitchView={setGlobalQuickPitchView}
                 ogMeta={ogMeta}
             >
+
+            {/* Team Statistics */}
+            <div className="bg-background shadow-cx-box-shadow flex flex-col items-start justify-between gap-5 self-stretch overflow-x-auto rounded-xl p-4 sm:flex-row sm:gap-2 sm:p-6">
+                <div className="flex w-120 items-center justify-start gap-4 overflow-x-auto">
+                    <div className="inline-flex flex-1 flex-col items-start justify-start gap-1">
+                        <div className="text-gray-persist text-sm">
+                            {t('proposals.totalProposals')}
+                        </div>
+                        <div className="text-content text-base">
+                            {teamStats?.totalProposals && teamStats.totalProposals > 0
+                                ? teamStats.totalProposals
+                                : '-'}
+                        </div>
+                    </div>
+                    <div className="inline-flex flex-1 flex-col items-start justify-start gap-1">
+                        <div className="text-gray-persist text-sm">
+                            {t('proposals.outstanding')}
+                        </div>
+                        <div className="text-content text-base">
+                            {teamStats?.outstandingProposals && teamStats.outstandingProposals > 0
+                                ? teamStats.outstandingProposals
+                                : '-'}
+                        </div>
+                    </div>
+                    <div className="inline-flex flex-1 flex-col items-start justify-start gap-1">
+                        <div className="text-gray-persist text-sm">
+                            {t('proposals.completed')}
+                        </div>
+                        <div className="text-content text-base">
+                            {teamStats?.completedProposals && teamStats.completedProposals > 0
+                                ? teamStats.completedProposals
+                                : '-'}
+                        </div>
+                    </div>
+                    <div className="inline-flex flex-1 flex-col items-start justify-start gap-1">
+                        <div className="text-gray-persist text-sm">
+                            {t('proposals.funded')}
+                        </div>
+                        <div className="text-content text-base">
+                            {teamStats?.fundedProposals && teamStats.fundedProposals > 0
+                                ? teamStats.fundedProposals
+                                : '-'}
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <WhenVisible
                 data="connections"

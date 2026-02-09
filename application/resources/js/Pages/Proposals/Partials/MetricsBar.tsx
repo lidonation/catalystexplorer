@@ -239,15 +239,17 @@ const MetricsBar: React.FC<MetricsBarProps> = ({ isConnected = false, isAnimatin
         onProposals && (
             <div
                 ref={analyticsRef}
-                className={`${gradientClass} overflow-visible ${borderRadiusClass} text-content-light shadow-lg transition-all duration-300 w-full ${
+                className={`${gradientClass} ${borderRadiusClass} text-content-light shadow-lg transition-all duration-300 w-full ${
                     isAnimating ? 'scale-95 opacity-0' : 'scale-100 opacity-100'
-                } ${showAnalytics && !isConnected ? 'min-h-[400px]' : ''}`}
+                }`}
                 data-testid="metrics-bar-container">
                 <div className="lg:hidden w-full">
                     {showAnalytics ? (
-                        <div className="relative">
-                            <AnalyticsView metrics={metrics} isMobile={true} />
-                            <div className="flex justify-center pb-4">
+                        <div className="relative flex flex-col" style={{ maxHeight: 'calc(100vh - 140px)' }}>
+                            <div className="overflow-y-auto flex-1 min-h-0 overscroll-contain">
+                                <AnalyticsView metrics={metrics} isMobile={true} />
+                            </div>
+                            <div className="flex justify-center pb-4 pt-2 flex-shrink-0 bg-gradient-to-t from-[var(--cx-background-gradient-2-dark)] to-transparent">
                                 <ViewAnalyticsButton
                                     onClick={toggleAnalytics}
                                     label="Hide Analytics"

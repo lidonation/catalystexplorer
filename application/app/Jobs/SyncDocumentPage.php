@@ -99,6 +99,15 @@ class SyncDocumentPage implements ShouldQueue
                     }
                 }
 
+                // Also try to decode payload[2] if it's still a hex string (even when payload[1] has content)
+                if (isset($decoded['payload'][2]) && is_string($decoded['payload'][2]) && ctype_xdigit($decoded['payload'][2])) {
+                    $decodedPayload2 = $this->tryDecodeHexString($decoded['payload'][2]);
+                    if ($decodedPayload2) {
+                        $decoded['payload'][2] = $decodedPayload2;
+                        Log::info("Successfully decoded payload[2] for {$documentId}");
+                    }
+                }
+
                 if (isset($decoded['payload'][1]['setup'])) {
                     // Safely create Fluent object from version data
                     $versionData = $doc['ver'][0] ?? null;
@@ -496,8 +505,8 @@ except Exception as e:
 
         foreach ($data as $key => $value) {
             if (is_string($value)) {
-                // Check if this string looks like hex data
-                if (strlen($value) > 64 && ctype_xdigit($value)) {
+                // Check if this string looks like hex data (min 32 chars for meaningful data)
+                if (strlen($value) >= 32 && ctype_xdigit($value)) {
                     Log::debug('Found potential hex data in nested structure', [
                         'key' => $key,
                         'length' => strlen($value),
@@ -517,6 +526,15 @@ except Exception as e:
                     $result[$key] = $value; // Not hex data, keep as-is
                 }
             } elseif (is_array($value)) {
+                // Check if this is a nested object with a 'payload' key containing hex
+                if (isset($value['payload']) && is_string($value['payload']) && ctype_xdigit($value['payload'])) {
+                    $decoded = $this->tryDecodeHexString($value['payload']);
+                    if ($decoded) {
+                        $value['payload'] = $decoded;
+                        $hasChanges = true;
+                        Log::info("Successfully decoded nested payload hex at key: {$key}");
+                    }
+                }
                 // Recursively process nested arrays
                 $result[$key] = $this->processNestedArrayForDecoding($value, $hasChanges);
             } else {

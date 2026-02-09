@@ -1,3 +1,39 @@
+# [1.74.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.73.1...v1.74.0) (2026-02-09)
+
+
+### Features
+
+* add rag tool to inject proposal specific data ([fd2ed97](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/fd2ed9746d5eb7bc0f76528bc9fd884214e5187d))
+
+## [1.73.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.73.0...v1.73.1) (2026-02-08)
+
+
+### Bug Fixes
+
+* update Ollama service configuration and add named routes to CatalystChatbox ([aba16fc](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/aba16fc9b8d5a29055dfd7e310e863178c45c4ef))
+
+# [1.73.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.72.0...v1.73.0) (2026-02-08)
+
+
+### Features
+
+* v1 of catalyst ai ([c0842e1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/c0842e1637bf55386373e2845967628a2f671f2b))
+* v1 of catalyst ai\n\nCo-Authored-By: Warp <agent@warp.dev> ([32169be](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/32169beae2932c3022b0ecc7b4219b6e32943ca1))
+
+# [1.72.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.71.0...v1.72.0) (2026-01-30)
+
+
+### Bug Fixes
+
+* wrong drep status showing ([9efcd77](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/9efcd770b2bd0719aea495a1c820802c7273ca8a))
+
+
+### Features
+
+* Add new metadata label and implement Blockfrost API rate limit handling with job release. ([0ac356a](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/0ac356a2818b3a175825f90568baf914d37d4221))
+* Add new metadata label and implement Blockfrost API rate limit handling with job release. ([85c14c1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/85c14c1b996ddad52148ec7d87b206484a518c6d))
+* Add new metadata label and implement Blockfrost API rate limit handling with job release. ([8854aa7](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/8854aa7426cbfe8a016319a0439993b39e1922d0))
+
 # [1.71.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.70.0...v1.71.0) (2026-01-27)
 
 

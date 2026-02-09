@@ -17,6 +17,8 @@ This document provides comprehensive documentation for all custom Artisan comman
   - [catalyst:process-historical-funds](#catalystprocess-historical-funds)
   - [ln:generate-connections](#lngenerate-connections)
   - [cx:import-catalyst-tally](#cximport-catalyst-tally)
+- [AI/Embedding Commands](#aiembedding-commands)
+  - [embeddings:generate](#embeddingsgenerate)
 - [Maintenance Commands](#maintenance-commands)
   - [cx:check-links](#cxcheck-links)
   - [proposals:find-duplicates](#proposalsfind-duplicates)
@@ -402,6 +404,94 @@ php artisan cx:import-catalyst-tally storage/app/fund14_tally.json
 
 ---
 
+## AI/Embedding Commands
+
+### embeddings:generate
+
+Generate semantic embeddings for any model class using Ollama or OpenAI for RAG (Retrieval-Augmented Generation) capabilities.
+
+**Signature:**
+```bash
+php artisan embeddings:generate {model} [options]
+```
+
+**Arguments:**
+| Argument | Description | Required |
+|----------|-------------|----------|
+| `model` | The model class name (e.g., Proposal, Community, IdeascaleProfile) | Yes |
+
+**Options:**
+| Option | Description | Default |
+|--------|-------------|----------|
+| `--provider=PROVIDER` | The embedding provider to use (`ollama`, `openai`) | ollama |
+| `--model-name=MODEL` | The specific embedding model to use (defaults to provider default) | null |
+| `--fields=FIELDS` | Comma-separated list of fields to embed | All embeddable fields |
+| `--batch-size=N` | Number of records to process at once | 50 |
+| `--force` | Regenerate embeddings even if they exist | false |
+| `--where=CLAUSE` | WHERE clause to filter records (e.g., "fund_id=123") | null |
+| `--limit=N` | Maximum number of records to process | null |
+
+**Examples:**
+```bash
+# Generate embeddings for all proposals using Ollama (default)
+php artisan embeddings:generate Proposal
+
+# Generate embeddings for community records using OpenAI
+php artisan embeddings:generate Community --provider=openai
+
+# Generate only specific fields for proposals
+php artisan embeddings:generate Proposal --fields=title,content,combined
+
+# Process specific fund with filtering
+php artisan embeddings:generate Proposal --where="fund_id=019a9c61-7d7a-7277-b082-bd4137a5a936" --batch-size=25
+
+# Force regenerate embeddings for first 100 records
+php artisan embeddings:generate Proposal --force --limit=100
+
+# Generate embeddings for IdeascaleProfile with custom model
+php artisan embeddings:generate IdeascaleProfile --model-name=text-embedding-3-large
+
+# Generate embeddings for any model that uses HasEmbeddings trait
+php artisan embeddings:generate Group --fields=title,description
+```
+
+**Embeddable Fields:**
+- **title**: Proposal title
+- **problem**: Problem statement
+- **solution**: Proposed solution
+- **experience**: Team experience description
+- **content**: Additional proposal content
+- **combined**: Comprehensive text combining all fields with structured context
+
+**Supported Providers:**
+- **ollama**: Local Ollama instance (default model: `nomic-embed-text`, 768 dimensions)
+- **openai**: OpenAI API (default model: `text-embedding-3-small`, 1536 dimensions)
+
+**What it does:**
+- Generates AI embeddings for any model class that uses the `HasEmbeddings` trait
+- Stores embeddings in PostgreSQL with pgvector for fast similarity search
+- Enables RAG capabilities for AI agents like CatalystChatbox
+- Supports deduplication - skips unchanged content based on content hash
+- Provides progress tracking and comprehensive error reporting
+- Validates model class exists and uses the required trait
+- Supports flexible WHERE clause filtering for targeted processing
+
+**Prerequisites:**
+- PostgreSQL with pgvector extension enabled
+- Model must use the `HasEmbeddings` trait
+- For Ollama: Running Ollama service with embedding models (e.g., `nomic-embed-text`)
+- For OpenAI: Valid `OPENAI_API_KEY` in environment variables
+
+**Performance Notes:**
+- Embedding generation can be CPU/network intensive
+- Use `--batch-size` to control memory usage and processing speed
+- Monitor Ollama/OpenAI API rate limits
+- Use `--limit` for testing or processing subsets
+- First run processes all records; subsequent runs only process changed content
+- Use `--where` clause to process specific subsets efficiently
+
+---
+
 ## Maintenance Commands
 
 ### cx:check-links
@@ -533,6 +623,28 @@ php artisan sync:milestones --sync
 
 # 4. Process historical data
 php artisan catalyst:process-historical-funds --fund=<fund_uuid>
+
+# 5. Generate embeddings for AI/RAG capabilities
+php artisan embeddings:generate Proposal --where="fund_id=<fund_uuid>"
+```
+
+**AI/RAG Setup:**
+```bash
+# Generate embeddings for all proposals (first time setup)
+php artisan embeddings:generate Proposal
+
+# Update embeddings for new/changed proposals
+php artisan embeddings:generate Proposal
+
+# Force regenerate all embeddings
+php artisan embeddings:generate Proposal --force
+
+# Use OpenAI instead of Ollama
+php artisan embeddings:generate Proposal --provider=openai
+
+# Generate embeddings for other models
+php artisan embeddings:generate Community --fields=title,description
+php artisan embeddings:generate IdeascaleProfile --limit=100
 ```
 
 **Maintenance Tasks:**
@@ -559,6 +671,11 @@ Some commands require specific environment variables:
 | `MEILISEARCH_KEY` | Meilisearch API key | search:index, cx:create-search-index |
 | `SERVICES_CATALYST_MILESTONE_KEY` | Catalyst Milestone API key | sync:milestones |
 | `SERVICES_GOVTOOLS_BUDGET_PROPOSALS` | GovTool API URL | cx:sync-cardano-budget-proposals |
+| `AI_DEFAULT_PROVIDER` | Default AI provider (ollama, openai) | embeddings:generate-proposals |
+| `OLLAMA_HOST` | Ollama server URL | embeddings:generate-proposals |
+| `OLLAMA_EMBEDDING_MODEL` | Ollama embedding model name | embeddings:generate-proposals |
+| `OPENAI_API_KEY` | OpenAI API key | embeddings:generate-proposals |
+| `OPENAI_EMBEDDING_MODEL` | OpenAI embedding model name | embeddings:generate-proposals |
 
 ---
 

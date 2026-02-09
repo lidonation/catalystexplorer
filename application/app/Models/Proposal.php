@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Concerns\HasAuthor;
 use App\Concerns\HasConnections;
 use App\Concerns\HasDto;
+use App\Concerns\HasEmbeddings;
 use App\Concerns\HasMetaData;
 use App\Concerns\HasSignatures;
 use App\Concerns\HasTaxonomies;
@@ -42,6 +43,7 @@ class Proposal extends Model implements IHasMetaData
         HasConnections,
         HasConnections,
         HasDto,
+        HasEmbeddings,
         HasMetaData,
         HasRelationships,
         HasSignatures,
@@ -78,9 +80,24 @@ class Proposal extends Model implements IHasMetaData
         'currency',
         'quickpitch_thumbnail',
         'is_claimed',
-        'alignment_score',
-        'auditability_score',
-        'feasibility_score',
+    ];
+
+    protected $casts = [
+        'alignment_score' => 'decimal:1',
+        'feasibility_score' => 'decimal:1',
+        'auditability_score' => 'decimal:1',
+        'ideascale_id' => 'integer',
+        'chain_proposal_index' => 'integer',
+        'unique_wallets' => 'integer',
+        'yes_wallets' => 'integer',
+        'no_wallets' => 'integer',
+        'is_auto_translated' => 'boolean',
+        'has_dependencies' => 'boolean',
+        'self_assessment' => 'array',
+        'pitch' => 'array',
+        'project_details' => 'array',
+        'category_questions' => 'array',
+        'theme' => 'array',
     ];
 
     public $meiliIndexName = 'cx_proposals';
@@ -319,21 +336,21 @@ class Proposal extends Model implements IHasMetaData
     public function feasibilityScore(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => ($this->meta_info?->feasibility_score ?? $value)
+            get: fn ($value) => $value ?? $this->meta_info?->feasibility_score
         );
     }
 
     public function alignmentScore(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => ($this->meta_info?->alignment_score ?? $value)
+            get: fn ($value) => $value ?? $this->meta_info?->alignment_score
         );
     }
 
     public function auditabilityScore(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => ($this->meta_info?->auditability_score ?? $value)
+            get: fn ($value) => $value ?? $this->meta_info?->auditability_score
         );
     }
 
@@ -984,5 +1001,79 @@ class Proposal extends Model implements IHasMetaData
             ->where('claimable_type', IdeascaleProfile::class)
             ->pluck('claimable_id')
             ->toArray();
+    }
+
+    public function getEmbeddableFields(): array
+    {
+        return [
+            'title',
+            'problem',
+            'solution',
+            'experience',
+            'content',
+            'combined', // Special field that combines multiple fields
+        ];
+    }
+
+    protected function getEmbeddableContent(string $fieldName): string
+    {
+        if ($fieldName === 'combined') {
+            // Create comprehensive text representation with structured context
+            $parts = [];
+
+            if ($title = $this->getFieldContent('title')) {
+                $parts[] = "Title: {$title}";
+            }
+
+            if ($problem = $this->getFieldContent('problem')) {
+                $parts[] = "Problem: {$problem}";
+            }
+
+            if ($solution = $this->getFieldContent('solution')) {
+                $parts[] = "Solution: {$solution}";
+            }
+
+            if ($experience = $this->getFieldContent('experience')) {
+                $parts[] = "Experience: {$experience}";
+            }
+
+            if ($content = $this->getFieldContent('content')) {
+                $parts[] = "Details: {$content}";
+            }
+
+            // Add contextual metadata for better semantic understanding
+            if ($this->campaign) {
+                $parts[] = "Campaign: {$this->campaign->title}";
+            }
+
+            if ($this->fund) {
+                $parts[] = "Fund: {$this->fund->title}";
+            }
+
+            return implode("\n\n", array_filter($parts));
+        }
+
+        return $this->getFieldContent($fieldName);
+    }
+
+    private function getFieldContent(string $fieldName): string
+    {
+        $value = $this->getAttribute($fieldName);
+
+        // Handle translated fields - prefer English, fallback to first available
+        if (in_array($fieldName, $this->translatable)) {
+            if (is_array($value)) {
+                return $value['en'] ?? (array_values($value)[0] ?? '');
+            }
+            if (is_string($value)) {
+                // Try to decode JSON-stored translations
+                $decoded = json_decode($value, true);
+                if (is_array($decoded)) {
+                    return $decoded['en'] ?? (array_values($decoded)[0] ?? '');
+                }
+            }
+        }
+
+        return (string) $value;
     }
 }

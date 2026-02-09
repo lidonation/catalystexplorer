@@ -26,14 +26,75 @@ services:
       accessMode: ReadWriteMany
       subPath: "uploads"
       mountPath: "/var/www/storage/app"
+  db:
+    monitoring:
+      enabled: true
+    bootstrap:
+      database:
+        database: catalystexplorer
+        owner: explorerdbuser
+      enablePgvector: true
+    migration:
+      enabled: true
+      sourceHost: cx-web-db-postgresql-ha-pgpool
+      sourcePort: "5432"
+      sourceUser: postgres
+      sourcePassword:
+      sourceDatabase: catalystexplorer
+    secrets:
+      DB_NAME: catalystexplorer
+      DB_USERNAME: explorerdbuser
+      DB_PASSWORD:
+      DEFAULT_REGION: us-east-1
+      POSTGRES_USER: postgres
+      POSTGRES_USER_PASSWORD:
   queue:
     replicaCount: 1
-  meili:
-    MEILISEARCH_KEY: 
+  ollama:
+    enabled: true
+    replicaCount: 2
+    model: "llama3.1:8b"
+    keepAlive: "24h"
+    
+    image:
+      repository: ollama/ollama
+      tag: "0.6.2"
+      pullPolicy: IfNotPresent
+    
+    service:
+      type: ClusterIP
+      port: 11434
+    
+    resources:
+      limits:
+        memory: 96Gi
+        cpu: "14"
+      requests:
+        cpu: "1"
+        memory: 4Gi
+    
     persistence:
-      size: 320Gi
+      size: 20Gi
+      storageClass: longhorn
+    
+    gpu:
+      enabled: false
+    
+    nodeSelector: {}
+    
+    tolerations: []
+    
+    affinity: {}
+
+  meili:
+    MEILISEARCH_KEY:
+    persistence:
+      size: "320Gi"
       storageClass: longhorn
   redis:
     password: 
     host: redis-headless
-    
+
+backup:
+  schedule:
+    cron: "0 2 * * *"

@@ -88,7 +88,7 @@ services:
 
   # database
   catalystexplorer_test.db:
-      image: postgres:17.1-bookworm
+      image: pgvector/pgvector:pg17
       container_name: catalystexplorer_test.db
       ports:
           - '5439:5432'
@@ -115,6 +115,21 @@ services:
               - 'catalystexplorer'
           retries: 3
           timeout: 5s
+
+  # one-shot init to enable extensions in explorerweb
+  catalystexplorer_test.db-init:
+      image: postgres:17-bookworm
+      container_name: catalystexplorer_test.db-init
+      depends_on:
+          - catalystexplorer_test.db
+      networks:
+          - catalystexplorer-net_test
+      entrypoint: ["/bin/sh","-c"]
+      command: >
+          "until pg_isready -h catalystexplorer_test.db -U catalystexplorer -d explorerweb; do echo waiting for test db; sleep 1; done;
+          PGPASSWORD=ASLJ023470AlserLFH psql -h catalystexplorer_test.db -U catalystexplorer -d explorerweb -v ON_ERROR_STOP=1 -c 'CREATE EXTENSION IF NOT EXISTS vector';
+          echo 'pgvector enabled (test)';"
+      restart: "no"
 
   # meilisearch
   catalystexplorer_test-search:

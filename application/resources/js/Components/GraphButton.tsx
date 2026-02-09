@@ -38,6 +38,8 @@ const GraphButton = () => {
         localStorage.setItem(METRICS_BAR_STORAGE_KEY, String(activePopup === 'analytics'));
     }, [activePopup]);
 
+    // no dynamic overlay sizing; keep original anchored popup
+
     useEffect(() => {
         if (!activePopup || !containerRef.current) return;
 
@@ -56,8 +58,8 @@ const GraphButton = () => {
         }
 
         if (targetButton && containerRef.current) {
-            const containerRect = containerRef.current.getBoundingClientRect();
             const buttonRect = targetButton.getBoundingClientRect();
+            const containerRect = containerRef.current.getBoundingClientRect();
             const containerCenter = containerRect.left + containerRect.width / 2;
             const buttonCenter = buttonRect.left + buttonRect.width / 2;
             const offset = buttonCenter - containerCenter;
@@ -89,7 +91,7 @@ const GraphButton = () => {
                             leave="transition-all duration-200 ease-in"
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95"
-                            className="w-full max-w-full mb-0"
+                            className="w-full max-w-full mb-0 max-h-[95vh]"
                         >
                             {metrics && <MetricsBar isConnected={false} />}
                         </Transition.Child>
