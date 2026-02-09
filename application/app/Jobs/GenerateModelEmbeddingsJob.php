@@ -26,9 +26,7 @@ class GenerateModelEmbeddingsJob implements ShouldQueue
         public ?array $fields = null,
         public ?string $provider = null,
         public ?string $embeddingModel = null
-    ) {
-        $this->onQueue('embeddings');
-    }
+    ) {}
 
     public function handle(EmbeddingService $embeddingService): void
     {
