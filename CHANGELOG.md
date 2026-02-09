@@ -1,3 +1,10 @@
+## [1.74.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.74.0...v1.74.1) (2026-02-09)
+
+
+### Bug Fixes
+
+* update catalyst chatbox prompts ([f47ead0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/f47ead00dd53a26d184b802f17d76002b802b973))
+
 # [1.74.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.73.1...v1.74.0) (2026-02-09)
 
 
