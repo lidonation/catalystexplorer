@@ -158,9 +158,6 @@ class SyncDocumentPage implements ShouldQueue
             'total' => count($this->docs),
         ]);
 
-        // Only fail the job if ALL documents failed (no successes at all)
-        // Some documents may have issues (decoder crashes, malformed data) but we shouldn't
-        // fail the entire batch for a few problematic documents
         if ($errorCount > 0 && $successCount === 0) {
             throw new \Exception("SyncDocumentPage failed: all {$errorCount} documents failed to process");
         }

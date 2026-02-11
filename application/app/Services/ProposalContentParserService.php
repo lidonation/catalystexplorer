@@ -164,8 +164,6 @@ class ProposalContentParserService
      *
      * For proposals with no structured sections (e.g., plain text from Fund 2-5),
      * falls back to storing the entire content as project_details.solution.
-     * For proposals with only ### Detailed Plan (Fund 6-7), promotes that content
-     * to project_details.solution if no specific project_details sections exist.
      *
      * @param  string  $content  The raw markdown content
      * @return array Associative array of all parsed fields
@@ -234,21 +232,14 @@ class ProposalContentParserService
         return $this->getFallbackProjectDetails($content, $allParsed);
     }
 
-    /**
-     * Get fallback project_details when no structured sections were found.
-     *
-     * Strategy:
-     * 1. If category_questions.detailed_plan exists, use it as solution
-     * 2. Otherwise, if the content is plain text (no section headers), use full content
-     */
     private function getFallbackProjectDetails(string $content, array $existingResults): ?array
     {
-        // Strategy 1: Promote detailed_plan from category_questions to project_details.solution
+        // detailed_plan from category_questions to project_details.solution
         if (isset($existingResults['category_questions']['detailed_plan'])) {
             return ['solution' => $existingResults['category_questions']['detailed_plan']];
         }
 
-        // Strategy 2: For plain text content, use the full content as solution
+        //  use the full content as solution
         $cleaned = $this->cleanContent($content);
         if (! empty($cleaned) && strlen($cleaned) >= 50) {
             return ['solution' => $cleaned];
@@ -263,17 +254,10 @@ class ProposalContentParserService
     private function cleanContent(string $content): string
     {
         $content = trim($content);
-
-        // Normalize line endings
         $content = str_replace("\r\n", "\n", $content);
-
-        // Remove excessive blank lines (more than 2 consecutive)
         $content = preg_replace("/\n{3,}/", "\n\n", $content);
-
-        // Remove trailing whitespace from each line
         $content = implode("\n", array_map('rtrim', explode("\n", $content)));
 
-        // Unescape common markdown escapes from Catalyst content
         $content = str_replace(
             ['\\[', '\\]', '\\(', '\\)', '\\.', '\\-', '\\_', '\\*'],
             ['[', ']', '(', ')', '.', '-', '_', '*'],
@@ -285,15 +269,11 @@ class ProposalContentParserService
 
     /**
      * Check if content appears to have parseable sections.
-     *
-     * Useful for determining if parsing should be attempted.
      */
     public function hasParsableSections(string $content): bool
     {
-        // Normalize escaped brackets before checking
         $content = str_replace(['\\[', '\\]'], ['[', ']'], $content);
 
-        // Check for common section markers
         $markers = [
             '/###\s*\[/i',                        // Fund 9-13: ### [SOLUTION], ### [IMPACT], etc.
             '/##\s+[A-Z][a-z]+\s*\n/i',           // Fund 6-8: ## Solution, ## Impact, etc.

@@ -355,7 +355,7 @@ class Proposal extends Model implements IHasMetaData
      * Get project details - returns JSONB data or parses from content.
      *
      * For new proposals (Fund 14+): Returns JSONB data directly
-     * For old proposals (Fund 2-13): Parses from content on-the-fly
+     * For old proposals (Fund 2-13): Parses from contet
      *
      * Note: To persist parsed data, use the backfill command:
      * php artisan proposals:backfill-structured-data
