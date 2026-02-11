@@ -93,10 +93,6 @@ class Proposal extends Model implements IHasMetaData
         'is_auto_translated' => 'boolean',
         'has_dependencies' => 'boolean',
         'self_assessment' => 'array',
-        'pitch' => 'array',
-        'project_details' => 'array',
-        'category_questions' => 'array',
-        'theme' => 'array',
     ];
 
     public $meiliIndexName = 'cx_proposals';
@@ -365,7 +361,9 @@ class Proposal extends Model implements IHasMetaData
     public function projectDetails(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => ! empty($value) ? $value : $this->parseStructuredContent('project_details')
+            get: fn ($value) => ! empty($value)
+                ? (is_string($value) ? json_decode($value, true) : $value)
+                : $this->parseStructuredContent('project_details')
         );
     }
 
@@ -375,7 +373,9 @@ class Proposal extends Model implements IHasMetaData
     public function pitch(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => ! empty($value) ? $value : $this->parseStructuredContent('pitch')
+            get: fn ($value) => ! empty($value)
+                ? (is_string($value) ? json_decode($value, true) : $value)
+                : $this->parseStructuredContent('pitch')
         );
     }
 
@@ -385,7 +385,9 @@ class Proposal extends Model implements IHasMetaData
     public function categoryQuestions(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => ! empty($value) ? $value : $this->parseStructuredContent('category_questions')
+            get: fn ($value) => ! empty($value)
+                ? (is_string($value) ? json_decode($value, true) : $value)
+                : $this->parseStructuredContent('category_questions')
         );
     }
 
@@ -395,7 +397,9 @@ class Proposal extends Model implements IHasMetaData
     public function theme(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => ! empty($value) ? $value : $this->parseStructuredContent('theme')
+            get: fn ($value) => ! empty($value)
+                ? (is_string($value) ? json_decode($value, true) : $value)
+                : $this->parseStructuredContent('theme')
         );
     }
 
@@ -1050,6 +1054,11 @@ class Proposal extends Model implements IHasMetaData
             'opensource' => 'boolean',
             'updated_at' => 'datetime',
             'meta_data' => 'array',
+            'self_assessment' => 'array',
+            'pitch' => 'array',
+            'project_details' => 'array',
+            'category_questions' => 'array',
+            'theme' => 'array',
         ];
     }
 

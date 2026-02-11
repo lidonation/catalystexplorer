@@ -34,12 +34,12 @@ class ProposalResource extends JsonResource
             'problem' => $this->problem,
             'solution' => $this->solution,
             'experience' => $this->experience,
-            'theme' => $this->theme,
             'content' => $this->when($request->boolean('include_content'), $this->content),
 
-            'pitch' => $this->pitch,
-            'project_details' => $this->project_details,
-            'category_questions' => $this->category_questions,
+            'project_details' => $this->normalizeProjectDetails(),
+            'pitch' => $this->normalizePitch(),
+            'category_questions' => $this->normalizeCategoryQuestions(),
+            'theme' => $this->normalizeTheme(),
 
             'website' => $this->website,
             'quickpitch' => $this->quickpitch,
@@ -182,6 +182,99 @@ class ProposalResource extends JsonResource
             ->unique()
             ->values()
             ->toArray();
+    }
+
+    /**
+     * Normalize project_details
+     */
+    private function normalizeProjectDetails(): ?array
+    {
+        $data = $this->project_details;
+        if (empty($data)) {
+            return null;
+        }
+
+        return [
+            'solution' => $this->flattenValue($data['solution'] ?? null),
+            'impact' => $this->flattenValue($data['impact'] ?? null),
+            'feasibility' => $this->flattenValue($data['feasibility'] ?? null),
+            'outputs' => $this->flattenValue($data['outputs'] ?? null),
+        ];
+    }
+
+    /**
+     * Normalize pitch
+     */
+    private function normalizePitch(): ?array
+    {
+        $data = $this->pitch;
+        if (empty($data)) {
+            return null;
+        }
+
+        return [
+            'team' => $this->flattenValue($data['team'] ?? null),
+            'budget' => $this->flattenValue($data['budget'] ?? null),
+            'milestones' => $this->flattenValue($data['milestones'] ?? null),
+            'value' => $this->flattenValue($data['value'] ?? null),
+            'resources' => $this->flattenValue($data['resources'] ?? null),
+        ];
+    }
+
+    /**
+     * Normalize category_questions
+     */
+    private function normalizeCategoryQuestions(): ?array
+    {
+        $data = $this->category_questions;
+        if (empty($data)) {
+            return null;
+        }
+
+        return [
+            'detailed_plan' => $this->flattenValue($data['detailed_plan'] ?? null),
+            'target' => $this->flattenValue($data['target'] ?? null),
+            'activities' => $this->flattenValue($data['activities'] ?? null),
+            'performance_metrics' => $this->flattenValue($data['performance_metrics'] ?? null),
+            'success_criteria' => $this->flattenValue($data['success_criteria'] ?? null),
+        ];
+    }
+
+    /**
+     * Normalize theme
+     */
+    private function normalizeTheme(): ?array
+    {
+        $data = $this->theme;
+        if (empty($data)) {
+            return null;
+        }
+
+        return [
+            'group' => $this->flattenValue($data['group'] ?? null),
+            'tag' => $this->flattenValue($data['tag'] ?? null),
+        ];
+    }
+
+    /**
+     * Flatten a value that may be a nested object from the Catalyst Gateway sync.
+     */
+    private function flattenValue(mixed $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        if (is_string($value)) {
+            return $value;
+        }
+        if (is_array($value)) {
+            $texts = array_filter($value, 'is_string');
+
+            return ! empty($texts) ? implode("\n\n", $texts) : null;
+        }
+
+        return null;
     }
 
     /**
