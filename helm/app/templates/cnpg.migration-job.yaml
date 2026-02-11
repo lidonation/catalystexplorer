@@ -1,0 +1,168 @@
+{{- if .Values.services.db.migration.enabled }}
+---
+# Data Migration Job for GitLab Database
+# This job will perform the data migration from the existing PostgreSQL HA to CNPG
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ $.Chart.Name }}-cnpg-migration-job"
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ $.Chart.Name }}-cnpg-migration
+    app.kubernetes.io/component: migration
+    app.kubernetes.io/part-of: {{ $.Chart.Name }}
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 86400  
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ $.Chart.Name }}-cnpg-migration
+        app.kubernetes.io/component: migration
+        app.kubernetes.io/part-of: {{ $.Chart.Name }}
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: migration
+        image: postgres:18.1
+        env:
+        - name: PGSSLMODE
+          value: "disable"
+        command:
+        - /bin/bash
+        - -c
+        - |
+          set -e
+          echo "Starting database migration to CNPG..."
+
+          # Wait for target database to be ready
+          echo "Waiting for target database to be ready..."
+          sleep 300
+          while ! pg_isready -h $TARGET_HOST -p $TARGET_PORT -U $TARGET_USER; do
+            echo "Target database not ready, waiting 10 seconds..."
+            sleep 10
+          done
+
+          # Wait for source database to be ready
+          echo "Waiting for source database to be ready..."
+          while ! pg_isready -h $SOURCE_HOST -p $SOURCE_PORT -U $SOURCE_USER; do
+            echo "Source database not ready, waiting 10 seconds..."
+            sleep 10
+          done
+
+          echo "Both databases are ready. Starting migration..."
+
+          # Create a full dump of the source database
+          echo "Creating dump of source database..."
+          PGPASSWORD=$SOURCE_PASSWORD pg_dump \
+            -h $SOURCE_HOST \
+            -p $SOURCE_PORT \
+            -U $SOURCE_USER \
+            -d $SOURCE_DATABASE \
+            --verbose \
+            --no-owner \
+            --no-privileges \
+            --format=custom \
+            --file=/tmp/gitlab_dump.sql
+
+          echo "Dump created successfully. Size: $(du -sh /tmp/gitlab_dump.sql)"
+
+          # Restore to target database
+          echo "Restoring to target database..."
+          PGPASSWORD=$TARGET_PASSWORD pg_restore \
+            -h $TARGET_HOST \
+            -p $TARGET_PORT \
+            -U $TARGET_USER \
+            -d $TARGET_DATABASE \
+            --verbose \
+            --no-owner \
+            --no-privileges \
+            --clean \
+            --if-exists \
+            /tmp/gitlab_dump.sql
+
+          echo "Migration completed successfully!"
+
+          # Verify the migration
+          echo "Verifying migration..."
+          SOURCE_COUNT=$(PGPASSWORD=$SOURCE_PASSWORD psql -h $SOURCE_HOST -p $SOURCE_PORT -U $SOURCE_USER -d $SOURCE_DATABASE -t -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public';")
+          TARGET_COUNT=$(PGPASSWORD=$TARGET_PASSWORD psql -h $TARGET_HOST -p $TARGET_PORT -U $TARGET_USER -d $TARGET_DATABASE -t -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public';")
+
+          echo "Source database tables: $SOURCE_COUNT"
+          echo "Target database tables: $TARGET_COUNT"
+
+          if [ "$SOURCE_COUNT" -eq "$TARGET_COUNT" ]; then
+            echo "Table count verification PASSED"
+          else
+            echo "Table count verification FAILED"
+            exit 1
+          fi
+
+          echo "Migration verification completed successfully!"
+
+        env:
+        # Source database (current GitLab DB)
+        - name: SOURCE_HOST
+          valueFrom:
+            secretKeyRef:
+              name:  "{{ $.Chart.Name }}-cnpg-migration-credentials"
+              key: PGHOST
+        - name: SOURCE_PORT
+          valueFrom:
+            secretKeyRef:
+              name:  "{{ $.Chart.Name }}-cnpg-migration-credentials"
+              key: PGPORT
+        - name: SOURCE_USER
+          valueFrom:
+            secretKeyRef:
+              name:  "{{ $.Chart.Name }}-cnpg-migration-credentials"
+              key: PGUSER
+        - name: SOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name:  "{{ $.Chart.Name }}-cnpg-migration-credentials"
+              key: PGPASSWORD
+        - name: SOURCE_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name:  "{{ $.Chart.Name }}-cnpg-migration-credentials"
+              key: PGDATABASE
+
+        # Target database (CNPG cluster)
+        - name: TARGET_HOST
+          value: "{{ $.Chart.Name }}-cnpg-cluster-rw"
+        - name: TARGET_PORT
+          value: "5432"
+        - name: TARGET_USER
+          valueFrom:
+            secretKeyRef:
+              name:  "{{ $.Chart.Name }}-cnpg-credentials"
+              key: username
+        - name: TARGET_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name:  "{{ $.Chart.Name }}-cnpg-credentials"
+              key: password
+        - name: TARGET_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name:  "{{ $.Chart.Name }}-cnpg-credentials"
+              key: dbname
+
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "4Gi"
+            cpu: "2"
+
+        volumeMounts:
+        - name: temp-storage
+          mountPath: /tmp
+
+      volumes:
+      - name: temp-storage
+        emptyDir:
+          sizeLimit: "50Gi"  # Space for database dump
+{{- end }}

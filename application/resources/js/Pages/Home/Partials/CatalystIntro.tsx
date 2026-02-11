@@ -41,9 +41,7 @@ const CatalystIntro = () => {
                     </div>
                 </section>
 
-               {/*  <section className="sticky top-12 container w-full pt-10 md:px-10 xl:px-60">
-                    <GlobalSearch />
-                </section> */}
+                <GlobalSearch />
             </div>
         </div>
     );

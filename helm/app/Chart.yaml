@@ -1,6 +1,7 @@
 apiVersion: v2
 name: catalystexplorer
 description: A Helm chart for Kubernetes
+icon: https://www.catalystexplorer.com/favicon.ico
 
 # A chart can be either an 'application' or a 'library' chart.
 #
