@@ -94,6 +94,21 @@ final class ProposalData extends Data
         #[TypeScriptOptional]
         public ?string $experience,
 
+        // #[TypeScriptOptional]
+        // public ?array $pitch,
+
+        // #[TypeScriptOptional]
+        // public ?array $project_details,
+
+        // #[TypeScriptOptional]
+        // public ?array $category_questions,
+
+        // #[TypeScriptOptional]
+        // public ?array $theme,
+
+        // #[TypeScriptOptional]
+        // public ?array $self_assessment,
+
         // Other attributes
         #[TypeScriptOptional]
         public ?string $currency,

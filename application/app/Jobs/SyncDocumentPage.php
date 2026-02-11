@@ -15,6 +15,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Fluent;
+use Illuminate\Support\Str;
 use Symfony\Component\Process\Process;
 
 class SyncDocumentPage implements ShouldQueue
@@ -58,7 +59,15 @@ class SyncDocumentPage implements ShouldQueue
                     continue;
                 }
 
-                $decoded = (new DecodeCatalystDocument)($binary);
+                try {
+                    $decoded = (new DecodeCatalystDocument)($binary);
+                } catch (\Exception $e) {
+                    // Decoder crash (e.g., signal 11) - skip this document but continue with others
+                    Log::warning("Decoder failed for document {$documentId}, skipping: ".$e->getMessage());
+                    $errorCount++;
+
+                    continue;
+                }
 
                 // Check if we got actual proposal content or just metadata
                 $hasProposalContent = isset($decoded['payload'][1]) && ! empty($decoded['payload'][1]);
@@ -149,9 +158,11 @@ class SyncDocumentPage implements ShouldQueue
             'total' => count($this->docs),
         ]);
 
-        // Fail the job if there were any errors
-        if ($errorCount > 0) {
-            throw new \Exception("SyncDocumentPage failed: {$errorCount} documents failed to process out of ".count($this->docs));
+        // Only fail the job if ALL documents failed (no successes at all)
+        // Some documents may have issues (decoder crashes, malformed data) but we shouldn't
+        // fail the entire batch for a few problematic documents
+        if ($errorCount > 0 && $successCount === 0) {
+            throw new \Exception("SyncDocumentPage failed: all {$errorCount} documents failed to process");
         }
     }
 
@@ -214,7 +225,8 @@ class SyncDocumentPage implements ShouldQueue
 
             // Try brotli decompression (venv has required packages)
             $python = '/venv/bin/python3';
-            $script = '/tmp/decode_brotli.py';
+            // Use unique temp file to avoid race conditions when multiple jobs run in parallel
+            $script = '/tmp/decode_brotli_'.Str::random(16).'.py';
 
             // Create a temporary Python script to handle brotli decompression
             $pythonCode = '
@@ -248,7 +260,10 @@ except Exception as e:
             $process->setInput($binaryData);
             $process->run();
 
-            unlink($script);
+            // Clean up temp file safely
+            if (file_exists($script)) {
+                unlink($script);
+            }
 
             if ($process->isSuccessful()) {
                 $result = json_decode($process->getOutput(), true);
