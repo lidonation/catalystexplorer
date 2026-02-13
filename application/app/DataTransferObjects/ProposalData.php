@@ -94,20 +94,26 @@ final class ProposalData extends Data
         #[TypeScriptOptional]
         public ?string $experience,
 
-        #[TypeScriptOptional]
-        public ?array $pitch,
+         #[TypeScriptOptional]
+        public mixed $pitch,
 
         #[TypeScriptOptional]
-        public ?array $project_details,
+        public mixed $theme,
 
         #[TypeScriptOptional]
-        public ?array $category_questions,
+        public mixed $self_assessment,
 
         #[TypeScriptOptional]
-        public ?array $theme,
+        public ?string $performance_metrics,
 
         #[TypeScriptOptional]
-        public ?array $self_assessment,
+        public mixed $category_questions,
+
+        #[TypeScriptOptional]
+        public mixed $meta_data,
+
+        #[TypeScriptOptional]
+        public mixed $project_details,
 
         // Other attributes
         #[TypeScriptOptional]

@@ -129,10 +129,10 @@ class ProposalResource extends JsonResource
                 'title' => $model->title ?? null,
                 'hero_img_url' => $model->hero_img_url ?? null,
                 // Proposal statistics
-                'proposals_count' => $proposalStats['total'],
-                'open_proposals_count' => $proposalStats['open'],
-                'funded_proposals_count' => $proposalStats['funded'],
-                'completed_proposals_count' => $proposalStats['completed'],
+                'submitted_proposals' => $proposalStats['total'],
+                'open_proposals' => $proposalStats['open'],
+                'funded_proposals' => $proposalStats['funded'],
+                'completed_proposals' => $proposalStats['completed'],
                 'proposals_by_fund' => $proposalStats['by_fund'],
             ];
         })->filter(); // Remove any null models
@@ -142,31 +142,34 @@ class ProposalResource extends JsonResource
 
     private function getTeamMemberProposalStats($model): array
     {
-        $proposals = $model->proposals();
-
-        $total = $proposals->count();
-        $open = $proposals->clone()->whereIn('status', ['pending', 'in_progress', 'onboarding'])->count();
-        $funded = $proposals->clone()->whereNotNull('funded_at')->count();
-        $completed = $proposals->clone()->where('status', 'complete')->count();
-
-        $byFund = $proposals->clone()
-            ->select('fund_id', DB::raw('count(*) as count'))
-            ->groupBy('fund_id')
-            ->with('fund:id,title,label')
+        $stats = $model->proposals()
+            ->toBase()
+            ->selectRaw("
+                count(*) as total,
+                count(*) filter (where status in ('pending','in_progress','onboarding')) as open,
+                count(*) filter (where funded_at is not null) as funded,
+                count(*) filter (where status = 'complete') as completed
+            ")
+            ->first();
+        $byFund = $model->proposals()
+            ->toBase()
+            ->join('funds', 'proposals.fund_id', '=', 'funds.id')
+            ->select('proposals.fund_id', 'funds.title as fund_title', 'funds.label as fund_label', DB::raw('count(*) as count'))
+            ->groupBy('proposals.fund_id', 'funds.title', 'funds.label')
             ->get()
             ->map(fn ($item) => [
                 'fund_id' => $item->fund_id,
-                'fund_title' => $item->fund?->title,
-                'fund_label' => $item->fund?->label,
-                'count' => $item->count,
+                'fund_title' => $item->fund_title,
+                'fund_label' => $item->fund_label,
+                'submitted_proposals' => (int) $item->count,
             ])
             ->toArray();
 
         return [
-            'total' => $total,
-            'open' => $open,
-            'funded' => $funded,
-            'completed' => $completed,
+            'total' => (int) ($stats->total ?? 0),
+            'open' => (int) ($stats->open ?? 0),
+            'funded' => (int) ($stats->funded ?? 0),
+            'completed' => (int) ($stats->completed ?? 0),
             'by_fund' => $byFund,
         ];
     }
@@ -184,76 +187,47 @@ class ProposalResource extends JsonResource
             ->toArray();
     }
 
-    /**
-     * Normalize project_details
-     */
+    private function normalizeJsonbField(?array $data, array $canonicalKeys): ?array
+    {
+        if (empty($data)) {
+            return null;
+        }
+
+        $defaults = array_fill_keys($canonicalKeys, null);
+        $flattened = array_map([$this, 'flattenValue'], $data);
+        return array_merge($defaults, $flattened);
+    }
+
     private function normalizeProjectDetails(): ?array
     {
-        $data = $this->project_details;
-        if (empty($data)) {
-            return null;
-        }
-
-        return [
-            'solution' => $this->flattenValue($data['solution'] ?? null),
-            'impact' => $this->flattenValue($data['impact'] ?? null),
-            'feasibility' => $this->flattenValue($data['feasibility'] ?? null),
-            'outputs' => $this->flattenValue($data['outputs'] ?? null),
-        ];
+        return $this->normalizeJsonbField(
+            $this->project_details,
+            ['solution', 'impact', 'feasibility', 'outputs']
+        );
     }
 
-    /**
-     * Normalize pitch
-     */
     private function normalizePitch(): ?array
     {
-        $data = $this->pitch;
-        if (empty($data)) {
-            return null;
-        }
-
-        return [
-            'team' => $this->flattenValue($data['team'] ?? null),
-            'budget' => $this->flattenValue($data['budget'] ?? null),
-            'milestones' => $this->flattenValue($data['milestones'] ?? null),
-            'value' => $this->flattenValue($data['value'] ?? null),
-            'resources' => $this->flattenValue($data['resources'] ?? null),
-        ];
+        return $this->normalizeJsonbField(
+            $this->pitch,
+            ['team', 'budget', 'value', 'resources']
+        );
     }
 
-    /**
-     * Normalize category_questions
-     */
     private function normalizeCategoryQuestions(): ?array
     {
-        $data = $this->category_questions;
-        if (empty($data)) {
-            return null;
-        }
-
-        return [
-            'detailed_plan' => $this->flattenValue($data['detailed_plan'] ?? null),
-            'target' => $this->flattenValue($data['target'] ?? null),
-            'activities' => $this->flattenValue($data['activities'] ?? null),
-            'performance_metrics' => $this->flattenValue($data['performance_metrics'] ?? null),
-            'success_criteria' => $this->flattenValue($data['success_criteria'] ?? null),
-        ];
+        return $this->normalizeJsonbField(
+            $this->category_questions,
+            ['detailed_plan', 'target', 'activities', 'performance_metrics', 'success_criteria']
+        );
     }
 
-    /**
-     * Normalize theme
-     */
     private function normalizeTheme(): ?array
     {
-        $data = $this->theme;
-        if (empty($data)) {
-            return null;
-        }
-
-        return [
-            'group' => $this->flattenValue($data['group'] ?? null),
-            'tag' => $this->flattenValue($data['tag'] ?? null),
-        ];
+        return $this->normalizeJsonbField(
+            $this->theme,
+            ['group', 'tag']
+        );
     }
 
     /**
@@ -268,6 +242,7 @@ class ProposalResource extends JsonResource
         if (is_string($value)) {
             return $value;
         }
+
         if (is_array($value)) {
             $texts = array_filter($value, 'is_string');
 
