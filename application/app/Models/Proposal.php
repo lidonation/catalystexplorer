@@ -1121,10 +1121,18 @@ class Proposal extends Model implements IHasMetaData
             'solution',
             'experience',
             'content',
-            'combined', // Special field that combines multiple fields
+            'combined',
             'status',
             'funding_status',
-            'funded_at'
+            'funded_at',
+            'campaign.title',
+            'campaign.label', 
+            'fund.title',
+            'fund.label',
+            'communities.*.title',
+            'ideascale_profiles.*.name',
+            'catalyst_profiles.*.name',
+            'groups.*.title'
         ];
     }
 
@@ -1169,15 +1177,17 @@ class Proposal extends Model implements IHasMetaData
 
     private function getFieldContent(string $fieldName): string
     {
+        if (str_contains($fieldName, '.')) {
+            return $this->getNestedFieldContent($fieldName);
+        }
+
         $value = $this->getAttribute($fieldName);
 
-        // Handle translated fields - prefer English, fallback to first available
         if (in_array($fieldName, $this->translatable)) {
             if (is_array($value)) {
                 return $value['en'] ?? (array_values($value)[0] ?? '');
             }
             if (is_string($value)) {
-                // Try to decode JSON-stored translations
                 $decoded = json_decode($value, true);
                 if (is_array($decoded)) {
                     return $decoded['en'] ?? (array_values($decoded)[0] ?? '');
@@ -1186,5 +1196,108 @@ class Proposal extends Model implements IHasMetaData
         }
 
         return (string) $value;
+    }
+
+    private function getNestedFieldContent(string $fieldPath): string
+    {
+        $segments = explode('.', $fieldPath);
+        $current = $this;
+        
+        foreach ($segments as $segment) {
+            if ($current === null) {
+                return '';
+            }
+            
+            if (is_object($current) && method_exists($current, 'toCollection')) {
+                $current = $current->toCollection();
+            }
+            
+            if ($current instanceof \Illuminate\Support\Collection) {
+                if (is_numeric($segment)) {
+                    $current = $current->get((int) $segment);
+                } elseif ($segment === '*') {
+                    $remainingPath = implode('.', array_slice($segments, array_search('*', $segments) + 1));
+                    if (empty($remainingPath)) {
+                        return $current->map(function ($item) {
+                            return is_object($item) && method_exists($item, '__toString') 
+                                ? (string) $item 
+                                : (is_scalar($item) ? (string) $item : '');
+                        })->filter()->implode(', ');
+                    }
+                    
+                    $values = $current->map(function ($item) use ($remainingPath) {
+                        return $this->getValueFromPath($item, $remainingPath);
+                    })->filter()->unique();
+                    
+                    return $values->implode(', ');
+                } else {
+                    return '';
+                }
+            } else {
+                if (is_object($current)) {
+                    if ($current instanceof \Illuminate\Database\Eloquent\Model) {
+                        if (method_exists($current, $segment) && !$current->relationLoaded($segment)) {
+                            $current->load($segment);
+                        }
+                        $current = $current->getAttribute($segment);
+                    } else {
+                        $current = $current->{$segment} ?? null;
+                    }
+                } else {
+                    return '';
+                }
+            }
+        }
+        
+        if ($current === null) {
+            return '';
+        }
+        
+        if (is_scalar($current)) {
+            return (string) $current;
+        }
+        
+        if (is_object($current) && method_exists($current, '__toString')) {
+            return (string) $current;
+        }
+        
+        if (is_array($current)) {
+            $scalars = array_filter($current, 'is_scalar');
+            if (count($scalars) === count($current)) {
+                return implode(', ', $scalars);
+            }
+        }
+        
+        return '';
+    }
+    
+    private function getValueFromPath($item, string $path): string
+    {
+        if ($item === null) {
+            return '';
+        }
+        
+        $segments = explode('.', $path);
+        $current = $item;
+        
+        foreach ($segments as $segment) {
+            if ($current === null) {
+                return '';
+            }
+            
+            if (is_object($current)) {
+                if ($current instanceof \Illuminate\Database\Eloquent\Model) {
+                    $current = $current->getAttribute($segment);
+                } else {
+                    $current = $current->{$segment} ?? null;
+                }
+            } elseif (is_array($current)) {
+                $current = $current[$segment] ?? null;
+            } else {
+                return '';
+            }
+        }
+        
+        return is_scalar($current) ? (string) $current : '';
     }
 }
