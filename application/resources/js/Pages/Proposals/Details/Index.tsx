@@ -9,6 +9,7 @@ import ProposalContent from '../Partials/ProposalContent';
 import ProposalLayout from '../ProposalLayout';
 import { useTrackProposalVisit } from '@/useHooks/useTrackVisit';
 import CatalystProfileData = App.DataTransferObjects.CatalystProfileData;
+import { useEffect } from 'react';
 
 interface IndexProps {
     proposal: App.DataTransferObjects.ProposalData;
@@ -86,6 +87,17 @@ const Index = ({
         fund_label: proposal.fund?.label ?? '',
     });
 
+    useEffect(()=>{
+        console.log('Checking for new data:', {
+            pitch: proposal.pitch,
+            theme: proposal.theme,
+            self_assessment: proposal.self_assessment,
+            performance_metrics: proposal.performance_metrics,
+            project_details: proposal.project_details,
+            meta_data: proposal.meta_data,
+            category_questions: proposal.category_questions
+        });
+    })
     return (
         <>
             <Head title={`${proposal.title} - Proposal`}>
@@ -200,7 +212,7 @@ const Index = ({
                 </div>
             )}
 
-            <ProposalContent content={proposal.content} />
+            <ProposalContent proposal={proposal} />
             </ProposalLayout>
         </>
     );
