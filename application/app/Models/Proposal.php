@@ -17,6 +17,7 @@ use App\Enums\CatalystCurrencies;
 use App\Models\Pivot\ClaimedProfile;
 use App\Models\Pivot\ProposalProfile;
 use App\Models\Scopes\ProposalTypeScope;
+use App\Services\ProposalContentParserService;
 use App\Services\VideoService;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
@@ -94,10 +95,6 @@ class Proposal extends Model implements IHasMetaData
         'is_auto_translated' => 'boolean',
         'has_dependencies' => 'boolean',
         'self_assessment' => 'array',
-        'pitch' => 'array',
-        'project_details' => 'array',
-        'category_questions' => 'array',
-        'theme' => 'array',
     ];
 
     public $meiliIndexName = 'cx_proposals';
@@ -352,6 +349,111 @@ class Proposal extends Model implements IHasMetaData
         return Attribute::make(
             get: fn ($value) => $value ?? $this->meta_info?->auditability_score
         );
+    }
+
+    /**
+     * Get project details - returns JSONB data or parses from content.
+     *
+     * For new proposals (Fund 14+): Returns JSONB data directly
+     * For old proposals (Fund 2-13): Parses from contet
+     *
+     * Note: To persist parsed data, use the backfill command:
+     * php artisan proposals:backfill-structured-data
+     */
+    public function projectDetails(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => ! empty($value)
+                ? (is_string($value) ? json_decode($value, true) : $value)
+                : $this->parseStructuredContent('project_details')
+        );
+    }
+
+    /**
+     * Get pitch data - returns JSONB data or parses from content.
+     */
+    public function pitch(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => ! empty($value)
+                ? (is_string($value) ? json_decode($value, true) : $value)
+                : $this->parseStructuredContent('pitch')
+        );
+    }
+
+    /**
+     * Get category questions - returns JSONB data or parses from content.
+     */
+    public function categoryQuestions(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => ! empty($value)
+                ? (is_string($value) ? json_decode($value, true) : $value)
+                : $this->parseStructuredContent('category_questions')
+        );
+    }
+
+    /**
+     * Get theme data - returns JSONB data or parses from content.
+     */
+    public function theme(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => ! empty($value)
+                ? (is_string($value) ? json_decode($value, true) : $value)
+                : $this->parseStructuredContent('theme')
+        );
+    }
+
+    /**
+     * Parse structured content from the content field.
+     */
+    protected function parseStructuredContent(string $field): ?array
+    {
+        $content = $this->getContentForParsing();
+
+        if (empty($content)) {
+            return null;
+        }
+
+        try {
+            return app(ProposalContentParserService::class)->parse($content, $field);
+        } catch (\Exception $e) {
+            Log::warning("Failed to parse {$field} from proposal content", [
+                'proposal_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
+    }
+
+    /**
+     * Get the content field ready for parsing.
+     * Handles translated content stored as JSON with locale keys.
+     */
+    protected function getContentForParsing(): ?string
+    {
+        $content = $this->getOriginal('content');
+
+        if (empty($content)) {
+            return null;
+        }
+
+        // Handle translated content (stored as JSON like {"en": "...", "es": "..."})
+        if (is_array($content)) {
+            $content = $content['en'] ?? array_values($content)[0] ?? null;
+        }
+
+        // Handle JSON string that needs decoding
+        if (is_string($content) && str_starts_with(trim($content), '{')) {
+            $decoded = json_decode($content, true);
+            if (is_array($decoded)) {
+                $content = $decoded['en'] ?? array_values($decoded)[0] ?? $content;
+            }
+        }
+
+        return is_string($content) ? $content : null;
     }
 
     public function amountReceivedUsd(): Attribute
@@ -954,6 +1056,11 @@ class Proposal extends Model implements IHasMetaData
             'opensource' => 'boolean',
             'updated_at' => 'datetime',
             'meta_data' => 'array',
+            'self_assessment' => 'array',
+            'pitch' => 'array',
+            'project_details' => 'array',
+            'category_questions' => 'array',
+            'theme' => 'array',
         ];
     }
 
