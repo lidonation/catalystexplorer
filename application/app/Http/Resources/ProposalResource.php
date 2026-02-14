@@ -195,6 +195,7 @@ class ProposalResource extends JsonResource
 
         $defaults = array_fill_keys($canonicalKeys, null);
         $flattened = array_map([$this, 'flattenValue'], $data);
+
         return array_merge($defaults, $flattened);
     }
 
