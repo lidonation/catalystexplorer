@@ -30,8 +30,7 @@ class CampaignResource extends JsonResource
             // Full content (only when include_content=true)
             'content' => $this->when($request->boolean('include_content'), $this->content),
 
-            // Structured category details from JSONB column (only when include_content=true)
-            'category_details' => $this->when($request->boolean('include_content'), $this->category_details),
+            'category_details' => $this->category_details,
         ];
     }
 }

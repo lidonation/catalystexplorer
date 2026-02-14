@@ -30,6 +30,7 @@ use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Exceptions\HelperNotSupported;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
@@ -149,6 +150,32 @@ class Proposals extends Resource
 
             Textarea::make(__('Content'), 'content')
                 ->hideFromIndex(),
+
+            // Structured Content Fields (JSONB)
+            Code::make(__('Pitch'), 'pitch')
+                ->json()
+                ->hideFromIndex()
+                ->help('Structured pitch data: team, budget, value'),
+
+            Code::make(__('Project Details'), 'project_details')
+                ->json()
+                ->hideFromIndex()
+                ->help('Structured project details: solution, impact, feasibility'),
+
+            Code::make(__('Category Questions'), 'category_questions')
+                ->json()
+                ->hideFromIndex()
+                ->help('Category-specific questions: target, activities, performance_metrics'),
+
+            Code::make(__('Theme'), 'theme')
+                ->json()
+                ->hideFromIndex()
+                ->help('Proposal theme: group and tag'),
+
+            Code::make(__('Self Assessment'), 'self_assessment')
+                ->json()
+                ->hideFromIndex()
+                ->help('Self-assessment checklist responses'),
 
             Text::make(__('Excerpt'), 'excerpt')
                 ->hideFromIndex(),

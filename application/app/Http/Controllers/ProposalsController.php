@@ -363,6 +363,8 @@ class ProposalsController extends Controller
             'quickpitchMetadata' => $quickpitchMetadata,
         ];
 
+        //    dd($proposal);
+
         return match (true) {
             str_contains($request->path(), '/details') => Inertia::render('Proposals/Details/Index', $props),
             str_contains($request->path(), '/schedule') => Inertia::render('Proposals/Schedule/Index', $props),
