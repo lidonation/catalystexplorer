@@ -1113,19 +1113,24 @@ class Proposal extends Model implements IHasMetaData
     public function getEmbeddableFields(): array
     {
         return [
+            'amount_requested',
+            'amount_received',
+            'completed_at',
             'title',
             'problem',
             'solution',
             'experience',
             'content',
             'combined', // Special field that combines multiple fields
+            'status',
+            'funding_status',
+            'funded_at'
         ];
     }
 
     protected function getEmbeddableContent(string $fieldName): string
     {
         if ($fieldName === 'combined') {
-            // Create comprehensive text representation with structured context
             $parts = [];
 
             if ($title = $this->getFieldContent('title')) {
@@ -1148,7 +1153,6 @@ class Proposal extends Model implements IHasMetaData
                 $parts[] = "Details: {$content}";
             }
 
-            // Add contextual metadata for better semantic understanding
             if ($this->campaign) {
                 $parts[] = "Campaign: {$this->campaign->title}";
             }
