@@ -43,7 +43,6 @@ class GenerateModelEmbeddings extends Command
             return self::FAILURE;
         }
 
-        // Resolve the model class
         $modelClass = $this->resolveModelClass($modelName);
         if (! $modelClass) {
             $this->error("Model '{$modelName}' not found. Please provide a valid model class name.");
@@ -51,7 +50,6 @@ class GenerateModelEmbeddings extends Command
             return self::FAILURE;
         }
 
-        // Check if model uses HasEmbeddings trait
         if (! $this->modelHasEmbeddingsTrait($modelClass)) {
             $this->error("Model '{$modelClass}' does not use the HasEmbeddings trait.");
 
@@ -99,7 +97,6 @@ class GenerateModelEmbeddings extends Command
         $errors = 0;
         $skipped = 0;
 
-        // Process in batches
         $query->chunk($batchSize, function ($models) use (
             $useQueue,
             $provider,
@@ -113,7 +110,6 @@ class GenerateModelEmbeddings extends Command
         ) {
             foreach ($models as $model) {
                 try {
-                    // Check if embeddings already exist and force is not set
                     if (! $force) {
                         $fieldsToProcess = $fields ?? $model->getEmbeddableFields();
                         $hasExistingEmbeddings = true;
@@ -133,12 +129,9 @@ class GenerateModelEmbeddings extends Command
                         }
                     }
 
-                    // Generate embeddings - use queue or sync mode
                     if ($useQueue) {
-                        // Dispatch background job for embedding generation
                         GenerateModelEmbeddingsJob::dispatch($model, $fields, $provider, $modelNameOption);
                     } else {
-                        // Process synchronously
                         $model->generateEmbeddings($fields, $provider, $modelNameOption);
                     }
                     $processed++;
@@ -201,10 +194,9 @@ class GenerateModelEmbeddings extends Command
 
     private function resolveModelClass(string $modelName): ?string
     {
-        // Try different namespace patterns
         $patterns = [
             "App\\Models\\{$modelName}",
-            $modelName, // If full class name is provided
+            $modelName,
         ];
 
         foreach ($patterns as $pattern) {
@@ -225,7 +217,6 @@ class GenerateModelEmbeddings extends Command
 
     private function applyWhereClause($query, string $whereClause): void
     {
-        // Parse simple WHERE clauses like "column=value" or "column!=value"
         if (preg_match('/^(\w+)(=|!=|>|<|>=|<=)(.+)$/', $whereClause, $matches)) {
             $column = $matches[1];
             $operator = $matches[2];

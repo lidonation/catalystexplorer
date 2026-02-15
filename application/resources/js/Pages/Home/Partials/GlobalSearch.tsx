@@ -57,12 +57,12 @@ function GlobalSearch() {
         >
             <SearchVariants value={searchFilters} onChange={setSearchFilters} />
 
-            <SearchBar
-                handleSearch={handleSearch}
-                focusState={handleFocusState}
-                autoFocus
-                placeholder={t('searchBar.placeholder')}
-            />
+            {/*<SearchBar*/}
+            {/*    handleSearch={handleSearch}*/}
+            {/*    focusState={handleFocusState}*/}
+            {/*    autoFocus*/}
+            {/*    placeholder={t('searchBar.placeholder')}*/}
+            {/*/>*/}
         </form>
     );
 }
