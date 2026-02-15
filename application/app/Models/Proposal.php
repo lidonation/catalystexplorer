@@ -78,7 +78,6 @@ class Proposal extends Model implements IHasMetaData
 
     protected $appends = [
         'link',
-        'currency',
         'quickpitch_thumbnail',
         'is_claimed',
     ];
@@ -1126,13 +1125,11 @@ class Proposal extends Model implements IHasMetaData
             'funding_status',
             'funded_at',
             'campaign.title',
-            'campaign.label', 
             'fund.title',
-            'fund.label',
-            'communities.*.title',
+            //            'communities.*.title',
             'ideascale_profiles.*.name',
             'catalyst_profiles.*.name',
-            'groups.*.title'
+            'groups.*.title',
         ];
     }
 
@@ -1202,16 +1199,16 @@ class Proposal extends Model implements IHasMetaData
     {
         $segments = explode('.', $fieldPath);
         $current = $this;
-        
+
         foreach ($segments as $segment) {
             if ($current === null) {
                 return '';
             }
-            
+
             if (is_object($current) && method_exists($current, 'toCollection')) {
                 $current = $current->toCollection();
             }
-            
+
             if ($current instanceof \Illuminate\Support\Collection) {
                 if (is_numeric($segment)) {
                     $current = $current->get((int) $segment);
@@ -1219,16 +1216,16 @@ class Proposal extends Model implements IHasMetaData
                     $remainingPath = implode('.', array_slice($segments, array_search('*', $segments) + 1));
                     if (empty($remainingPath)) {
                         return $current->map(function ($item) {
-                            return is_object($item) && method_exists($item, '__toString') 
-                                ? (string) $item 
+                            return is_object($item) && method_exists($item, '__toString')
+                                ? (string) $item
                                 : (is_scalar($item) ? (string) $item : '');
                         })->filter()->implode(', ');
                     }
-                    
+
                     $values = $current->map(function ($item) use ($remainingPath) {
                         return $this->getValueFromPath($item, $remainingPath);
                     })->filter()->unique();
-                    
+
                     return $values->implode(', ');
                 } else {
                     return '';
@@ -1236,7 +1233,7 @@ class Proposal extends Model implements IHasMetaData
             } else {
                 if (is_object($current)) {
                     if ($current instanceof \Illuminate\Database\Eloquent\Model) {
-                        if (method_exists($current, $segment) && !$current->relationLoaded($segment)) {
+                        if (method_exists($current, $segment) && ! $current->relationLoaded($segment)) {
                             $current->load($segment);
                         }
                         $current = $current->getAttribute($segment);
@@ -1248,43 +1245,43 @@ class Proposal extends Model implements IHasMetaData
                 }
             }
         }
-        
+
         if ($current === null) {
             return '';
         }
-        
+
         if (is_scalar($current)) {
             return (string) $current;
         }
-        
+
         if (is_object($current) && method_exists($current, '__toString')) {
             return (string) $current;
         }
-        
+
         if (is_array($current)) {
             $scalars = array_filter($current, 'is_scalar');
             if (count($scalars) === count($current)) {
                 return implode(', ', $scalars);
             }
         }
-        
+
         return '';
     }
-    
+
     private function getValueFromPath($item, string $path): string
     {
         if ($item === null) {
             return '';
         }
-        
+
         $segments = explode('.', $path);
         $current = $item;
-        
+
         foreach ($segments as $segment) {
             if ($current === null) {
                 return '';
             }
-            
+
             if (is_object($current)) {
                 if ($current instanceof \Illuminate\Database\Eloquent\Model) {
                     $current = $current->getAttribute($segment);
@@ -1297,7 +1294,7 @@ class Proposal extends Model implements IHasMetaData
                 return '';
             }
         }
-        
+
         return is_scalar($current) ? (string) $current : '';
     }
 }
