@@ -94,7 +94,7 @@ final class ProposalData extends Data
         #[TypeScriptOptional]
         public ?string $experience,
 
-         #[TypeScriptOptional]
+        #[TypeScriptOptional]
         public mixed $pitch,
 
         #[TypeScriptOptional]
