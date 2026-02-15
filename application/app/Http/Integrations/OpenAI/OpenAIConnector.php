@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Integrations\OpenAI;
 
-use Saloon\Http\Auth\TokenAuth;
+use Saloon\Http\Auth\TokenAuthenticator;
 use Saloon\Http\Connector;
 use Saloon\Traits\Plugins\AcceptsJson;
 use Saloon\Traits\Plugins\AlwaysThrowOnErrors;
@@ -48,8 +48,8 @@ class OpenAIConnector extends Connector
     /**
      * Define the authentication for the connector
      */
-    protected function defaultAuth(): TokenAuth
+    protected function defaultAuth(): TokenAuthenticator
     {
-        return new TokenAuth($this->apiKey);
+        return new TokenAuthenticator($this->apiKey);
     }
 }

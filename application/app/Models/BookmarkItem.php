@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Concerns\HasDto;
 use App\Concerns\HasModel;
 use App\Enums\VoteEnum;
 use App\Observers\BookmarkItemObserver;
@@ -16,7 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 #[ObservedBy([BookmarkItemObserver::class])]
 class BookmarkItem extends Model
 {
-    use HasModel, HasUuids, SoftDeletes;
+    use HasDto, HasModel, HasUuids, SoftDeletes;
 
     protected $primaryKey = 'id';
 

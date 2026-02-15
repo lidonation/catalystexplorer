@@ -157,8 +157,8 @@ services:
       POSTGRESQL_DB_SYNC_DB: cexplorer
       POSTGRESQL_DB_SYNC_USER: postgres
       POSTGRESQL_WEB_DB_HOST: catalystexplorer.db
-      POSTGRESQL_WEB_DB: explorerweb
-      POSTGRESQL_WEB_USER: catalystexplorer
+      POSTGRESQL_WEB_DB: catalystexplorer
+      POSTGRESQL_WEB_USER: explorerdbuser
       POSTGRESQL_WEB_PASSWORD: ASLJ023470AlserLFH
       TELESCOPE_USE_DARK_THEME: "true"
       XDG_CONFIG_HOME: /var/www
@@ -178,19 +178,19 @@ services:
       - shared-network
   # database
   catalystexplorer.db:
-    image: pgvector/pgvector:pg17
+    image: pgvector/pgvector:pg18-trixie
     container_name: catalystexplorer.db
     logging: *default-logging
     ports:
       - "${FORWARD_DB_PORT:-5432}:5432"
     environment:
       - POSTGRES_LOGGING=true
-      - POSTGRES_DB=explorerweb
+      - POSTGRES_DB=catalystexplorer
       - POSTGRES_PASSWORD=ASLJ023470AlserLFH
-      - POSTGRES_USER=catalystexplorer
-      - POSTGRES_POSTGRES_PASSWORD=alj2340aaALJAF2341408AUUZLJK
+      - POSTGRES_USER=explorerdbuser
+      - POSTGRES_POSTGRES_PASSWORD=${POSTGRES_POSTGRES_PASSWORD:-alj2340aaALJAF2341408AUUZLJK}
     volumes:
-      - "catalystexplorer-db:/var/lib/postgresql/data"
+      - "catalystexplorer-db:/var/lib/postgresql"
     networks:
       - catalystexplorer-net
       - shared-network
@@ -200,15 +200,15 @@ services:
         - pg_isready
         - "-q"
         - "-d"
-        - "explorerweb"
-        - "-U"
         - "catalystexplorer"
+        - "-U"
+        - "explorerdbuser"
       retries: 3
       timeout: 5s
 
   # one-shot init to enable extensions in explorerweb
   catalystexplorer.db-init:
-    image: postgres:17-bookworm
+    image: postgres:18.1-trixie
     container_name: catalystexplorer.db-init
     depends_on:
       - catalystexplorer.db
@@ -216,8 +216,8 @@ services:
       - catalystexplorer-net
     entrypoint: ["/bin/sh","-c"]
     command: >
-      "until pg_isready -h catalystexplorer.db -U catalystexplorer -d explorerweb; do echo waiting for db; sleep 1; done;
-      PGPASSWORD=ASLJ023470AlserLFH psql -h catalystexplorer.db -U catalystexplorer -d explorerweb -v ON_ERROR_STOP=1 -c 'CREATE EXTENSION IF NOT EXISTS vector';
+      "until pg_isready -h catalystexplorer.db -U explorerdbuser -d catalystexplorer; do echo waiting for db; sleep 1; done;
+      PGPASSWORD=ASLJ023470AlserLFH psql -h catalystexplorer.db -U explorerdbuser -d catalystexplorer -v ON_ERROR_STOP=1 -c 'CREATE EXTENSION IF NOT EXISTS vector';
       echo 'pgvector enabled';"
     restart: "no"
   # meilisearch
