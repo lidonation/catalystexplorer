@@ -40,7 +40,7 @@ class EmbeddingService
 
         $embedding = $this->generateEmbedding($content, $provider, $embeddingModel);
         $dimensions = count($embedding);
-        
+
         $embeddingData = [
             'field_name' => $fieldName,
             'provider' => $provider,
@@ -51,7 +51,7 @@ class EmbeddingService
             'token_count' => $this->estimateTokenCount($content),
             'embedding' => $embedding,
         ];
-        
+
         // Add metadata for proposals
         if ($model instanceof \App\Models\Proposal) {
             $metadata = $this->extractProposalMetadata($model);
@@ -142,7 +142,7 @@ class EmbeddingService
     {
         return (int) ceil(strlen($text) / 4);
     }
-    
+
     private function extractProposalMetadata(\App\Models\Proposal $proposal): array
     {
         // Extract funding year from funded_at or created_at
@@ -152,7 +152,7 @@ class EmbeddingService
         } elseif ($proposal->created_at) {
             $fundingYear = $proposal->created_at->year;
         }
-        
+
         return [
             'metadata' => [
                 'id' => $proposal->id,
@@ -163,7 +163,7 @@ class EmbeddingService
             'funding_year' => $fundingYear,
             'fund_label' => $proposal->fund?->label,
             'campaign_title' => $proposal->campaign?->title,
-            'is_funded' => !is_null($proposal->funded_at),
+            'is_funded' => ! is_null($proposal->funded_at),
             'amount_requested' => $proposal->amount_requested,
             'currency' => $proposal->currency,
         ];
