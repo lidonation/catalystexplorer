@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tools;
 
+use App\Models\Fund;
 use App\Models\ModelEmbedding;
 use App\Models\Proposal;
 use App\Services\EmbeddingService;
@@ -53,6 +54,11 @@ class ProposalSearchTool implements ToolInterface
                         'description' => 'Optional: Only return funded proposals (default: false)',
                         'default' => false,
                     ],
+                    'completed_only' => [
+                        'type' => 'boolean',
+                        'description' => 'Optional: Only return completed proposals (default: false)',
+                        'default' => false,
+                    ],
                 ],
                 'required' => ['query'],
             ],
@@ -66,6 +72,7 @@ class ProposalSearchTool implements ToolInterface
         $threshold = $arguments['threshold'] ?? 0.7;
         $fundId = $arguments['fund_id'] ?? null;
         $fundedOnly = $arguments['funded_only'] ?? false;
+        $completedOnly = $arguments['completed_only'] ?? false;
 
         // Validate query is not empty
         if (empty($query)) {
@@ -80,14 +87,22 @@ class ProposalSearchTool implements ToolInterface
             $similarEmbeddings = ModelEmbedding::where('embeddable_type', Proposal::class)
                 ->forField('combined') // Search the combined field for best results
                 ->similarTo($queryEmbedding, $limit * 2, $threshold) // Get extra results to filter
-                ->with(['embeddable' => function ($query) use ($fundId, $fundedOnly) {
+                ->with(['embeddable' => function ($query) use ($fundId, $fundedOnly, $completedOnly) {
                     if ($fundId) {
                         $query->where('fund_id', $fundId);
                     }
                     if ($fundedOnly) {
                         $query->whereNotNull('funded_at');
                     }
-                    $query->with(['fund', 'campaign']);
+                    if ($completedOnly) {
+                        $query->where(function ($q) {
+                            $q->where('status', 'complete')
+                                ->orWhereHas('schedule', function ($sq) {
+                                    $sq->where('status', 'completed');
+                                });
+                        });
+                    }
+                    $query->with(['fund', 'campaign', 'schedule']);
                 }])
                 ->get();
 
@@ -109,6 +124,8 @@ class ProposalSearchTool implements ToolInterface
                         'amount_requested' => $proposal->amount_requested,
                         'currency' => $proposal->currency,
                         'funded' => ! is_null($proposal->funded_at),
+                        'completed' => $proposal->completed == 1,
+                        'status' => $proposal->status,
                         'fund' => $proposal->fund?->title ?? 'Unknown Fund',
                         'campaign' => $proposal->campaign?->title ?? 'General',
                         'similarity_score' => round($similarity, 3),
@@ -117,13 +134,11 @@ class ProposalSearchTool implements ToolInterface
                 });
 
             if ($proposals->isEmpty()) {
-                return "No proposals found matching your query. Try:\n".
-                       "- Using different keywords\n".
-                       "- Lowering the similarity threshold\n".
-                       '- Broadening your search terms';
+                // Fallback to database search when no embeddings are found
+                return $this->fallbackDatabaseSearch($query, $fundId, $fundedOnly, $completedOnly, $limit);
             }
 
-            return $this->formatResults($proposals, $query);
+            return $this->formatResults($proposals, $query, false);
 
         } catch (\Exception $e) {
             return 'Sorry, I encountered an error while searching proposals: '.$e->getMessage();
@@ -171,17 +186,102 @@ class ProposalSearchTool implements ToolInterface
         return strlen($text) > 200 ? substr($text, 0, 197).'...' : $text;
     }
 
-    private function formatResults(Collection $proposals, string $query): string
+    /**
+     * Fallback to database text search when no embeddings are available
+     */
+    private function fallbackDatabaseSearch(string $query, ?string $fundId, bool $fundedOnly, bool $completedOnly, int $limit): string
+    {
+        $proposalQuery = Proposal::query()
+            ->with(['fund', 'campaign', 'schedule']);
+
+        // Apply filters
+        if ($fundId) {
+            $proposalQuery->where('fund_id', $fundId);
+        }
+
+        if ($fundedOnly) {
+            $proposalQuery->whereNotNull('funded_at');
+        }
+
+        if ($completedOnly) {
+            $proposalQuery->where(function ($q) {
+                $q->where('status', 'complete')
+                    ->orWhereHas('schedule', function ($sq) {
+                        $sq->where('status', 'completed');
+                    });
+            });
+        }
+
+        // Text search across relevant fields
+        $proposalQuery->where(function ($q) use ($query) {
+            $q->whereRaw('title::text ILIKE ?', ["%{$query}%"])
+                ->orWhereRaw('problem::text ILIKE ?', ["%{$query}%"])
+                ->orWhereRaw('solution::text ILIKE ?', ["%{$query}%"])
+                ->orWhereRaw('content::text ILIKE ?', ["%{$query}%"]);
+        });
+
+        $proposals = $proposalQuery->limit($limit)->get();
+
+        if ($proposals->isEmpty()) {
+            $filterDescription = [];
+            if ($fundId) {
+                $fund = Fund::find($fundId);
+                $filterDescription[] = strval('in '.$fund?->title ?? 'specified fund');
+            }
+            if ($fundedOnly) {
+                $filterDescription[] = 'that are funded';
+            }
+            if ($completedOnly) {
+                $filterDescription[] = 'that are completed';
+            }
+
+            $filterText = empty($filterDescription) ? '' : ' '.implode(' and ', $filterDescription);
+
+            return "No proposals found matching '{$query}'{$filterText}. Try:\n".
+                   "- Using different or broader keywords\n".
+                   "- Removing filters to expand the search\n".
+                   '- Checking if the fund has any proposals with matching content';
+        }
+
+        // Format results (similar to embedding results but without similarity score)
+        $results = $proposals->map(function (Proposal $proposal) {
+            return [
+                'id' => $proposal->id,
+                'title' => $this->extractTitle($proposal),
+                'problem' => $this->extractField($proposal, 'problem'),
+                'solution' => $this->extractField($proposal, 'solution'),
+                'amount_requested' => $proposal->amount_requested,
+                'currency' => $proposal->currency,
+                'funded' => ! is_null($proposal->funded_at),
+                'completed' => $proposal->completed == 1,
+                'status' => $proposal->status,
+                'fund' => $proposal->fund?->title ?? 'Unknown Fund',
+                'campaign' => $proposal->campaign?->title ?? 'General',
+                'similarity_score' => null, // No similarity score for database search
+                'url' => $proposal->link,
+            ];
+        });
+
+        return $this->formatResults($results, $query, true);
+    }
+
+    private function formatResults(Collection $proposals, string $query, bool $isDatabaseSearch = false): string
     {
         $count = $proposals->count();
-        $result = "Found {$count} proposal".($count > 1 ? 's' : '')." similar to: \"{$query}\"\n\n";
+        $searchType = $isDatabaseSearch ? 'database search' : 'semantic search';
+        $result = "Found {$count} proposal".($count > 1 ? 's' : '')." matching: \"{$query}\" (via {$searchType})\n\n";
 
         foreach ($proposals as $index => $proposal) {
             $result .= ($index + 1).". **{$proposal['title']}**\n";
             $result .= "   💰 Requested: {$proposal['amount_requested']} {$proposal['currency']}\n";
             $result .= "   📊 Fund: {$proposal['fund']}\n";
             $result .= '   '.($proposal['funded'] ? '✅ FUNDED' : '⏳ Not Funded')."\n";
-            $result .= '   🎯 Similarity: '.($proposal['similarity_score'] * 100)."%\n";
+            $result .= '   '.($proposal['completed'] ? '🎉 COMPLETED' : '📝 Status: '.ucfirst($proposal['status']))."\n";
+
+            // Only show similarity score for semantic search results
+            if (! $isDatabaseSearch && isset($proposal['similarity_score'])) {
+                $result .= '   🎯 Similarity: '.($proposal['similarity_score'] * 100)."%\n";
+            }
 
             if ($proposal['problem']) {
                 $result .= "   🔍 Problem: {$proposal['problem']}\n";

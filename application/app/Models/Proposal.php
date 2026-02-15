@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
@@ -80,6 +81,7 @@ class Proposal extends Model implements IHasMetaData
         'link',
         'quickpitch_thumbnail',
         'is_claimed',
+        'currency',
     ];
 
     protected $casts = [
@@ -1126,7 +1128,7 @@ class Proposal extends Model implements IHasMetaData
             'funded_at',
             'campaign.title',
             'fund.title',
-            //            'communities.*.title',
+            'communities.*.title',
             'ideascale_profiles.*.name',
             'catalyst_profiles.*.name',
             'groups.*.title',
@@ -1209,7 +1211,7 @@ class Proposal extends Model implements IHasMetaData
                 $current = $current->toCollection();
             }
 
-            if ($current instanceof \Illuminate\Support\Collection) {
+            if ($current instanceof Collection) {
                 if (is_numeric($segment)) {
                     $current = $current->get((int) $segment);
                 } elseif ($segment === '*') {
