@@ -94,6 +94,27 @@ final class ProposalData extends Data
         #[TypeScriptOptional]
         public ?string $experience,
 
+        #[TypeScriptOptional]
+        public mixed $pitch,
+
+        #[TypeScriptOptional]
+        public mixed $theme,
+
+        #[TypeScriptOptional]
+        public mixed $self_assessment,
+
+        #[TypeScriptOptional]
+        public ?string $performance_metrics,
+
+        #[TypeScriptOptional]
+        public mixed $category_questions,
+
+        #[TypeScriptOptional]
+        public mixed $meta_data,
+
+        #[TypeScriptOptional]
+        public mixed $project_details,
+
         // Other attributes
         #[TypeScriptOptional]
         public ?string $currency,
@@ -126,7 +147,7 @@ final class ProposalData extends Data
         #[DataCollectionOf(IdeascaleProfileData::class)]
         public ?DataCollection $users,
 
-        #[MapOutputName('team')]
+        #[MapOutputName('team_collection')]
         #[DataCollectionOf(ProposalProfileData::class)]
         public ?DataCollection $team,
 

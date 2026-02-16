@@ -18,6 +18,7 @@ return [
 
     'driver' => env('SCOUT_DRIVER', 'meilisearch'),
 
+
     /*
     |--------------------------------------------------------------------------
     | Index Prefix
@@ -41,8 +42,10 @@ return [
     | all automatic data syncing will get queued for better performance.
     |
     */
-
-    'queue' => env('SCOUT_QUEUE', true),
+    'queue' => [
+        'connection' => 'redis',
+        'queue' => env('SCOUT_QUEUE', 'low'),
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -69,7 +72,7 @@ return [
     */
 
     'chunk' => [
-        'searchable' => env('SCOUT_CHUNK_SIZE', 50),
+        'searchable' => env('SCOUT_CHUNK_SIZE', 75),
         'unsearchable' => 200,
     ],
 
@@ -103,22 +106,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Algolia Configuration
-    |--------------------------------------------------------------------------
-    |
-    | Here you may configure your Algolia settings. Algolia is a cloud hosted
-    | search engine which works great with Scout out of the box. Just plug
-    | in your application ID and admin API key to get started searching.
-    |
-    */
-
-    'algolia' => [
-        'id' => env('ALGOLIA_APP_ID', ''),
-        'secret' => env('ALGOLIA_SECRET', ''),
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
     | Meilisearch Configuration
     |--------------------------------------------------------------------------
     |
@@ -138,66 +125,6 @@ return [
 //                'filterableAttributes' => ['id', 'ideascale_profiles', 'tags', 'proposals', 'proposals_funded', 'proposals_completed', 'amount_awarded_usd', 'amount_awarded_ada', 'proposals_count'],
 //                'sortableAttributes' => ['name', 'id', 'website', 'proposals_funded', 'proposals_completed', 'amount_awarded_ada', 'amount_awarded_usd', 'amount_requested'],
 //            ],
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Typesense Configuration
-    |--------------------------------------------------------------------------
-    |
-    | Here you may configure your Typesense settings. Typesense is an open
-    | source search engine using minimal configuration. Below, you will
-    | state the host, key, and schema configuration for the instance.
-    |
-    */
-
-    'typesense' => [
-        'client-settings' => [
-            'api_key' => env('TYPESENSE_API_KEY', 'xyz'),
-            'nodes' => [
-                [
-                    'host' => env('TYPESENSE_HOST', 'localhost'),
-                    'port' => env('TYPESENSE_PORT', '8108'),
-                    'path' => env('TYPESENSE_PATH', ''),
-                    'protocol' => env('TYPESENSE_PROTOCOL', 'http'),
-                ],
-            ],
-            'nearest_node' => [
-                'host' => env('TYPESENSE_HOST', 'localhost'),
-                'port' => env('TYPESENSE_PORT', '8108'),
-                'path' => env('TYPESENSE_PATH', ''),
-                'protocol' => env('TYPESENSE_PROTOCOL', 'http'),
-            ],
-            'connection_timeout_seconds' => env('TYPESENSE_CONNECTION_TIMEOUT_SECONDS', 2),
-            'healthcheck_interval_seconds' => env('TYPESENSE_HEALTHCHECK_INTERVAL_SECONDS', 30),
-            'num_retries' => env('TYPESENSE_NUM_RETRIES', 3),
-            'retry_interval_seconds' => env('TYPESENSE_RETRY_INTERVAL_SECONDS', 1),
-        ],
-        // 'max_total_results' => env('TYPESENSE_MAX_TOTAL_RESULTS', 1000),
-        'model-settings' => [
-            // User::class => [
-            //     'collection-schema' => [
-            //         'fields' => [
-            //             [
-            //                 'name' => 'id',
-            //                 'type' => 'string',
-            //             ],
-            //             [
-            //                 'name' => 'name',
-            //                 'type' => 'string',
-            //             ],
-            //             [
-            //                 'name' => 'created_at',
-            //                 'type' => 'int64',
-            //             ],
-            //         ],
-            //         'default_sorting_field' => 'created_at',
-            //     ],
-            //     'search-parameters' => [
-            //         'query_by' => 'name'
-            //     ],
-            // ],
-        ],
-    ],
+    ]
 
 ];

@@ -1,12 +1,31 @@
 import Graph from '@/Components/Graph';
+import Title from '@/Components/atoms/Title';
 import { Head, WhenVisible } from '@inertiajs/react';
+import { useLaravelReactI18n } from 'laravel-react-i18n';
 import ProposalLayout from '../ProposalLayout';
 import ConnectionData = App.DataTransferObjects.ConnectionData;
 import ProposalData = App.DataTransferObjects.ProposalData;
 
+interface TeamMember {
+    id: string;
+    name: string | null;
+    username?: string | null;
+    proposals_count?: number;
+    open_proposals_count?: number;
+    funded_proposals_count?: number;
+    completed_proposals_count?: number;
+    proposals_by_fund?: Array<{
+        fund_id: string;
+        fund_title: string | null;
+        fund_label: string | null;
+        count: number;
+    }>;
+}
+
 interface ConnectionPageProps {
     connections: ConnectionData;
     proposal: ProposalData;
+    teamWithStats?: TeamMember[];
     globalQuickPitchView: boolean;
     setGlobalQuickPitchView?: (value: boolean) => void;
     ogMeta?: {
@@ -19,10 +38,13 @@ interface ConnectionPageProps {
 export default function Connections({
     connections,
     proposal,
+    teamWithStats,
     globalQuickPitchView,
     setGlobalQuickPitchView,
     ogMeta,
 }: ConnectionPageProps) {
+    const { t } = useLaravelReactI18n();
+    const team = teamWithStats || [];
     // Use server-side OG meta data if available (for SSR)
     const ogImageUrl = ogMeta?.ogImageUrl ?? 
         (typeof window !== 'undefined' ? `${window.location.origin}/og-image/proposals/${proposal.slug}` : '');
@@ -49,6 +71,65 @@ export default function Connections({
                 setGlobalQuickPitchView={setGlobalQuickPitchView}
                 ogMeta={ogMeta}
             >
+                {team.length > 0 && (
+                    <div className="mb-6">
+                        <Title level="5" className="text-content mb-4 font-semibold">
+                            {t('Team')}
+                        </Title>
+                        <div className="bg-background-lighter flex flex-nowrap gap-2 overflow-x-auto rounded-xl p-6 shadow-sm [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                            {team.map((member) => {
+                                const currentFund = member.proposals_by_fund?.[0];
+                                return (
+                                    <div
+                                        key={member.id}
+                                        className="border-black-persist flex flex-shrink-0 overflow-hidden rounded-xl border-3">
+                                        <div className="bg-black-persist flex flex-col justify-content-center px-4 py-3">
+                                            <span className="text-3 font-semibold text-content-light">
+                                                {member.name || member.username || 'Unknown'}
+                                            </span>
+                                            <span className="text-4 text-gray-persist">
+                                                {t('Metrics')}
+                                            </span>
+                                        </div>
+                                        <div className="bg-background-lighter m-1 flex flex-1 items-center divide-x divide-gray-light rounded-lg">
+                                            {currentFund && (
+                                                <div className="flex flex-col items-center justify-center px-3 my-2">
+                                                    <span className="text-content text-2 font-bold">
+                                                        {currentFund.count}
+                                                    </span>
+                                                    <span className="text-gray-persist text-5">
+                                                        {t('In')} {currentFund.fund_label || currentFund.fund_title}
+                                                    </span>
+                                                </div>
+                                            )}
+                                            <div className="flex flex-col items-center justify-center px-3 my-2">
+                                                <span className="text-content text-2 font-bold">
+                                                    {member.completed_proposals_count ?? 0}
+                                                </span>
+                                                <span className="text-gray-persist text-5">
+                                                    {t('Completed')}
+                                                </span>
+                                            </div>
+                                            <div className="flex flex-col items-center justify-center px-3 my-2">
+                                                <span className="text-content text-2 font-bold">
+                                                    {member.open_proposals_count ?? 0}
+                                                </span>
+                                                <span className="text-gray-persist text-5">
+                                                    {t('Outstanding')}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                )}
+
+                {/* Team Connections Section */}
+                <Title level="5" className="text-content mb-4 font-semibold">
+                    {t('Team Connections')}
+                </Title>
 
             <WhenVisible
                 data="connections"

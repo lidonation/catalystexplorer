@@ -15,6 +15,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Fluent;
+use Illuminate\Support\Str;
 use Symfony\Component\Process\Process;
 
 class SyncDocumentPage implements ShouldQueue
@@ -58,7 +59,15 @@ class SyncDocumentPage implements ShouldQueue
                     continue;
                 }
 
-                $decoded = (new DecodeCatalystDocument)($binary);
+                try {
+                    $decoded = (new DecodeCatalystDocument)($binary);
+                } catch (\Exception $e) {
+                    // Decoder crash (e.g., signal 11) - skip this document but continue with others
+                    Log::warning("Decoder failed for document {$documentId}, skipping: ".$e->getMessage());
+                    $errorCount++;
+
+                    continue;
+                }
 
                 // Check if we got actual proposal content or just metadata
                 $hasProposalContent = isset($decoded['payload'][1]) && ! empty($decoded['payload'][1]);
@@ -96,6 +105,15 @@ class SyncDocumentPage implements ShouldQueue
                     $decodedPayload3 = $this->tryDecodePayload3($decoded['payload'][3]);
                     if ($decodedPayload3) {
                         $decoded['payload'][3] = $decodedPayload3;
+                    }
+                }
+
+                // Also try to decode payload[2] if it's still a hex string (even when payload[1] has content)
+                if (isset($decoded['payload'][2]) && is_string($decoded['payload'][2]) && ctype_xdigit($decoded['payload'][2])) {
+                    $decodedPayload2 = $this->tryDecodeHexString($decoded['payload'][2]);
+                    if ($decodedPayload2) {
+                        $decoded['payload'][2] = $decodedPayload2;
+                        Log::info("Successfully decoded payload[2] for {$documentId}");
                     }
                 }
 
@@ -140,9 +158,8 @@ class SyncDocumentPage implements ShouldQueue
             'total' => count($this->docs),
         ]);
 
-        // Fail the job if there were any errors
-        if ($errorCount > 0) {
-            throw new \Exception("SyncDocumentPage failed: {$errorCount} documents failed to process out of ".count($this->docs));
+        if ($errorCount > 0 && $successCount === 0) {
+            throw new \Exception("SyncDocumentPage failed: all {$errorCount} documents failed to process");
         }
     }
 
@@ -205,7 +222,8 @@ class SyncDocumentPage implements ShouldQueue
 
             // Try brotli decompression (venv has required packages)
             $python = '/venv/bin/python3';
-            $script = '/tmp/decode_brotli.py';
+            // Use unique temp file to avoid race conditions when multiple jobs run in parallel
+            $script = '/tmp/decode_brotli_'.Str::random(16).'.py';
 
             // Create a temporary Python script to handle brotli decompression
             $pythonCode = '
@@ -239,7 +257,10 @@ except Exception as e:
             $process->setInput($binaryData);
             $process->run();
 
-            unlink($script);
+            // Clean up temp file safely
+            if (file_exists($script)) {
+                unlink($script);
+            }
 
             if ($process->isSuccessful()) {
                 $result = json_decode($process->getOutput(), true);
@@ -496,8 +517,8 @@ except Exception as e:
 
         foreach ($data as $key => $value) {
             if (is_string($value)) {
-                // Check if this string looks like hex data
-                if (strlen($value) > 64 && ctype_xdigit($value)) {
+                // Check if this string looks like hex data (min 32 chars for meaningful data)
+                if (strlen($value) >= 32 && ctype_xdigit($value)) {
                     Log::debug('Found potential hex data in nested structure', [
                         'key' => $key,
                         'length' => strlen($value),
@@ -517,6 +538,15 @@ except Exception as e:
                     $result[$key] = $value; // Not hex data, keep as-is
                 }
             } elseif (is_array($value)) {
+                // Check if this is a nested object with a 'payload' key containing hex
+                if (isset($value['payload']) && is_string($value['payload']) && ctype_xdigit($value['payload'])) {
+                    $decoded = $this->tryDecodeHexString($value['payload']);
+                    if ($decoded) {
+                        $value['payload'] = $decoded;
+                        $hasChanges = true;
+                        Log::info("Successfully decoded nested payload hex at key: {$key}");
+                    }
+                }
                 // Recursively process nested arrays
                 $result[$key] = $this->processNestedArrayForDecoding($value, $hasChanges);
             } else {

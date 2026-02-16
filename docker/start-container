@@ -12,13 +12,19 @@ else
     # Use FRANKENPHP_PORT env var or default to 8000
     FRANKENPHP_PORT="${FRANKENPHP_PORT:-8000}"
     
+    # Choose appropriate Caddyfile based on environment
+    CADDYFILE="/etc/caddy/Caddyfile"
+    if [ "$APP_ENV" = "testing" ]; then
+      CADDYFILE="/etc/caddy/Caddyfile.testing"
+    fi
+    
     if [ "$OCTANE_WATCH" = "true" ]; then
       # Enable watch mode for Octane
-      php /var/www/artisan octane:frankenphp --workers=3 --max-requests=10 --host=0.0.0.0 --port=$FRANKENPHP_PORT --admin-port=2019 --caddyfile=/etc/caddy/Caddyfile --watch
+      php /var/www/artisan octane:frankenphp --workers=3 --max-requests=10 --host=0.0.0.0 --port=$FRANKENPHP_PORT --admin-port=2019 --caddyfile=$CADDYFILE --watch
     else
       php /var/www/artisan search:index create
       # Run without watch mode
-      php /var/www/artisan octane:frankenphp --workers=2 --max-requests=50 --host=0.0.0.0 --port=$FRANKENPHP_PORT --admin-port=2019 --caddyfile=/etc/caddy/Caddyfile --watch
+      php /var/www/artisan octane:frankenphp --workers=2 --max-requests=50 --host=0.0.0.0 --port=$FRANKENPHP_PORT --admin-port=2019 --caddyfile=$CADDYFILE --watch
     fi
     ;;
   *)

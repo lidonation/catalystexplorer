@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\DataTransferObjects;
 
+use App\DataTransferObjects\Casts\PolymorphicModelCast;
 use App\Enums\VoteEnum;
+use Spatie\LaravelData\Attributes\WithCast;
 use Spatie\LaravelData\Data;
 use Spatie\TypeScriptTransformer\Attributes\Optional as TypeScriptOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
@@ -25,6 +27,7 @@ final class BookmarkItemData extends Data
         public ?string $model_id,
 
         #[TypeScriptOptional]
+        #[WithCast(PolymorphicModelCast::class)]
         public ProposalData|ReviewData|IdeascaleProfileData|CommunityData|GroupData|null $model,
 
         #[TypeScriptOptional]

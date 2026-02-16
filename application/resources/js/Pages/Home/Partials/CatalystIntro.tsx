@@ -12,16 +12,16 @@ const CatalystIntro = () => {
             data-testid="catalyst-intro"
         >
             <div
-                className="flex w-full flex-col gap-8 pt-16 pb-16"
+                className="flex w-full flex-col gap-8"
                 style={{
                     backgroundImage: `url(${ConcentricCircles})`,
                     backgroundPosition: 'top',
                     backgroundRepeat: 'no-repeat',
                 }}
             >
-                <section className="container flex flex-col items-center justify-center gap-3 md:px-10 xl:px-56">
+                <section className="container flex flex-col items-center justify-center gap-3 md:px-10 xl:px-56 mb-8">
                     <BlueEyeIcon
-                        className="text-eye-logo"
+                        className="text-eye-logo my-8"
                         width={90}
                         height={50}
                         data-testid="catalyst-intro-icon"
@@ -41,9 +41,9 @@ const CatalystIntro = () => {
                     </div>
                 </section>
 
-               {/*  <section className="sticky top-12 container w-full pt-10 md:px-10 xl:px-60">
-                    <GlobalSearch />
-                </section> */}
+                {/*<section className='container'>*/}
+                {/*    <GlobalSearch />*/}
+                {/*</section>*/}
             </div>
         </div>
     );

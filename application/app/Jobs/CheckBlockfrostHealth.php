@@ -34,7 +34,6 @@ class CheckBlockfrostHealth implements ShouldQueue
         }
 
         Log::warning('Blockfrost Health Check: No healthy endpoints found.');
-
     }
 
     protected function isHealthy(string $baseUrl): bool
@@ -42,7 +41,7 @@ class CheckBlockfrostHealth implements ShouldQueue
         try {
             $response = Http::timeout(10)
                 ->withHeaders([
-                    'project_id' => config('services.blockfrost.projectId'),
+                    'project_id' => config('services.blockfrost.project_id'),
                     'Accept' => 'application/json',
                 ])
                 ->get("{$baseUrl}/health");

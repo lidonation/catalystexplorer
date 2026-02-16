@@ -7,14 +7,17 @@ namespace App\Models;
 use App\Concerns\HasAuthor;
 use App\Concerns\HasConnections;
 use App\Concerns\HasDto;
+use App\Concerns\HasEmbeddings;
 use App\Concerns\HasMetaData;
 use App\Concerns\HasSignatures;
 use App\Concerns\HasTaxonomies;
 use App\Concerns\HasTranslations;
 use App\Contracts\IHasMetaData;
 use App\Enums\CatalystCurrencies;
+use App\Models\Pivot\ClaimedProfile;
 use App\Models\Pivot\ProposalProfile;
 use App\Models\Scopes\ProposalTypeScope;
+use App\Services\ProposalContentParserService;
 use App\Services\VideoService;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
@@ -27,6 +30,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
@@ -41,6 +45,7 @@ class Proposal extends Model implements IHasMetaData
         HasConnections,
         HasConnections,
         HasDto,
+        HasEmbeddings,
         HasMetaData,
         HasRelationships,
         HasSignatures,
@@ -74,12 +79,23 @@ class Proposal extends Model implements IHasMetaData
 
     protected $appends = [
         'link',
-        'currency',
         'quickpitch_thumbnail',
         'is_claimed',
-        'alignment_score',
-        'auditability_score',
-        'feasibility_score',
+        'currency',
+    ];
+
+    protected $casts = [
+        'alignment_score' => 'decimal:1',
+        'feasibility_score' => 'decimal:1',
+        'auditability_score' => 'decimal:1',
+        'ideascale_id' => 'integer',
+        'chain_proposal_index' => 'integer',
+        'unique_wallets' => 'integer',
+        'yes_wallets' => 'integer',
+        'no_wallets' => 'integer',
+        'is_auto_translated' => 'boolean',
+        'has_dependencies' => 'boolean',
+        'self_assessment' => 'array',
     ];
 
     public $meiliIndexName = 'cx_proposals';
@@ -318,22 +334,127 @@ class Proposal extends Model implements IHasMetaData
     public function feasibilityScore(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => ($this->meta_info?->feasibility_score ?? $value)
+            get: fn ($value) => $value ?? $this->meta_info?->feasibility_score
         );
     }
 
     public function alignmentScore(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => ($this->meta_info?->alignment_score ?? $value)
+            get: fn ($value) => $value ?? $this->meta_info?->alignment_score
         );
     }
 
     public function auditabilityScore(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => ($this->meta_info?->auditability_score ?? $value)
+            get: fn ($value) => $value ?? $this->meta_info?->auditability_score
         );
+    }
+
+    /**
+     * Get project details - returns JSONB data or parses from content.
+     *
+     * For new proposals (Fund 14+): Returns JSONB data directly
+     * For old proposals (Fund 2-13): Parses from contet
+     *
+     * Note: To persist parsed data, use the backfill command:
+     * php artisan proposals:backfill-structured-data
+     */
+    public function projectDetails(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => ! empty($value)
+                ? (is_string($value) ? json_decode($value, true) : $value)
+                : $this->parseStructuredContent('project_details')
+        );
+    }
+
+    /**
+     * Get pitch data - returns JSONB data or parses from content.
+     */
+    public function pitch(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => ! empty($value)
+                ? (is_string($value) ? json_decode($value, true) : $value)
+                : $this->parseStructuredContent('pitch')
+        );
+    }
+
+    /**
+     * Get category questions - returns JSONB data or parses from content.
+     */
+    public function categoryQuestions(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => ! empty($value)
+                ? (is_string($value) ? json_decode($value, true) : $value)
+                : $this->parseStructuredContent('category_questions')
+        );
+    }
+
+    /**
+     * Get theme data - returns JSONB data or parses from content.
+     */
+    public function theme(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => ! empty($value)
+                ? (is_string($value) ? json_decode($value, true) : $value)
+                : $this->parseStructuredContent('theme')
+        );
+    }
+
+    /**
+     * Parse structured content from the content field.
+     */
+    protected function parseStructuredContent(string $field): ?array
+    {
+        $content = $this->getContentForParsing();
+
+        if (empty($content)) {
+            return null;
+        }
+
+        try {
+            return app(ProposalContentParserService::class)->parse($content, $field);
+        } catch (\Exception $e) {
+            Log::warning("Failed to parse {$field} from proposal content", [
+                'proposal_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
+    }
+
+    /**
+     * Get the content field ready for parsing.
+     * Handles translated content stored as JSON with locale keys.
+     */
+    protected function getContentForParsing(): ?string
+    {
+        $content = $this->getOriginal('content');
+
+        if (empty($content)) {
+            return null;
+        }
+
+        // Handle translated content (stored as JSON like {"en": "...", "es": "..."})
+        if (is_array($content)) {
+            $content = $content['en'] ?? array_values($content)[0] ?? null;
+        }
+
+        // Handle JSON string that needs decoding
+        if (is_string($content) && str_starts_with(trim($content), '{')) {
+            $decoded = json_decode($content, true);
+            if (is_array($decoded)) {
+                $content = $decoded['en'] ?? array_values($decoded)[0] ?? $content;
+            }
+        }
+
+        return is_string($content) ? $content : null;
     }
 
     public function amountReceivedUsd(): Attribute
@@ -715,28 +836,17 @@ class Proposal extends Model implements IHasMetaData
                     'username' => $profile->username,
                     'catalyst_id' => $profile->catalyst_id,
                 ]),
-            'claimed_ideascale_profiles' => $this->ideascale_profiles
-                ->filter(fn ($profile) => ! is_null($profile->claimed_by_uuid))
-                ->map(fn ($profile) => [
-                    'id' => $profile->id,
-                    'name' => $profile->name,
-                    'claimed_by_uuid' => $profile->claimed_by_uuid,
-                    'username' => $profile->username,
-                    'ideascale_id' => $profile->ideascale_id,
-                ]),
+            'claimed_ideascale_profiles' => $this->getClaimedIdeascaleProfiles(),
             // Convenience fields for searching claimed profiles
             'claimed_profile_ids' => array_merge(
                 $this->catalyst_profiles->filter(fn ($p) => ! is_null($p->claimed_by))->pluck('id')->toArray(),
-                $this->ideascale_profiles->filter(fn ($p) => ! is_null($p->claimed_by_uuid))->pluck('id')->toArray()
+                $this->getClaimedIdeascaleProfileIds()
             ),
             'claimed_catalyst_profile_ids' => $this->catalyst_profiles
                 ->filter(fn ($profile) => ! is_null($profile->claimed_by))
                 ->pluck('id')
                 ->toArray(),
-            'claimed_ideascale_profile_ids' => $this->ideascale_profiles
-                ->filter(fn ($profile) => ! is_null($profile->claimed_by_uuid))
-                ->pluck('id')
-                ->toArray(),
+            'claimed_ideascale_profile_ids' => $this->getClaimedIdeascaleProfileIds(),
             'alignment_score' => $this->alignment_score,
             'auditability_score' => $this->auditability_score,
             'feasibility_score' => $this->feasibility_score,
@@ -883,9 +993,14 @@ class Proposal extends Model implements IHasMetaData
                         continue;
                     }
 
-                    // Check claimed_by_uuid field for IdeascaleProfile
-                    if (isset($profile->claimed_by_uuid) && ! is_null($profile->claimed_by_uuid)) {
-                        return true;
+                    // Check if IdeascaleProfile is claimed using ClaimedProfile pivot table
+                    if ($profile instanceof IdeascaleProfile) {
+                        $claimedCount = ClaimedProfile::where('claimable_type', IdeascaleProfile::class)
+                            ->where('claimable_id', $profile->id)
+                            ->count();
+                        if ($claimedCount > 0) {
+                            return true;
+                        }
                     }
 
                     // Check claimed_by field for CatalystProfile
@@ -942,6 +1057,246 @@ class Proposal extends Model implements IHasMetaData
             'opensource' => 'boolean',
             'updated_at' => 'datetime',
             'meta_data' => 'array',
+            'self_assessment' => 'array',
+            'pitch' => 'array',
+            'project_details' => 'array',
+            'category_questions' => 'array',
+            'theme' => 'array',
         ];
+    }
+
+    /**
+     * Get claimed IdeascaleProfiles for this proposal using the ClaimedProfile pivot table
+     */
+    private function getClaimedIdeascaleProfiles(): array
+    {
+        $ideascaleProfileIds = $this->ideascale_profiles->pluck('id')->toArray();
+
+        if (empty($ideascaleProfileIds)) {
+            return [];
+        }
+
+        $claimedProfiles = ClaimedProfile::whereIn('claimable_id', $ideascaleProfileIds)
+            ->where('claimable_type', IdeascaleProfile::class)
+            ->with('claimable')
+            ->get();
+
+        return $claimedProfiles->map(function ($claimedProfile) {
+            $profile = $claimedProfile->claimable;
+
+            return [
+                'id' => $profile->id,
+                'name' => $profile->name,
+                'claimed_by_uuid' => $claimedProfile->user_id,
+                'username' => $profile->username,
+                'ideascale_id' => $profile->ideascale_id,
+            ];
+        })->toArray();
+    }
+
+    /**
+     * Get claimed IdeascaleProfile IDs for this proposal using the ClaimedProfile pivot table
+     */
+    private function getClaimedIdeascaleProfileIds(): array
+    {
+        $ideascaleProfileIds = $this->ideascale_profiles->pluck('id')->toArray();
+
+        if (empty($ideascaleProfileIds)) {
+            return [];
+        }
+
+        return ClaimedProfile::whereIn('claimable_id', $ideascaleProfileIds)
+            ->where('claimable_type', IdeascaleProfile::class)
+            ->pluck('claimable_id')
+            ->toArray();
+    }
+
+    public function getEmbeddableFields(): array
+    {
+        return [
+            'amount_requested',
+            'amount_received',
+            'completed_at',
+            'title',
+            'problem',
+            'solution',
+            'experience',
+            'content',
+            'combined',
+            'status',
+            'funding_status',
+            'funded_at',
+            'campaign.title',
+            'fund.title',
+            'communities.*.title',
+            'ideascale_profiles.*.name',
+            'catalyst_profiles.*.name',
+            'groups.*.title',
+        ];
+    }
+
+    protected function getEmbeddableContent(string $fieldName): string
+    {
+        if ($fieldName === 'combined') {
+            $parts = [];
+
+            if ($title = $this->getFieldContent('title')) {
+                $parts[] = "Title: {$title}";
+            }
+
+            if ($problem = $this->getFieldContent('problem')) {
+                $parts[] = "Problem: {$problem}";
+            }
+
+            if ($solution = $this->getFieldContent('solution')) {
+                $parts[] = "Solution: {$solution}";
+            }
+
+            if ($experience = $this->getFieldContent('experience')) {
+                $parts[] = "Experience: {$experience}";
+            }
+
+            if ($content = $this->getFieldContent('content')) {
+                $parts[] = "Details: {$content}";
+            }
+
+            if ($this->campaign) {
+                $parts[] = "Campaign: {$this->campaign->title}";
+            }
+
+            if ($this->fund) {
+                $parts[] = "Fund: {$this->fund->title}";
+            }
+
+            return implode("\n\n", array_filter($parts));
+        }
+
+        return $this->getFieldContent($fieldName);
+    }
+
+    private function getFieldContent(string $fieldName): string
+    {
+        if (str_contains($fieldName, '.')) {
+            return $this->getNestedFieldContent($fieldName);
+        }
+
+        $value = $this->getAttribute($fieldName);
+
+        if (in_array($fieldName, $this->translatable)) {
+            if (is_array($value)) {
+                return $value['en'] ?? (array_values($value)[0] ?? '');
+            }
+            if (is_string($value)) {
+                $decoded = json_decode($value, true);
+                if (is_array($decoded)) {
+                    return $decoded['en'] ?? (array_values($decoded)[0] ?? '');
+                }
+            }
+        }
+
+        return (string) $value;
+    }
+
+    private function getNestedFieldContent(string $fieldPath): string
+    {
+        $segments = explode('.', $fieldPath);
+        $current = $this;
+
+        foreach ($segments as $segment) {
+            if ($current === null) {
+                return '';
+            }
+
+            if (is_object($current) && method_exists($current, 'toCollection')) {
+                $current = $current->toCollection();
+            }
+
+            if ($current instanceof Collection) {
+                if (is_numeric($segment)) {
+                    $current = $current->get((int) $segment);
+                } elseif ($segment === '*') {
+                    $remainingPath = implode('.', array_slice($segments, array_search('*', $segments) + 1));
+                    if (empty($remainingPath)) {
+                        return $current->map(function ($item) {
+                            return is_object($item) && method_exists($item, '__toString')
+                                ? (string) $item
+                                : (is_scalar($item) ? (string) $item : '');
+                        })->filter()->implode(', ');
+                    }
+
+                    $values = $current->map(function ($item) use ($remainingPath) {
+                        return $this->getValueFromPath($item, $remainingPath);
+                    })->filter()->unique();
+
+                    return $values->implode(', ');
+                } else {
+                    return '';
+                }
+            } else {
+                if (is_object($current)) {
+                    if ($current instanceof \Illuminate\Database\Eloquent\Model) {
+                        if (method_exists($current, $segment) && ! $current->relationLoaded($segment)) {
+                            $current->load($segment);
+                        }
+                        $current = $current->getAttribute($segment);
+                    } else {
+                        $current = $current->{$segment} ?? null;
+                    }
+                } else {
+                    return '';
+                }
+            }
+        }
+
+        if ($current === null) {
+            return '';
+        }
+
+        if (is_scalar($current)) {
+            return (string) $current;
+        }
+
+        if (is_object($current) && method_exists($current, '__toString')) {
+            return (string) $current;
+        }
+
+        if (is_array($current)) {
+            $scalars = array_filter($current, 'is_scalar');
+            if (count($scalars) === count($current)) {
+                return implode(', ', $scalars);
+            }
+        }
+
+        return '';
+    }
+
+    private function getValueFromPath($item, string $path): string
+    {
+        if ($item === null) {
+            return '';
+        }
+
+        $segments = explode('.', $path);
+        $current = $item;
+
+        foreach ($segments as $segment) {
+            if ($current === null) {
+                return '';
+            }
+
+            if (is_object($current)) {
+                if ($current instanceof \Illuminate\Database\Eloquent\Model) {
+                    $current = $current->getAttribute($segment);
+                } else {
+                    $current = $current->{$segment} ?? null;
+                }
+            } elseif (is_array($current)) {
+                $current = $current[$segment] ?? null;
+            } else {
+                return '';
+            }
+        }
+
+        return is_scalar($current) ? (string) $current : '';
     }
 }

@@ -168,7 +168,7 @@ vite:
 
 .PHONY: watch
 watch:
-	docker-compose up -d --remove-orphans $(COMPOSE_FLAGS) && $(sail) npx vite --force -- --unsafe-perm=true
+	docker-compose up -d --remove-orphans $(COMPOSE_FLAGS) && $(sail) npm run dev -- --force
 
 .PHONY: watch-ext
 watch-ext:
@@ -292,3 +292,34 @@ delete-index:
 	done
 %:
 	@:
+
+# Ollama AI Commands
+.PHONY: ollama-pull ollama-init ollama-status ollama-shell ollama-logs
+
+ollama-pull:
+	@echo "Pulling llama3.3:70b model..."
+	docker-compose exec catalystexplorer.ollama ollama pull llama3.3:70b
+
+ollama-init:
+	@echo "Initializing Ollama with model..."
+	docker-compose exec catalystexplorer.ollama /ollama-init.sh
+
+ollama-status:
+	@echo "Checking Ollama status and available models..."
+	docker-compose exec catalystexplorer.ollama ollama list
+
+ollama-shell:
+	@echo "Opening shell in Ollama container..."
+	docker-compose exec catalystexplorer.ollama /bin/bash
+
+ollama-logs:
+	@echo "Showing Ollama container logs..."
+	docker logs --follow catalystexplorer.ollama
+
+ollama-chat:
+	@echo "Starting interactive chat with llama3.3:70b..."
+	docker-compose exec -it catalystexplorer.ollama ollama run llama3.3:70b
+
+ollama-restart:
+	@echo "Restarting Ollama service..."
+	docker-compose restart catalystexplorer.ollama

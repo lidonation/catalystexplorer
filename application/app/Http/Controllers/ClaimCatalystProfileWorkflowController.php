@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\DecodeTransactionMetadataKey10;
 use App\Models\CatalystProfile;
 use App\Models\Proposal;
 use App\Models\Signature;
@@ -80,29 +79,43 @@ class ClaimCatalystProfileWorkflowController extends Controller
             ]);
         }
 
-        $transaction = Transaction::where('stake_key', $signature->stake_key)
-            ->where('type', 'x509_envelope')
-            ->first();
+        $catalystProfile = CatalystProfile::where('stake_address', $stakeAddress)->first();
 
-        if (! $transaction) {
-            return Inertia::render('Workflows/ClaimCatalystProfile/Step3', [
-                'stepDetails' => $this->getStepDetails(),
-                'activeStep' => intval($request->step),
-                'catalystProfile' => null,
-                'stakeAddress' => $stakeAddress,
-                'context' => $context,
-                'proposal' => null,
-            ]);
+        if (! $catalystProfile) {
+            $transaction = Transaction::where('stake_key', $signature->stake_key)
+                ->whereNotNull('json_metadata')
+                ->orderBy('created_at', 'desc')
+                ->first();
+
+            if ($transaction) {
+                $catalystId = null;
+
+                if (isset($transaction->json_metadata->catalyst_profile_id)) {
+                    $catalystId = $transaction->json_metadata->catalyst_profile_id;
+                } elseif (isset($transaction->json_metadata['catalyst_profile_id'])) {
+                    $catalystId = $transaction->json_metadata['catalyst_profile_id'];
+                } else {
+                    $decodedData = (new \App\Actions\DecodeCatalystRegistrationMetadata)($transaction->raw_metadata ?? $transaction->json_metadata);
+                    $catalystId = $decodedData['catalyst_profile_id'] ?? null;
+                }
+
+                if ($catalystId) {
+                    $catalystKey = null;
+                    if (preg_match('#id\.catalyst://[^/]+/([^/]+)#', $catalystId, $matches)) {
+                        $catalystKey = $matches[1];
+                    }
+
+                    if ($catalystKey) {
+                        $catalystProfile = CatalystProfile::where('catalyst_id', 'LIKE', "%{$catalystKey}%")->first();
+                    }
+
+                    if ($catalystProfile) {
+                        $catalystProfile->update(['stake_address' => $stakeAddress]);
+                        $catalystProfile->searchable();
+                    }
+                }
+            }
         }
-
-        $metadataArray = json_decode(json_encode($transaction->raw_metadata), true);
-
-        $decodedData = (new DecodeTransactionMetadataKey10)($metadataArray);
-
-        $catalystId = rtrim($decodedData['catalyst_profile_id'] ?? '', '=');
-
-        $catalystProfile = CatalystProfile::where('catalyst_id', 'LIKE', "%{$catalystId}%")
-            ->first();
 
         if (! $catalystProfile) {
             return Inertia::render('Workflows/ClaimCatalystProfile/Step3', [
@@ -158,6 +171,7 @@ class ClaimCatalystProfileWorkflowController extends Controller
     public function collectUserSignature(User $user, Request $request): RedirectResponse|Response
     {
         $proposal = $request->proposal;
+
         $stakeAddressPattern = app()->environment('production')
             ? '/^stake1[0-9a-z]{38,}$/'
             : '/^stake_test1[0-9a-z]{38,}$/';
@@ -235,18 +249,17 @@ class ClaimCatalystProfileWorkflowController extends Controller
         }
 
         DB::transaction(function () use ($catalystProfile, $validated, $user) {
-            // the claimed_by update here is just here for backward compatibility.
-            // do not rely on it
             $catalystProfile->update([
                 'name' => $validated['name'],
                 'username' => $validated['username'],
-                'claimed_by' => $user->id,
+                'stake_address' => $validated['stakeAddress'] ?? $catalystProfile->stake_address,
             ]);
 
             $user->claimProfile($catalystProfile);
         });
 
         // Update search index for related proposals
+        $catalystProfile->searchable();
         $relatedProposals = $catalystProfile->proposals;
         if ($relatedProposals->isNotEmpty()) {
             $relatedProposals->searchable();

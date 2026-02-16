@@ -12,6 +12,15 @@ class Tag extends Taxonomy
 {
     use HasUuids;
 
+    protected $fillable = [
+        'id',
+        'title',
+        'meta_title',
+        'slug',
+        'color',
+        'content',
+    ];
+
     public $append = ['url'];
 
     public function url(): Attribute

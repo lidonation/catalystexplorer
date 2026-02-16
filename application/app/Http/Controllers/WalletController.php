@@ -183,8 +183,10 @@ class WalletController extends Controller
             return [
                 'all_time_votes' => 0,
                 'funds_participated' => [],
+                'drep_status' => false,
             ];
         }
+        $drepStatus = $this->walletInfoService->isDrep($stakeKey);
         $voter = Voter::where('stake_pub', $stakeKey)
             ->with(['voting_powers.snapshot.fund'])
             ->first();
@@ -193,6 +195,7 @@ class WalletController extends Controller
             return [
                 'all_time_votes' => 0,
                 'funds_participated' => [],
+                'drep_status' => $drepStatus,
             ];
         }
 
@@ -205,6 +208,7 @@ class WalletController extends Controller
         return [
             'all_time_votes' => $allTimeVotes,
             'funds_participated' => $fundsParticipated,
+            'drep_status' => $drepStatus,
         ];
     }
 

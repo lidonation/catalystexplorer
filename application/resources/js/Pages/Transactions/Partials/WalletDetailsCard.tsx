@@ -10,6 +10,7 @@ interface WalletDetailsCardProps {
     walletStats: {
         all_time_votes: number;
         funds_participated: string[];
+        drep_status?: boolean;
     };
     children?: React.ReactNode;
     title?: string;
@@ -55,12 +56,12 @@ export default function WalletDetailsCard({
                     <DetailRow label={t('transactions.drepStatus')}>
                         <Paragraph
                             className={`rounded-xl px-2 py-1 font-bold ${
-                                transaction?.json_metadata.status === 'true'
+                                walletStats?.drep_status
                                     ? 'bg-success-light text-success border'
                                     : 'bg-error-light text-error border'
                             }`}
                         >
-                            {transaction?.json_metadata.status === 'true'
+                            {walletStats?.drep_status
                                 ? 'Active'
                                 : 'Inactive'}
                         </Paragraph>

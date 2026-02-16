@@ -47,6 +47,10 @@ class UserData extends Data
         public ?float $voting_power,
 
         public ?string $city,
+
+        public ?bool $has_claimed_profiles,
+
+        public mixed $claimed_profiles_summary,
     ) {}
 
     public static function from(...$payloads): static
@@ -59,6 +63,9 @@ class UserData extends Data
             $rawId = $user->getKey() ?? $user->id;
 
             $instance->id = $rawId !== null ? (string) $rawId : null;
+
+            $instance->claimed_profiles_summary = $user->claimed_profiles_summary ?? null;
+            $instance->has_claimed_profiles = $user->has_claimed_profiles ?? false;
         }
 
         if ($user && method_exists($user, 'getKey') && auth()->check()) {

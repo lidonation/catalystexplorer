@@ -18,7 +18,7 @@ it('converts BookmarkItem model to BookmarkItemData DTO successfully', function 
     $dto = $bookmarkItem->toDto();
 
     expect($dto)->toBeInstanceOf(BookmarkItemData::class)
-        ->and($dto->id)->toBe((string) $bookmarkItem->id) // BookmarkItem uses int ID
+        ->and($dto->id)->toBe((string) $bookmarkItem->id) // BookmarkItem uses UUID
         ->and($dto->user_id)->toBe($bookmarkItem->user_id)
         ->and($dto->bookmark_collection_id)->toBe($bookmarkItem->bookmark_collection_id)
         ->and($dto->model_id)->toBe($bookmarkItem->model_id)
@@ -49,7 +49,14 @@ it('serializes BookmarkItemData to array correctly', function () {
 });
 
 it('handles polymorphic model relationship in BookmarkItemData', function () {
-    $bookmarkItem = BookmarkItem::factory()->create();
+    // Create a Group model first
+    $group = Group::factory()->create();
+    
+    // Create a BookmarkItem that references the Group
+    $bookmarkItem = BookmarkItem::factory()->create([
+        'model_id' => $group->id,
+        'model_type' => Group::class,
+    ]);
     $bookmarkItem->load('model'); // Load the polymorphic relationship
     $dto = $bookmarkItem->toDto();
 
@@ -184,7 +191,13 @@ it('preserves all VoteEnum values correctly', function () {
 
 // Type Validation Tests
 it('validates all BookmarkItemData field types', function () {
-    $item = BookmarkItem::factory()->create();
+    // Create a Group model first to ensure the polymorphic relationship works
+    $group = Group::factory()->create();
+    $item = BookmarkItem::factory()->create([
+        'model_id' => $group->id,
+        'model_type' => Group::class,
+    ]);
+    $item->load('model'); // Load the polymorphic relationship
     $dto = $item->toDto();
     
     // Nullable string fields
@@ -216,14 +229,17 @@ it('validates all BookmarkItemData field types', function () {
 });
 
 it('rejects invalid BookmarkItemData types', function () {
-    expect(fn() => BookmarkItemData::from([
-        'id' => 123 // should be string or null
-    ]))->toThrow();
+    // Laravel Data automatically casts compatible types (int to string)
+    $dto1 = BookmarkItemData::from([
+        'id' => 123 // This gets cast to '123'
+    ]);
+    expect($dto1->id)->toBe('123');
     
+    // But throws TypeError for incompatible types (string to int)
     expect(fn() => BookmarkItemData::from([
         'id' => 'valid-id',
-        'action' => 'not-integer' // should be int or null
-    ]))->toThrow();
+        'action' => 'not-integer' // string cannot be cast to int
+    ]))->toThrow(\TypeError::class);
 });
 
 it('accepts null values for BookmarkItemData nullable fields', function () {

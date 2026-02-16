@@ -55,7 +55,7 @@ spec:
                     serviceAccountName: "sa-{{ $.Chart.Name }}-scheduler"
                     containers:
                       - name: scheduler-run
-                        image: bitnami/kubectl:sha256-f79ebae1ff869758d46262ecb417e3526805669a2c61623e74ff6e4cf1d82bca
+                        image: alpine/kubectl:1.35.0
                         imagePullPolicy: IfNotPresent
                         command:
                           - /bin/sh

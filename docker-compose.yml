@@ -157,8 +157,8 @@ services:
       POSTGRESQL_DB_SYNC_DB: cexplorer
       POSTGRESQL_DB_SYNC_USER: postgres
       POSTGRESQL_WEB_DB_HOST: catalystexplorer.db
-      POSTGRESQL_WEB_DB: explorerweb
-      POSTGRESQL_WEB_USER: catalystexplorer
+      POSTGRESQL_WEB_DB: catalystexplorer
+      POSTGRESQL_WEB_USER: explorerdbuser
       POSTGRESQL_WEB_PASSWORD: ASLJ023470AlserLFH
       TELESCOPE_USE_DARK_THEME: "true"
       XDG_CONFIG_HOME: /var/www
@@ -178,20 +178,19 @@ services:
       - shared-network
   # database
   catalystexplorer.db:
-    image: postgres:17.1-bookworm
+    image: pgvector/pgvector:pg18-trixie
     container_name: catalystexplorer.db
     logging: *default-logging
     ports:
       - "${FORWARD_DB_PORT:-5432}:5432"
     environment:
       - POSTGRES_LOGGING=true
-      - POSTGRES_DB=explorerweb
+      - POSTGRES_DB=catalystexplorer
       - POSTGRES_PASSWORD=ASLJ023470AlserLFH
-      - POSTGRES_USER=catalystexplorer
-      - POSTGRES_POSTGRES_PASSWORD=alj2340aaALJAF2341408AUUZLJK
+      - POSTGRES_USER=explorerdbuser
+      - POSTGRES_POSTGRES_PASSWORD=${POSTGRES_POSTGRES_PASSWORD:-alj2340aaALJAF2341408AUUZLJK}
     volumes:
-      - "catalystexplorer-db:/var/lib/postgresql/data"
-      # - './vendor/laravel/sail/database/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
+      - "catalystexplorer-db:/var/lib/postgresql"
     networks:
       - catalystexplorer-net
       - shared-network
@@ -201,14 +200,29 @@ services:
         - pg_isready
         - "-q"
         - "-d"
-        - "explorerweb"
-        - "-U"
         - "catalystexplorer"
+        - "-U"
+        - "explorerdbuser"
       retries: 3
       timeout: 5s
+
+  # one-shot init to enable extensions in explorerweb
+  catalystexplorer.db-init:
+    image: postgres:18.1-trixie
+    container_name: catalystexplorer.db-init
+    depends_on:
+      - catalystexplorer.db
+    networks:
+      - catalystexplorer-net
+    entrypoint: ["/bin/sh","-c"]
+    command: >
+      "until pg_isready -h catalystexplorer.db -U explorerdbuser -d catalystexplorer; do echo waiting for db; sleep 1; done;
+      PGPASSWORD=ASLJ023470AlserLFH psql -h catalystexplorer.db -U explorerdbuser -d catalystexplorer -v ON_ERROR_STOP=1 -c 'CREATE EXTENSION IF NOT EXISTS vector';
+      echo 'pgvector enabled';"
+    restart: "no"
   # meilisearch
   catalystexplorer-search:
-    image: getmeili/meilisearch:v1.32.1
+    image: getmeili/meilisearch:v1.35.0
     container_name: catalystexplorer-search
     logging: *default-logging
     ports:
@@ -291,6 +305,29 @@ services:
     profiles:
       - testing
 
+  # ollama AI service
+  catalystexplorer.ollama:
+    image: ollama/ollama:0.6.2
+    container_name: catalystexplorer.ollama
+    ports:
+      - "${FORWARD_OLLAMA_PORT:-11434}:11434"
+    volumes:
+      - "catalystexplorer-ollama:/root/.ollama"
+      - "./docker/scripts/ollama-init.sh:/ollama-init.sh"
+    networks:
+      - catalystexplorer-net
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+      - OLLAMA_HOST=0.0.0.0
+    restart: unless-stopped
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
   createbuckets:
     image: minio/mc
     depends_on:
@@ -319,6 +356,8 @@ volumes:
   catalystexplorer-search:
     driver: local
   catalystexplorer-redis:
+    driver: local
+  catalystexplorer-ollama:
     driver: local
   test_catalystexplorer-db:
     driver: local

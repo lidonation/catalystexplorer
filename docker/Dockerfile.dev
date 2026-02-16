@@ -188,6 +188,7 @@ RUN mkdir -p \
 
 COPY --link --chown=${WWWUSER}:${WWWUSER} healthcheck /usr/local/bin/healthcheck
 COPY --link --chown=${WWWUSER}:${WWWUSER} Caddyfile.dev /etc/caddy/Caddyfile
+COPY --link --chown=${WWWUSER}:${WWWUSER} Caddyfile.testing /etc/caddy/Caddyfile.testing
 COPY --link --chown=${WWWUSER}:${WWWUSER} start-container /usr/local/bin/start-container
 COPY --link --chown=${WWWUSER}:${WWWUSER} supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY --link --chown=${WWWUSER}:${WWWUSER} php.ini ${PHP_INI_DIR}/conf.d/99-octane.ini

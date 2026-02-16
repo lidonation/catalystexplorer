@@ -73,7 +73,7 @@ class ProposalPolicy extends AppPolicy
         }
 
         // Check CatalystProfiles
-        $userCatalystProfiles = CatalystProfile::where('claimed_by', $user->id)->pluck('id')->toArray();
+        $userCatalystProfiles = $user->claimed_catalyst_profiles->pluck('id')->toArray();
         $proposalCatalystProfileIds = $proposal->catalyst_profiles->pluck('id')->toArray();
 
         if (! empty($userCatalystProfiles) && ! empty(array_intersect($userCatalystProfiles, $proposalCatalystProfileIds))) {

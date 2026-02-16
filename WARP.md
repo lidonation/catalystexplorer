@@ -293,9 +293,9 @@ make db-schema
 
 ### Docker Services
 - `catalystexplorer.com` - Main Laravel application
-- `catalystexplorer.pgsql` - PostgreSQL database  
+- `catalystexplorer.db` - PostgreSQL database  
 - `catalystexplorer.redis` - Redis cache/queue
-- `catalystexplorer.meilisearch` - Search engine
+- `catalystexplorer-search` - Meilisearch search engine
 - `catalystexplorer.allure` - E2E test reporting
 
 ### Workflow System

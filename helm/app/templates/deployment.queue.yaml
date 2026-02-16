@@ -43,14 +43,14 @@ spec:
 
               php /var/www/artisan horizon
           lifecycle:
-              preStop:
+            preStop:
               exec:
-                  command: ["php", "/var/www/artisan", "horizon:terminate"]
+                command: ["php", "/var/www/artisan", "horizon:terminate"]
           resources:
-              limits:
+            limits:
               memory: 9216Mi
-              cpu: 5
-              requests:
+              cpu: "5"
+            requests:
               cpu: 120m
               memory: 512Mi
           envFrom:
@@ -61,10 +61,6 @@ spec:
               value: "{{ .Values.services.app.POSTGRESQL_WEB_DB_HOST }}"
             - name: PHP_MEMORY_LIMIT
               value: 4096M
-            - name: REDIS_PASSWORD
-              value: "{{ .Values.services.redis.password }}"
-            - name: REDIS_HOST
-              value: "{{ .Values.services.redis.host }}"
             - name: CONTAINER_ROLE
               value: queue
             - name: PHP_DISABLED_FUNCTION
