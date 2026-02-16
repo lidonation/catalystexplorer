@@ -50,7 +50,7 @@ export default function ProposalUsers({
                             <div className="absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 transform">
                                 <div className="bg-background text-content rounded border-2 px-2 py-1 text-xs whitespace-nowrap">
                                     <div className="font-medium">
-                                        {profile?.model?.name || t('anonymous')}
+                                        {profile?.model?.name || t('profile')}
                                     </div>
                                 </div>
                             </div>
