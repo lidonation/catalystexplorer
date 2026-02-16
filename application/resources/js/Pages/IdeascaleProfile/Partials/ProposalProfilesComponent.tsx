@@ -100,6 +100,7 @@ export default function ProposalProfiles({
                             name={user?.name || undefined}
                             imageUrl={user.hero_img_url || undefined}
                             subtitle={getProfileTypeName(user)}
+                            username={user?.username || undefined}
                             data-testid={`team-member-avatar-${index}`}
                         />
                     </li>
