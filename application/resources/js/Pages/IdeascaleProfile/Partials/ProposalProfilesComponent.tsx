@@ -45,16 +45,25 @@ export default function ProposalProfiles({
 
     const [isHovered, setIsHovered] = useState(false);
 
-    const [hoveredUserIndex, setHoveredUserIndex] = useState<number | null>(
-        null,
-    );
-
     const handleUserClick = (
         user: any,
     ) => {
         if (onUserClick) {
             onUserClick(user);
         }
+    };
+
+    // Helper function to determine profile type display name
+    const getProfileTypeName = (user: any): string => {
+        if ('profile_type' in user && user.profile_type) {
+            const profileType = user.profile_type;
+            if (profileType === 'App\\Models\\IdeascaleProfile' || profileType === 'IdeascaleProfile') {
+                return 'Ideascale Profile';
+            } else if (profileType === 'App\\Models\\CatalystProfile' || profileType === 'CatalystProfile') {
+                return 'Catalyst Profile';
+            }
+        }
+        return 'Profile';
     };
 
     // Helper function to determine the profile type for routing
@@ -73,20 +82,6 @@ export default function ProposalProfiles({
         return 'ideascaleProfiles.show';
     };
 
-    // Helper function to determine profile type display name
-    const getProfileTypeName = (user: any): string => {
-        if ('profile_type' in user && user.profile_type) {
-            // Handle both full namespace and basename formats
-            const profileType = user.profile_type;
-            if (profileType === 'App\\Models\\IdeascaleProfile' || profileType === 'IdeascaleProfile') {
-                return 'Ideascale Profile';
-            } else if (profileType === 'App\\Models\\CatalystProfile' || profileType === 'CatalystProfile') {
-                return 'Catalyst Profile';
-            }
-        }
-        return 'Profile'; // fallback for old format
-    };
-
     return (
         <section
             className={`relative flex`}
@@ -98,37 +93,15 @@ export default function ProposalProfiles({
                     <li
                         key={index}
                         onClick={() => onUserClick?.(user)}
-                        onMouseEnter={() => setHoveredUserIndex(index)}
-                        onMouseLeave={() => setHoveredUserIndex(null)}
                         className="relative"
                     >
                         <UserAvatar
                             size="size-8"
                             name={user?.name || undefined}
                             imageUrl={user.hero_img_url || undefined}
+                            subtitle={getProfileTypeName(user)}
                             data-testid={`team-member-avatar-${index}`}
                         />
-
-                        {hoveredUserIndex === index && (
-                            <div
-                                className="absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 transform"
-                                data-testid={`team-member-tooltip-${index}`}
-                            >
-                                <div className="bg-background text-content rounded border-2 px-2 py-1 text-xs whitespace-nowrap">
-                                    <div className="font-medium">
-                                        {user.name || t('anonymous')}
-                                    </div>
-                                    <div className="text-gray-500 text-xs">
-                                        {getProfileTypeName(user)}
-                                    </div>
-                                    {user.username && (
-                                        <div className="text-gray-400 text-xs">
-                                            @{user.username}
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        )}
                     </li>
                 ))}
 
