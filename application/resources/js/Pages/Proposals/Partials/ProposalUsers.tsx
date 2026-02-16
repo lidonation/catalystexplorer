@@ -17,7 +17,6 @@ export default function ProposalUsers({
     className,
 }: PageProps<ProposalUsers>) {
     const { t } = useLaravelReactI18n();
-
     // Limit the users array to the first 5
     const visibleUsers = team?.slice(0, 5);
     const remainingCount = team?.length - visibleUsers?.length;
@@ -31,8 +30,12 @@ export default function ProposalUsers({
                 {t('teams')}
             </Title>
             <ul className="flex cursor-pointer -space-x-2 py-1.5">
-                {visibleUsers?.map((profile) => (
-                    <li key={profile?.id} onClick={() => onUserClick(profile.model)}>
+                {visibleUsers?.map((profile, index) => (
+                    <li
+                        key={profile?.id}
+                        className="relative"
+                        onClick={() => onUserClick(profile.model)}
+                    >
                         <UserAvatar
                             size="size-8"
                             name={profile?.model?.name}
