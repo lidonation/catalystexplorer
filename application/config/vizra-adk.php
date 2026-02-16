@@ -29,11 +29,11 @@ return [
          * Fine-grained control over which components can log.
          */
         'components' => [
-            'vector_memory' => env('VIZRA_ADK_LOG_VECTOR_MEMORY', false),
+            'vector_memory' => env('VIZRA_ADK_LOG_VECTOR_MEMORY', true),
             'agents' => env('VIZRA_ADK_LOG_AGENTS', true),
             'tools' => env('VIZRA_ADK_LOG_TOOLS', true),
             'mcp' => env('VIZRA_ADK_LOG_MCP', true),
-            'traces' => env('VIZRA_ADK_LOG_TRACES', false),
+            'traces' => env('VIZRA_ADK_LOG_TRACES', true),
         ],
     ],
 
@@ -103,6 +103,18 @@ return [
      * - Models: Use format "provider/model" (e.g., "openai/gpt-4", "anthropic/claude-3-opus")
      */
     'providers' => [
+        'openai' => [
+            'api_key' => env('OPENAI_API_KEY'),
+            'organization' => env('OPENAI_ORGANIZATION'),
+            'project' => env('OPENAI_PROJECT'),
+            'base_url' => env('OPENAI_BASE_URL', 'https://api.openai.com/v1'),
+            'url' => env('OPENAI_BASE_URL', 'https://api.openai.com/v1'), // Added 'url' key for compatibility
+            'timeout' => env('OPENAI_TIMEOUT', 60),
+            'max_retries' => env('OPENAI_MAX_RETRIES', 3),
+            'default_model' => env('OPENAI_DEFAULT_MODEL', 'gpt-4o-mini'),
+            'default_temperature' => env('OPENAI_DEFAULT_TEMPERATURE', 0.7),
+            'default_max_tokens' => env('OPENAI_DEFAULT_MAX_TOKENS', 4096),
+        ],
         'openrouter' => [
             'api_key' => env('OPENROUTER_API_KEY'),
             'base_url' => 'https://openrouter.ai/api/v1',
@@ -113,7 +125,7 @@ return [
         'ollama' => [
             'base_url' => env('OLLAMA_HOST', 'http://catalystexplorer-ollama-service:11434'),
             'url' => env('OLLAMA_HOST', 'http://catalystexplorer-ollama-service:11434'),
-            'timeout' => env('OLLAMA_TIMEOUT', 300),
+            'timeout' => env('VIZRA_ADK_HTTP_TIMEOUT', 300),
             'keep_alive' => env('OLLAMA_KEEP_ALIVE', '24h'),
         ],
     ],
@@ -409,7 +421,7 @@ return [
          */
         'rag' => [
             'context_template' => "Based on the following context:\n{context}\n\nAnswer this question: {query}",
-            'max_context_length' => env('VIZRA_ADK_RAG_MAX_CONTEXT', 4000),
+            'max_context_length' => env('VIZRA_ADK_RAG_MAX_CONTEXT', 5000),
             'include_metadata' => env('VIZRA_ADK_RAG_INCLUDE_METADATA', true),
         ],
     ],

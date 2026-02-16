@@ -217,7 +217,7 @@ services:
     entrypoint: ["/bin/sh","-c"]
     command: >
       "until pg_isready -h catalystexplorer.db -U explorerdbuser -d catalystexplorer; do echo waiting for db; sleep 1; done;
-      PGPASSWORD=ASLJ023470AlserLFH psql -h catalystexplorer.db -U explorerdbuser -d catalystexplorer -v ON_ERROR_STOP=1 -c 'CREATE EXTENSION IF NOT EXISTS vector';
+      PGPASSWORD=${POSTGRES_POSTGRES_PASSWORD:-alj2340aaALJAF2341408AUUZLJK} psql -h catalystexplorer.db -U postgres -d catalystexplorer -v ON_ERROR_STOP=1 -c 'CREATE EXTENSION IF NOT EXISTS vector';
       echo 'pgvector enabled';"
     restart: "no"
   # meilisearch
