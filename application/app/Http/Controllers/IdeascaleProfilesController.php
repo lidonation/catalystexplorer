@@ -11,6 +11,7 @@ use App\DataTransferObjects\IdeascaleProfileData;
 use App\DataTransferObjects\ProjectScheduleData;
 use App\DataTransferObjects\ProposalData;
 use App\DataTransferObjects\ReviewData;
+use App\Enums\CatalystCurrencySymbols;
 use App\Enums\IdeascaleProfileSearchParams;
 use App\Enums\ProposalSearchParams;
 use App\Models\Campaign;
@@ -22,14 +23,12 @@ use App\Repositories\IdeascaleProfileRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Fluent;
 use Inertia\Inertia;
 use Inertia\Response;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
-use Illuminate\Support\Facades\DB;
-use App\Enums\CatalystCurrencySymbols;
-
 
 class IdeascaleProfilesController extends Controller
 {
@@ -60,93 +59,92 @@ class IdeascaleProfilesController extends Controller
         $profileId = $ideascaleProfile->id;
 
         $cacheKey = "ideascale_profile:{$profileId}:base_data";
-       $ideascaleProfileData = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($ideascaleProfile, $profileId) {
+        $ideascaleProfileData = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($ideascaleProfile, $profileId) {
             // Load groups for display
             $ideascaleProfile->load(['groupsUuid']);
 
             // Build a base query using the SAME pivot table you seeded: proposal_profiles
             $baseQuery = DB::table('proposals')
-            ->join('proposal_profiles', 'proposals.id', '=', 'proposal_profiles.proposal_id')
-            ->where('proposal_profiles.profile_type', IdeascaleProfile::class)
-            ->whereRaw('CAST(proposal_profiles.profile_id AS VARCHAR) = ?', [(string) $profileId])
-            ->whereNull('proposals.deleted_at')
-            ->whereRaw("proposals.type::text = 'proposal'");
+                ->join('proposal_profiles', 'proposals.id', '=', 'proposal_profiles.proposal_id')
+                ->where('proposal_profiles.profile_type', IdeascaleProfile::class)
+                ->whereRaw('CAST(proposal_profiles.profile_id AS VARCHAR) = ?', [(string) $profileId])
+                ->whereNull('proposals.deleted_at')
+                ->whereRaw("proposals.type::text = 'proposal'");
 
             // Counts
             $proposalsCount = (clone $baseQuery)->count();
 
             $fundedCount = (clone $baseQuery)
-            ->whereNotNull('proposals.funded_at')
-            ->count();
+                ->whereNotNull('proposals.funded_at')
+                ->count();
 
             $unfundedCount = (clone $baseQuery)
-            ->whereNull('proposals.funded_at')
-            ->count();
+                ->whereNull('proposals.funded_at')
+                ->count();
 
             $completedCount = (clone $baseQuery)
-            ->where('proposals.status', 'complete')
-            ->count();
+                ->where('proposals.status', 'complete')
+                ->count();
 
             // Totals (split by fund currency)
             $requestedAda = (float) (clone $baseQuery)
-            ->join('funds', 'funds.id', '=', 'proposals.fund_id')
-            ->where('funds.currency', CatalystCurrencySymbols::ADA->name)
-            ->sum('proposals.amount_requested');
+                ->join('funds', 'funds.id', '=', 'proposals.fund_id')
+                ->where('funds.currency', CatalystCurrencySymbols::ADA->name)
+                ->sum('proposals.amount_requested');
 
             $requestedUsd = (float) (clone $baseQuery)
-            ->join('funds', 'funds.id', '=', 'proposals.fund_id')
-            ->where('funds.currency', CatalystCurrencySymbols::USD->name)
-            ->sum('proposals.amount_requested');
+                ->join('funds', 'funds.id', '=', 'proposals.fund_id')
+                ->where('funds.currency', CatalystCurrencySymbols::USD->name)
+                ->sum('proposals.amount_requested');
 
             $awardedAda = (float) (clone $baseQuery)
-            ->join('funds', 'funds.id', '=', 'proposals.fund_id')
-            ->where('funds.currency', CatalystCurrencySymbols::ADA->name)
-            ->whereNotNull('proposals.funded_at')
-            ->sum('proposals.amount_requested');
+                ->join('funds', 'funds.id', '=', 'proposals.fund_id')
+                ->where('funds.currency', CatalystCurrencySymbols::ADA->name)
+                ->whereNotNull('proposals.funded_at')
+                ->sum('proposals.amount_requested');
 
             $awardedUsd = (float) (clone $baseQuery)
-            ->join('funds', 'funds.id', '=', 'proposals.fund_id')
-            ->where('funds.currency', CatalystCurrencySymbols::USD->name)
-            ->whereNotNull('proposals.funded_at')
-            ->sum('proposals.amount_requested');
+                ->join('funds', 'funds.id', '=', 'proposals.fund_id')
+                ->where('funds.currency', CatalystCurrencySymbols::USD->name)
+                ->whereNotNull('proposals.funded_at')
+                ->sum('proposals.amount_requested');
 
             $distributedAda = (float) (clone $baseQuery)
-            ->join('funds', 'funds.id', '=', 'proposals.fund_id')
-            ->where('funds.currency', CatalystCurrencySymbols::ADA->name)
-            ->whereNotNull('proposals.funded_at')
-            ->sum('proposals.amount_received');
+                ->join('funds', 'funds.id', '=', 'proposals.fund_id')
+                ->where('funds.currency', CatalystCurrencySymbols::ADA->name)
+                ->whereNotNull('proposals.funded_at')
+                ->sum('proposals.amount_received');
 
             $distributedUsd = (float) (clone $baseQuery)
-            ->join('funds', 'funds.id', '=', 'proposals.fund_id')
-            ->where('funds.currency', CatalystCurrencySymbols::USD->name)
-            ->whereNotNull('proposals.funded_at')
-            ->sum('proposals.amount_received');
+                ->join('funds', 'funds.id', '=', 'proposals.fund_id')
+                ->where('funds.currency', CatalystCurrencySymbols::USD->name)
+                ->whereNotNull('proposals.funded_at')
+                ->sum('proposals.amount_received');
 
             // Return full payload expected by IdeascaleProfileData + the card
             return [
-            ...$ideascaleProfile->toArray(),
-            'groups' => $ideascaleProfile->groupsUuid->toArray(),
+                ...$ideascaleProfile->toArray(),
+                'groups' => $ideascaleProfile->groupsUuid->toArray(),
 
-            'proposals_count' => (int) $proposalsCount,
-            'funded_proposals_count' => (int) $fundedCount,
-            'unfunded_proposals_count' => (int) $unfundedCount,
-            'completed_proposals_count' => (int) $completedCount,
+                'proposals_count' => (int) $proposalsCount,
+                'funded_proposals_count' => (int) $fundedCount,
+                'unfunded_proposals_count' => (int) $unfundedCount,
+                'completed_proposals_count' => (int) $completedCount,
 
-            'amount_requested_ada' => $requestedAda,
-            'amount_requested_usd' => $requestedUsd,
-            'amount_awarded_ada' => $awardedAda,
-            'amount_awarded_usd' => $awardedUsd,
-            'amount_distributed_ada' => $distributedAda,
-            'amount_distributed_usd' => $distributedUsd,
+                'amount_requested_ada' => $requestedAda,
+                'amount_requested_usd' => $requestedUsd,
+                'amount_awarded_ada' => $awardedAda,
+                'amount_awarded_usd' => $awardedUsd,
+                'amount_distributed_ada' => $distributedAda,
+                'amount_distributed_usd' => $distributedUsd,
 
-            // Safe defaults for fields you aren’t computing yet
-            'co_proposals_count' => $ideascaleProfile->co_proposals_count ?? 0,
-            'own_proposals_count' => $ideascaleProfile->own_proposals_count ?? 0,
-            'collaborating_proposals_count' => $ideascaleProfile->collaborating_proposals_count ?? 0,
-            'reviews_count' => $ideascaleProfile->reviews_count ?? 0,
+                // Safe defaults for fields you aren’t computing yet
+                'co_proposals_count' => $ideascaleProfile->co_proposals_count ?? 0,
+                'own_proposals_count' => $ideascaleProfile->own_proposals_count ?? 0,
+                'collaborating_proposals_count' => $ideascaleProfile->collaborating_proposals_count ?? 0,
+                'reviews_count' => $ideascaleProfile->reviews_count ?? 0,
             ];
-            });
-
+        });
 
         $currentPage = 1;
 

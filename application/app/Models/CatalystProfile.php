@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
 use Spatie\Image\Enums\CropPosition;
 use Spatie\MediaLibrary\HasMedia;
@@ -36,13 +35,11 @@ class CatalystProfile extends Model implements HasMedia
         'funded_proposals_count',
         'completed_proposals_count',
         'amount_requested_ada',
-        'amount_requested_usd',
         'amount_awarded_ada',
-        'amount_awarded_usd',
         'amount_distributed_ada',
-        'amount_distributed_usd',
-        'own_proposals_count',
-        'collaborating_proposals_count',
+        'amount_requested_usdm',
+        'amount_awarded_usdm',
+        'amount_distributed_usdm',
     ];
 
     public string $meiliIndexName = 'cx_catalyst_profiles';
@@ -81,7 +78,6 @@ class CatalystProfile extends Model implements HasMedia
             'name',
             'username',
             'amount_awarded_ada',
-            'amount_awarded_usd',
             'completed_proposals_count',
             'funded_proposals_count',
             'updated_at',
@@ -107,84 +103,12 @@ class CatalystProfile extends Model implements HasMedia
             'completed_proposals_count',
             'funded_proposals_count',
             'amount_distributed_ada',
-            'amount_distributed_usd',
             'amount_awarded_ada',
-            'amount_awarded_usd',
             'proposals_count',
             'proposals.campaign',
             'proposals.tags',
             'proposals',
         ];
-    }
-
-    /**
-     * Append the common profile stats and ensure they are loaded efficiently.
-     */
-    public function appendProfileStats(): self
-    {
-        $this->loadProfileAggregates();
-
-        return $this->append($this->profileStatAppends);
-    }
-
-    /**
-     * Load counts and currency aggregates onto the model attributes.
-     */
-    public function loadProfileAggregates(): self
-    {
-        try {
-            $this->loadCount([
-                'proposals',
-                'proposals as funded_proposals_count' => fn ($q) => $q->whereNotNull('funded_at'),
-                'proposals as completed_proposals_count' => fn ($q) => $q->where('status', ProposalStatus::complete()->value),
-            ]);
-
-            $this->loadCurrencyAggregates();
-        } catch (\Throwable $e) {
-            Log::warning('Failed to load CatalystProfile aggregates via relationships.', [
-                'profile_id' => $this->id,
-                'error' => $e->getMessage(),
-            ]);
-
-            throw $e;
-        }
-
-        // These are not yet computed elsewhere but the DTO expects them.
-        $this->setAttribute('own_proposals_count', (int) ($this->attributes['own_proposals_count'] ?? 0));
-        $this->setAttribute('collaborating_proposals_count', (int) ($this->attributes['collaborating_proposals_count'] ?? 0));
-
-        return $this;
-    }
-
-    /**
-     * Load currency aggregates using a single grouped query.
-     */
-    protected function loadCurrencyAggregates(): void
-    {
-        // Use the underlying builder to avoid BelongsToMany adding pivot
-        // columns to the select list, which breaks GROUP BY queries.
-        $rows = $this->proposals()
-            ->getQuery()
-            ->join('funds', 'funds.id', '=', 'proposals.fund_id')
-            ->selectRaw(
-                'funds.currency as currency,
-                COALESCE(SUM(proposals.amount_requested), 0) as requested,
-                COALESCE(SUM(CASE WHEN proposals.funded_at IS NOT NULL THEN proposals.amount_requested ELSE 0 END), 0) as awarded,
-                COALESCE(SUM(CASE WHEN proposals.funded_at IS NOT NULL THEN proposals.amount_received ELSE 0 END), 0) as distributed'
-            )
-            ->groupBy('funds.currency')
-            ->get()
-            ->keyBy('currency');
-
-        $ada = $rows->get(CatalystCurrencySymbols::ADA->name);
-        $usd = $rows->get(CatalystCurrencySymbols::USD->name);
-
-        $this->setAttribute('amount_requested_ada', (float) ($ada->requested ?? 0));
-        $this->setAttribute('amount_requested_usd', (float) ($usd->requested ?? 0));
-        $this->setAttribute('amount_awarded_ada', (float) ($ada->awarded ?? 0));
-        $this->setAttribute('amount_awarded_usd', (float) ($usd->awarded ?? 0));
-        $this->setAttribute('amount_distributed_ada', (float) ($ada->distributed ?? 0));
-        $this->setAttribute('amount_distributed_usd', (float) ($usd->distributed ?? 0));
     }
 
     public function amountRequestedAda(): Attribute
@@ -197,21 +121,6 @@ class CatalystProfile extends Model implements HasMedia
 
                 return (float) $this->proposals()
                     ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::ADA->name))
-                    ->sum('amount_requested');
-            },
-        );
-    }
-
-    public function amountRequestedUsd(): Attribute
-    {
-        return Attribute::make(
-            get: function ($value) {
-                if ($value !== null) {
-                    return (float) $value;
-                }
-
-                return (float) $this->proposals()
-                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USD->name))
                     ->sum('amount_requested');
             },
         );
@@ -232,21 +141,6 @@ class CatalystProfile extends Model implements HasMedia
         );
     }
 
-    public function amountAwardedUsd(): Attribute
-    {
-        return Attribute::make(
-            get: function ($value) {
-                if ($value !== null) {
-                    return (float) $value;
-                }
-
-                return (float) $this->funded_proposals()
-                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USD->name))
-                    ->sum('amount_requested');
-            },
-        );
-    }
-
     public function amountDistributedAda(): Attribute
     {
         return Attribute::make(
@@ -262,7 +156,22 @@ class CatalystProfile extends Model implements HasMedia
         );
     }
 
-    public function amountDistributedUsd(): Attribute
+    public function amountRequestedUsdm(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                if ($value !== null) {
+                    return (float) $value;
+                }
+
+                return (float) $this->proposals()
+                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USDM->name))
+                    ->sum('amount_requested');
+            },
+        );
+    }
+
+    public function amountAwardedUsdm(): Attribute
     {
         return Attribute::make(
             get: function ($value) {
@@ -271,7 +180,22 @@ class CatalystProfile extends Model implements HasMedia
                 }
 
                 return (float) $this->funded_proposals()
-                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USD->name))
+                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USDM->name))
+                    ->sum('amount_requested');
+            },
+        );
+    }
+
+    public function amountDistributedUsdm(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                if ($value !== null) {
+                    return (float) $value;
+                }
+
+                return (float) $this->funded_proposals()
+                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USDM->name))
                     ->sum('amount_received');
             },
         );
@@ -340,23 +264,8 @@ class CatalystProfile extends Model implements HasMedia
         return $value !== null ? (int) $value : $this->completedProposalCount();
     }
 
-    public function getOwnProposalsCountAttribute($value): int
-    {
-        return $value !== null
-            ? (int) $value
-            : (int) ($this->attributes['own_proposals_count'] ?? 0);
-    }
-
-    public function getCollaboratingProposalsCountAttribute($value): int
-    {
-        return $value !== null
-            ? (int) $value
-            : (int) ($this->attributes['collaborating_proposals_count'] ?? 0);
-    }
-
     public function toSearchableArray(): array
     {
-        $this->loadProfileAggregates();
 
         $array = $this->toArray();
 
@@ -366,11 +275,11 @@ class CatalystProfile extends Model implements HasMedia
             'funded_proposals_count' => $this->fundedProposalCount(),
             'completed_proposals_count' => $this->completedProposalCount(),
             'amount_requested_ada' => $this->amount_requested_ada,
-            'amount_requested_usd' => $this->amount_requested_usd,
             'amount_awarded_ada' => $this->amount_awarded_ada,
-            'amount_awarded_usd' => $this->amount_awarded_usd,
             'amount_distributed_ada' => $this->amount_distributed_ada,
-            'amount_distributed_usd' => $this->amount_distributed_usd,
+            'amount_requested_usdm' => $this->amount_requested_usdm,
+            'amount_awarded_usdm' => $this->amount_awarded_usdm,
+            'amount_distributed_usdm' => $this->amount_distributed_usdm,
         ]);
     }
 

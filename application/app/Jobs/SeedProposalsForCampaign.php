@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Jobs;
 
 use App\Models\Campaign;
-use App\Models\IdeascaleProfile;
 use App\Models\CatalystProfile;
+use App\Models\IdeascaleProfile;
 use App\Models\Meta;
+use App\Models\Pivot\ProposalProfile;
 use App\Models\Proposal;
 use App\Models\Tag;
-use App\Models\Pivot\ProposalProfile;
 
 class SeedProposalsForCampaign
 {
@@ -22,14 +22,14 @@ class SeedProposalsForCampaign
     public function handle(): void
     {
         $ideascaleProfiles = IdeascaleProfile::all();
-        $catalystProfiles  = CatalystProfile::all();
+        $catalystProfiles = CatalystProfile::all();
         $tags = Tag::all();
 
         Proposal::factory()
             ->count($this->count)
             ->state([
                 'campaign_id' => $this->campaign->id,
-                'fund_id'     => $this->campaign->fund->id,
+                'fund_id' => $this->campaign->fund->id,
             ])
             ->create()
             ->each(function (Proposal $proposal) use (
@@ -40,13 +40,13 @@ class SeedProposalsForCampaign
                 // ---- Meta ----
                 Meta::create([
                     'model_type' => Proposal::class,
-                    'model_id'   => $proposal->id,
-                    'key'        => fake()->randomElement([
+                    'model_id' => $proposal->id,
+                    'key' => fake()->randomElement([
                         'woman_proposal',
                         'impact_proposal',
                         'ideafest_proposal',
                     ]),
-                    'content'    => fake()->randomElement([0, 1]),
+                    'content' => fake()->randomElement([0, 1]),
                 ]);
 
                 // ---- Tags ----
@@ -64,8 +64,8 @@ class SeedProposalsForCampaign
                         ->each(function ($profile) use ($proposal) {
                             ProposalProfile::create([
                                 'proposal_id' => $proposal->id,
-                                'profile_id'  => $profile->id,
-                                'profile_type'=> IdeascaleProfile::class,
+                                'profile_id' => $profile->id,
+                                'profile_type' => IdeascaleProfile::class,
                             ]);
                         });
                 }
@@ -77,8 +77,8 @@ class SeedProposalsForCampaign
                         ->each(function ($profile) use ($proposal) {
                             ProposalProfile::create([
                                 'proposal_id' => $proposal->id,
-                                'profile_id'  => $profile->id,
-                                'profile_type'=> CatalystProfile::class,
+                                'profile_id' => $profile->id,
+                                'profile_type' => CatalystProfile::class,
                             ]);
                         });
                 }

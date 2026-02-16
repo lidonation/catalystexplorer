@@ -24,7 +24,6 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 
-
 class CatalystProfilesController extends Controller
 {
     protected int $limit = 24;
@@ -59,12 +58,29 @@ class CatalystProfilesController extends Controller
             $cacheKey,
             now()->addMinutes(10),
             function () use ($catalystProfile) {
-                $catalystProfile->load(['groupsUuid']);
-                $catalystProfile->appendProfileStats();
+                $catalystProfile->loadCount([
+                    'proposals',
+                    'proposals as funded_proposals_count' => fn ($q) => $q->whereNotNull('funded_at'),
+                    'proposals as completed_proposals_count' => fn ($q) => $q->where('status', \App\Enums\ProposalStatus::complete()->value),
+                ]);
+
+                $catalystProfile->load(['groups']);
+
+                $catalystProfile->append([
+                    'proposals_count',
+                    'funded_proposals_count',
+                    'completed_proposals_count',
+                    'amount_requested_ada',
+                    'amount_awarded_ada',
+                    'amount_distributed_ada',
+                    'amount_requested_usdm',
+                    'amount_awarded_usdm',
+                    'amount_distributed_usdm',
+                ]);
 
                 return [
                     ...$catalystProfile->toArray(),
-                    'groups' => $catalystProfile->groupsUuid->toArray(),
+                    'groups' => $catalystProfile->groups->toArray(),
                 ];
             }
         );
@@ -148,23 +164,17 @@ class CatalystProfilesController extends Controller
         ];
 
         return match (true) {
-            str_contains($request->path(), '/connections') =>
-                Inertia::render('CatalystProfile/Connections/Index', $props),
+            str_contains($request->path(), '/connections') => Inertia::render('CatalystProfile/Connections/Index', $props),
 
-            str_contains($request->path(), '/groups') =>
-                Inertia::render('CatalystProfile/Groups/Index', $props),
+            str_contains($request->path(), '/groups') => Inertia::render('CatalystProfile/Groups/Index', $props),
 
-            str_contains($request->path(), '/communities') =>
-                Inertia::render('CatalystProfile/Communities/Index', $props),
+            str_contains($request->path(), '/communities') => Inertia::render('CatalystProfile/Communities/Index', $props),
 
-            str_contains($request->path(), '/campaigns') =>
-                Inertia::render('CatalystProfile/Campaigns/Index', $props),
+            str_contains($request->path(), '/campaigns') => Inertia::render('CatalystProfile/Campaigns/Index', $props),
 
-            default =>
-                Inertia::render('CatalystProfile/Proposals/Index', $props),
+            default => Inertia::render('CatalystProfile/Proposals/Index', $props),
         };
     }
-
 
     protected function query($returnBuilder = false, $attrs = null, $filters = [])
     {
@@ -186,14 +196,12 @@ class CatalystProfilesController extends Controller
                 'proposals_count',
                 'funded_proposals_count',
                 'completed_proposals_count',
-                'own_proposals_count',
-                'collaborating_proposals_count',
                 'amount_requested_ada',
-                'amount_requested_usd',
                 'amount_awarded_ada',
-                'amount_awarded_usd',
                 'amount_distributed_ada',
-                'amount_distributed_usd',
+                'amount_requested_usdm',
+                'amount_awarded_usdm',
+                'amount_distributed_usdm',
             ],
         ];
 
