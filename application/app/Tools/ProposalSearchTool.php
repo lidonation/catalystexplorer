@@ -23,13 +23,13 @@ class ProposalSearchTool implements ToolInterface
     {
         return [
             'name' => 'search_proposals',
-            'description' => 'Search for Project Catalyst proposals by topic, technology, or keywords. REQUIRED: Extract relevant keywords from the user\'s question to use as the search query.',
+            'description' => 'Search for Project Catalyst proposals by topic, technology, or keywords. You MUST extract relevant keywords from the user\'s question. For fund-specific searches like "show me funded proposals from fund 13", use query="funding" or "fund 13" and set fund_id="13" and funded_only=true.',
             'parameters' => [
                 'type' => 'object',
                 'properties' => [
                     'query' => [
                         'type' => 'string',
-                        'description' => 'REQUIRED: Keywords extracted from user question. Examples: "AI" (for AI questions), "DeFi" (for DeFi), "education" (for education), "mobile app" (for mobile app questions). DO NOT leave empty.',
+                        'description' => 'REQUIRED: Keywords extracted from user question. Examples: "AI", "DeFi", "education", "mobile app". For fund requests use "funding" or "fund X". NEVER leave empty - always provide a search term.',
                     ],
                     'limit' => [
                         'type' => 'integer',
@@ -74,9 +74,13 @@ class ProposalSearchTool implements ToolInterface
         $fundedOnly = $arguments['funded_only'] ?? false;
         $completedOnly = $arguments['completed_only'] ?? false;
 
-        // Validate query is not empty
+        // Handle fund-specific queries by providing a default search term
         if (empty($query)) {
-            return "Please provide a search query to find relevant proposals. For example, try searching for 'AI', 'DeFi', 'education', or 'mobile apps'.";
+            if ($fundId) {
+                $query = 'funding'; // Default query for fund-specific searches
+            } else {
+                return "Please provide a search query to find relevant proposals. For example, try searching for 'AI', 'DeFi', 'education', or 'mobile apps'.";
+            }
         }
 
         try {
