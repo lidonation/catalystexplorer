@@ -53,19 +53,6 @@ export default function ProposalProfiles({
         }
     };
 
-    // Helper function to determine profile type display name
-    const getProfileTypeName = (user: any): string => {
-        if ('profile_type' in user && user.profile_type) {
-            const profileType = user.profile_type;
-            if (profileType === 'App\\Models\\IdeascaleProfile' || profileType === 'IdeascaleProfile') {
-                return 'Ideascale Profile';
-            } else if (profileType === 'App\\Models\\CatalystProfile' || profileType === 'CatalystProfile') {
-                return 'Catalyst Profile';
-            }
-        }
-        return 'Profile';
-    };
-
     // Helper function to determine the profile type for routing
     const getProfileRoute = (user: any) => {
         // Check if it's the new format with profile_type
@@ -80,6 +67,19 @@ export default function ProposalProfiles({
         }
         // Default fallback (for old format or unknown type)
         return 'ideascaleProfiles.show';
+    };
+
+    // Helper function to determine profile type display name
+    const getProfileTypeName = (user: any): string => {
+        if ('profile_type' in user && user.profile_type) {
+            const profileType = user.profile_type;
+            if (profileType === 'App\\Models\\IdeascaleProfile' || profileType === 'IdeascaleProfile') {
+                return 'Ideascale Profile';
+            } else if (profileType === 'App\\Models\\CatalystProfile' || profileType === 'CatalystProfile') {
+                return 'Catalyst Profile';
+            }
+        }
+        return 'Profile';
     };
 
     return (

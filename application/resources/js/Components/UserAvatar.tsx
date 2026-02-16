@@ -55,7 +55,7 @@ export default function UserAvatar({
                 <div className="rounded border-2 border-black bg-white px-2 py-1 text-xs whitespace-nowrap text-black shadow-md relative">
                     <div className="font-medium">{name}</div>
                     {subtitle && (
-                        <div className="text-gray-500 text-[10px]">{subtitle}</div>
+                        <div className="text-gray-500 text-5">{subtitle}</div>
                     )}
                 </div>
             </div>
