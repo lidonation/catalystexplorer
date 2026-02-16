@@ -2,6 +2,7 @@ import Title from '@/Components/atoms/Title';
 import UserAvatar from '@/Components/UserAvatar';
 import { PageProps } from '@/types';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
+import { useState } from 'react';
 import ProposalProfileData = App.DataTransferObjects.ProposalProfileData;
 import CatalystProfileData = App.DataTransferObjects.CatalystProfileData;
 
@@ -17,6 +18,7 @@ export default function ProposalUsers({
     className,
 }: PageProps<ProposalUsers>) {
     const { t } = useLaravelReactI18n();
+    const [hoveredUserIndex, setHoveredUserIndex] = useState<number | null>(null);
 
     // Limit the users array to the first 5
     const visibleUsers = team?.slice(0, 5);
@@ -31,13 +33,28 @@ export default function ProposalUsers({
                 {t('teams')}
             </Title>
             <ul className="flex cursor-pointer -space-x-2 py-1.5">
-                {visibleUsers?.map((profile) => (
-                    <li key={profile?.id} onClick={() => onUserClick(profile.model)}>
+                {visibleUsers?.map((profile, index) => (
+                    <li
+                        key={profile?.id}
+                        className="relative"
+                        onClick={() => onUserClick(profile.model)}
+                        onMouseEnter={() => setHoveredUserIndex(index)}
+                        onMouseLeave={() => setHoveredUserIndex(null)}
+                    >
                         <UserAvatar
                             size="size-8"
                             name={profile?.model?.name}
                             imageUrl={profile?.model?.hero_img_url}
                         />
+                        {hoveredUserIndex === index && (
+                            <div className="absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 transform">
+                                <div className="bg-background text-content rounded border-2 px-2 py-1 text-xs whitespace-nowrap">
+                                    <div className="font-medium">
+                                        {profile?.model?.name || t('anonymous')}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </li>
                 ))}
 
