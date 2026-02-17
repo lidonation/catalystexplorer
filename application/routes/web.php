@@ -364,6 +364,8 @@ Route::localized(
                         ->name('addBookmarkItem');
                     Route::get('/fetch-proposals', [TinderProposalWorkflowController::class, 'fetchMoreProposals'])
                         ->name('fetchProposals');
+                    Route::get('/ai-recommendations', [TinderProposalWorkflowController::class, 'getAiRecommendations'])
+                        ->name('aiRecommendations');
                     Route::get('/{step}', [TinderProposalWorkflowController::class, 'handleStep'])
                         ->name('index');
                 });
