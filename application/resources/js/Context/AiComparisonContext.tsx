@@ -68,10 +68,6 @@ Please format your response as a structured comparison that evaluates each propo
                 max_tokens: 2000,
             });
 
-            // For now, we'll parse the text response and create mock structured data
-            // In a real implementation, you'd want to structure the AI response better
-            const content = response.data.choices[0]?.message?.content || '';
-            
             // Create mock structured results based on the response
             // This would be better implemented with structured AI output
             const results: ComparisonResult[] = proposalIds.map((id, index) => ({
@@ -131,7 +127,7 @@ Please format your response as a structured comparison that evaluates each propo
     };
 
     return (
-        <AiComparisonContext.Provider 
+        <AiComparisonContext.Provider
             value={{
                 ...state,
                 generateComparison,
