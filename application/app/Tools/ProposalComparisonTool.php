@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace App\Tools;
 
+use App\Actions\Ai\ExtractProposalField;
+use App\Actions\Ai\ExtractProposalTitle;
 use App\Models\Proposal;
+use Prism\Prism\Facades\Prism;
+use Prism\Prism\ValueObjects\Messages\UserMessage;
 use Vizra\VizraADK\Contracts\ToolInterface;
 use Vizra\VizraADK\Memory\AgentMemory;
 use Vizra\VizraADK\System\AgentContext;
@@ -22,7 +26,7 @@ class ProposalComparisonTool implements ToolInterface
                     'proposal_ids' => [
                         'type' => 'array',
                         'items' => [
-                            'type' => 'string'
+                            'type' => 'string',
                         ],
                         'description' => 'Array of proposal IDs to compare and analyze',
                     ],
@@ -38,12 +42,12 @@ class ProposalComparisonTool implements ToolInterface
             'arguments' => $arguments,
             'context_agent' => $context?->getAgent()?->getName() ?? 'direct_call',
         ]);
-        
+
         $proposalIds = $arguments['proposal_ids'] ?? [];
 
         if (empty($proposalIds)) {
             return json_encode([
-                'error' => 'No proposal IDs provided for comparison'
+                'error' => 'No proposal IDs provided for comparison',
             ]);
         }
 
@@ -54,7 +58,7 @@ class ProposalComparisonTool implements ToolInterface
 
             if ($proposals->isEmpty()) {
                 return json_encode([
-                    'error' => 'No proposals found with the provided IDs'
+                    'error' => 'No proposals found with the provided IDs',
                 ]);
             }
 
@@ -69,111 +73,104 @@ class ProposalComparisonTool implements ToolInterface
                 'success' => true,
                 'comparisons' => $comparisons,
                 'generated_at' => now()->toISOString(),
-                'rubric_version' => 'Fund 14'
+                'rubric_version' => 'Fund 14',
             ]);
 
         } catch (\Exception $e) {
             \Log::error('ProposalComparisonTool error', [
                 'proposal_ids' => $proposalIds,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
-            
+
             return json_encode([
                 'success' => false,
-                'error' => 'Failed to generate comparison: ' . $e->getMessage(),
+                'error' => 'Failed to generate comparison: '.$e->getMessage(),
                 'details' => [
                     'proposal_ids' => $proposalIds,
-                    'error_class' => get_class($e)
-                ]
+                    'error_class' => get_class($e),
+                ],
             ]);
         }
     }
 
     private function analyzeProposal(Proposal $proposal): array
     {
-        $title = $this->extractTitle($proposal);
-        $problem = $this->extractField($proposal, 'problem') ?? '';
-        $solution = $this->extractField($proposal, 'solution') ?? '';
-        $experience = $this->extractField($proposal, 'experience') ?? '';
-        $content = $this->extractField($proposal, 'content') ?? '';
+        $extractTitle = new ExtractProposalTitle;
+        $extractField = new ExtractProposalField;
 
-        // Analyze alignment (30 points)
-        $alignmentScore = $this->scoreAlignment($title, $problem, $solution, $proposal);
-        
-        // Analyze feasibility (35 points)
-        $feasibilityScore = $this->scoreFeasibility($experience, $proposal, $solution);
-        
-        // Analyze auditability (35 points)
-        $auditabilityScore = $this->scoreAuditability($content, $proposal);
+        $title = $extractTitle($proposal);
+        $problem = $extractField($proposal, 'problem') ?? '';
+        $solution = $extractField($proposal, 'solution') ?? '';
+        $experience = $extractField($proposal, 'experience') ?? '';
+        $content = $extractField($proposal, 'content') ?? '';
+
+        // Get AI-powered analysis including scores
+        $aiAnalysis = $this->generateAiAnalysis($proposal, $title, $problem, $solution, $experience, $content);
+
+        $alignmentScore = $aiAnalysis['alignment_score'] ?? $this->scoreAlignment($problem.' '.$solution, $proposal);
+        $feasibilityScore = $aiAnalysis['feasibility_score'] ?? $this->scoreFeasibility($experience.' '.$solution, $proposal);
+        $auditabilityScore = $aiAnalysis['auditability_score'] ?? $this->scoreAuditability($content, $proposal);
 
         $totalScore = $alignmentScore + $feasibilityScore + $auditabilityScore;
 
-        // Generate insights
-        $strengths = $this->identifyStrengths($proposal, $alignmentScore, $feasibilityScore, $auditabilityScore);
-        $improvements = $this->identifyImprovements($proposal, $alignmentScore, $feasibilityScore, $auditabilityScore);
-        $pros = $this->generatePros($proposal, $problem, $solution);
-        $cons = $this->generateCons($proposal, $problem, $solution, $experience);
-        
         return [
             'proposal_id' => $proposal->id,
             'title' => $title,
-            'summary' => $this->generateSummary($proposal, $problem, $solution),
-            'one_sentence_summary' => $this->generateOneSentenceSummary($proposal, $totalScore),
+            'summary' => $aiAnalysis['summary'] ?? $this->generateSummary($proposal, $problem, $solution),
+            'one_sentence_summary' => $aiAnalysis['one_sentence_summary'] ?? $this->generateOneSentenceSummary($proposal, $totalScore),
             'alignment_score' => $alignmentScore,
             'feasibility_score' => $feasibilityScore,
             'auditability_score' => $auditabilityScore,
             'total_score' => $totalScore,
-            'recommendation' => $totalScore >= 70 ? 'Fund' : "Don't Fund",
-            'strengths' => $strengths,
-            'improvements' => $improvements,
-            'pros' => $pros,
-            'cons' => $cons,
+            'recommendation' => $aiAnalysis['recommendation'] ?? ($totalScore >= 70 ? 'Fund' : "Don't Fund"),
+            'strengths' => $aiAnalysis['strengths'] ?? [],
+            'improvements' => $aiAnalysis['improvements'] ?? [],
+            'pros' => $aiAnalysis['pros'] ?? [],
+            'cons' => $aiAnalysis['cons'] ?? [],
             'detailed_analysis' => [
                 'alignment_breakdown' => $this->getAlignmentBreakdown($proposal),
                 'feasibility_breakdown' => $this->getFeasibilityBreakdown($proposal),
                 'auditability_breakdown' => $this->getAuditabilityBreakdown($proposal),
-            ]
+            ],
         ];
     }
 
-    private function scoreAlignment(string $title, string $problem, string $solution, Proposal $proposal): int
+    private function scoreAlignment(string $content, Proposal $proposal): int
     {
         $score = 0;
-        
+
         // Impact potential (10 points)
         $impactKeywords = ['scale', 'ecosystem', 'community', 'adoption', 'innovation', 'growth'];
-        $impactScore = $this->scoreByKeywords($problem . ' ' . $solution, $impactKeywords, 10);
-        
+        $impactScore = $this->scoreByKeywords($content, $impactKeywords, 10);
+
         // Problem understanding (10 points)
-        $problemScore = min(10, max(0, strlen($problem) > 100 ? 8 : 4));
-        if (str_contains(strtolower($problem), 'currently') || str_contains(strtolower($problem), 'challenge')) {
+        $problemScore = min(10, max(0, strlen($content) > 100 ? 8 : 4));
+        if (str_contains(strtolower($content), 'currently') || str_contains(strtolower($content), 'challenge')) {
             $problemScore += 2;
         }
-        
+
         // Solution fit (10 points)
-        $solutionScore = min(10, max(0, strlen($solution) > 100 ? 8 : 4));
-        if (str_contains(strtolower($solution), 'will') && str_contains(strtolower($solution), 'by')) {
+        $solutionScore = min(10, max(0, strlen($content) > 200 ? 8 : 4));
+        if (str_contains(strtolower($content), 'will') && str_contains(strtolower($content), 'by')) {
             $solutionScore += 2;
         }
-        
+
         return min(30, $impactScore + $problemScore + $solutionScore);
     }
 
-    private function scoreFeasibility(string $experience, Proposal $proposal, string $solution): int
+    private function scoreFeasibility(string $content, Proposal $proposal): int
     {
-        $score = 0;
-        
         // Team capability (10 points)
-        $teamScore = strlen($experience) > 50 ? 7 : 3;
+        $teamScore = strlen($content) > 50 ? 7 : 3;
         if ($proposal->team && $proposal->team->count() > 0) {
             $teamScore += 3;
         }
-        
+
         // Technical approach (10 points)
         $techKeywords = ['technology', 'framework', 'development', 'implementation', 'architecture'];
-        $techScore = $this->scoreByKeywords($solution, $techKeywords, 10);
-        
+        $techScore = $this->scoreByKeywords($content, $techKeywords, 10);
+
         // Resource planning (10 points)
         $resourceScore = 5; // Base score
         if ($proposal->amount_requested > 0 && $proposal->amount_requested <= 75000) {
@@ -182,25 +179,23 @@ class ProposalComparisonTool implements ToolInterface
         if ($proposal->project_length && $proposal->project_length <= 12) {
             $resourceScore += 2; // Realistic timeline
         }
-        
+
         // Risk management (5 points)
-        $riskScore = str_contains(strtolower($solution . ' ' . $experience), 'risk') ? 4 : 2;
-        
+        $riskScore = str_contains(strtolower($content), 'risk') ? 4 : 2;
+
         return min(35, $teamScore + $techScore + $resourceScore + $riskScore);
     }
 
     private function scoreAuditability(string $content, Proposal $proposal): int
     {
-        $score = 0;
-        
         // Success metrics (10 points)
         $metricsKeywords = ['metric', 'measure', 'kpi', 'target', 'goal', 'success'];
         $metricsScore = $this->scoreByKeywords($content, $metricsKeywords, 10);
-        
+
         // Progress tracking (10 points)
         $trackingKeywords = ['milestone', 'deliverable', 'progress', 'report', 'update'];
         $trackingScore = $this->scoreByKeywords($content, $trackingKeywords, 10);
-        
+
         // Milestone definition (10 points)
         $milestoneScore = 5; // Base score
         if (str_contains(strtolower($content), 'month') || str_contains(strtolower($content), 'week')) {
@@ -209,11 +204,11 @@ class ProposalComparisonTool implements ToolInterface
         if (str_contains(strtolower($content), 'deliverable')) {
             $milestoneScore += 2;
         }
-        
+
         // Accountability framework (5 points)
         $accountabilityScore = $proposal->opensource ? 3 : 1;
         $accountabilityScore += str_contains(strtolower($content), 'transparent') ? 2 : 0;
-        
+
         return min(35, $metricsScore + $trackingScore + $milestoneScore + $accountabilityScore);
     }
 
@@ -221,144 +216,205 @@ class ProposalComparisonTool implements ToolInterface
     {
         $text = strtolower($text);
         $matches = 0;
-        
+
         foreach ($keywords as $keyword) {
             if (str_contains($text, strtolower($keyword))) {
                 $matches++;
             }
         }
-        
+
         $percentage = $matches / count($keywords);
         $score = $percentage * $maxScore;
         $finalScore = max(1, min($maxScore, $score));
-        
+
         return intval($finalScore);
     }
 
-    private function identifyStrengths(Proposal $proposal, int $alignment, int $feasibility, int $auditability): array
+    private function generateAiAnalysis(Proposal $proposal, string $title, string $problem, string $solution, string $experience, string $content): array
     {
+        try {
+            $prompt = $this->buildAnalysisPrompt($proposal, $title, $problem, $solution, $experience, $content);
+
+            $systemMessage = 'You are an expert Project Catalyst reviewer. Analyze the provided proposal data and return a JSON response with the requested insights. Be specific, insightful, and base your analysis on the actual proposal content.';
+
+            // Use Prism to make the LLM call
+            $provider = config('vizra-adk.default_provider', 'openai');
+            $model = config('vizra-adk.default_model', 'gpt-4o-mini');
+
+            $messages = [
+                new UserMessage($prompt),
+            ];
+
+            $response = Prism::text()
+                ->using($provider, $model)
+                ->withSystemPrompt($systemMessage)
+                ->usingTemperature(0.7)
+                ->withMaxTokens(2000)
+                ->withMessages($messages)
+                ->asText();
+
+            $responseContent = $response->text;
+
+            // Try to extract JSON from the response
+            if (preg_match('/\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}/', $responseContent, $matches)) {
+                $jsonData = json_decode($matches[0], true);
+                if ($jsonData && is_array($jsonData) &&
+                    isset($jsonData['alignment_score']) &&
+                    isset($jsonData['feasibility_score']) &&
+                    isset($jsonData['auditability_score'])) {
+                    return $jsonData;
+                }
+            }
+
+            \Log::warning('Failed to parse AI analysis JSON', [
+                'response_content' => $responseContent,
+                'proposal_id' => $proposal->id,
+            ]);
+
+            return $this->getFallbackAnalysis($proposal);
+
+        } catch (\Exception $e) {
+            \Log::error('AI insights generation failed', [
+                'proposal_id' => $proposal->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return $this->getFallbackAnalysis($proposal);
+        }
+    }
+
+    private function buildAnalysisPrompt(Proposal $proposal, string $title, string $problem, string $solution, string $experience, string $content): string
+    {
+        $fundingStatus = $proposal->funded_at ? 'funded' : 'unfunded';
+        $amount = number_format($proposal->amount_requested);
+        $openSource = $proposal->opensource ? 'Yes' : 'No';
+
+        // Load the prompt template from file
+        $promptPath = resource_path('prompts/catalyst-proposal-analysis.md');
+        if (! file_exists($promptPath)) {
+            throw new \Exception("Prompt template not found at: {$promptPath}");
+        }
+
+        $promptTemplate = file_get_contents($promptPath);
+
+        // Replace placeholders with actual values
+        $replacements = [
+            '{title}' => $title,
+            '{amount}' => $amount,
+            '{currency}' => $proposal->currency,
+            '{funding_status}' => $fundingStatus,
+            '{project_length}' => $proposal->project_length,
+            '{open_source}' => $openSource,
+            '{problem}' => $problem,
+            '{solution}' => $solution,
+            '{experience}' => $experience,
+            '{content}' => $content,
+        ];
+
+        return str_replace(array_keys($replacements), array_values($replacements), $promptTemplate);
+    }
+
+    /**
+     * Generate rule-based scores and analysis when AI fails
+     */
+    private function getFallbackAnalysis(Proposal $proposal): array
+    {
+        $extractField = new ExtractProposalField;
+
+        $problem = $extractField($proposal, 'problem') ?? '';
+        $solution = $extractField($proposal, 'solution') ?? '';
+        $experience = $extractField($proposal, 'relevant_experience') ?? '';
+        $content = $problem.' '.$solution.' '.$experience;
+
+        $alignmentScore = $this->scoreAlignment($content, $proposal);
+        $feasibilityScore = $this->scoreFeasibility($content, $proposal);
+        $auditabilityScore = $this->scoreAuditability($content, $proposal);
+        $totalScore = $alignmentScore + $feasibilityScore + $auditabilityScore;
+
         $strengths = [];
-        
-        if ($alignment >= 24) {
+        $improvements = [];
+        $pros = [];
+        $cons = [];
+
+        // Analyze based on scores
+        if ($alignmentScore >= 24) {
             $strengths[] = 'Strong alignment with Catalyst objectives and clear problem identification';
+            $pros[] = 'Well-aligned solution addressing important ecosystem challenges';
         }
-        
-        if ($feasibility >= 28) {
+
+        if ($feasibilityScore >= 28) {
             $strengths[] = 'Feasible approach with realistic resource planning and capable team';
+            $pros[] = 'Realistic implementation plan with achievable milestones';
         }
-        
-        if ($auditability >= 28) {
+
+        if ($auditabilityScore >= 28) {
             $strengths[] = 'Clear success metrics and accountability framework';
+            $pros[] = 'Transparent progress tracking and measurable outcomes';
         }
-        
+
+        // Analyze based on proposal attributes
         if ($proposal->amount_requested <= 50000) {
             $strengths[] = 'Conservative budget allocation reducing financial risk';
+        } elseif ($proposal->amount_requested > 100000) {
+            $cons[] = 'High budget request requires strong justification';
+            $improvements[] = 'Consider breaking down large budget into phases';
         }
-        
-        if ($proposal->team && $proposal->team->count() > 2) {
-            $strengths[] = 'Well-structured team with diverse expertise';
-        }
-        
-        return array_slice($strengths, 0, 5);
-    }
 
-    private function identifyImprovements(Proposal $proposal, int $alignment, int $feasibility, int $auditability): array
-    {
-        $improvements = [];
-        
-        if ($alignment < 20) {
-            $improvements[] = 'Strengthen alignment by better articulating problem impact and solution relevance';
+        if ($proposal->opensource) {
+            $pros[] = 'Open-source approach maximizes community benefit';
+        } else {
+            $cons[] = 'Closed-source approach limits community value';
+            $improvements[] = 'Consider open-source strategy for greater transparency';
         }
-        
-        if ($feasibility < 25) {
-            $improvements[] = 'Provide more details on technical approach and team capabilities';
-        }
-        
-        if ($auditability < 25) {
-            $improvements[] = 'Define clearer success metrics and milestone tracking mechanisms';
-        }
-        
-        if ($proposal->amount_requested > 75000) {
-            $improvements[] = 'Consider breaking down large budget into smaller, more manageable phases';
-        }
-        
-        if (!$proposal->opensource) {
-            $improvements[] = 'Consider open-source approach to increase transparency and community value';
-        }
-        
-        return array_slice($improvements, 0, 5);
-    }
 
-    private function generatePros(Proposal $proposal, string $problem, string $solution): array
-    {
-        $pros = [];
-        
-        if (strlen($problem) > 150) {
-            $pros[] = 'Comprehensive problem analysis demonstrating deep understanding';
+        if ($alignmentScore < 20) {
+            $improvements[] = 'Strengthen alignment with Catalyst objectives';
+            $cons[] = 'Limited alignment with ecosystem priorities';
         }
-        
-        if (strlen($solution) > 200) {
-            $pros[] = 'Detailed solution approach with clear implementation strategy';
-        }
-        
-        if ($proposal->amount_requested <= 50000) {
-            $pros[] = 'Cost-effective budget that maximizes value for the ecosystem';
-        }
-        
-        if ($proposal->project_length && $proposal->project_length <= 6) {
-            $pros[] = 'Short timeline allowing for quick delivery and iteration';
-        }
-        
-        if ($proposal->team && $proposal->team->count() > 0) {
-            $pros[] = 'Dedicated team committed to project execution';
-        }
-        
-        return array_slice($pros, 0, 3);
-    }
 
-    private function generateCons(Proposal $proposal, string $problem, string $solution, string $experience): array
-    {
-        $cons = [];
-        
-        if (strlen($problem) < 100) {
-            $cons[] = 'Limited problem description may indicate superficial understanding';
+        if ($feasibilityScore < 25) {
+            $improvements[] = 'Provide more technical implementation details';
+            $cons[] = 'Execution feasibility concerns need addressing';
         }
-        
-        if (strlen($experience) < 50) {
-            $cons[] = 'Insufficient team experience details raise capability concerns';
+
+        if ($auditabilityScore < 25) {
+            $improvements[] = 'Define clearer success metrics and reporting mechanisms';
+            $cons[] = 'Insufficient accountability and progress tracking';
         }
-        
-        if ($proposal->amount_requested > 100000) {
-            $cons[] = 'High budget request requires strong justification and risk management';
-        }
-        
-        if (!$proposal->opensource) {
-            $cons[] = 'Closed-source approach limits community benefit and transparency';
-        }
-        
-        if ($proposal->project_length && $proposal->project_length > 12) {
-            $cons[] = 'Extended timeline increases execution risk and market uncertainty';
-        }
-        
-        return array_slice($cons, 0, 3);
+
+        return [
+            'alignment_score' => $alignmentScore,
+            'feasibility_score' => $feasibilityScore,
+            'auditability_score' => $auditabilityScore,
+            'recommendation' => $totalScore >= 70 ? 'Fund' : "Don't Fund",
+            'strengths' => array_slice($strengths, 0, 5),
+            'improvements' => array_slice($improvements, 0, 5),
+            'pros' => array_slice($pros, 0, 3),
+            'cons' => array_slice($cons, 0, 3),
+            'summary' => $this->generateSummary($proposal, $problem, $solution),
+            'one_sentence_summary' => $this->generateOneSentenceSummary($proposal, $totalScore),
+        ];
     }
 
     private function generateSummary(Proposal $proposal, string $problem, string $solution): string
     {
-        $title = $this->extractTitle($proposal);
+        $extractTitle = new ExtractProposalTitle;
+
+        $title = $extractTitle($proposal);
         $fundingStatus = $proposal->funded_at ? 'funded' : 'unfunded';
         $amount = number_format($proposal->amount_requested);
-        
-        return "This {$fundingStatus} proposal '{$title}' requests {$amount} {$proposal->currency} to address challenges in the Catalyst ecosystem. " .
-               "The project demonstrates " . (strlen($problem) > 100 ? "strong" : "basic") . " problem understanding and " .
-               (strlen($solution) > 150 ? "detailed" : "general") . " solution planning.";
+
+        return "This {$fundingStatus} proposal '{$title}' requests {$amount} {$proposal->currency} to address challenges in the Catalyst ecosystem. ".
+               'The project demonstrates '.(strlen($problem) > 100 ? 'strong' : 'basic').' problem understanding and '.
+               (strlen($solution) > 150 ? 'detailed' : 'general').' solution planning.';
     }
 
     private function generateOneSentenceSummary(Proposal $proposal, int $totalScore): string
     {
         $quality = $totalScore >= 80 ? 'exceptional' : ($totalScore >= 70 ? 'strong' : ($totalScore >= 50 ? 'adequate' : 'limited'));
         $recommendation = $totalScore >= 70 ? 'recommended for funding' : 'needs improvement before funding';
-        
+
         return "This proposal shows {$quality} merit across the evaluation criteria and is {$recommendation}.";
     }
 
@@ -367,7 +423,7 @@ class ProposalComparisonTool implements ToolInterface
         return [
             'impact_potential' => 'Evaluated based on ecosystem benefit and innovation potential',
             'problem_understanding' => 'Assessed through problem statement depth and clarity',
-            'solution_fit' => 'Analyzed for appropriateness and effectiveness of proposed approach'
+            'solution_fit' => 'Analyzed for appropriateness and effectiveness of proposed approach',
         ];
     }
 
@@ -377,7 +433,7 @@ class ProposalComparisonTool implements ToolInterface
             'team_capability' => 'Reviewed team experience and track record',
             'technical_approach' => 'Assessed technical soundness and implementation strategy',
             'resource_planning' => 'Evaluated budget, timeline, and resource allocation',
-            'risk_management' => 'Analyzed risk identification and mitigation strategies'
+            'risk_management' => 'Analyzed risk identification and mitigation strategies',
         ];
     }
 
@@ -387,51 +443,7 @@ class ProposalComparisonTool implements ToolInterface
             'success_metrics' => 'Reviewed measurable success criteria and KPIs',
             'progress_tracking' => 'Assessed reporting and monitoring mechanisms',
             'milestone_definition' => 'Evaluated specificity and measurability of milestones',
-            'accountability_framework' => 'Analyzed transparency and accountability measures'
+            'accountability_framework' => 'Analyzed transparency and accountability measures',
         ];
-    }
-
-    private function extractTitle(Proposal $proposal): string
-    {
-        $title = $proposal->title;
-
-        if (is_array($title)) {
-            return $title['en'] ?? array_values($title)[0] ?? 'Untitled Proposal';
-        }
-
-        if (is_string($title)) {
-            $decoded = json_decode($title, true);
-            if (is_array($decoded)) {
-                return $decoded['en'] ?? array_values($decoded)[0] ?? 'Untitled Proposal';
-            }
-
-            return $title;
-        }
-
-        return 'Untitled Proposal';
-    }
-
-    private function extractField(Proposal $proposal, string $field): ?string
-    {
-        $value = $proposal->getAttribute($field);
-
-        if (empty($value)) {
-            return null;
-        }
-
-        if (is_array($value)) {
-            $text = $value['en'] ?? array_values($value)[0] ?? '';
-        } elseif (is_string($value)) {
-            $decoded = json_decode($value, true);
-            if (is_array($decoded)) {
-                $text = $decoded['en'] ?? array_values($decoded)[0] ?? '';
-            } else {
-                $text = $value;
-            }
-        } else {
-            $text = (string) $value;
-        }
-
-        return trim($text) ?: null;
     }
 }
