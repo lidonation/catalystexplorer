@@ -21,13 +21,33 @@ import { useLaravelReactI18n } from 'laravel-react-i18n';
 import ComparisonTableFilters from './Partials/ComparisonTableFilters';
 import RowVisibilitySelector from './Partials/RowVisibilitySelector';
 import SortableProposalColumn from './SortableProposalColumn';
+import { AiComparisonProvider, useAiComparisonContext } from '@/Context/AiComparisonContext';
+import { Sparkles } from 'lucide-react';
 
-export default function ProposalsTable() {
+function ProposalsTableInner() {
     const { t } = useLaravelReactI18n();
+    const { filteredProposals } = useProposalComparison();
+    const { isGenerating, results, error, generateComparison, clearComparison } = useAiComparisonContext();
+
+    const handleGenerateComparison = async () => {
+        const proposalIds = filteredProposals
+            .map(proposal => proposal.id)
+            .filter((id): id is string => id !== null && id !== undefined);
+
+        if (proposalIds.length === 0) return;
+
+        try {
+            await generateComparison(proposalIds);
+        } catch (err) {
+            console.error('Failed to generate AI comparison:', err);
+        }
+    };
+
     const METRIC_ROW_ID = 'metric';
     const ACTION_ROW_ID = 'action';
 
-    const EXCLUDED_FROM_VISIBILITY = [METRIC_ROW_ID, ACTION_ROW_ID];
+    const AI_COMPARISON_ROW_ID = 'ai-comparison';
+    const EXCLUDED_FROM_VISIBILITY = [METRIC_ROW_ID, ACTION_ROW_ID, AI_COMPARISON_ROW_ID];
 
     const rows = [
         {
@@ -95,6 +115,11 @@ export default function ProposalsTable() {
             label: t('proposalComparison.tableHeaders.action'),
             height: 'h-16',
         },
+        {
+            id: 'ai-comparison',
+            label: t('proposalComparison.tableHeaders.aiComparison'),
+            height: 'h-auto',
+        },
     ];
 
     const controllableRows = rows.filter(
@@ -110,7 +135,7 @@ export default function ProposalsTable() {
         controllableRows.map((row) => row.id),
     );
 
-    const { filteredProposals, reorderProposals } = useProposalComparison();
+    const { reorderProposals } = useProposalComparison();
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -138,7 +163,7 @@ export default function ProposalsTable() {
 
     return (
         <div className="container" data-testid="proposal-comparison-table">
-            <div className="mb-4 flex items-center justify-between">
+                <div className="mb-4 flex items-center justify-between">
                 <header data-testid="proposal-comparison-header">
                     <div className=" ">
                         <Title level="1">{t('proposalComparison.title')}</Title>
@@ -160,41 +185,87 @@ export default function ProposalsTable() {
             <div>
                 <ComparisonTableFilters />
             </div>
-            <div className="bg-background border-gray-light relative mb-4 flex w-full rounded-lg border shadow-lg">
-                {/* Sticky Row Headers */}
-                <div className="bg-background sticky left-0 z-10 flex flex-col rounded-l-lg">
-                    {visibleRowsData.map((row) => (
-                        <div
-                            key={row.id}
-                            className={`${row.height} border-gray-light flex items-center border-b px-4 text-left font-medium ${row.id == 'metric' ? 'text-dark !bg-background-lighter rounded-tl-lg' : ''}`}
-                            data-testid={`proposal-comparison-row-${row.id}`}
-                        >
-                            {row.label}
-                        </div>
-                    ))}
-                </div>
-
-                {/* Scrollable Draggable Columns */}
-                <div
-                    className="border-gray-light overflow-x-auto border-l"
-                    style={{ maxWidth: 'calc(100% - 120px)' }}
-                    data-testid="proposal-comparison-scrollable-columns"
-                >
-                    <DndContext
-                        sensors={sensors}
-                        collisionDetection={closestCenter}
-                        onDragEnd={handleDragEnd}
-                    >
-                        <div className="flex min-w-max">
-                            <SortableContext
-                                items={filteredProposals.map((p) => p.id ?? '')}
-                                strategy={horizontalListSortingStrategy}
-                                data-testid="sortable-proposal-context"
+            <div className="bg-background border-gray-light relative mb-4 w-full rounded-lg border shadow-lg">
+                <div className="flex">
+                    {/* Sticky Row Headers */}
+                    <div className="bg-background sticky left-0 z-10 flex flex-col rounded-l-lg">
+                        {visibleRowsData.map((row) => (
+                            <div
+                                key={row.id}
+                                className={`${row.height} ${row.id === 'ai-comparison' ? 'min-h-24' : 'border-gray-light border-b '} flex items-center px-4 text-left font-medium ${row.id == 'metric' ? 'text-dark !bg-background-lighter rounded-tl-lg' : ''}`}
+                                data-testid={`proposal-comparison-row-${row.id}`}
                             >
+                                {row.id === 'ai-comparison' ? (
+                                    <div className="flex flex-col gap-2 w-full">
+                                        <div className="flex items-center gap-2">
+                                            <Sparkles className="h-4 w-4 text-primary" />
+                                            <span>{row.label}</span>
+                                        </div>
+
+                                        {!results && !isGenerating && (
+                                            <button
+                                                onClick={handleGenerateComparison}
+                                                disabled={filteredProposals.length < 2 || isGenerating}
+                                                className="flex items-center gap-1 bg-primary text-white px-2 py-1 rounded text-xs hover:bg-primary-hover disabled:bg-gray-400 disabled:cursor-not-allowed font-medium transition-colors"
+                                            >
+                                                <Sparkles className="h-3 w-3" />
+                                                {t('proposalComparison.generateAiComparison')}
+                                            </button>
+                                        )}
+
+                                        {isGenerating && (
+                                            <div className="flex items-center gap-1 text-primary">
+                                                <div className="animate-spin h-3 w-3 border border-primary border-t-transparent rounded-full"></div>
+                                                <span className="text-xs">
+                                                    {t('proposalComparison.aiComparison.generating')}
+                                                </span>
+                                            </div>
+                                        )}
+
+                                        {results && (
+                                            <button
+                                                onClick={clearComparison}
+                                                className="text-xs text-content hover:text-dark px-2 py-1 border border-gray-light rounded hover:bg-background-lighter w-fit"
+                                            >
+                                                Clear Results
+                                            </button>
+                                        )}
+
+                                        {error && (
+                                            <div className="text-xs text-danger">
+                                                Error loading
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    row.label
+                                )}
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Scrollable Draggable Columns */}
+                    <div
+                        className="border-gray-light overflow-x-auto border-l"
+                        style={{ maxWidth: 'calc(100% - 120px)' }}
+                        data-testid="proposal-comparison-scrollable-columns"
+                    >
+                        <DndContext
+                            sensors={sensors}
+                            collisionDetection={closestCenter}
+                            onDragEnd={handleDragEnd}
+                        >
+                            <div className="flex min-w-max">
+                                <SortableContext
+                                    items={filteredProposals.map((p) => p.id ?? '')}
+                                    strategy={horizontalListSortingStrategy}
+                                    data-testid="sortable-proposal-context"
+                                >
                                 {filteredProposals.map((proposal, index) => (
                                     <SortableProposalColumn
                                         key={proposal.id}
                                         proposal={proposal}
+                                        isFirst={index === 0}
                                         isLast={
                                             index ===
                                             filteredProposals.length - 1
@@ -202,11 +273,20 @@ export default function ProposalsTable() {
                                         visibleRows={visibleRows || []}
                                     />
                                 ))}
-                            </SortableContext>
-                        </div>
-                    </DndContext>
+                                </SortableContext>
+                            </div>
+                        </DndContext>
+                    </div>
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function ProposalsTable() {
+    return (
+        <AiComparisonProvider>
+            <ProposalsTableInner />
+        </AiComparisonProvider>
     );
 }
