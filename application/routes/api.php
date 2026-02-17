@@ -26,6 +26,7 @@ use App\Http\Controllers\CatalystDrepController;
 use App\Http\Controllers\Api\Internal\QuickSearchController;
 use App\Http\Controllers\UserLanguageController;
 use App\Http\Controllers\Api\ProposalComparisonController;
+use App\Http\Controllers\Api\ProposalPredictionTestController;
 use Inertia\Inertia;
 
 Route::as('api.')->group(function () {
@@ -213,4 +214,20 @@ Route::as('api.')->group(function () {
     Route::post('proposals/compare', [ProposalComparisonController::class, 'compare'])
         ->name('proposals.compare')
         ->middleware(['throttle:30,1']);
+
+    // AI Prediction Testing Routes (Development/Debug only)
+    Route::prefix('ai-predictions')->as('aiPredictions.')
+        ->middleware(['throttle:20,1'])
+        ->group(function () {
+            Route::get('/test', [ProposalPredictionTestController::class, 'testPredictions'])
+                ->name('test');
+            Route::get('/test-enhancement', [ProposalPredictionTestController::class, 'testSearchEnhancement'])
+                ->name('testEnhancement');
+            Route::get('/session-data', [ProposalPredictionTestController::class, 'getSessionData'])
+                ->name('sessionData');
+            Route::post('/clear-session', [ProposalPredictionTestController::class, 'clearSessionData'])
+                ->name('clearSession');
+            Route::get('/embeddings-coverage', [ProposalPredictionTestController::class, 'checkEmbeddingsCoverage'])
+                ->name('embeddingsCoverage');
+        });
 });
