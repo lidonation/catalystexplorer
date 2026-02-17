@@ -1,3 +1,10 @@
+# [1.77.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.76.0...v1.77.0) (2026-02-17)
+
+
+### Features
+
+* add ada predictions to tinder swipe ([68e0043](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/68e004374f24c8cce70b8a62209740b6654bf2ef))
+
 # [1.76.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.75.0...v1.76.0) (2026-02-17)
 
 
