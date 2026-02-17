@@ -189,6 +189,7 @@ return [
         'gpt-4o' => env('VIZRA_ADK_OPENAI_GPT4O_AGENT', 'chat_agent'),
         'gpt-4o-mini' => env('VIZRA_ADK_OPENAI_GPT4O_MINI_AGENT', 'chat_agent'),
         'catalyst-chatbox' => 'catalyst-chatbox',
+        'catalyst-reviewer' => 'catalyst-reviewer',
         // Add more mappings as needed
     ],
 

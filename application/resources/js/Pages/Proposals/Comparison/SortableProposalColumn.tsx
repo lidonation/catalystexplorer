@@ -6,21 +6,25 @@ import { shortNumber } from '@/utils/shortNumber';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { Grab, MinusSquareIcon } from 'lucide-react';
+import { Grab, MinusSquareIcon, Sparkles } from 'lucide-react';
 import ProposalFundingPercentages from '../Partials/ProposalFundingPercentages';
 import ProposalFundingStatus from '../Partials/ProposalFundingStatus';
 import ProposalSolution from '../Partials/ProposalSolution';
 import ColumnHeader from './Partials/ColumnHeader';
+import { useProposalComparison } from '@/Context/ProposalComparisonContext';
+import { useAiComparisonContext } from '@/Context/AiComparisonContext';
 import ProposalData = App.DataTransferObjects.ProposalData;
 
 export default function SortableProposalColumn({
     proposal,
     isLast,
     visibleRows,
+    isFirst = false,
 }: {
     proposal: ProposalData;
     isLast: boolean;
     visibleRows: string[];
+    isFirst?: boolean;
 }) {
     const {
         attributes,
@@ -34,6 +38,7 @@ export default function SortableProposalColumn({
     });
 
     const { t } = useLaravelReactI18n();
+    const { results } = useAiComparisonContext();
 
     const rows = [
         {
@@ -100,6 +105,11 @@ export default function SortableProposalColumn({
             id: 'action',
             label: t('proposalComparison.tableHeaders.action'),
             height: 'h-16',
+        },
+        {
+            id: 'ai-comparison',
+            label: t('proposalComparison.tableHeaders.aiComparison'),
+            height: 'h-auto',
         },
     ];
 
@@ -314,7 +324,7 @@ export default function SortableProposalColumn({
                     className={`${getRowData('opensource')?.height} border-gray-light flex items-center border-r border-b p-4`}
                     data-testid="sortable-proposal-opensource"
                 >
-                    <span className="text-dark-persist bg-content-light rounded-md px-2 py-1 text-xs">
+                    <span className="text-dark-persist rounded-md px-2 py-1 text-xs">
                         {proposal.opensource ? 'OpenSource' : 'Non-OpenSource'}
                     </span>
                 </div>
@@ -331,6 +341,95 @@ export default function SortableProposalColumn({
                 >
                     {t('proposalComparison.viewProposal')}
                 </PrimaryLink>
+            </div>
+
+            {/* AI Comparison Row */}
+            <div
+                className={`${getRowData('ai-comparison')?.height} min-h-16 border-gray-light bg-background flex flex-col items-center justify-center border-r border-b p-3 ${isLast ? 'rounded-br-lg' : ''}`}
+                data-testid="sortable-proposal-ai-comparison"
+            >
+                {results ? (
+                    (() => {
+                        const result = results.find(r => r.proposal_id === proposal.id);
+                        if (result) {
+                            return (
+                                <div className="text-center space-y-3 w-full p-2">
+                                    {/* Score and Recommendation */}
+                                    <div className="space-y-2">
+                                        <div className="text-xl font-bold text-dark">
+                                            {result.total_score}/100
+                                        </div>
+                                        <div className={`text-xs px-2 py-1 rounded-full inline-block ${
+                                            result.recommendation === 'Fund' 
+                                                ? 'bg-success text-white' 
+                                                : 'bg-danger text-white'
+                                        }`}>
+                                            {result.recommendation}
+                                        </div>
+                                    </div>
+
+                                    {/* One Sentence Summary */}
+                                    <div className="text-xs text-content text-left bg-background-lighter p-2 rounded italic">
+                                        {result.one_sentence_summary}
+                                    </div>
+
+                                    {/* Score Breakdown */}
+                                    <div className="text-xs text-content space-y-1">
+                                        <div className="flex justify-between">
+                                            <span>Alignment:</span>
+                                            <span className="font-medium">{result.alignment_score}/30</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span>Feasibility:</span>
+                                            <span className="font-medium">{result.feasibility_score}/35</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span>Auditability:</span>
+                                            <span className="font-medium">{result.auditability_score}/35</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Pros */}
+                                    <div className="text-left">
+                                        <h6 className="text-xs font-medium text-success mb-1">Pros:</h6>
+                                        <ul className="text-xs text-content space-y-1">
+                                            {result.pros.slice(0, 2).map((pro, idx) => (
+                                                <li key={idx} className="flex items-start">
+                                                    <span className="text-success mr-1">+</span>
+                                                    <span className="leading-tight">{pro}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+
+                                    {/* Cons */}
+                                    <div className="text-left">
+                                        <h6 className="text-xs font-medium text-danger mb-1">Cons:</h6>
+                                        <ul className="text-xs text-content space-y-1">
+                                            {result.cons.slice(0, 2).map((con, idx) => (
+                                                <li key={idx} className="flex items-start">
+                                                    <span className="text-danger mr-1">-</span>
+                                                    <span className="leading-tight">{con}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                            );
+                        }
+                        return (
+                            <div className="flex items-center gap-1">
+                                <Sparkles className="h-3 w-3 text-primary" />
+                                <span className="text-xs text-content">No Analysis</span>
+                            </div>
+                        );
+                    })()
+                ) : (
+                    <div className="flex items-center gap-1">
+                        <Sparkles className="h-3 w-3 text-primary" />
+                        <span className="text-xs text-content">AI Review</span>
+                    </div>
+                )}
             </div>
         </div>
     );
