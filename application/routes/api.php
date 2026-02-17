@@ -25,6 +25,7 @@ use App\Http\Controllers\CardanoBudgetProposalController;
 use App\Http\Controllers\CatalystDrepController;
 use App\Http\Controllers\Api\Internal\QuickSearchController;
 use App\Http\Controllers\UserLanguageController;
+use App\Http\Controllers\Api\ProposalComparisonController;
 use Inertia\Inertia;
 
 Route::as('api.')->group(function () {
@@ -207,4 +208,9 @@ Route::as('api.')->group(function () {
             ->middleware(['throttle:60,1'])
             ->name('quickSearch');
     });
+
+    // Direct proposal comparison API (bypass AI agent issues)
+    Route::post('proposals/compare', [ProposalComparisonController::class, 'compare'])
+        ->name('proposals.compare')
+        ->middleware(['throttle:30,1']);
 });
