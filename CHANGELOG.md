@@ -1,3 +1,10 @@
+# [1.76.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.75.0...v1.76.0) (2026-02-17)
+
+
+### Features
+
+* catalyst-ai-comparison ([12b42c8](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/12b42c82d65887579074c5f057df4e0c625df14a))
+
 # [1.75.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.74.2...v1.75.0) (2026-02-17)
 
 
