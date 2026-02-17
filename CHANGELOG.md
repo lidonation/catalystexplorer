@@ -1,3 +1,10 @@
+# [1.75.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.74.2...v1.75.0) (2026-02-17)
+
+
+### Features
+
+* adding AI comparisons ([c8b0705](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/c8b0705da231b585ea7cfa1f29753a9106f915fb))
+
 ## [1.74.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.74.1...v1.74.2) (2026-02-15)
 
 
