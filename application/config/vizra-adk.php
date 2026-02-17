@@ -422,7 +422,7 @@ return [
          */
         'rag' => [
             'context_template' => "Based on the following context:\n{context}\n\nAnswer this question: {query}",
-            'max_context_length' => env('VIZRA_ADK_RAG_MAX_CONTEXT', 5000),
+            'max_context_length' => env('VIZRA_ADK_RAG_MAX_CONTEXT', 10000),
             'include_metadata' => env('VIZRA_ADK_RAG_INCLUDE_METADATA', true),
         ],
     ],

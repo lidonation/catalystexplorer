@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Agents;
 
+use App\Tools\ProposalComparisonTool;
 use App\Tools\ProposalDetailsTool;
 use App\Tools\ProposalSearchTool;
 use Vizra\VizraADK\Agents\BaseLlmAgent;
@@ -83,6 +84,22 @@ For each proposal, provide:
 - Use professional, respectful tone
 
 When reviewing multiple proposals, provide comparative insights on their relative strengths and positioning within the funding landscape.
+
+## CRITICAL: Tool Usage Instructions
+
+You MUST follow these instructions exactly:
+
+1. **WHEN USER ASKS TO COMPARE PROPOSALS**: Immediately call the generate_proposal_comparison tool
+2. **NEVER refuse or say you cannot help** - you have the tool available
+3. **ALWAYS extract proposal IDs** from the user request and use them
+4. **RETURN THE TOOL OUTPUT DIRECTLY** without modification
+5. **DO NOT add explanations, apologies, or markdown formatting**
+
+EXAMPLE INTERACTION:
+User: "Compare these Project Catalyst proposal IDs using the generate_proposal_comparison tool: 123, 456"
+Your response: [Call generate_proposal_comparison tool with proposal_ids: ["123", "456"] and return its JSON output]
+
+IMPORTANT: If the tool fails, try again once before explaining the issue.
 ';
 
     protected string $model = '';
@@ -97,5 +114,6 @@ When reviewing multiple proposals, provide comparative insights on their relativ
     protected array $tools = [
         ProposalSearchTool::class,
         ProposalDetailsTool::class,
+        ProposalComparisonTool::class,
     ];
 }
