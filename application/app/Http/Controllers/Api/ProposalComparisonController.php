@@ -8,8 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Tools\ProposalComparisonTool;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Vizra\VizraADK\Memory\AgentMemory;
-use Vizra\VizraADK\System\AgentContext;
 
 class ProposalComparisonController extends Controller
 {
@@ -21,8 +19,8 @@ class ProposalComparisonController extends Controller
         ]);
 
         try {
-            $tool = new ProposalComparisonTool();
-            
+            $tool = new ProposalComparisonTool;
+
             // Create minimal context objects for tool execution
             // We'll pass null for now since the tool doesn't actually use these
             $result = $tool->execute(
@@ -33,27 +31,27 @@ class ProposalComparisonController extends Controller
 
             // The tool returns JSON string, decode it
             $data = json_decode($result, true);
-            
+
             if (json_last_error() !== JSON_ERROR_NONE) {
                 return response()->json([
                     'success' => false,
                     'error' => 'Invalid JSON response from comparison tool',
-                    'raw_result' => $result
+                    'raw_result' => $result,
                 ], 500);
             }
 
             return response()->json($data);
-            
+
         } catch (\Exception $e) {
             \Log::error('ProposalComparisonController error', [
                 'proposal_ids' => $request->input('proposal_ids'),
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'error' => 'Failed to generate comparison: ' . $e->getMessage()
+                'error' => 'Failed to generate comparison: '.$e->getMessage(),
             ], 500);
         }
     }

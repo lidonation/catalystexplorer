@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tools;
 
+use App\Actions\Ai\ExtractProposalField;
+use App\Actions\Ai\ExtractProposalTitle;
 use App\Models\Fund;
 use App\Models\ModelEmbedding;
 use App\Models\Proposal;
@@ -120,11 +122,14 @@ class ProposalSearchTool implements ToolInterface
                     $embedding = $similarEmbeddings->firstWhere('embeddable_id', $proposal->id);
                     $similarity = $embedding?->similarity ?? 0;
 
+                    $extractTitle = new ExtractProposalTitle;
+                    $extractField = new ExtractProposalField;
+
                     return [
                         'id' => $proposal->id,
-                        'title' => $this->extractTitle($proposal),
-                        'problem' => $this->extractField($proposal, 'problem'),
-                        'solution' => $this->extractField($proposal, 'solution'),
+                        'title' => $extractTitle($proposal, 'Untitled'),
+                        'problem' => $extractField($proposal, 'problem', 200),
+                        'solution' => $extractField($proposal, 'solution', 200),
                         'amount_requested' => $proposal->amount_requested,
                         'currency' => $proposal->currency,
                         'funded' => ! is_null($proposal->funded_at),
@@ -147,47 +152,6 @@ class ProposalSearchTool implements ToolInterface
         } catch (\Exception $e) {
             return 'Sorry, I encountered an error while searching proposals: '.$e->getMessage();
         }
-    }
-
-    private function extractTitle(Proposal $proposal): string
-    {
-        $title = $proposal->title;
-
-        if (is_array($title)) {
-            return $title['en'] ?? array_values($title)[0] ?? 'Untitled';
-        }
-
-        if (is_string($title)) {
-            $decoded = json_decode($title, true);
-            if (is_array($decoded)) {
-                return $decoded['en'] ?? array_values($decoded)[0] ?? 'Untitled';
-            }
-
-            return $title;
-        }
-
-        return 'Untitled';
-    }
-
-    private function extractField(Proposal $proposal, string $field): ?string
-    {
-        $value = $proposal->getAttribute($field);
-
-        if (is_array($value)) {
-            $text = $value['en'] ?? array_values($value)[0] ?? '';
-        } elseif (is_string($value)) {
-            $decoded = json_decode($value, true);
-            if (is_array($decoded)) {
-                $text = $decoded['en'] ?? array_values($decoded)[0] ?? '';
-            } else {
-                $text = $value;
-            }
-        } else {
-            $text = (string) $value;
-        }
-
-        // Truncate long text
-        return strlen($text) > 200 ? substr($text, 0, 197).'...' : $text;
     }
 
     /**
@@ -248,12 +212,15 @@ class ProposalSearchTool implements ToolInterface
         }
 
         // Format results (similar to embedding results but without similarity score)
-        $results = $proposals->map(function (Proposal $proposal) {
+        $extractTitle = new ExtractProposalTitle;
+        $extractField = new ExtractProposalField;
+
+        $results = $proposals->map(function (Proposal $proposal) use ($extractTitle, $extractField) {
             return [
                 'id' => $proposal->id,
-                'title' => $this->extractTitle($proposal),
-                'problem' => $this->extractField($proposal, 'problem'),
-                'solution' => $this->extractField($proposal, 'solution'),
+                'title' => $extractTitle($proposal, 'Untitled'),
+                'problem' => $extractField($proposal, 'problem', 200),
+                'solution' => $extractField($proposal, 'solution', 200),
                 'amount_requested' => $proposal->amount_requested,
                 'currency' => $proposal->currency,
                 'funded' => ! is_null($proposal->funded_at),
