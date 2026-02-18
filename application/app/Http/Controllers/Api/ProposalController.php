@@ -21,10 +21,62 @@ use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 
+/**
+ * @group Proposals
+ *
+ * APIs for managing and retrieving Project Catalyst proposals. Proposals represent funding requests submitted to the Catalyst ecosystem.
+ */
 class ProposalController extends Controller
 {
     /**
-     * Display a listing of proposals with filtering, sorting, and includes.
+     * List proposals
+     *
+     * Retrieve a paginated list of Project Catalyst proposals with advanced filtering, sorting, and relationship includes.
+     *
+     * @queryParam page integer The page number for pagination. Example: 1
+     * @queryParam per_page integer Number of proposals per page (max 60). Example: 24
+     * @queryParam filter[id] integer Filter by exact proposal ID. Example: 123
+     * @queryParam filter[title] string Search proposals by title (case insensitive). Example: DeFi
+     * @queryParam filter[status] string Filter by proposal status. Example: funded
+     * @queryParam filter[type] string Filter by proposal type. Example: project
+     * @queryParam filter[category] string Filter by proposal category. Example: developer-tools
+     * @queryParam filter[campaign_id] integer Filter by campaign ID. Example: 456
+     * @queryParam filter[fund_id] integer Filter by fund ID. Example: 12
+     * @queryParam filter[funded] boolean Filter only funded proposals (any non-empty value). Example: 1
+     * @queryParam filter[amount_min] integer Filter by minimum requested amount (in ADA lovelace). Example: 10000000
+     * @queryParam filter[amount_max] integer Filter by maximum requested amount (in ADA lovelace). Example: 100000000
+     * @queryParam include string Comma-separated list of relationships to include (campaign,user,fund,team,schedule,schedule.milestones,links,meta_data,reviews). Example: campaign,fund,team
+     * @queryParam sort string Comma-separated list of fields to sort by. Prefix with - for descending order. Available: title,status,amount_requested,amount_received,project_length,yes_votes_count,no_votes_count,funded_at,created_at,updated_at. Example: -created_at,title
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 123,
+     *       "title": {
+     *         "en": "DeFi Protocol Development"
+     *       },
+     *       "status": "funded",
+     *       "amount_requested": 50000000,
+     *       "amount_received": 45000000,
+     *       "funded_at": "2024-01-15T10:30:00Z",
+     *       "yes_votes_count": 250,
+     *       "no_votes_count": 15
+     *     }
+     *   ],
+     *   "links": {
+     *     "first": "https://api.catalystexplorer.com/api/v1/proposals?page=1",
+     *     "last": "https://api.catalystexplorer.com/api/v1/proposals?page=10",
+     *     "prev": null,
+     *     "next": "https://api.catalystexplorer.com/api/v1/proposals?page=2"
+     *   },
+     *   "meta": {
+     *     "current_page": 1,
+     *     "per_page": 24,
+     *     "total": 240
+     *   }
+     * }
+     *
+     * @unauthenticated
      */
     public function index(Request $request): AnonymousResourceCollection
     {
@@ -100,7 +152,42 @@ class ProposalController extends Controller
     }
 
     /**
-     * Display the specified proposal with optional includes.
+     * Get proposal details
+     *
+     * Retrieve detailed information about a specific proposal including optional related data.
+     *
+     * @urlParam id integer required The proposal ID. Example: 123
+     *
+     * @queryParam include string Comma-separated list of relationships to include (campaign,user,fund,team,schedule,schedule.milestones,links,meta_data,reviews). Example: campaign,fund,team
+     *
+     * @response 200 {
+     *   "data": {
+     *     "id": 123,
+     *     "title": {
+     *       "en": "DeFi Protocol Development"
+     *     },
+     *     "status": "funded",
+     *     "type": "project",
+     *     "category": "developer-tools",
+     *     "amount_requested": 50000000,
+     *     "amount_received": 45000000,
+     *     "funded_at": "2024-01-15T10:30:00Z",
+     *     "yes_votes_count": 250,
+     *     "no_votes_count": 15,
+     *     "reviews_count": 12,
+     *     "created_at": "2023-12-01T09:00:00Z",
+     *     "updated_at": "2024-01-15T10:30:00Z",
+     *     "campaign": {
+     *       "id": 456,
+     *       "title": "Fund 12 - Developer Tools"
+     *     }
+     *   }
+     * }
+     * @response 404 {
+     *   "message": "No query results for model [App\\Models\\Proposal] 999"
+     * }
+     *
+     * @unauthenticated
      */
     public function show(Request $request, string $id): ProposalResource
     {
