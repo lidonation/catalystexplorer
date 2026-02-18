@@ -1,3 +1,10 @@
+# [1.78.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.77.0...v1.78.0) (2026-02-18)
+
+
+### Features
+
+* adding api documentation ([b1c4e46](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/b1c4e464c09cb3fb3d69de29cc59e7714c9c457a))
+
 # [1.77.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.76.0...v1.77.0) (2026-02-17)
 
 
