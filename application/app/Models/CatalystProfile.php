@@ -82,6 +82,7 @@ class CatalystProfile extends Model implements HasMedia
             'funded_proposals_count',
             'updated_at',
             'proposals_count',
+            'amount_awarded_usdm',
         ];
     }
 
@@ -107,7 +108,9 @@ class CatalystProfile extends Model implements HasMedia
             'proposals_count',
             'proposals.campaign',
             'proposals.tags',
+            'proposals.funding_status',
             'proposals',
+            'proposals_total_amount_requested',
         ];
     }
 
@@ -120,7 +123,13 @@ class CatalystProfile extends Model implements HasMedia
                 }
 
                 return (float) $this->proposals()
-                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::ADA->name))
+                    ->where(function ($query) {
+                        $query->whereHas('campaign', fn ($q) => $q->where('currency', CatalystCurrencySymbols::ADA->name))
+                            ->orWhere(function ($q) {
+                                $q->whereHas('campaign', fn ($c) => $c->whereNull('currency'))
+                                    ->whereHas('fund', fn ($f) => $f->where('currency', CatalystCurrencySymbols::ADA->name));
+                            });
+                    })
                     ->sum('amount_requested');
             },
         );
@@ -135,7 +144,13 @@ class CatalystProfile extends Model implements HasMedia
                 }
 
                 return (float) $this->funded_proposals()
-                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::ADA->name))
+                    ->where(function ($query) {
+                        $query->whereHas('campaign', fn ($q) => $q->where('currency', CatalystCurrencySymbols::ADA->name))
+                            ->orWhere(function ($q) {
+                                $q->whereHas('campaign', fn ($c) => $c->whereNull('currency'))
+                                    ->whereHas('fund', fn ($f) => $f->where('currency', CatalystCurrencySymbols::ADA->name));
+                            });
+                    })
                     ->sum('amount_requested');
             },
         );
@@ -150,7 +165,13 @@ class CatalystProfile extends Model implements HasMedia
                 }
 
                 return (float) $this->funded_proposals()
-                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::ADA->name))
+                    ->where(function ($query) {
+                        $query->whereHas('campaign', fn ($q) => $q->where('currency', CatalystCurrencySymbols::ADA->name))
+                            ->orWhere(function ($q) {
+                                $q->whereHas('campaign', fn ($c) => $c->whereNull('currency'))
+                                    ->whereHas('fund', fn ($f) => $f->where('currency', CatalystCurrencySymbols::ADA->name));
+                            });
+                    })
                     ->sum('amount_received');
             },
         );
@@ -165,7 +186,13 @@ class CatalystProfile extends Model implements HasMedia
                 }
 
                 return (float) $this->proposals()
-                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USDM->name))
+                    ->where(function ($query) {
+                        $query->whereHas('campaign', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USDM->name))
+                            ->orWhere(function ($q) {
+                                $q->whereHas('campaign', fn ($c) => $c->whereNull('currency'))
+                                    ->whereHas('fund', fn ($f) => $f->where('currency', CatalystCurrencySymbols::USDM->name));
+                            });
+                    })
                     ->sum('amount_requested');
             },
         );
@@ -180,7 +207,13 @@ class CatalystProfile extends Model implements HasMedia
                 }
 
                 return (float) $this->funded_proposals()
-                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USDM->name))
+                    ->where(function ($query) {
+                        $query->whereHas('campaign', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USDM->name))
+                            ->orWhere(function ($q) {
+                                $q->whereHas('campaign', fn ($c) => $c->whereNull('currency'))
+                                    ->whereHas('fund', fn ($f) => $f->where('currency', CatalystCurrencySymbols::USDM->name));
+                            });
+                    })
                     ->sum('amount_requested');
             },
         );
@@ -195,7 +228,13 @@ class CatalystProfile extends Model implements HasMedia
                 }
 
                 return (float) $this->funded_proposals()
-                    ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USDM->name))
+                    ->where(function ($query) {
+                        $query->whereHas('campaign', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USDM->name))
+                            ->orWhere(function ($q) {
+                                $q->whereHas('campaign', fn ($c) => $c->whereNull('currency'))
+                                    ->whereHas('fund', fn ($f) => $f->where('currency', CatalystCurrencySymbols::USDM->name));
+                            });
+                    })
                     ->sum('amount_received');
             },
         );
@@ -280,6 +319,7 @@ class CatalystProfile extends Model implements HasMedia
             'amount_requested_usdm' => $this->amount_requested_usdm,
             'amount_awarded_usdm' => $this->amount_awarded_usdm,
             'amount_distributed_usdm' => $this->amount_distributed_usdm,
+            'proposals_total_amount_requested' => $this->proposals()->sum('amount_requested'),
         ]);
     }
 

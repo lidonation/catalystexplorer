@@ -11,6 +11,7 @@ use App\DataTransferObjects\GroupData;
 use App\DataTransferObjects\ProposalData;
 use App\Enums\IdeascaleProfileSearchParams;
 use App\Enums\ProposalSearchParams;
+use App\Enums\ProposalStatus;
 use App\Models\Campaign;
 use App\Models\CatalystProfile;
 use App\Models\Community;
@@ -61,7 +62,7 @@ class CatalystProfilesController extends Controller
                 $catalystProfile->loadCount([
                     'proposals',
                     'proposals as funded_proposals_count' => fn ($q) => $q->whereNotNull('funded_at'),
-                    'proposals as completed_proposals_count' => fn ($q) => $q->where('status', \App\Enums\ProposalStatus::complete()->value),
+                    'proposals as completed_proposals_count' => fn ($q) => $q->where('status', ProposalStatus::complete()->value),
                 ]);
 
                 $catalystProfile->load(['groups']);
@@ -236,6 +237,7 @@ class CatalystProfilesController extends Controller
 
     protected function getProps(Request $request): void
     {
+        Log::info('CatalystProfilesController: request->all()', $request->all());
         $this->queryParams = $request->validate([
             ProposalSearchParams::FUNDS()->value => 'array|nullable',
             ProposalSearchParams::PROJECT_STATUS()->value => 'array|nullable',
@@ -275,8 +277,12 @@ class CatalystProfilesController extends Controller
 
             // Funding status filter
             if (isset($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
-                $fundingStatus = implode(',', $this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value]);
-                $filters[] = "proposals.funding_status = '{$fundingStatus}'";
+                $fundingStatus = $this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value];
+                if (in_array('funded', $fundingStatus) && ! in_array('unfunded', $fundingStatus)) {
+                    $filters[] = '(funded_proposals_count > 0 OR completed_proposals_count > 0)';
+                } elseif (in_array('unfunded', $fundingStatus) && ! in_array('funded', $fundingStatus)) {
+                    $filters[] = '(funded_proposals_count = 0 AND completed_proposals_count = 0)';
+                }
             }
 
             // filter by budget range
