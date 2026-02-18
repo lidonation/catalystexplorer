@@ -15,10 +15,61 @@ use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 
+/**
+ * @group Funds & Campaigns
+ *
+ * APIs for managing and retrieving Project Catalyst funding rounds and campaigns. Funds represent major funding cycles in the Catalyst ecosystem.
+ */
 class FundController extends Controller
 {
     /**
-     * Display a listing of funds with filtering, sorting, and includes.
+     * List funds
+     *
+     * Retrieve a paginated list of Project Catalyst funding rounds with filtering, sorting, and relationship includes.
+     *
+     * @queryParam page integer The page number for pagination. Example: 1
+     * @queryParam per_page integer Number of funds per page (max 60). Example: 24
+     * @queryParam filter[ids] integer[] Filter by specific fund IDs. Example: 10,11,12
+     * @queryParam filter[title] string Search funds by title (partial match). Example: Fund 12
+     * @queryParam filter[status] string Filter by fund status. Example: completed
+     * @queryParam filter[currency] string Filter by currency. Example: ADA
+     * @queryParam filter[launched_after] string Filter funds launched after this date (ISO 8601). Example: 2024-01-01
+     * @queryParam filter[launched_before] string Filter funds launched before this date (ISO 8601). Example: 2024-12-31
+     * @queryParam filter[amount_min] integer Filter by minimum fund amount (in ADA lovelace). Example: 1000000000
+     * @queryParam filter[amount_max] integer Filter by maximum fund amount (in ADA lovelace). Example: 10000000000
+     * @queryParam include string Comma-separated list of relationships to include (proposals,campaigns,funded_proposals,completed_proposals). Example: proposals,campaigns
+     * @queryParam sort string Comma-separated list of fields to sort by. Prefix with - for descending order. Available: title,status,amount,launched_at,awarded_at,created_at,updated_at. Example: -launched_at,title
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": 12,
+     *       "title": "Fund 12",
+     *       "status": "completed",
+     *       "amount": 50000000000,
+     *       "currency": "ADA",
+     *       "launched_at": "2024-01-15T00:00:00Z",
+     *       "awarded_at": "2024-03-15T00:00:00Z",
+     *       "proposals_count": 420,
+     *       "funded_proposals_count": 89,
+     *       "completed_proposals_count": 72,
+     *       "campaigns_count": 12
+     *     }
+     *   ],
+     *   "links": {
+     *     "first": "https://api.catalystexplorer.com/api/v1/funds?page=1",
+     *     "last": "https://api.catalystexplorer.com/api/v1/funds?page=3",
+     *     "prev": null,
+     *     "next": "https://api.catalystexplorer.com/api/v1/funds?page=2"
+     *   },
+     *   "meta": {
+     *     "current_page": 1,
+     *     "per_page": 24,
+     *     "total": 12
+     *   }
+     * }
+     *
+     * @unauthenticated
      */
     public function index(Request $request): AnonymousResourceCollection
     {

@@ -56,6 +56,13 @@ Route::as('api.')->group(function () {
         Route::get('funds/{fund}/proposals', [FundController::class, 'proposals'])
             ->name('funds.proposals');
 
+        Route::apiResource('communities', CommunityController::class)
+            ->only(['index', 'show']);
+
+        // Nested resource for community proposals
+        Route::get('communities/{community}/proposals', [CommunityController::class, 'proposals'])
+            ->name('communities.proposals');
+
         // CatalystTally API routes
         Route::apiResource('catalyst-tallies', CatalystTallyController::class)
             ->only(['index', 'show']);
