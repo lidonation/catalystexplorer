@@ -76,18 +76,7 @@ const CatalystProfileCard: React.FC<CatalystProfileProps> = ({
         },
     ] as Segments[];
 
-    const extraSegments = [
-        {
-            label: 'Proposer',
-            color: '',
-            value: catalystProfile.own_proposals_count ?? 0,
-        },
-        {
-            label: 'Collaborator',
-            color: '',
-            value: catalystProfile.collaborating_proposals_count ?? 0,
-        },
-    ] as Segments[];
+
 
     return (
         <Card className="bg-background">
@@ -178,7 +167,7 @@ const CatalystProfileCard: React.FC<CatalystProfileProps> = ({
                     <Paragraph
                         size="lg"
                         className="font-bold"
-                    >{`${currency(catalystProfile?.amount_requested_ada ?? 0, 2, 'ADA')} + ${currency(catalystProfile?.amount_requested_usd ?? 0, 2, 'USD')}`}</Paragraph>
+                    >{`${currency(catalystProfile?.amount_requested_ada ?? 0, 2, 'ADA')} + ${currency(catalystProfile?.amount_requested_usdm ?? 0, 2, 'USDM')}`}</Paragraph>
                     <Paragraph size="md" className="mt-1">
                         {t('catalystProfiles.totalRequested')}
                     </Paragraph>
@@ -200,16 +189,7 @@ const CatalystProfileCard: React.FC<CatalystProfileProps> = ({
                             segments={chartSegments}
                             tooltipSegments={segmentsLegend}
                         >
-                            {extraSegments.map((segment, index) => (
-                                <div key={index} className="flex items-center">
-                                    <Paragraph className="text-3">
-                                        {segment.label}:
-                                    </Paragraph>
-                                    <Paragraph className="text-3 ml-1 font-bold">
-                                        {segment.value}
-                                    </Paragraph>
-                                </div>
-                            ))}
+
                         </SegmentedBar>
                     </div>
                     <ul className="mt-2 flex w-full flex-wrap gap-x-4">
@@ -250,14 +230,14 @@ const CatalystProfileCard: React.FC<CatalystProfileProps> = ({
                             />
                             <FundingPercentages
                                 amount={
-                                    catalystProfile?.amount_awarded_usd ?? 0
+                                    catalystProfile?.amount_awarded_usdm ?? 0
                                 }
                                 total={
-                                    catalystProfile?.amount_requested_usd ?? 0
+                                    catalystProfile?.amount_requested_usdm ?? 0
                                 }
                                 primaryBackgroundColor="bg-content-light"
                                 secondaryBackgroundColor="bg-primary-dark"
-                                amount_currency="USD"
+                                amount_currency="USDM"
                             />
                         </div>
                         <Paragraph className="text-highlight">
@@ -281,15 +261,15 @@ const CatalystProfileCard: React.FC<CatalystProfileProps> = ({
                             />
                             <FundingPercentages
                                 amount={
-                                    catalystProfile?.amount_distributed_usd ??
+                                    catalystProfile?.amount_distributed_usdm ??
                                     0
                                 }
                                 total={
-                                    catalystProfile?.amount_awarded_usd ?? 0
+                                    catalystProfile?.amount_awarded_usdm ?? 0
                                 }
                                 primaryBackgroundColor="bg-content-light"
                                 secondaryBackgroundColor="bg-primary-dark"
-                                amount_currency="USD"
+                                amount_currency="USDM"
                             />
                         </div>
                         <Paragraph className="text-highlight">

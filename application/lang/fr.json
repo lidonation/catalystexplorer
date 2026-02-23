@@ -954,6 +954,10 @@
     "catalystProfiles.tabs.groups": "Groupes",
     "catalystProfiles.tabs.communities": "Communautés",
     "catalystProfiles.tabs.campaigns": "Campagnes",
+    "catalystProfiles.projectStatus": "Statut du projet",
+    "catalystProfiles.limitTags": "Limite aux balises",
+    "catalystProfiles.fundingStatus": "Statut du financement",
+
     "groups.groups": "Groupes",
     "groups.title": "Groupes catalyseurs",
     "groups.subtitle": "Diversifiés, indépendants et inspirant ensemble le plus haut niveau de collaboration humaine",
