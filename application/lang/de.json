@@ -989,6 +989,10 @@
     "catalystProfiles.tabs.groups": "Gruppen",
     "catalystProfiles.tabs.communities": "Gemeinschaften",
     "catalystProfiles.tabs.campaigns": "Kampagnen",
+    "catalystProfiles.projectStatus": "Projektstatus",
+    "catalystProfiles.limitTags": "Auf Tags begrenzen",
+    "catalystProfiles.fundingStatus": "Finanzierungsstatus",
+
     "ideascaleProfiles.people": "Personen",
     "ideascaleProfiles.ideascaleProfiles": "Ideascale-Profile",
     "ideascaleProfiles.ownProposals": "Eigene Vorschläge",
