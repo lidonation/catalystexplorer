@@ -20,7 +20,6 @@ class CatalystProfileFactory extends Factory
             'name' => $this->faker->name(),
             'username' => $this->faker->userName(),
             'catalyst_id' => $this->faker->uuid(),
-            'claimed_by' => null,
         ];
     }
 }

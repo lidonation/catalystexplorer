@@ -6,7 +6,10 @@ namespace App\Models;
 
 use App\Concerns\HasCatalystProposers;
 use App\Concerns\HasConnections;
+use App\Enums\CatalystCurrencySymbols;
+use App\Enums\ProposalStatus;
 use App\Models\Pivot\ClaimedProfile;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -23,6 +26,21 @@ class CatalystProfile extends Model implements HasMedia
     public $guarded = [];
 
     protected $appends = ['hero_img_url', 'claimed_by'];
+
+    /**
+     * The profile stats that we commonly need on profile pages/cards.
+     */
+    protected array $profileStatAppends = [
+        'proposals_count',
+        'funded_proposals_count',
+        'completed_proposals_count',
+        'amount_requested_ada',
+        'amount_awarded_ada',
+        'amount_distributed_ada',
+        'amount_requested_usdm',
+        'amount_awarded_usdm',
+        'amount_distributed_usdm',
+    ];
 
     public string $meiliIndexName = 'cx_catalyst_profiles';
 
@@ -59,8 +77,12 @@ class CatalystProfile extends Model implements HasMedia
             'id',
             'name',
             'username',
+            'amount_awarded_ada',
+            'completed_proposals_count',
+            'funded_proposals_count',
             'updated_at',
             'proposals_count',
+            'amount_awarded_usdm',
         ];
     }
 
@@ -79,22 +101,225 @@ class CatalystProfile extends Model implements HasMedia
     {
         return [
             'id',
+            'completed_proposals_count',
+            'funded_proposals_count',
+            'amount_distributed_ada',
+            'amount_awarded_ada',
             'proposals_count',
             'proposals.campaign',
             'proposals.tags',
+            'proposals.funding_status',
             'proposals',
+            'proposals_total_amount_requested',
         ];
+    }
+
+    public function amountRequestedAda(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                if ($value !== null) {
+                    return (float) $value;
+                }
+
+                return (float) $this->proposals()
+                    ->where(function ($query) {
+                        $query->whereHas('campaign', fn ($q) => $q->where('currency', CatalystCurrencySymbols::ADA->name))
+                            ->orWhere(function ($q) {
+                                $q->whereHas('campaign', fn ($c) => $c->whereNull('currency'))
+                                    ->whereHas('fund', fn ($f) => $f->where('currency', CatalystCurrencySymbols::ADA->name));
+                            });
+                    })
+                    ->sum('amount_requested');
+            },
+        );
+    }
+
+    public function amountAwardedAda(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                if ($value !== null) {
+                    return (float) $value;
+                }
+
+                return (float) $this->funded_proposals()
+                    ->where(function ($query) {
+                        $query->whereHas('campaign', fn ($q) => $q->where('currency', CatalystCurrencySymbols::ADA->name))
+                            ->orWhere(function ($q) {
+                                $q->whereHas('campaign', fn ($c) => $c->whereNull('currency'))
+                                    ->whereHas('fund', fn ($f) => $f->where('currency', CatalystCurrencySymbols::ADA->name));
+                            });
+                    })
+                    ->sum('amount_requested');
+            },
+        );
+    }
+
+    public function amountDistributedAda(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                if ($value !== null) {
+                    return (float) $value;
+                }
+
+                return (float) $this->funded_proposals()
+                    ->where(function ($query) {
+                        $query->whereHas('campaign', fn ($q) => $q->where('currency', CatalystCurrencySymbols::ADA->name))
+                            ->orWhere(function ($q) {
+                                $q->whereHas('campaign', fn ($c) => $c->whereNull('currency'))
+                                    ->whereHas('fund', fn ($f) => $f->where('currency', CatalystCurrencySymbols::ADA->name));
+                            });
+                    })
+                    ->sum('amount_received');
+            },
+        );
+    }
+
+    public function amountRequestedUsdm(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                if ($value !== null) {
+                    return (float) $value;
+                }
+
+                return (float) $this->proposals()
+                    ->where(function ($query) {
+                        $query->whereHas('campaign', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USDM->name))
+                            ->orWhere(function ($q) {
+                                $q->whereHas('campaign', fn ($c) => $c->whereNull('currency'))
+                                    ->whereHas('fund', fn ($f) => $f->where('currency', CatalystCurrencySymbols::USDM->name));
+                            });
+                    })
+                    ->sum('amount_requested');
+            },
+        );
+    }
+
+    public function amountAwardedUsdm(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                if ($value !== null) {
+                    return (float) $value;
+                }
+
+                return (float) $this->funded_proposals()
+                    ->where(function ($query) {
+                        $query->whereHas('campaign', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USDM->name))
+                            ->orWhere(function ($q) {
+                                $q->whereHas('campaign', fn ($c) => $c->whereNull('currency'))
+                                    ->whereHas('fund', fn ($f) => $f->where('currency', CatalystCurrencySymbols::USDM->name));
+                            });
+                    })
+                    ->sum('amount_requested');
+            },
+        );
+    }
+
+    public function amountDistributedUsdm(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                if ($value !== null) {
+                    return (float) $value;
+                }
+
+                return (float) $this->funded_proposals()
+                    ->where(function ($query) {
+                        $query->whereHas('campaign', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USDM->name))
+                            ->orWhere(function ($q) {
+                                $q->whereHas('campaign', fn ($c) => $c->whereNull('currency'))
+                                    ->whereHas('fund', fn ($f) => $f->where('currency', CatalystCurrencySymbols::USDM->name));
+                            });
+                    })
+                    ->sum('amount_received');
+            },
+        );
+    }
+
+    public function completed_proposals(): BelongsToMany
+    {
+        return $this->proposals()
+            ->where(['type' => 'proposal', 'status' => ProposalStatus::complete()->value]);
+    }
+
+    public function funded_proposals(): BelongsToMany
+    {
+        return $this->proposals()
+            ->where('type', 'proposal')
+            ->whereNotNull('funded_at');
+    }
+
+    public function unfunded_proposals(): BelongsToMany
+    {
+        return $this->proposals()
+            ->where('type', 'proposal')
+            ->whereNull('funded_at');
+    }
+
+    /**
+     * Convenience methods for places that prefer explicit methods.
+     */
+    public function proposalsCount(): int
+    {
+        return isset($this->attributes['proposals_count'])
+            ? (int) $this->attributes['proposals_count']
+            : $this->proposals()->count();
+    }
+
+    public function fundedProposalCount(): int
+    {
+        return isset($this->attributes['funded_proposals_count'])
+            ? (int) $this->attributes['funded_proposals_count']
+            : $this->funded_proposals()->count();
+    }
+
+    public function completedProposalCount(): int
+    {
+        return isset($this->attributes['completed_proposals_count'])
+            ? (int) $this->attributes['completed_proposals_count']
+            : $this->completed_proposals()->count();
+    }
+
+    /**
+     * Legacy accessors to avoid serialization errors when appending *_count
+     * attributes in older parts of the codebase.
+     */
+    public function getProposalsCountAttribute($value): int
+    {
+        return $value !== null ? (int) $value : $this->proposalsCount();
+    }
+
+    public function getFundedProposalsCountAttribute($value): int
+    {
+        return $value !== null ? (int) $value : $this->fundedProposalCount();
+    }
+
+    public function getCompletedProposalsCountAttribute($value): int
+    {
+        return $value !== null ? (int) $value : $this->completedProposalCount();
     }
 
     public function toSearchableArray(): array
     {
-        $this->loadCount(['proposals']);
 
         $array = $this->toArray();
 
         return array_merge($array, [
             'hero_img_url' => $this->hero_img_url,
-            'proposals_count' => $this->proposals_count ?? 0,
+            'proposals_count' => $this->proposalsCount(),
+            'funded_proposals_count' => $this->fundedProposalCount(),
+            'completed_proposals_count' => $this->completedProposalCount(),
+            'amount_requested_ada' => $this->amount_requested_ada,
+            'amount_awarded_ada' => $this->amount_awarded_ada,
+            'amount_distributed_ada' => $this->amount_distributed_ada,
+            'amount_requested_usdm' => $this->amount_requested_usdm,
+            'amount_awarded_usdm' => $this->amount_awarded_usdm,
+            'amount_distributed_usdm' => $this->amount_distributed_usdm,
+            'proposals_total_amount_requested' => $this->proposals()->sum('amount_requested'),
         ]);
     }
 

@@ -14,6 +14,6 @@ class CatalystProfileSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        \App\Models\CatalystProfile::factory()->count(50)->create();
     }
 }
