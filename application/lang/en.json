@@ -1111,6 +1111,7 @@
     "proposals.manageProposal.milestonesCompleted": "Milestones Completed",
     "proposals.manageProposal.milestonesRemaining": "Milestones Remaining",
     "proposals.manageProposal.viewProposalDetailsAndMilestones": "View Proposal Details and Milestones",
+
     "catalystProfiles.catalystProfiles": "Catalyst Profiles",
     "catalystProfiles.ownProposals": "Own Proposals",
     "catalystProfiles.coProposals": "Co-Proposals",
@@ -1130,6 +1131,10 @@
     "catalystProfiles.tabs.groups": "Groups",
     "catalystProfiles.tabs.communities": "Communities",
     "catalystProfiles.tabs.campaigns": "Campaigns",
+    "catalystProfiles.projectStatus": "Project status",
+    "catalystProfiles.limitTags" : "Limit to tags",
+    "catalystProfiles.fundingStatus" : "Funding Status",
+
     "ideascaleProfiles.people": "People",
     "ideascaleProfiles.ideascaleProfiles": "Ideascale Profiles",
     "ideascaleProfiles.ownProposals": "Own Proposals",
