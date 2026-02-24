@@ -20,8 +20,7 @@ class CatalystChatbox extends BaseLlmAgent
 
     public function __construct()
     {
-        // Use a simpler model for initial testing
-        $this->model = 'llama3.2:3b'; // Simpler model for debugging
+        $this->model = config('vizra-adk.default_model', 'gpt-4o-mini');
 
         parent::__construct();
     }

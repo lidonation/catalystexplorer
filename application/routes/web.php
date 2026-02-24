@@ -43,6 +43,16 @@ use CodeZero\LocalizedRoutes\Controllers\FallbackController;
 Route::get('/og-image/proposals/{slug}', [ProposalsController::class, 'generateOgImage'])
     ->name('proposals.og-image');
 
+// API Documentation
+Route::get('/docs', function () {
+    return view('docs.index', [
+        'stats' => [
+            'endpoints' => 15,
+            'groups' => 4,
+        ]
+    ]);
+})->name('docs.index');
+
 
 Route::localized(
     function () {
@@ -364,6 +374,8 @@ Route::localized(
                         ->name('addBookmarkItem');
                     Route::get('/fetch-proposals', [TinderProposalWorkflowController::class, 'fetchMoreProposals'])
                         ->name('fetchProposals');
+                    Route::get('/ai-recommendations', [TinderProposalWorkflowController::class, 'getAiRecommendations'])
+                        ->name('aiRecommendations');
                     Route::get('/{step}', [TinderProposalWorkflowController::class, 'handleStep'])
                         ->name('index');
                 });

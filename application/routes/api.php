@@ -25,6 +25,8 @@ use App\Http\Controllers\CardanoBudgetProposalController;
 use App\Http\Controllers\CatalystDrepController;
 use App\Http\Controllers\Api\Internal\QuickSearchController;
 use App\Http\Controllers\UserLanguageController;
+use App\Http\Controllers\Api\ProposalComparisonController;
+use App\Http\Controllers\Api\ProposalPredictionTestController;
 use Inertia\Inertia;
 
 Route::as('api.')->group(function () {
@@ -53,6 +55,13 @@ Route::as('api.')->group(function () {
         // Nested resource for fund proposals
         Route::get('funds/{fund}/proposals', [FundController::class, 'proposals'])
             ->name('funds.proposals');
+
+        Route::apiResource('communities', CommunityController::class)
+            ->only(['index', 'show']);
+
+        // Nested resource for community proposals
+        Route::get('communities/{community}/proposals', [CommunityController::class, 'proposals'])
+            ->name('communities.proposals');
 
         // CatalystTally API routes
         Route::apiResource('catalyst-tallies', CatalystTallyController::class)
@@ -207,4 +216,25 @@ Route::as('api.')->group(function () {
             ->middleware(['throttle:60,1'])
             ->name('quickSearch');
     });
+
+    // Direct proposal comparison API (bypass AI agent issues)
+    Route::post('proposals/compare', [ProposalComparisonController::class, 'compare'])
+        ->name('proposals.compare')
+        ->middleware(['throttle:30,1']);
+
+    // AI Prediction Testing Routes (Development/Debug only)
+    Route::prefix('ai-predictions')->as('aiPredictions.')
+        ->middleware(['throttle:20,1'])
+        ->group(function () {
+            Route::get('/test', [ProposalPredictionTestController::class, 'testPredictions'])
+                ->name('test');
+            Route::get('/test-enhancement', [ProposalPredictionTestController::class, 'testSearchEnhancement'])
+                ->name('testEnhancement');
+            Route::get('/session-data', [ProposalPredictionTestController::class, 'getSessionData'])
+                ->name('sessionData');
+            Route::post('/clear-session', [ProposalPredictionTestController::class, 'clearSessionData'])
+                ->name('clearSession');
+            Route::get('/embeddings-coverage', [ProposalPredictionTestController::class, 'checkEmbeddingsCoverage'])
+                ->name('embeddingsCoverage');
+        });
 });

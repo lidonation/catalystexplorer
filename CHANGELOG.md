@@ -1,3 +1,31 @@
+# [1.78.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.77.0...v1.78.0) (2026-02-18)
+
+
+### Features
+
+* adding api documentation ([b1c4e46](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/b1c4e464c09cb3fb3d69de29cc59e7714c9c457a))
+
+# [1.77.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.76.0...v1.77.0) (2026-02-17)
+
+
+### Features
+
+* add ada predictions to tinder swipe ([68e0043](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/68e004374f24c8cce70b8a62209740b6654bf2ef))
+
+# [1.76.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.75.0...v1.76.0) (2026-02-17)
+
+
+### Features
+
+* catalyst-ai-comparison ([12b42c8](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/12b42c82d65887579074c5f057df4e0c625df14a))
+
+# [1.75.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.74.2...v1.75.0) (2026-02-17)
+
+
+### Features
+
+* adding AI comparisons ([c8b0705](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/c8b0705da231b585ea7cfa1f29753a9106f915fb))
+
 ## [1.74.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.74.1...v1.74.2) (2026-02-15)
 
 

@@ -5,10 +5,14 @@ export default function UserAvatar({
     size = 'size-9',
     imageUrl,
     name = 'User',
+    subtitle,
+    username,
 }: {
     imageUrl?: string;
     size?: string;
     name?: string;
+    subtitle?: string;
+    username?: string;
 }) {
     const [avatarSrc, setAvatarSrc] = useState('');
 
@@ -51,7 +55,13 @@ export default function UserAvatar({
             />
             <div className="pointer-events-none absolute bottom-full left-1/2 z-999 mb-2 -translate-x-1/2 transform opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                 <div className="rounded border-2 border-black bg-white px-2 py-1 text-xs whitespace-nowrap text-black shadow-md relative">
-                    {name}
+                    <div className="font-medium">{name}</div>
+                    {subtitle && (
+                        <div className="text-gray-500 text-5">{subtitle}</div>
+                    )}
+                    {username && (
+                        <div className="text-gray-400 text-5">@{username}</div>
+                    )}
                 </div>
             </div>
         </div>

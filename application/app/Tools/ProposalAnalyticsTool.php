@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tools;
 
-use App\Models\ModelEmbedding;
-use App\Models\Proposal;
+use App\Actions\Ai\ExtractProposalTitle;
 use Vizra\VizraADK\Contracts\ToolInterface;
 use Vizra\VizraADK\Memory\AgentMemory;
 use Vizra\VizraADK\System\AgentContext;
@@ -220,13 +219,15 @@ class ProposalAnalyticsTool implements ToolInterface
 
         $result = "Found **{$embeddings->count()} proposals** ".$filters."\n\n";
 
+        $extractTitle = new ExtractProposalTitle;
+
         foreach ($embeddings as $index => $embedding) {
             $proposal = $embedding->embeddable;
             if (! $proposal) {
                 continue;
             }
 
-            $title = $this->extractTitle($proposal);
+            $title = $extractTitle($proposal, 'Unknown Proposal');
             $fundedStatus = $embedding->is_funded ? '✅ FUNDED' : '⏳ Not Funded';
             $amount = number_format($embedding->amount_requested, 2);
 
@@ -279,29 +280,5 @@ class ProposalAnalyticsTool implements ToolInterface
         }
 
         return empty($parts) ? '' : '('.implode(', ', $parts).')';
-    }
-
-    private function extractTitle($proposal): string
-    {
-        if (! $proposal) {
-            return 'Unknown Proposal';
-        }
-
-        $title = $proposal->title;
-
-        if (is_array($title)) {
-            return $title['en'] ?? array_values($title)[0] ?? 'Untitled';
-        }
-
-        if (is_string($title)) {
-            $decoded = json_decode($title, true);
-            if (is_array($decoded)) {
-                return $decoded['en'] ?? array_values($decoded)[0] ?? 'Untitled';
-            }
-
-            return $title;
-        }
-
-        return 'Untitled';
     }
 }

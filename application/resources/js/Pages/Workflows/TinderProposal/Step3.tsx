@@ -88,7 +88,6 @@ const Step3: React.FC<Step3Props> = ({
     const [isButtonClick, setIsButtonClick] = useState(false);
     const currentDragOffset = useRef({ x: 0, y: 0 });
 
-    // State for infinite scrolling
     const [allProposals, setAllProposals] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [hasMorePages, setHasMorePages] = useState(true);
@@ -102,7 +101,6 @@ const Step3: React.FC<Step3Props> = ({
         new Set(),
     );
 
-    // Queue system for API calls
     const [apiQueue, setApiQueue] = useState<
         Array<{
             id: string;
@@ -114,6 +112,10 @@ const Step3: React.FC<Step3Props> = ({
         }>
     >([]);
     const [isProcessingQueue, setIsProcessingQueue] = useState(false);
+
+    // AI refetch
+    const [totalSwipeCount, setTotalSwipeCount] = useState(0);
+    const [isRefetchingAI, setIsRefetchingAI] = useState(false);
 
     // Track current page - start from the calculated starting page
     const [currentPage, setCurrentPage] = useState(startingPage);
@@ -159,19 +161,16 @@ const Step3: React.FC<Step3Props> = ({
             ];
 
             if (isLoadMore) {
-                // Append new proposals to existing ones, but filter out any already swiped proposals
                 const filteredNewProposals = proposals.data.filter(
                     (proposal) => !allSwipedSlugs.includes(proposal.slug),
                 );
                 setAllProposals((prev) => [...prev, ...filteredNewProposals]);
             } else {
-                // Replace with initial proposals, filtering out already swiped ones
                 const filteredProposals = proposals.data.filter(
                     (proposal) => !allSwipedSlugs.includes(proposal.slug),
                 );
                 setAllProposals(filteredProposals);
 
-                // Set the current index to the index within the current page
                 setCurrentIndex(currentIndexWithinPage);
             }
 
@@ -225,7 +224,6 @@ const Step3: React.FC<Step3Props> = ({
                 preserveState: true,
                 preserveScroll: true,
                 onSuccess: () => {
-                    // Update the local page state when the request succeeds
                     setCurrentPage(nextPage);
                 },
                 onError: () => {
@@ -235,12 +233,59 @@ const Step3: React.FC<Step3Props> = ({
         );
     };
 
-    // Check if we need to load more proposals (when user is near the end)
+    const refetchAIRecommendations = async () => {
+        if (isRefetchingAI || !rightBookmarkCollectionHash) {
+            return;
+        }
+
+        setIsRefetchingAI(true);
+        try {
+            const excludeSlugs = [
+                ...swipedLeftProposals,
+                ...swipedRightProposals,
+                ...allProposals.slice(currentIndex).map(p => p.slug)
+            ];
+
+            const response = await api.get(
+                generateLocalizedRoute('workflows.tinderProposal.aiRecommendations'),
+                {
+                    params: {
+                        [TinderWorkflowParams.LEFT_BOOKMARK_COLLECTION_HASH]: leftBookmarkCollectionHash,
+                        [TinderWorkflowParams.RIGHT_BOOKMARK_COLLECTION_HASH]: rightBookmarkCollectionHash,
+                        excludeSlugs,
+                        limit: 20,
+                    },
+                }
+            );
+
+            if (response.data?.success && response.data?.data?.length > 0) {
+                const aiProposals = response.data.data;
+
+                setAllProposals(prev => [
+                    ...prev.slice(0, currentIndex),
+                    ...aiProposals
+                ]);
+
+                setHasMorePages(aiProposals.length >= 20);
+            }
+        } catch (error) {
+            console.error('Failed to fetch AI recommendations:', error);
+        } finally {
+            setIsRefetchingAI(false);
+        }
+    };
+
+    // Check for AI refetch every 5 swipes
+    useEffect(() => {
+        if (totalSwipeCount > 0 && totalSwipeCount % 5 === 0 && rightBookmarkCollectionHash) {
+            refetchAIRecommendations();
+        }
+    }, [totalSwipeCount, rightBookmarkCollectionHash]);
+
     useEffect(() => {
         const remainingCards = allProposals.length - currentIndex;
-        const threshold = 5; // Load more when 5 cards remaining (reduced from 10)
+        const threshold = 5;
 
-        // Don't auto-load more if we just returned to a saved page and haven't started swiping yet
         const isReturningToSavedPage =
             currentIndexWithinPage === 0 &&
             currentIndex === 0 &&
@@ -251,7 +296,8 @@ const Step3: React.FC<Step3Props> = ({
             hasMorePages &&
             !isLoading &&
             allProposals.length > 0 &&
-            !isReturningToSavedPage
+            !isReturningToSavedPage &&
+            !isRefetchingAI
         ) {
             loadMoreProposals();
         }
@@ -262,6 +308,7 @@ const Step3: React.FC<Step3Props> = ({
         isLoading,
         currentIndexWithinPage,
         startingPage,
+        isRefetchingAI,
     ]);
 
     // Process API queue
@@ -325,7 +372,6 @@ const Step3: React.FC<Step3Props> = ({
         setIsProcessingQueue(false);
     };
 
-    // Process queue when items are added
     useEffect(() => {
         if (apiQueue.length > 0 && !isProcessingQueue) {
             const timeoutId = setTimeout(() => {
@@ -364,6 +410,8 @@ const Step3: React.FC<Step3Props> = ({
             } else {
                 setSwipedRightProposals((prev) => [...prev, proposalSlug]);
             }
+
+            setTotalSwipeCount(prev => prev + 1);
         }
 
         if (proposalSlug) {
@@ -815,11 +863,16 @@ const Step3: React.FC<Step3Props> = ({
                                         )}
 
                                     {/* Loading indicator */}
-                                    {isLoading &&
+                                    {(isLoading || isRefetchingAI) &&
                                         currentIndex >= allProposals.length && (
                                             <div className="bg-background absolute inset-0 flex w-full items-center justify-center">
                                                 <div className="p-8 text-center">
                                                     <div className="border-primary mx-auto mb-2 h-8 w-8 animate-spin rounded-full border-b-2"></div>
+                                                    {isRefetchingAI && (
+                                                        <Paragraph className="text-sm text-gray-600 mt-2">
+                                                            {t('workflows.tinderProposal.step3.fetchingAiRecommendations')}
+                                                        </Paragraph>
+                                                    )}
                                                 </div>
                                             </div>
                                         )}
