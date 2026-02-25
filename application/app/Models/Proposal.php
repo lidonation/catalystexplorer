@@ -1062,6 +1062,7 @@ class Proposal extends Model implements IHasMetaData
             'project_details' => 'array',
             'category_questions' => 'array',
             'theme' => 'array',
+            'ai_generated_at' => 'datetime',
         ];
     }
 

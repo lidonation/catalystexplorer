@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useRef, useCallback, useEffect, ReactNode } from 'react';
 import axios from 'axios';
 import useRoute from '@/useHooks/useRoute';
 
-interface ComparisonResult {
+export interface ComparisonResult {
     proposal_id: string;
     summary: string;
     alignment_score: number;
@@ -21,6 +21,8 @@ interface AiComparisonState {
     isGenerating: boolean;
     results: ComparisonResult[] | null;
     error: string | null;
+    completedCount: number;
+    totalCount: number;
 }
 
 interface AiComparisonContextType extends AiComparisonState {
@@ -28,21 +30,118 @@ interface AiComparisonContextType extends AiComparisonState {
     clearComparison: () => void;
 }
 
+const STORAGE_KEY = 'ai_comparison_results';
+
+function getCacheKey(proposalIds: string[]): string {
+    return [...proposalIds].sort().join(',');
+}
+
+function loadCachedResults(): { key: string; results: ComparisonResult[] } | null {
+    try {
+        const raw = sessionStorage.getItem(STORAGE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (parsed?.key && Array.isArray(parsed?.results) && parsed.results.length > 0) {
+            return parsed;
+        }
+    } catch {
+        // ignore parse errors
+    }
+    return null;
+}
+
+function saveCachedResults(key: string, results: ComparisonResult[]): void {
+    try {
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ key, results }));
+    } catch {
+        // ignore quota errors
+    }
+}
+
+function clearCachedResults(): void {
+    try {
+        sessionStorage.removeItem(STORAGE_KEY);
+    } catch {
+        // ignore
+    }
+}
+
 const AiComparisonContext = createContext<AiComparisonContextType | undefined>(undefined);
 
 export const AiComparisonProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const route = useRoute();
-    const [state, setState] = useState<AiComparisonState>({
-        isGenerating: false,
-        results: null,
-        error: null,
+    const staggerTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
+    const [state, setState] = useState<AiComparisonState>(() => {
+        const cached = loadCachedResults();
+        if (cached) {
+            return {
+                isGenerating: false,
+                results: cached.results,
+                error: null,
+                completedCount: cached.results.length,
+                totalCount: cached.results.length,
+            };
+        }
+        return {
+            isGenerating: false,
+            results: null,
+            error: null,
+            completedCount: 0,
+            totalCount: 0,
+        };
     });
 
+    const clearStaggerTimers = useCallback(() => {
+        staggerTimers.current.forEach(clearTimeout);
+        staggerTimers.current = [];
+    }, []);
+
+    const staggerResults = useCallback((allResults: ComparisonResult[]): Promise<ComparisonResult[]> => {
+        clearStaggerTimers();
+        const STAGGER_DELAY = 600; // ms between each result
+
+        return new Promise((resolve) => {
+            allResults.forEach((result, index) => {
+                const timer = setTimeout(() => {
+                    setState(prev => ({
+                        ...prev,
+                        results: [...(prev.results || []), result],
+                        completedCount: index + 1,
+                        isGenerating: index < allResults.length - 1,
+                    }));
+
+                    if (index === allResults.length - 1) {
+                        resolve(allResults);
+                    }
+                }, index * STAGGER_DELAY);
+
+                staggerTimers.current.push(timer);
+            });
+        });
+    }, [clearStaggerTimers]);
+
     const generateComparison = async (proposalIds: string[]): Promise<ComparisonResult[]> => {
+        // Check if we already have cached results for these exact proposals
+        const cacheKey = getCacheKey(proposalIds);
+        const cached = loadCachedResults();
+        if (cached && cached.key === cacheKey) {
+            setState({
+                isGenerating: false,
+                results: cached.results,
+                error: null,
+                completedCount: cached.results.length,
+                totalCount: cached.results.length,
+            });
+            return cached.results;
+        }
+
+        clearStaggerTimers();
         setState({
             isGenerating: true,
             results: null,
             error: null,
+            completedCount: 0,
+            totalCount: proposalIds.length,
         });
 
         try {
@@ -82,11 +181,11 @@ export const AiComparisonProvider: React.FC<{ children: ReactNode }> = ({ childr
                 recommendation: comparison.recommendation,
             }));
 
-            setState({
-                isGenerating: false,
-                results,
-                error: null,
-            });
+            // Stagger results one by one for visual reveal effect
+            await staggerResults(results);
+
+            // Persist to sessionStorage
+            saveCachedResults(cacheKey, results);
 
             return results;
         } catch (error) {
@@ -132,11 +231,7 @@ export const AiComparisonProvider: React.FC<{ children: ReactNode }> = ({ childr
                             recommendation: comparison.recommendation,
                         }));
 
-                        setState({
-                            isGenerating: false,
-                            results,
-                            error: null,
-                        });
+                        await staggerResults(results);
 
                         return results;
                     }
@@ -172,30 +267,33 @@ export const AiComparisonProvider: React.FC<{ children: ReactNode }> = ({ childr
                     recommendation: index % 2 === 0 ? 'Fund' : "Don't Fund",
                 }));
 
-                setState({
-                    isGenerating: false,
-                    results: mockResults,
-                    error: null,
-                });
+                await staggerResults(mockResults);
 
                 return mockResults;
             }
 
             const errorMessage = error instanceof Error ? error.message : 'Failed to generate AI comparison';
+            clearStaggerTimers();
             setState({
                 isGenerating: false,
                 results: null,
                 error: errorMessage,
+                completedCount: 0,
+                totalCount: 0,
             });
             throw error;
         }
     };
 
     const clearComparison = () => {
+        clearStaggerTimers();
+        clearCachedResults();
         setState({
             isGenerating: false,
             results: null,
             error: null,
+            completedCount: 0,
+            totalCount: 0,
         });
     };
 

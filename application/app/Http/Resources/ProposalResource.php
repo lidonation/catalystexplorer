@@ -53,6 +53,10 @@ class ProposalResource extends JsonResource
             'feasibility_score' => $this->feasibility_score,
             'auditability_score' => $this->auditability_score,
 
+            // AI Analysis
+            'ai_summary' => $this->ai_summary,
+            'ai_generated_at' => $this->ai_generated_at,
+
             // Blockchain references
             'ideascale_id' => $this->ideascale_id,
             'chain_proposal_id' => $this->chain_proposal_id,

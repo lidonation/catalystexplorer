@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { Sparkles, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
-import { useAiComparison } from '@/hooks/useAiComparison';
+import { useAiComparisonContext } from '@/Context/AiComparisonContext';
 import { useProposalComparison } from '@/Context/ProposalComparisonContext';
 
 interface AiComparisonRowProps {
@@ -11,7 +11,7 @@ interface AiComparisonRowProps {
 export default function AiComparisonRow({ height }: AiComparisonRowProps) {
     const { t } = useLaravelReactI18n();
     const { filteredProposals } = useProposalComparison();
-    const { isGenerating, results, error, generateComparison, clearComparison } = useAiComparison();
+    const { isGenerating, results, error, completedCount, totalCount, generateComparison, clearComparison } = useAiComparisonContext();
     const [isExpanded, setIsExpanded] = useState(false);
 
     const handleGenerateComparison = async () => {
@@ -79,11 +79,29 @@ export default function AiComparisonRow({ height }: AiComparisonRowProps) {
                             )}
 
                             {isGenerating && (
-                                <div className="flex items-center gap-2 text-blue-600">
-                                    <div className="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
-                                    <span className="text-sm">
-                                        {t('proposalComparison.aiComparison.generating')}
-                                    </span>
+                                <div className="flex items-center gap-3 text-blue-600">
+                                    <div className="flex items-center gap-2">
+                                        <div className="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
+                                        <span className="text-sm">
+                                            {completedCount > 0
+                                                ? `Analyzing proposal ${completedCount + 1} of ${totalCount}...`
+                                                : t('proposalComparison.aiComparison.generating')
+                                            }
+                                        </span>
+                                    </div>
+                                    {totalCount > 0 && (
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-24 h-1.5 bg-blue-100 rounded-full overflow-hidden">
+                                                <div
+                                                    className="h-full bg-blue-600 rounded-full transition-all duration-500 ease-out"
+                                                    style={{ width: `${(completedCount / totalCount) * 100}%` }}
+                                                />
+                                            </div>
+                                            <span className="text-xs tabular-nums">
+                                                {completedCount}/{totalCount}
+                                            </span>
+                                        </div>
+                                    )}
                                 </div>
                             )}
 
