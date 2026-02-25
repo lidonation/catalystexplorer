@@ -1040,6 +1040,7 @@
     "proposals.tabs.schedule": "Cronograma",
     "proposals.tabs.community": "Reseña Comunitaria",
     "proposals.tabs.team": "Información del Equipo",
+    
     "catalystProfiles.catalystProfiles": "Perfiles Catalyst",
     "catalystProfiles.ownProposals": "Propuestas Propias",
     "catalystProfiles.coProposals": "Co-Propuestas",
@@ -1059,6 +1060,10 @@
     "catalystProfiles.tabs.groups": "Grupos",
     "catalystProfiles.tabs.communities": "Comunidades",
     "catalystProfiles.tabs.campaigns": "Campañas",
+    "catalystProfiles.projectStatus": "Estado del proyecto",
+    "catalystProfiles.limitTags": "Limitar a etiquetas",
+    "catalystProfiles.fundingStatus": "Estado de Financiación",
+
     "ideascaleProfiles.people": "Personas",
     "ideascaleProfiles.ideascaleProfiles": "Perfiles de Ideascale",
     "ideascaleProfiles.ownProposals": "Propuestas Propias",

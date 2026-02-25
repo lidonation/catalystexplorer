@@ -133,6 +133,11 @@ class SyncProposalJob implements ShouldQueue
             // Extract theme data
             $theme = $this->extractThemeData($this->proposalDetail->theme ?? null);
 
+            // Extract open source data
+            $openSource = $proposalSummary->open_source ?? null;
+            $isOpenSource = $openSource->isOpenSource ?? false;
+            $openSourceDescription = $this->extractOpenSourceDescription($openSource);
+
             $data = [
                 'title' => ['en' => $title],
                 'problem' => ['en' => $proposalSummary->problem->statement ?? ''],
@@ -142,7 +147,8 @@ class SyncProposalJob implements ShouldQueue
                 'campaign_id' => $campaign->id,
                 'slug' => $slug,
                 'project_length' => $proposalSummary->time->duration ?? null,
-                'opensource' => $proposalSummary->open_source->isOpenSource ?? false,
+                'opensource' => $isOpenSource,
+                'opensource_description' => $openSourceDescription,
                 'self_assessment' => $selfAssessment,
                 'pitch' => $pitch,
                 'project_details' => $projectDetails,
@@ -330,6 +336,35 @@ class SyncProposalJob implements ShouldQueue
                 'group' => $data['group'] ?? null,
                 'tag' => $data['tag'] ?? null,
             ];
+        }
+
+        return null;
+    }
+
+    /**
+     * Extract open source description from the open_source data
+     *
+     * Structure: {"isOpenSource": true, "openSourceInformation": "..."}
+     */
+    protected function extractOpenSourceDescription($openSourceData): ?string
+    {
+        if ($openSourceData === null) {
+            return null;
+        }
+
+        // Handle Fluent object
+        if ($openSourceData instanceof Fluent) {
+            return $openSourceData->openSourceInformation ?? null;
+        }
+
+        // Handle array
+        if (is_array($openSourceData)) {
+            return $openSourceData['openSourceInformation'] ?? null;
+        }
+
+        // Handle object
+        if (is_object($openSourceData)) {
+            return $openSourceData->openSourceInformation ?? null;
         }
 
         return null;

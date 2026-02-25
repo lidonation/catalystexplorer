@@ -1,7 +1,7 @@
 import SearchControls from '@/Components/atoms/SearchControls';
 import Title from '@/Components/atoms/Title';
 import { FiltersProvider } from '@/Context/FiltersContext';
-import IdeascaleSortingOptions from '@/lib/IdeascaleSortOptions';
+import CatalystSortingOptions from '@/lib/CatalystSortingOptions';
 import { PageProps } from '@/types';
 import { Head } from '@inertiajs/react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
@@ -46,7 +46,7 @@ const Index = ({
 
                 <section className="container">
                     <SearchControls
-                        sortOptions={IdeascaleSortingOptions()}
+                        sortOptions={CatalystSortingOptions()}
                         onFiltersToggle={setShowFilters}
                         searchPlaceholder={t('searchBar.placeholder')}
                     />

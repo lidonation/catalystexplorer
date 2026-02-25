@@ -26,7 +26,10 @@ trait HasCatalystProposers
             'proposal_profiles',
             'profile_id',
             'proposal_id'
-        )->where('proposals.type', 'proposal');
+        )
+            ->wherePivot('profile_type', static::class)
+            ->whereNull('proposals.deleted_at')
+            ->where('proposals.type', 'proposal');
     }
 
     /**

@@ -219,6 +219,11 @@ class Proposals extends Resource
                 ->trueValue(true)
                 ->falseValue(false),
 
+            Textarea::make(__('Open Source Description'), 'opensource_description')
+                ->help('Details about open source commitment (repository URL, license, what will be open sourced)')
+                ->hideFromIndex()
+                ->alwaysShow(),
+
             Text::make(__('Type'), 'type')
                 ->hideFromIndex(),
 
