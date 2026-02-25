@@ -1,6 +1,8 @@
-import React, { createContext, useContext, useState, useRef, useCallback, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useRef, useCallback, ReactNode } from 'react';
 import axios from 'axios';
 import useRoute from '@/useHooks/useRoute';
+import storageService from '@/utils/storage-service';
+import { StorageKeys } from '@/enums/storage-keys-enums';
 
 export interface ComparisonResult {
     proposal_id: string;
@@ -17,6 +19,11 @@ export interface ComparisonResult {
     recommendation: 'Fund' | "Don't Fund";
 }
 
+interface CachedComparison {
+    key: string;
+    results: ComparisonResult[];
+}
+
 interface AiComparisonState {
     isGenerating: boolean;
     results: ComparisonResult[] | null;
@@ -30,40 +37,32 @@ interface AiComparisonContextType extends AiComparisonState {
     clearComparison: () => void;
 }
 
-const STORAGE_KEY = 'ai_comparison_results';
-
 function getCacheKey(proposalIds: string[]): string {
     return [...proposalIds].sort().join(',');
 }
 
-function loadCachedResults(): { key: string; results: ComparisonResult[] } | null {
-    try {
-        const raw = sessionStorage.getItem(STORAGE_KEY);
-        if (!raw) return null;
-        const parsed = JSON.parse(raw);
-        if (parsed?.key && Array.isArray(parsed?.results) && parsed.results.length > 0) {
-            return parsed;
-        }
-    } catch {
-        // ignore parse errors
+function loadCachedResults(): CachedComparison | null {
+    const cached = storageService.get<CachedComparison>(
+        StorageKeys.AI_COMPARISON_RESULTS,
+        undefined,
+        'session',
+    );
+    if (cached?.key && Array.isArray(cached?.results) && cached.results.length > 0) {
+        return cached;
     }
     return null;
 }
 
 function saveCachedResults(key: string, results: ComparisonResult[]): void {
-    try {
-        sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ key, results }));
-    } catch {
-        // ignore quota errors
-    }
+    storageService.save<CachedComparison>(
+        StorageKeys.AI_COMPARISON_RESULTS,
+        { key, results },
+        'session',
+    );
 }
 
 function clearCachedResults(): void {
-    try {
-        sessionStorage.removeItem(STORAGE_KEY);
-    } catch {
-        // ignore
-    }
+    storageService.remove(StorageKeys.AI_COMPARISON_RESULTS, 'session');
 }
 
 const AiComparisonContext = createContext<AiComparisonContextType | undefined>(undefined);
@@ -190,87 +189,6 @@ export const AiComparisonProvider: React.FC<{ children: ReactNode }> = ({ childr
             return results;
         } catch (error) {
             console.error('AI Comparison Error:', error);
-
-            // For debugging: provide more detailed error info and fallback
-            console.error('Full error details:', {
-                error: error,
-                message: error instanceof Error ? error.message : 'Unknown error',
-                stack: error instanceof Error ? error.stack : undefined
-            });
-
-            if (error instanceof Error && (error.message.includes('Invalid response format') || error.message.includes('404') || error.message.includes('500'))) {
-                console.warn('AI agent failed, trying direct API fallback:', error.message);
-
-                try {
-                    // Try direct API as fallback
-                    let directApiUrl: string;
-                    try {
-                        directApiUrl = route('api.proposals.compare');
-                    } catch {
-                        directApiUrl = '/api/proposals/compare';
-                    }
-
-                    const fallbackResponse = await axios.post(directApiUrl, {
-                        proposal_ids: proposalIds
-                    });
-
-                    const fallbackData = fallbackResponse.data;
-                    if (fallbackData.success && fallbackData.comparisons) {
-                        const results: ComparisonResult[] = fallbackData.comparisons.map((comparison: any) => ({
-                            proposal_id: comparison.proposal_id,
-                            summary: comparison.summary,
-                            alignment_score: comparison.alignment_score,
-                            feasibility_score: comparison.feasibility_score,
-                            auditability_score: comparison.auditability_score,
-                            total_score: comparison.total_score,
-                            strengths: comparison.strengths || [],
-                            improvements: comparison.improvements || [],
-                            pros: comparison.pros || [],
-                            cons: comparison.cons || [],
-                            one_sentence_summary: comparison.one_sentence_summary,
-                            recommendation: comparison.recommendation,
-                        }));
-
-                        await staggerResults(results);
-
-                        return results;
-                    }
-                } catch (fallbackError) {
-                    console.error('Direct API fallback also failed:', fallbackError);
-                }
-
-                console.warn('Both AI agent and direct API failed, using mock data');
-
-                const mockResults: ComparisonResult[] = proposalIds.map((id, index) => ({
-                    proposal_id: id,
-                    summary: `[DEBUG] Mock analysis for proposal ${id} - AI tool execution failed`,
-                    alignment_score: 20 + (index * 2),
-                    feasibility_score: 25 + (index * 2),
-                    auditability_score: 25 + (index * 2),
-                    total_score: 70 + (index * 5),
-                    strengths: [
-                        '[DEBUG] Mock strength - Clear problem identification',
-                        '[DEBUG] Mock strength - Reasonable approach',
-                    ],
-                    improvements: [
-                        '[DEBUG] Mock improvement - Tool execution needs fixing',
-                    ],
-                    pros: [
-                        '[DEBUG] Mock pro - This is test data',
-                        '[DEBUG] Mock pro - Tool needs debugging',
-                    ],
-                    cons: [
-                        '[DEBUG] Mock con - AI agent not using tool properly',
-                        '[DEBUG] Mock con - Response parsing failed',
-                    ],
-                    one_sentence_summary: `[DEBUG] Mock summary for proposal ${id} - tool execution failed.`,
-                    recommendation: index % 2 === 0 ? 'Fund' : "Don't Fund",
-                }));
-
-                await staggerResults(mockResults);
-
-                return mockResults;
-            }
 
             const errorMessage = error instanceof Error ? error.message : 'Failed to generate AI comparison';
             clearStaggerTimers();
