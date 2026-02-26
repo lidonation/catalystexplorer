@@ -7,6 +7,7 @@ namespace App\Tools;
 use App\Actions\Ai\ExtractProposalField;
 use App\Actions\Ai\ExtractProposalTitle;
 use App\Models\Proposal;
+use Illuminate\Support\Facades\Cache;
 use Prism\Prism\Facades\Prism;
 use Prism\Prism\ValueObjects\Messages\UserMessage;
 use Vizra\VizraADK\Contracts\ToolInterface;
@@ -15,6 +16,10 @@ use Vizra\VizraADK\System\AgentContext;
 
 class ProposalComparisonTool implements ToolInterface
 {
+    private const CACHE_TTL = 60 * 60 * 24 * 30;
+
+    private const CACHE_PREFIX = 'proposal_ai_analysis:';
+
     public function definition(): array
     {
         return [
@@ -65,7 +70,12 @@ class ProposalComparisonTool implements ToolInterface
             $comparisons = [];
 
             foreach ($proposals as $proposal) {
-                $analysis = $this->analyzeProposal($proposal);
+                $cacheKey = self::CACHE_PREFIX.$proposal->id;
+
+                $analysis = Cache::remember($cacheKey, self::CACHE_TTL, function () use ($proposal) {
+                    return $this->analyzeProposal($proposal);
+                });
+
                 $comparisons[] = $analysis;
             }
 

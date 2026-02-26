@@ -189,6 +189,8 @@ class SyncProposalJob implements ShouldQueue
             // Generate projectcatalyst.io link if we have the necessary data
             $this->generateProjectCatalystLink($proposal, $campaign, $fundNumber);
 
+            GenerateProposalAiSummary::dispatch($proposal)->onQueue('ai');
+
         } catch (\Throwable $e) {
             Log::error('Error syncing proposal: '.$e->getMessage(), [
                 'document_id' => $this->documentId,

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { Sparkles, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
-import { useAiComparison } from '@/hooks/useAiComparison';
+import { useAiComparisonContext } from '@/Context/AiComparisonContext';
 import { useProposalComparison } from '@/Context/ProposalComparisonContext';
 
 interface AiComparisonRowProps {
@@ -11,7 +11,7 @@ interface AiComparisonRowProps {
 export default function AiComparisonRow({ height }: AiComparisonRowProps) {
     const { t } = useLaravelReactI18n();
     const { filteredProposals } = useProposalComparison();
-    const { isGenerating, results, error, generateComparison, clearComparison } = useAiComparison();
+    const { isGenerating, results, error, generateComparison, clearComparison } = useAiComparisonContext();
     const [isExpanded, setIsExpanded] = useState(false);
 
     const handleGenerateComparison = async () => {
