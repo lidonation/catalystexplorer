@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useRef, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 import axios from 'axios';
 import useRoute from '@/useHooks/useRoute';
 import storageService from '@/utils/storage-service';
@@ -28,8 +28,6 @@ interface AiComparisonState {
     isGenerating: boolean;
     results: ComparisonResult[] | null;
     error: string | null;
-    completedCount: number;
-    totalCount: number;
 }
 
 interface AiComparisonContextType extends AiComparisonState {
@@ -69,7 +67,6 @@ const AiComparisonContext = createContext<AiComparisonContextType | undefined>(u
 
 export const AiComparisonProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const route = useRoute();
-    const staggerTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
     const [state, setState] = useState<AiComparisonState>(() => {
         const cached = loadCachedResults();
         if (cached) {
@@ -77,47 +74,14 @@ export const AiComparisonProvider: React.FC<{ children: ReactNode }> = ({ childr
                 isGenerating: false,
                 results: cached.results,
                 error: null,
-                completedCount: cached.results.length,
-                totalCount: cached.results.length,
             };
         }
         return {
             isGenerating: false,
             results: null,
             error: null,
-            completedCount: 0,
-            totalCount: 0,
         };
     });
-
-    const clearStaggerTimers = useCallback(() => {
-        staggerTimers.current.forEach(clearTimeout);
-        staggerTimers.current = [];
-    }, []);
-
-    const staggerResults = useCallback((allResults: ComparisonResult[]): Promise<ComparisonResult[]> => {
-        clearStaggerTimers();
-        const STAGGER_DELAY = 600; // ms between each result
-
-        return new Promise((resolve) => {
-            allResults.forEach((result, index) => {
-                const timer = setTimeout(() => {
-                    setState(prev => ({
-                        ...prev,
-                        results: [...(prev.results || []), result],
-                        completedCount: index + 1,
-                        isGenerating: index < allResults.length - 1,
-                    }));
-
-                    if (index === allResults.length - 1) {
-                        resolve(allResults);
-                    }
-                }, index * STAGGER_DELAY);
-
-                staggerTimers.current.push(timer);
-            });
-        });
-    }, [clearStaggerTimers]);
 
     const generateComparison = async (proposalIds: string[]): Promise<ComparisonResult[]> => {
         // Check if we already have cached results for these exact proposals
@@ -128,19 +92,14 @@ export const AiComparisonProvider: React.FC<{ children: ReactNode }> = ({ childr
                 isGenerating: false,
                 results: cached.results,
                 error: null,
-                completedCount: cached.results.length,
-                totalCount: cached.results.length,
             });
             return cached.results;
         }
 
-        clearStaggerTimers();
         setState({
             isGenerating: true,
             results: null,
             error: null,
-            completedCount: 0,
-            totalCount: proposalIds.length,
         });
 
         try {
@@ -180,8 +139,11 @@ export const AiComparisonProvider: React.FC<{ children: ReactNode }> = ({ childr
                 recommendation: comparison.recommendation,
             }));
 
-            // Stagger results one by one for visual reveal effect
-            await staggerResults(results);
+            setState({
+                isGenerating: false,
+                results,
+                error: null,
+            });
 
             // Persist to sessionStorage
             saveCachedResults(cacheKey, results);
@@ -191,29 +153,23 @@ export const AiComparisonProvider: React.FC<{ children: ReactNode }> = ({ childr
             console.error('AI Comparison Error:', error);
 
             const errorMessage = error instanceof Error ? error.message : 'Failed to generate AI comparison';
-            clearStaggerTimers();
             setState({
                 isGenerating: false,
                 results: null,
                 error: errorMessage,
-                completedCount: 0,
-                totalCount: 0,
             });
             throw error;
         }
     };
 
-    const clearComparison = () => {
-        clearStaggerTimers();
+    const clearComparison = useCallback(() => {
         clearCachedResults();
         setState({
             isGenerating: false,
             results: null,
             error: null,
-            completedCount: 0,
-            totalCount: 0,
         });
-    };
+    }, []);
 
     return (
         <AiComparisonContext.Provider
