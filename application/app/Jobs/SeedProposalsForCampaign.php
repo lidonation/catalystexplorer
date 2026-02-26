@@ -52,7 +52,7 @@ class SeedProposalsForCampaign
                 // ---- Tags ----
                 if ($tags->isNotEmpty()) {
                     $proposal->tags()->attach(
-                        $tags->random(rand(1, min(3, $tags->count())))->pluck('id'),
+                        $tags->random(random_int(1, min(3, $tags->count())))->pluck('id'),
                         ['model_type' => Proposal::class]
                     );
                 }
@@ -60,7 +60,7 @@ class SeedProposalsForCampaign
                 // ---- Ideascale team ----
                 if ($ideascaleProfiles->isNotEmpty()) {
                     $ideascaleProfiles
-                        ->random(rand(1, min(7, $ideascaleProfiles->count())))
+                        ->random(random_int(1, min(7, $ideascaleProfiles->count())))
                         ->each(function ($profile) use ($proposal) {
                             ProposalProfile::create([
                                 'proposal_id' => $proposal->id,
@@ -73,7 +73,7 @@ class SeedProposalsForCampaign
                 // ---- Catalyst team ----
                 if ($catalystProfiles->isNotEmpty()) {
                     $catalystProfiles
-                        ->random(rand(1, min(7, $catalystProfiles->count())))
+                        ->random(random_int(1, min(7, $catalystProfiles->count())))
                         ->each(function ($profile) use ($proposal) {
                             ProposalProfile::create([
                                 'proposal_id' => $proposal->id,

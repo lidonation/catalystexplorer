@@ -9,6 +9,7 @@ use App\Enums\RoleEnum;
 use App\Models\Proposal;
 use App\Nova\Actions\AddQuickPitch;
 use App\Nova\Actions\EditModel;
+use App\Nova\Actions\GenerateAiSummary;
 use App\Nova\Actions\GenerateProposalLinks;
 use App\Nova\Actions\MakeSearchable;
 use App\Nova\Actions\RegenerateOgImage;
@@ -336,6 +337,21 @@ class Proposals extends Resource
                 ->hideWhenCreating()
                 ->hideWhenUpdating(),
 
+            // AI Fields
+            Textarea::make(__('AI Summary'), 'ai_summary')
+                ->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating()
+                ->help('Auto-generated summary via AI. Use the "Generate AI Summary" action to populate.'),
+
+            DateTime::make(__('AI Generated At'), 'ai_generated_at')
+                ->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating()
+                ->help('Timestamp when the AI summary was last generated.'),
+
             Number::make(__('Ranking Total'), 'ranking_total')
                 ->hideFromIndex(),
 
@@ -504,6 +520,7 @@ class Proposals extends Resource
                     || auth()->user()->hasRole(RoleEnum::editor()->value);
             }),
             (new EditModel),
+            (new GenerateAiSummary),
             (new GenerateProposalLinks),
             (new MakeSearchable),
             (new RemoveFromSearchIndex),

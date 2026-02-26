@@ -1,5 +1,6 @@
 import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
+import Title from '@/Components/atoms/Title';
 import IdeascaleProfileUsers from '@/Pages/IdeascaleProfile/Partials/ProposalProfilesComponent';
 import { IndexedDBService } from '@/Services/IndexDbService';
 import { shortNumber } from '@/utils/shortNumber';
@@ -11,6 +12,7 @@ import ProposalFundingPercentages from '../Partials/ProposalFundingPercentages';
 import ProposalFundingStatus from '../Partials/ProposalFundingStatus';
 import ProposalSolution from '../Partials/ProposalSolution';
 import ColumnHeader from './Partials/ColumnHeader';
+import AiComparisonSkeleton from './Partials/AiComparisonSkeleton';
 import { useProposalComparison } from '@/Context/ProposalComparisonContext';
 import { useAiComparisonContext } from '@/Context/AiComparisonContext';
 import ProposalData = App.DataTransferObjects.ProposalData;
@@ -38,7 +40,7 @@ export default function SortableProposalColumn({
     });
 
     const { t } = useLaravelReactI18n();
-    const { results } = useAiComparisonContext();
+    const { results, isGenerating } = useAiComparisonContext();
 
     const rows = [
         {
@@ -109,7 +111,7 @@ export default function SortableProposalColumn({
         {
             id: 'ai-comparison',
             label: t('proposalComparison.tableHeaders.aiComparison'),
-            height: 'h-auto',
+            height: '',
         },
     ];
 
@@ -345,53 +347,66 @@ export default function SortableProposalColumn({
 
             {/* AI Comparison Row */}
             <div
-                className={`${getRowData('ai-comparison')?.height} min-h-16 border-gray-light bg-background flex flex-col items-center justify-center border-r border-b p-3 ${isLast ? 'rounded-br-lg' : ''}`}
+                className={`flex-1 border-gray-light bg-background flex flex-col items-center ${results ? 'justify-start' : 'justify-center'} border-r p-3 ${isLast ? 'rounded-br-lg' : ''}`}
                 data-testid="sortable-proposal-ai-comparison"
             >
                 {results ? (
                     (() => {
                         const result = results.find(r => r.proposal_id === proposal.id);
                         if (result) {
+                            const scoreColor = result.total_score >= 70 ? 'text-success' : result.total_score >= 40 ? 'text-warning' : 'text-danger-strong';
+                            const badgeBg = result.recommendation === 'Fund' ? 'bg-success-light text-success' : 'bg-danger-light text-danger-mid';
+
+                            const breakdowns = [
+                                { label: 'Alignment', score: result.alignment_score, max: 30 },
+                                { label: 'Feasibility', score: result.feasibility_score, max: 35 },
+                                { label: 'Auditability', score: result.auditability_score, max: 35 },
+                            ];
+
                             return (
-                                <div className="text-center space-y-3 w-full p-2">
+                                <div className="text-left space-y-3 w-full p-2">
                                     {/* Score and Recommendation */}
-                                    <div className="space-y-2">
-                                        <div className="text-xl font-bold text-dark">
-                                            {result.total_score}/100
+                                    <div className="flex items-center justify-between">
+                                        <div className={`text-2xl font-bold ${scoreColor}`}>
+                                            {result.total_score}<span className="text-sm font-normal text-dark">/100</span>
                                         </div>
-                                        <div className={`text-xs px-2 py-1 rounded-full inline-block ${
-                                            result.recommendation === 'Fund' 
-                                                ? 'bg-success text-white' 
-                                                : 'bg-danger text-white'
-                                        }`}>
+                                        <div className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full ${badgeBg}`}>
                                             {result.recommendation}
                                         </div>
                                     </div>
 
                                     {/* One Sentence Summary */}
-                                    <div className="text-xs text-content text-left bg-background-lighter p-2 rounded italic">
+                                    <div className="text-xs text-content leading-snug">
                                         {result.one_sentence_summary}
                                     </div>
 
-                                    {/* Score Breakdown */}
-                                    <div className="text-xs text-content space-y-1">
-                                        <div className="flex justify-between">
-                                            <span>Alignment:</span>
-                                            <span className="font-medium">{result.alignment_score}/30</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span>Feasibility:</span>
-                                            <span className="font-medium">{result.feasibility_score}/35</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span>Auditability:</span>
-                                            <span className="font-medium">{result.auditability_score}/35</span>
-                                        </div>
+                                    <div className="space-y-2">
+                                        {breakdowns.map(({ label, score, max }) => {
+                                            const pct = Math.round((score / max) * 100);
+                                            const barColor = pct >= 70 ? 'bg-success' : pct >= 40 ? 'bg-warning' : 'bg-danger-mid';
+                                            return (
+                                                <div key={label} className="space-y-0.5">
+                                                    <div className="flex justify-between text-[11px]">
+                                                        <span className="text-content">{label}</span>
+                                                        <span className="font-medium text-dark">{score}/{max}</span>
+                                                    </div>
+                                                    <div className="h-1.5 w-full rounded-full bg-background-darker overflow-hidden">
+                                                        <div
+                                                            className={`h-full rounded-full ${barColor} transition-all duration-700 ease-out`}
+                                                            style={{ width: `${pct}%` }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
                                     </div>
+
+                                    {/* Divider */}
+                                    <hr className="border-gray-light" />
 
                                     {/* Pros */}
                                     <div className="text-left">
-                                        <h6 className="text-xs font-medium text-success mb-1">Pros:</h6>
+                                        <Title level="6" className="text-xs font-medium text-success mb-1">Pros:</Title>
                                         <ul className="text-xs text-content space-y-1">
                                             {result.pros.slice(0, 2).map((pro, idx) => (
                                                 <li key={idx} className="flex items-start">
@@ -404,7 +419,7 @@ export default function SortableProposalColumn({
 
                                     {/* Cons */}
                                     <div className="text-left">
-                                        <h6 className="text-xs font-medium text-danger mb-1">Cons:</h6>
+                                        <Title level="6" className="text-xs font-medium text-danger mb-1">Cons:</Title>
                                         <ul className="text-xs text-content space-y-1">
                                             {result.cons.slice(0, 2).map((con, idx) => (
                                                 <li key={idx} className="flex items-start">
@@ -417,6 +432,10 @@ export default function SortableProposalColumn({
                                 </div>
                             );
                         }
+                        if (isGenerating) {
+                            return <AiComparisonSkeleton />;
+                        }
+
                         return (
                             <div className="flex items-center gap-1">
                                 <Sparkles className="h-3 w-3 text-primary" />
@@ -424,6 +443,8 @@ export default function SortableProposalColumn({
                             </div>
                         );
                     })()
+                ) : isGenerating ? (
+                    <AiComparisonSkeleton />
                 ) : (
                     <div className="flex items-center gap-1">
                         <Sparkles className="h-3 w-3 text-primary" />

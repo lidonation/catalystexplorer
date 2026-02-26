@@ -135,6 +135,12 @@ final class ProposalData extends Data
         public ?int $auditability_score,
 
         #[TypeScriptOptional]
+        public ?string $ai_summary,
+
+        #[TypeScriptOptional]
+        public ?string $ai_generated_at,
+
+        #[TypeScriptOptional]
         public ?string $quickpitch,
 
         #[TypeScriptOptional]
