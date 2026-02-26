@@ -19,11 +19,16 @@ export default {
         extend: {
             animation: {
                 waveform: 'waveform 1s ease-in-out infinite',
+                fadeIn: 'fadeIn 0.4s ease-out',
             },
             keyframes: {
                 waveform: {
                     '0%, 100%': { height: '20%' },
                     '50%': { height: '60%' },
+                },
+                fadeIn: {
+                    '0%': { opacity: '0', transform: 'translateY(8px)' },
+                    '100%': { opacity: '1', transform: 'translateY(0)' },
                 },
             },
             fontFamily: {

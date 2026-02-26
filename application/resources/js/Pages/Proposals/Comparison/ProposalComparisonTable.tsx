@@ -118,7 +118,7 @@ function ProposalsTableInner() {
         {
             id: 'ai-comparison',
             label: t('proposalComparison.tableHeaders.aiComparison'),
-            height: 'h-auto',
+            height: '',
         },
     ];
 
@@ -192,7 +192,7 @@ function ProposalsTableInner() {
                         {visibleRowsData.map((row) => (
                             <div
                                 key={row.id}
-                                className={`${row.height} ${row.id === 'ai-comparison' ? 'min-h-24' : 'border-gray-light border-b '} flex items-center px-4 text-left font-medium ${row.id == 'metric' ? 'text-dark !bg-background-lighter rounded-tl-lg' : ''}`}
+                                className={`${row.height} ${row.id === 'ai-comparison' ? 'flex-1' : 'border-gray-light border-b '} flex items-center px-4 text-left font-medium ${row.id == 'metric' ? 'text-dark !bg-background-lighter rounded-tl-lg' : ''}`}
                                 data-testid={`proposal-comparison-row-${row.id}`}
                             >
                                 {row.id === 'ai-comparison' ? (
@@ -206,7 +206,7 @@ function ProposalsTableInner() {
                                             <button
                                                 onClick={handleGenerateComparison}
                                                 disabled={filteredProposals.length < 2 || isGenerating}
-                                                className="flex items-center gap-1 bg-primary text-white px-2 py-1 rounded text-xs hover:bg-primary-hover disabled:bg-gray-400 disabled:cursor-not-allowed font-medium transition-colors"
+                                                className="flex items-center gap-1 bg-primary text-white px-2 py-1 rounded text-xs hover:bg-primary-hover disabled:bg-gray-400 disabled:cursor-not-allowed font-medium transition-colors cursor-pointer mb-2"
                                             >
                                                 <Sparkles className="h-3 w-3" />
                                                 {t('proposalComparison.generateAiComparison')}
@@ -215,7 +215,7 @@ function ProposalsTableInner() {
 
                                         {isGenerating && (
                                             <div className="flex items-center gap-1 text-primary">
-                                                <div className="animate-spin h-3 w-3 border border-primary border-t-transparent rounded-full"></div>
+                                                <div className="animate-spin h-3 w-3 border border-primary border-t-transparent rounded-full cursor-pointer"></div>
                                                 <span className="text-xs">
                                                     {t('proposalComparison.aiComparison.generating')}
                                                 </span>
@@ -255,7 +255,7 @@ function ProposalsTableInner() {
                             collisionDetection={closestCenter}
                             onDragEnd={handleDragEnd}
                         >
-                            <div className="flex min-w-max">
+                            <div className="flex min-w-max items-stretch h-full">
                                 <SortableContext
                                     items={filteredProposals.map((p) => p.id ?? '')}
                                     strategy={horizontalListSortingStrategy}
