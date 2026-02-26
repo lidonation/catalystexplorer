@@ -1,3 +1,11 @@
+## [1.78.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.78.0...v1.78.1) (2026-02-25)
+
+
+### Bug Fixes
+
+* **catalyst & ideascale profile controllers:** ln-2154 controllers now compute... ([47e8182](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/47e8182f38b5a03eb1b4d517f49b9eed1089b593))
+* **Lang.Json files:**  LN-2162 fixed translation issues for filter params in Catalyst Profiles page ([76020f0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/76020f0989c796a8a26b5b1e4988f7453a806d56))
+
 # [1.78.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.77.0...v1.78.0) (2026-02-18)
 
 
