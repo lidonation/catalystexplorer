@@ -1,0 +1,160 @@
+{{- if and (or (eq .Values.services.app.environment "production") (eq .Values.services.app.environment "mainnet")) .Values.services.nocodb.enabled -}}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "{{ $.Chart.Name }}-nocodb"
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ $.Chart.Name }}-nocodb
+    app.kubernetes.io/instance: {{ .Values.namespace }}
+    app.kubernetes.io/component: database-ui
+    service: "{{ $.Chart.Name }}-nocodb"
+spec:
+  serviceName: "{{ $.Chart.Name }}-nocodb-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      service: "{{ $.Chart.Name }}-nocodb"
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ $.Chart.Name }}-nocodb
+        app.kubernetes.io/instance: {{ .Values.namespace }}
+        app.kubernetes.io/component: database-ui
+        service: "{{ $.Chart.Name }}-nocodb"
+    spec:
+      containers:
+        - name: nocodb
+          image: "{{ .Values.services.nocodb.image.repository }}:{{ .Values.services.nocodb.image.tag }}"
+          imagePullPolicy: {{ .Values.services.nocodb.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: NC_DB
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ $.Chart.Name }}-secrets"
+                  key: NOCODB_DATABASE_URL
+            
+            - name: NC_REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ $.Chart.Name }}-secrets"
+                  key: REDIS_HOST
+            
+            - name: NC_AUTH_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ $.Chart.Name }}-secrets"
+                  key: NOCODB_JWT_SECRET
+            
+            - name: NC_ADMIN_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ $.Chart.Name }}-secrets"
+                  key: NOCODB_ADMIN_EMAIL
+            
+            - name: NC_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ $.Chart.Name }}-secrets"
+                  key: NOCODB_ADMIN_PASSWORD
+            
+            - name: NC_PUBLIC_URL
+              value: "https://dataset.catalystexplorer.com"
+            
+            - name: NC_DISABLE_TELE
+              value: "true"
+            
+            - name: NC_TOOL_DIR
+              value: "/usr/app/data/"
+            
+            - name: NC_S3_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ $.Chart.Name }}-secrets"
+                  key: AWS_BUCKET
+                  optional: true
+            
+            - name: NC_S3_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ $.Chart.Name }}-secrets"
+                  key: AWS_DEFAULT_REGION
+                  optional: true
+            
+            - name: NC_S3_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ $.Chart.Name }}-secrets"
+                  key: AWS_ACCESS_KEY_ID
+                  optional: true
+     
+            - name: NC_S3_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ $.Chart.Name }}-secrets"
+                  key: AWS_ENDPOINT
+                  optional: true
+            
+            - name: NC_S3_FORCE_PATH_STYLE
+              value: "true"
+            
+            - name: NC_S3_USE_SSL
+              value: "true"
+            
+            # MinIO specific configuration
+            - name: NC_ATTACHMENT_FIELD_SIZE
+              value: "20971520"  # 20MB default
+            
+            - name: NC_MAX_ATTACHMENTS_ALLOWED
+              value: "10"
+          
+          volumeMounts:
+            - name: nocodb-data
+              mountPath: /usr/app/data
+              subPath: nocodb-data
+          
+          resources:
+            requests:
+              cpu: {{ .Values.services.nocodb.resources.requests.cpu }}
+              memory: {{ .Values.services.nocodb.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.services.nocodb.resources.limits.cpu }}
+              memory: {{ .Values.services.nocodb.resources.limits.memory }}
+          
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: http
+            initialDelaySeconds: 120
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+          
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+      
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+        runAsGroup: 1000
+  
+  volumeClaimTemplates:
+    - metadata:
+        name: nocodb-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: {{ .Values.services.nocodb.persistence.storageClass }}
+        resources:
+          requests:
+            storage: {{ .Values.services.nocodb.persistence.size }}
+{{- end -}}

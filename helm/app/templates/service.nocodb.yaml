@@ -1,0 +1,21 @@
+{{- if and (or (eq .Values.services.app.environment "production") (eq .Values.services.app.environment "mainnet")) .Values.services.nocodb.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ $.Chart.Name }}-nocodb-service"
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ $.Chart.Name }}-nocodb
+    app.kubernetes.io/instance: {{ .Values.namespace }}
+    app.kubernetes.io/component: database-ui
+    service: "{{ $.Chart.Name }}-nocodb"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: http
+      targetPort: http
+      protocol: TCP
+  selector:
+    service: "{{ $.Chart.Name }}-nocodb"
+{{- end -}}
