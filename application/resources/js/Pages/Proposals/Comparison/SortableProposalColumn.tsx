@@ -40,7 +40,8 @@ export default function SortableProposalColumn({
     });
 
     const { t } = useLaravelReactI18n();
-    const { results, isGenerating } = useAiComparisonContext();
+    const { results, isGenerating, generatingIds } = useAiComparisonContext();
+    const isThisGenerating = generatingIds.has(proposal.id ?? '');
 
     const rows = [
         {
@@ -432,7 +433,7 @@ export default function SortableProposalColumn({
                                 </div>
                             );
                         }
-                        if (isGenerating) {
+                        if (isThisGenerating) {
                             return <AiComparisonSkeleton />;
                         }
 
@@ -443,7 +444,7 @@ export default function SortableProposalColumn({
                             </div>
                         );
                     })()
-                ) : isGenerating ? (
+                ) : isThisGenerating ? (
                     <AiComparisonSkeleton />
                 ) : (
                     <div className="flex items-center gap-1">

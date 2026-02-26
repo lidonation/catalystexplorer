@@ -11,7 +11,8 @@ interface AiComparisonRowProps {
 export default function AiComparisonRow({ height }: AiComparisonRowProps) {
     const { t } = useLaravelReactI18n();
     const { filteredProposals } = useProposalComparison();
-    const { isGenerating, results, error, generateComparison, clearComparison } = useAiComparisonContext();
+    const { isGenerating, generatingIds, results, error, generateComparison, clearComparison } = useAiComparisonContext();
+    const hasAnyGenerating = generatingIds.size > 0;
     const [isExpanded, setIsExpanded] = useState(false);
 
     const handleGenerateComparison = async () => {
@@ -67,10 +68,10 @@ export default function AiComparisonRow({ height }: AiComparisonRowProps) {
                                 </button>
                             )}
                             
-                            {!results && !isGenerating && (
+                            {!results && !hasAnyGenerating && (
                                 <button
                                     onClick={handleGenerateComparison}
-                                    disabled={filteredProposals.length < 2 || isGenerating}
+                                    disabled={filteredProposals.length < 2 || hasAnyGenerating}
                                     className="flex items-center gap-2 bg-blue-600 text-white px-3 py-1.5 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm font-medium transition-colors"
                                 >
                                     <Sparkles className="h-3 w-3" />
@@ -78,7 +79,7 @@ export default function AiComparisonRow({ height }: AiComparisonRowProps) {
                                 </button>
                             )}
 
-                            {isGenerating && (
+                            {hasAnyGenerating && (
                                 <div className="flex items-center gap-2 text-blue-600">
                                     <div className="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
                                     <span className="text-sm">

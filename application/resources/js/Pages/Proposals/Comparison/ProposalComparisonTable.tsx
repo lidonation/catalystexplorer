@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import { useProposalComparison } from '@/Context/ProposalComparisonContext';
@@ -27,7 +28,27 @@ import { Sparkles } from 'lucide-react';
 function ProposalsTableInner() {
     const { t } = useLaravelReactI18n();
     const { filteredProposals } = useProposalComparison();
-    const { isGenerating, results, error, generateComparison, clearComparison } = useAiComparisonContext();
+    const { isGenerating, generatingIds, results, error, generateComparison, generateForNewProposals, clearComparison } = useAiComparisonContext();
+    const prevIdsRef = useRef<string[]>([]);
+    const hasAnyGenerating = generatingIds.size > 0;
+
+    useEffect(() => {
+        const currentIds = filteredProposals
+            .map((p) => p.id)
+            .filter((id): id is string => id !== null && id !== undefined);
+
+        const prevIds = prevIdsRef.current;
+        prevIdsRef.current = currentIds;
+
+        if (!results || results.length === 0) return;
+
+        const prevSet = new Set(prevIds);
+        const hasNewIds = currentIds.some((id) => !prevSet.has(id));
+
+        if (hasNewIds && !hasAnyGenerating) {
+            generateForNewProposals(currentIds);
+        }
+    }, [filteredProposals]);
 
     const handleGenerateComparison = async () => {
         const proposalIds = filteredProposals
@@ -202,10 +223,10 @@ function ProposalsTableInner() {
                                             <span>{row.label}</span>
                                         </div>
 
-                                        {!results && !isGenerating && (
+                                        {!results && !hasAnyGenerating && (
                                             <button
                                                 onClick={handleGenerateComparison}
-                                                disabled={filteredProposals.length < 2 || isGenerating}
+                                                disabled={filteredProposals.length < 2 || hasAnyGenerating}
                                                 className="flex items-center gap-1 bg-primary text-white px-2 py-1 rounded text-xs hover:bg-primary-hover disabled:bg-gray-400 disabled:cursor-not-allowed font-medium transition-colors cursor-pointer mb-2"
                                             >
                                                 <Sparkles className="h-3 w-3" />
@@ -213,7 +234,7 @@ function ProposalsTableInner() {
                                             </button>
                                         )}
 
-                                        {isGenerating && (
+                                        {hasAnyGenerating && (
                                             <div className="flex items-center gap-1 text-primary">
                                                 <div className="animate-spin h-3 w-3 border border-primary border-t-transparent rounded-full cursor-pointer"></div>
                                                 <span className="text-xs">
