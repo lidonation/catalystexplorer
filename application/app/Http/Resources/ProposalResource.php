@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Resources;
 
 use App\Enums\CatalystCurrencies;
+use App\Services\ProposalAiSummaryService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
@@ -54,9 +55,15 @@ class ProposalResource extends JsonResource
             'feasibility_score' => $this->feasibility_score,
             'auditability_score' => $this->auditability_score,
 
-            // AI Analysis
-            'ai_summary' => $this->ai_summary,
-            'ai_generated_at' => $this->ai_generated_at,
+            // AI summary (generated on demand if requested via ?include=ai_summary)
+            'ai_summary' => $this->when(
+                $this->isAiSummaryRequested($request),
+                fn () => $this->getOrGenerateAiSummary($request)
+            ),
+            'ai_generated_at' => $this->when(
+                $this->isAiSummaryRequested($request),
+                fn () => $this->ai_generated_at
+            ),
 
             // Blockchain references
             'ideascale_id' => $this->ideascale_id,
@@ -256,6 +263,34 @@ class ProposalResource extends JsonResource
         }
 
         return null;
+    }
+
+    /**
+     * Check if ai_summary was requested via the ?include= query parameter.
+     */
+    private function isAiSummaryRequested(Request $request): bool
+    {
+        return collect(explode(',', $request->get('include', '')))
+            ->map(fn ($v) => trim($v))
+            ->filter()
+            ->contains('ai_summary');
+    }
+
+    private function getOrGenerateAiSummary(Request $request): ?string
+    {
+        // Return existing summary immediately if available
+        if (! empty($this->ai_summary)) {
+            return $this->ai_summary;
+        }
+
+        $isShowRoute = $request->route()?->getName() === 'api.v1.proposals.show'
+            || str_contains($request->path(), 'proposals/');
+
+        if (! $isShowRoute) {
+            return null;
+        }
+
+        return app(ProposalAiSummaryService::class)->generate($this->resource);
     }
 
     /**

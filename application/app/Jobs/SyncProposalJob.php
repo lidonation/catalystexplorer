@@ -9,6 +9,7 @@ use App\Models\CatalystProfile;
 use App\Models\Fund;
 use App\Models\Link;
 use App\Models\Proposal;
+use App\Services\ProposalAiSummaryService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -189,7 +190,8 @@ class SyncProposalJob implements ShouldQueue
             // Generate projectcatalyst.io link if we have the necessary data
             $this->generateProjectCatalystLink($proposal, $campaign, $fundNumber);
 
-            GenerateProposalAiSummary::dispatch($proposal)->onQueue('ai');
+            // Generate AI summary inline (no queue needed)
+            app(ProposalAiSummaryService::class)->generate($proposal);
 
         } catch (\Throwable $e) {
             Log::error('Error syncing proposal: '.$e->getMessage(), [
