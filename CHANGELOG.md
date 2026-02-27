@@ -1,3 +1,10 @@
+# [1.79.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.78.2...v1.79.0) (2026-02-27)
+
+
+### Features
+
+* adding nocodb ([e00662c](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/e00662cf358677493ba52e4fb635fca1b7417b41))
+
 ## [1.78.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.78.1...v1.78.2) (2026-02-26)
 
 
