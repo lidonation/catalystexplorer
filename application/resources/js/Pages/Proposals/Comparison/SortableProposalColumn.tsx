@@ -359,9 +359,9 @@ export default function SortableProposalColumn({
                             const badgeBg = result.recommendation === 'Fund' ? 'bg-success-light text-success' : 'bg-danger-light text-danger-mid';
 
                             const breakdowns = [
-                                { label: 'Alignment', score: result.alignment_score, max: 30 },
-                                { label: 'Feasibility', score: result.feasibility_score, max: 35 },
-                                { label: 'Auditability', score: result.auditability_score, max: 35 },
+                                { label: t('proposalComparison.aiComparison.alignment'), score: result.alignment_score, max: 30 },
+                                { label: t('proposalComparison.aiComparison.feasibility'), score: result.feasibility_score, max: 35 },
+                                { label: t('proposalComparison.aiComparison.auditability'), score: result.auditability_score, max: 35 },
                             ];
 
                             return (
@@ -407,7 +407,7 @@ export default function SortableProposalColumn({
 
                                     {/* Pros */}
                                     <div className="text-left">
-                                        <Title level="6" className="text-xs font-medium text-success mb-1">Pros:</Title>
+                                        <Title level="6" className="text-xs font-medium text-success mb-1">{t('proposalComparison.aiComparison.pros')}</Title>
                                         <ul className="text-xs text-content space-y-1">
                                             {result.pros.slice(0, 2).map((pro, idx) => (
                                                 <li key={idx} className="flex items-start">
@@ -420,7 +420,7 @@ export default function SortableProposalColumn({
 
                                     {/* Cons */}
                                     <div className="text-left">
-                                        <Title level="6" className="text-xs font-medium text-danger mb-1">Cons:</Title>
+                                        <Title level="6" className="text-xs font-medium text-danger mb-1">{t('proposalComparison.aiComparison.cons')}</Title>
                                         <ul className="text-xs text-content space-y-1">
                                             {result.cons.slice(0, 2).map((con, idx) => (
                                                 <li key={idx} className="flex items-start">
@@ -440,7 +440,7 @@ export default function SortableProposalColumn({
                         return (
                             <div className="flex items-center gap-1">
                                 <Sparkles className="h-3 w-3 text-primary" />
-                                <span className="text-xs text-content">No Analysis</span>
+                                <span className="text-xs text-content">{t('proposalComparison.aiComparison.noAnalysis')}</span>
                             </div>
                         );
                     })()
@@ -449,7 +449,7 @@ export default function SortableProposalColumn({
                 ) : (
                     <div className="flex items-center gap-1">
                         <Sparkles className="h-3 w-3 text-primary" />
-                        <span className="text-xs text-content">AI Review</span>
+                        <span className="text-xs text-content">{t('proposalComparison.aiComparison.aiReview')}</span>
                     </div>
                 )}
             </div>

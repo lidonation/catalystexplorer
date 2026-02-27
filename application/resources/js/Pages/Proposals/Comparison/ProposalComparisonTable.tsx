@@ -213,11 +213,11 @@ function ProposalsTableInner() {
                         {visibleRowsData.map((row) => (
                             <div
                                 key={row.id}
-                                className={`${row.height} ${row.id === 'ai-comparison' ? 'flex-1' : 'border-gray-light border-b '} flex items-center px-4 text-left font-medium ${row.id == 'metric' ? 'text-dark !bg-background-lighter rounded-tl-lg' : ''}`}
+                                className={`${row.height} ${row.id === 'ai-comparison' ? 'flex-1 items-start pt-4' : 'border-gray-light border-b items-center'} flex px-4 text-left font-medium ${row.id == 'metric' ? 'text-dark !bg-background-lighter rounded-tl-lg' : ''}`}
                                 data-testid={`proposal-comparison-row-${row.id}`}
                             >
                                 {row.id === 'ai-comparison' ? (
-                                    <div className="flex flex-col gap-2 w-full">
+                                    <div className="flex flex-col gap-4 w-full">
                                         <div className="flex items-center gap-2">
                                             <Sparkles className="h-4 w-4 text-primary" />
                                             <span>{row.label}</span>
@@ -227,7 +227,7 @@ function ProposalsTableInner() {
                                             <button
                                                 onClick={handleGenerateComparison}
                                                 disabled={filteredProposals.length < 2 || hasAnyGenerating}
-                                                className="flex items-center gap-1 bg-primary text-white px-2 py-1 rounded text-xs hover:bg-primary-hover disabled:bg-gray-400 disabled:cursor-not-allowed font-medium transition-colors cursor-pointer mb-2"
+                                                className="flex items-center gap-1 bg-primary text-white px-2 py-1 rounded text-xs hover:bg-primary-hover disabled:bg-gray-400 disabled:cursor-not-allowed font-medium transition-colors cursor-pointer"
                                             >
                                                 <Sparkles className="h-3 w-3" />
                                                 {t('proposalComparison.generateAiComparison')}
@@ -236,27 +236,41 @@ function ProposalsTableInner() {
 
                                         {hasAnyGenerating && (
                                             <div className="flex items-center gap-1 text-primary">
-                                                <div className="animate-spin h-3 w-3 border border-primary border-t-transparent rounded-full cursor-pointer"></div>
+                                                <div className="animate-spin h-3 w-3 border border-primary border-t-transparent rounded-full"></div>
                                                 <span className="text-xs">
                                                     {t('proposalComparison.aiComparison.generating')}
                                                 </span>
                                             </div>
                                         )}
 
+                                        {error && (
+                                            <div className="text-xs text-danger">
+                                                {t('proposalComparison.aiComparison.errorLoading')}
+                                            </div>
+                                        )}
+
                                         {results && (
                                             <button
                                                 onClick={clearComparison}
-                                                className="text-xs text-content hover:text-dark px-2 py-1 border border-gray-light rounded hover:bg-background-lighter w-fit"
+                                                className="text-[10px] text-content hover:text-dark px-1.5 py-0.5 border border-gray-light rounded hover:bg-background-lighter cursor-pointer w-fit"
                                             >
-                                                Clear Results
+                                                {t('proposalComparison.aiComparison.clearResults')}
                                             </button>
                                         )}
 
-                                        {error && (
-                                            <div className="text-xs text-danger">
-                                                Error loading
-                                            </div>
-                                        )}
+                                        <div className="text-xs text-content leading-relaxed space-y-2">
+                                            <p>
+                                                {t('proposalComparison.aiComparison.description')}
+                                            </p>
+                                            <ul className="space-y-1 text-[11px]">
+                                                <li><span className="text-dark font-medium">{t('proposalComparison.aiComparison.alignmentLabel')}</span> {t('proposalComparison.aiComparison.alignmentDesc')}</li>
+                                                <li><span className="text-dark font-medium">{t('proposalComparison.aiComparison.feasibilityLabel')}</span> {t('proposalComparison.aiComparison.feasibilityDesc')}</li>
+                                                <li><span className="text-dark font-medium">{t('proposalComparison.aiComparison.auditabilityLabel')}</span> {t('proposalComparison.aiComparison.auditabilityDesc')}</li>
+                                            </ul>
+                                            <p className="text-[11px]">
+                                                {t('proposalComparison.aiComparison.scoreSummary')}
+                                            </p>
+                                        </div>
                                     </div>
                                 ) : (
                                     row.label

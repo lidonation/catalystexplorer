@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useState, useCallback, useRef, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, useMemo, ReactNode } from 'react';
 import axios from 'axios';
 import useRoute from '@/useHooks/useRoute';
-import storageService from '@/utils/storage-service';
-import { StorageKeys } from '@/enums/storage-keys-enums';
+import { IndexedDBService } from '@/Services/IndexDbService';
+import { useProposalComparison } from '@/Context/ProposalComparisonContext';
 
 export interface ComparisonResult {
     proposal_id: string;
@@ -32,30 +32,6 @@ interface AiComparisonContextType extends AiComparisonState {
     clearComparison: () => void;
 }
 
-function loadCachedResults(): ComparisonResult[] | null {
-    const cached = storageService.get<ComparisonResult[]>(
-        StorageKeys.AI_COMPARISON_RESULTS,
-        undefined,
-        'session',
-    );
-    if (Array.isArray(cached) && cached.length > 0) {
-        return cached;
-    }
-    return null;
-}
-
-function saveCachedResults(results: ComparisonResult[]): void {
-    storageService.save<ComparisonResult[]>(
-        StorageKeys.AI_COMPARISON_RESULTS,
-        results,
-        'session',
-    );
-}
-
-function clearCachedResults(): void {
-    storageService.remove(StorageKeys.AI_COMPARISON_RESULTS, 'session');
-}
-
 function parseResults(comparisons: any[]): ComparisonResult[] {
     return comparisons.map((comparison: any) => ({
         proposal_id: comparison.proposal_id,
@@ -73,29 +49,47 @@ function parseResults(comparisons: any[]): ComparisonResult[] {
     }));
 }
 
+async function persistResultsToIndexedDB(results: ComparisonResult[]): Promise<void> {
+    await Promise.all(
+        results.map((result) =>
+            IndexedDBService.update(
+                'proposal_comparisons',
+                result.proposal_id,
+                { ai_analysis: result } as any,
+            ),
+        ),
+    );
+}
+
+async function clearResultsFromIndexedDB(proposalIds: string[]): Promise<void> {
+    await Promise.all(
+        proposalIds.map((id) =>
+            IndexedDBService.update(
+                'proposal_comparisons',
+                id,
+                { ai_analysis: null } as any,
+            ),
+        ),
+    );
+}
+
 const AiComparisonContext = createContext<AiComparisonContextType | undefined>(undefined);
 
 export const AiComparisonProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const route = useRoute();
-    const resultsRef = useRef<ComparisonResult[] | null>(null);
+    const { proposals } = useProposalComparison();
 
-    const [state, setState] = useState<AiComparisonState>(() => {
-        const cached = loadCachedResults();
-        if (cached) {
-            resultsRef.current = cached;
-            return {
-                isGenerating: false,
-                generatingIds: new Set<string>(),
-                results: cached,
-                error: null,
-            };
-        }
-        return {
-            isGenerating: false,
-            generatingIds: new Set<string>(),
-            results: null,
-            error: null,
-        };
+    const persistedResults = useMemo<ComparisonResult[] | null>(() => {
+        const extracted = proposals
+            .map((p: any) => p.ai_analysis as ComparisonResult | undefined)
+            .filter((a): a is ComparisonResult => !!a);
+        return extracted.length > 0 ? extracted : null;
+    }, [proposals]);
+
+    const [state, setState] = useState<Omit<AiComparisonState, 'results'>>({
+        isGenerating: false,
+        generatingIds: new Set<string>(),
+        error: null,
     });
 
     const fetchProposals = async (proposalIds: string[]): Promise<ComparisonResult[]> => {
@@ -122,7 +116,7 @@ export const AiComparisonProvider: React.FC<{ children: ReactNode }> = ({ childr
 
     const generateComparison = async (proposalIds: string[]): Promise<ComparisonResult[]> => {
         // Check which proposals already have results
-        const existing = resultsRef.current ?? [];
+        const existing = persistedResults ?? [];
         const existingIds = new Set(existing.map((r) => r.proposal_id));
         const allCovered = proposalIds.every((id) => existingIds.has(id));
 
@@ -130,7 +124,6 @@ export const AiComparisonProvider: React.FC<{ children: ReactNode }> = ({ childr
             setState((prev) => ({
                 ...prev,
                 isGenerating: false,
-                results: existing,
                 error: null,
             }));
             return existing;
@@ -142,26 +135,20 @@ export const AiComparisonProvider: React.FC<{ children: ReactNode }> = ({ childr
             ...prev,
             isGenerating: true,
             generatingIds: idSet,
-            results: prev.results,
             error: null,
         }));
 
         try {
             const newResults = await fetchProposals(proposalIds);
 
-            // Merge with existing results (new results take precedence)
-            const merged = [...existing.filter((r) => !idSet.has(r.proposal_id)), ...newResults];
-
-            resultsRef.current = merged;
+            // Persist each result onto its proposal in IndexedDB
+            await persistResultsToIndexedDB(newResults);
 
             setState({
                 isGenerating: false,
                 generatingIds: new Set<string>(),
-                results: merged,
                 error: null,
             });
-
-            saveCachedResults(merged);
 
             return newResults;
         } catch (error) {
@@ -179,7 +166,7 @@ export const AiComparisonProvider: React.FC<{ children: ReactNode }> = ({ childr
     };
 
     const generateForNewProposals = async (allIds: string[]): Promise<void> => {
-        const existing = resultsRef.current ?? [];
+        const existing = persistedResults ?? [];
         const existingIds = new Set(existing.map((r) => r.proposal_id));
         const newIds = allIds.filter((id) => !existingIds.has(id));
 
@@ -195,17 +182,13 @@ export const AiComparisonProvider: React.FC<{ children: ReactNode }> = ({ childr
         try {
             const newResults = await fetchProposals(newIds);
 
-            const merged = [...existing, ...newResults];
-            resultsRef.current = merged;
+            await persistResultsToIndexedDB(newResults);
 
             setState((prev) => ({
                 ...prev,
                 generatingIds: new Set<string>(),
-                results: merged,
                 error: null,
             }));
-
-            saveCachedResults(merged);
         } catch (error) {
             console.error('AI Comparison Error (incremental):', error);
 
@@ -217,21 +200,25 @@ export const AiComparisonProvider: React.FC<{ children: ReactNode }> = ({ childr
         }
     };
 
-    const clearComparison = useCallback(() => {
-        clearCachedResults();
-        resultsRef.current = null;
+    const clearComparison = useCallback(async () => {
+        const ids = proposals
+            .map((p) => p.id)
+            .filter((id): id is string => !!id);
+
+        await clearResultsFromIndexedDB(ids);
+
         setState({
             isGenerating: false,
             generatingIds: new Set<string>(),
-            results: null,
             error: null,
         });
-    }, []);
+    }, [proposals]);
 
     return (
         <AiComparisonContext.Provider
             value={{
                 ...state,
+                results: persistedResults,
                 generateComparison,
                 generateForNewProposals,
                 clearComparison,

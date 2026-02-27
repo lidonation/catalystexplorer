@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ProposalResource;
 use App\Models\Comment;
 use App\Models\Proposal;
+use App\QueryBuilders\Includes\IncludedNoop;
 use App\QueryBuilders\Sorts\ProjectLengthSort;
 use App\Repositories\ProposalRepository;
 use Illuminate\Http\Request;
@@ -119,7 +120,7 @@ class ProposalController extends Controller
                 AllowedInclude::relationship('reviews'),
                 // ai_summary is not a relationship — it's handled in ProposalResource.
                 // Registered here so Spatie QueryBuilder doesn't reject it.
-                AllowedInclude::callback('ai_summary', fn ($query) => $query),
+                AllowedInclude::custom('ai_summary', new IncludedNoop),
             ])
             ->allowedSorts([
                 AllowedSort::field('title'),
@@ -206,7 +207,7 @@ class ProposalController extends Controller
                 AllowedInclude::relationship('links'),
                 AllowedInclude::relationship('meta_data'),
                 AllowedInclude::relationship('reviews'),
-                AllowedInclude::callback('ai_summary', fn ($query) => $query),
+                AllowedInclude::custom('ai_summary', new IncludedNoop),
             ]);
 
         // Check if any relations are being included and ensure they're loaded

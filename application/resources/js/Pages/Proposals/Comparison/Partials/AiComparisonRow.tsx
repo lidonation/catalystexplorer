@@ -64,7 +64,7 @@ export default function AiComparisonRow({ height }: AiComparisonRowProps) {
                                     className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
                                 >
                                     {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                                    {isExpanded ? 'Hide Results' : 'Show Results'}
+                                    {isExpanded ? t('proposalComparison.aiComparison.hideResults') : t('proposalComparison.aiComparison.showResults')}
                                 </button>
                             )}
                             
@@ -93,7 +93,7 @@ export default function AiComparisonRow({ height }: AiComparisonRowProps) {
                                     onClick={clearComparison}
                                     className="text-sm text-gray-600 hover:text-gray-800 px-2 py-1 border border-gray-300 rounded hover:bg-gray-50"
                                 >
-                                    Clear
+                                    {t('proposalComparison.aiComparison.clear')}
                                 </button>
                             )}
                         </div>
@@ -120,7 +120,7 @@ export default function AiComparisonRow({ height }: AiComparisonRowProps) {
                                 {t('proposalComparison.aiComparison.title')}
                             </h4>
                             <p className="text-sm text-gray-600 mb-4">
-                                Comparative analysis of {results.length} proposals using the official Catalyst Fund 14 scoring rubric
+                                {t('proposalComparison.aiComparison.comparativeAnalysis', { count: results.length })}
                             </p>
                         </div>
 
@@ -132,7 +132,7 @@ export default function AiComparisonRow({ height }: AiComparisonRowProps) {
                                     <div key={result.proposal_id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
                                         <div className="mb-3">
                                             <h5 className="font-medium text-gray-800 text-sm mb-1">
-                                                {proposal?.title || `Proposal ${index + 1}`}
+                                                {proposal?.title || t('proposalComparison.aiComparison.proposal', { number: index + 1 })}
                                             </h5>
                                             <div className={`text-xs px-2 py-1 rounded-full inline-block ${
                                                 result.recommendation === 'Fund' 
@@ -166,7 +166,7 @@ export default function AiComparisonRow({ height }: AiComparisonRowProps) {
 
                                         {/* Summary */}
                                         <div className="mb-3">
-                                            <h6 className="text-xs font-medium text-gray-700 mb-1">Key Strengths:</h6>
+                                            <h6 className="text-xs font-medium text-gray-700 mb-1">{t('proposalComparison.aiComparison.keyStrengths')}</h6>
                                             <ul className="text-xs text-gray-600 space-y-1">
                                                 {result.strengths.slice(0, 2).map((strength, idx) => (
                                                     <li key={idx} className="flex items-start">
@@ -178,7 +178,7 @@ export default function AiComparisonRow({ height }: AiComparisonRowProps) {
                                         </div>
 
                                         <div>
-                                            <h6 className="text-xs font-medium text-gray-700 mb-1">Areas for Improvement:</h6>
+                                            <h6 className="text-xs font-medium text-gray-700 mb-1">{t('proposalComparison.aiComparison.areasForImprovement')}</h6>
                                             <ul className="text-xs text-gray-600 space-y-1">
                                                 {result.improvements.slice(0, 2).map((improvement, idx) => (
                                                     <li key={idx} className="flex items-start">
