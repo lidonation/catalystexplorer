@@ -1,3 +1,12 @@
+## [1.78.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.78.1...v1.78.2) (2026-02-26)
+
+
+### Bug Fixes
+
+* **catalyst & ideascale profile controllers:** ln-2154 controllers now compute... ([2136cc4](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/2136cc407c6ae136a1c570f2891eebb5154ae9b9))
+* **catalyst & ideascale profile controllers:** ln-2154 controllers now compute... ([13b7590](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/13b7590320bac266531ac1c22cf77ad4e5f78134))
+* **Makefile:** remove CARP initialization script and related commands ([33475e0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/33475e09de70a602266e82d3527925f85ebb268b))
+
 ## [1.78.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.78.0...v1.78.1) (2026-02-25)
 
 
