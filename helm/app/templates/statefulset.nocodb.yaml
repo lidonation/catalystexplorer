@@ -38,11 +38,11 @@ spec:
                   name: "{{ $.Chart.Name }}-secrets"
                   key: NOCODB_DATABASE_URL
             
-            - name: NC_REDIS_URL
-              valueFrom:
-                secretKeyRef:
-                  name: "{{ $.Chart.Name }}-secrets"
-                  key: REDIS_HOST
+{{/*            - name: NC_REDIS_URL*/}}
+{{/*              valueFrom:*/}}
+{{/*                secretKeyRef:*/}}
+{{/*                  name: "{{ $.Chart.Name }}-secrets"*/}}
+{{/*                  key: NOCODB_REDIS_URL*/}}
             
             - name: NC_AUTH_JWT_SECRET
               valueFrom:
@@ -64,6 +64,9 @@ spec:
             
             - name: NC_PUBLIC_URL
               value: "https://dataset.catalystexplorer.com"
+
+            - name: NC_DISABLE_CACHE
+              value: "true"
             
             - name: NC_DISABLE_TELE
               value: "true"
@@ -91,7 +94,7 @@ spec:
                   name: "{{ $.Chart.Name }}-secrets"
                   key: AWS_ACCESS_KEY_ID
                   optional: true
-     
+
             - name: NC_S3_ENDPOINT
               valueFrom:
                 secretKeyRef:
