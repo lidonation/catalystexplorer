@@ -118,8 +118,6 @@ class ProposalController extends Controller
                 AllowedInclude::relationship('links'),
                 AllowedInclude::relationship('meta_data'),
                 AllowedInclude::relationship('reviews'),
-                // ai_summary is not a relationship — it's handled in ProposalResource.
-                // Registered here so Spatie QueryBuilder doesn't reject it.
                 AllowedInclude::custom('ai_summary', new IncludedNoop),
             ])
             ->allowedSorts([
