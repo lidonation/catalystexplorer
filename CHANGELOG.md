@@ -1,3 +1,27 @@
+# [1.79.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.78.2...v1.79.0) (2026-02-27)
+
+
+### Features
+
+* adding nocodb ([e00662c](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/e00662cf358677493ba52e4fb635fca1b7417b41))
+
+## [1.78.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.78.1...v1.78.2) (2026-02-26)
+
+
+### Bug Fixes
+
+* **catalyst & ideascale profile controllers:** ln-2154 controllers now compute... ([2136cc4](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/2136cc407c6ae136a1c570f2891eebb5154ae9b9))
+* **catalyst & ideascale profile controllers:** ln-2154 controllers now compute... ([13b7590](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/13b7590320bac266531ac1c22cf77ad4e5f78134))
+* **Makefile:** remove CARP initialization script and related commands ([33475e0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/33475e09de70a602266e82d3527925f85ebb268b))
+
+## [1.78.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.78.0...v1.78.1) (2026-02-25)
+
+
+### Bug Fixes
+
+* **catalyst & ideascale profile controllers:** ln-2154 controllers now compute... ([47e8182](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/47e8182f38b5a03eb1b4d517f49b9eed1089b593))
+* **Lang.Json files:**  LN-2162 fixed translation issues for filter params in Catalyst Profiles page ([76020f0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/76020f0989c796a8a26b5b1e4988f7453a806d56))
+
 # [1.78.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.77.0...v1.78.0) (2026-02-18)
 
 

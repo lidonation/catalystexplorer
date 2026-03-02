@@ -94,6 +94,22 @@ services:
   redis:
     password: 
     host: redis-headless
+  nocodb:
+    enabled: true
+    image:
+      repository: nocodb/nocodb
+      tag: "0.301.2"
+      pullPolicy: IfNotPresent
+    persistence:
+      size: 20Gi
+      storageClass: longhorn
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+      limits:
+        cpu: "2"
+        memory: "4Gi"
 
 backup:
   schedule:

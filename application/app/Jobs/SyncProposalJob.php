@@ -191,7 +191,7 @@ class SyncProposalJob implements ShouldQueue
             $this->generateProjectCatalystLink($proposal, $campaign, $fundNumber);
 
             // Generate AI summary inline (no queue needed)
-            app(ProposalAiSummaryService::class)->generate($proposal);
+            // app(ProposalAiSummaryService::class)->generate($proposal);
 
         } catch (\Throwable $e) {
             Log::error('Error syncing proposal: '.$e->getMessage(), [

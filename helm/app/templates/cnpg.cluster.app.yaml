@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/component: database
     app.kubernetes.io/part-of: {{ $.Chart.Name }}
 spec:
-  instances: 3
+  instances: 4
   imageName: ghcr.io/cloudnative-pg/postgresql:18.1-system-trixie
 
   postgresql:

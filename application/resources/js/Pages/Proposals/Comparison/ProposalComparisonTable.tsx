@@ -24,6 +24,7 @@ import RowVisibilitySelector from './Partials/RowVisibilitySelector';
 import SortableProposalColumn from './SortableProposalColumn';
 import { AiComparisonProvider, useAiComparisonContext } from '@/Context/AiComparisonContext';
 import { Sparkles } from 'lucide-react';
+import { Button } from '@headlessui/react';
 
 function ProposalsTableInner() {
     const { t } = useLaravelReactI18n();
@@ -206,14 +207,14 @@ function ProposalsTableInner() {
             <div>
                 <ComparisonTableFilters />
             </div>
-            <div className="bg-background border-gray-light relative mb-4 w-full rounded-lg border shadow-lg">
-                <div className="flex">
-                    {/* Sticky Row Headers */}
-                    <div className="bg-background sticky left-0 z-10 flex flex-col rounded-l-lg">
+            <div className="bg-background border-gray-light relative mb-4 w-full overflow-x-auto rounded-lg border shadow-lg">
+                <div className="flex min-w-max">
+                    {/* Row Headers — scrolls on mobile, sticky on md+ */}
+                    <div className="bg-background md:sticky md:left-0 z-10 flex w-24 min-w-24 md:w-48 md:min-w-48 flex-col rounded-l-lg">
                         {visibleRowsData.map((row) => (
                             <div
                                 key={row.id}
-                                className={`${row.height} ${row.id === 'ai-comparison' ? 'flex-1 items-start pt-4' : 'border-gray-light border-b items-center'} flex px-4 text-left font-medium ${row.id == 'metric' ? 'text-dark !bg-background-lighter rounded-tl-lg' : ''}`}
+                                className={`${row.height} ${row.id === 'ai-comparison' ? 'flex-1 items-start pt-4' : 'border-gray-light border-b items-center'} flex px-2 md:px-4 text-left text-xs md:text-sm font-medium ${row.id == 'metric' ? 'text-dark !bg-background-lighter rounded-tl-lg' : ''}`}
                                 data-testid={`proposal-comparison-row-${row.id}`}
                             >
                                 {row.id === 'ai-comparison' ? (
@@ -250,27 +251,25 @@ function ProposalsTableInner() {
                                         )}
 
                                         {results && (
-                                            <button
+                                            <Button
                                                 onClick={clearComparison}
-                                                className="text-[10px] text-content hover:text-dark px-1.5 py-0.5 border border-gray-light rounded hover:bg-background-lighter cursor-pointer w-fit"
-                                            >
+                                                className="text-xs text-content hover:text-dark px-1.5 py-1.5 border border-gray-light rounded hover:bg-background-lighter cursor-pointer w-fit">
                                                 {t('proposalComparison.aiComparison.clearResults')}
-                                            </button>
+                                            </Button>
                                         )}
 
-                                        <div className="text-xs text-content leading-relaxed space-y-2">
-                                            <p>
-                                                {t('proposalComparison.aiComparison.description')}
-                                            </p>
-                                            <ul className="space-y-1 text-[11px]">
-                                                <li><span className="text-dark font-medium">{t('proposalComparison.aiComparison.alignmentLabel')}</span> {t('proposalComparison.aiComparison.alignmentDesc')}</li>
-                                                <li><span className="text-dark font-medium">{t('proposalComparison.aiComparison.feasibilityLabel')}</span> {t('proposalComparison.aiComparison.feasibilityDesc')}</li>
-                                                <li><span className="text-dark font-medium">{t('proposalComparison.aiComparison.auditabilityLabel')}</span> {t('proposalComparison.aiComparison.auditabilityDesc')}</li>
-                                            </ul>
-                                            <p className="text-[11px]">
-                                                {t('proposalComparison.aiComparison.scoreSummary')}
-                                            </p>
-                                        </div>
+                                        {results && (
+                                            <div className="text-xs text-content leading-relaxed space-y-2">
+                                                <Paragraph className='text-xs'>
+                                                    {t('proposalComparison.aiComparison.description')}
+                                                </Paragraph>
+                                                <ul className="space-y-1 text-xs">
+                                                    <li><span className="text-dark font-medium">{t('proposalComparison.aiComparison.alignmentLabel')}</span> {t('proposalComparison.aiComparison.alignmentDesc')}</li>
+                                                    <li><span className="text-dark font-medium">{t('proposalComparison.aiComparison.feasibilityLabel')}</span> {t('proposalComparison.aiComparison.feasibilityDesc')}</li>
+                                                    <li><span className="text-dark font-medium">{t('proposalComparison.aiComparison.auditabilityLabel')}</span> {t('proposalComparison.aiComparison.auditabilityDesc')}</li>
+                                                </ul>
+                                            </div>
+                                        )}
                                     </div>
                                 ) : (
                                     row.label
@@ -279,10 +278,9 @@ function ProposalsTableInner() {
                         ))}
                     </div>
 
-                    {/* Scrollable Draggable Columns */}
+                    {/* Draggable Columns */}
                     <div
-                        className="border-gray-light overflow-x-auto border-l"
-                        style={{ maxWidth: 'calc(100% - 120px)' }}
+                        className="border-gray-light border-l"
                         data-testid="proposal-comparison-scrollable-columns"
                     >
                         <DndContext

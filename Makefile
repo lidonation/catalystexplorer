@@ -27,8 +27,6 @@ init:
 		composer bash -c "composer config --global github-protocols https && composer install --ignore-platform-reqs"
 
 	sudo chown -R $(id -u -n):$(id -g -n) ${PWD}/application/vendor
-	./scripts/clone-carp.sh
-	chmod +x ./carp/scripts/entrypoint.sh
 	make up
 	sleep 10
 	$(compose) php artisan key:generate

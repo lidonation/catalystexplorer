@@ -92,6 +92,22 @@ export const AiComparisonProvider: React.FC<{ children: ReactNode }> = ({ childr
         error: null,
     });
 
+    React.useEffect(() => {
+        if (state.generatingIds.size === 0) return;
+        if (!persistedResults) return;
+
+        const persistedIds = new Set(persistedResults.map((r) => r.proposal_id));
+        const allResolved = [...state.generatingIds].every((id) => persistedIds.has(id));
+
+        if (allResolved) {
+            setState((prev) => ({
+                ...prev,
+                isGenerating: false,
+                generatingIds: new Set<string>(),
+            }));
+        }
+    }, [persistedResults, state.generatingIds]);
+
     const fetchProposals = async (proposalIds: string[]): Promise<ComparisonResult[]> => {
         let directApiUrl: string;
         try {
@@ -141,14 +157,12 @@ export const AiComparisonProvider: React.FC<{ children: ReactNode }> = ({ childr
         try {
             const newResults = await fetchProposals(proposalIds);
 
-            // Persist each result onto its proposal in IndexedDB
             await persistResultsToIndexedDB(newResults);
 
-            setState({
-                isGenerating: false,
-                generatingIds: new Set<string>(),
+            setState((prev) => ({
+                ...prev,
                 error: null,
-            });
+            }));
 
             return newResults;
         } catch (error) {
@@ -186,7 +200,6 @@ export const AiComparisonProvider: React.FC<{ children: ReactNode }> = ({ childr
 
             setState((prev) => ({
                 ...prev,
-                generatingIds: new Set<string>(),
                 error: null,
             }));
         } catch (error) {
