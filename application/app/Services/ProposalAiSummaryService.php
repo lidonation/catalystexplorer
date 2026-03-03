@@ -35,8 +35,8 @@ class ProposalAiSummaryService
         try {
             $prompt = $this->buildPrompt($proposal);
 
-            $provider = config('vizra-adk.default_provider', 'ollama');
-            $model = config('vizra-adk.default_model', 'llama3.1:8b');
+            $provider = config('vizra-adk.default_provider', 'openai');
+            $model = config('vizra-adk.default_model', 'gpt-4o-mini');
 
             $response = Prism::text()
                 ->using($provider, $model)
