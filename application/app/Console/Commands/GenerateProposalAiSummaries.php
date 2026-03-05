@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Jobs\GenerateProposalAiSummary;
 use App\Models\Proposal;
+use App\Services\ProposalAiSummaryService;
 use Illuminate\Console\Command;
 
 class GenerateProposalAiSummaries extends Command
@@ -14,18 +14,16 @@ class GenerateProposalAiSummaries extends Command
                            {--batch-size=50 : Number of proposals per batch}
                            {--force : Regenerate summaries even if they exist}
                            {--limit= : Maximum number of proposals to process}
-                           {--fund= : Only process proposals from this fund ID}
-                           {--sync : Process synchronously instead of dispatching to queue}';
+                           {--fund= : Only process proposals from this fund ID}';
 
     protected $description = 'Generate AI summaries for proposals that do not have one yet';
 
-    public function handle(): int
+    public function handle(ProposalAiSummaryService $service): int
     {
         $batchSize = (int) $this->option('batch-size');
-        $force = $this->option('force');
+        $force = (bool) $this->option('force');
         $limit = $this->option('limit') ? (int) $this->option('limit') : null;
         $fundId = $this->option('fund');
-        $sync = $this->option('sync');
 
         $query = Proposal::query()
             ->whereNotNull('problem')
@@ -47,24 +45,23 @@ class GenerateProposalAiSummaries extends Command
             return self::SUCCESS;
         }
 
-        $this->info("Processing {$total} proposals".($sync ? ' synchronously' : ' via queue').'...');
+        $this->info("Processing {$total} proposals...");
 
         $bar = $this->output->createProgressBar($total);
         $bar->start();
 
         $processed = 0;
+        $failed = 0;
 
-        $query->chunkById($batchSize, function ($proposals) use ($force, $sync, $limit, &$processed, $bar) {
+        $query->chunkById($batchSize, function ($proposals) use ($service, $force, $limit, &$processed, &$failed, $bar) {
             foreach ($proposals as $proposal) {
                 if ($limit && $processed >= $limit) {
                     return false;
                 }
 
-                if ($sync) {
-                    GenerateProposalAiSummary::dispatchSync($proposal, $force);
-                } else {
-                    GenerateProposalAiSummary::dispatch($proposal, $force)
-                        ->onQueue('ai');
+                $result = $service->generate($proposal, $force);
+                if ($result === null) {
+                    $failed++;
                 }
 
                 $processed++;
@@ -76,8 +73,10 @@ class GenerateProposalAiSummaries extends Command
 
         $bar->finish();
         $this->newLine();
-        $this->info("Dispatched {$processed} AI summary ".($sync ? 'jobs (sync)' : 'jobs to the ai queue').'.');
 
-        return self::SUCCESS;
+        $succeeded = $processed - $failed;
+        $this->info("Generated {$succeeded} AI summaries. {$failed} failed. {$processed} total processed.");
+
+        return $failed > 0 ? self::FAILURE : self::SUCCESS;
     }
 }
