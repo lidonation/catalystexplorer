@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import { useProposalComparison } from '@/Context/ProposalComparisonContext';
@@ -23,11 +24,32 @@ import RowVisibilitySelector from './Partials/RowVisibilitySelector';
 import SortableProposalColumn from './SortableProposalColumn';
 import { AiComparisonProvider, useAiComparisonContext } from '@/Context/AiComparisonContext';
 import { Sparkles } from 'lucide-react';
+import { Button } from '@headlessui/react';
 
 function ProposalsTableInner() {
     const { t } = useLaravelReactI18n();
     const { filteredProposals } = useProposalComparison();
-    const { isGenerating, results, error, generateComparison, clearComparison } = useAiComparisonContext();
+    const { isGenerating, generatingIds, results, error, generateComparison, generateForNewProposals, clearComparison } = useAiComparisonContext();
+    const prevIdsRef = useRef<string[]>([]);
+    const hasAnyGenerating = generatingIds.size > 0;
+
+    useEffect(() => {
+        const currentIds = filteredProposals
+            .map((p) => p.id)
+            .filter((id): id is string => id !== null && id !== undefined);
+
+        const prevIds = prevIdsRef.current;
+        prevIdsRef.current = currentIds;
+
+        if (!results || results.length === 0) return;
+
+        const prevSet = new Set(prevIds);
+        const hasNewIds = currentIds.some((id) => !prevSet.has(id));
+
+        if (hasNewIds && !hasAnyGenerating) {
+            generateForNewProposals(currentIds);
+        }
+    }, [filteredProposals]);
 
     const handleGenerateComparison = async () => {
         const proposalIds = filteredProposals
@@ -185,55 +207,67 @@ function ProposalsTableInner() {
             <div>
                 <ComparisonTableFilters />
             </div>
-            <div className="bg-background border-gray-light relative mb-4 w-full rounded-lg border shadow-lg">
-                <div className="flex">
-                    {/* Sticky Row Headers */}
-                    <div className="bg-background sticky left-0 z-10 flex flex-col rounded-l-lg">
+            <div className="bg-background border-gray-light relative mb-4 w-full overflow-x-auto rounded-lg border shadow-lg">
+                <div className="flex min-w-max">
+                    {/* Row Headers — scrolls on mobile, sticky on md+ */}
+                    <div className="bg-background md:sticky md:left-0 z-10 flex w-24 min-w-24 md:w-48 md:min-w-48 flex-col rounded-l-lg">
                         {visibleRowsData.map((row) => (
                             <div
                                 key={row.id}
-                                className={`${row.height} ${row.id === 'ai-comparison' ? 'flex-1' : 'border-gray-light border-b '} flex items-center px-4 text-left font-medium ${row.id == 'metric' ? 'text-dark !bg-background-lighter rounded-tl-lg' : ''}`}
+                                className={`${row.height} ${row.id === 'ai-comparison' ? 'flex-1 items-start pt-4' : 'border-gray-light border-b items-center'} flex px-2 md:px-4 text-left text-xs md:text-sm font-medium ${row.id == 'metric' ? 'text-dark !bg-background-lighter rounded-tl-lg' : ''}`}
                                 data-testid={`proposal-comparison-row-${row.id}`}
                             >
                                 {row.id === 'ai-comparison' ? (
-                                    <div className="flex flex-col gap-2 w-full">
+                                    <div className="flex flex-col gap-4 w-full">
                                         <div className="flex items-center gap-2">
                                             <Sparkles className="h-4 w-4 text-primary" />
                                             <span>{row.label}</span>
                                         </div>
 
-                                        {!results && !isGenerating && (
+                                        {!results && !hasAnyGenerating && (
                                             <button
                                                 onClick={handleGenerateComparison}
-                                                disabled={filteredProposals.length < 2 || isGenerating}
-                                                className="flex items-center gap-1 bg-primary text-white px-2 py-1 rounded text-xs hover:bg-primary-hover disabled:bg-gray-400 disabled:cursor-not-allowed font-medium transition-colors cursor-pointer mb-2"
+                                                disabled={filteredProposals.length < 2 || hasAnyGenerating}
+                                                className="flex items-center gap-1 bg-primary text-white px-2 py-1 rounded text-xs hover:bg-primary-hover disabled:bg-gray-400 disabled:cursor-not-allowed font-medium transition-colors cursor-pointer"
                                             >
                                                 <Sparkles className="h-3 w-3" />
                                                 {t('proposalComparison.generateAiComparison')}
                                             </button>
                                         )}
 
-                                        {isGenerating && (
+                                        {hasAnyGenerating && (
                                             <div className="flex items-center gap-1 text-primary">
-                                                <div className="animate-spin h-3 w-3 border border-primary border-t-transparent rounded-full cursor-pointer"></div>
+                                                <div className="animate-spin h-3 w-3 border border-primary border-t-transparent rounded-full"></div>
                                                 <span className="text-xs">
                                                     {t('proposalComparison.aiComparison.generating')}
                                                 </span>
                                             </div>
                                         )}
 
-                                        {results && (
-                                            <button
-                                                onClick={clearComparison}
-                                                className="text-xs text-content hover:text-dark px-2 py-1 border border-gray-light rounded hover:bg-background-lighter w-fit"
-                                            >
-                                                Clear Results
-                                            </button>
-                                        )}
-
                                         {error && (
                                             <div className="text-xs text-danger">
-                                                Error loading
+                                                {t('proposalComparison.aiComparison.errorLoading')}
+                                            </div>
+                                        )}
+
+                                        {results && (
+                                            <Button
+                                                onClick={clearComparison}
+                                                className="text-xs text-content hover:text-dark px-1.5 py-1.5 border border-gray-light rounded hover:bg-background-lighter cursor-pointer w-fit">
+                                                {t('proposalComparison.aiComparison.clearResults')}
+                                            </Button>
+                                        )}
+
+                                        {results && (
+                                            <div className="text-xs text-content leading-relaxed space-y-2">
+                                                <Paragraph className='text-xs'>
+                                                    {t('proposalComparison.aiComparison.description')}
+                                                </Paragraph>
+                                                <ul className="space-y-1 text-xs">
+                                                    <li><span className="text-dark font-medium">{t('proposalComparison.aiComparison.alignmentLabel')}</span> {t('proposalComparison.aiComparison.alignmentDesc')}</li>
+                                                    <li><span className="text-dark font-medium">{t('proposalComparison.aiComparison.feasibilityLabel')}</span> {t('proposalComparison.aiComparison.feasibilityDesc')}</li>
+                                                    <li><span className="text-dark font-medium">{t('proposalComparison.aiComparison.auditabilityLabel')}</span> {t('proposalComparison.aiComparison.auditabilityDesc')}</li>
+                                                </ul>
                                             </div>
                                         )}
                                     </div>
@@ -244,10 +278,9 @@ function ProposalsTableInner() {
                         ))}
                     </div>
 
-                    {/* Scrollable Draggable Columns */}
+                    {/* Draggable Columns */}
                     <div
-                        className="border-gray-light overflow-x-auto border-l"
-                        style={{ maxWidth: 'calc(100% - 120px)' }}
+                        className="border-gray-light border-l"
                         data-testid="proposal-comparison-scrollable-columns"
                     >
                         <DndContext

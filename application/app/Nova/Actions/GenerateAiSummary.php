@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Nova\Actions;
 
-use App\Jobs\GenerateProposalAiSummary;
+use App\Services\ProposalAiSummaryService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
@@ -22,22 +22,33 @@ class GenerateAiSummary extends Action
     public function handle(ActionFields $fields, Collection $models): ActionResponse
     {
         $force = $fields->get('force', false);
-        $dispatched = 0;
+        $service = app(ProposalAiSummaryService::class);
+        $generated = 0;
+        $failed = 0;
 
         foreach ($models as $proposal) {
             if (! $force && $proposal->ai_generated_at !== null) {
                 continue;
             }
 
-            GenerateProposalAiSummary::dispatch($proposal, (bool) $force)->onQueue('ai');
-            $dispatched++;
+            $result = $service->generate($proposal, (bool) $force);
+            if ($result !== null) {
+                $generated++;
+            } else {
+                $failed++;
+            }
         }
 
-        if ($dispatched === 0) {
+        if ($generated === 0 && $failed === 0) {
             return ActionResponse::message('All selected proposals already have AI summaries. Use "Force regenerate" to overwrite.');
         }
 
-        return ActionResponse::message("Dispatched AI summary generation for {$dispatched} proposal(s).");
+        $message = "Generated AI summaries for {$generated} proposal(s).";
+        if ($failed > 0) {
+            $message .= " {$failed} failed.";
+        }
+
+        return ActionResponse::message($message);
     }
 
     public function fields(\Laravel\Nova\Http\Requests\NovaRequest $request): array
