@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ProposalResource;
 use App\Models\Comment;
 use App\Models\Proposal;
+use App\QueryBuilders\Includes\IncludedNoop;
 use App\QueryBuilders\Sorts\ProjectLengthSort;
 use App\Repositories\ProposalRepository;
 use Illuminate\Http\Request;
@@ -45,7 +46,7 @@ class ProposalController extends Controller
      * @queryParam filter[funded] boolean Filter only funded proposals (any non-empty value). Example: 1
      * @queryParam filter[amount_min] integer Filter by minimum requested amount (in ADA lovelace). Example: 10000000
      * @queryParam filter[amount_max] integer Filter by maximum requested amount (in ADA lovelace). Example: 100000000
-     * @queryParam include string Comma-separated list of relationships to include (campaign,user,fund,team,schedule,schedule.milestones,links,meta_data,reviews). Example: campaign,fund,team
+     * @queryParam include string Comma-separated list of relationships to include (campaign,user,fund,team,schedule,schedule.milestones,links,meta_data,reviews,ai_summary). Use ai_summary to include AI-generated summaries (generated on demand for the show endpoint if not yet available). Example: campaign,fund,ai_summary
      * @queryParam sort string Comma-separated list of fields to sort by. Prefix with - for descending order. Available: title,status,amount_requested,amount_received,project_length,yes_votes_count,no_votes_count,funded_at,created_at,updated_at. Example: -created_at,title
      *
      * @response 200 {
@@ -117,6 +118,7 @@ class ProposalController extends Controller
                 AllowedInclude::relationship('links'),
                 AllowedInclude::relationship('meta_data'),
                 AllowedInclude::relationship('reviews'),
+                AllowedInclude::custom('ai_summary', new IncludedNoop),
             ])
             ->allowedSorts([
                 AllowedSort::field('title'),
@@ -135,6 +137,7 @@ class ProposalController extends Controller
         $includedRelations = collect(explode(',', $request->get('include', '')))
             ->filter()
             ->map(fn ($relation) => trim($relation))
+            ->reject(fn ($r) => $r === 'ai_summary') // not a relationship
             ->toArray();
 
         if (! empty($includedRelations)) {
@@ -202,12 +205,14 @@ class ProposalController extends Controller
                 AllowedInclude::relationship('links'),
                 AllowedInclude::relationship('meta_data'),
                 AllowedInclude::relationship('reviews'),
+                AllowedInclude::custom('ai_summary', new IncludedNoop),
             ]);
 
         // Check if any relations are being included and ensure they're loaded
         $includedRelations = collect(explode(',', $request->get('include', '')))
             ->filter()
             ->map(fn ($relation) => trim($relation))
+            ->reject(fn ($r) => $r === 'ai_summary')
             ->toArray();
 
         if (! empty($includedRelations)) {

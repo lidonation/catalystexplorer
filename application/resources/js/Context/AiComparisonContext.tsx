@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, useMemo, ReactNode } from 'react';
 import axios from 'axios';
 import useRoute from '@/useHooks/useRoute';
-import storageService from '@/utils/storage-service';
-import { StorageKeys } from '@/enums/storage-keys-enums';
+import { IndexedDBService } from '@/Services/IndexDbService';
+import { useProposalComparison } from '@/Context/ProposalComparisonContext';
 
 export interface ComparisonResult {
     proposal_id: string;
@@ -19,163 +19,221 @@ export interface ComparisonResult {
     recommendation: 'Fund' | "Don't Fund";
 }
 
-interface CachedComparison {
-    key: string;
-    results: ComparisonResult[];
-}
-
 interface AiComparisonState {
     isGenerating: boolean;
+    generatingIds: Set<string>;
     results: ComparisonResult[] | null;
     error: string | null;
 }
 
 interface AiComparisonContextType extends AiComparisonState {
     generateComparison: (proposalIds: string[]) => Promise<ComparisonResult[]>;
+    generateForNewProposals: (allIds: string[]) => Promise<void>;
     clearComparison: () => void;
 }
 
-function getCacheKey(proposalIds: string[]): string {
-    return [...proposalIds].sort().join(',');
+function parseResults(comparisons: any[]): ComparisonResult[] {
+    return comparisons.map((comparison: any) => ({
+        proposal_id: comparison.proposal_id,
+        summary: comparison.summary,
+        alignment_score: comparison.alignment_score,
+        feasibility_score: comparison.feasibility_score,
+        auditability_score: comparison.auditability_score,
+        total_score: comparison.total_score,
+        strengths: comparison.strengths || [],
+        improvements: comparison.improvements || [],
+        pros: comparison.pros || [],
+        cons: comparison.cons || [],
+        one_sentence_summary: comparison.one_sentence_summary,
+        recommendation: comparison.recommendation,
+    }));
 }
 
-function loadCachedResults(): CachedComparison | null {
-    const cached = storageService.get<CachedComparison>(
-        StorageKeys.AI_COMPARISON_RESULTS,
-        undefined,
-        'session',
+async function persistResultsToIndexedDB(results: ComparisonResult[]): Promise<void> {
+    await Promise.all(
+        results.map((result) =>
+            IndexedDBService.update(
+                'proposal_comparisons',
+                result.proposal_id,
+                { ai_analysis: result } as any,
+            ),
+        ),
     );
-    if (cached?.key && Array.isArray(cached?.results) && cached.results.length > 0) {
-        return cached;
-    }
-    return null;
 }
 
-function saveCachedResults(key: string, results: ComparisonResult[]): void {
-    storageService.save<CachedComparison>(
-        StorageKeys.AI_COMPARISON_RESULTS,
-        { key, results },
-        'session',
+async function clearResultsFromIndexedDB(proposalIds: string[]): Promise<void> {
+    await Promise.all(
+        proposalIds.map((id) =>
+            IndexedDBService.update(
+                'proposal_comparisons',
+                id,
+                { ai_analysis: null } as any,
+            ),
+        ),
     );
-}
-
-function clearCachedResults(): void {
-    storageService.remove(StorageKeys.AI_COMPARISON_RESULTS, 'session');
 }
 
 const AiComparisonContext = createContext<AiComparisonContextType | undefined>(undefined);
 
 export const AiComparisonProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const route = useRoute();
-    const [state, setState] = useState<AiComparisonState>(() => {
-        const cached = loadCachedResults();
-        if (cached) {
-            return {
-                isGenerating: false,
-                results: cached.results,
-                error: null,
-            };
-        }
-        return {
-            isGenerating: false,
-            results: null,
-            error: null,
-        };
+    const { proposals } = useProposalComparison();
+
+    const persistedResults = useMemo<ComparisonResult[] | null>(() => {
+        const extracted = proposals
+            .map((p: any) => p.ai_analysis as ComparisonResult | undefined)
+            .filter((a): a is ComparisonResult => !!a);
+        return extracted.length > 0 ? extracted : null;
+    }, [proposals]);
+
+    const [state, setState] = useState<Omit<AiComparisonState, 'results'>>({
+        isGenerating: false,
+        generatingIds: new Set<string>(),
+        error: null,
     });
 
-    const generateComparison = async (proposalIds: string[]): Promise<ComparisonResult[]> => {
-        // Check if we already have cached results for these exact proposals
-        const cacheKey = getCacheKey(proposalIds);
-        const cached = loadCachedResults();
-        if (cached && cached.key === cacheKey) {
-            setState({
+    React.useEffect(() => {
+        if (state.generatingIds.size === 0) return;
+        if (!persistedResults) return;
+
+        const persistedIds = new Set(persistedResults.map((r) => r.proposal_id));
+        const allResolved = [...state.generatingIds].every((id) => persistedIds.has(id));
+
+        if (allResolved) {
+            setState((prev) => ({
+                ...prev,
                 isGenerating: false,
-                results: cached.results,
-                error: null,
-            });
-            return cached.results;
+                generatingIds: new Set<string>(),
+            }));
+        }
+    }, [persistedResults, state.generatingIds]);
+
+    const fetchProposals = async (proposalIds: string[]): Promise<ComparisonResult[]> => {
+        let directApiUrl: string;
+        try {
+            directApiUrl = route('api.proposals.compare');
+        } catch {
+            directApiUrl = '/api/proposals/compare';
         }
 
-        setState({
-            isGenerating: true,
-            results: null,
-            error: null,
+        const response = await axios.post(directApiUrl, {
+            proposal_ids: proposalIds,
         });
 
+        const comparisonData = response.data;
+
+        if (!comparisonData || !comparisonData.success || !comparisonData.comparisons) {
+            console.error('Invalid comparison data structure:', comparisonData);
+            throw new Error(comparisonData?.error || 'Invalid response format from API');
+        }
+
+        return parseResults(comparisonData.comparisons);
+    };
+
+    const generateComparison = async (proposalIds: string[]): Promise<ComparisonResult[]> => {
+        // Check which proposals already have results
+        const existing = persistedResults ?? [];
+        const existingIds = new Set(existing.map((r) => r.proposal_id));
+        const allCovered = proposalIds.every((id) => existingIds.has(id));
+
+        if (allCovered && existing.length > 0) {
+            setState((prev) => ({
+                ...prev,
+                isGenerating: false,
+                error: null,
+            }));
+            return existing;
+        }
+
+        const idSet = new Set(proposalIds);
+
+        setState((prev) => ({
+            ...prev,
+            isGenerating: true,
+            generatingIds: idSet,
+            error: null,
+        }));
+
         try {
-            // Use direct API as primary method (more reliable than AI agent)
-            let directApiUrl: string;
-            try {
-                directApiUrl = route('api.proposals.compare');
-            } catch {
-                directApiUrl = '/api/proposals/compare';
-            }
-            
-            const response = await axios.post(directApiUrl, {
-                proposal_ids: proposalIds
-            });
+            const newResults = await fetchProposals(proposalIds);
 
-            // Parse the structured response from the direct API
-            const comparisonData = response.data;
-            
-            if (!comparisonData || !comparisonData.success || !comparisonData.comparisons) {
-                console.error('Invalid comparison data structure:', comparisonData);
-                throw new Error(comparisonData?.error || 'Invalid response format from API');
-            }
+            await persistResultsToIndexedDB(newResults);
 
-            // Transform the data to match our interface
-            const results: ComparisonResult[] = comparisonData.comparisons.map((comparison: any) => ({
-                proposal_id: comparison.proposal_id,
-                summary: comparison.summary,
-                alignment_score: comparison.alignment_score,
-                feasibility_score: comparison.feasibility_score,
-                auditability_score: comparison.auditability_score,
-                total_score: comparison.total_score,
-                strengths: comparison.strengths || [],
-                improvements: comparison.improvements || [],
-                pros: comparison.pros || [],
-                cons: comparison.cons || [],
-                one_sentence_summary: comparison.one_sentence_summary,
-                recommendation: comparison.recommendation,
+            setState((prev) => ({
+                ...prev,
+                error: null,
             }));
 
-            setState({
-                isGenerating: false,
-                results,
-                error: null,
-            });
-
-            // Persist to sessionStorage
-            saveCachedResults(cacheKey, results);
-
-            return results;
+            return newResults;
         } catch (error) {
             console.error('AI Comparison Error:', error);
 
             const errorMessage = error instanceof Error ? error.message : 'Failed to generate AI comparison';
-            setState({
+            setState((prev) => ({
+                ...prev,
                 isGenerating: false,
-                results: null,
+                generatingIds: new Set<string>(),
                 error: errorMessage,
-            });
+            }));
             throw error;
         }
     };
 
-    const clearComparison = useCallback(() => {
-        clearCachedResults();
+    const generateForNewProposals = async (allIds: string[]): Promise<void> => {
+        const existing = persistedResults ?? [];
+        const existingIds = new Set(existing.map((r) => r.proposal_id));
+        const newIds = allIds.filter((id) => !existingIds.has(id));
+
+        if (newIds.length === 0) return;
+
+        const newIdSet = new Set(newIds);
+
+        setState((prev) => ({
+            ...prev,
+            generatingIds: newIdSet,
+        }));
+
+        try {
+            const newResults = await fetchProposals(newIds);
+
+            await persistResultsToIndexedDB(newResults);
+
+            setState((prev) => ({
+                ...prev,
+                error: null,
+            }));
+        } catch (error) {
+            console.error('AI Comparison Error (incremental):', error);
+
+            setState((prev) => ({
+                ...prev,
+                generatingIds: new Set<string>(),
+                error: error instanceof Error ? error.message : 'Failed to generate AI comparison',
+            }));
+        }
+    };
+
+    const clearComparison = useCallback(async () => {
+        const ids = proposals
+            .map((p) => p.id)
+            .filter((id): id is string => !!id);
+
+        await clearResultsFromIndexedDB(ids);
+
         setState({
             isGenerating: false,
-            results: null,
+            generatingIds: new Set<string>(),
             error: null,
         });
-    }, []);
+    }, [proposals]);
 
     return (
         <AiComparisonContext.Provider
             value={{
                 ...state,
+                results: persistedResults,
                 generateComparison,
+                generateForNewProposals,
                 clearComparison,
             }}
         >

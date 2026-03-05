@@ -3,6 +3,8 @@ import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { Sparkles, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { useAiComparisonContext } from '@/Context/AiComparisonContext';
 import { useProposalComparison } from '@/Context/ProposalComparisonContext';
+import Paragraph from '@/Components/atoms/Paragraph';
+import Title from '@/Components/atoms/Title';
 
 interface AiComparisonRowProps {
     height: string;
@@ -11,14 +13,15 @@ interface AiComparisonRowProps {
 export default function AiComparisonRow({ height }: AiComparisonRowProps) {
     const { t } = useLaravelReactI18n();
     const { filteredProposals } = useProposalComparison();
-    const { isGenerating, results, error, generateComparison, clearComparison } = useAiComparisonContext();
+    const { isGenerating, generatingIds, results, error, generateComparison, clearComparison } = useAiComparisonContext();
+    const hasAnyGenerating = generatingIds.size > 0;
     const [isExpanded, setIsExpanded] = useState(false);
 
     const handleGenerateComparison = async () => {
         const proposalIds = filteredProposals
             .map(proposal => proposal.id)
             .filter((id): id is string => id !== null && id !== undefined);
-        
+
         if (proposalIds.length === 0) return;
 
         try {
@@ -63,14 +66,14 @@ export default function AiComparisonRow({ height }: AiComparisonRowProps) {
                                     className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
                                 >
                                     {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                                    {isExpanded ? 'Hide Results' : 'Show Results'}
+                                    {isExpanded ? t('proposalComparison.aiComparison.hideResults') : t('proposalComparison.aiComparison.showResults')}
                                 </button>
                             )}
-                            
-                            {!results && !isGenerating && (
+
+                            {!results && !hasAnyGenerating && (
                                 <button
                                     onClick={handleGenerateComparison}
-                                    disabled={filteredProposals.length < 2 || isGenerating}
+                                    disabled={filteredProposals.length < 2 || hasAnyGenerating}
                                     className="flex items-center gap-2 bg-blue-600 text-white px-3 py-1.5 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm font-medium transition-colors"
                                 >
                                     <Sparkles className="h-3 w-3" />
@@ -78,7 +81,7 @@ export default function AiComparisonRow({ height }: AiComparisonRowProps) {
                                 </button>
                             )}
 
-                            {isGenerating && (
+                            {hasAnyGenerating && (
                                 <div className="flex items-center gap-2 text-blue-600">
                                     <div className="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
                                     <span className="text-sm">
@@ -92,7 +95,7 @@ export default function AiComparisonRow({ height }: AiComparisonRowProps) {
                                     onClick={clearComparison}
                                     className="text-sm text-gray-600 hover:text-gray-800 px-2 py-1 border border-gray-300 rounded hover:bg-gray-50"
                                 >
-                                    Clear
+                                    {t('proposalComparison.aiComparison.clear')}
                                 </button>
                             )}
                         </div>
@@ -115,12 +118,12 @@ export default function AiComparisonRow({ height }: AiComparisonRowProps) {
                 <div className="w-full bg-white border border-gray-200 border-t-0 rounded-b-lg">
                     <div className="p-4">
                         <div className="mb-4">
-                            <h4 className="text-lg font-semibold text-gray-800 mb-2">
+                            <Title level="4" className="font-semibold text-gray-800 mb-2">
                                 {t('proposalComparison.aiComparison.title')}
-                            </h4>
-                            <p className="text-sm text-gray-600 mb-4">
-                                Comparative analysis of {results.length} proposals using the official Catalyst Fund 14 scoring rubric
-                            </p>
+                            </Title>
+                            <Paragraph className="text-sm text-gray-600 mb-4">
+                                {t('proposalComparison.aiComparison.comparativeAnalysis', { count: results.length })}
+                            </Paragraph>
                         </div>
 
                         {/* Comparison Grid */}
@@ -130,12 +133,12 @@ export default function AiComparisonRow({ height }: AiComparisonRowProps) {
                                 return (
                                     <div key={result.proposal_id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
                                         <div className="mb-3">
-                                            <h5 className="font-medium text-gray-800 text-sm mb-1">
-                                                {proposal?.title || `Proposal ${index + 1}`}
-                                            </h5>
+                                            <Title level="5" className="font-medium text-gray-800 text-sm mb-1">
+                                                {proposal?.title || t('proposalComparison.aiComparison.proposal', { number: index + 1 })}
+                                            </Title>
                                             <div className={`text-xs px-2 py-1 rounded-full inline-block ${
-                                                result.recommendation === 'Fund' 
-                                                    ? 'bg-green-100 text-green-800' 
+                                                result.recommendation === 'Fund'
+                                                    ? 'bg-green-100 text-green-800'
                                                     : 'bg-red-100 text-red-800'
                                             }`}>
                                                 {result.recommendation}
@@ -165,7 +168,7 @@ export default function AiComparisonRow({ height }: AiComparisonRowProps) {
 
                                         {/* Summary */}
                                         <div className="mb-3">
-                                            <h6 className="text-xs font-medium text-gray-700 mb-1">Key Strengths:</h6>
+                                            <Title level="6" className="text-xs font-medium text-gray-700 mb-1">{t('proposalComparison.aiComparison.keyStrengths')}</Title>
                                             <ul className="text-xs text-gray-600 space-y-1">
                                                 {result.strengths.slice(0, 2).map((strength, idx) => (
                                                     <li key={idx} className="flex items-start">
@@ -177,7 +180,7 @@ export default function AiComparisonRow({ height }: AiComparisonRowProps) {
                                         </div>
 
                                         <div>
-                                            <h6 className="text-xs font-medium text-gray-700 mb-1">Areas for Improvement:</h6>
+                                            <Title level="6" className="text-xs font-medium text-gray-700 mb-1">{t('proposalComparison.aiComparison.areasForImprovement')}</Title>
                                             <ul className="text-xs text-gray-600 space-y-1">
                                                 {result.improvements.slice(0, 2).map((improvement, idx) => (
                                                     <li key={idx} className="flex items-start">

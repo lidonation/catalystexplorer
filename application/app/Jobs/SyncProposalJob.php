@@ -9,6 +9,7 @@ use App\Models\CatalystProfile;
 use App\Models\Fund;
 use App\Models\Link;
 use App\Models\Proposal;
+use App\Services\ProposalAiSummaryService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -189,7 +190,8 @@ class SyncProposalJob implements ShouldQueue
             // Generate projectcatalyst.io link if we have the necessary data
             $this->generateProjectCatalystLink($proposal, $campaign, $fundNumber);
 
-            GenerateProposalAiSummary::dispatch($proposal)->onQueue('ai');
+            // Generate AI summary inline (no queue needed)
+            // app(ProposalAiSummaryService::class)->generate($proposal);
 
         } catch (\Throwable $e) {
             Log::error('Error syncing proposal: '.$e->getMessage(), [
@@ -219,7 +221,15 @@ class SyncProposalJob implements ShouldQueue
                 $key = collect($section->toArray())->keys()->first();
                 $value = $section->{$key} ?? '';
 
-                return [$key => $value];
+                if ($value instanceof Fluent) {
+                    $value = $value->{$key} ?? collect($value->getAttributes())->first() ?? '';
+                }
+
+                if ($value instanceof Fluent) {
+                    $value = collect($value->getAttributes())->first() ?? '';
+                }
+
+                return [$key => is_string($value) ? $value : json_encode($value)];
             }
 
             return is_array($section) ? $section : ['content' => $section];
@@ -262,6 +272,21 @@ class SyncProposalJob implements ShouldQueue
         }
 
         if (is_array($data)) {
+            if (array_is_list($data) && ! empty($data) && $data[0] instanceof Fluent) {
+                $allSingleKey = collect($data)->every(
+                    fn ($item) => $item instanceof Fluent && count($item->getAttributes()) === 1
+                );
+
+                if ($allSingleKey) {
+                    $merged = [];
+                    foreach ($data as $item) {
+                        $merged = array_merge($merged, $this->fluentToArray($item));
+                    }
+
+                    return $merged;
+                }
+            }
+
             return $this->normalizeArrayData($data);
         }
 
@@ -281,6 +306,12 @@ class SyncProposalJob implements ShouldQueue
                 $result[$key] = $this->normalizeArrayData($value);
             } else {
                 $result[$key] = $value;
+            }
+        }
+
+        foreach ($result as $key => $value) {
+            if (is_array($value) && count($value) === 1 && array_key_exists($key, $value)) {
+                $result[$key] = $value[$key];
             }
         }
 
