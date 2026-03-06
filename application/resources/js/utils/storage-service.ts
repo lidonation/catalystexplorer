@@ -1,5 +1,7 @@
 import { StorageKeys } from '@/enums/storage-keys-enums';
 
+type StorageType = 'local' | 'session';
+
 export class StorageService {
     private static instance: StorageService;
 
@@ -12,13 +14,17 @@ export class StorageService {
         return StorageService.instance;
     }
 
-    public save<T>(key: StorageKeys, value: T): void {
+    private getStorage(type: StorageType): Storage {
+        return type === 'session' ? sessionStorage : localStorage;
+    }
+
+    public save<T>(key: StorageKeys, value: T, storage: StorageType = 'local'): void {
         try {
             const serializedValue = JSON.stringify(value);
-            localStorage.setItem(key, serializedValue);
+            this.getStorage(storage).setItem(key, serializedValue);
         } catch (error) {
             console.error(
-                `Error saving to localStorage with key ${key}:`,
+                `Error saving to ${storage}Storage with key ${key}:`,
                 error,
             );
         }
@@ -65,18 +71,18 @@ export class StorageService {
     }
 
     /**
-     * Get a value from localStorage
+     * Get a value from storage
      */
-    public get<T>(key: StorageKeys, defaultValue?: T): T | null {
+    public get<T>(key: StorageKeys, defaultValue?: T, storage: StorageType = 'local'): T | null {
         try {
-            const value = localStorage.getItem(key);
+            const value = this.getStorage(storage).getItem(key);
             if (value === null) {
                 return defaultValue ?? null;
             }
             return JSON.parse(value) as T;
         } catch (error) {
             console.error(
-                `Error retrieving from localStorage with key ${key}:`,
+                `Error retrieving from ${storage}Storage with key ${key}:`,
                 error,
             );
             return defaultValue ?? null;
@@ -84,14 +90,14 @@ export class StorageService {
     }
 
     /**
-     * Remove a value from localStorage
+     * Remove a value from storage
      */
-    public remove(key: StorageKeys): void {
+    public remove(key: StorageKeys, storage: StorageType = 'local'): void {
         try {
-            localStorage.removeItem(key);
+            this.getStorage(storage).removeItem(key);
         } catch (error) {
             console.error(
-                `Error removing from localStorage with key ${key}:`,
+                `Error removing from ${storage}Storage with key ${key}:`,
                 error,
             );
         }

@@ -966,6 +966,10 @@
   "catalystProfiles.tabs.groups": "ቡድኖች",
   "catalystProfiles.tabs.communities": "ማህበረሰቦች",
   "catalystProfiles.tabs.campaigns": "ዘመቻዎች",
+  "catalystProfiles.projectStatus": "የፕሮጀክት ሁኔታ",
+"catalystProfiles.limitTags": "በመለያ ገደብ",
+"catalystProfiles.fundingStatus": "የገንዘብ ሁኔታ",
+
   "ideascaleProfiles.tabs.milestones": "ምዕራፎች",
   "milestones.milestones": "ምዕራፎች",
   "groups.groups": "ቡድኖች",

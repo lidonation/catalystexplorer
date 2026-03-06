@@ -159,13 +159,13 @@ const GraphButton = () => {
 
                     {/* Icon buttons */}
                     <div className="flex justify-center gap-2">
-                        <div ref={aiButtonRef}>
+                        {/* <div ref={aiButtonRef}>
                             <IconButton
                                 onClick={() => setActivePopup(activePopup === "ai" ? null : "ai")}
                                 icon={<AIPromptIcon />}
                                 aria-label="AI Assistant"
                             />
-                        </div>
+                        </div> */}
 
                         <div ref={chartButtonRef}>
                             {onProposals ? (
@@ -227,12 +227,12 @@ const GraphButton = () => {
                     </Transition>
 
                     <div className="flex flex-col gap-2 ml-4">
-                        <IconButton
+                        {/* <IconButton
                             onClick={() => setActivePopup(activePopup === 'ai' ? null : 'ai')}
                             icon={<AIPromptIcon />}
                             aria-label="AI Assistant"
                             className="hover:scale-105 transition-transform duration-200 active:scale-95 "
-                        />
+                        /> */}
                         {onProposals ? (
                             <IconButton
                                 href={chartsUrl}

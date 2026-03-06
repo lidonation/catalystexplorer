@@ -197,6 +197,11 @@ class Community extends Model implements HasMedia
             ->groupBy(['groups.id', 'community_has_proposal.community_id']);
     }
 
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     public function toSearchableArray(): array
     {
         // $this->loadMissing([

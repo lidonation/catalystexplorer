@@ -2,7 +2,8 @@ import { CommandGroup, CommandItem } from '@/Components/Command';
 import { generateLocalizedRoute } from '@/utils/localizedRoute';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
 import { router, usePage } from '@inertiajs/react';
-import { Compass, FileText, List, MessageCircle } from 'lucide-react';
+import { Compass, FileText, List } from 'lucide-react';
+import AIPromptIcon from '../svgs/AIPromptIcon';
 import Paragraph from '../atoms/Paragraph';
 
 interface ToolsSectionProps {
@@ -18,7 +19,7 @@ export default function ToolsSection({ onSelect, onOpenChatbox }: ToolsSectionPr
         id: 'catalyst-chatbox',
         title: t('catalyst.chatbox.title'),
         description: t('catalyst.chatbox.description'),
-        icon: MessageCircle,
+        icon: ({ className }: { className?: string }) => <AIPromptIcon className={className} width={36} height={36} />,
         action: 'chatbox' as const,
     };
 

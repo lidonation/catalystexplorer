@@ -28,8 +28,8 @@ services:
         XDG_DATA_HOME:  /var/www/caddy 
         OCTANE_WATCH: 'false'
         POSTGRESQL_WEB_DB_HOST: catalystexplorer_test.db
-        POSTGRESQL_WEB_DB: explorerweb
-        POSTGRESQL_WEB_USER: catalystexplorer
+        POSTGRESQL_WEB_DB: catalystexplorer
+        POSTGRESQL_WEB_USER: explorerdbuser
         POSTGRESQL_WEB_PASSWORD: ASLJ023470AlserLFH
         REDIS_HOST: catalystexplorer_test.redis
     volumes:
@@ -66,8 +66,8 @@ services:
         POSTGRESQL_DB_SYNC_USER: postgres
         XDG_CONFIG_HOME: /var/www
         POSTGRESQL_WEB_DB_HOST: catalystexplorer_test.db
-        POSTGRESQL_WEB_DB: explorerweb
-        POSTGRESQL_WEB_USER: catalystexplorer
+        POSTGRESQL_WEB_DB: catalystexplorer
+        POSTGRESQL_WEB_USER: explorerdbuser
         POSTGRESQL_WEB_PASSWORD: ASLJ023470AlserLFH
         MEDIA_DISK: public
         TELESCOPE_USE_DARK_THEME: "true"
@@ -96,9 +96,9 @@ services:
         - ./application/.env.testing
       environment:
           - POSTGRES_LOGGING=true
-          - POSTGRES_DB=explorerweb
+          - POSTGRES_DB=catalystexplorer
           - POSTGRES_PASSWORD=ASLJ023470AlserLFH
-          - POSTGRES_USER=catalystexplorer
+          - POSTGRES_USER=explorerdbuser
           - POSTGRES_POSTGRES_PASSWORD=alj2340aaALJAF2341408AUUZLJK
       volumes:
           - 'test_catalystexplorer-db:/var/lib/postgresql/data'
@@ -110,15 +110,15 @@ services:
               - pg_isready
               - '-q'
               - '-d'
-              - 'explorerweb'
-              - '-U'
               - 'catalystexplorer'
+              - '-U'
+              - 'explorerdbuser'
           retries: 3
           timeout: 5s
 
   # one-shot init to enable extensions in explorerweb
   catalystexplorer_test.db-init:
-      image: postgres:17-bookworm
+      image: postgres:18.1-trixie
       container_name: catalystexplorer_test.db-init
       depends_on:
           - catalystexplorer_test.db
@@ -126,14 +126,14 @@ services:
           - catalystexplorer-net_test
       entrypoint: ["/bin/sh","-c"]
       command: >
-          "until pg_isready -h catalystexplorer_test.db -U catalystexplorer -d explorerweb; do echo waiting for test db; sleep 1; done;
-          PGPASSWORD=ASLJ023470AlserLFH psql -h catalystexplorer_test.db -U catalystexplorer -d explorerweb -v ON_ERROR_STOP=1 -c 'CREATE EXTENSION IF NOT EXISTS vector';
+          "until pg_isready -h catalystexplorer_test.db -U explorerdbuser -d catalystexplorer; do echo waiting for test db; sleep 1; done;
+          PGPASSWORD=ASLJ023470AlserLFH psql -h catalystexplorer_test.db -U explorerdbuser -d catalystexplorer -v ON_ERROR_STOP=1 -c 'CREATE EXTENSION IF NOT EXISTS vector';
           echo 'pgvector enabled (test)';"
       restart: "no"
 
   # meilisearch
   catalystexplorer_test-search:
-      image: getmeili/meilisearch:v1.16.0-rc.3
+      image: getmeili/meilisearch:v1.35.0
       container_name: catalystexplorer_test-search
       env_file:
         - ./application/.env.testing

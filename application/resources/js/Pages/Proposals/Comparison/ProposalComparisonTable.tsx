@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import Paragraph from '@/Components/atoms/Paragraph';
 import Title from '@/Components/atoms/Title';
 import { useProposalComparison } from '@/Context/ProposalComparisonContext';
@@ -21,13 +22,54 @@ import { useLaravelReactI18n } from 'laravel-react-i18n';
 import ComparisonTableFilters from './Partials/ComparisonTableFilters';
 import RowVisibilitySelector from './Partials/RowVisibilitySelector';
 import SortableProposalColumn from './SortableProposalColumn';
+import { AiComparisonProvider, useAiComparisonContext } from '@/Context/AiComparisonContext';
+import { Sparkles } from 'lucide-react';
+import { Button } from '@headlessui/react';
 
-export default function ProposalsTable() {
+function ProposalsTableInner() {
     const { t } = useLaravelReactI18n();
+    const { filteredProposals } = useProposalComparison();
+    const { isGenerating, generatingIds, results, error, generateComparison, generateForNewProposals, clearComparison } = useAiComparisonContext();
+    const prevIdsRef = useRef<string[]>([]);
+    const hasAnyGenerating = generatingIds.size > 0;
+
+    useEffect(() => {
+        const currentIds = filteredProposals
+            .map((p) => p.id)
+            .filter((id): id is string => id !== null && id !== undefined);
+
+        const prevIds = prevIdsRef.current;
+        prevIdsRef.current = currentIds;
+
+        if (!results || results.length === 0) return;
+
+        const prevSet = new Set(prevIds);
+        const hasNewIds = currentIds.some((id) => !prevSet.has(id));
+
+        if (hasNewIds && !hasAnyGenerating) {
+            generateForNewProposals(currentIds);
+        }
+    }, [filteredProposals]);
+
+    const handleGenerateComparison = async () => {
+        const proposalIds = filteredProposals
+            .map(proposal => proposal.id)
+            .filter((id): id is string => id !== null && id !== undefined);
+
+        if (proposalIds.length === 0) return;
+
+        try {
+            await generateComparison(proposalIds);
+        } catch (err) {
+            console.error('Failed to generate AI comparison:', err);
+        }
+    };
+
     const METRIC_ROW_ID = 'metric';
     const ACTION_ROW_ID = 'action';
 
-    const EXCLUDED_FROM_VISIBILITY = [METRIC_ROW_ID, ACTION_ROW_ID];
+    const AI_COMPARISON_ROW_ID = 'ai-comparison';
+    const EXCLUDED_FROM_VISIBILITY = [METRIC_ROW_ID, ACTION_ROW_ID, AI_COMPARISON_ROW_ID];
 
     const rows = [
         {
@@ -95,6 +137,11 @@ export default function ProposalsTable() {
             label: t('proposalComparison.tableHeaders.action'),
             height: 'h-16',
         },
+        {
+            id: 'ai-comparison',
+            label: t('proposalComparison.tableHeaders.aiComparison'),
+            height: '',
+        },
     ];
 
     const controllableRows = rows.filter(
@@ -110,7 +157,7 @@ export default function ProposalsTable() {
         controllableRows.map((row) => row.id),
     );
 
-    const { filteredProposals, reorderProposals } = useProposalComparison();
+    const { reorderProposals } = useProposalComparison();
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -138,7 +185,7 @@ export default function ProposalsTable() {
 
     return (
         <div className="container" data-testid="proposal-comparison-table">
-            <div className="mb-4 flex items-center justify-between">
+                <div className="mb-4 flex items-center justify-between">
                 <header data-testid="proposal-comparison-header">
                     <div className=" ">
                         <Title level="1">{t('proposalComparison.title')}</Title>
@@ -160,41 +207,98 @@ export default function ProposalsTable() {
             <div>
                 <ComparisonTableFilters />
             </div>
-            <div className="bg-background border-gray-light relative mb-4 flex w-full rounded-lg border shadow-lg">
-                {/* Sticky Row Headers */}
-                <div className="bg-background sticky left-0 z-10 flex flex-col rounded-l-lg">
-                    {visibleRowsData.map((row) => (
-                        <div
-                            key={row.id}
-                            className={`${row.height} border-gray-light flex items-center border-b px-4 text-left font-medium ${row.id == 'metric' ? 'text-dark !bg-background-lighter rounded-tl-lg' : ''}`}
-                            data-testid={`proposal-comparison-row-${row.id}`}
-                        >
-                            {row.label}
-                        </div>
-                    ))}
-                </div>
-
-                {/* Scrollable Draggable Columns */}
-                <div
-                    className="border-gray-light overflow-x-auto border-l"
-                    style={{ maxWidth: 'calc(100% - 120px)' }}
-                    data-testid="proposal-comparison-scrollable-columns"
-                >
-                    <DndContext
-                        sensors={sensors}
-                        collisionDetection={closestCenter}
-                        onDragEnd={handleDragEnd}
-                    >
-                        <div className="flex min-w-max">
-                            <SortableContext
-                                items={filteredProposals.map((p) => p.id ?? '')}
-                                strategy={horizontalListSortingStrategy}
-                                data-testid="sortable-proposal-context"
+            <div className="bg-background border-gray-light relative mb-4 w-full overflow-x-auto rounded-lg border shadow-lg">
+                <div className="flex min-w-max">
+                    {/* Row Headers — scrolls on mobile, sticky on md+ */}
+                    <div className="bg-background md:sticky md:left-0 z-10 flex w-24 min-w-24 md:w-48 md:min-w-48 flex-col rounded-l-lg">
+                        {visibleRowsData.map((row) => (
+                            <div
+                                key={row.id}
+                                className={`${row.height} ${row.id === 'ai-comparison' ? 'flex-1 items-start pt-4' : 'border-gray-light border-b items-center'} flex px-2 md:px-4 text-left text-xs md:text-sm font-medium ${row.id == 'metric' ? 'text-dark !bg-background-lighter rounded-tl-lg' : ''}`}
+                                data-testid={`proposal-comparison-row-${row.id}`}
                             >
+                                {row.id === 'ai-comparison' ? (
+                                    <div className="flex flex-col gap-4 w-full">
+                                        <div className="flex items-center gap-2">
+                                            <Sparkles className="h-4 w-4 text-primary" />
+                                            <span>{row.label}</span>
+                                        </div>
+
+                                        {!results && !hasAnyGenerating && (
+                                            <button
+                                                onClick={handleGenerateComparison}
+                                                disabled={filteredProposals.length < 2 || hasAnyGenerating}
+                                                className="flex items-center gap-1 bg-primary text-white px-2 py-1 rounded text-xs hover:bg-primary-hover disabled:bg-gray-400 disabled:cursor-not-allowed font-medium transition-colors cursor-pointer"
+                                            >
+                                                <Sparkles className="h-3 w-3" />
+                                                {t('proposalComparison.generateAiComparison')}
+                                            </button>
+                                        )}
+
+                                        {hasAnyGenerating && (
+                                            <div className="flex items-center gap-1 text-primary">
+                                                <div className="animate-spin h-3 w-3 border border-primary border-t-transparent rounded-full"></div>
+                                                <span className="text-xs">
+                                                    {t('proposalComparison.aiComparison.generating')}
+                                                </span>
+                                            </div>
+                                        )}
+
+                                        {error && (
+                                            <div className="text-xs text-danger">
+                                                {t('proposalComparison.aiComparison.errorLoading')}
+                                            </div>
+                                        )}
+
+                                        {results && (
+                                            <Button
+                                                onClick={clearComparison}
+                                                className="text-xs text-content hover:text-dark px-1.5 py-1.5 border border-gray-light rounded hover:bg-background-lighter cursor-pointer w-fit">
+                                                {t('proposalComparison.aiComparison.clearResults')}
+                                            </Button>
+                                        )}
+
+                                        {results && (
+                                            <div className="text-xs text-content leading-relaxed space-y-2">
+                                                <Paragraph className='text-xs'>
+                                                    {t('proposalComparison.aiComparison.description')}
+                                                </Paragraph>
+                                                <ul className="space-y-1 text-xs">
+                                                    <li><span className="text-dark font-medium">{t('proposalComparison.aiComparison.alignmentLabel')}</span> {t('proposalComparison.aiComparison.alignmentDesc')}</li>
+                                                    <li><span className="text-dark font-medium">{t('proposalComparison.aiComparison.feasibilityLabel')}</span> {t('proposalComparison.aiComparison.feasibilityDesc')}</li>
+                                                    <li><span className="text-dark font-medium">{t('proposalComparison.aiComparison.auditabilityLabel')}</span> {t('proposalComparison.aiComparison.auditabilityDesc')}</li>
+                                                </ul>
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    row.label
+                                )}
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Draggable Columns */}
+                    <div
+                        className="border-gray-light border-l"
+                        data-testid="proposal-comparison-scrollable-columns"
+                    >
+                        <DndContext
+                            sensors={sensors}
+                            collisionDetection={closestCenter}
+                            onDragEnd={handleDragEnd}
+                        >
+                            <div className="flex min-w-max items-stretch h-full">
+                                <SortableContext
+                                    items={filteredProposals.map((p) => p.id ?? '')}
+                                    strategy={horizontalListSortingStrategy}
+                                    data-testid="sortable-proposal-context"
+                                >
                                 {filteredProposals.map((proposal, index) => (
                                     <SortableProposalColumn
                                         key={proposal.id}
                                         proposal={proposal}
+                                        isFirst={index === 0}
                                         isLast={
                                             index ===
                                             filteredProposals.length - 1
@@ -202,11 +306,20 @@ export default function ProposalsTable() {
                                         visibleRows={visibleRows || []}
                                     />
                                 ))}
-                            </SortableContext>
-                        </div>
-                    </DndContext>
+                                </SortableContext>
+                            </div>
+                        </DndContext>
+                    </div>
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function ProposalsTable() {
+    return (
+        <AiComparisonProvider>
+            <ProposalsTableInner />
+        </AiComparisonProvider>
     );
 }

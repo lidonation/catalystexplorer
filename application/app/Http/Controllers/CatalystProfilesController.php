@@ -11,6 +11,7 @@ use App\DataTransferObjects\GroupData;
 use App\DataTransferObjects\ProposalData;
 use App\Enums\IdeascaleProfileSearchParams;
 use App\Enums\ProposalSearchParams;
+use App\Enums\ProposalStatus;
 use App\Models\Campaign;
 use App\Models\CatalystProfile;
 use App\Models\Community;
@@ -53,14 +54,37 @@ class CatalystProfilesController extends Controller
         $profileId = $catalystProfile->id;
 
         $cacheKey = "catalyst_profile:{$profileId}:base_data";
-        $catalystProfileData = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($catalystProfile) {
-            $catalystProfile->load(['groups']);
 
-            return [
-                ...$catalystProfile->toArray(),
-                'groups' => $catalystProfile->groupsUuid->toArray(),
-            ];
-        });
+        $catalystProfileData = Cache::remember(
+            $cacheKey,
+            now()->addMinutes(10),
+            function () use ($catalystProfile) {
+                $catalystProfile->loadCount([
+                    'proposals',
+                    'proposals as funded_proposals_count' => fn ($q) => $q->whereNotNull('funded_at'),
+                    'proposals as completed_proposals_count' => fn ($q) => $q->where('status', ProposalStatus::complete()->value),
+                ]);
+
+                $catalystProfile->load(['groups']);
+
+                $catalystProfile->append([
+                    'proposals_count',
+                    'funded_proposals_count',
+                    'completed_proposals_count',
+                    'amount_requested_ada',
+                    'amount_awarded_ada',
+                    'amount_distributed_ada',
+                    'amount_requested_usdm',
+                    'amount_awarded_usdm',
+                    'amount_distributed_usdm',
+                ]);
+
+                return [
+                    ...$catalystProfile->toArray(),
+                    'groups' => $catalystProfile->groups->toArray(),
+                ];
+            }
+        );
 
         $currentPage = 1;
 
@@ -77,8 +101,8 @@ class CatalystProfilesController extends Controller
                                 ->with(['users', 'fund'])
                                 ->paginate(11, ['*'], 'p', $currentPage)
                         )
-                    )->onEachSide(0)
-                )
+                    )
+                )->onEachSide(0)
             ),
 
             'groups' => Inertia::optional(
@@ -128,7 +152,7 @@ class CatalystProfilesController extends Controller
                     "catalyst_profile:{$profileId}:campaigns",
                     now()->addMinutes(10),
                     fn () => CampaignData::collect(
-                        Campaign::whereIn('id', $catalystProfile->proposals()->pluck('campaign_id'))
+                        Campaign::whereIn('id', $catalystProfile->proposals()->select('campaign_id'))
                             ->withCount([
                                 'completed_proposals',
                                 'unfunded_proposals',
@@ -142,9 +166,13 @@ class CatalystProfilesController extends Controller
 
         return match (true) {
             str_contains($request->path(), '/connections') => Inertia::render('CatalystProfile/Connections/Index', $props),
+
             str_contains($request->path(), '/groups') => Inertia::render('CatalystProfile/Groups/Index', $props),
+
             str_contains($request->path(), '/communities') => Inertia::render('CatalystProfile/Communities/Index', $props),
+
             str_contains($request->path(), '/campaigns') => Inertia::render('CatalystProfile/Campaigns/Index', $props),
+
             default => Inertia::render('CatalystProfile/Proposals/Index', $props),
         };
     }
@@ -167,6 +195,14 @@ class CatalystProfilesController extends Controller
                 'claimed_by',
                 'hero_img_url',
                 'proposals_count',
+                'funded_proposals_count',
+                'completed_proposals_count',
+                'amount_requested_ada',
+                'amount_awarded_ada',
+                'amount_distributed_ada',
+                'amount_requested_usdm',
+                'amount_awarded_usdm',
+                'amount_distributed_usdm',
             ],
         ];
 
@@ -201,6 +237,7 @@ class CatalystProfilesController extends Controller
 
     protected function getProps(Request $request): void
     {
+        Log::info('CatalystProfilesController: request->all()', $request->all());
         $this->queryParams = $request->validate([
             ProposalSearchParams::FUNDS()->value => 'array|nullable',
             ProposalSearchParams::PROJECT_STATUS()->value => 'array|nullable',
@@ -240,8 +277,12 @@ class CatalystProfilesController extends Controller
 
             // Funding status filter
             if (isset($this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value])) {
-                $fundingStatus = implode(',', $this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value]);
-                $filters[] = "proposals.funding_status = '{$fundingStatus}'";
+                $fundingStatus = $this->queryParams[ProposalSearchParams::FUNDING_STATUS()->value];
+                if (in_array('funded', $fundingStatus) && ! in_array('unfunded', $fundingStatus)) {
+                    $filters[] = '(funded_proposals_count > 0 OR completed_proposals_count > 0)';
+                } elseif (in_array('unfunded', $fundingStatus) && ! in_array('funded', $fundingStatus)) {
+                    $filters[] = '(funded_proposals_count = 0 AND completed_proposals_count = 0)';
+                }
             }
 
             // filter by budget range

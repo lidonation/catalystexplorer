@@ -1,0 +1,264 @@
+{
+  "info": {
+    "name": "CatalystExplorer API",
+    "description": "Comprehensive API for exploring Project Catalyst proposals, funding data, and community insights.",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://www.catalystexplorer.com/api",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Proposals",
+      "item": [
+        {
+          "name": "List Proposals",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/proposals?page=1&per_page=24&filter[status]=funded&include=campaign,fund&sort=-created_at",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "proposals"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "The page number for pagination"
+                },
+                {
+                  "key": "per_page",
+                  "value": "24",
+                  "description": "Number of proposals per page (max 60)"
+                },
+                {
+                  "key": "filter[status]",
+                  "value": "funded",
+                  "description": "Filter by proposal status"
+                },
+                {
+                  "key": "include",
+                  "value": "campaign,fund",
+                  "description": "Comma-separated list of relationships to include"
+                },
+                {
+                  "key": "sort",
+                  "value": "-created_at",
+                  "description": "Sort by field (prefix with - for descending)"
+                }
+              ]
+            },
+            "description": "Retrieve a paginated list of Project Catalyst proposals with advanced filtering, sorting, and relationship includes."
+          }
+        },
+        {
+          "name": "Get Proposal Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/proposals/:id?include=campaign,fund,team",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "proposals",
+                ":id"
+              ],
+              "query": [
+                {
+                  "key": "include",
+                  "value": "campaign,fund,team",
+                  "description": "Comma-separated list of relationships to include"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "123",
+                  "description": "The proposal ID"
+                }
+              ]
+            },
+            "description": "Retrieve detailed information about a specific proposal including optional related data."
+          }
+        }
+      ],
+      "description": "APIs for managing and retrieving Project Catalyst proposals"
+    },
+    {
+      "name": "Funds & Campaigns",
+      "item": [
+        {
+          "name": "List Funds",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/funds?page=1&per_page=24",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "funds"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "The page number for pagination"
+                },
+                {
+                  "key": "per_page",
+                  "value": "24",
+                  "description": "Number of funds per page (max 60)"
+                }
+              ]
+            },
+            "description": "Retrieve a paginated list of Project Catalyst funding rounds with filtering, sorting, and relationship includes."
+          }
+        },
+        {
+          "name": "Get Fund Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/funds/:id?include=proposals,campaigns",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "funds",
+                ":id"
+              ],
+              "query": [
+                {
+                  "key": "include",
+                  "value": "proposals,campaigns",
+                  "description": "Comma-separated list of relationships to include"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "12",
+                  "description": "The fund ID"
+                }
+              ]
+            },
+            "description": "Retrieve detailed information about a specific fund including optional related data."
+          }
+        },
+        {
+          "name": "Get Fund Proposals",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/funds/:id/proposals?page=1&per_page=24",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "funds",
+                ":id",
+                "proposals"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "The page number for pagination"
+                },
+                {
+                  "key": "per_page",
+                  "value": "24",
+                  "description": "Number of proposals per page (max 60)"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "12",
+                  "description": "The fund ID"
+                }
+              ]
+            },
+            "description": "Get paginated proposals for a specific fund."
+          }
+        }
+      ],
+      "description": "APIs for managing and retrieving Project Catalyst funding rounds and campaigns"
+    }
+  ]
+}

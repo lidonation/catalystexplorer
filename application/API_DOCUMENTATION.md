@@ -486,6 +486,8 @@ All proposal fields are included in the response:
 ### Structured Content Fields (Always Included)
 These fields contain structured data extracted from the Catalyst API Gateway. They are always included in responses without needing any query parameter. Note: These fields may be `null` for older proposals that haven't been synced from the Catalyst API.
 
+Values are **flat strings** (not nested objects). The canonical keys are always present (set to `null` if no data). Additional keys from the Catalyst Gateway are preserved as-is.
+
 - `pitch` - Pitch section data containing:
   - `team` - Team description and qualifications
   - `budget` - Budget breakdown and justification
@@ -494,7 +496,10 @@ These fields contain structured data extracted from the Catalyst API Gateway. Th
   - `solution` - Detailed solution description
   - `impact` - Expected impact and outcomes
   - `feasibility` - Feasibility assessment
-- `category_questions` - Category-specific questions containing:
+  - `outputs` - Deliverables and outputs
+  - *Additional keys may be present (e.g., `prototype_mvp`, `innovative_idea`)*
+- `category_questions` - Category-specific questions (vary by campaign):
+  - `detailed_plan` - Detailed plan
   - `target` - Target audience/beneficiaries
   - `activities` - Planned activities
   - `performance_metrics` - Success metrics and KPIs
@@ -513,19 +518,23 @@ These fields contain structured data extracted from the Catalyst API Gateway. Th
     "id": "00e72c2e-b661-4afb-b2fb-3603469d3d30",
     "title": "AI-Powered Blockchain Explorer",
     "pitch": {
-      "team": { "value": "Our team has 10+ years combined experience..." },
-      "budget": { "value": "Development: $50,000, Marketing: $10,000..." },
-      "value": { "value": "This tool will enable faster analysis..." }
+      "team": "Our team has 10+ years combined experience...",
+      "budget": "Development: $50,000, Marketing: $10,000...",
+      "value": "This tool will enable faster analysis...",
+      "resources": null
     },
     "project_details": {
-      "solution": { "value": "We will build a comprehensive explorer..." },
-      "impact": { "value": "Expected to serve 10,000+ users..." },
-      "feasibility": { "value": "Using proven technologies..." }
+      "solution": "We will build a comprehensive explorer...",
+      "impact": "Expected to serve 10,000+ users...",
+      "feasibility": "Using proven technologies...",
+      "outputs": null
     },
     "category_questions": {
-      "target": { "value": "Developers and analysts..." },
-      "activities": { "value": "Phase 1: Research, Phase 2: Development..." },
-      "performance_metrics": { "value": "Monthly active users, API calls..." }
+      "detailed_plan": null,
+      "target": "Developers and analysts...",
+      "activities": "Phase 1: Research, Phase 2: Development...",
+      "performance_metrics": "Monthly active users, API calls...",
+      "success_criteria": null
     },
     "theme": {
       "group": "Development & Tools",
@@ -560,6 +569,20 @@ The `team` field returns an array of team member objects with unified formatting
 - `title` - Professional title or role
 - `proposals_count` - Number of proposals associated with this profile
 - `hero_img_url` - Profile image URL
+- `twitter` - Twitter/X handle or URL
+- `linkedin` - LinkedIn profile URL
+- `discord` - Discord username
+- `ideascale` - Ideascale profile link
+- `telegram` - Telegram username
+- `submitted_proposals` - Total proposals submitted across all funds
+- `open_proposals` - Proposals with status: pending, in_progress, or onboarding
+- `funded_proposals` - Proposals that have been funded
+- `completed_proposals` - Proposals with status: complete
+- `proposals_by_fund` - Breakdown of submitted proposals per fund (array):
+  - `fund_id` - Fund UUID
+  - `fund_title` - Fund title (e.g., "Fund 14")
+  - `fund_label` - Fund label
+  - `submitted_proposals` - Number of proposals in this fund
 
 ### Example Response with Team Data
 ```json
@@ -579,6 +602,11 @@ The `team` field returns an array of team member objects with unified formatting
         "username": "john_dev",
         "name": "John Smith",
         "bio": "Experienced blockchain developer with 5+ years in Web3",
+        "twitter": "@john_dev",
+        "linkedin": "https://linkedin.com/in/johnsmith",
+        "discord": "john_dev#1234",
+        "ideascale": null,
+        "telegram": null,
         "title": "Lead Developer",
         "proposals_count": 3,
         "hero_img_url": "https://example.com/profile/john.jpg"
@@ -590,9 +618,25 @@ The `team` field returns an array of team member objects with unified formatting
         "username": "sarah_pm",
         "name": "Sarah Johnson",
         "bio": "Product manager specializing in educational technology",
+        "twitter": null,
+        "linkedin": null,
+        "discord": null,
+        "ideascale": null,
+        "telegram": null,
         "title": "Project Manager",
-        "proposals_count": 1,
-        "hero_img_url": "https://example.com/profile/sarah.jpg"
+        "hero_img_url": "https://example.com/profile/sarah.jpg",
+        "submitted_proposals": 1,
+        "open_proposals": 1,
+        "funded_proposals": 0,
+        "completed_proposals": 0,
+        "proposals_by_fund": [
+          {
+            "fund_id": "a12c4d5e-6f78-9012-abcd-ef1234567890",
+            "fund_title": "Fund 15",
+            "fund_label": "Fund 15",
+            "submitted_proposals": 1
+          }
+        ]
       }
     ],
     "created_at": "2024-01-15T10:30:00Z",
@@ -616,9 +660,25 @@ Some proposals may have minimal team data:
         "username": "community_lead",
         "name": "Alex Chen",
         "bio": null,
+        "twitter": null,
+        "linkedin": null,
+        "discord": null,
+        "ideascale": null,
+        "telegram": null,
         "title": null,
-        "proposals_count": 2,
-        "hero_img_url": null
+        "hero_img_url": null,
+        "submitted_proposals": 2,
+        "open_proposals": 0,
+        "funded_proposals": 1,
+        "completed_proposals": 1,
+        "proposals_by_fund": [
+          {
+            "fund_id": "b77b307e-2e83-4f9d-8be1-ba9f600299f3",
+            "fund_title": "Fund 14",
+            "fund_label": "Fund 14",
+            "submitted_proposals": 2
+          }
+        ]
       }
     ]
   }
@@ -631,7 +691,15 @@ Some proposals may have minimal team data:
 - **Mixed profile types** - A single proposal can have team members from both Ideascale and Catalyst platforms
 - Team data is only included when explicitly requested via `include=team`
 - Empty teams return an empty array `[]`
-- The `proposals_count` field indicates how many proposals this team member is associated with across the platform
+- Proposal statistics (`submitted_proposals`, `open_proposals`, `funded_proposals`, `completed_proposals`) are computed across **all funds**, not just the current proposal's fund
+- `proposals_by_fund` provides the per-fund breakdown of submitted proposals
+
+## Campaign Sub-Resource Fields
+When included via `?include=campaign`, the campaign object includes the following fields added in this version:
+- `color` - Campaign color (hex)
+- `label` - Display label (e.g., "Cardano Open: Ecosystem")
+- `awarded_at` - Award date
+- `category_details` - Category-specific details (questions, budget constraints, etc.) — always included but may be `null`
 
 ## Meta Data Relation
 
@@ -645,6 +713,8 @@ GET /api/v1/proposals/{id}?include=meta_data
 
 ### Meta Data Structure
 The `meta_data` field returns a flat object with string keys and values. The structure varies by proposal, but common fields include:
+
+> **Note:** Fields like `alignment_score`, `feasibility_score`, `auditability_score`, `unique_wallets`, `ideascale_id`, `chain_proposal_id`, `chain_proposal_index`, and `project_length` are now available as **top-level fields** on the proposal resource. They remain in `meta_data` as raw string values for backward compatibility.
 
 #### Common Meta Data Fields
 - `funds_remaining` - Remaining project funding amount

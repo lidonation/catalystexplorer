@@ -9,6 +9,7 @@ use App\Enums\RoleEnum;
 use App\Models\Proposal;
 use App\Nova\Actions\AddQuickPitch;
 use App\Nova\Actions\EditModel;
+use App\Nova\Actions\GenerateAiSummary;
 use App\Nova\Actions\GenerateProposalLinks;
 use App\Nova\Actions\MakeSearchable;
 use App\Nova\Actions\RegenerateOgImage;
@@ -30,6 +31,7 @@ use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Exceptions\HelperNotSupported;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\HasMany;
@@ -150,6 +152,32 @@ class Proposals extends Resource
             Textarea::make(__('Content'), 'content')
                 ->hideFromIndex(),
 
+            // Structured Content Fields (JSONB)
+            Code::make(__('Pitch'), 'pitch')
+                ->json()
+                ->hideFromIndex()
+                ->help('Structured pitch data: team, budget, value'),
+
+            Code::make(__('Project Details'), 'project_details')
+                ->json()
+                ->hideFromIndex()
+                ->help('Structured project details: solution, impact, feasibility'),
+
+            Code::make(__('Category Questions'), 'category_questions')
+                ->json()
+                ->hideFromIndex()
+                ->help('Category-specific questions: target, activities, performance_metrics'),
+
+            Code::make(__('Theme'), 'theme')
+                ->json()
+                ->hideFromIndex()
+                ->help('Proposal theme: group and tag'),
+
+            Code::make(__('Self Assessment'), 'self_assessment')
+                ->json()
+                ->hideFromIndex()
+                ->help('Self-assessment checklist responses'),
+
             Text::make(__('Excerpt'), 'excerpt')
                 ->hideFromIndex(),
 
@@ -190,6 +218,11 @@ class Proposals extends Resource
             Boolean::make(__('Open Source'), 'opensource')
                 ->trueValue(true)
                 ->falseValue(false),
+
+            Textarea::make(__('Open Source Description'), 'opensource_description')
+                ->help('Details about open source commitment (repository URL, license, what will be open sourced)')
+                ->hideFromIndex()
+                ->alwaysShow(),
 
             Text::make(__('Type'), 'type')
                 ->hideFromIndex(),
@@ -303,6 +336,21 @@ class Proposals extends Resource
                 ->readonly()
                 ->hideWhenCreating()
                 ->hideWhenUpdating(),
+
+            // AI Fields
+            Textarea::make(__('AI Summary'), 'ai_summary')
+                ->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating()
+                ->help('Auto-generated summary via AI. Use the "Generate AI Summary" action to populate.'),
+
+            DateTime::make(__('AI Generated At'), 'ai_generated_at')
+                ->hideFromIndex()
+                ->readonly()
+                ->hideWhenCreating()
+                ->hideWhenUpdating()
+                ->help('Timestamp when the AI summary was last generated.'),
 
             Number::make(__('Ranking Total'), 'ranking_total')
                 ->hideFromIndex(),
@@ -472,6 +520,7 @@ class Proposals extends Resource
                     || auth()->user()->hasRole(RoleEnum::editor()->value);
             }),
             (new EditModel),
+            (new GenerateAiSummary),
             (new GenerateProposalLinks),
             (new MakeSearchable),
             (new RemoveFromSearchIndex),

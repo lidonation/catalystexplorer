@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\DB;
 
@@ -18,6 +19,13 @@ class ModelEmbedding extends Model
         'dimensions',
         'source_text',
         'content_hash',
+        'metadata',
+        'funding_year',
+        'fund_label',
+        'campaign_title',
+        'is_funded',
+        'amount_requested',
+        'currency',
         'token_count',
         'embedding',
         'embedding_norm',
@@ -25,7 +33,11 @@ class ModelEmbedding extends Model
 
     protected $casts = [
         'embedding' => 'array', // For non-PostgreSQL databases
+        'metadata' => 'array',
         'dimensions' => 'integer',
+        'funding_year' => 'integer',
+        'is_funded' => 'boolean',
+        'amount_requested' => 'decimal:2',
         'token_count' => 'integer',
         'embedding_norm' => 'float',
     ];

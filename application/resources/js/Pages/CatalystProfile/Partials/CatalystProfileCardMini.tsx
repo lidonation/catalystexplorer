@@ -71,18 +71,6 @@ const CatalystProfileCardMini: React.FC<CatalystProfileProps> = ({
         },
     ] as Segments[];
 
-    const extraSegments = [
-        {
-            label: 'Proposer',
-            color: '',
-            value: catalystProfile.own_proposals_count ?? 0,
-        },
-        {
-            label: 'Collaborator',
-            color: '',
-            value: catalystProfile.collaborating_proposals_count ?? 0,
-        },
-    ] as Segments[];
 
     return (
         <Card className="relative z-10 bg-background">
@@ -149,21 +137,7 @@ const CatalystProfileCardMini: React.FC<CatalystProfileProps> = ({
                             <SegmentedBar
                                 segments={chartSegments}
                                 tooltipSegments={toolTipSegments}
-                            >
-                                {extraSegments.map((segment, index) => (
-                                    <div
-                                        key={index}
-                                        className="flex items-center"
-                                    >
-                                        <div className="font-s text-sm">
-                                            {segment.label}:
-                                        </div>
-                                        <div className="text-3 ml-1 font-bold">
-                                            {segment.value}
-                                        </div>
-                                    </div>
-                                ))}
-                            </SegmentedBar>
+                            />
                         </div>
                     </div>
                 }

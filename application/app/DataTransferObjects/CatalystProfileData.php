@@ -54,28 +54,22 @@ class CatalystProfileData extends Data
         public ?int $proposals_count,
 
         #[TypeScriptOptional]
-        public ?int $own_proposals_count,
-
-        #[TypeScriptOptional]
-        public ?int $collaborating_proposals_count,
-
-        #[TypeScriptOptional]
         public ?float $amount_requested_ada,
-
-        #[TypeScriptOptional]
-        public ?float $amount_requested_usd,
 
         #[TypeScriptOptional]
         public ?float $amount_awarded_ada,
 
         #[TypeScriptOptional]
-        public ?float $amount_awarded_usd,
-
-        #[TypeScriptOptional]
         public ?float $amount_distributed_ada,
 
         #[TypeScriptOptional]
-        public ?float $amount_distributed_usd,
+        public ?float $amount_requested_usdm,
+
+        #[TypeScriptOptional]
+        public ?float $amount_awarded_usdm,
+
+        #[TypeScriptOptional]
+        public ?float $amount_distributed_usdm,
 
         #[TypeScriptOptional]
         public mixed $groups = null,

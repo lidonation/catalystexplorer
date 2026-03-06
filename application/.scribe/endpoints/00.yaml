@@ -1,0 +1,263 @@
+name: Proposals
+description: |-
+
+  APIs for managing and retrieving Project Catalyst proposals. Proposals represent funding requests submitted to the Catalyst ecosystem.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/v1/proposals
+    metadata:
+      custom: []
+      groupName: Proposals
+      groupDescription: |-
+
+        APIs for managing and retrieving Project Catalyst proposals. Proposals represent funding requests submitted to the Catalyst ecosystem.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List proposals'
+      description: 'Retrieve a paginated list of Project Catalyst proposals with advanced filtering, sorting, and relationship includes.'
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      page:
+        custom: []
+        name: page
+        description: 'The page number for pagination.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      per_page:
+        custom: []
+        name: per_page
+        description: 'Number of proposals per page (max 60).'
+        required: false
+        example: 24
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'filter[id]':
+        custom: []
+        name: 'filter[id]'
+        description: 'Filter by exact proposal ID.'
+        required: false
+        example: 123
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'filter[title]':
+        custom: []
+        name: 'filter[title]'
+        description: 'Search proposals by title (case insensitive).'
+        required: false
+        example: DeFi
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'filter[status]':
+        custom: []
+        name: 'filter[status]'
+        description: 'Filter by proposal status.'
+        required: false
+        example: funded
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'filter[type]':
+        custom: []
+        name: 'filter[type]'
+        description: 'Filter by proposal type.'
+        required: false
+        example: project
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'filter[category]':
+        custom: []
+        name: 'filter[category]'
+        description: 'Filter by proposal category.'
+        required: false
+        example: developer-tools
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'filter[campaign_id]':
+        custom: []
+        name: 'filter[campaign_id]'
+        description: 'Filter by campaign ID.'
+        required: false
+        example: 456
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'filter[fund_id]':
+        custom: []
+        name: 'filter[fund_id]'
+        description: 'Filter by fund ID.'
+        required: false
+        example: 12
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'filter[funded]':
+        custom: []
+        name: 'filter[funded]'
+        description: 'Filter only funded proposals (any non-empty value).'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'filter[amount_min]':
+        custom: []
+        name: 'filter[amount_min]'
+        description: 'Filter by minimum requested amount (in ADA lovelace).'
+        required: false
+        example: 10000000
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'filter[amount_max]':
+        custom: []
+        name: 'filter[amount_max]'
+        description: 'Filter by maximum requested amount (in ADA lovelace).'
+        required: false
+        example: 100000000
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      include:
+        custom: []
+        name: include
+        description: 'Comma-separated list of relationships to include (campaign,user,fund,team,schedule,schedule.milestones,links,meta_data,reviews).'
+        required: false
+        example: 'campaign,fund,team'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      sort:
+        custom: []
+        name: sort
+        description: 'Comma-separated list of fields to sort by. Prefix with - for descending order. Available: title,status,amount_requested,amount_received,project_length,yes_votes_count,no_votes_count,funded_at,created_at,updated_at.'
+        required: false
+        example: '-created_at,title'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanQueryParameters:
+      page: 1
+      per_page: 24
+      'filter[id]': 123
+      'filter[title]': DeFi
+      'filter[status]': funded
+      'filter[type]': project
+      'filter[category]': developer-tools
+      'filter[campaign_id]': 456
+      'filter[fund_id]': 12
+      'filter[funded]': true
+      'filter[amount_min]': 10000000
+      'filter[amount_max]': 100000000
+      include: 'campaign,fund,team'
+      sort: '-created_at,title'
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/v1/proposals/{id}'
+    metadata:
+      custom: []
+      groupName: Proposals
+      groupDescription: |-
+
+        APIs for managing and retrieving Project Catalyst proposals. Proposals represent funding requests submitted to the Catalyst ecosystem.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get proposal details'
+      description: 'Retrieve detailed information about a specific proposal including optional related data.'
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The proposal ID.'
+        required: true
+        example: 123
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 123
+    queryParameters:
+      include:
+        custom: []
+        name: include
+        description: 'Comma-separated list of relationships to include (campaign,user,fund,team,schedule,schedule.milestones,links,meta_data,reviews).'
+        required: false
+        example: 'campaign,fund,team'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanQueryParameters:
+      include: 'campaign,fund,team'
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null

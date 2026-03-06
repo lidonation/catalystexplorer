@@ -30,6 +30,15 @@ expect()->extend('toBeOne', function () {
     return $this->toBe(1);
 });
 
+expect()->extend('toSatisfy', function (callable $callback) {
+    $result = $callback($this->value);
+    \PHPUnit\Framework\Assert::assertTrue(
+        $result, 
+        'Failed asserting that the condition is satisfied.'
+    );
+    return $this;
+});
+
 /*
 |--------------------------------------------------------------------------
 | Functions

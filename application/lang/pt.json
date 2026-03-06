@@ -1083,6 +1083,10 @@
     "catalystProfiles.tabs.groups": "Grupos",
     "catalystProfiles.tabs.communities": "Comunidades",
     "catalystProfiles.tabs.campaigns": "Campanhas",
+    "catalystProfiles.projectStatus": "Status do projeto",
+    "catalystProfiles.limitTags": "Limitar a tags",
+    "catalystProfiles.fundingStatus": "Status de Financiamento",
+
     "ideascaleProfiles.tabs.milestones": "Marcos",
     "milestones.milestones": "Marcos",
     "groups.groups": "Grupos",

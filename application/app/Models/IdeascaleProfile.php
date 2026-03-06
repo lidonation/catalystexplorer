@@ -141,11 +141,79 @@ class IdeascaleProfile extends Model implements HasMedia
         ];
     }
 
+    /**
+     * Load counts and currency aggregates onto the model attributes.
+     * This keeps Meilisearch indexing and UI cards consistent.
+     */
+    public function loadProfileAggregates(): self
+    {
+        try {
+            $this->loadCount([
+                'proposals',
+                'proposals as funded_proposals_count' => fn ($q) => $q->whereNotNull('funded_at'),
+                'proposals as unfunded_proposals_count' => fn ($q) => $q->whereNull('funded_at'),
+                'proposals as completed_proposals_count' => fn ($q) => $q->where('status', ProposalStatus::complete()->value),
+            ]);
+
+            $this->loadCurrencyAggregates();
+        } catch (\Throwable $e) {
+            Log::warning('Failed to load IdeascaleProfile aggregates via relationships.', [
+                'profile_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
+
+        // These are not yet computed elsewhere but the DTO expects them.
+        $this->setAttribute('own_proposals_count', (int) ($this->attributes['own_proposals_count'] ?? 0));
+        $this->setAttribute('collaborating_proposals_count', (int) ($this->attributes['collaborating_proposals_count'] ?? 0));
+        $this->setAttribute('co_proposals_count', (int) ($this->attributes['co_proposals_count'] ?? 0));
+        $this->setAttribute('reviews_count', (int) ($this->attributes['reviews_count'] ?? 0));
+
+        return $this;
+    }
+
+    /**
+     * Load currency aggregates using a single grouped query.
+     */
+    protected function loadCurrencyAggregates(): void
+    {
+        // Use the underlying builder to avoid BelongsToMany adding pivot
+        // columns to the select list, which breaks GROUP BY queries.
+        $rows = $this->proposals()
+            ->getQuery()
+            ->join('funds', 'funds.id', '=', 'proposals.fund_id')
+            ->selectRaw(
+                'funds.currency as currency,
+                COALESCE(SUM(proposals.amount_requested), 0) as requested,
+                COALESCE(SUM(CASE WHEN proposals.funded_at IS NOT NULL THEN proposals.amount_requested ELSE 0 END), 0) as awarded,
+                COALESCE(SUM(CASE WHEN proposals.funded_at IS NOT NULL THEN proposals.amount_received ELSE 0 END), 0) as distributed'
+            )
+            ->groupBy('funds.currency')
+            ->get()
+            ->keyBy('currency');
+
+        $ada = $rows->get(CatalystCurrencySymbols::ADA->name);
+        $usd = $rows->get(CatalystCurrencySymbols::USD->name);
+
+        $this->setAttribute('amount_requested_ada', (float) ($ada->requested ?? 0));
+        $this->setAttribute('amount_requested_usd', (float) ($usd->requested ?? 0));
+        $this->setAttribute('amount_awarded_ada', (float) ($ada->awarded ?? 0));
+        $this->setAttribute('amount_awarded_usd', (float) ($usd->awarded ?? 0));
+        $this->setAttribute('amount_distributed_ada', (float) ($ada->distributed ?? 0));
+        $this->setAttribute('amount_distributed_usd', (float) ($usd->distributed ?? 0));
+    }
+
     public function amountRequestedAda(): Attribute
     {
         return Attribute::make(
-            get: function () {
-                return $this->proposals()
+            get: function ($value) {
+                if ($value !== null) {
+                    return (float) $value;
+                }
+
+                return (float) $this->proposals()
                     ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::ADA->name))
                     ->sum('amount_requested');
             },
@@ -155,8 +223,12 @@ class IdeascaleProfile extends Model implements HasMedia
     public function amountRequestedUsd(): Attribute
     {
         return Attribute::make(
-            get: function () {
-                return $this->proposals()
+            get: function ($value) {
+                if ($value !== null) {
+                    return (float) $value;
+                }
+
+                return (float) $this->proposals()
                     ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USD->name))
                     ->sum('amount_requested');
             },
@@ -166,8 +238,12 @@ class IdeascaleProfile extends Model implements HasMedia
     public function amountAwardedAda(): Attribute
     {
         return Attribute::make(
-            get: function () {
-                return $this->proposals()
+            get: function ($value) {
+                if ($value !== null) {
+                    return (float) $value;
+                }
+
+                return (float) $this->proposals()
                     ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::ADA->name))
                     ->whereNotNull('funded_at')
                     ->sum('amount_requested');
@@ -178,8 +254,12 @@ class IdeascaleProfile extends Model implements HasMedia
     public function amountAwardedUsd(): Attribute
     {
         return Attribute::make(
-            get: function () {
-                return $this->proposals()
+            get: function ($value) {
+                if ($value !== null) {
+                    return (float) $value;
+                }
+
+                return (float) $this->proposals()
                     ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USD->name))
                     ->whereNotNull('funded_at')
                     ->sum('amount_requested');
@@ -190,8 +270,12 @@ class IdeascaleProfile extends Model implements HasMedia
     public function amountDistributedAda(): Attribute
     {
         return Attribute::make(
-            get: function () {
-                return $this->proposals()
+            get: function ($value) {
+                if ($value !== null) {
+                    return (float) $value;
+                }
+
+                return (float) $this->proposals()
                     ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::ADA->name))
                     ->whereNotNull('funded_at')
                     ->sum('amount_received');
@@ -202,8 +286,12 @@ class IdeascaleProfile extends Model implements HasMedia
     public function amountDistributedUsd(): Attribute
     {
         return Attribute::make(
-            get: function () {
-                return $this->proposals()
+            get: function ($value) {
+                if ($value !== null) {
+                    return (float) $value;
+                }
+
+                return (float) $this->proposals()
                     ->whereHas('fund', fn ($q) => $q->where('currency', CatalystCurrencySymbols::USD->name))
                     ->whereNotNull('funded_at')
                     ->sum('amount_received');
@@ -378,8 +466,7 @@ class IdeascaleProfile extends Model implements HasMedia
 
     public function toSearchableArray(): array
     {
-        // Load the model with required counts for indexing
-        $this->loadCount(['proposals']);
+        $this->loadProfileAggregates();
 
         $array = $this->toArray();
 
@@ -388,19 +475,27 @@ class IdeascaleProfile extends Model implements HasMedia
             unset($array['hash']);
         }
 
-        // Calculate proposals count with fallback methods
         $proposalsCount = $this->getProposalsCount();
+        $fundedCount = (int) ($this->attributes['funded_proposals_count'] ?? 0);
+        $unfundedCount = (int) ($this->attributes['unfunded_proposals_count'] ?? 0);
+        $completedCount = (int) ($this->attributes['completed_proposals_count'] ?? 0);
 
         return array_merge($array, [
             'hero_img_url' => $this->hero_img_url,
             'proposals_count' => $proposalsCount,
+            'funded_proposals_count' => $fundedCount,
+            'unfunded_proposals_count' => $unfundedCount,
+            'completed_proposals_count' => $completedCount,
+            'own_proposals_count' => (int) ($this->attributes['own_proposals_count'] ?? 0),
+            'collaborating_proposals_count' => (int) ($this->attributes['collaborating_proposals_count'] ?? 0),
+            'co_proposals_count' => (int) ($this->attributes['co_proposals_count'] ?? 0),
+            'reviews_count' => (int) ($this->attributes['reviews_count'] ?? 0),
             'amount_requested_ada' => $this->amount_requested_ada,
             'amount_requested_usd' => $this->amount_requested_usd,
             'amount_awarded_ada' => $this->amount_awarded_ada,
             'amount_awarded_usd' => $this->amount_awarded_usd,
             'amount_distributed_ada' => $this->amount_distributed_ada,
             'amount_distributed_usd' => $this->amount_distributed_usd,
-            // Add other counts when type mismatches are fixed
         ]);
     }
 

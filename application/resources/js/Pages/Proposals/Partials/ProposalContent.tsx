@@ -29,7 +29,6 @@ function normalizeMarkdown(text: string): string {
     );
 }
 
-// Checklist label mappings
 const CHECKLIST_LABELS: Record<string, string> = {
     foundational_work: 'I confirm that evidence of prior research, whitepaper, design, or proof-of-concept is provided.',
     ecosystem_value: 'I confirm that the proposal includes ecosystem research and uses the findings to either (a) justify its uniqueness over existing solutions or (b) demonstrate the value of its novel approach.',
@@ -66,7 +65,6 @@ const ProposalContent = ({ proposal }: ProposalContentProps) => {
         if (typeof proposal === 'object' && !Array.isArray(proposal)) {
             const structuredSections = [];
 
-            // 1. Proposed Solution
             if (proposal.project_details?.solution?.solution) {
                 structuredSections.push({
                     header: 'Proposed Solution',
@@ -74,7 +72,6 @@ const ProposalContent = ({ proposal }: ProposalContentProps) => {
                 });
             }
 
-            // 2. Impact & Feasibility
             if (proposal.project_details?.impact?.impact) {
                 structuredSections.push({
                     header: 'Project Impact',
@@ -89,7 +86,6 @@ const ProposalContent = ({ proposal }: ProposalContentProps) => {
                 });
             }
 
-            // 3. Team
             if (proposal.pitch?.team?.who) {
                 structuredSections.push({
                     header: 'The Team',
@@ -97,7 +93,6 @@ const ProposalContent = ({ proposal }: ProposalContentProps) => {
                 });
             }
 
-            // 4. Theme (Combined)
             if (proposal.theme?.tag || proposal.theme?.group) {
                 const themeContent = [
                     proposal.theme.tag ? `**Tag:** ${proposal.theme.tag}` : '',
@@ -110,7 +105,6 @@ const ProposalContent = ({ proposal }: ProposalContentProps) => {
                 });
             }
 
-            // 5. Value & Budget
             if (proposal.pitch?.value?.note) {
                 structuredSections.push({
                     header: 'Ecosystem Value',
@@ -125,7 +119,6 @@ const ProposalContent = ({ proposal }: ProposalContentProps) => {
                 });
             }
 
-            // 6. --- CATEGORY QUESTIONS (ALWAYS LAST) ---
             const categoryItems = [];
             
             if (proposal.category_questions?.innovative_idea) {
@@ -147,15 +140,12 @@ const ProposalContent = ({ proposal }: ProposalContentProps) => {
                 });
             }
 
-            // 7. Self Assessment Checklist
             if (proposal.self_assessment?.checklist) {
                 const checklistItems = Object.entries(proposal.self_assessment.checklist)
                     .map(([key, value]) => {
-                        // Use the mapped label if available, otherwise fall back to formatted key
                         const label = CHECKLIST_LABELS[key] || 
                             key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
                         
-                        // Support boolean values, "Yes", "I Agree", or any truthy value
                         const isChecked = value === true || 
                                         value === 'Yes' || 
                                         value === 'I Agree' ||
@@ -181,7 +171,6 @@ const ProposalContent = ({ proposal }: ProposalContentProps) => {
             }
         }
 
-        // Legacy Fallback
         let contentText: string = typeof proposal === 'string' 
             ? proposal 
             : JSON.stringify(proposal);
@@ -190,7 +179,6 @@ const ProposalContent = ({ proposal }: ProposalContentProps) => {
     };
 
     const parseProposalSections = (text: string) => {
-        // Match both ### [Header] and [Header] formats
         const sectionRegex = /(?:^|\n)(?:###\s*)?(?:\\\[|\[)(.*?)(?:\\\]|\])\s*\n(.*?)(?=(?:^|\n)(?:###\s*)?(?:\\\[|\[)|$)/gs;
         const sections = [];
         let match;

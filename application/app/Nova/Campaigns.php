@@ -124,6 +124,8 @@ class Campaigns extends Resource
             Textarea::make(__('Content'), 'content')
                 ->rules('nullable'),
 
+            new Panel('Category Details', self::categoryDetailsFields()),
+
             new Panel('Media', self::mediaFields()),
 
             HasMany::make('Metadata', 'metas', Metas::class),
@@ -137,6 +139,41 @@ class Campaigns extends Resource
         return [
             Images::make(__('Hero'), 'hero')
                 ->enableExistingMedia(),
+        ];
+    }
+
+    public static function categoryDetailsFields(): array
+    {
+        return [
+            Textarea::make(__('Overview'), 'category_details->overview')
+                ->help('Category overview - what this category is about')
+                ->alwaysShow()
+                ->rules('nullable'),
+
+            Textarea::make(__('Budget & Constraints'), 'category_details->budget_constraints')
+                ->help('Budget range, proposal limits, and constraints')
+                ->alwaysShow()
+                ->rules('nullable'),
+
+            Textarea::make(__('Areas of Interest'), 'category_details->areas_of_interest')
+                ->help('What types of proposals should focus on')
+                ->alwaysShow()
+                ->rules('nullable'),
+
+            Textarea::make(__('Who Should Apply'), 'category_details->who_should_apply')
+                ->help('Core eligibility criteria')
+                ->alwaysShow()
+                ->rules('nullable'),
+
+            Textarea::make(__('Defining Criteria'), 'category_details->defining_criteria')
+                ->help('Key criteria that define eligible proposals')
+                ->alwaysShow()
+                ->rules('nullable'),
+
+            Textarea::make(__('Proposal Requirements'), 'category_details->proposal_guidance')
+                ->help('Detailed proposal requirements and guidance')
+                ->alwaysShow()
+                ->rules('nullable'),
         ];
     }
 

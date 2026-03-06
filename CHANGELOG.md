@@ -1,3 +1,69 @@
+# [1.79.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.78.2...v1.79.0) (2026-02-27)
+
+
+### Features
+
+* adding nocodb ([e00662c](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/e00662cf358677493ba52e4fb635fca1b7417b41))
+
+## [1.78.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.78.1...v1.78.2) (2026-02-26)
+
+
+### Bug Fixes
+
+* **catalyst & ideascale profile controllers:** ln-2154 controllers now compute... ([2136cc4](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/2136cc407c6ae136a1c570f2891eebb5154ae9b9))
+* **catalyst & ideascale profile controllers:** ln-2154 controllers now compute... ([13b7590](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/13b7590320bac266531ac1c22cf77ad4e5f78134))
+* **Makefile:** remove CARP initialization script and related commands ([33475e0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/33475e09de70a602266e82d3527925f85ebb268b))
+
+## [1.78.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.78.0...v1.78.1) (2026-02-25)
+
+
+### Bug Fixes
+
+* **catalyst & ideascale profile controllers:** ln-2154 controllers now compute... ([47e8182](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/47e8182f38b5a03eb1b4d517f49b9eed1089b593))
+* **Lang.Json files:**  LN-2162 fixed translation issues for filter params in Catalyst Profiles page ([76020f0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/76020f0989c796a8a26b5b1e4988f7453a806d56))
+
+# [1.78.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.77.0...v1.78.0) (2026-02-18)
+
+
+### Features
+
+* adding api documentation ([b1c4e46](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/b1c4e464c09cb3fb3d69de29cc59e7714c9c457a))
+
+# [1.77.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.76.0...v1.77.0) (2026-02-17)
+
+
+### Features
+
+* add ada predictions to tinder swipe ([68e0043](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/68e004374f24c8cce70b8a62209740b6654bf2ef))
+
+# [1.76.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.75.0...v1.76.0) (2026-02-17)
+
+
+### Features
+
+* catalyst-ai-comparison ([12b42c8](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/12b42c82d65887579074c5f057df4e0c625df14a))
+
+# [1.75.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.74.2...v1.75.0) (2026-02-17)
+
+
+### Features
+
+* adding AI comparisons ([c8b0705](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/c8b0705da231b585ea7cfa1f29753a9106f915fb))
+
+## [1.74.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.74.1...v1.74.2) (2026-02-15)
+
+
+### Bug Fixes
+
+* update catalyst chatbox prompts ([4f065ed](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/4f065edc6a3c69cf465d4d35c11ff964f5386e9f))
+
+## [1.74.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.74.0...v1.74.1) (2026-02-09)
+
+
+### Bug Fixes
+
+* update catalyst chatbox prompts ([f47ead0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/f47ead00dd53a26d184b802f17d76002b802b973))
+
 # [1.74.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.73.1...v1.74.0) (2026-02-09)
 
 

@@ -95,15 +95,6 @@ final class ProposalData extends Data
         public ?string $experience,
 
         #[TypeScriptOptional]
-        public ?string $currency,
-
-        #[TypeScriptOptional]
-        public ?array $minted_nfts_fingerprint,
-
-        #[TypeScriptOptional]
-        public ?int $ranking_total,
-
-        #[TypeScriptOptional]
         public mixed $pitch,
 
         #[TypeScriptOptional]
@@ -124,6 +115,16 @@ final class ProposalData extends Data
         #[TypeScriptOptional]
         public mixed $project_details,
 
+        // Other attributes
+        #[TypeScriptOptional]
+        public ?string $currency,
+
+        #[TypeScriptOptional]
+        public ?array $minted_nfts_fingerprint,
+
+        #[TypeScriptOptional]
+        public ?int $ranking_total,
+
         #[TypeScriptOptional]
         public ?int $alignment_score,
 
@@ -132,6 +133,12 @@ final class ProposalData extends Data
 
         #[TypeScriptOptional]
         public ?int $auditability_score,
+
+        #[TypeScriptOptional]
+        public ?string $ai_summary,
+
+        #[TypeScriptOptional]
+        public ?string $ai_generated_at,
 
         #[TypeScriptOptional]
         public ?string $quickpitch,

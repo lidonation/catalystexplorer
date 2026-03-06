@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
+use App\Models\CatalystProfile;
 use App\Models\Community;
 use App\Models\Group;
 use App\Models\IdeascaleProfile;
@@ -27,6 +28,7 @@ class SyncProposalsToEntities implements ShouldQueue
         $groups = Group::all();
         $communities = Community::all();
         $profiles = IdeascaleProfile::all();
+        $catalystProfiles = CatalystProfile::all();
 
         $profiles->each(function ($profile) {
             $proposal = Proposal::inRandomOrder()->first();
@@ -34,6 +36,17 @@ class SyncProposalsToEntities implements ShouldQueue
                 $proposal->users()->syncWithoutDetaching($profile->id);
             } else {
                 Log::warning('SyncProposalsToEntities: No proposal found for profile sync');
+            }
+        });
+
+        $catalystProfiles->each(function ($catalystProfile) {
+            $proposal = Proposal::inRandomOrder()->first();
+            if ($proposal) {
+                $proposal->catalyst_profiles()->syncWithoutDetaching([
+                    $catalystProfile->id => ['profile_type' => CatalystProfile::class],
+                ]);
+            } else {
+                Log::warning('SyncProposalsToEntities: No proposal found for catalyst profile sync');
             }
         });
 

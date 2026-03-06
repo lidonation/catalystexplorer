@@ -17,8 +17,8 @@ class FundFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::inRandomOrder()->value('old_id'),
-            'title' => 'Fund '.$this->faker->randomElement(CatalystFunds::toValues()),
+            'user_id' => User::factory(),
+            'title' => 'Fund ' . $this->faker->randomElement(CatalystFunds::toValues()),
             'meta_title' => $this->faker->words(5, true),
             'slug' => $this->faker->unique()->slug(),
             'excerpt' => $this->faker->text(150),

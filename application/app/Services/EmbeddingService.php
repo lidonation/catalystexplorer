@@ -41,7 +41,7 @@ class EmbeddingService
         $embedding = $this->generateEmbedding($content, $provider, $embeddingModel);
         $dimensions = count($embedding);
 
-        $modelEmbedding = new ModelEmbedding([
+        $embeddingData = [
             'field_name' => $fieldName,
             'provider' => $provider,
             'model' => $embeddingModel,
@@ -50,7 +50,15 @@ class EmbeddingService
             'content_hash' => $contentHash,
             'token_count' => $this->estimateTokenCount($content),
             'embedding' => $embedding,
-        ]);
+        ];
+
+        // Add metadata for proposals
+        if ($model instanceof \App\Models\Proposal) {
+            $metadata = $this->extractProposalMetadata($model);
+            $embeddingData = array_merge($embeddingData, $metadata);
+        }
+
+        $modelEmbedding = new ModelEmbedding($embeddingData);
 
         $modelEmbedding->calculateNorm();
         $model->embeddings()->save($modelEmbedding);
@@ -133,6 +141,32 @@ class EmbeddingService
     private function estimateTokenCount(string $text): int
     {
         return (int) ceil(strlen($text) / 4);
+    }
+
+    private function extractProposalMetadata(\App\Models\Proposal $proposal): array
+    {
+        // Extract funding year from funded_at or created_at
+        $fundingYear = null;
+        if ($proposal->funded_at) {
+            $fundingYear = $proposal->funded_at->year;
+        } elseif ($proposal->created_at) {
+            $fundingYear = $proposal->created_at->year;
+        }
+
+        return [
+            'metadata' => [
+                'id' => $proposal->id,
+                'slug' => $proposal->slug,
+                'status' => $proposal->status,
+                'funding_status' => $proposal->funding_status,
+            ],
+            'funding_year' => $fundingYear,
+            'fund_label' => $proposal->fund?->label,
+            'campaign_title' => $proposal->campaign?->title,
+            'is_funded' => ! is_null($proposal->funded_at),
+            'amount_requested' => $proposal->amount_requested,
+            'currency' => $proposal->currency,
+        ];
     }
 
     public function findSimilarEmbeddings(

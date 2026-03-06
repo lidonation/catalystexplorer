@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useLaravelReactI18n } from 'laravel-react-i18n';
-import { ArrowLeft, MessageCircle, Send, Loader2, Trash2 } from 'lucide-react';
+import { ArrowLeft, Send, Loader2, Trash2 } from 'lucide-react';
+import AIPromptIcon from '../svgs/AIPromptIcon';
 import Paragraph from '../atoms/Paragraph';
 import Button from '@/Components/atoms/Button';
 import TextInput from '@/Components/atoms/TextInput';
@@ -258,7 +259,7 @@ export default function CatalystChatbox({ onBack }: CatalystChatboxProps) {
                     <ArrowLeft className="h-4 w-4" />
                 </Button>
                 <div className="flex items-center gap-2">
-                    <MessageCircle className="text-primary h-5 w-5" />
+                    <AIPromptIcon className="text-primary" width={20} height={20} />
                     <Paragraph className="text-content font-semibold">
                         {t('catalyst.chatbox.title')}
                     </Paragraph>

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tools;
 
+use App\Actions\Ai\ExtractProposalField;
+use App\Actions\Ai\ExtractProposalTitle;
 use App\Models\Proposal;
 use Vizra\VizraADK\Contracts\ToolInterface;
 use Vizra\VizraADK\Memory\AgentMemory;
@@ -50,10 +52,13 @@ class ProposalDetailsTool implements ToolInterface
 
     private function formatProposalDetails(Proposal $proposal): string
     {
-        $details = '# '.$this->extractTitle($proposal)."\n\n";
+        $extractTitle = new ExtractProposalTitle;
+        $extractField = new ExtractProposalField;
+
+        $title = $extractTitle($proposal);
 
         // Basic information
-        $details .= "## 📊 Basic Information\n";
+        $details = '## 📊 Basic Informationn'."\n";
         $details .= "- **ID**: {$proposal->id}\n";
         $details .= '- **Fund**: '.($proposal->fund?->title ?? 'Unknown')."\n";
         $details .= '- **Campaign**: '.($proposal->campaign?->title ?? 'General')."\n";
@@ -71,17 +76,17 @@ class ProposalDetailsTool implements ToolInterface
         $details .= "- **View Online**: {$proposal->link}\n\n";
 
         // Problem statement
-        if ($problem = $this->extractField($proposal, 'problem')) {
+        if ($problem = $extractField($proposal, 'problem')) {
             $details .= "## 🔍 Problem Statement\n{$problem}\n\n";
         }
 
         // Proposed solution
-        if ($solution = $this->extractField($proposal, 'solution')) {
+        if ($solution = $extractField($proposal, 'solution')) {
             $details .= "## 💡 Proposed Solution\n{$solution}\n\n";
         }
 
         // Experience and team
-        if ($experience = $this->extractField($proposal, 'experience')) {
+        if ($experience = $extractField($proposal, 'experience')) {
             $details .= "## 👥 Team & Experience\n{$experience}\n\n";
         }
 
@@ -101,7 +106,7 @@ class ProposalDetailsTool implements ToolInterface
         }
 
         // Additional details
-        if ($content = $this->extractField($proposal, 'content')) {
+        if ($content = $extractField($proposal, 'content')) {
             $details .= "## 📝 Additional Details\n{$content}\n\n";
         }
 
@@ -147,49 +152,5 @@ class ProposalDetailsTool implements ToolInterface
         $details .= '💡 **Need more information?** Ask me specific questions about this proposal or search for similar ones!';
 
         return $details;
-    }
-
-    private function extractTitle(Proposal $proposal): string
-    {
-        $title = $proposal->title;
-
-        if (is_array($title)) {
-            return $title['en'] ?? array_values($title)[0] ?? 'Untitled Proposal';
-        }
-
-        if (is_string($title)) {
-            $decoded = json_decode($title, true);
-            if (is_array($decoded)) {
-                return $decoded['en'] ?? array_values($decoded)[0] ?? 'Untitled Proposal';
-            }
-
-            return $title;
-        }
-
-        return 'Untitled Proposal';
-    }
-
-    private function extractField(Proposal $proposal, string $field): ?string
-    {
-        $value = $proposal->getAttribute($field);
-
-        if (empty($value)) {
-            return null;
-        }
-
-        if (is_array($value)) {
-            $text = $value['en'] ?? array_values($value)[0] ?? '';
-        } elseif (is_string($value)) {
-            $decoded = json_decode($value, true);
-            if (is_array($decoded)) {
-                $text = $decoded['en'] ?? array_values($decoded)[0] ?? '';
-            } else {
-                $text = $value;
-            }
-        } else {
-            $text = (string) $value;
-        }
-
-        return trim($text) ?: null;
     }
 }

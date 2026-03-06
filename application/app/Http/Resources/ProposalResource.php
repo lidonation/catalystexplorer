@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Resources;
 
 use App\Enums\CatalystCurrencies;
+use App\Services\ProposalAiSummaryService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
@@ -34,17 +35,18 @@ class ProposalResource extends JsonResource
             'problem' => $this->problem,
             'solution' => $this->solution,
             'experience' => $this->experience,
-            'theme' => $this->theme,
             'content' => $this->when($request->boolean('include_content'), $this->content),
 
-            'pitch' => $this->pitch,
-            'project_details' => $this->project_details,
-            'category_questions' => $this->category_questions,
+            'project_details' => $this->normalizeProjectDetails(),
+            'pitch' => $this->normalizePitch(),
+            'category_questions' => $this->normalizeCategoryQuestions(),
+            'theme' => $this->normalizeTheme(),
 
             'website' => $this->website,
             'quickpitch' => $this->quickpitch,
             'project_length' => $this->project_length,
-            'opensourced' => $this->opensourced,
+            'opensource' => (bool) $this->opensource,
+            'opensource_description' => $this->opensource_description,
             'funded_at' => $this->funded_at,
             'link' => $this->link,
 
@@ -52,6 +54,16 @@ class ProposalResource extends JsonResource
             'alignment_score' => $this->alignment_score,
             'feasibility_score' => $this->feasibility_score,
             'auditability_score' => $this->auditability_score,
+
+            // AI summary (generated on demand if requested via ?include=ai_summary)
+            'ai_summary' => $this->when(
+                $this->isAiSummaryRequested($request),
+                fn () => $this->getOrGenerateAiSummary($request)
+            ),
+            'ai_generated_at' => $this->when(
+                $this->isAiSummaryRequested($request),
+                fn () => $this->ai_generated_at
+            ),
 
             // Blockchain references
             'ideascale_id' => $this->ideascale_id,
@@ -129,10 +141,10 @@ class ProposalResource extends JsonResource
                 'title' => $model->title ?? null,
                 'hero_img_url' => $model->hero_img_url ?? null,
                 // Proposal statistics
-                'proposals_count' => $proposalStats['total'],
-                'open_proposals_count' => $proposalStats['open'],
-                'funded_proposals_count' => $proposalStats['funded'],
-                'completed_proposals_count' => $proposalStats['completed'],
+                'submitted_proposals' => $proposalStats['total'],
+                'open_proposals' => $proposalStats['open'],
+                'funded_proposals' => $proposalStats['funded'],
+                'completed_proposals' => $proposalStats['completed'],
                 'proposals_by_fund' => $proposalStats['by_fund'],
             ];
         })->filter(); // Remove any null models
@@ -142,31 +154,34 @@ class ProposalResource extends JsonResource
 
     private function getTeamMemberProposalStats($model): array
     {
-        $proposals = $model->proposals();
-
-        $total = $proposals->count();
-        $open = $proposals->clone()->whereIn('status', ['pending', 'in_progress', 'onboarding'])->count();
-        $funded = $proposals->clone()->whereNotNull('funded_at')->count();
-        $completed = $proposals->clone()->where('status', 'complete')->count();
-
-        $byFund = $proposals->clone()
-            ->select('fund_id', DB::raw('count(*) as count'))
-            ->groupBy('fund_id')
-            ->with('fund:id,title,label')
+        $stats = $model->proposals()
+            ->toBase()
+            ->selectRaw("
+                count(*) as total,
+                count(*) filter (where status in ('pending','in_progress','onboarding')) as open,
+                count(*) filter (where funded_at is not null) as funded,
+                count(*) filter (where status = 'complete') as completed
+            ")
+            ->first();
+        $byFund = $model->proposals()
+            ->toBase()
+            ->join('funds', 'proposals.fund_id', '=', 'funds.id')
+            ->select('proposals.fund_id', 'funds.title as fund_title', 'funds.label as fund_label', DB::raw('count(*) as count'))
+            ->groupBy('proposals.fund_id', 'funds.title', 'funds.label')
             ->get()
             ->map(fn ($item) => [
                 'fund_id' => $item->fund_id,
-                'fund_title' => $item->fund?->title,
-                'fund_label' => $item->fund?->label,
-                'count' => $item->count,
+                'fund_title' => $item->fund_title,
+                'fund_label' => $item->fund_label,
+                'submitted_proposals' => (int) $item->count,
             ])
             ->toArray();
 
         return [
-            'total' => $total,
-            'open' => $open,
-            'funded' => $funded,
-            'completed' => $completed,
+            'total' => (int) ($stats->total ?? 0),
+            'open' => (int) ($stats->open ?? 0),
+            'funded' => (int) ($stats->funded ?? 0),
+            'completed' => (int) ($stats->completed ?? 0),
             'by_fund' => $byFund,
         ];
     }
@@ -182,6 +197,100 @@ class ProposalResource extends JsonResource
             ->unique()
             ->values()
             ->toArray();
+    }
+
+    private function normalizeJsonbField(?array $data, array $canonicalKeys): ?array
+    {
+        if (empty($data)) {
+            return null;
+        }
+
+        $defaults = array_fill_keys($canonicalKeys, null);
+        $flattened = array_map([$this, 'flattenValue'], $data);
+
+        return array_merge($defaults, $flattened);
+    }
+
+    private function normalizeProjectDetails(): ?array
+    {
+        return $this->normalizeJsonbField(
+            $this->project_details,
+            ['solution', 'impact', 'feasibility', 'outputs']
+        );
+    }
+
+    private function normalizePitch(): ?array
+    {
+        return $this->normalizeJsonbField(
+            $this->pitch,
+            ['team', 'budget', 'value', 'resources']
+        );
+    }
+
+    private function normalizeCategoryQuestions(): ?array
+    {
+        return $this->normalizeJsonbField(
+            $this->category_questions,
+            ['detailed_plan', 'target', 'activities', 'performance_metrics', 'success_criteria']
+        );
+    }
+
+    private function normalizeTheme(): ?array
+    {
+        return $this->normalizeJsonbField(
+            $this->theme,
+            ['group', 'tag']
+        );
+    }
+
+    /**
+     * Flatten a value that may be a nested object from the Catalyst Gateway sync.
+     */
+    private function flattenValue(mixed $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        if (is_string($value)) {
+            return $value;
+        }
+
+        if (is_array($value)) {
+            $texts = array_filter($value, 'is_string');
+
+            return ! empty($texts) ? implode("\n\n", $texts) : null;
+        }
+
+        return null;
+    }
+
+    /**
+     * Check if ai_summary was requested via the ?include= query parameter.
+     */
+    private function isAiSummaryRequested(Request $request): bool
+    {
+        return collect(explode(',', $request->get('include', '')))
+            ->map(fn ($v) => trim($v))
+            ->filter()
+            ->contains('ai_summary');
+    }
+
+    private function getOrGenerateAiSummary(Request $request): ?string
+    {
+        // Return existing summary immediately if available
+        if (! empty($this->ai_summary)) {
+            return $this->ai_summary;
+        }
+
+        $isShowRoute = $request->route()?->getName() === 'api.v1.proposals.show'
+            || str_contains($request->path(), 'proposals/');
+
+        if (! $isShowRoute) {
+            return null;
+        }
+
+        return app(ProposalAiSummaryService::class)->generate($this->resource);
     }
 
     /**

@@ -1,0 +1,284 @@
+name: Community
+description: |-
+
+  APIs for retrieving community and organization data from the Catalyst ecosystem.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/v1/communities
+    metadata:
+      custom: []
+      groupName: Community
+      groupDescription: |-
+
+        APIs for retrieving community and organization data from the Catalyst ecosystem.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List communities'
+      description: 'Retrieve a paginated list of communities and organizations in the Catalyst ecosystem with search and filtering capabilities.'
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      search:
+        custom: []
+        name: search
+        description: 'Search communities by name or description.'
+        required: false
+        example: DeFi
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      page:
+        custom: []
+        name: page
+        description: 'The page number for pagination.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      per_page:
+        custom: []
+        name: per_page
+        description: 'Number of communities per page (max 60).'
+        required: false
+        example: 24
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      ids:
+        custom: []
+        name: ids
+        description: 'Filter by specific community IDs.'
+        required: false
+        example: null
+        type: 'integer[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      hashes:
+        custom: []
+        name: hashes
+        description: 'Filter by community hashes.'
+        required: false
+        example: null
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanQueryParameters:
+      search: DeFi
+      page: 1
+      per_page: 24
+      ids: null
+      hashes: null
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/v1/communities/{id}'
+    metadata:
+      custom: []
+      groupName: Community
+      groupDescription: |-
+
+        APIs for retrieving community and organization data from the Catalyst ecosystem.
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the community.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/v1/communities/{community_slug}/proposals'
+    metadata:
+      custom: []
+      groupName: Community
+      groupDescription: |-
+
+        APIs for retrieving community and organization data from the Catalyst ecosystem.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List community proposals'
+      description: 'Retrieve a paginated list of proposals associated with a specific community with filtering and sorting capabilities.'
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      community_slug:
+        custom: []
+        name: community_slug
+        description: 'The slug of the community.'
+        required: true
+        example: cardano-over-coffee-guest-proposals
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      community:
+        custom: []
+        name: community
+        description: 'The ID or hash of the community.'
+        required: true
+        example: cardano-foundation-catalyst-participation
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      community_slug: cardano-over-coffee-guest-proposals
+      community: cardano-foundation-catalyst-participation
+    queryParameters:
+      'filter[status]':
+        custom: []
+        name: 'filter[status]'
+        description: 'Filter proposals by status (e.g., funded, completed, in_progress).'
+        required: false
+        example: funded
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'filter[funding_status]':
+        custom: []
+        name: 'filter[funding_status]'
+        description: 'Filter by funding status.'
+        required: false
+        example: funded
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'filter[search]':
+        custom: []
+        name: 'filter[search]'
+        description: 'Search proposals by title or description.'
+        required: false
+        example: DeFi
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      sort:
+        custom: []
+        name: sort
+        description: "Sort proposals by field. Prefix with '-' for descending order."
+        required: false
+        example: '-created_at'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      include:
+        custom: []
+        name: include
+        description: 'Include related data (e.g., campaign, fund, users).'
+        required: false
+        example: 'campaign,fund'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      page:
+        custom: []
+        name: page
+        description: 'The page number for pagination.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      per_page:
+        custom: []
+        name: per_page
+        description: 'Number of proposals per page (max 60).'
+        required: false
+        example: 24
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanQueryParameters:
+      'filter[status]': funded
+      'filter[funding_status]': funded
+      'filter[search]': DeFi
+      sort: '-created_at'
+      include: 'campaign,fund'
+      page: 1
+      per_page: 24
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
