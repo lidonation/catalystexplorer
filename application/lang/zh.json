@@ -1745,5 +1745,12 @@
     "shareCard.shareOnLinkedIn": "在 LinkedIn 上分享",
     "shareCard.copyLink": "复制链接",
     "shareCard.linkCopied": "链接已复制！",
-    "shareCard.logoSizeInfo": "PNG、JPG 最大 2MB"
+    "shareCard.logoSizeInfo": "PNG、JPG 最大 2MB",
+    "proposal.aiSummary.aiSummary": "AI摘要",
+    "proposal.aiSummary.summary": "摘要",
+    "proposal.aiSummary.keyPoints": "要点",
+    "proposal.aiSummary.strengths": "优势",
+    "proposal.aiSummary.considerations": "注意事项",
+    "proposal.aiSummary.generating": "生成中",
+    "proposal.aiSummary.generate": "生成AI摘要"
 }

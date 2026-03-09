@@ -1877,5 +1877,12 @@
     "support.message": "Tin nhắn",
     "support.messagePlaceholder": "Chúng tôi có thể giúp gì cho bạn?",
     "support.sendButton": "Gửi Tin nhắn",
-    "support.successMessage": "Tin nhắn của bạn đã được gửi thành công. Chúng tôi sẽ liên hệ với bạn sớm!"
+    "support.successMessage": "Tin nhắn của bạn đã được gửi thành công. Chúng tôi sẽ liên hệ với bạn sớm!",
+    "proposal.aiSummary.aiSummary": "Tóm tắt AI",
+    "proposal.aiSummary.summary": "Tóm tắt",
+    "proposal.aiSummary.keyPoints": "Các điểm chính",
+    "proposal.aiSummary.strengths": "Điểm mạnh",
+    "proposal.aiSummary.considerations": "Những điều cần cân nhắc",
+    "proposal.aiSummary.generating": "Đang tạo",
+    "proposal.aiSummary.generate": "Tạo tóm tắt bằng AI"
 }

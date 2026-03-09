@@ -1764,5 +1764,12 @@
     "support.message": "메시지",
     "support.messagePlaceholder": "어떻게 도와드릴까요?",
     "support.sendButton": "메시지 보내기",
-    "support.successMessage": "메시지가 성공적으로 전송되었습니다. 곳 연락드리겠습니다!"
+    "support.successMessage": "메시지가 성공적으로 전송되었습니다. 곳 연락드리겠습니다!",
+    "proposal.aiSummary.aiSummary": "AI 요약",
+    "proposal.aiSummary.summary": "요약",
+    "proposal.aiSummary.keyPoints": "핵심 포인트",
+    "proposal.aiSummary.strengths": "강점",
+    "proposal.aiSummary.considerations": "고려 사항",
+    "proposal.aiSummary.generating": "생성 중",
+    "proposal.aiSummary.generate": "AI 요약 생성"
 }

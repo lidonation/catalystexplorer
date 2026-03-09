@@ -313,8 +313,8 @@
     "proposals.manageProposal.upcomingPayment": "Bevorstehende Zahlung",
     "proposals.manageProposal.milestoneModule": "Im Meilenstein-Modul anzeigen",
     "proposals.manageProposal.milestonesCompleted": "Abgeschlossene Meilensteine",
-  "proposals.manageProposal.milestonesRemaining": "Verbleibende Meilensteine",
-  "proposals.manageProposal.viewProposalDetailsAndMilestones": "Vorschlagsdetails und Meilensteine anzeigen",
+    "proposals.manageProposal.milestonesRemaining": "Verbleibende Meilensteine",
+    "proposals.manageProposal.viewProposalDetailsAndMilestones": "Vorschlagsdetails und Meilensteine anzeigen",
     "workflows.claimIdeascale.selectProfile": "Profil auswählen",
     "workflows.claimIdeascale.submitDetails": "Details einreichen",
     "workflows.claimIdeascale.verification": "Verifizierungscode",
@@ -1812,5 +1812,12 @@
     "globalSearch.searchHint.pressEnter": "Drücken Sie die Eingabetaste, um zu suchen in",
     "globalSearch.searchHint.categories": "Vorschläge, Listen, Profile, Gruppen, Bewertungen und Links",
     "globalSearch.searchHint.searchIn": "Suchen in :categories",
-    "globalSearch.searchHint.enterKey": "Eingabe"
+    "globalSearch.searchHint.enterKey": "Eingabe",
+    "proposal.aiSummary.aiSummary": "KI-Zusammenfassung",
+    "proposal.aiSummary.summary": "Zusammenfassung",
+    "proposal.aiSummary.keyPoints": "Wichtige Punkte",
+    "proposal.aiSummary.strengths": "Stärken",
+    "proposal.aiSummary.considerations": "Zu berücksichtigende Punkte",
+    "proposal.aiSummary.generating": "Wird erstellt",
+    "proposal.aiSummary.generate": "KI-Zusammenfassung erstellen"
 }
