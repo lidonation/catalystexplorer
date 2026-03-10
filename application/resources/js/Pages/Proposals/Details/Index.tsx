@@ -40,7 +40,7 @@ interface IndexProps {
     };
 }
 
-const IndexInner = ({
+const ProposalDetails = ({
     proposal,
     globalQuickPitchView,
     setGlobalQuickPitchView,
@@ -365,7 +365,7 @@ const IndexInner = ({
 
 const Index = (props: IndexProps) => (
     <AiSummaryProvider>
-        <IndexInner {...props} />
+        <ProposalDetails {...props} />
     </AiSummaryProvider>
 );
 

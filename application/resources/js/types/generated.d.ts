@@ -561,7 +561,7 @@ projectcatalyst_io_link?: string;
 type?: string;
 meta_title?: string;
 problem?: string;
-solution?: string;summ
+solution?: string;
 experience?: string;
 pitch?: any;
 theme?: any;
