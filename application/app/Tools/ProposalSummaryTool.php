@@ -67,21 +67,40 @@ class ProposalSummaryTool implements ToolInterface
                 return $this->summarizeProposal($proposal);
             });
 
+            $dbJson = json_encode($summary);
+
             $proposal->update([
-                'ai_summary' => json_encode($summary),
+                'ai_summary' => $dbJson !== false ? $dbJson : json_encode(['error' => 'Data encoding failed']),
                 'ai_generated_at' => now(),
             ]);
 
-            return json_encode([
+            $responseArray = [
                 'success' => true,
                 'summary' => $summary,
                 'generated_at' => now()->toISOString(),
-            ]);
+            ];
+
+            $result = json_encode($responseArray);
+
+            if ($result === false) {
+                Log::error('ProposalSummaryTool JSON Failure', [
+                    'proposal_id' => $proposalId,
+                    'json_error' => json_last_error_msg(),
+                ]);
+
+                return json_encode([
+                    'success' => false,
+                    'error' => 'Internal encoding error: '.json_last_error_msg(),
+                ]);
+            }
+
+            return $result;
+
         } catch (\Exception $e) {
             Log::error('ProposalSummaryTool error', [
                 'proposal_id' => $proposalId,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
+                'trace' => substr($e->getTraceAsString(), 0, 1000),
             ]);
 
             return json_encode([
@@ -111,8 +130,8 @@ class ProposalSummaryTool implements ToolInterface
         return [
             'proposal_id' => $proposal->id,
             'title' => $title,
-            'summary' => $aiSummary['summary'] ?? null,
-            'one_sentence_summary' => $aiSummary['one_sentence_summary'] ?? null,
+            'summary' => $aiSummary['summary'] ?? $this->generateDefaultSummary($proposal, $problem, $solution),
+            'one_sentence_summary' => $aiSummary['one_sentence_summary'] ?? $this->generateDefaultOneSentence($proposal),
             'key_points' => $aiSummary['key_points'] ?? [],
             'strengths' => $aiSummary['strengths'] ?? [],
             'considerations' => $aiSummary['considerations'] ?? [],
@@ -121,19 +140,20 @@ class ProposalSummaryTool implements ToolInterface
 
     private function generateAiSummary(Proposal $proposal, string $title, string $problem, string $solution, string $experience, string $content): array
     {
+        $provider = config('vizra-adk.default_provider', env('VIZRA_ADK_DEFAULT_PROVIDER', 'ollama'));
+        $model = config('vizra-adk.default_model', env('VIZRA_ADK_DEFAULT_MODEL', 'llama3.1:8b'));
+        $timeout = (int) env('PRISM_REQUEST_TIMEOUT', 120);
+
         try {
             $prompt = $this->buildSummaryPrompt($proposal, $title, $problem, $solution, $experience, $content);
 
             $systemMessage = 'You are an expert Project Catalyst proposal analyzer. Analyze proposals in detail and provide UNIQUE, specific insights based on their actual content. Return ONLY valid JSON with these exact fields: summary, one_sentence_summary, key_points (array), strengths (array), considerations (array).';
 
-            $provider = config('vizra-adk.default_provider', 'openai');
-            $model = config('vizra-adk.default_model', 'gpt-4o-mini');
-
-            Log::info('AI Summary - LLM Call', [
+            Log::info('AI Summary - LLM Call Started', [
                 'proposal_id' => $proposal->id,
                 'provider' => $provider,
                 'model' => $model,
-                'title' => $title,
+                'timeout_setting' => $timeout,
             ]);
 
             $messages = [
@@ -142,6 +162,7 @@ class ProposalSummaryTool implements ToolInterface
 
             $response = Prism::text()
                 ->using($provider, $model)
+                ->withClientOptions(['timeout' => $timeout])
                 ->withSystemPrompt($systemMessage)
                 ->usingTemperature(0.5)
                 ->withMaxTokens(2000)
@@ -150,10 +171,9 @@ class ProposalSummaryTool implements ToolInterface
 
             $responseContent = $response->text;
 
-            Log::info('AI Summary - Raw Response', [
+            Log::info('AI Summary - Raw Response Received', [
                 'proposal_id' => $proposal->id,
                 'response_length' => strlen($responseContent),
-                'response_preview' => substr($responseContent, 0, 500),
             ]);
 
             $jsonData = $this->extractJsonFromResponse($responseContent);
@@ -167,18 +187,21 @@ class ProposalSummaryTool implements ToolInterface
                 return $jsonData;
             }
 
-            Log::warning('Failed to extract valid AI summary data', [
-                'response_content' => $responseContent,
+            Log::warning('AI summary parse failed — using fallback defaults', [
                 'proposal_id' => $proposal->id,
-                'extracted_json' => json_encode($jsonData),
+                'raw_response' => substr($responseContent, 0, 500),
+                'json_error' => json_last_error_msg(),
             ]);
 
             return [];
+
         } catch (\Exception $e) {
             Log::error('AI summary generation failed', [
                 'proposal_id' => $proposal->id,
+                'provider' => $provider,
+                'model' => $model,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
+                'trace' => substr($e->getTraceAsString(), 0, 1000),
             ]);
 
             return [];
@@ -220,7 +243,7 @@ class ProposalSummaryTool implements ToolInterface
         $openSource = $proposal->opensource ? 'Yes' : 'No';
 
         $promptTemplate = <<<'PROMPT'
-You are an expert Project Catalyst proposal analyzer. Analyze this specific proposal and provide a comprehensive analysis with specific strengths and considerations.
+You are an expert Project Catalyst proposal analyzer. Analyze this specific proposal in detail and provide UNIQUE insights based on its actual content.
 
 **PROPOSAL DETAILS**
 - Title: {title}
@@ -238,49 +261,91 @@ You are an expert Project Catalyst proposal analyzer. Analyze this specific prop
 **TEAM EXPERIENCE**
 {experience}
 
+**FULL PROPOSAL CONTENT**
+{content}
+
 ---
 
-Analyze this proposal thoroughly and return a JSON response with the following fields. Each field must be specific to this proposal:
+Analyze this proposal and provide a comprehensive evaluation focusing on the following:
 
-**summary**: 2-3 sentences explaining what this proposal does, the problem it addresses, and why it matters for Cardano.
+1. PROBLEM
+Identify the specific ecosystem problem being addressed and explain why this issue matters for the Cardano ecosystem.
 
-**one_sentence_summary**: One compelling sentence that captures the essence of this proposal.
+2. SOLUTION
+Explain how the proposed solution addresses the problem. Identify whether the approach is innovative, practical, scalable, or infrastructure-focused.
 
-**key_points**: Array of 3-4 specific insights about this proposal (not generic statements).
+3. BUDGET
+Assess whether the requested {amount} {currency} appears reasonable relative to the scope and expected outcomes.
 
-**strengths**: Array of 3-5 SPECIFIC strengths based on the actual proposal content. Include:
-- How it targets specific ecosystem challenges mentioned in the problem
-- Quality and detail of the implementation strategy
-- Innovation or novel aspects
-- Measurable outcomes or clear deliverables
-Example: "Targets the lack of [specific thing] by [specific approach]"
-Example: "Provides detailed implementation strategy with [specific technical approach]"
+4. IMPACT
+Describe the expected impact on the Cardano ecosystem. Identify who benefits (developers, users, adoption, tooling, education, etc.).
 
-**considerations**: Array of 3-5 SPECIFIC questions that reviewers should consider:
-- Ask how specific problems are addressed
-- Request timeline and milestone details if not clear
-- Ask about budget allocation if not explained
-- Question feasibility or team capacity
-Example: "How does this address the ecosystem challenge of [specific problem]?"
-Example: "Can you clarify the project timeline and major milestones?"
-Example: "How will the requested {amount} {currency} be allocated across different phases?"
+5. FEASIBILITY
+Evaluate how realistic the implementation is based on the proposal scope, team experience, and described approach.
 
-CRITICAL RULES:
-- Return ONLY valid JSON, nothing else
-- Make UNIQUE observations specific to THIS proposal
-- Do NOT use generic language or templates
-- Strengths must affirm specific positive attributes from the content
-- Considerations must ALWAYS be written as questions
-- Reference actual details from the proposal
+---
 
-Return ONLY this JSON structure:
+STRENGTHS
+
+Provide **3–5 strengths** that represent **clear advantages of this proposal**.
+
+Strengths must:
+- Reference actual information from the proposal
+- Highlight ecosystem value
+- Identify quality of implementation strategy
+- Mention innovation, scalability, or adoption potential where relevant
+
+Examples of good strengths:
+- "Addresses the lack of developer tooling for onboarding."
+- "Provides a detailed technical implementation strategy."
+- "Targets adoption in underserved regions."
+
+---
+
+CONSIDERATIONS
+
+Provide **3–5 thoughtful questions** that reviewers or voters should consider before supporting this proposal.
+
+These should:
+- Ask for clarification
+- Highlight possible risks or uncertainties
+- Encourage deeper evaluation
+
+Examples:
+- "How will the project measure adoption and success metrics?"
+- "What milestones ensure delivery within the proposed timeline?"
+- "How will the solution be maintained after Catalyst funding?"
+
+---
+
+Return ONLY valid JSON with this exact structure:
+
 {
-  "summary": "specific summary for this proposal",
-  "one_sentence_summary": "one sentence specific to this proposal",
-  "key_points": ["specific point 1", "specific point 2", "specific point 3"],
-  "strengths": ["specific strength 1", "specific strength 2", "specific strength 3"],
-  "considerations": ["question 1?", "question 2?", "question 3?"]
+  "summary": "A detailed 2-3 sentence summary explaining the proposal problem, solution, and ecosystem impact.",
+  "one_sentence_summary": "One clear sentence capturing the essence of the proposal.",
+  "key_points": [
+    "Key insight about the proposal",
+    "Another important takeaway",
+    "Third key insight"
+  ],
+  "strengths": [
+    "Specific strength of the proposal",
+    "Another strength",
+    "Another strength"
+  ],
+  "considerations": [
+    "Question reviewers should consider?",
+    "Another thoughtful question?",
+    "Another evaluation question?"
+  ]
 }
+
+IMPORTANT:
+- Make UNIQUE observations based on the proposal content.
+- Avoid generic or template language.
+- Strengths should affirm positive attributes found in the proposal.
+- Considerations must always be written as questions.
+- Always return valid JSON.
 PROMPT;
 
         $replacements = [
@@ -311,10 +376,7 @@ PROMPT;
             $cleanSolution = ucfirst($this->cleanProposalText($solution));
 
             $intro = "'{$title}' is a {$fundingStatus} proposal requesting {$amount} {$proposal->currency}.";
-
             $problemStatement = "**It addresses:** {$cleanProblem}";
-
-            // UPDATED: Wrapped solution output in bold (**)
             $solutionStatement = "**The solution provides:** {$cleanSolution}";
 
             return $intro.' '.$problemStatement.'. '.$solutionStatement.'. '.
@@ -324,7 +386,6 @@ PROMPT;
         $problemSummary = strlen($problem) > 0 ? $problem : 'address ecosystem challenges';
         $solutionSummary = strlen($solution) > 0 ? $solution : 'provide structured implementation';
 
-        // UPDATED: Wrapped solution output in bold (**) here as well for consistency
         return "'{$title}' is a {$fundingStatus} proposal requesting {$amount} {$proposal->currency} to address: {$problemSummary}. ".
             "**The proposal solution focuses on: {$solutionSummary}** ".
             'The project includes defined milestones and success metrics for tracking progress.';
@@ -352,91 +413,5 @@ PROMPT;
         $fundStatus = $proposal->funded_at ? 'funded' : 'unfunded';
 
         return "This {$fundStatus} proposal '{$title}' requests {$amount} {$proposal->currency} to {$problemKeyword} through a structured implementation approach.";
-    }
-
-    private function generateDefaultKeyPoints(string $problem, string $solution): array
-    {
-        $keyPoints = [];
-
-        if (strlen($problem) > 0) {
-            $cleanProblem = $this->cleanProposalText($problem);
-            $keyPoints[] = 'Addresses: '.substr($cleanProblem, 0, 120).(strlen($cleanProblem) > 120 ? '...' : '');
-        }
-
-        if (strlen($solution) > 0) {
-            $cleanSolution = $this->cleanProposalText($solution);
-            $keyPoints[] = 'Solution: '.substr($cleanSolution, 0, 120).(strlen($cleanSolution) > 120 ? '...' : '');
-        }
-
-        if (count($keyPoints) < 3) {
-            $keyPoints[] = 'Includes defined milestones and measurable success metrics';
-        }
-
-        return $keyPoints;
-    }
-
-    private function generateDefaultConsiderations(string $problem, string $solution): array
-    {
-        $considerations = [];
-
-        if (preg_match('/(\w+)\s+(\w+)\s+(\w+)/i', $problem, $matches)) {
-            $considerations[] = "How does this address the lack of {$matches[1]} in the ecosystem?";
-        }
-
-        if (strlen($problem) < 50) {
-            $considerations[] = 'Provide more detail about the specific problem this addresses';
-        }
-
-        if (strlen($solution) < 50) {
-            $considerations[] = 'Expand on the technical implementation and approach';
-        }
-
-        if (! preg_match('/(timeline|month|quarter|year|week)/i', $solution)) {
-            $considerations[] = 'Clarify project timeline and milestone delivery schedule';
-        }
-
-        if (! preg_match('/(budget|cost|fund|allocation)/i', $solution)) {
-            $considerations[] = 'Detail how the requested budget will be allocated';
-        }
-
-        return $considerations;
-    }
-
-    private function generateDefaultStrengths(string $problem, string $solution, string $experience): array
-    {
-        $strengths = [];
-
-        // Extract keywords from problem to identify specific issues
-        if (preg_match('/(\w+)\s+(\w+)/i', $problem, $matches)) {
-            $strengths[] = "Targets {$matches[1]} {$matches[2]} challenges in the ecosystem";
-        }
-
-        // Check for innovation/novel approach indicators
-        if (preg_match('/(novel|innovative|new|unique|first|pioneering)/i', $solution)) {
-            $strengths[] = 'Proposes an innovative approach to ecosystem challenges';
-        }
-
-        // Check for measurable metrics
-        if (preg_match('/(metric|measure|track|monitor|success|outcome)/i', $solution)) {
-            $strengths[] = 'Includes measurable success criteria and outcome tracking';
-        }
-
-        // Check for team capability indicators
-        if (strlen($experience) > 100) {
-            $strengths[] = 'Team demonstrates relevant experience and background';
-        }
-
-        // Check for implementation detail
-        if (strlen($solution) > 150) {
-            $strengths[] = 'Provides detailed implementation strategy and approach';
-        }
-
-        if (count($strengths) === 0) {
-            $strengths[] = 'Addresses identified ecosystem needs';
-            $strengths[] = 'Includes defined milestones and deliverables';
-            $strengths[] = 'Clear value proposition for the ecosystem';
-        }
-
-        return $strengths;
     }
 }
