@@ -1825,5 +1825,12 @@
     "support.message": "Message",
     "support.messagePlaceholder": "Comment pouvons-nous vous aider?",
     "support.sendButton": "Envoyer le Message",
-    "support.successMessage": "Votre message a été envoyé avec succès. Nous vous répondrons bientôt!"
+    "support.successMessage": "Votre message a été envoyé avec succès. Nous vous répondrons bientôt!",
+    "proposal.aiSummary.aiSummary": "Résumé IA",
+    "proposal.aiSummary.summary": "Résumé",
+    "proposal.aiSummary.keyPoints": "Points clés",
+    "proposal.aiSummary.strengths": "Forces",
+    "proposal.aiSummary.considerations": "Points à considérer",
+    "proposal.aiSummary.generating": "Génération en cours",
+    "proposal.aiSummary.generate": "Générer un résumé IA"
 }

@@ -576,6 +576,8 @@ ranking_total?: number;
 alignment_score?: number;
 feasibility_score?: number;
 auditability_score?: number;
+ai_summary?: string;
+ai_generated_at?: string;
 quickpitch?: string;
 quickpitch_length?: number;
 project_length?: number;
