@@ -27,6 +27,7 @@ use App\Http\Controllers\Api\Internal\QuickSearchController;
 use App\Http\Controllers\UserLanguageController;
 use App\Http\Controllers\Api\ProposalComparisonController;
 use App\Http\Controllers\Api\ProposalPredictionTestController;
+use App\Http\Controllers\Api\ProposalSummaryController;
 use Inertia\Inertia;
 
 Route::as('api.')->group(function () {
@@ -221,6 +222,11 @@ Route::as('api.')->group(function () {
     Route::post('proposals/compare', [ProposalComparisonController::class, 'compare'])
         ->name('proposals.compare')
         ->middleware(['throttle:30,1']);
+
+    Route::post('proposals/{proposal}/summarize', [ProposalSummaryController::class, 'summarize'])
+        ->name('api.proposals.summarize')
+        ->middleware(['throttle:30,1']);
+
 
     // AI Prediction Testing Routes (Development/Debug only)
     Route::prefix('ai-predictions')->as('aiPredictions.')

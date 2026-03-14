@@ -1758,5 +1758,12 @@
     "support.message": "メッセージ",
     "support.messagePlaceholder": "どのようにお手伝いできますか？",
     "support.sendButton": "メッセージを送信",
-    "support.successMessage": "メッセージが正常に送信されました。近日中にご連絡いたします！"
+    "support.successMessage": "メッセージが正常に送信されました。近日中にご連絡いたします！",
+    "proposal.aiSummary.aiSummary": "AI要約",
+    "proposal.aiSummary.summary": "要約",
+    "proposal.aiSummary.keyPoints": "主なポイント",
+    "proposal.aiSummary.strengths": "強み",
+    "proposal.aiSummary.considerations": "考慮点",
+    "proposal.aiSummary.generating": "生成中",
+    "proposal.aiSummary.generate": "AI要約を生成"
 }

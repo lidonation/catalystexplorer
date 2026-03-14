@@ -1803,5 +1803,12 @@
     "support.message": "Mensagem",
     "support.messagePlaceholder": "Como podemos ajudá-lo?",
     "support.sendButton": "Enviar Mensagem",
-    "support.successMessage": "Sua mensagem foi enviada com sucesso. Entraremos em contato em breve!"
+    "support.successMessage": "Sua mensagem foi enviada com sucesso. Entraremos em contato em breve!",
+    "proposal.aiSummary.aiSummary": "AI 요약",
+    "proposal.aiSummary.summary": "요약",
+    "proposal.aiSummary.keyPoints": "핵심 포인트",
+    "proposal.aiSummary.strengths": "강점",
+    "proposal.aiSummary.considerations": "고려 사항",
+    "proposal.aiSummary.generating": "생성 중",
+    "proposal.aiSummary.generate": "AI 요약 생성"
 }

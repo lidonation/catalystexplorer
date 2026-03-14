@@ -1923,5 +1923,12 @@
     "globalSearch.searchHint.pressEnter": "Press Enter to search in",
     "globalSearch.searchHint.categories": "Proposals, Lists, Profiles, Groups, Reviews, and Links",
     "globalSearch.searchHint.searchIn": "Search in :categories",
-    "globalSearch.searchHint.enterKey": "Enter"
-}
+    "globalSearch.searchHint.enterKey": "Enter",
+    "proposal.aiSummary.aiSummary": " AI Summary",
+    "proposal.aiSummary.summary": "Summary",
+    "proposal.aiSummary.keyPoints": "Key Points",
+    "proposal.aiSummary.strengths": "Strengths",
+    "proposal.aiSummary.considerations":"Considerations",
+    "proposal.aiSummary.generating": "Generating",
+    "proposal.aiSummary.generate": "Generate AI Summary"
+}   
