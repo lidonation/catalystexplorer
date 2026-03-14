@@ -1801,5 +1801,12 @@
     "support.message": "Ujumbe",
     "support.messagePlaceholder": "Je, tunaweza kukusaidiaje?",
     "support.sendButton": "Tuma Ujumbe",
-    "support.successMessage": "Ujumbe wako umetumwa kwa mafanikio. Tutawasiliana nawe hivi karibuni!"
+    "support.successMessage": "Ujumbe wako umetumwa kwa mafanikio. Tutawasiliana nawe hivi karibuni!",
+    "proposal.aiSummary.aiSummary": "Muhtasari wa AI",
+    "proposal.aiSummary.summary": "Muhtasari",
+    "proposal.aiSummary.keyPoints": "Hoja Muhimu",
+    "proposal.aiSummary.strengths": "Nguvu",
+    "proposal.aiSummary.considerations": "Mambo ya Kuzingatia",
+    "proposal.aiSummary.generating": "Inazalishwa",
+    "proposal.aiSummary.generate": "Tengeneza Muhtasari wa AI"
 }
