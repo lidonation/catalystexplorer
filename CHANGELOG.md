@@ -1,3 +1,10 @@
+## [1.79.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.79.0...v1.79.1) (2026-02-27)
+
+
+### Bug Fixes
+
+* **ar.json:** translated content to Arabic sitewide ([8af0875](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/8af087502245da1a9294285f4ebaa136379f1f42))
+
 # [1.79.0](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.78.2...v1.79.0) (2026-02-27)
 
 
