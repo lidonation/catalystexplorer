@@ -21,6 +21,15 @@ class ProposalSummaryTool implements ToolInterface
 
     private const CACHE_PREFIX = 'proposal_ai_summary:';
 
+    // Max character limits per field before truncation
+    private const MAX_CHARS_CONTENT = 4000;
+
+    private const MAX_CHARS_PROBLEM = 1500;
+
+    private const MAX_CHARS_SOLUTION = 1500;
+
+    private const MAX_CHARS_EXPERIENCE = 800;
+
     public function definition(): array
     {
         return [
@@ -149,11 +158,15 @@ class ProposalSummaryTool implements ToolInterface
 
             $systemMessage = 'You are an expert Project Catalyst proposal analyzer. Analyze proposals in detail and provide UNIQUE, specific insights based on their actual content. Return ONLY valid JSON with these exact fields: summary, one_sentence_summary, key_points (array), strengths (array), considerations (array).';
 
+            $estimatedTokens = (int) (strlen($prompt) / 4);
+
             Log::info('AI Summary - LLM Call Started', [
                 'proposal_id' => $proposal->id,
                 'provider' => $provider,
                 'model' => $model,
                 'timeout_setting' => $timeout,
+                'prompt_chars' => strlen($prompt),
+                'estimated_tokens' => $estimatedTokens,
             ]);
 
             $messages = [
@@ -236,11 +249,31 @@ class ProposalSummaryTool implements ToolInterface
         return null;
     }
 
+    /**
+     * Truncate a field to a maximum character length.
+     * Appends a notice if the content was cut so the LLM knows it was truncated.
+     */
+    private function truncateField(string $text, int $maxChars): string
+    {
+        if (strlen($text) <= $maxChars) {
+            return $text;
+        }
+
+        return substr($text, 0, $maxChars)."\n\n[... truncated for brevity ...]";
+    }
+
     private function buildSummaryPrompt(Proposal $proposal, string $title, string $problem, string $solution, string $experience, string $content): string
     {
         $fundingStatus = $proposal->funded_at ? 'funded' : 'unfunded';
         $amount = number_format($proposal->amount_requested);
         $openSource = $proposal->opensource ? 'Yes' : 'No';
+
+        // Truncate large fields before injecting into the prompt to avoid exceeding
+        // provider token limits (e.g. Groq PrismRequestTooLargeException).
+        $problem = $this->truncateField($problem, self::MAX_CHARS_PROBLEM);
+        $solution = $this->truncateField($solution, self::MAX_CHARS_SOLUTION);
+        $experience = $this->truncateField($experience, self::MAX_CHARS_EXPERIENCE);
+        $content = $this->truncateField($content, self::MAX_CHARS_CONTENT);
 
         $promptTemplate = <<<'PROMPT'
 You are an expert Project Catalyst proposal analyzer. Analyze this specific proposal in detail and provide UNIQUE insights based on its actual content.
