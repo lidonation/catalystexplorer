@@ -2,6 +2,7 @@ import Paragraph from '@/Components/atoms/Paragraph';
 import PrimaryButton from '@/Components/atoms/PrimaryButton';
 import PrimaryLink from '@/Components/atoms/PrimaryLink';
 import Title from '@/Components/atoms/Title';
+import AIPromptIcon from '@/Components/svgs/AIPromptIcon';
 import DurationIcon from '@/Components/svgs/DurationIcon';
 import {
     AiSummaryProvider,
@@ -197,7 +198,8 @@ const ProposalDetails = ({
 
                 {(parsedAiSummary || result) && (
                     <div className="bg-background shadow-cx-box-shadow mt-4 rounded-xl p-6">
-                        <div className="border-gray-persist/80 mb-4 border-b pb-4">
+                        <div className="border-gray-persist/80 mb-4 flex border-b pb-4 items-center gap-1">
+                            <AIPromptIcon width={24} height={24} />
                             <Title className="text-content text-lg font-semibold">
                                 {t('proposal.aiSummary.aiSummary')}
                             </Title>
@@ -223,7 +225,10 @@ const ProposalDetails = ({
                                             <ul className="text-content/70 list-outside list-disc space-y-2 pl-6">
                                                 {result.key_points.map(
                                                     (point, idx) => (
-                                                        <li key={idx} className="pl-2">
+                                                        <li
+                                                            key={idx}
+                                                            className="pl-2"
+                                                        >
                                                             {point}
                                                         </li>
                                                     ),
@@ -243,7 +248,10 @@ const ProposalDetails = ({
                                             <ul className="text-content/70 list-outside list-disc space-y-2 pl-6">
                                                 {result.strengths.map(
                                                     (strength, idx) => (
-                                                        <li key={idx} className="pl-2">
+                                                        <li
+                                                            key={idx}
+                                                            className="pl-2"
+                                                        >
                                                             {strength}
                                                         </li>
                                                     ),
@@ -263,7 +271,10 @@ const ProposalDetails = ({
                                             <ul className="text-content/70 list-outside list-disc space-y-2 pl-6">
                                                 {result.considerations.map(
                                                     (consideration, idx) => (
-                                                        <li key={idx} className="pl-2">
+                                                        <li
+                                                            key={idx}
+                                                            className="pl-2"
+                                                        >
                                                             {consideration}
                                                         </li>
                                                     ),
@@ -297,7 +308,10 @@ const ProposalDetails = ({
                                                         point: string,
                                                         idx: number,
                                                     ) => (
-                                                        <li key={idx} className="pl-2">
+                                                        <li
+                                                            key={idx}
+                                                            className="pl-2"
+                                                        >
                                                             {point}
                                                         </li>
                                                     ),
@@ -320,7 +334,10 @@ const ProposalDetails = ({
                                                         strength: string,
                                                         idx: number,
                                                     ) => (
-                                                        <li key={idx} className="pl-2">
+                                                        <li
+                                                            key={idx}
+                                                            className="pl-2"
+                                                        >
                                                             {strength}
                                                         </li>
                                                     ),
@@ -344,7 +361,10 @@ const ProposalDetails = ({
                                                         consideration: string,
                                                         idx: number,
                                                     ) => (
-                                                        <li key={idx} className="pl-2">
+                                                        <li
+                                                            key={idx}
+                                                            className="pl-2"
+                                                        >
                                                             {consideration}
                                                         </li>
                                                     ),
