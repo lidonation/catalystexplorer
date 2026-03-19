@@ -68,7 +68,7 @@ export default function ToolsSection({ onSelect, onOpenChatbox }: ToolsSectionPr
                     key={item.id}
                     value={item.id}
                     onSelect={() => handleItemSelect(item)}
-                    className="flex cursor-pointer items-center gap-3 px-3 py-2"
+                    className="flex cursor-pointer items-center gap-3 px-3 py-2 [&[data-selected=true]_svg]:text-content-light"
                     data-testid={`global-search-${item.action}-${item.id}`}
                 >
                     <item.icon className={`h-4 w-4 shrink-0 ${
