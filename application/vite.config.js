@@ -72,8 +72,9 @@ export default defineConfig({
     },
     server: detectServerConfig(),
     ssr: {
-        noExternal: ['@inertiajs/server'],
+        noExternal: ['@inertiajs/server', 'laravel-react-i18n'],
         external: [
+            'react',
             'react-map-gl',
             'react-map-gl/mapbox',
             'mapbox-gl',
