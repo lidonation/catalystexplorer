@@ -136,7 +136,7 @@ yarn-build-ssr:
     yarn run build:ssr
   artifacts:
     paths:
-      - ./application/public
+      - ./application/bootstrap/ssr
     expire_in: 2 days
 
 ########## Automated Testing jobs #########
