@@ -42,7 +42,6 @@
         "saloonphp/pagination-plugin": "^2.2",
         "saloonphp/saloon": "^3.14",
         "spatie/browsershot": "^5.0",
-        "spatie/laravel-comments": "^2.3",
         "spatie/laravel-data": "^4.17",
         "spatie/laravel-enum": "^3.2",
         "spatie/laravel-markdown": "^2.7",
@@ -55,6 +54,7 @@
         "spomky-labs/cbor-php": "^3.1",
         "staudenmeir/belongs-to-through": "^2.17",
         "staudenmeir/eloquent-has-many-deep": "^1.21",
+        "symfony/html-sanitizer": "^7.3",
         "tightenco/ziggy": "^2.0",
         "vizra/vizra-adk": "^0.0.45"
     },
@@ -131,10 +131,6 @@
         {
             "type": "composer",
             "url": "https://nova.laravel.com"
-        },
-        {
-            "type": "composer",
-            "url": "https://satis.spatie.be"
         },
         {
             "type": "path",

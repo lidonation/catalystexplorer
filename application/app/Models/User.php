@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Concerns\HasSignatures;
+use App\Concerns\InteractsWithComments;
+use App\Contracts\CanComment;
 use App\Mail\PasswordResetMail;
 use App\Mail\WelcomeEmailMail;
 use App\Models\Pivot\ClaimedProfile;
@@ -20,7 +22,6 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Mail;
-use Spatie\Comments\Models\Concerns\Interfaces\CanComment;
 use Spatie\Image\Enums\CropPosition;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -39,7 +40,7 @@ class User extends Authenticatable implements CanComment, HasMedia
         InteractsWithMedia,
         MustVerifyEmail,
         Notifiable;
-    use \Spatie\Comments\Models\Concerns\InteractsWithComments;
+    use InteractsWithComments;
 
     /**
      * The attributes that are mass assignable.
