@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
+use App\Models\Comment;
 use App\Models\Model;
 use Database\Seeders\Traits\GetImageLink;
 use Illuminate\Bus\Queueable;
@@ -12,7 +13,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Spatie\Comments\Models\Comment;
 
 class AttachImageJob implements ShouldQueue
 {

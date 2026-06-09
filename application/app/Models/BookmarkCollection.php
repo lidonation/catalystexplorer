@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Concerns\HasAuthor;
+use App\Concerns\HasComments;
 use App\Concerns\HasIpfsFiles;
 use App\Concerns\HasMetaData;
 use App\Concerns\HasSignatures;
@@ -20,7 +21,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
-use Spatie\Comments\Models\Concerns\HasComments;
 
 // #[ScopedBy([PublicVisibilityScope::class, PublishedScope::class])]
 class BookmarkCollection extends Model

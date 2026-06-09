@@ -18,8 +18,8 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class Review extends Model
 {
+    use \App\Concerns\HasComments;
     use HasMetaData, HasRelationships, HasUuids, Searchable;
-    use \Spatie\Comments\Models\Concerns\HasComments;
 
     protected $guarded = [];
 

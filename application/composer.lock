@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cb0882c8bf7ddeef78640fa6a781fb93",
+    "content-hash": "30cc9306b0f6ab69dd58e685a7c0b865",
     "packages": [
         {
             "name": "aaronfrancis/fast-paginate",
@@ -744,7 +744,7 @@
         },
         {
             "name": "codezero/laravel-uri-translator",
-            "version": "dev-main",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "./packages/codezero/laravel-uri-translator-master",
@@ -8759,102 +8759,6 @@
             "time": "2025-11-26T10:57:19+00:00"
         },
         {
-            "name": "spatie/laravel-comments",
-            "version": "2.3.0",
-            "source": {
-                "type": "git",
-                "url": "git@github.com:spatie/laravel-comments.git",
-                "reference": "93fc691090f85dc891d17cae8ce75a715a8a25b1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://satis.spatie.be/dist/spatie/laravel-comments/spatie-laravel-comments-93fc691090f85dc891d17cae8ce75a715a8a25b1-zip-4c3a18.zip",
-                "reference": "93fc691090f85dc891d17cae8ce75a715a8a25b1",
-                "shasum": "423dbc9f81fa824d585c7289b50e57a38aca33bc"
-            },
-            "require": {
-                "illuminate/contracts": "^11.0|^12.0",
-                "php": "^8.2",
-                "spatie/laravel-package-tools": "^1.9.2",
-                "symfony/html-sanitizer": "^6.1|^7.3"
-            },
-            "require-dev": {
-                "larastan/larastan": "^2.9.14|^3.0",
-                "nunomaduro/collision": "^6.0|^7.0|^8.0",
-                "orchestra/testbench": "^8.33.0|^9.9.0|^10.0.0",
-                "pestphp/pest": "^2.34.7|^3.7",
-                "pestphp/pest-plugin-laravel": "^2.4|^3.0",
-                "phpstan/extension-installer": "^1.4",
-                "spatie/laravel-markdown": "^2.7",
-                "spatie/laravel-ray": "^1.37",
-                "spatie/pest-plugin-snapshots": "^2.1"
-            },
-            "suggest": {
-                "spatie/laravel-markdown": "Required to convert markdown to HTML"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Spatie\\Comments\\CommentsServiceProvider"
-                    ],
-                    "aliases": {
-                        "Comments": "Spatie\\Comments\\Facades\\Comments"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Spatie\\Comments\\": "src",
-                    "Spatie\\Comments\\Database\\Factories\\": "database/factories"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "Spatie\\Comments\\Tests\\": "tests"
-                }
-            },
-            "scripts": {
-                "analyse": [
-                    "vendor/bin/phpstan analyse"
-                ],
-                "baseline": [
-                    "vendor/bin/phpstan --generate-baseline"
-                ],
-                "test": [
-                    "vendor/bin/pest"
-                ],
-                "test-coverage": [
-                    "vendor/bin/pest coverage"
-                ]
-            },
-            "authors": [
-                {
-                    "name": "Freek Van der Herten",
-                    "email": "freek@spatie.be",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Associate comments and reactions with Eloquent models",
-            "homepage": "https://github.com/spatie/laravel-comments",
-            "keywords": [
-                "laravel",
-                "laravel-comments",
-                "spatie"
-            ],
-            "support": {
-                "source": "https://github.com/spatie/laravel-comments/tree/2.3.0",
-                "issues": "https://github.com/spatie/laravel-comments/issues"
-            },
-            "funding": [
-                {
-                    "type": "github",
-                    "url": "https://github.com/spatie"
-                }
-            ],
-            "time": "2025-07-04T13:00:39+00:00"
-        },
-        {
             "name": "spatie/laravel-data",
             "version": "4.19.1",
             "source": {
@@ -10899,16 +10803,16 @@
         },
         {
             "name": "symfony/html-sanitizer",
-            "version": "v7.4.0",
+            "version": "v7.4.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/html-sanitizer.git",
-                "reference": "5b0bbcc3600030b535dd0b17a0e8c56243f96d7f"
+                "reference": "761f6c49dfd103ee08b3cd09ece588b069e18ec9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/html-sanitizer/zipball/5b0bbcc3600030b535dd0b17a0e8c56243f96d7f",
-                "reference": "5b0bbcc3600030b535dd0b17a0e8c56243f96d7f",
+                "url": "https://api.github.com/repos/symfony/html-sanitizer/zipball/761f6c49dfd103ee08b3cd09ece588b069e18ec9",
+                "reference": "761f6c49dfd103ee08b3cd09ece588b069e18ec9",
                 "shasum": ""
             },
             "require": {
@@ -10949,7 +10853,7 @@
                 "sanitizer"
             ],
             "support": {
-                "source": "https://github.com/symfony/html-sanitizer/tree/v7.4.0"
+                "source": "https://github.com/symfony/html-sanitizer/tree/v7.4.13"
             },
             "funding": [
                 {
@@ -10969,7 +10873,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-10-30T13:39:42+00:00"
+            "time": "2026-05-24T11:20:33+00:00"
         },
         {
             "name": "symfony/http-foundation",
