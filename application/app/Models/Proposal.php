@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Concerns\HasAuthor;
+use App\Concerns\HasComments;
 use App\Concerns\HasConnections;
 use App\Concerns\HasDto;
 use App\Concerns\HasEmbeddings;
@@ -34,7 +35,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Laravel\Scout\Searchable;
-use Spatie\Comments\Models\Concerns\HasComments;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 #[ScopedBy(ProposalTypeScope::class)]
