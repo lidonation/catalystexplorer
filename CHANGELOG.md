@@ -1,3 +1,10 @@
+## [1.79.3](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.79.2...v1.79.3) (2026-06-10)
+
+
+### Bug Fixes
+
+* ssr keeps failing ([851bfa5](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/851bfa5c7eb1237df4280206e19d9becb16fc2b0))
+
 ## [1.79.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.79.1...v1.79.2) (2026-03-25)
 
 
