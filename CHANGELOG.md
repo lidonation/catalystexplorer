@@ -1,3 +1,10 @@
+## [1.79.2](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.79.1...v1.79.2) (2026-03-25)
+
+
+### Bug Fixes
+
+* keep global search icons visible on hover ([be36d39](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/commit/be36d392815bf4a42c638b4fdf8467333ea9eddd))
+
 ## [1.79.1](https://gitlab.2lovelaces.io/catalystexplorer/www.catalystexplorer.com/compare/v1.79.0...v1.79.1) (2026-02-27)
 
 
