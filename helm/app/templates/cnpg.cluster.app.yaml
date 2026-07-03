@@ -74,10 +74,11 @@ spec:
       - sourceLabels: [ __tmp_name ]
         targetLabel: __name__
 
-  backup:
-    retentionPolicy: "14d"
-
-  # Configure Barman Cloud Plugin (replaces deprecated in-tree barmanObjectStore)
+  # Configure Barman Cloud Plugin (replaces deprecated in-tree barmanObjectStore).
+  # NOTE: retention is deliberately NOT set here. With the barman-cloud PLUGIN,
+  # cluster.spec.backup.retentionPolicy is IGNORED — pruning is driven by
+  # ObjectStore.spec.retentionPolicy (set below). Configuring it here would
+  # silently disable base-backup cleanup and let backups grow until the bucket fills.
   plugins:
     - name: barman-cloud.cloudnative-pg.io
       isWALArchiver: true
@@ -155,6 +156,10 @@ metadata:
   name: {{ $.Chart.Name }}-barman-store
   namespace: {{ .Values.namespace }}
 spec:
+  # Base-backup retention, honored by the barman-cloud plugin. This is the ONLY
+  # place retention takes effect (cluster.spec.backup.retentionPolicy is ignored
+  # with the plugin — see the cluster note above). Form XXu, u in [d]ays/[w]eeks/[m]onths.
+  retentionPolicy: "14d"
   configuration:
     destinationPath: "s3://{{ .Values.namespace }}/db-backups"
     endpointURL: "https://s3.2lovelaces.com"
