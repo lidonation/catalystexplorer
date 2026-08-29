@@ -66,13 +66,19 @@ spec:
 
   monitoring:
     enablePodMonitor: true
-    podMonitorMetricRelabelings:
-      - sourceLabels: [ __name__ ]
-        regex: cnpg_.*
-        targetLabel: __tmp_name
-        replacement: $1
-      - sourceLabels: [ __tmp_name ]
-        targetLabel: __name__
+    # NO podMonitorMetricRelabelings. The pair that used to live here erased
+    # every metric name and left this cluster permanently in TargetDown:
+    #
+    #   - sourceLabels: [__name__]   regex: cnpg_.*  targetLabel: __tmp_name
+    #     replacement: $1                 <- `cnpg_.*` has NO capture group, so
+    #                                        $1 resolves to "" and __tmp_name=""
+    #   - sourceLabels: [__tmp_name] targetLabel: __name__
+    #                                   <- copies "" over the metric name
+    #
+    # Prometheus then rejects the whole scrape with "missing metric name
+    # (__name__ label)", so a healthy database reports as a down target and no
+    # cnpg_* metric is ever ingested. There is nothing to rename here anyway —
+    # CNPG already prefixes its metrics with cnpg_.
 
   # Configure Barman Cloud Plugin (replaces deprecated in-tree barmanObjectStore).
   # NOTE: retention is deliberately NOT set here. With the barman-cloud PLUGIN,
