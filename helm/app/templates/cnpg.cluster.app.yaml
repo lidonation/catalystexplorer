@@ -2,7 +2,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: "{{ $.Chart.Name }}-cnpg-cluster"
+  name: {{ include "app.cnpgClusterName" $ | quote }}
   namespace: {{ .Values.namespace }}
   labels:
     app.kubernetes.io/name: {{ $.Chart.Name }}-cnpg
@@ -130,10 +130,14 @@ metadata:
   name: {{ $.Chart.Name }}-app
   namespace: {{ .Values.namespace }}
 spec:
+  # Explicit, because the default is not worth betting a production database on:
+  # with "delete", removing this CR (a chart rename, a helm uninstall, a values
+  # typo) DROPS the database. "retain" leaves it alone.
+  databaseReclaimPolicy: retain
   name: {{ .Values.services.db.bootstrap.database.database }}
   owner: {{ .Values.services.db.bootstrap.database.owner }}
   cluster:
-    name: {{ $.Chart.Name }}-cnpg
+    name: {{ include "app.cnpgClusterName" $ }}
   extensions:
     - name: vector
 ---
@@ -149,7 +153,7 @@ metadata:
 spec:
   schedule: "{{ .Values.backup.schedule.cron }}"
   cluster:
-    name: {{ $.Chart.Name }}-cnpg
+    name: {{ include "app.cnpgClusterName" $ }}
   immediate: false
   suspend: false
   method: plugin
@@ -193,7 +197,7 @@ metadata:
     app.kubernetes.io/component: pooler
 spec:
   cluster:
-    name: {{ $.Chart.Name }}-cnpg
+    name: {{ include "app.cnpgClusterName" $ }}
   instances: 3
   type: rw
   pgbouncer:

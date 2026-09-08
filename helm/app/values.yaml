@@ -113,4 +113,8 @@ services:
 
 backup:
   schedule:
-    cron: "0 2 * * *"
+    # SIX fields — CNPG's cron parser takes leading SECONDS, unlike crontab.
+    # The five-field "0 2 * * *" was read as second=0, minute=2, hour=*, i.e.
+    # hourly at :02, which is how ~4000 Backup objects accumulated instead of
+    # one a day. The operator warns about this but does not reject it.
+    cron: "0 0 2 * * *"
